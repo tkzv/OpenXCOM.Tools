@@ -164,6 +164,9 @@
     <Compile Include="Forms\MapObservers\Map_Observer_Form.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\MapObservers\TileView\TilePanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\MapObservers\TopViewForm\BottomPanelDrawService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
