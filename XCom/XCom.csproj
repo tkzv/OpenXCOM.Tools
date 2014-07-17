@@ -114,6 +114,8 @@
     <Compile Include="GameFiles\Images\Collections\DotNetCollection.cs" />
     <Compile Include="GameFiles\Images\xcFiles\xcBdy.cs" />
     <Compile Include="GameFiles\Images\xcFiles\xcSpk.cs" />
+    <Compile Include="GameFiles\Map\McdEntryFactory.cs" />
+    <Compile Include="GameFiles\Map\XcTileFactory.cs" />
     <Compile Include="Interfaces\Base\IMapTile.cs" />
     <Compile Include="Interfaces\Base\IMap_Base.cs" />
     <Compile Include="Interfaces\Base\IMap_Observer.cs" />
