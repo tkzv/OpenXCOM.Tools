@@ -167,7 +167,16 @@
     <Compile Include="Forms\MapObservers\TileView\TilePanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Forms\MapObservers\TileView\TileView.Designer.cs">
+      <DependentUpon>TileView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MapObservers\TopViewForm\BottomPanelDrawService.cs" />
+    <Compile Include="Forms\McdViewer\McdViewerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\McdViewer\McdViewerForm.Designer.cs">
+      <DependentUpon>McdViewerForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -287,6 +296,9 @@
     </Compile>
     <EmbeddedResource Include="Forms\Error\ErrorWindow.resx">
       <DependentUpon>ErrorWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\McdViewer\McdViewerForm.resx">
+      <DependentUpon>McdViewerForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PathsEditor.resx">
       <DependentUpon>PathsEditor.cs</DependentUpon>
