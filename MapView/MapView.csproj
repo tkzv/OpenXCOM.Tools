@@ -130,6 +130,10 @@
       <Project>{A8A39824-E51C-426B-A449-9780BF9E2DF6}</Project>
       <Name>DSShared</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PckView\PckView.csproj">
+      <Project>{040161D8-6B6F-4274-98EC-EB9C31856114}</Project>
+      <Name>PckView</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XCom\XCom.csproj">
       <Name>XCom</Name>
       <Project>{66DC3C20-8041-48DD-962B-DEA050F89179}</Project>
