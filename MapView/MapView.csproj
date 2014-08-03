@@ -162,6 +162,9 @@
     <Compile Include="Forms\Error\ErrorWindowAdapter.cs" />
     <Compile Include="Forms\Error\IErrorHandler.cs" />
     <Compile Include="Forms\MainWindow\MainToolStripButtonsFactory.cs" />
+    <Compile Include="Forms\MainWindow\MainWindowsManager.cs" />
+    <Compile Include="Forms\MainWindow\MainWindowsMenuItemManager.cs" />
+    <Compile Include="Forms\MainWindow\MainWindowsShowAllManager.cs" />
     <Compile Include="Forms\MapObservers\Map_Observer_Control.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -298,6 +301,9 @@
     <Compile Include="Forms\MainWindow\_MainWindow.Designer.cs">
       <DependentUpon>_MainWindow.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\AboutWindow.resx">
+      <DependentUpon>AboutWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Error\ErrorWindow.resx">
       <DependentUpon>ErrorWindow.cs</DependentUpon>
     </EmbeddedResource>
