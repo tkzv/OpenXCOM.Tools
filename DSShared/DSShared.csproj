@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DB\DBTableType.cs" />
+    <Compile Include="FileSystems\FileBackupManager.cs" />
     <Compile Include="Interfaces\IUpdater.cs" />
     <Compile Include="Interfaces\IOpenSave.cs" />
     <Compile Include="FilterBy.cs" />
