@@ -115,6 +115,7 @@
     <Compile Include="GameFiles\Images\xcFiles\xcBdy.cs" />
     <Compile Include="GameFiles\Images\xcFiles\xcSpk.cs" />
     <Compile Include="GameFiles\Map\McdEntryFactory.cs" />
+    <Compile Include="GameFiles\Map\SpecialType.cs" />
     <Compile Include="GameFiles\Map\XcMapFileService.cs" />
     <Compile Include="GameFiles\Map\XcTileFactory.cs" />
     <Compile Include="Interfaces\Base\IMapTile.cs" />
