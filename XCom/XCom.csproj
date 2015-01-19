@@ -115,10 +115,14 @@
     <Compile Include="GameFiles\Images\xcFiles\xcBdy.cs" />
     <Compile Include="GameFiles\Images\xcFiles\xcSpk.cs" />
     <Compile Include="GameFiles\Map\McdEntryFactory.cs" />
+    <Compile Include="GameFiles\Map\XcMapFileService.cs" />
     <Compile Include="GameFiles\Map\XcTileFactory.cs" />
     <Compile Include="Interfaces\Base\IMapTile.cs" />
     <Compile Include="Interfaces\Base\IMap_Base.cs" />
     <Compile Include="Interfaces\Base\IMap_Observer.cs" />
+    <Compile Include="Interfaces\Base\IMenuItem.cs" />
+    <Compile Include="Interfaces\IWarningHandler.cs" />
+    <Compile Include="Interfaces\IWarningNotifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -239,7 +243,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="SharedSpace.cs">
+    <Compile Include="SharedSpaceServices\ConsoleSharedSpace.cs" />
+    <Compile Include="SharedSpaceServices\SharedSpace.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Updator.cs" />
@@ -283,6 +288,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

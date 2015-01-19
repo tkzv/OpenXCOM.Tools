@@ -141,7 +141,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExportForm.cs">
+    <Compile Include="Forms\OtherForms\ExportForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\AboutWindow.cs">
@@ -161,6 +161,7 @@
     </Compile>
     <Compile Include="Forms\Error\ErrorWindowAdapter.cs" />
     <Compile Include="Forms\Error\IErrorHandler.cs" />
+    <Compile Include="Forms\Error\WarningConsole\ConsoleWarningHandler.cs" />
     <Compile Include="Forms\MainWindow\MainToolStripButtonsFactory.cs" />
     <Compile Include="Forms\MainWindow\MainWindowsManager.cs" />
     <Compile Include="Forms\MainWindow\MainWindowsMenuItemManager.cs" />
@@ -194,16 +195,16 @@
     <Compile Include="Forms\MapObservers\TopViewForm\BottomPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ByteView.cs">
+    <Compile Include="Forms\OtherForms\ByteView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChangeMapSizeForm.cs">
+    <Compile Include="Forms\OtherForms\ChangeMapSizeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChoiceDialog.cs">
+    <Compile Include="Forms\OtherForms\ChoiceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CopyForm.cs">
+    <Compile Include="Forms\OtherForms\CopyForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CopyGroup.cs">
@@ -211,37 +212,37 @@
     <Compile Include="Cursor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Dialog.cs">
+    <Compile Include="Forms\OtherForms\Dialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Globals.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="HelpScreen.cs">
+    <Compile Include="Forms\OtherForms\HelpScreen.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InstallWindow.cs">
+    <Compile Include="Forms\OtherForms\InstallWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InstallWindow.Designer.cs">
+    <Compile Include="Forms\OtherForms\InstallWindow.Designer.cs">
       <DependentUpon>InstallWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="LoadingForm.cs">
+    <Compile Include="Forms\OtherForms\LoadingForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MapInfoForm.cs">
+    <Compile Include="Forms\OtherForms\MapInfoForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MapViewPanel\MapViewPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="NewMapForm.cs">
+    <Compile Include="Forms\OtherForms\NewMapForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NoDirForm.cs">
+    <Compile Include="Forms\OtherForms\NoDirForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PathsEditor.cs">
+    <Compile Include="Forms\OtherForms\PathsEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Program.cs" />
@@ -255,7 +256,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="PropertyForm.cs">
+    <Compile Include="Forms\OtherForms\PropertyForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MapObservers\RmpViewForm\RmpView.cs">
@@ -267,10 +268,10 @@
     <Compile Include="Settings.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SubsetForm.cs">
+    <Compile Include="Forms\OtherForms\SubsetForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TilesetForm.cs">
+    <Compile Include="Forms\OtherForms\TilesetForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MapObservers\TileView\TileView.cs">
@@ -288,7 +289,7 @@
     <Compile Include="Forms\MapObservers\TopViewForm\TopViewPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TreeEditor.cs">
+    <Compile Include="Forms\OtherForms\TreeEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Updator.cs" />
@@ -310,7 +311,7 @@
     <EmbeddedResource Include="Forms\McdViewer\McdViewerForm.resx">
       <DependentUpon>McdViewerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PathsEditor.resx">
+    <EmbeddedResource Include="Forms\OtherForms\PathsEditor.resx">
       <DependentUpon>PathsEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MapObservers\RmpViewForm\RmpView.resx">
@@ -327,7 +328,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="_Embedded\ImagesTFTD.dat" />
     <EmbeddedResource Include="_Embedded\ImagesUFO.dat" />
-    <EmbeddedResource Include="InstallWindow.resx">
+    <EmbeddedResource Include="Forms\OtherForms\InstallWindow.resx">
       <SubType>Designer</SubType>
       <DependentUpon>InstallWindow.cs</DependentUpon>
     </EmbeddedResource>
