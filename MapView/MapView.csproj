@@ -141,6 +141,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\MapObservers\RmpViewForm\ConnectNodeService.cs" />
+    <Compile Include="Forms\MapObservers\RmpViewForm\ConnectNodeTypes.cs" />
+    <Compile Include="Forms\MapObservers\RmpViewForm\MapPanelClickEventArgs.cs" />
     <Compile Include="Forms\MapObservers\RmpViewForm\RmpPanel.cs">
       <SubType>Component</SubType>
     </Compile>
