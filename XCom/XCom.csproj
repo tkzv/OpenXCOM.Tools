@@ -172,7 +172,7 @@
     <Compile Include="GameFiles\Map\XCMapFile.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Map\MapTile.cs">
+    <Compile Include="GameFiles\Map\XCMapTile.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Map\McdEntry.cs">
@@ -212,7 +212,7 @@
     <Compile Include="Interfaces\Base\IMapDesc.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\Base\ITile.cs" />
+    <Compile Include="Interfaces\Base\TileBase.cs" />
     <Compile Include="Interfaces\Base\ITileset.cs">
       <SubType>Code</SubType>
     </Compile>
