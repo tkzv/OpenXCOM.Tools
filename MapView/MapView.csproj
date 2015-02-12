@@ -197,6 +197,8 @@
     <Compile Include="Forms\MapObservers\RmpViewForm\MapPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="SettingServices\SettingsService.cs" />
+    <Compile Include="SettingServices\VolutarSettingService.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Forms\MapObservers\TopViewForm\BottomPanel.cs">
       <SubType>Component</SubType>
