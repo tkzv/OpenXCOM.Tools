@@ -319,6 +319,9 @@
     <EmbeddedResource Include="Forms\McdViewer\McdViewerForm.resx">
       <DependentUpon>McdViewerForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OtherForms\ChangeMapSizeForm.resx">
+      <DependentUpon>ChangeMapSizeForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\PathsEditor.resx">
       <DependentUpon>PathsEditor.cs</DependentUpon>
     </EmbeddedResource>
