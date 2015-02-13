@@ -115,6 +115,8 @@
     <Compile Include="GameFiles\Images\xcFiles\xcBdy.cs" />
     <Compile Include="GameFiles\Images\xcFiles\xcSpk.cs" />
     <Compile Include="GameFiles\Map\McdEntryFactory.cs" />
+    <Compile Include="GameFiles\Map\RmpData\Link.cs" />
+    <Compile Include="GameFiles\Map\RmpData\RmpEntry.cs" />
     <Compile Include="GameFiles\Map\SpecialType.cs" />
     <Compile Include="GameFiles\Map\XcMapFileService.cs" />
     <Compile Include="GameFiles\Map\XcTileFactory.cs" />
@@ -184,7 +186,7 @@
     <Compile Include="GameFiles\Map\McdFile.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Map\RmpFile.cs">
+    <Compile Include="GameFiles\Map\RmpData\RmpFile.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Map\StrEnum.cs">
