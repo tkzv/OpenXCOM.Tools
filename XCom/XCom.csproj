@@ -117,6 +117,7 @@
     <Compile Include="GameFiles\Map\McdEntryFactory.cs" />
     <Compile Include="GameFiles\Map\RmpData\Link.cs" />
     <Compile Include="GameFiles\Map\RmpData\RmpEntry.cs" />
+    <Compile Include="GameFiles\Map\RmpData\RmpService.cs" />
     <Compile Include="GameFiles\Map\SpecialType.cs" />
     <Compile Include="GameFiles\Map\XcMapFileService.cs" />
     <Compile Include="GameFiles\Map\XcTileFactory.cs" />
