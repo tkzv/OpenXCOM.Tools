@@ -56,6 +56,6 @@
 
         #endregion
 
-        private RmpView RouteViewControl;
+        public RmpView RouteViewControl;
     }
 }

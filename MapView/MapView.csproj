@@ -155,6 +155,12 @@
     <Compile Include="Forms\MapObservers\RmpViews\RmpViewForm.Designer.cs">
       <DependentUpon>RmpViewForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MapObservers\TopRmpViews\TopRmpViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MapObservers\TopRmpViews\TopRmpViewForm.Designer.cs">
+      <DependentUpon>TopRmpViewForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MapObservers\TileViews\TileViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -197,7 +203,7 @@
     <Compile Include="Forms\MapObservers\Map_Observer_Control.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\MapObservers\Map_Observer_Form.cs">
+    <Compile Include="Forms\MapObservers\MapObserverControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\MapObservers\TileViews\TilePanel.cs">
@@ -340,6 +346,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MapObservers\RmpViews\RmpViewForm.resx">
       <DependentUpon>RmpViewForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MapObservers\TopRmpViews\TopRmpViewForm.resx">
+      <DependentUpon>TopRmpViewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MapObservers\TileViews\TileViewForm.resx">
       <DependentUpon>TileViewForm.cs</DependentUpon>
