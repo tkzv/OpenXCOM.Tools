@@ -147,7 +147,7 @@
     <Compile Include="Forms\MapObservers\RmpViews\DrawContentService.cs" />
     <Compile Include="Forms\MapObservers\RmpViews\MapPanelClickEventArgs.cs" />
     <Compile Include="Forms\MapObservers\RmpViews\RmpPanel.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\MapObservers\RmpViews\RmpViewForm.cs">
       <SubType>Form</SubType>
@@ -217,7 +217,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Forms\MapObservers\RmpViews\MapPanel.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="SettingServices\SettingsService.cs" />
     <Compile Include="SettingServices\VolutarSettingService.cs" />
