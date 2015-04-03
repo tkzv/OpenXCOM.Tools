@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.TileViewControl = new MapView.Forms.MapObservers.TileViews.TileView();
+            this.TileViewControl = new global::MapView.Forms.MapObservers.TileViews.TileView();
             this.SuspendLayout();
             // 
             // TileViewControl
