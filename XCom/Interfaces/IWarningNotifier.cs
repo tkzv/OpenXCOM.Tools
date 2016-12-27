@@ -2,8 +2,8 @@
 
 namespace XCom.Interfaces
 {
-    public interface IWarningNotifier
-    {
-        event Action<string> HandleWarning;
-    }
+	public interface IWarningNotifier
+	{
+		event Action<string> HandleWarning;
+	}
 }
