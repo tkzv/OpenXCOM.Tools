@@ -2,7 +2,10 @@
 
 namespace MapView.Forms.MapObservers.TileViews
 {
-	public partial class TileViewForm : Form, IMapObserverFormProvider
+	public partial class TileViewForm
+		:
+		Form,
+		IMapObserverFormProvider
 	{
 		public TileViewForm()
 		{
