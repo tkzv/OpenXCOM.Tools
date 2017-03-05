@@ -139,34 +139,24 @@ namespace MapView.Forms.MapObservers.TileViews
 					}
 					else
 					{
-/*						int qtyTiles = 0;
+						int qtyTiles = 0;
 
 						for (int i = 0; i < value.Count; i++)
 							if (value[i].Info.TileType == type)
 								++qtyTiles;
-						
-						if (qtyTiles != 0)
-						{
-							tiles = new TileBase[qtyTiles + 1];
-							tiles[0] = null;
 
-							for (int i = 0, j = 1; i < value.Count; i++)
-								if (value[i].Info.TileType == type)
-									tiles[j++] = value[i];
-						}
-						else
-						{
-							tiles = null;
-							selectedNum = 0;
-						} */
+						tiles = new TileBase[qtyTiles + 1];
+						tiles[0] = null;
 
-						var list = new List<TileBase>(); // to be replaced by above^ to add 1st blank/erasure-tile to each tile-group.
+						for (int i = 0, j = 1; i < value.Count; i++)
+							if (value[i].Info.TileType == type)
+								tiles[j++] = value[i];
 
+/*						var list = new List<TileBase>(); // NOTE: Replaced by above^ to add 1st blank/erasure-tile to each tile-group.
 						for (int i = 0; i < value.Count; i++)
 							if (value[i].Info.TileType == type)
 								list.Add(value[i]);
-
-						tiles = list.ToArray();
+						tiles = list.ToArray(); */
 					}
 
 					if (selectedNum >= tiles.Length)
