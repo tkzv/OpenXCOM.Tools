@@ -91,11 +91,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			vert.Location = new Point(Width - vert.Width, 0);
 			vert.Height = Height;
 			vert.Maximum = Math.Max((PreferredHeight - Height) + 10, vert.Minimum);
-
-			if (vert.Maximum == vert.Minimum)
-				vert.Visible = false;
-			else
-				vert.Visible = true;
+			vert.Visible = (vert.Maximum != vert.Minimum);
 
 			Refresh();
 		}

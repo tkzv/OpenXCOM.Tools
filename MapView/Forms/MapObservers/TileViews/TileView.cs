@@ -104,7 +104,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private void options_click(object sender,EventArgs e)
 		{
-			PropertyForm pf = new PropertyForm("tileViewOptions", Settings);
+			var pf = new PropertyForm("tileViewOptions", Settings);
 			pf.Text = "Tile View Settings";
 			pf.Show();
 		}
@@ -171,14 +171,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			set
 			{
 				base.Map = value;
-				if (value == null)
-				{
-					Tiles = null;
-				}
-				else
-				{
-					Tiles = value.Tiles;
-				}
+				Tiles = (value == null) ? null : value.Tiles;
 			}
 		}
 		
