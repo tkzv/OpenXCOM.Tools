@@ -9,7 +9,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TileView));
+			var resources = new System.ComponentModel.ComponentResourceManager(typeof(TileView));
 			this.mcdInfoTab = new System.Windows.Forms.MenuItem();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.allTab = new System.Windows.Forms.TabPage();

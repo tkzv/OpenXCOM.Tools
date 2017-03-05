@@ -5,12 +5,16 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+
 using MapView.Forms.MainWindow;
 using MapView.Forms.McdViewer;
 using MapView.SettingServices;
+
 using PckView;
+
 using XCom;
 using XCom.Interfaces.Base;
+
 
 namespace MapView.Forms.MapObservers.TileViews
 {
@@ -46,7 +50,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				handler(newtile);
 		}
 
-		public TileView( )
+		public TileView()
 		{
 			InitializeComponent();
 
@@ -102,7 +106,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
-		private void options_click(object sender,EventArgs e)
+		private void options_click(object sender, EventArgs e)
 		{
 			var pf = new PropertyForm("tileViewOptions", Settings);
 			pf.Text = "Tile View Settings";

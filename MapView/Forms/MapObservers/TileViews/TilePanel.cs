@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+
 using XCom;
 using XCom.Interfaces.Base;
+
 
 namespace MapView.Forms.MapObservers.TileViews
 {

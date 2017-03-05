@@ -17,7 +17,8 @@ namespace MapView
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
 
-		private string txt,mapPath,rmpPath,blanksPath;
+		private string txt, mapPath, rmpPath, blanksPath;
+
 		private System.Windows.Forms.TextBox txtRmp;
 		private System.Windows.Forms.TextBox txtMap;
 		private System.Windows.Forms.Button btnFindMap;
@@ -31,7 +32,7 @@ namespace MapView
 			InitializeComponent();
 			txt		=
 			mapPath	=
-			rmpPath	= null;
+			rmpPath	= null; // NOTE: whynot 'blanksPath' also
 		}
 
 		public string TilesetText
@@ -293,7 +294,7 @@ namespace MapView
 
 		private void btnFindMap_Click(object sender, System.EventArgs e)
 		{
-			FolderBrowserDialog fs = new FolderBrowserDialog();
+			var fs = new FolderBrowserDialog();
 			fs.Description = "Find MAP directory";
 			if (fs.ShowDialog(this) == DialogResult.OK)
 				txtMap.Text = fs.SelectedPath;
@@ -301,7 +302,7 @@ namespace MapView
 
 		private void btnFindRmp_Click(object sender, System.EventArgs e)
 		{
-			FolderBrowserDialog fs = new FolderBrowserDialog();
+			var fs = new FolderBrowserDialog();
 			fs.Description = "Find RMP directory";
 			if (fs.ShowDialog(this) == DialogResult.OK)
 				txtRmp.Text=fs.SelectedPath;
@@ -309,7 +310,7 @@ namespace MapView
 
 		private void btnFindBlank_Click(object sender, System.EventArgs e)
 		{
-			FolderBrowserDialog fs = new FolderBrowserDialog();
+			var fs = new FolderBrowserDialog();
 			fs.Description = "Find BLANKS directory";
 			if (fs.ShowDialog(this) == DialogResult.OK)
 				txtBlank.Text=fs.SelectedPath;
