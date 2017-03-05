@@ -10,6 +10,7 @@ using XCom;
 using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
+
 namespace MapView
 {
 	public class MapView
@@ -72,8 +73,14 @@ namespace MapView
 			if (map != null && copied != null)
 			{
 				var dragStart = DragStart;
-				for (int r = dragStart.Y; r < map.MapSize.Rows && (r - dragStart.Y) < copied.GetLength(0); r++)
-					for (int c = dragStart.X; c < map.MapSize.Cols && (c - dragStart.X) < copied.GetLength(1); c++)
+				for (int
+						r = dragStart.Y;
+						r < map.MapSize.Rows && (r - dragStart.Y) < copied.GetLength(0);
+						r++)
+					for (int
+							c = dragStart.X;
+							c < map.MapSize.Cols && (c - dragStart.X) < copied.GetLength(1);
+							c++)
 					{
 						var tile = map[r, c] as XCMapTile;
 						if (tile != null)

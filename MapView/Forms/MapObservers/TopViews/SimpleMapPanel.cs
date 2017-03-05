@@ -10,6 +10,7 @@ using MapView.Forms.MapObservers.RmpViews;
 using XCom;
 using XCom.Interfaces.Base;
 
+
 namespace MapView.Forms.MapObservers.TopViews
 {
 	public class SimpleMapPanel
@@ -198,15 +199,6 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh();
 		}
 
-		protected override void OnMouseWheel(MouseEventArgs e)
-		{
-			base.OnMouseWheel(e);
-			if (e.Delta < 0)
-				map.Up();
-			else
-				map.Down();
-		}
-
 		private Point ConvertCoordsDiamond(int x, int y)
 		{
 			// 16 is half the width of the diamond
@@ -319,8 +311,8 @@ namespace MapView.Forms.MapObservers.TopViews
 												pt.Y,
 												pt.X,
 												map.CurrentHeight);
-				_mDown = true;
 
+				_mDown = true;
 				MapViewPanel.Instance.MapView.SetDrag(pt, pt);
 			}
 		}
@@ -331,6 +323,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			_mDown = false;
 			MapViewPanel.Instance.MapView.Refresh();
+
 			Refresh();
 		}
 
@@ -350,6 +343,15 @@ namespace MapView.Forms.MapObservers.TopViews
 													pt);
 				Refresh();
 			}
+		}
+
+		protected override void OnMouseWheel(MouseEventArgs e)
+		{
+			base.OnMouseWheel(e);
+			if (e.Delta < 0)
+				map.Up();
+			else
+				map.Down();
 		}
 	}
 }

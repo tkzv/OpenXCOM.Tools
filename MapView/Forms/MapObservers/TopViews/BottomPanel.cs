@@ -9,6 +9,7 @@ using MapView.Forms.MainWindow;
 using XCom;
 using XCom.Interfaces.Base;
 
+
 namespace MapView.Forms.MapObservers.TopViews
 {
 	public class BottomPanel
@@ -20,7 +21,9 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private readonly BottomPanelDrawService _drawService;
 		private XCMapTile.MapQuadrant _selectedQuadrant;
+
 		public event EventHandler PanelClicked;
+
 
 		public BottomPanel()
 		{
@@ -74,23 +77,36 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			if (_mapTile != null)
 			{
-				if (btn == MouseButtons.Left)
+				switch (btn)
 				{
-					if (clicks == 2)
+					case MouseButtons.Left:
+						switch (clicks)
+						{
+							case 1:
+								break;
+								
+							case 2:
+								var tileView = MainWindowsManager.TileView.TileViewControl;
+								tileView.SelectedTile = _mapTile[SelectedQuadrant];
+								break;
+						}
+						break;
+
+					case MouseButtons.Right:
 					{
-						var tileView = MainWindowsManager.TileView.TileViewControl;
-						tileView.SelectedTile = _mapTile[SelectedQuadrant];
+						switch (clicks)
+						{
+							case 1:
+								var tileView = MainWindowsManager.TileView.TileViewControl;
+								_mapTile[SelectedQuadrant] = tileView.SelectedTile;
+								break;
+
+							case 2:
+								_mapTile[SelectedQuadrant] = null;
+								break;
+						}
+						break;
 					}
-				}
-				else if (btn == MouseButtons.Right)
-				{
-					if (clicks == 1)
-					{
-						var tileView = MainWindowsManager.TileView.TileViewControl;
-						_mapTile[SelectedQuadrant] = tileView.SelectedTile;
-					}
-					else if (clicks == 2)
-						_mapTile[SelectedQuadrant] = null;
 				}
 			}
 
@@ -119,8 +135,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			SelectedQuadrant = (XCMapTile.MapQuadrant)((e.X - BottomPanelDrawService.startX) /
-														BottomPanelDrawService.TOTAL_QUADRAN_SPACE);
+			var type = (e.X - BottomPanelDrawService.startX) / BottomPanelDrawService.TOTAL_QUADRANT_SPACE;
+			SelectedQuadrant = (XCMapTile.MapQuadrant)type;
 
 			SetSelected(e.Button, e.Clicks);
 

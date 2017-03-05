@@ -2,12 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Collections;
+
 using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
+
 namespace XCom
 {
-	public class XCMapTile : MapTileBase
+	public class XCMapTile
+		:
+		MapTileBase
 	{
 		public enum MapQuadrant
 		{
@@ -18,17 +22,19 @@ namespace XCom
 		};
 
 		private RmpEntry _rmpInfo;
+
 		private TileBase _ground;
 		private TileBase _north;
 		private TileBase _west;
 		private TileBase _content;
+
 		private bool _blank;
 
 		internal XCMapTile(TileBase ground, TileBase west, TileBase north, TileBase content)
 		{
-			_ground = ground;
-			_north = north;
-			_west = west;
+			_ground  = ground;
+			_north   = north;
+			_west    = west;
 			_content = content;
 
 			DrawAbove = true;
@@ -87,10 +93,12 @@ namespace XCom
 			get
 			{
 				var list = new List<TileBase>();
-				if (Ground != null) list.Add(Ground);
-				if (West != null) list.Add(West);
-				if (North != null) list.Add(North);
+
+				if (Ground  != null) list.Add(Ground);
+				if (West    != null) list.Add(West);
+				if (North   != null) list.Add(North);
 				if (Content != null) list.Add(Content);
+
 				return list.ToArray();
 			}
 		}
@@ -99,14 +107,10 @@ namespace XCom
 		{
 			switch (quad)
 			{
-				case MapQuadrant.Ground:
-					return Ground;
-				case MapQuadrant.Content:
-					return Content;
-				case MapQuadrant.North:
-					return North;
-				case MapQuadrant.West:
-					return West;
+				case MapQuadrant.Ground:	return Ground;
+				case MapQuadrant.West:		return West;
+				case MapQuadrant.North:		return North;
+				case MapQuadrant.Content:	return Content;
 				default:
 					return null;
 			}
@@ -116,18 +120,10 @@ namespace XCom
 		{
 			switch (quad)
 			{
-				case MapQuadrant.Ground:
-					_ground = value;
-					break;
-				case MapQuadrant.Content:
-					_content = value;
-					break;
-				case MapQuadrant.North:
-					_north = value;
-					break;
-				case MapQuadrant.West:
-					_west = value;
-					break;
+				case MapQuadrant.Ground:	_ground = value;	break;
+				case MapQuadrant.West:		_west = value;		break;
+				case MapQuadrant.North:		_north = value;		break;
+				case MapQuadrant.Content:	_content = value;	break;
 			}
 		}
 

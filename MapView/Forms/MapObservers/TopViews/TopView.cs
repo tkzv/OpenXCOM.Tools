@@ -2,9 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using MapView.Forms.MainWindow;
+
 using Microsoft.Win32;
+
+using MapView.Forms.MainWindow;
+
 using XCom;
+
 
 namespace MapView.Forms.MapObservers.TopViews
 {
@@ -20,6 +24,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		private MainToolStripButtonsFactory _mainToolStripButtonsFactory;
 
 		public event EventHandler VisibleTileChanged;
+
 
 		public TopView()
 		{
@@ -40,7 +45,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			var visItems = VisibleToolStripButton.DropDown.Items;
 			var ground = new ToolStripMenuItem("Ground");
 			visItems.Add(ground);
-			_topViewPanel.Ground = ground ;
+			_topViewPanel.Ground = ground;
 			_visibleHash[_topViewPanel.Ground] = 0;
 			_topViewPanel.Ground.ShortcutKeys = Keys.F1;
 
@@ -251,7 +256,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			get { return _topViewPanel.Content.Checked; }
 		}
-		 
+
 		private void TopView_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control && e.KeyCode == Keys.S

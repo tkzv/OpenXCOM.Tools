@@ -2,7 +2,9 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Text;
+
 using XCom.Interfaces.Base;
+
 
 namespace MapView
 {
@@ -14,7 +16,7 @@ namespace MapView
 		protected IMap_Base map;
 
 		private DSShared.Windows.RegistryInfo registryInfo;
-		private Dictionary<string, IMap_Observer> moreObservers;
+		private readonly Dictionary<string, IMap_Observer> moreObservers;
 
 		public Map_Observer_Control()
 		{

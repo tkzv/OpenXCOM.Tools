@@ -6,6 +6,7 @@ using DSShared.Windows;
 
 using XCom.Interfaces.Base;
 
+
 namespace MapView
 {
 	public class MapObserverControl

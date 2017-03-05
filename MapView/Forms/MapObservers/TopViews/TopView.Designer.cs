@@ -27,7 +27,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TopView));
+			var resources = new System.ComponentModel.ComponentResourceManager(typeof(TopView));
 			this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
 			this.center = new System.Windows.Forms.Panel();
 			this.toolStrip = new System.Windows.Forms.ToolStrip();
