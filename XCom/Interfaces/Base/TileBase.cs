@@ -10,17 +10,27 @@ namespace XCom.Interfaces.Base
 		protected XCImage[] image;
 		protected IInfo info;
 
-		public TileBase(int id) { this.Id = id; MapId = -1; info = null; }
+		public TileBase(int id)
+		{
+			this.Id = id;
+			MapId = -1;
+			info = null;
+		}
 
 		/// <summary>
 		/// This is the ID unique to this TileBase after it has been loaded
 		/// </summary>
-		public int Id { get; protected set; }
+		public int Id
+		{
+			get;
+			protected set;
+		}
 
 		/// <summary>
 		/// This is the ID by which the map knows this tile by
 		/// </summary>
-		public int MapId { get; set; }
+		public int MapId
+		{ get; set; }
 
 		/// <summary>
 		/// Gets an image at the specified animation frame

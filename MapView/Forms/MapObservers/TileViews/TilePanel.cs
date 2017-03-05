@@ -131,7 +131,6 @@ namespace MapView.Forms.MapObservers.TileViews
 				{
 					if (type == TileType.All)
 					{
-//						tiles = value;
 						tiles = new TileBase[value.Count + 1];
 						tiles[0] = null;
 
@@ -140,7 +139,28 @@ namespace MapView.Forms.MapObservers.TileViews
 					}
 					else
 					{
-						var list = new List<TileBase>();
+/*						int qtyTiles = 0;
+
+						for (int i = 0; i < value.Count; i++)
+							if (value[i].Info.TileType == type)
+								++qtyTiles;
+						
+						if (qtyTiles != 0)
+						{
+							tiles = new TileBase[qtyTiles + 1];
+							tiles[0] = null;
+
+							for (int i = 0, j = 1; i < value.Count; i++)
+								if (value[i].Info.TileType == type)
+									tiles[j++] = value[i];
+						}
+						else
+						{
+							tiles = null;
+							selectedNum = 0;
+						} */
+
+						var list = new List<TileBase>(); // to be replaced by above^ to add 1st blank/erasure-tile to each tile-group.
 
 						for (int i = 0; i < value.Count; i++)
 							if (value[i].Info.TileType == type)
@@ -332,10 +352,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 					if (val > vert.Minimum)
 					{
-						if (val < vert.Maximum)
-							vert.Value = val;
-						else
-							vert.Value = vert.Maximum;
+						vert.Value = (val < vert.Maximum) ? val : vert.Maximum;
 					}
 					else
 						vert.Value = vert.Minimum;
