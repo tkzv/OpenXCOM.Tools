@@ -14,8 +14,9 @@ namespace MapView.Forms.MapObservers.TileViews
 	{
 		private TileBase[] tiles;
 
-		private int space = 2;
-		private int height = 40, width = 32;
+		private const int width  = 32;
+		private const int height = 40;
+		private const int space  = 4;
 
 		private SolidBrush brush = new SolidBrush(Color.FromArgb(204, 204, 255));
 		private Pen pen = new Pen(Brushes.Red, 3);
@@ -52,8 +53,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 //		public static PckFile ExtraFile
 //		{
-//			get{return extraFile;}
-//			set{extraFile=value;}
+//			get { return extraFile; }
+//			set { extraFile = value; }
 //		}
 
 		public static Hashtable Colors
@@ -86,7 +87,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		protected override void OnResize(EventArgs e)
 		{
-			numAcross = (Width - (vert.Visible ? vert.Width : 0)) / (width + 2 * space);
+			numAcross = (Width - (vert.Visible ? vert.Width : 0)) / (width + space);
 			vert.Location = new Point(Width - vert.Width, 0);
 			vert.Height = Height;
 			vert.Maximum = Math.Max((PreferredHeight - Height) + 10, vert.Minimum);
@@ -116,9 +117,9 @@ namespace MapView.Forms.MapObservers.TileViews
 				if (tiles != null && numAcross > 0)
 				{
 					if (tiles.Length % numAcross == 0)
-						return (tiles.Length / numAcross) * (height + 2 * space);
+						return (tiles.Length / numAcross) * (height + space);
 
-					return (1 + tiles.Length / numAcross) * (height + 2 * space);
+					return (1 + tiles.Length / numAcross) * (height + space);
 				}
 				return 0;
 			}
@@ -163,7 +164,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
-		private int scrollAmount = 20;
+		private const int scrollAmount = 20;
 
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
@@ -193,8 +194,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (tiles != null)
 			{
-				int x = e.X / (width + 2 * space);
-				int y = (e.Y - startY) / (height + 2 * space);
+				int x = e.X / (width + space);
+				int y = (e.Y - startY) / (height + space);
 
 				if (x >= numAcross)
 					x = numAcross - 1;
@@ -221,8 +222,8 @@ namespace MapView.Forms.MapObservers.TileViews
 				Graphics g = e.Graphics;
 
 				int x = 0, y = 0;
-				var bottomWidth  = width  + 2 * space;
-				var bottomHeight = height + 2 * space;
+				const int bottomWidth  = width  + space;
+				const int bottomHeight = height + space;
 
 				foreach (var tile in tiles)
 				{
@@ -277,10 +278,10 @@ namespace MapView.Forms.MapObservers.TileViews
 
 //				g.DrawRectangle(
 //							brush,
-//							(selectedNum % numAcross) * (width + 2 * space),
-//							startY + (selectedNum / numAcross) * (height + 2 * space),
-//							width  + 2 * space,
-//							height + 2 * space)
+//							(selectedNum % numAcross) * (width + space),
+//							startY + (selectedNum / numAcross) * (height + space),
+//							width  + space,
+//							height + space)
 
 				for (int k = 0; k <= numAcross + 1; k++)
 					g.DrawLine(
@@ -328,7 +329,7 @@ namespace MapView.Forms.MapObservers.TileViews
 					if (TileChanged != null)
 						TileChanged(SelectedTile);
 
-					int y = startY + (selectedNum / numAcross) * (height + 2 * space);
+					int y = startY + (selectedNum / numAcross) * (height + space);
 					int val = -(startY - y);
 
 					if (val > vert.Minimum)
