@@ -22,7 +22,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		private readonly BottomPanelDrawService _drawService;
 		private XCMapTile.MapQuadrant _selectedQuadrant;
 
-		public event EventHandler PanelClicked;
+//		public event EventHandler PanelClicked;
 
 
 		public BottomPanel()
@@ -140,8 +140,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			SetSelected(e.Button, e.Clicks);
 
-			if (PanelClicked != null)
-				PanelClicked(this, new EventArgs());
+//			if (PanelClicked != null)
+//				PanelClicked(this, new EventArgs());
 
 			Refresh();
 		}

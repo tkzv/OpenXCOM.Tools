@@ -27,7 +27,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		private void InitializeComponent()
 		{
-			var resources = new System.ComponentModel.ComponentResourceManager(typeof(TopView));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TopView));
 			this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
 			this.center = new System.Windows.Forms.Panel();
 			this.toolStrip = new System.Windows.Forms.ToolStrip();
@@ -52,7 +52,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			// toolStripContainer2.ContentPanel
 			// 
 			this.toolStripContainer2.ContentPanel.Controls.Add(this.center);
-			this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(484, 213);
+			this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(478, 213);
 			this.toolStripContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer2.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			// 
@@ -80,7 +80,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.center.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.center.Location = new System.Drawing.Point(0, 0);
 			this.center.Name = "center";
-			this.center.Size = new System.Drawing.Size(484, 213);
+			this.center.Size = new System.Drawing.Size(478, 213);
 			this.center.TabIndex = 2;
 			// 
 			// toolStrip
@@ -91,7 +91,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Padding = new System.Windows.Forms.Padding(0);
 			this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.toolStrip.Size = new System.Drawing.Size(25, 109);
+			this.toolStrip.Size = new System.Drawing.Size(31, 30);
 			this.toolStrip.TabIndex = 1;
 			this.toolStrip.Text = "toolStrip1";
 			// 
@@ -112,8 +112,8 @@ namespace MapView.Forms.MapObservers.TopViews
 			// 
 			this.MainToolStrip.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.VisibleToolStripButton,
-									this.toolStripDropDownButton1});
+			this.VisibleToolStripButton,
+			this.toolStripDropDownButton1});
 			this.MainToolStrip.Location = new System.Drawing.Point(0, 0);
 			this.MainToolStrip.Name = "MainToolStrip";
 			this.MainToolStrip.Size = new System.Drawing.Size(509, 25);
@@ -133,7 +133,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			// 
 			this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.optionsToolStripMenuItem});
+			this.optionsToolStripMenuItem});
 			this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
 			this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
@@ -165,6 +165,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.MainToolStrip.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
+
 		}
 		#endregion
 
