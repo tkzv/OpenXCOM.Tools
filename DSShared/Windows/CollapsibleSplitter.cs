@@ -61,10 +61,20 @@ namespace DSShared.Windows
 	/// </summary>
 	public enum DotStyles
 	{
+		/// <summary>
+		/// </summary>
 		Mozilla,
+		/// <summary>
+		/// </summary>
 		XP,
+		/// <summary>
+		/// </summary>
 		Win9x,
+		/// <summary>
+		/// </summary>
 		DoubleDots,
+		/// <summary>
+		/// </summary>
 		Lines
 	}
 
@@ -73,9 +83,17 @@ namespace DSShared.Windows
 	/// </summary>
 	public enum SplitterState
 	{
+		/// <summary>
+		/// </summary>
 		Collapsed,
+		/// <summary>
+		/// </summary>
 		Expanding,
+		/// <summary>
+		/// </summary>
 		Expanded,
+		/// <summary>
+		/// </summary>
 		Collapsing
 	}
 

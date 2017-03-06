@@ -13,10 +13,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (components != null))
-			{
+			if (disposing && components != null)
 				components.Dispose();
-			}
+
 			base.Dispose(disposing);
 		}
 
@@ -52,7 +51,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			// toolStripContainer2.ContentPanel
 			// 
 			this.toolStripContainer2.ContentPanel.Controls.Add(this.center);
-			this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(478, 213);
+			this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(484, 213);
 			this.toolStripContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer2.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			// 
@@ -80,7 +79,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.center.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.center.Location = new System.Drawing.Point(0, 0);
 			this.center.Name = "center";
-			this.center.Size = new System.Drawing.Size(478, 213);
+			this.center.Size = new System.Drawing.Size(484, 213);
 			this.center.TabIndex = 2;
 			// 
 			// toolStrip
@@ -91,7 +90,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Padding = new System.Windows.Forms.Padding(0);
 			this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.toolStrip.Size = new System.Drawing.Size(31, 30);
+			this.toolStrip.Size = new System.Drawing.Size(25, 111);
 			this.toolStrip.TabIndex = 1;
 			this.toolStrip.Text = "toolStrip1";
 			// 
@@ -143,7 +142,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
 			this.optionsToolStripMenuItem.Text = "Options";
 			this.optionsToolStripMenuItem.Click += new System.EventHandler(this.options_click);
 			// 

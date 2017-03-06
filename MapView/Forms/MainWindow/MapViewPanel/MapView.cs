@@ -601,7 +601,7 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// convert from screen coordinates to tile coordinates
+		/// Converts a point from screen coordinates to tile coordinates.
 		/// </summary>
 		/// <param name="ptX"></param>
 		/// <param name="ptY"></param>

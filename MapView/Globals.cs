@@ -2,7 +2,7 @@ using System;
 
 namespace MapView
 {
-	public class Globals
+	public static class Globals
 	{
 		public static double MinPckImageScale	= 0.3;
 		public static double MaxPckImageScale	= 2.0;

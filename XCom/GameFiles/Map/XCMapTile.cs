@@ -30,7 +30,12 @@ namespace XCom
 
 		private bool _blank;
 
-		internal XCMapTile(TileBase ground, TileBase west, TileBase north, TileBase content)
+
+		internal XCMapTile(
+						TileBase ground,
+						TileBase west,
+						TileBase north,
+						TileBase content)
 		{
 			_ground  = ground;
 			_north   = north;
@@ -43,7 +48,13 @@ namespace XCom
 
 		public static XCMapTile BlankTile
 		{
-			get { return CreateBlankTile(); }
+			get
+			{
+				var tile = new XCMapTile(null, null, null, null);
+				tile._blank = true;
+				return tile;
+//				return CreateBlankTile();
+			}
 		}
 
 		public bool Blank
@@ -54,7 +65,19 @@ namespace XCom
 
 		public TileBase this[MapQuadrant quad]
 		{
-			get { return GetQuadrantTile(quad); }
+			get
+			{
+				switch (quad)
+				{
+					case MapQuadrant.Ground:	return Ground;
+					case MapQuadrant.West:		return West;
+					case MapQuadrant.North:		return North;
+					case MapQuadrant.Content:	return Content;
+				}
+				return null;
+//				return GetQuadrantTile(quad);
+			}
+
 			set { ChangeMapQuadrant(quad, value); }
 		}
 
@@ -103,19 +126,6 @@ namespace XCom
 			}
 		}
 
-		private TileBase GetQuadrantTile(MapQuadrant quad)
-		{
-			switch (quad)
-			{
-				case MapQuadrant.Ground:	return Ground;
-				case MapQuadrant.West:		return West;
-				case MapQuadrant.North:		return North;
-				case MapQuadrant.Content:	return Content;
-				default:
-					return null;
-			}
-		}
-
 		private void ChangeMapQuadrant(MapQuadrant quad, TileBase value)
 		{
 			switch (quad)
@@ -127,11 +137,24 @@ namespace XCom
 			}
 		}
 
-		private static XCMapTile CreateBlankTile()
-		{
-			var mt = new XCMapTile(null, null, null, null);
-			mt._blank = true;
-			return mt;
-		}
+//		private TileBase GetQuadrantTile(MapQuadrant quad) // kL_note: Say, why wasn't this done right in the getter for this[MapQuadrant quad].
+//		{
+//			switch (quad)
+//			{
+//				case MapQuadrant.Ground:	return Ground;
+//				case MapQuadrant.West:		return West;
+//				case MapQuadrant.North:		return North;
+//				case MapQuadrant.Content:	return Content;
+//				default:
+//					return null;
+//			}
+//		}
+
+//		private static XCMapTile CreateBlankTile() // kL_note: Say, why wasn't this done right in the getter for BlankTile.
+//		{
+//			var mt = new XCMapTile(null, null, null, null);
+//			mt._blank = true;
+//			return mt;
+//		}
 	}
 }

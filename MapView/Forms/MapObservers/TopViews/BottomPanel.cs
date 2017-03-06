@@ -29,7 +29,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			_mapTile = null;
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
-			SelectedQuadrant = XCMapTile.MapQuadrant.Ground;
+//			SelectedQuadrant = XCMapTile.MapQuadrant.Ground; // is done in the designer.
 
 			Globals.LoadExtras();
 
@@ -37,6 +37,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			_drawService.Brush = new SolidBrush(Color.FromArgb(204, 204, 255));
 			_drawService.Font = new Font("Verdana", 7);
 		}
+
 
 		[Browsable(false)]
 		public Dictionary<string, SolidBrush> Brushes
@@ -128,22 +129,24 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh();
 		}
 
-		private void visChanged(object sender, EventArgs e)
-		{
-			Refresh();
-		}
+//		private void visChanged(object sender, EventArgs e)
+//		{
+//			Refresh();
+//		}
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			var type = (e.X - BottomPanelDrawService.startX) / BottomPanelDrawService.TOTAL_QUADRANT_SPACE;
-			SelectedQuadrant = (XCMapTile.MapQuadrant)type;
+			var quad = (e.X - BottomPanelDrawService.startX) / BottomPanelDrawService.TOTAL_QUADRANT_SPACE;
+			if (quad > -1 && quad < 4)
+			{
+				SelectedQuadrant = (XCMapTile.MapQuadrant)quad;
+				SetSelected(e.Button, e.Clicks);
 
-			SetSelected(e.Button, e.Clicks);
+//				if (PanelClicked != null)
+//					PanelClicked(this, new EventArgs());
 
-//			if (PanelClicked != null)
-//				PanelClicked(this, new EventArgs());
-
-			Refresh();
+				Refresh();
+			}
 		}
 
 		protected override void Render(Graphics g)
