@@ -146,6 +146,8 @@ namespace MapView.Forms.MapObservers.TopViews
 //					PanelClicked(this, new EventArgs());
 
 				Refresh();
+				// TODO: Refresh *all* views (Top,Map,Rmp) if right-click.
+				// See SetSelected() above.
 			}
 		}
 

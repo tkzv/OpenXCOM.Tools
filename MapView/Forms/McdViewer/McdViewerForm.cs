@@ -5,7 +5,9 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+
 using XCom;
+
 
 namespace MapView.Forms.McdViewer
 {
@@ -110,7 +112,7 @@ namespace MapView.Forms.McdViewer
 			rtb.AppendText(string.Format(
 									"high explosive type: {0}:{1}\n",
 									info.HE_Type,
-									info.HE_Type == 0 ? "HE" : info.HE_Type == 1 ? "smoke" : "unknown"));
+									(info.HE_Type == 0) ? "HE" : (info.HE_Type == 1) ? "smoke" : "unknown"));
 //			unsigned char HE_Type; // 0=HE 1=Smoke
 			rtb.AppendText(string.Format("HE Strength: {0}\n", info.HE_Strength));
 //			unsigned char HE_Strength; // The strength of the explosion caused when it's destroyed. 0 means no explosion.

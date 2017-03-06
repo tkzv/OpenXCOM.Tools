@@ -1,7 +1,10 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
+
 using MapView.Forms.MapObservers.TopViews;
+
 using XCom.Interfaces.Base;
+
 
 namespace MapView.Forms.MapObservers.RmpViews
 {
