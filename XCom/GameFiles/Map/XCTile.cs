@@ -1,16 +1,23 @@
 using System;
 using System.Drawing;
+
 using XCom.Interfaces;
+
 
 namespace XCom
 {
-	public class XCTile : XCom.Interfaces.Base.TileBase
+	public class XCTile
+		:
+		XCom.Interfaces.Base.TileBase
 	{
 		private readonly PckFile _myFile;
 		private readonly McdEntry _info;
 		private const int NUM_IMAGES = 8;
 
-		public XCTile(int id, PckFile file, McdEntry info, XCTile[] tiles) : base(id)
+
+		public XCTile(int id, PckFile file, McdEntry info, XCTile[] tiles)
+			:
+			base(id)
 		{
 			this.info = info;
 			_info = info;
@@ -28,11 +35,14 @@ namespace XCom
 			Alternate = null;
 		}
 
-		public XCTile[] Tiles { get; private set; }
+		public XCTile[] Tiles
+		{ get; private set; }
 
-		public XCTile Dead { get; set; }
+		public XCTile Dead
+		{ get; set; }
 
-		public XCTile Alternate { get; set; }
+		public XCTile Alternate
+		{ get; set; }
 
 		public void MakeAnimate()
 		{
@@ -57,6 +67,5 @@ namespace XCom
 			image[6] = _myFile[_info.Image1];
 			image[7] = _myFile[_info.Image1];
 		}
-
 	}
 }

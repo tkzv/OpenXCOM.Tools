@@ -6,6 +6,7 @@ using System.Reflection;
 using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
+
 namespace XCom
 {
 	public class XCTileset
@@ -82,23 +83,23 @@ namespace XCom
 				Dictionary<string, IMapDesc> h = subsets[str];
 				if (h != null)
 				{
-					VarCollection vc = new VarCollection("Deps");
+					var vc = new VarCollection("Deps");
 					foreach (string s in h.Keys)
 					{
-						XCMapDesc id = (XCMapDesc)maps[s];
-						if (id == null)
-							continue;
-
-						string depList = "";
-						if (id.Dependencies.Length > 0)
+						var id = (XCMapDesc)maps[s];
+						if (id != null)
 						{
-							int i = 0;
-							for (; i < id.Dependencies.Length - 1; i++)
-								depList += id.Dependencies[i] + " ";
-
-							depList += id.Dependencies[i];
+							string depList = "";
+							if (id.Dependencies.Length > 0)
+							{
+								int i = 0;
+								for (; i < id.Dependencies.Length - 1; i++)
+									depList += id.Dependencies[i] + " ";
+	
+								depList += id.Dependencies[i];
+							}
+							vc.AddVar(id.Name, depList);
 						}
-						vc.AddVar(id.Name, depList);
 					}
 
 					sw.WriteLine("\tfiles:" + str);
@@ -114,15 +115,15 @@ namespace XCom
 			sw.Flush();
 		}
 
-		public override void AddMap(string fName, string subset)
+		public override void AddMap(string name, string subset)
 		{
-			XCMapDesc imd = new XCMapDesc(
-										fName,
-										rootPath,
-										blankPath,
-										rmpPath,
-										new string[0],
-										myPal);
+			var imd = new XCMapDesc(
+								name,
+								rootPath,
+								blankPath,
+								rmpPath,
+								new string[0],
+								myPal);
 			maps[imd.Name] = imd;
 			subsets[subset][imd.Name] = imd;
 		}
@@ -133,16 +134,16 @@ namespace XCom
 			subsets[subset][imd.Name] = imd;
 		}
 
-		public override XCMapDesc RemoveMap(string fName, string subset)
+		public override XCMapDesc RemoveMap(string name, string subset)
 		{
-			XCMapDesc imd = (XCMapDesc)subsets[subset][fName];
-			subsets[subset].Remove(fName);
+			var imd = (XCMapDesc)subsets[subset][name];
+			subsets[subset].Remove(name);
 			return imd;
 		}
 
 		public override void ParseLine(
 									string keyword,
-									string rest,
+									string line,
 									StreamReader sr,
 									VarCollection vars)
 		{
@@ -150,39 +151,39 @@ namespace XCom
 			{
 				case "files":
 				{
-					Dictionary<string, IMapDesc> subset = new Dictionary<string, IMapDesc>();
-					subsets[rest] = subset;
-					string line = VarCollection.ReadLine(sr, vars);
-					while (line != "end" && line != "END")
+					var subset = new Dictionary<string, IMapDesc>();
+					subsets[line] = subset;
+					string varsLine = VarCollection.ReadLine(sr, vars);
+					while (varsLine != "end" && varsLine != "END")
 					{
-						int idx = line.IndexOf(':');
-						string fName = line.Substring(0, idx);
-						string[] deps = line.Substring(idx + 1).Split(' ');
-						XCMapDesc imd = new XCMapDesc(
-													fName,
-													rootPath,
-													blankPath,
-													rmpPath,
-													deps,
-													myPal);
-						maps[fName] = imd;
-						subset[fName] = imd;
-						line = VarCollection.ReadLine(sr, vars);
+						int idx = varsLine.IndexOf(':');
+						string file = varsLine.Substring(0, idx);
+						string[] deps = varsLine.Substring(idx + 1).Split(' ');
+						var imd = new XCMapDesc(
+											file,
+											rootPath,
+											blankPath,
+											rmpPath,
+											deps,
+											myPal);
+						maps[file] = imd;
+						subset[file] = imd;
+						varsLine = VarCollection.ReadLine(sr, vars);
 					}
 					break;
 				}
 
 				case "order":
-					mapOrder = rest.Split(' ');
+					mapOrder = line.Split(' ');
 					break;
 
 				case "starttile":
-					startTile = int.Parse(rest);
+					startTile = int.Parse(line);
 					break;
 
 				case "startloc":
 				{
-					string[] locs = rest.Split(' ');
+					string[] locs = line.Split(' ');
 					startLoc = new MapLocation[locs.Length];
 					for (int i = 0; i < locs.Length; i++)
 					{
@@ -196,7 +197,7 @@ namespace XCom
 				}
 
 				case "endtile":
-					endTile = int.Parse(rest);
+					endTile = int.Parse(line);
 					break;
 
 				default:
@@ -204,7 +205,7 @@ namespace XCom
 												"Unknown line in tileset {0}-> {1}:{2}",
 												name,
 												keyword,
-												rest));
+												line));
 					break;
 			}
 		}

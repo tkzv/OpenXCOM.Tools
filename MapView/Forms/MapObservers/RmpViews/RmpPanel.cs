@@ -2,8 +2,11 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+
 using MapView.Forms.MapObservers.TopViews;
+
 using XCom;
+
 
 namespace MapView.Forms.MapObservers.RmpViews
 {
@@ -125,7 +128,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 			}
 		}
 
-		private void DrawPoles(Graphics g)
+		private void DrawPoles(Graphics g) // NOTE: These aren't "poles"; they are compass points.
 		{
 			const int PAD_HORI = 25;
 			const int PAD_VERT = 5;
@@ -338,17 +341,19 @@ namespace MapView.Forms.MapObservers.RmpViews
 			_drawContentService.HHeight = DrawAreaHeight;
 
 			var map = Map;
-			for (int row = 0, startX = Origin.X, startY = Origin.Y;
+			for (int
+					row = 0, startX = Origin.X, startY = Origin.Y;
 					row < map.MapSize.Rows;
 					row++, startX -= DrawAreaWidth, startY += DrawAreaHeight)
 			{
-				for (int col = 0, x = startX, y = startY;
+				for (int
+						col = 0, x = startX, y = startY;
 						col < map.MapSize.Cols;
 						col++, x += DrawAreaWidth, y += DrawAreaHeight)
 				{
 					if (map[row, col] != null)
 					{
-						XCMapTile tile = (XCMapTile) map[row, col];
+						var tile = (XCMapTile)map[row, col];
 
 						if (tile.North != null)
 							_drawContentService.DrawContent(g, _wallColor, x, y, tile.North);
@@ -367,11 +372,13 @@ namespace MapView.Forms.MapObservers.RmpViews
 		{
 			var map = Map;
 
-			for (int row = 0, startX = Origin.X, startY = Origin.Y;
+			for (int
+					row = 0, startX = Origin.X, startY = Origin.Y;
 					row < map.MapSize.Rows;
 					row++, startX -= DrawAreaWidth, startY += DrawAreaHeight)
 			{
-				for (int col = 0, x = startX, y = startY;
+				for (int
+						col = 0, x = startX, y = startY;
 						col < map.MapSize.Cols;
 						col++, x += DrawAreaWidth, y += DrawAreaHeight)
 				{

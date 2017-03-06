@@ -3,7 +3,7 @@ using System.IO;
 
 namespace XCom
 {
-	public class BlankFile
+	public static class BlankFile
 	{
 		public static readonly string Extension = ".BLK";
 
@@ -12,7 +12,7 @@ namespace XCom
 									string blankPath,
 									XCMapFile myFile)
 		{
-			BinaryReader br = new BinaryReader(File.OpenRead(blankPath + basename + Extension));
+			var br = new BinaryReader(File.OpenRead(blankPath + basename + Extension));
 
 			bool flip = true;
 			int curr = 0;
@@ -48,7 +48,7 @@ namespace XCom
 			if (!Directory.Exists(blankPath))
 				Directory.CreateDirectory(blankPath);
 
-			BinaryWriter bw = new BinaryWriter(new FileStream(blankPath + basename + Extension, FileMode.Create));
+			var bw = new BinaryWriter(new FileStream(blankPath + basename + Extension, FileMode.Create));
 
 			UInt16 curr = 0;
 			bool flip = true;

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+
 using XCom;
 using XCom.Interfaces.Base;
+
 
 namespace MapView.Forms.MapObservers.TopViews
 {

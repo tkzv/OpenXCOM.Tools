@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+
 using XCom.Interfaces.Base;
+
 
 namespace XCom
 {
@@ -13,7 +15,6 @@ namespace XCom
 				string basename,
 				string basePath,
 				string blankPath,
-//				string tileset,
 				string rmpPath,
 				string[] dependencies,
 				Palette palette)
@@ -25,7 +26,6 @@ namespace XCom
 			BasePath = basePath;
 			RmpPath = rmpPath;
 			BlankPath = blankPath;
-//			this.tileset = tileset;
 			Dependencies = dependencies;
 			IsStatic = false;
 		}
@@ -59,7 +59,7 @@ namespace XCom
 		public int CompareTo(object other)
 		{
 			if (other is XCMapDesc)
-				return Basename.CompareTo(((XCMapDesc)other).Basename);
+				return Basename.CompareTo(((XCMapDesc)other).Basename); //, StringComparison.Ordinal
 
 			return 1;
 		}

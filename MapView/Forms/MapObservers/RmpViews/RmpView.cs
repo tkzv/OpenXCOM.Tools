@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using XCom;
 using XCom.Interfaces.Base;
 
+
 namespace MapView.Forms.MapObservers.RmpViews
 {
 	/*
@@ -641,7 +642,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 				}
 				catch
 				{
-					txtDist1.Text = _currEntry[0].Distance + "";
+					txtDist1.Text = _currEntry[0].Distance.ToString();
 				}
 			}
 		}
@@ -657,7 +658,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 					}
 					catch
 					{
-						txtDist1.Text = _currEntry[0].Distance + "";
+						txtDist1.Text = _currEntry[0].Distance.ToString();
 					}
 					break;
 			}
@@ -673,7 +674,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 				}
 				catch
 				{
-					txtDist2.Text = _currEntry[1].Distance + "";
+					txtDist2.Text = _currEntry[1].Distance.ToString();
 				}
 			}
 		}
@@ -689,7 +690,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 					}
 					catch
 					{
-						txtDist2.Text = _currEntry[1].Distance + "";
+						txtDist2.Text = _currEntry[1].Distance.ToString();
 					}
 					break;
 			}
@@ -705,7 +706,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 				}
 				catch
 				{
-					txtDist3.Text = _currEntry[2].Distance + "";
+					txtDist3.Text = _currEntry[2].Distance.ToString();
 				}
 			}
 		}
@@ -721,7 +722,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 					}
 					catch
 					{
-						txtDist3.Text = _currEntry[2].Distance + "";
+						txtDist3.Text = _currEntry[2].Distance.ToString();
 					}
 					break;
 			}
@@ -737,7 +738,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 				}
 				catch
 				{
-					txtDist4.Text = _currEntry[3].Distance + "";
+					txtDist4.Text = _currEntry[3].Distance.ToString();
 				}
 			}
 		}
@@ -753,7 +754,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 					}
 					catch
 					{
-						txtDist4.Text = _currEntry[3].Distance + "";
+						txtDist4.Text = _currEntry[3].Distance.ToString();
 					}
 					break;
 			}
@@ -769,7 +770,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 				}
 				catch
 				{
-					txtDist5.Text = _currEntry[4].Distance + "";
+					txtDist5.Text = _currEntry[4].Distance.ToString();
 				}
 			}
 		}
@@ -785,7 +786,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 					}
 					catch
 					{
-						txtDist5.Text = _currEntry[4].Distance + "";
+						txtDist5.Text = _currEntry[4].Distance.ToString();
 					}
 					break;
 			}
@@ -963,9 +964,9 @@ namespace MapView.Forms.MapObservers.RmpViews
 
 				ClearSelected();
 
-				gbNodeInfo.Enabled = false;
-				groupBox1.Enabled = false;
-				groupBox2.Enabled = false;
+				gbNodeInfo.Enabled   =
+				groupBox1.Enabled    =
+				groupBox2.Enabled    =
 				LinkGroupBox.Enabled = false;
 
 				Refresh();
@@ -995,8 +996,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 				HeightDifTextbox.Text = _map.Rmp.ExtraHeight.ToString();
 			}
 
-			if (!_loadingMap)
-				_map.MapChanged = true;
+			_map.MapChanged |= !_loadingMap;
 		}
 
 		private void makeAllNodeRank0ToolStripMenuItem_Click(object sender, EventArgs e)

@@ -1,11 +1,14 @@
 using System;
-using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Drawing;
 using System.ComponentModel;
-using Microsoft.Win32;
-using DSShared.Windows;
+using System.Drawing;
 using System.Reflection;
+using System.Windows.Forms;
+
+using Microsoft.Win32;
+
+using DSShared.Windows;
+
 
 namespace DSShared.Lists
 {
@@ -30,7 +33,7 @@ namespace DSShared.Lists
 		:
 		Control
 	{
-		private CustomListColumnCollection columns;
+		private readonly CustomListColumnCollection columns;
 		private List<ObjRow> items;
 
 		/// <summary>
@@ -77,7 +80,7 @@ namespace DSShared.Lists
 			columns.RowClicked += new MouseEventHandler(rowClicked);
 			columns.Parent = this;
 
-			items = new List<ObjRow>();			
+			items = new List<ObjRow>();
 
 			SetStyle(ControlStyles.DoubleBuffer|ControlStyles.AllPaintingInWmPaint|ControlStyles.UserPaint,true);
 
@@ -233,23 +236,23 @@ namespace DSShared.Lists
 			Refresh();
 		}
 
-		private void mouseOverRows(int mouseY, CustomListColumn overCol)
+		private void mouseOverRows(int mouseY, CustomListColumn curCol)
 		{
 			int overY = (mouseY - (columns.HeaderHeight + yOffset)) / (Font.Height + columns.RowSpace * 2);
 			
 			if (selected != null)
 				selected.MouseLeave();
 
-			selected = null;
-
-			if (overCol != null && overY >= 0 && overY < items.Count)
+			if (curCol != null && overY > -1 && overY < items.Count)
 			{
 				selRow = overY;
 				selected = items[selRow];
-				selected.MouseOver(overCol);
+				selected.MouseOver(curCol);
 			}
-			this.overCol = overCol;
-			// else its the same, do nothing
+			else
+				selected = null;
+
+			overCol = curCol;
 		}
 
 		/// <summary>
@@ -306,8 +309,8 @@ namespace DSShared.Lists
 			int rowHeight = 0;
 			for (int i = 0; i < items.Count; i++)
 			{
-				ObjRow row = (ObjRow)items[i];
-				if (rowHeight + yOffset + row.Height >= 0 && rowHeight + yOffset < Height)
+				var row = (ObjRow)items[i];
+				if (rowHeight + yOffset + row.Height > -1 && rowHeight + yOffset < Height)
 					row.Render(e, yOffset);
 
 				rowHeight += row.Height;
@@ -323,12 +326,12 @@ namespace DSShared.Lists
 		/// <param name="row">The row to delete.</param>
 		public virtual void DeleteRow(ObjRow row)
 		{
-			Object obj=null;
+			Object obj = null;
 			for (int i = 0; i < items.Count; i++)
 			{
 				if (obj != null) // move this row's object to the one above it, move obj to the end to delete
 					items[i - 1].Object = items[i].Object;
-				else if (obj == null && items[i].Equals(row)) // found it, will start moving up on the next iteration
+				else if (items[i].Equals(row)) // found it, will start moving up on the next iteration
 					obj = items[i].Object;
 			}
 
@@ -366,7 +369,7 @@ namespace DSShared.Lists
 		public virtual void AddItem(object o)
 		{
 			ConstructorInfo ci = rowType.GetConstructor(new Type[]{ typeof(object) });
-			ObjRow row = (ObjRow)ci.Invoke(new object[]{ o });
+			var row = (ObjRow)ci.Invoke(new object[]{ o });
 			AddItem(row);
 		}
 

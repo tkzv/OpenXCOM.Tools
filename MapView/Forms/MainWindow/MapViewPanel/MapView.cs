@@ -240,7 +240,7 @@ namespace MapView
 					if (e.Button != MouseButtons.None)
 						SetDrag(DragStart, pt);
 
-					Refresh();
+					Refresh(); // for MapView.
 				}
 			}
 		}

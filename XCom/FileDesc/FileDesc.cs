@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+
 namespace XCom
 {
 	public abstract class FileDesc
 	{
-		private string path;
+		private readonly string path;
 
-		public FileDesc(string path)
-		{ this.path = path; }
+		protected FileDesc(string path1)
+		{ path = path1; }
 
 		public abstract void Save(string outFile);
 

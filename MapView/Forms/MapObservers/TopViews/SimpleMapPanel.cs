@@ -341,7 +341,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					MapViewPanel.Instance.MapView.SetDrag(
 													MapViewPanel.Instance.MapView.DragStart,
 													pt);
-				Refresh();
+				Refresh(); // for TopView.
 			}
 		}
 

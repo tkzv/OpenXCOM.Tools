@@ -3,13 +3,16 @@ using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
+
+using Microsoft.Win32;
+
 using XCom;
 using XCom.GameFiles.Map;
 using XCom.Interfaces;
-using Microsoft.Win32;
 using XCom.Interfaces.Base;
+
 
 namespace MapView
 {
@@ -95,11 +98,11 @@ namespace MapView
 			paths = pathsPath;
 			InitializeComponent();
 
-//			txtCursor.Text = GameInfo.CursorPath;
-//			txtCursor.Text = GameInfo.MiscInfo.CursorFile;
 			txtMap.Text = GameInfo.TilesetInfo.Path;
 			txtImages.Text = GameInfo.ImageInfo.Path;
 			txtImage2.Text = GameInfo.ImageInfo.Path;
+//			txtCursor.Text = GameInfo.CursorPath;
+//			txtCursor.Text = GameInfo.MiscInfo.CursorFile;
 //			txtPalettes.Text = GameInfo.PalettePath;
 
 			populateImageList();
@@ -113,18 +116,18 @@ namespace MapView
 		private void populateTree()
 		{
 			treeMaps.Nodes.Clear();
-			ArrayList al = new ArrayList();
+			var al = new ArrayList();
 			foreach (object o in GameInfo.TilesetInfo.Tilesets.Keys)
 				al.Add(o);
 
 			al.Sort();
-			ArrayList al2 = new ArrayList();
+			var al2 = new ArrayList();
 			foreach (string o in al) // tileset
 			{
 				ITileset it = GameInfo.TilesetInfo.Tilesets[o];
 				if (it != null)
 				{
-					TreeNode t = treeMaps.Nodes.Add(o); // make the node for the tileset
+					TreeNode tn = treeMaps.Nodes.Add(o); // make the node for the tileset
 
 					al2.Clear();
 
@@ -137,9 +140,9 @@ namespace MapView
 						Dictionary<string, IMapDesc> subset = it.Subsets[o2];
 						if (subset != null)
 						{
-							TreeNode subsetNode = t.Nodes.Add(o2);
+							TreeNode subsetNode = tn.Nodes.Add(o2);
 
-							ArrayList sKeys = new ArrayList();
+							var sKeys = new ArrayList();
 							foreach (string sKey in subset.Keys)
 								sKeys.Add(sKey);
 
@@ -157,7 +160,7 @@ namespace MapView
 		private void populateImageList()
 		{
 			ImageInfo ii = GameInfo.ImageInfo;
-			ArrayList al = new ArrayList();
+			var al = new ArrayList();
 			foreach (object o in ii.Images.Keys)
 				al.Add(o);
 
@@ -182,7 +185,7 @@ namespace MapView
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && components != null)
-					components.Dispose();
+				components.Dispose();
 
 			base.Dispose(disposing);
 		}
@@ -883,75 +886,75 @@ namespace MapView
 
 		private void treeMaps_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
 		{
-			TreeNode t = e.Node;
-			IXCTileset it = null;
+			TreeNode tn = e.Node;
+			IXCTileset tSet = null;
 
 			grpMapGroup.Enabled = true;
 			grpMap.Enabled = false;
 			delMap.Enabled = false;
 
-			if (t.Parent != null)
+			if (tn.Parent != null)
 			{
 				addMap.Enabled = true;
 				delSub.Enabled = true;
 
-				if (t.Parent.Parent != null) // inner node
+				if (tn.Parent.Parent != null) // inner node
 				{
 					grpMapGroup.Enabled = false;
 					grpMap.Enabled = true;
 					delMap.Enabled = true;
 
-					it = (IXCTileset)GameInfo.TilesetInfo.Tilesets[t.Parent.Parent.Text];
+					tSet = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Parent.Text];
 
-					XCMapDesc imd = (XCMapDesc)it[t.Text];
+					var desc = (XCMapDesc)tSet[tn.Text];
 
 					listMapImages.Items.Clear();
 
-					if (imd != null)
+					if (desc != null)
 					{
-						foreach (string s in imd.Dependencies)
+						foreach (string s in desc.Dependencies)
 							listMapImages.Items.Add(s);
 					}
 					else
 					{
-						it.AddMap(
+						tSet.AddMap(
 								new XCMapDesc(
-											t.Text,
-											it.MapPath,
-											it.BlankPath,
-											it.RmpPath, new string[]{},
-											it.Palette),
-								t.Parent.Text);
+											tn.Text,
+											tSet.MapPath,
+											tSet.BlankPath,
+											tSet.RmpPath, new string[]{},
+											tSet.Palette),
+								tn.Parent.Text);
 					}
 				}
 				else // subset node
 				{
-					it = (IXCTileset)GameInfo.TilesetInfo.Tilesets[t.Parent.Text];
+					tSet = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Text];
 				}
 			}
 			else // parent node
 			{
-				it = (IXCTileset)GameInfo.TilesetInfo.Tilesets[t.Text];
+				tSet = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Text];
 				addMap.Enabled = false;
 				delMap.Enabled = false;
 				delSub.Enabled = false;
 			}
 
-			txtRoot.Text = it.MapPath;
-			txtRmp.Text = it.RmpPath;
-			txtBlank.Text = it.BlankPath;
-			cbPalette.SelectedItem = it.Palette;
+			txtRoot.Text = tSet.MapPath;
+			txtRmp.Text = tSet.RmpPath;
+			txtBlank.Text = tSet.BlankPath;
+			cbPalette.SelectedItem = tSet.Palette;
 		}
 
 		private void txtRoot_Leave(object sender, System.EventArgs e)
 		{
-			IXCTileset it = getCurrset();
+			IXCTileset tSet = getCurrset();
 			if (!Directory.Exists(txtRoot.Text)
 				&& NoDirForm.Show(txtRoot.Text) != DialogResult.OK)
 			{
-				txtRoot.Text = it.MapPath;
+				txtRoot.Text = tSet.MapPath;
 			}
-			it.MapPath = txtRoot.Text;
+			tSet.MapPath = txtRoot.Text;
 		}
 
 		private void txtRoot_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
@@ -962,13 +965,13 @@ namespace MapView
 
 		private void txtRmp_Leave(object sender, System.EventArgs e)
 		{
-			IXCTileset it = getCurrset();
+			IXCTileset tSet = getCurrset();
 			if (!Directory.Exists(txtRmp.Text)
 				&& NoDirForm.Show(txtRmp.Text) != DialogResult.OK)
 			{
-				txtRmp.Text = it.RmpPath;
+				txtRmp.Text = tSet.RmpPath;
 			}
-			it.RmpPath = txtRmp.Text;
+			tSet.RmpPath = txtRmp.Text;
 		}
 
 		private void txtRmp_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
@@ -979,8 +982,8 @@ namespace MapView
 
 		private void btnUp_Click(object sender, System.EventArgs e)
 		{
-			IXCTileset it = getCurrset();
-			string[] dep = ((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies;
+			IXCTileset tSet = getCurrset();
+			string[] dep = ((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies;
 
 			for (int i = 1; i < dep.Length; i++)
 			{
@@ -990,7 +993,7 @@ namespace MapView
 					dep[i - 1] = dep[i];
 					dep[i] = old;
 
-					((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies = dep;
+					((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies = dep;
 
 					listMapImages.Items.Clear();
 
@@ -1005,8 +1008,8 @@ namespace MapView
 
 		private void btnDown_Click(object sender, System.EventArgs e)
 		{
-			IXCTileset it = getCurrset();
-			string[] dep = ((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies;
+			IXCTileset tSet = getCurrset();
+			string[] dep = ((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies;
 
 			for (int i = 0; i < dep.Length - 1; i++)
 			{
@@ -1016,7 +1019,7 @@ namespace MapView
 					dep[i + 1] = dep[i];
 					dep[i] = old;
 
-					((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies = dep;
+					((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies = dep;
 					
 					listMapImages.Items.Clear();
 
@@ -1031,10 +1034,10 @@ namespace MapView
 
 		private void button2_Click(object sender, System.EventArgs e)
 		{
-			IXCTileset it = getCurrset();
-			ArrayList dep = new ArrayList(((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies);
+			IXCTileset tSet = getCurrset();
+			var dep = new ArrayList(((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies);
 			dep.Remove(listMapImages.SelectedItem);
-			((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies = (string[])dep.ToArray(typeof(string));
+			((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies = (string[])dep.ToArray(typeof(string));
 			
 			listMapImages.Items.Clear();
 
@@ -1044,14 +1047,14 @@ namespace MapView
 
 		private void btnMoveLeft_Click(object sender, System.EventArgs e)
 		{
-			IXCTileset it = getCurrset();
-			ArrayList dep = new ArrayList(((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies);
+			IXCTileset tSet = getCurrset();
+			var dep = new ArrayList(((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies);
 
 			foreach (object o in listAllImages.SelectedItems)
 				if (!dep.Contains(o))
 				{
 					dep.Add(o);
-					((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies = (string[])dep.ToArray(typeof(string));
+					((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies = (string[])dep.ToArray(typeof(string));
 				
 					listMapImages.Items.Clear();
 
@@ -1122,9 +1125,9 @@ namespace MapView
 			{
 				foreach (string s in openFile.FileNames)
 				{
-					string path = s.Substring(0, s.LastIndexOf(@"\") + 1);
-					string file = s.Substring(s.LastIndexOf(@"\") + 1);
-					file = file.Substring(0, file.IndexOf("."));
+					string path = s.Substring(0, s.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+					string file = s.Substring(s.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+					file = file.Substring(0, file.IndexOf(".", StringComparison.Ordinal));
 					GameInfo.ImageInfo[file] = new ImageDescriptor(file, path);
 				}
 
@@ -1147,13 +1150,13 @@ namespace MapView
 
 		private void runInstaller_Click(object sender, System.EventArgs e)
 		{
-			InstallWindow iw = new InstallWindow();
+			var iw = new InstallWindow();
 			iw.ShowDialog(this);
 		}
 
 		private void btnSave_Click(object sender, System.EventArgs e)
 		{
-			StreamWriter sw = new StreamWriter(new FileStream(this.paths, FileMode.Create));
+			var sw = new StreamWriter(new FileStream(this.paths, FileMode.Create));
 			
 //			GameInfo.CursorPath		= txtCursor.Text;
 //			GameInfo.MapPath		= txtMap.Text;
@@ -1176,16 +1179,16 @@ namespace MapView
 
 		private void newGroup_Click(object sender, System.EventArgs e)
 		{
-			TilesetForm tf = new TilesetForm();
+			var tf = new TilesetForm();
 			tf.ShowDialog(this);
 
 			if (tf.TilesetText != null)
 			{
-				IXCTileset tSet = (IXCTileset)GameInfo.TilesetInfo.AddTileset(
-																		tf.TilesetText,
-																		tf.MapPath,
-																		tf.RmpPath,
-																		tf.BlankPath);
+				var tSet = (IXCTileset)GameInfo.TilesetInfo.AddTileset(
+																tf.TilesetText,
+																tf.MapPath,
+																tf.RmpPath,
+																tf.BlankPath);
 //				addTileset(tSet.Name);
 				treeMaps.Nodes.Add(tSet.Name);
 
@@ -1207,10 +1210,10 @@ namespace MapView
 			System.Windows.Forms.Cursor oldCur = System.Windows.Forms.Cursor.Current;
 			System.Windows.Forms.Cursor.Current = Cursors.WaitCursor;
 
-			string path = txtMap.Text.Substring(0, txtMap.Text.LastIndexOf("\\") + 1);
-			string file = txtMap.Text.Substring(txtMap.Text.LastIndexOf("\\") + 1);
-			string ext = file.Substring(file.LastIndexOf("."));
-			file = file.Substring(0, file.LastIndexOf("."));
+			string path = txtMap.Text.Substring(0, txtMap.Text.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+			string file = txtMap.Text.Substring(txtMap.Text.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+			string ext = file.Substring(file.LastIndexOf(".", StringComparison.Ordinal));
+			file = file.Substring(0, file.LastIndexOf(".", StringComparison.Ordinal));
 
 			try
 			{
@@ -1245,15 +1248,15 @@ namespace MapView
 
 		private void addSub_Click(object sender, System.EventArgs e)
 		{
-			SubsetForm ss = new SubsetForm();
-			ss.ShowDialog(this);
-			if (ss.SubsetName != null)
+			var sf = new SubsetForm();
+			sf.ShowDialog(this);
+			if (sf.SubsetName != null)
 			{
-				IXCTileset it = getCurrset();
-				TreeNode t = treeMaps.SelectedNode;
+				IXCTileset tSet = getCurrset();
+				TreeNode tn = treeMaps.SelectedNode; // TODO: Check if not used.
 
-				it.Subsets[ss.SubsetName] = new Dictionary<string, IMapDesc>();
-//				it.NewSubset(ss.SubsetName);
+				tSet.Subsets[sf.SubsetName] = new Dictionary<string, IMapDesc>();
+//				tSet.NewSubset(sf.SubsetName);
 //				saveMapedit();
 				populateTree();
 			}
@@ -1261,15 +1264,15 @@ namespace MapView
 
 		private IXCTileset getCurrset()
 		{
-			TreeNode t = treeMaps.SelectedNode;
-			if (t.Parent != null)
+			TreeNode tn = treeMaps.SelectedNode;
+			if (tn.Parent != null)
 			{
-				if (t.Parent.Parent != null)
-					return (IXCTileset)GameInfo.TilesetInfo.Tilesets[t.Parent.Parent.Text]; // inner node
+				if (tn.Parent.Parent != null)
+					return (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Parent.Text]; // inner node
 
-				return (IXCTileset)GameInfo.TilesetInfo.Tilesets[t.Parent.Text]; // subset node
+				return (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Text]; // subset node
 			}
-			return (IXCTileset)GameInfo.TilesetInfo.Tilesets[t.Text]; // parent node
+			return (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Text]; // parent node
 		}
 
 //		private void btnSave2_Click(object sender, System.EventArgs e)
@@ -1279,17 +1282,17 @@ namespace MapView
 
 		private void addNewMap_Click(object sender, System.EventArgs e)
 		{
-			NewMapForm nfm = new NewMapForm();
-			nfm.ShowDialog(this);
+			var nf = new NewMapForm();
+			nf.ShowDialog(this);
 
-			if (nfm.MapName != null)
+			if (nf.MapName != null)
 			{
 				if (treeMaps.SelectedNode.Parent != null) // add to here
 				{
-					string path = txtRoot.Text+nfm.MapName+".MAP";
+					string path = txtRoot.Text + nf.MapName + ".MAP";
 					if (File.Exists(path))
 					{
-						ChoiceDialog cd = new ChoiceDialog(path);
+						var cd = new ChoiceDialog(path);
 						cd.ShowDialog(this);
 						switch (cd.Choice)
 						{
@@ -1299,11 +1302,11 @@ namespace MapView
 
 							case Choice.Overwrite:
 								XCMapFile.NewMap(
-											File.OpenWrite(txtRoot.Text + nfm.MapName + ".MAP"),
-											nfm.MapRows,
-											nfm.MapCols,
-											nfm.MapHeight);
-								FileStream fs = File.OpenWrite(txtRmp.Text + nfm.MapName + ".RMP");
+											File.OpenWrite(txtRoot.Text + nf.MapName + ".MAP"),
+											nf.MapRows,
+											nf.MapCols,
+											nf.MapHeight);
+								FileStream fs = File.OpenWrite(txtRmp.Text + nf.MapName + ".RMP");
 								fs.Close();
 								break;
 						}
@@ -1311,11 +1314,11 @@ namespace MapView
 					else
 					{
 						XCMapFile.NewMap(
-									File.OpenWrite(txtRoot.Text + nfm.MapName + ".MAP"),
-									nfm.MapRows,
-									nfm.MapCols,
-									nfm.MapHeight);
-						FileStream fs = File.OpenWrite(txtRmp.Text + nfm.MapName + ".RMP");
+									File.OpenWrite(txtRoot.Text + nf.MapName + ".MAP"),
+									nf.MapRows,
+									nf.MapCols,
+									nf.MapHeight);
+						FileStream fs = File.OpenWrite(txtRmp.Text + nf.MapName + ".RMP");
 						fs.Close();
 					}
 
@@ -1325,27 +1328,27 @@ namespace MapView
 					if (treeMaps.SelectedNode.Parent.Parent == null) // subset
 					{
 						tSet = (IXCTileset)GameInfo.TilesetInfo.Tilesets[treeMaps.SelectedNode.Parent.Text];
-						treeMaps.SelectedNode.Nodes.Add(nfm.MapName);
+						treeMaps.SelectedNode.Nodes.Add(nf.MapName);
 						sSet = treeMaps.SelectedNode.Text;
 					}
 					else // subset is parent
 					{
 						tSet = (IXCTileset)GameInfo.TilesetInfo.Tilesets[treeMaps.SelectedNode.Parent.Parent.Text];
-						treeMaps.SelectedNode.Parent.Nodes.Add(nfm.MapName);
+						treeMaps.SelectedNode.Parent.Nodes.Add(nf.MapName);
 						sSet = treeMaps.SelectedNode.Parent.Text;
 					}
 
-//					Type1MapData tmd = new Type1MapData(nfm.MapName, nfm.mapp
+//					Type1MapData tmd = new Type1MapData(nf.MapName, nf.mapp
 					
-					tSet.AddMap(nfm.MapName, sSet);
+					tSet.AddMap(nf.MapName, sSet);
 					//Console.WriteLine("map added: " + tSet.Name);
 
 //					saveMapedit();
 				}
-//				else //top node, baaaaad
+//				else // top node, baaaaad
 //				{
 //					tSet = GameInfo.GetTileInfo()[treeMaps.SelectedNode.Parent.Text];
-//					treeMaps.SelectedNode.Parent.Nodes.Add(nfm.MapName);
+//					treeMaps.SelectedNode.Parent.Nodes.Add(nf.MapName);
 //				}
 			}
 		}
@@ -1367,11 +1370,11 @@ namespace MapView
 					else
 						subset = treeMaps.SelectedNode.Parent;
 
-					IXCTileset tSet = (IXCTileset)GameInfo.TilesetInfo.Tilesets[subset.Parent.Text];
+					var tSet = (IXCTileset)GameInfo.TilesetInfo.Tilesets[subset.Parent.Text];
 					foreach (string file in openFile.FileNames)
 					{
-						int start = file.LastIndexOf(@"\") + 1;
-						int end = file.LastIndexOf(".");
+						int start = file.LastIndexOf(@"\", StringComparison.Ordinal) + 1;
+						int end = file.LastIndexOf(".", StringComparison.Ordinal);
 
 						string name = file.Substring(start, end-start);
 						try
@@ -1468,23 +1471,23 @@ namespace MapView
 
 		private void btnCopy_Click(object sender, System.EventArgs e)
 		{
-			IXCTileset it = getCurrset();
-			images = new string[((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies.Length];
+			IXCTileset tSet = getCurrset();
+			images = new string[((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies.Length];
 
-			for (int i = 0; i < ((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies.Length; i++)
-				images[i] = ((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies[i];
+			for (int i = 0; i < ((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies.Length; i++)
+				images[i] = ((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies[i];
 		}
 
 		private void btnPaste_Click(object sender, System.EventArgs e)
 		{
-			IXCTileset it = getCurrset();
-			((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies = new string[images.Length];
+			IXCTileset tSet = getCurrset();
+			((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies = new string[images.Length];
 
 			listMapImages.Items.Clear();
 
 			for (int i = 0; i < images.Length; i++)
 			{
-				((XCMapDesc)it[treeMaps.SelectedNode.Text]).Dependencies[i] = images[i];
+				((XCMapDesc)tSet[treeMaps.SelectedNode.Text]).Dependencies[i] = images[i];
 				listMapImages.Items.Add(images[i]);
 			}
 		}

@@ -84,7 +84,7 @@ namespace MapView.Forms.MapObservers.TopViews
 						{
 							case 1:
 								break;
-								
+
 							case 2:
 								var tileView = MainWindowsManager.TileView.TileViewControl;
 								tileView.SelectedTile = _mapTile[SelectedQuadrant];

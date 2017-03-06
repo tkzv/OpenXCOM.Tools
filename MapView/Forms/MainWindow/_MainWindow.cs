@@ -22,6 +22,7 @@ using Microsoft.Win32;
 
 using DSShared;
 
+
 namespace MapView
 {
 //	public delegate void MapChangedDelegate(object sender, SetMapEventArgs e);
@@ -77,8 +78,8 @@ namespace MapView
 
 			sharedSpace.GetObj("MapView",		this);
 			sharedSpace.GetObj("AppDir",		Environment.CurrentDirectory);
-			sharedSpace.GetObj("CustomDir",		Environment.CurrentDirectory + "\\custom");
-			sharedSpace.GetObj("SettingsDir",	Environment.CurrentDirectory + "\\settings");
+			sharedSpace.GetObj("CustomDir",		Environment.CurrentDirectory + @"\custom");
+			sharedSpace.GetObj("SettingsDir",	Environment.CurrentDirectory + @"\settings");
 
 			var pathsFile		= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "Paths",		"pth");
 			var settingsFile	= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "MVSettings",	"dat");
@@ -94,7 +95,7 @@ namespace MapView
 
 			if (!pathsFile.Exists())
 			{
-				InstallWindow iw = new InstallWindow();
+				var iw = new InstallWindow();
 
 				if (iw.ShowDialog(this) != DialogResult.OK)
 					Environment.Exit(-1);
@@ -222,7 +223,7 @@ namespace MapView
 			switch (line.Keyword.ToLower())
 			{
 				case "cursor":
-					if (line.Rest.EndsWith("\\"))
+					if (line.Rest.EndsWith(@"\", StringComparison.Ordinal))
 						SharedSpace.Instance.GetObj("cursorFile", line.Rest + "CURSOR");
 					else
 						SharedSpace.Instance.GetObj("cursorFile", line.Rest + "\\CURSOR");
@@ -311,7 +312,7 @@ namespace MapView
 			public int CompareTo(object other)
 			{
 				if (other is SortableTreeNode)
-					return Text.CompareTo(((SortableTreeNode)other).Text);
+					return Text.CompareTo(((SortableTreeNode)other).Text); //, StringComparison.Ordinal
 
 				return -1;
 			}
@@ -321,7 +322,7 @@ namespace MapView
 		{
 			foreach (string key in maps.Keys)
 			{
-				SortableTreeNode mapNode = new SortableTreeNode(key);
+				var mapNode = new SortableTreeNode(key);
 				mapNode.Tag = maps[key];
 				tn.Nodes.Add(mapNode);
 			}
@@ -329,13 +330,13 @@ namespace MapView
 
 		private void AddTileset(ITileset tSet)
 		{
-			SortableTreeNode tSetNode = new SortableTreeNode(tSet.Name);
+			var tSetNode = new SortableTreeNode(tSet.Name);
 			tSetNode.Tag = tSet;
 			mapList.Nodes.Add(tSetNode);
 
 			foreach (string tSetMapGroup in tSet.Subsets.Keys)
 			{
-				SortableTreeNode tsGroup = new SortableTreeNode(tSetMapGroup);
+				var tsGroup = new SortableTreeNode(tSetMapGroup);
 				tsGroup.Tag = tSet.Subsets[tSetMapGroup];
 				tSetNode.Nodes.Add(tsGroup);
 
@@ -507,7 +508,7 @@ namespace MapView
 
 		private void miPaths_Click(object sender, System.EventArgs e)
 		{
-			PathsEditor p = new PathsEditor(SharedSpace.Instance["MV_PathsFile"].ToString());
+			var p = new PathsEditor(SharedSpace.Instance["MV_PathsFile"].ToString());
 			p.ShowDialog();
 
 			var pathInfo = (PathInfo)SharedSpace.Instance["MV_PathsFile"];
@@ -752,7 +753,7 @@ namespace MapView
 
 		private void ZoomInButton_Click(object sender, EventArgs e)
 		{
-			if (Globals.PckImageScale < Globals.MaxPckImageScale )
+			if (Globals.PckImageScale < Globals.MaxPckImageScale)
 			{
 				Globals.PckImageScale += 0.125;
 				Globals.AutoPckImageScale = false;

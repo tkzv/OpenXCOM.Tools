@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+
 using XCom.Interfaces.Base;
+
 
 namespace XCom.GameFiles.Map.RmpData
 {
