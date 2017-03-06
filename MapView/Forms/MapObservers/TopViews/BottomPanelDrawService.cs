@@ -195,7 +195,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			DrawGroundAndContent(g);
 
 			g.DrawString(
-					"Gnd",
+					"Floor",
 					Font,
 					System.Drawing.Brushes.Black,
 					new RectangleF(

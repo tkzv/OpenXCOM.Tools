@@ -287,7 +287,7 @@ namespace MapView
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(45, 15);
 			this.label7.TabIndex = 4;
-			this.label7.Text = "Ground";
+			this.label7.Text = "Floor";
 			// 
 			// label6
 			// 

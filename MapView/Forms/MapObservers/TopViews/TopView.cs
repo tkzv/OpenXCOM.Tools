@@ -43,7 +43,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			_visibleHash = new Dictionary<ToolStripMenuItem, int>();
 
 			var visItems = VisibleToolStripButton.DropDown.Items;
-			var ground = new ToolStripMenuItem("Ground");
+			var ground = new ToolStripMenuItem("Floor");
 			visItems.Add(ground);
 			_topViewPanel.Ground = ground;
 			_visibleHash[_topViewPanel.Ground] = 0;

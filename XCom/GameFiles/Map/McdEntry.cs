@@ -136,7 +136,7 @@ namespace XCom
 		public byte Alt_MCD			{ get; set; }		// info[46];}}						// unsigned char Alt_MCD;			// If "Door" or "UFO_Door" is on, then when a unit walks through it the door is set to 0 and a tile type Alt_MCD is added.
 		public byte Unknown47		{ get; set; }		// info[47];}}						// unsigned char u48;
 		public sbyte StandOffset	{ get; set; }		// (sbyte)info[48];}}				// signed char T_Level;				// When a unit or object is standing on the tile, the unit is shifted by this amount
-		public sbyte TileOffset		{ get; set; }		// (sbyte)info[49];}}				// unsigned char P_Level;			/ /When the tile is drawn, this amount is subtracted from its y (so y position-P_Level is where it's drawn)
+		public sbyte TileOffset		{ get; set; }		// (sbyte)info[49];}}				// unsigned char P_Level;			// When the tile is drawn, this amount is subtracted from its y (so y position-P_Level is where it's drawn)
 		public byte Unknown50		{ get; set; }		// info[50];}}						// unsigned char u51;
 		public sbyte LightBlock		{ get; set; }		// (sbyte)info[51];}}				// unsigned char Light_Block;		// The amount of light it blocks, from 0 to 10
 		public sbyte Footstep		{ get; set; }		// (sbyte)info[52];}}				// unsigned char Footstep;			// The Sound Effect set to choose from when footsteps are on the tile

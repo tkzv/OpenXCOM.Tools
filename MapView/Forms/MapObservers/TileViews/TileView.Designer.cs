@@ -63,7 +63,7 @@
 			this.groundTab.Name = "groundTab";
 			this.groundTab.Size = new System.Drawing.Size(546, 320);
 			this.groundTab.TabIndex = 1;
-			this.groundTab.Text = "Ground";
+			this.groundTab.Text = "Floors";
 			// 
 			// wWallsTab
 			// 
