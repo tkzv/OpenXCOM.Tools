@@ -133,7 +133,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 			}
 
 			_rmpPanel.Position = new Point(e.X, e.Y);
-			_rmpPanel.Refresh();
+			_rmpPanel.Refresh(); // mouseover refresh for RmpView.
 		}
 
 		private void RmpPanel_PanelClick(object sender, MapPanelClickEventArgs e)
@@ -492,7 +492,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 
 				if (!selIdx.HasValue)
 				{
-					MessageBox.Show("ERROR: Determining SelectedIndex value failed");
+					MessageBox.Show("ERROR: RmpView: Determining SelectedIndex value failed.");
 				}
 				else
 				{
@@ -510,7 +510,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 					}
 					catch (Exception ex)
 					{
-						MessageBox.Show("ERROR: " + ex.Message);
+						MessageBox.Show("ERROR: RmpView: " + ex.Message);
 					}
 					Refresh();
 				}
@@ -530,7 +530,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 					if (connectType == ConnectNodeTypes.ConnectTwoWays)
 					{
 						RmpEntry connected = _map.Rmp[_currEntry[senderIndex].Index];
-	
+
 						var spaceAt = CompareLinks(connected, (byte)sender.SelectedItem);
 						if (spaceAt.HasValue)
 						{

@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+
 using XCom.Interfaces.Base;
+
 
 namespace XCom.Interfaces
 {
@@ -15,6 +17,7 @@ namespace XCom.Interfaces
 		protected int mapDepth;
 		protected string scanFile, loftFile;
 		protected MapSize mapSize;
+
 
 		protected IXCTileset(string name)
 			:
@@ -57,7 +60,7 @@ namespace XCom.Interfaces
 						break;
 
 					case "dll":
-						string dllName = rest.Substring(rest.LastIndexOf(@"\") + 1);
+						string dllName = rest.Substring(rest.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
 						Console.WriteLine(name + " is in dll " + dllName);
 						break;
 

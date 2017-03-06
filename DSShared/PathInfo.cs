@@ -1,13 +1,16 @@
 using System;
 
+
 namespace DSShared
 {
 	/// <summary>
-	/// Class to help pass around file paths
+	/// Class to help pass around file paths.
 	/// </summary>
 	public class PathInfo
 	{
-		private string path="", file="", ext="";
+		private string path = "";
+		private string file = "";
+		private string ext  = "";
 
 		/// <summary>
 		/// Extension part of the path (.exe)
@@ -19,7 +22,7 @@ namespace DSShared
 		}
 
 		/// <summary>
-		/// Filename part of the path, without extension (file1)
+		/// Filename part of the path, without extension (file1).
 		/// </summary>
 		public string File
 		{
@@ -28,7 +31,7 @@ namespace DSShared
 		}
 
 		/// <summary>
-		/// Directory path (C:\directory1\directory2)
+		/// Directory path (C:\directory1\directory2).
 		/// </summary>
 		public string Path
 		{
@@ -37,7 +40,7 @@ namespace DSShared
 		}
 
 		/// <summary>
-		/// First checks if the directory exists, than checks if file exists
+		/// First checks if the directory exists, then checks if file exists.
 		/// </summary>
 		/// <returns>System.IO.File.Exists(ToString())</returns>
 		public bool Exists()
@@ -49,7 +52,7 @@ namespace DSShared
 		}
 
 		/// <summary>
-		/// Calling this will create the directory if it does not exist
+		/// Calling this will create the directory if it does not exist.
 		/// </summary>
 		public void EnsureDirectoryExists()
 		{
@@ -81,15 +84,17 @@ namespace DSShared
 		/// Initializes a new instance of the <see cref="T:PathInfo"/> class.
 		/// </summary>
 		/// <param name="fullPath">The full path.</param>
-		/// <param name="parseFile">if set to <c>true</c> the path will be broken down into filename and extension parts. You should pass false if the path string does not describe a file location</param>
+		/// <param name="parseFile">if set to <c>true</c> the path will be broken down into
+		/// filename and extension parts. You should pass false if the path string does not
+		/// describe a file location</param>
 		public PathInfo(string fullPath, bool parseFile)
 		{
-			if (parseFile && fullPath.IndexOf(".") > 0)
+			if (parseFile && fullPath.IndexOf(".", StringComparison.Ordinal) > 0)
 			{
-				ext = fullPath.Substring(fullPath.LastIndexOf(".") + 1);
-				file = fullPath.Substring(fullPath.LastIndexOf("\\") + 1);
-				file = file.Substring(0, file.LastIndexOf("."));
-				path = fullPath.Substring(0, fullPath.LastIndexOf("\\"));
+				ext = fullPath.Substring(fullPath.LastIndexOf(".", StringComparison.Ordinal) + 1);
+				file = fullPath.Substring(fullPath.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+				file = file.Substring(0, file.LastIndexOf(".", StringComparison.Ordinal));
+				path = fullPath.Substring(0, fullPath.LastIndexOf(@"\", StringComparison.Ordinal));
 			}
 			else
 			{
@@ -106,7 +111,7 @@ namespace DSShared
 		/// <returns></returns>
 		public string ToStringExt(string newExt)
 		{
-			return path + "\\" + file + "." + newExt;
+			return path + @"\" + file + "." + newExt;
 		}
 
 
@@ -118,10 +123,10 @@ namespace DSShared
 		/// </returns>
 		public override string ToString()
 		{
-			if (ext != "")
-				return path + "\\" + file + "." + ext;
+			if (ext.Length != 0)
+				return path + @"\" + file + "." + ext;
 
-			return path + "\\" + file;
+			return path + @"\" + file;
 		}
 	}
 }

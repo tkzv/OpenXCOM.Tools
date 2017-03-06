@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using XCom;
 using XCom.Interfaces.Base;
 
+
 namespace MapView
 {
 	public class MapViewPanel
@@ -17,6 +18,7 @@ namespace MapView
 		private readonly VScrollBar _vert;
 
 		private static MapViewPanel _myInstance;
+
 
 		private MapViewPanel()
 		{

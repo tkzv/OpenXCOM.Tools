@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+
 namespace XCom.Interfaces.Base
 {
 	public interface IMap_Observer
@@ -22,13 +23,13 @@ namespace XCom.Interfaces.Base
 	}
 
 	/// <summary>
-	/// EventArgs class that holds a IMap_Base for when a SetMap event fires
+	/// EventArgs class that holds a IMap_Base for when a SetMap event fires.
 	/// </summary>
 	public class SetMapEventArgs
 		:
 		EventArgs
 	{
-		private IMap_Base map;
+		private readonly IMap_Base map;
 
 		public SetMapEventArgs(IMap_Base map)
 		{
@@ -43,14 +44,14 @@ namespace XCom.Interfaces.Base
 
 
 	/// <summary>
-	/// EventArgs class that holds a MapLocation and MapTile for when a SelectedTileChanged event fires
+	/// EventArgs class that holds a MapLocation and MapTile for when a SelectedTileChanged event fires.
 	/// </summary>
 	public class SelectedTileChangedEventArgs
 		:
 		EventArgs
 	{
 		private MapLocation newSelected;
-		private MapTileBase selectedTile;
+		private readonly MapTileBase selectedTile;
 
 		public SelectedTileChangedEventArgs(MapLocation newSelected, MapTileBase selectedTile)
 		{
@@ -77,7 +78,7 @@ namespace XCom.Interfaces.Base
 		EventArgs
 	{
 		private int newHeight;
-		private int oldHeight;
+		private readonly int oldHeight;
 
 		public HeightChangedEventArgs(int oldHeight, int newHeight)
 		{

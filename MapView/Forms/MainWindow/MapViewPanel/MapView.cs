@@ -240,7 +240,7 @@ namespace MapView
 					if (e.Button != MouseButtons.None)
 						SetDrag(DragStart, pt);
 
-					Refresh(); // for MapView.
+					Refresh(); // mouseover refresh for MapView.
 				}
 			}
 		}
@@ -603,8 +603,8 @@ namespace MapView
 		/// <summary>
 		/// convert from screen coordinates to tile coordinates
 		/// </summary>
-		/// <param name="xp"></param>
-		/// <param name="yp"></param>
+		/// <param name="ptX"></param>
+		/// <param name="ptY"></param>
 		/// <param name="level"></param>
 		/// <returns></returns>
 		private Point ConvertCoordsDiamond(int ptX, int ptY, int level)

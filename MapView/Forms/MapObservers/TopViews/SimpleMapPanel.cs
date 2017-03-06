@@ -175,7 +175,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		public override void SelectedTileChanged(IMap_Base sender, SelectedTileChangedEventArgs e)
 		{
 			MapLocation pt = e.MapPosition;
-			Text = "c: " + pt.Col + " r: " + pt.Row; // I don't think this actually prints anywhere.
+//			Text = "c: " + pt.Col + " r: " + pt.Row; // I don't think this actually prints anywhere.
 
 			var hWidth  = DrawContentService.HWidth;
 			var hHeight = DrawContentService.HHeight;
@@ -341,7 +341,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					MapViewPanel.Instance.MapView.SetDrag(
 													MapViewPanel.Instance.MapView.DragStart,
 													pt);
-				Refresh(); // for TopView.
+				Refresh(); // mouseover refresh for TopView.
 			}
 		}
 

@@ -11,8 +11,6 @@ namespace MapView.Forms.MapObservers.TopViews
 		:
 		SimpleMapPanel
 	{
-//		private const bool BLANK = false;
-
 		public TopViewPanel()
 		{
 			MapViewPanel.Instance.MapView.DragChanged += ViewDrag;
@@ -54,8 +52,6 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			var mapTile = (XCMapTile)tile;
 
-//			if (!BLANK)
-//			{
 			if (mapTile.Ground != null && Ground.Checked)
 				DrawContentService.DrawFloor(
 											g,
@@ -94,21 +90,11 @@ namespace MapView.Forms.MapObservers.TopViews
 											_contentColor,
 											x, y,
 											mapTile.Content);
-//			}
-//			else
-//			{
-//				if (!mapTile.DrawAbove)
-//				{
-//					DrawContentService.DrawFloor(g, Brushes["GroundColor"], x, y);
-//					DrawContentService.DrawContent(g, _contentColor, x, y, mapTile.Content);
-//				}
-//			}
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-
 			ControlPaint.DrawBorder3D(e.Graphics, ClientRectangle, Border3DStyle.Etched);
 		}
 

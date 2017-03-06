@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Data;
 using System.Text;
 using System.Windows.Forms;
+
 
 namespace DSShared.Windows
 {
@@ -41,7 +42,8 @@ namespace DSShared.Windows
 
 		/// <summary>
 		/// </summary>
-		protected virtual void Render(Graphics backBuffer){}
+		protected virtual void Render(Graphics backBuffer)
+		{}
 	}
 
 /*	public class DoubleBufferControl
