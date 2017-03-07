@@ -29,7 +29,6 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			_mapTile = null;
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
-//			SelectedQuadrant = XCMapTile.MapQuadrant.Ground; // is done in the designer.
 
 			Globals.LoadExtras();
 
@@ -129,30 +128,30 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh();
 		}
 
-//		private void visChanged(object sender, EventArgs e)
-//		{
-//			Refresh();
-//		}
-
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			var quad = (e.X - BottomPanelDrawService.startX) / BottomPanelDrawService.TOTAL_QUADRANT_SPACE;
-			if (quad > -1 && quad < 4)
+			switch (quad)
 			{
-				SelectedQuadrant = (XCMapTile.MapQuadrant)quad;
-				SetSelected(e.Button, e.Clicks);
+				case (int)XCMapTile.MapQuadrant.Ground:
+				case (int)XCMapTile.MapQuadrant.West:
+				case (int)XCMapTile.MapQuadrant.North:
+				case (int)XCMapTile.MapQuadrant.Content:
+					SelectedQuadrant = (XCMapTile.MapQuadrant)quad;
+					SetSelected(e.Button, e.Clicks);
 
-//				if (PanelClicked != null)
-//					PanelClicked(this, new EventArgs());
+//					if (PanelClicked != null)
+//						PanelClicked(this, new EventArgs());
 
-				if (e.Button == MouseButtons.Right) // see SetSelected() above^
-				{
-					MapViewPanel.Instance.MapView.Refresh();
-					MainWindowsManager.TopView.Refresh();
-					MainWindowsManager.TopRmpView.Refresh();
-					MainWindowsManager.RmpView.Refresh();
-				}
-				Refresh();
+					if (e.Button == MouseButtons.Right) // see SetSelected() above^
+					{
+						MapViewPanel.Instance.MapView.Refresh();
+						MainWindowsManager.TopView.Refresh();
+						MainWindowsManager.TopRmpView.Refresh();
+						MainWindowsManager.RmpView.Refresh();
+					}
+					Refresh();
+					break;
 			}
 		}
 
