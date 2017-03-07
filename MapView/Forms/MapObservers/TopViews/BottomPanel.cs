@@ -145,9 +145,14 @@ namespace MapView.Forms.MapObservers.TopViews
 //				if (PanelClicked != null)
 //					PanelClicked(this, new EventArgs());
 
+				if (e.Button == MouseButtons.Right) // see SetSelected() above^
+				{
+					MapViewPanel.Instance.MapView.Refresh();
+					MainWindowsManager.TopView.Refresh();
+					MainWindowsManager.TopRmpView.Refresh();
+					MainWindowsManager.RmpView.Refresh();
+				}
 				Refresh();
-				// TODO: Refresh *all* views (Top,Map,Rmp) if right-click.
-				// See SetSelected() above.
 			}
 		}
 
