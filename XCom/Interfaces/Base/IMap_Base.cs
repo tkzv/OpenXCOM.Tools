@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
-using System.Drawing;
+
 using XCom.Services;
+
 
 namespace XCom.Interfaces.Base
 {
@@ -11,7 +13,7 @@ namespace XCom.Interfaces.Base
 	public delegate void SelectedTileChangedDelegate(IMap_Base sender, SelectedTileChangedEventArgs e);
 
 	/// <summary>
-	/// Abstract base class definining all common functionality of an editable map
+	/// Abstract base class definining all common functionality of an editable map.
 	/// </summary>
 	public class IMap_Base
 	{
@@ -43,7 +45,7 @@ namespace XCom.Interfaces.Base
 		public event SelectedTileChangedDelegate SelectedTileChanged;
 
 		/// <summary>
-		/// Changes the currentHeight property and fires a HeightChanged event
+		/// Changes the currentHeight property and fires a HeightChanged event.
 		/// </summary>
 		public void Up()
 		{
@@ -58,7 +60,7 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Changes the currentHeight property and fires a HeightChanged event
+		/// Changes the currentHeight property and fires a HeightChanged event.
 		/// </summary>
 		public void Down()
 		{
@@ -73,8 +75,8 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Gets the current height
-		/// Setting the height will fire a HeightChanged event
+		/// Gets the current height.
+		/// Setting the height will fire a HeightChanged event.
 		/// </summary>
 		public byte CurrentHeight
 		{
@@ -99,15 +101,15 @@ namespace XCom.Interfaces.Base
 		{ get; protected set; }
 
 		/// <summary>
-		/// gets or sets the current selected location. Setting the location will fire a SelectedTileChanged event
+		/// Gets/Sets the current selected location. Setting the location will fire a SelectedTileChanged event.
 		/// </summary>
 		public MapLocation SelectedTile
 		{
 			get { return Selected; }
 			set
 			{
-				if (   value.Row >= 0 && value.Row < this.MapSize.Rows
-					&& value.Col >= 0 && value.Col < this.MapSize.Cols)
+				if (   value.Row > -1 && value.Row < this.MapSize.Rows
+					&& value.Col > -1 && value.Col < this.MapSize.Cols)
 				{
 					Selected = value;
 					var tile = this[Selected.Row, Selected.Col];
@@ -120,7 +122,7 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Get/Set a MapTile using row,col,height values. No error checking is done to ensure that the location is valid
+		/// Gets/Sets a MapTile using row,col,height values. No error checking is done to ensure that the location is valid.
 		/// </summary>
 		/// <param name="row"></param>
 		/// <param name="col"></param>
@@ -140,7 +142,7 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Get/Set a MapTile at the current height using row,col values
+		/// Gets/Sets a MapTile at the current height using row,col values.
 		/// </summary>
 		/// <param name="row"></param>
 		/// <param name="col"></param>
@@ -152,7 +154,7 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Get/Set a MapTile using a MapLocation
+		/// Gets/Sets a MapTile using a MapLocation.
 		/// </summary>
 		public MapTileBase this[MapLocation position]
 		{
@@ -184,14 +186,14 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Not yet generic enough to call with custom derived classes other than XCMapFile
+		/// Not yet generic enough to call with custom derived classes other than XCMapFile.
 		/// </summary>
 		/// <param name="file"></param>
 		public void SaveGif(string file)
 		{
 			var palette = GetFirstGroundPalette();
 			if (palette == null)
-				throw new ApplicationException("At least 1 ground tile is required");
+				throw new ApplicationException("IMap_Base: At least 1 ground tile is required");
 
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
 			var b = Bmp.MakeBitmap(
@@ -211,19 +213,21 @@ namespace XCom.Interfaces.Base
 				var hHeight = Globals.HalfHeight;
 				for (int h = MapSize.Height - 1; h >= _currentHeight; h--)
 				{
-					for (int row = 0, startX = start.X, startY = start.Y + (24 * h);
+					for (int
+						row = 0, startX = start.X, startY = start.Y + h * 24;
 						row < MapSize.Rows;
 						row++, startX -= hWid, startY += hHeight)
 					{
-						for (int col = 0, x = startX, y = startY;
+						for (int
+							col = 0, x = startX, y = startY;
 							col < MapSize.Cols;
 							col++, x += hWid, y += hHeight, curr++)
 						{
 							var tiles = this[row, col, h].UsedTiles;
 							foreach (var tileBase in tiles)
 							{
-								var t = (XCTile)tileBase;
-								Bmp.Draw(t[0].Image, b, x, y - t.Info.TileOffset);
+								var tile = (XCTile)tileBase;
+								Bmp.Draw(tile[0].Image, b, x, y - tile.Info.TileOffset);
 							}
 
 							Bmp.FireLoadingEvent(curr, (MapSize.Height - _currentHeight) * MapSize.Rows * MapSize.Cols);

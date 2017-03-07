@@ -18,8 +18,6 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TileViews
 {
-	public delegate void SelectedTileTypeChanged(TileBase newTile);
-
 	public partial class TileView
 		:
 		MapObserverControl
@@ -49,6 +47,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			if (handler != null)
 				handler(newtile);
 		}
+
 
 		public TileView()
 		{
@@ -83,9 +82,11 @@ namespace MapView.Forms.MapObservers.TileViews
 			_mainWindowsShowAllManager = mainWindowsShowAllManager;
 		}
 
+
 		#region public events
 
 		public event MethodInvoker MapChanged;
+
 		private void OnMapChanged()
 		{
 			MethodInvoker handler = MapChanged;
@@ -101,7 +102,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			if (tile != null && tile.Info is McdEntry)
 			{
 				var info = (McdEntry)tile.Info;
-				Text = "TileView: mapID:" + tile.MapId + " mcdID: " + tile.Id;
+				Text = "Tile View - mapID:" + tile.MapId + " mcdID:" + tile.Id;
 				UpdateMcdText(info);
 			}
 		}
@@ -127,7 +128,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			var settings = Settings;
 			foreach (string s in Enum.GetNames(typeof(SpecialType)))
 			{
-				brushes[s] = new SolidBrush(TilePanel.tileTypes[(int)Enum.Parse(typeof(SpecialType), s)]);
+				brushes[s] = new SolidBrush(TilePanel._tileTypes[(int)Enum.Parse(typeof(SpecialType), s)]);
 				settings.AddSetting(
 								s,
 								((SolidBrush)brushes[s]).Color,
@@ -154,13 +155,12 @@ namespace MapView.Forms.MapObservers.TileViews
 			if (tile != null && tile.Info is McdEntry)
 			{
 				var info = (McdEntry)tile.Info;
-				Text = "TileView: mapID:" + tile.MapId + " mcdID: " + tile.Id + " Name: " + GetSelectedDependencyName();
+				Text = "Tile View - mapID:" + tile.MapId + " mcdID:" + tile.Id + " Name: " + GetSelectedDependencyName();
 				UpdateMcdText(info);
 			}
 			else
-			{
-				Text = "TileView";
-			}
+				Text = "Tile View";
+
 			OnSelectedTileTypeChanged(tile);
 		}
 
@@ -257,14 +257,13 @@ namespace MapView.Forms.MapObservers.TileViews
 				if (MCDInfoForm == null)
 				{
 					MCDInfoForm = new McdViewerForm();
-//					MCDInfoForm.Size = new Size(480, 670); // not req'd.
 					MCDInfoForm.Closing += infoTabClosing;
 
 					var tile = SelectedTile;
 					if (tile != null && tile.Info is McdEntry)
 					{
 						var info = (McdEntry)tile.Info;
-						Text = "TileView: mapID:" + tile.MapId + " mcdID: " + tile.Id;
+						Text = "Tile View - mapID:" + tile.MapId + " mcdID:" + tile.Id;
 						UpdateMcdText(info);
 					}
 				}
@@ -287,12 +286,12 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private string GetSelectedDependencyName()
 		{
-			var selectedTile = SelectedTile;
-			if (selectedTile != null)
+			var tile = SelectedTile;
+			if (tile != null)
 			{
 				var map = Map as XCMapFile;
 				if (map != null)
-					return map.GetDependecyName(selectedTile);
+					return map.GetDependecyName(tile);
 			}
 			return null;
 		}
@@ -310,4 +309,6 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 	}
+
+	public delegate void SelectedTileTypeChanged(TileBase newTile);
 }

@@ -27,7 +27,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-//			MapView.Settings settings1 = new MapView.Settings();
 			this.TileViewControl = new global::MapView.Forms.MapObservers.TileViews.TileView();
 			this.SuspendLayout();
 			// 
@@ -37,7 +36,6 @@
 			this.TileViewControl.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TileViewControl.Location = new System.Drawing.Point(0, 0);
 			this.TileViewControl.Name = "TileViewControl";
-//			this.TileViewControl.Settings = settings1;
 			this.TileViewControl.Size = new System.Drawing.Size(546, 345);
 			this.TileViewControl.TabIndex = 0;
 			// 
@@ -52,6 +50,7 @@
 			this.ShowInTaskbar = false;
 			this.Text = "Tile View";
 			this.ResumeLayout(false);
+
 		}
 
 		#endregion

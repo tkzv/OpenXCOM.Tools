@@ -31,6 +31,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		protected DrawContentService DrawContentService = new DrawContentService();
 
+
 		public SimpleMapPanel()
 		{
 			_cell		= new GraphicsPath();
@@ -38,14 +39,15 @@ namespace MapView.Forms.MapObservers.TopViews
 			_copyArea	= new GraphicsPath();
 		}
 
+
 		public void ParentSize(int width, int height)
 		{
 			if (map != null)
 			{
-				int oldWid = DrawContentService.HWidth;
-
 				var hWidth  = DrawContentService.HWidth;
 				var hHeight = DrawContentService.HHeight;
+				
+				int curWidth = hWidth;
 
 				if (map.MapSize.Rows > 0 || map.MapSize.Cols > 0)
 				{
@@ -77,7 +79,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				_offX = 4 + map.MapSize.Rows * hWidth;
 				_offY = 4;
 
-				if (oldWid != hWidth)
+				if (curWidth != hWidth)
 				{
 					Width  = 8 + (map.MapSize.Rows + map.MapSize.Cols) * hWidth;
 					Height = 8 + (map.MapSize.Rows + map.MapSize.Cols) * hHeight;
@@ -87,7 +89,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 		[Browsable(false)]
-		[DefaultValue(null)]
+		[DefaultValue(null)] // NOTE: this is only for the designer, it doesn't actually set the default-value.
 		public override IMap_Base Map
 		{
 			set

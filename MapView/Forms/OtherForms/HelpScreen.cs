@@ -3,8 +3,11 @@ using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
+
 using MapView.Forms.MapObservers.TileViews;
+
 using XCom;
+
 
 namespace MapView
 {
@@ -57,6 +60,7 @@ namespace MapView
 		private System.Windows.Forms.Label l10;
 		private System.Windows.Forms.Label l14;
 		private System.Windows.Forms.Label l13;
+
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -65,24 +69,24 @@ namespace MapView
 		public HelpScreen()
 		{
 			//
-			// Required for Windows Form Designer support
+			// Required for Windows Form Designer support.
 			//
 			InitializeComponent();
 
-			l1.ForeColor=TilePanel.tileTypes[(int)SpecialType.Tile];
-			l2.ForeColor=TilePanel.tileTypes[(int)SpecialType.StartPoint];
-			l3.ForeColor=TilePanel.tileTypes[(int)SpecialType.IonBeamAccel];
-			l4.ForeColor=TilePanel.tileTypes[(int)SpecialType.DestroyObjective];
-			l5.ForeColor=TilePanel.tileTypes[(int)SpecialType.MagneticNav];
-			l6.ForeColor=TilePanel.tileTypes[(int)SpecialType.AlienCryo];
-			l7.ForeColor=TilePanel.tileTypes[(int)SpecialType.AlienClon];
-			l8.ForeColor=TilePanel.tileTypes[(int)SpecialType.AlienLearn];
-			l9.ForeColor=TilePanel.tileTypes[(int)SpecialType.AlienImplant];
-			l10.ForeColor=TilePanel.tileTypes[(int)SpecialType.AlienPlastics];
-			l11.ForeColor=TilePanel.tileTypes[(int)SpecialType.ExamRoom];
-			l12.ForeColor=TilePanel.tileTypes[(int)SpecialType.DeadTile];
-			l13.ForeColor=TilePanel.tileTypes[(int)SpecialType.EndPoint];
-			l14.ForeColor=TilePanel.tileTypes[(int)SpecialType.MustDestroy];
+			 l1.ForeColor = TilePanel._tileTypes[(int)SpecialType.Tile];
+			 l2.ForeColor = TilePanel._tileTypes[(int)SpecialType.StartPoint];
+			 l3.ForeColor = TilePanel._tileTypes[(int)SpecialType.IonBeamAccel];
+			 l4.ForeColor = TilePanel._tileTypes[(int)SpecialType.DestroyObjective];
+			 l5.ForeColor = TilePanel._tileTypes[(int)SpecialType.MagneticNav];
+			 l6.ForeColor = TilePanel._tileTypes[(int)SpecialType.AlienCryo];
+			 l7.ForeColor = TilePanel._tileTypes[(int)SpecialType.AlienClon];
+			 l8.ForeColor = TilePanel._tileTypes[(int)SpecialType.AlienLearn];
+			 l9.ForeColor = TilePanel._tileTypes[(int)SpecialType.AlienImplant];
+			l10.ForeColor = TilePanel._tileTypes[(int)SpecialType.AlienPlastics];
+			l11.ForeColor = TilePanel._tileTypes[(int)SpecialType.ExamRoom];
+			l12.ForeColor = TilePanel._tileTypes[(int)SpecialType.DeadTile];
+			l13.ForeColor = TilePanel._tileTypes[(int)SpecialType.EndPoint];
+			l14.ForeColor = TilePanel._tileTypes[(int)SpecialType.MustDestroy];
 
 			//
 			// TODO: Add any constructor code after InitializeComponent call
@@ -92,15 +96,11 @@ namespace MapView
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		protected override void Dispose( bool disposing )
+		protected override void Dispose(bool disposing)
 		{
-			if (disposing)
-			{
-				if (components != null)
-				{
-					components.Dispose();
-				}
-			}
+			if (disposing && components != null)
+				components.Dispose();
+
 			base.Dispose(disposing);
 		}
 

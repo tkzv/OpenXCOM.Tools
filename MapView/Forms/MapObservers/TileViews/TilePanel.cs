@@ -28,7 +28,9 @@ namespace MapView.Forms.MapObservers.TileViews
 		private VScrollBar vert;
 		private int numAcross = 1;
 
-		public static readonly Color[] tileTypes =
+		private TileType _type;
+
+		public static readonly Color[] _tileTypes =
 		{
 			Color.Cornsilk,
 			Color.Lavender,
@@ -47,8 +49,6 @@ namespace MapView.Forms.MapObservers.TileViews
 			Color.Blue
 		};
 
-		private TileType type;
-
 		public event SelectedTileTypeChanged TileChanged;
 		private static Hashtable brushes;
 //		private static PckFile extraFile;
@@ -65,9 +65,10 @@ namespace MapView.Forms.MapObservers.TileViews
 			set { brushes = value; }
 		}
 
+
 		public TilePanel(TileType type)
 		{
-			this.type = type;
+			_type = type;
 			vert = new VScrollBar();
 			vert.ValueChanged += valChange;
 			vert.Location = new Point(Width - vert.Width, 0);
@@ -81,13 +82,14 @@ namespace MapView.Forms.MapObservers.TileViews
 			Globals.LoadExtras();
 		}
 
+
 		private void valChange(object sender, EventArgs e)
 		{
 			startY = -vert.Value;
 			Refresh();
 		}
 
-		protected override void OnResize(EventArgs e)
+		protected override void OnResize(EventArgs eventargs)
 		{
 			numAcross = (Width - (vert.Visible ? vert.Width : 0)) / (width + space);
 			vert.Location = new Point(Width - vert.Width, 0);
@@ -129,7 +131,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				if (value != null)
 				{
-					if (type == TileType.All)
+					if (_type == TileType.All)
 					{
 						tiles = new TileBase[value.Count + 1];
 						tiles[0] = null;
@@ -142,19 +144,19 @@ namespace MapView.Forms.MapObservers.TileViews
 						int qtyTiles = 0;
 
 						for (int i = 0; i < value.Count; i++)
-							if (value[i].Info.TileType == type)
+							if (value[i].Info.TileType == _type)
 								++qtyTiles;
 
 						tiles = new TileBase[qtyTiles + 1];
 						tiles[0] = null;
 
 						for (int i = 0, j = 1; i < value.Count; i++)
-							if (value[i].Info.TileType == type)
+							if (value[i].Info.TileType == _type)
 								tiles[j++] = value[i];
 
 /*						var list = new List<TileBase>(); // NOTE: Replaced by above^ to add 1st blank/erasure-tile to each tile-group.
 						for (int i = 0; i < value.Count; i++)
-							if (value[i].Info.TileType == type)
+							if (value[i].Info.TileType == _type)
 								list.Add(value[i]);
 						tiles = list.ToArray(); */
 					}
@@ -209,8 +211,8 @@ namespace MapView.Forms.MapObservers.TileViews
 					x = numAcross - 1;
 
 				selectedNum = y * numAcross + x;
-	
 				selectedNum = (selectedNum < tiles.Length) ? selectedNum : tiles.Length - 1;
+
 				if (TileChanged != null)
 					TileChanged(SelectedTile);
 
@@ -241,7 +243,8 @@ namespace MapView.Forms.MapObservers.TileViews
 										bottomLeft, bottomTop,
 										bottomWidth, bottomHeight);
 
-					if (tile != null && (type == TileType.All || tile.Info.TileType == type))
+					if (tile != null &&
+						(_type == TileType.All || _type == tile.Info.TileType))
 					{
 						// Target Type
 						var targetType = tile.Info.TargetType.ToString();
@@ -328,9 +331,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			set
 			{
-				if (value == null)
-					selectedNum = 0;
-				else
+				if (value != null)
 				{
 					selectedNum = value.MapId + 1;
 
@@ -338,7 +339,7 @@ namespace MapView.Forms.MapObservers.TileViews
 						TileChanged(SelectedTile);
 
 					int y = startY + (selectedNum / numAcross) * (height + space);
-					int val = -(startY - y);
+					int val = y - startY;
 
 					if (val > vert.Minimum)
 					{
@@ -347,6 +348,8 @@ namespace MapView.Forms.MapObservers.TileViews
 					else
 						vert.Value = vert.Minimum;
 				}
+				else
+					selectedNum = 0;
 			}
 		}
 

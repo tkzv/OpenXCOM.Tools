@@ -67,7 +67,7 @@ namespace MapView.Forms.MainWindow
 				TopView.TopViewControl
 			};
 
-			foreach (var f in maps)
+			foreach (var f in maps) // iterate all Forms/Views/Controls (take your pick.).
 				if (f != null)
 					SetMap(map, f);
 
@@ -77,7 +77,7 @@ namespace MapView.Forms.MainWindow
 		private static void _tileView_SelectedTileTypeChanged(TileBase newTile)
 		{
 			if (newTile != null && newTile.Info != null)
-				TopView.TopViewControl.SetSelectedQuadrantFrom(newTile.Info.TileType);
+				TopView.TopViewControl.SelectQuadrant(newTile.Info.TileType);
 		}
 
 		private void SetMap(IMap_Base newMap, IMap_Observer observer)
@@ -88,8 +88,7 @@ namespace MapView.Forms.MainWindow
 				observer.Map.SelectedTileChanged -= observer.SelectedTileChanged;
 			}
 
-			observer.Map = newMap;
-			if (newMap != null)
+			if ((observer.Map = newMap) != null)
 			{
 				newMap.HeightChanged += observer.HeightChanged;
 				newMap.SelectedTileChanged += observer.SelectedTileChanged;

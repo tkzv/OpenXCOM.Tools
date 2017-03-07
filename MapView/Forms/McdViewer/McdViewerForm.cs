@@ -86,12 +86,12 @@ namespace MapView.Forms.McdViewer
 //			unsigned char Armour; // The higher this is the less likely it is that a weapon will destroy this tile when it's hit.
 			rtb.AppendText(string.Format("HE Block: {0}\n", info.HE_Block));
 //			unsigned char HE_Block; // How much of an explosion this tile will block
-			rtb.SelectionColor = Color.Red;
+			rtb.SelectionColor = Color.Crimson;
 			rtb.AppendText(string.Format("Death tile: {0}\n", info.DieTile));
 //			unsigned char Die_MCD; // If the terrain is destroyed, it is set to 0 and a tile of type Die_MCD is added
 			rtb.AppendText(string.Format("Flammable: {0}\n", info.Flammable));
 //			unsigned char Flammable; // How flammable it is (the higher the harder it is to set aflame)
-			rtb.SelectionColor = Color.Red;
+			rtb.SelectionColor = Color.Crimson;
 			rtb.AppendText(string.Format("Door open tile: {0}\n", info.Alt_MCD));
 //			unsigned char Alt_MCD; // If "Door" or "UFO_Door" is on, then when a unit walks through it the door is set to 0 and a tile type Alt_MCD is added.
 			//rtb.AppendText(string.Format("Unknown data: {0}\n",info[47]));// unsigned char u48;
@@ -104,13 +104,13 @@ namespace MapView.Forms.McdViewer
 //			unsigned char Light_Block; // The amount of light it blocks, from 0 to 10
 			rtb.AppendText(string.Format("footstep sound effect: {0}\n", info.Footstep));
 //			unsigned char Footstep; // The Sound Effect set to choose from when footsteps are on the tile
-			rtb.AppendText(string.Format("tile type: {0}:{1}\n", (sbyte)info.TileType, info.TileType + ""));
+			rtb.AppendText(string.Format("tile type: {0} - {1}\n", (sbyte)info.TileType, Enum.GetName(typeof(TileType), info.TileType)));
 //			info.TileType==0?"floor":info.TileType==1?"west wall":info.TileType==2?"north wall":info.TileType==3?"object":"Unknown"));
 //			unsigned char Tile_Type;	// This is the type of tile it is meant to be -- 0=floor, 1=west wall, 2=north wall, 3=object.
 										// When this type of tile is in the Die_As or Open_As flags, this value is added to the tile
 										// coordinate to determine the byte in which the tile type should be written.
 			rtb.AppendText(string.Format(
-									"high explosive type: {0}:{1}\n",
+									"high explosive type: {0} - {1}\n",
 									info.HE_Type,
 									(info.HE_Type == 0) ? "HE" : (info.HE_Type == 1) ? "smoke" : "unknown"));
 //			unsigned char HE_Type; // 0=HE 1=Smoke
