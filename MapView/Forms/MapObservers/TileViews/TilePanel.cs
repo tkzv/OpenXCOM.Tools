@@ -25,7 +25,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private int startY = 0;
 		private int selectedNum;
-		private VScrollBar vert;
+		private VScrollBar _scrollBar;
 		private int numAcross = 1;
 
 		private TileType _type;
@@ -69,11 +69,11 @@ namespace MapView.Forms.MapObservers.TileViews
 		public TilePanel(TileType type)
 		{
 			_type = type;
-			vert = new VScrollBar();
-			vert.ValueChanged += valChange;
-			vert.Location = new Point(Width - vert.Width, 0);
+			_scrollBar = new VScrollBar();
+			_scrollBar.ValueChanged += valChange;
+			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
 
-			Controls.Add(vert);
+			Controls.Add(_scrollBar);
 			MapViewPanel.ImageUpdate += tick;
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
@@ -85,17 +85,17 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private void valChange(object sender, EventArgs e)
 		{
-			startY = -vert.Value;
+			startY = -_scrollBar.Value;
 			Refresh();
 		}
 
 		protected override void OnResize(EventArgs eventargs)
 		{
-			numAcross = (Width - (vert.Visible ? vert.Width : 0)) / (width + space);
-			vert.Location = new Point(Width - vert.Width, 0);
-			vert.Height = Height;
-			vert.Maximum = Math.Max((PreferredHeight - Height) + 10, vert.Minimum);
-			vert.Visible = (vert.Maximum != vert.Minimum);
+			numAcross = (Width - (_scrollBar.Visible ? _scrollBar.Width : 0)) / (width + space);
+			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
+			_scrollBar.Height = Height;
+			_scrollBar.Maximum = Math.Max((PreferredHeight - Height) + 10, _scrollBar.Minimum);
+			_scrollBar.Visible = (_scrollBar.Maximum != _scrollBar.Minimum);
 
 			Refresh();
 		}
@@ -184,17 +184,17 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (e.Delta < 0)
 			{
-				if (vert.Value + scrollAmount < vert.Maximum)
-					vert.Value += scrollAmount;
+				if (_scrollBar.Value + scrollAmount < _scrollBar.Maximum)
+					_scrollBar.Value += scrollAmount;
 				else
-					vert.Value = vert.Maximum;
+					_scrollBar.Value = _scrollBar.Maximum;
 			}
 			else if (e.Delta > 0)
 			{
-				if (vert.Value - scrollAmount > vert.Minimum)
-					vert.Value -= scrollAmount;
+				if (_scrollBar.Value - scrollAmount > _scrollBar.Minimum)
+					_scrollBar.Value -= scrollAmount;
 				else
-					vert.Value = vert.Minimum;
+					_scrollBar.Value = _scrollBar.Minimum;
 			}
 		}
 
@@ -341,12 +341,12 @@ namespace MapView.Forms.MapObservers.TileViews
 					int y = startY + (selectedNum / numAcross) * (height + space);
 					int val = y - startY;
 
-					if (val > vert.Minimum)
+					if (val > _scrollBar.Minimum)
 					{
-						vert.Value = (val < vert.Maximum) ? val : vert.Maximum;
+						_scrollBar.Value = (val < _scrollBar.Maximum) ? val : _scrollBar.Maximum;
 					}
 					else
-						vert.Value = vert.Minimum;
+						_scrollBar.Value = _scrollBar.Minimum;
 				}
 				else
 					selectedNum = 0;

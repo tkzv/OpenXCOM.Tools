@@ -84,7 +84,6 @@ namespace MapView.Forms.MapObservers.TileViews
 
 
 		#region public events
-
 		public event MethodInvoker MapChanged;
 
 		private void OnMapChanged()
@@ -93,18 +92,25 @@ namespace MapView.Forms.MapObservers.TileViews
 			if (handler != null)
 				handler();
 		}
-
 		#endregion
+		
+		private string BuildTitleString(int id, int mcd)
+		{
+			return "Tile View - id " + id + " - mcd " + mcd + " - file " + GetSelectedDependencyName();
+		}
 
 		private void tabs_Selected(object sender, TabControlEventArgs e)
 		{
+			var f = FindForm();
+
 			var tile = SelectedTile;
 			if (tile != null && tile.Info is McdEntry)
 			{
-				var info = (McdEntry)tile.Info;
-				Text = "Tile View - mapID:" + tile.MapId + " mcdID:" + tile.Id;
-				UpdateMcdText(info);
+				f.Text = BuildTitleString(tile.MapId, tile.Id);
+				UpdateMcdText((McdEntry)tile.Info);
 			}
+			else
+				f.Text = "Tile View";
 		}
 
 		private void options_click(object sender, EventArgs e)
@@ -152,14 +158,14 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private void TileChanged(TileBase tile)
 		{
+			var f = FindForm();
 			if (tile != null && tile.Info is McdEntry)
 			{
-				var info = (McdEntry)tile.Info;
-				Text = "Tile View - mapID:" + tile.MapId + " mcdID:" + tile.Id + " Name: " + GetSelectedDependencyName();
-				UpdateMcdText(info);
+				f.Text = BuildTitleString(tile.MapId, tile.Id);
+				UpdateMcdText((McdEntry)tile.Info);
 			}
 			else
-				Text = "Tile View";
+				f.Text = "Tile View";
 
 			OnSelectedTileTypeChanged(tile);
 		}
@@ -259,13 +265,16 @@ namespace MapView.Forms.MapObservers.TileViews
 					MCDInfoForm = new McdViewerForm();
 					MCDInfoForm.Closing += infoTabClosing;
 
+					var f = FindForm();
+
 					var tile = SelectedTile;
 					if (tile != null && tile.Info is McdEntry)
 					{
-						var info = (McdEntry)tile.Info;
-						Text = "Tile View - mapID:" + tile.MapId + " mcdID:" + tile.Id;
-						UpdateMcdText(info);
+						f.Text = BuildTitleString(tile.MapId, tile.Id);
+						UpdateMcdText((McdEntry)tile.Info);
 					}
+					else
+						f.Text = "Tile View";
 				}
 
 				MCDInfoForm.Visible = true;
