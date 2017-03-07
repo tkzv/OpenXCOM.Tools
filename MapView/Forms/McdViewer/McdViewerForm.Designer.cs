@@ -16,9 +16,8 @@ namespace MapView.Forms.McdViewer
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && (components != null))
-			{
 				components.Dispose();
-			}
+
 			base.Dispose(disposing);
 		}
 
@@ -63,7 +62,7 @@ namespace MapView.Forms.McdViewer
 			this.Name = "McdViewerForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "MCD viewer";
+			this.Text = "MCD Viewer";
 			((System.ComponentModel.ISupportInitialize)(this.InfoBs)).EndInit();
 			this.ResumeLayout(false);
 		}

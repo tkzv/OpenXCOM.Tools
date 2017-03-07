@@ -110,7 +110,10 @@ namespace MapView.Forms.MapObservers.TileViews
 				UpdateMcdText((McdEntry)tile.Info);
 			}
 			else
+			{
 				f.Text = "Tile View";
+				UpdateMcdText(null);
+			}
 		}
 
 		private void options_click(object sender, EventArgs e)
@@ -165,7 +168,10 @@ namespace MapView.Forms.MapObservers.TileViews
 				UpdateMcdText((McdEntry)tile.Info);
 			}
 			else
+			{
 				f.Text = "Tile View";
+				UpdateMcdText(null);
+			}
 
 			OnSelectedTileTypeChanged(tile);
 		}
@@ -173,7 +179,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		private void UpdateMcdText(McdEntry info)
 		{
 			if (MCDInfoForm != null)
-				MCDInfoForm.UpdateData(info);
+			{
+				if (info != null)
+					MCDInfoForm.UpdateData(info);
+				else
+					MCDInfoForm.ClearData();
+			}
 		}
 
 		public override IMap_Base Map
@@ -274,7 +285,10 @@ namespace MapView.Forms.MapObservers.TileViews
 						UpdateMcdText((McdEntry)tile.Info);
 					}
 					else
+					{
 						f.Text = "Tile View";
+						UpdateMcdText(null);
+					}
 				}
 
 				MCDInfoForm.Visible = true;
