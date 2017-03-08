@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
+
 namespace MapView.Forms.Error
 {
 	public partial class ErrorWindow
@@ -9,11 +10,13 @@ namespace MapView.Forms.Error
 	{
 		private readonly Exception _exception;
 
+
 		public ErrorWindow(Exception exception)
 		{
 			_exception = exception;
 			InitializeComponent();
 		}
+
 
 		private void ErrorDetailsPanel_Click(object sender, EventArgs e)
 		{

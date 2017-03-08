@@ -156,7 +156,7 @@ namespace XCom
 		{
 			using (var s = File.Create(BasePath + BaseName + ".MAP"))
 			{
-				if (Rmp.ExtraHeight != 0) // add extraHeight to release mode - see SetupRoutes() below_
+				if (Rmp.ExtraHeight != 0) // add ExtraHeight to save - see SetupRoutes() below_
 					foreach (RmpEntry route in Rmp)
 						route.Height += Rmp.ExtraHeight;
 
@@ -323,14 +323,13 @@ namespace XCom
 
 		private void SetupRoutes(RmpFile rmp)
 		{
-			if (rmp.ExtraHeight != 0) // remove extraHeight from edit-mode - see Save() above^
+			if (rmp.ExtraHeight != 0) // remove ExtraHeight for editing - see Save() above^
 				foreach (RmpEntry route in rmp)
 					route.Height -= rmp.ExtraHeight;
 
-			foreach (RmpEntry re in rmp) // set tile
+			foreach (RmpEntry re in rmp)
 			{
 				var tile = this[re.Row, re.Col, re.Height];
-
 				if (tile != null)
 					((XCMapTile)tile).Rmp = re;
 			}

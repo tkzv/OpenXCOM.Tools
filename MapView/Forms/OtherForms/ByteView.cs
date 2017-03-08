@@ -3,7 +3,9 @@ using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
+
 using XCom;
+
 
 namespace PckView
 {
@@ -21,14 +23,18 @@ namespace PckView
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		private System.ComponentModel.Container components = null;
+		private readonly System.ComponentModel.Container components = null;
+
 
 		public ByteView(PckImage img)
 		{
 			InitializeComponent();
+
 			image = img;
-			printData();
+
+//			printData();
 		}
+
 
 		public PckImage Image
 		{
@@ -37,35 +43,36 @@ namespace PckView
 				if (value != image)
 				{
 					image = value;
-					printData();
+
+//					printData();
 				}
 			}
 		}
 
-		private void printData()
+/*		private void printData()
 		{
-//			if (image != null)
-//			{
-//				output.Text = "";
-//				foreach (int i in image.Bytes)
-//				{
-//					if (i == 254)
-//					{
-//						output.SelectionColor = Color.Gray;
-//						output.AppendText("254\n");
-//						output.SelectionColor = Color.Black;
-//					}
-//					else if (i == 255)
-//					{
-//						output.SelectionColor = Color.Red;
-//						output.AppendText("\n255\n");
-//						output.SelectionColor = Color.Black;
-//					}
-//					else
-//						output.AppendText(i + " ");
-//				}
-//			}
-		}
+			if (image != null)
+			{
+				output.Text = "";
+				foreach (int i in image.Bytes)
+				{
+					if (i == 254)
+					{
+						output.SelectionColor = Color.Gray;
+						output.AppendText("254\n");
+						output.SelectionColor = Color.Black;
+					}
+					else if (i == 255)
+					{
+						output.SelectionColor = Color.Red;
+						output.AppendText("\n255\n");
+						output.SelectionColor = Color.Black;
+					}
+					else
+						output.AppendText(i + " ");
+				}
+			}
+		} */
 
 		#region Windows Form Designer generated code
 

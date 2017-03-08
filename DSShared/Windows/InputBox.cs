@@ -4,14 +4,9 @@ using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+
 namespace DSShared.Windows
 {
-	/// <summary>
-	/// Delegate used for pressing the Okay button on an InputBox
-	/// </summary>
-	/// <param name="sender"></param>
-	/// <param name="e"></param>
-	public delegate void InputOkClickDelegate(object sender, InputOkEventArgs e);
 	/// <summary>
 	/// A generic inputbox providing an area for a user-supplied panel, and okay+cancel buttons
 	/// The default inputbox prompts the user to enter a string
@@ -26,7 +21,9 @@ namespace DSShared.Windows
 		/// Raised when the Okay button is pressed
 		/// </summary>
 		public event InputOkClickDelegate OkClick;
-		//private DialogResult res = DialogResult.Cancel;
+
+//		private DialogResult res = DialogResult.Cancel;
+
 
 		/// <summary>
 		/// Default constructor, Calls this("Input value","Input Box","")
@@ -37,7 +34,7 @@ namespace DSShared.Windows
 		{}
 
 		/// <summary>
-		/// Constructor, calls this(caption,"Input","")
+		/// Constructor, calls this(caption, "Input", "").
 		/// </summary>
 		/// <param name="caption"></param>
 		public InputBox(string caption)
@@ -46,7 +43,7 @@ namespace DSShared.Windows
 		{}
 
 		/// <summary>
-		/// Constructor, calls this(caption, title,"")
+		/// Constructor, calls this(caption, title, "").
 		/// </summary>
 		/// <param name="caption"></param>
 		/// <param name="title"></param>
@@ -56,7 +53,7 @@ namespace DSShared.Windows
 		{}
 
 		/// <summary>
-		/// Constructor specifying all arguements
+		/// Constructor specifying all arguments.
 		/// </summary>
 		/// <param name="caption">Text that will be shown above the text box</param>
 		/// <param name="title">Title of the form</param>
@@ -68,7 +65,7 @@ namespace DSShared.Windows
 			DialogResult = DialogResult.Cancel;
 
 			lblCaption.Text = caption;
-			this.Text = title;
+			Text = title;
 			txtInput.Text = defaultValue;
 			txtInput.Focus();
 		}
@@ -81,14 +78,15 @@ namespace DSShared.Windows
 		public InputBox(string title, Panel contents)
 		{
 			InitializeComponent();
-			DialogResult = DialogResult.Cancel;
 
+			DialogResult = DialogResult.Cancel;
 			Text = title;
 			CustomContents = contents;
 		}
 
+
 		/// <summary>
-		/// get/set the contents of the panel
+		/// Gets/Sets the contents of the panel.
 		/// </summary>
 		public Panel CustomContents
 		{
@@ -106,7 +104,7 @@ namespace DSShared.Windows
 		}
 
 		/// <summary>
-		/// get/set the text in the default text box
+		/// Gets/Sets the text in the default text box.
 		/// </summary>
 		public string InputValue
 		{
@@ -115,10 +113,10 @@ namespace DSShared.Windows
 		}
 
 		/// <summary>
-		/// Gives focus to the text box and calls ShowDialog()
+		/// Gives focus to the text box and calls ShowDialog().
 		/// </summary>
 		/// <param name="parent"></param>
-		/// <returns></returns>
+		/// <returns>DialogResult</returns>
 		public new DialogResult Show(IWin32Window parent)
 		{
 			txtInput.Focus();
@@ -142,24 +140,31 @@ namespace DSShared.Windows
 		}
 
 		/// <summary>
-		/// Creates an InputBox(title,contents) and returns the value of calling ShowDialog() on it
+		/// Creates an InputBox(title,contents) and returns the value of calling ShowDialog() on it.
 		/// </summary>
 		/// <param name="title"></param>
 		/// <param name="contents"></param>
 		/// <returns></returns>
 		public static DialogResult ShowDialog(string title, Panel contents)
 		{
-			InputBox ib = new InputBox(title,contents);
+			var ib = new InputBox(title,contents);
 			return ib.ShowDialog();
 		}
 	}
 
 	/// <summary>
-	/// Args class for the InputOkClickDelegate
+	/// Delegate used for pressing the Okay button on an InputBox
+	/// </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	public delegate void InputOkClickDelegate(object sender, InputOkEventArgs e);
+
+	/// <summary>
+	/// Args class for the InputOkClickDelegate.
 	/// </summary>
 	public class InputOkEventArgs:EventArgs
 	{
-		private Panel panel;
+		private readonly Panel _panel;
 
 		/// <summary>
 		/// Constructor 
@@ -167,7 +172,7 @@ namespace DSShared.Windows
 		/// <param name="panel"></param>
 		public InputOkEventArgs(Panel panel)
 		{
-			this.panel = panel;
+			_panel = panel;
 		}
 
 		/// <summary>
@@ -175,7 +180,7 @@ namespace DSShared.Windows
 		/// </summary>
 		public Panel Panel
 		{
-			get { return panel; }
+			get { return _panel; }
 		}
 	}
 }

@@ -4,6 +4,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+
 namespace MapView
 {
 	public class ChoiceDialog
@@ -18,11 +19,13 @@ namespace MapView
 
 		private Choice choice = Choice.Cancel;
 
+
 		public ChoiceDialog(string file)
 		{
 			InitializeComponent();
-			txt.Text = "The file " + file + " already exists. Do you want to overwrite the existing file, use the existing file, or cancel";
+			txt.Text = "The file " + file + " already exists. Do you want to overwrite the existing file, use the existing file, or cancel?";
 		}
+
 
 		public Choice Choice
 		{
@@ -34,16 +37,12 @@ namespace MapView
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		protected override void Dispose( bool disposing )
+		protected override void Dispose(bool disposing)
 		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
+			if (disposing && components != null)
+				components.Dispose();
+
+			base.Dispose(disposing);
 		}
 		
 		/// <summary>

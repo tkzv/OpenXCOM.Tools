@@ -314,7 +314,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		private string BuildTitleString(int id, int mcd)
 		{
 			var dep = GetSelectedDependencyName();
-			return "Tile View - id " + id + " - mcd " + mcd + " - file " + (dep ?? "unknown");
+			return "Tile View : id " + id + " - mcd " + mcd + " - " + (dep ?? "unknown");
 		}
 
 		private void VolutarMcdEditMenuItem_Click(object sender, EventArgs e)

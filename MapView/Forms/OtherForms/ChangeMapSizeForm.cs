@@ -230,7 +230,7 @@ namespace MapView
 			this.CeilingCheckBox.Name = "CeilingCheckBox";
 			this.CeilingCheckBox.Size = new System.Drawing.Size(81, 16);
 			this.CeilingCheckBox.TabIndex = 9;
-			this.CeilingCheckBox.Text = "wrt Ceiling";
+			this.CeilingCheckBox.Text = "to Ceiling";
 			this.CeilingCheckBox.UseVisualStyleBackColor = true;
 			this.CeilingCheckBox.Visible = false;
 			// 

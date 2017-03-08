@@ -4,6 +4,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+
 namespace MapView
 {
 	public class Dialog
@@ -14,15 +15,17 @@ namespace MapView
 		private System.Windows.Forms.Button btnOk;
 		private System.ComponentModel.Container components = null;
 
+
 		public Dialog(string text)
 		{
 			InitializeComponent();
 			txt.Text = text;
 		}
 
+
 		public static void ShowDialog(IWin32Window parent, string text)
 		{
-			Dialog d = new Dialog(text);
+			var d = new Dialog(text);
 			d.ShowDialog(parent);
 		}
 
@@ -31,15 +34,11 @@ namespace MapView
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		protected override void Dispose( bool disposing )
+		protected override void Dispose(bool disposing)
 		{
-			if (disposing)
-			{
-				if (components != null)
-				{
-					components.Dispose();
-				}
-			}
+			if (disposing && components != null)
+				components.Dispose();
+
 			base.Dispose(disposing);
 		}
 

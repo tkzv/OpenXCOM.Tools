@@ -241,8 +241,9 @@ namespace MapView.Forms.MapObservers.TileViews
 
 				foreach (var tile in tiles)
 				{
-					top  = _startY + y * height;
+					top  = y * height + _startY;
 					left = x * width;
+
 					var rect = new Rectangle(
 										left,  top,
 										width, height);
@@ -309,7 +310,6 @@ namespace MapView.Forms.MapObservers.TileViews
 
 				g.DrawRectangle(
 							_pen,
-//							Pens.Red,
 							(_sel % _across) * width, _startY + (_sel / _across) * height,
 							width, height);
 			}
