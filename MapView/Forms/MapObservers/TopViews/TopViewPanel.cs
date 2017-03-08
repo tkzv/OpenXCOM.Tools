@@ -43,9 +43,9 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		private SolidPenBrush _northColor;
-		private SolidPenBrush _westColor;
-		private SolidPenBrush _contentColor;
+		private SolidPenBrush _colorWest;
+		private SolidPenBrush _colorNorth;
+		private SolidPenBrush _colorContent;
 
 		protected override void RenderCell(
 										MapTileBase tile,
@@ -55,43 +55,43 @@ namespace MapView.Forms.MapObservers.TopViews
 			var mapTile = (XCMapTile)tile;
 
 			if (mapTile.Ground != null && Ground.Checked)
-				DrawContentService.DrawFloor(
-											g,
-											Brushes["GroundColor"],
-											x, y);
+				_stuffer.DrawFloor(
+								g,
+								Brushes["GroundColor"],
+								x, y);
 
 
-			if (_northColor == null)
-				_northColor = new SolidPenBrush(Pens["NorthColor"]);
+			if (_colorNorth == null)
+				_colorNorth = new SolidPenBrush(Pens["NorthColor"]);
 
 			if (mapTile.North != null && North.Checked)
-				DrawContentService.DrawContent(
-											g,
-											_northColor,
-											x, y,
-											mapTile.North);
+				_stuffer.DrawContent(
+								g,
+								_colorNorth,
+								x, y,
+								mapTile.North);
 
 
-			if (_westColor == null)
-				_westColor = new SolidPenBrush(Pens["WestColor"]);
+			if (_colorWest == null)
+				_colorWest = new SolidPenBrush(Pens["WestColor"]);
 
 			if (mapTile.West != null && West.Checked)
-				DrawContentService.DrawContent(
-											g,
-											_westColor,
-											x, y,
-											mapTile.West);
+				_stuffer.DrawContent(
+								g,
+								_colorWest,
+								x, y,
+								mapTile.West);
 
 
-			if (_contentColor == null)
-				_contentColor = new SolidPenBrush(Brushes["ContentColor"], _northColor.Pen.Width);
+			if (_colorContent == null)
+				_colorContent = new SolidPenBrush(Brushes["ContentColor"], _colorNorth.Pen.Width);
 
 			if (mapTile.Content != null && Content.Checked)
-				DrawContentService.DrawContent(
-											g,
-											_contentColor,
-											x, y,
-											mapTile.Content);
+				_stuffer.DrawContent(
+								g,
+								_colorContent,
+								x, y,
+								mapTile.Content);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)

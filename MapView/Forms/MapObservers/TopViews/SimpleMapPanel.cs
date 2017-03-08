@@ -29,7 +29,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		private int _mR = -1;
 		private int _mC = -1;
 
-		protected DrawContentService DrawContentService = new DrawContentService();
+		protected DrawContentService _stuffer = new DrawContentService();
 
 
 		public SimpleMapPanel()
@@ -44,8 +44,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			if (map != null)
 			{
-				var hWidth  = DrawContentService.HWidth;
-				var hHeight = DrawContentService.HHeight;
+				var hWidth  = _stuffer.HWidth;
+				var hHeight = _stuffer.HHeight;
 				
 				int curWidth = hWidth;
 
@@ -73,8 +73,8 @@ namespace MapView.Forms.MapObservers.TopViews
 					hHeight = MinimumHeight;
 				}
 
-				DrawContentService.HWidth  = hWidth;
-				DrawContentService.HHeight = hHeight;
+				_stuffer.HWidth  = hWidth;
+				_stuffer.HHeight = hHeight;
 
 				_offX = 4 + map.MapSize.Rows * hWidth;
 				_offY = 4;
@@ -95,7 +95,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			set
 			{
 				map = value;
-				DrawContentService.HWidth = 7;
+				_stuffer.HWidth = 7;
 				ParentSize(Parent.Width, Parent.Height);
 				Refresh();
 			}
@@ -117,8 +117,8 @@ namespace MapView.Forms.MapObservers.TopViews
 			var s = GetDragStart();
 			var e = GetDragEnd();
 
-			var hWidth  = DrawContentService.HWidth;
-			var hHeight = DrawContentService.HHeight;
+			var hWidth  = _stuffer.HWidth;
+			var hHeight = _stuffer.HHeight;
 
 			var sel1 = new Point(
 							_offX + (s.X - s.Y) * hWidth,
@@ -179,8 +179,8 @@ namespace MapView.Forms.MapObservers.TopViews
 			MapLocation pt = e.MapPosition;
 //			Text = "c: " + pt.Col + " r: " + pt.Row; // I don't think this actually prints anywhere.
 
-			var hWidth  = DrawContentService.HWidth;
-			var hHeight = DrawContentService.HHeight;
+			var hWidth  = _stuffer.HWidth;
+			var hHeight = _stuffer.HHeight;
 
 			int xc = (pt.Col - pt.Row) * hWidth;
 			int yc = (pt.Col + pt.Row) * hHeight;
@@ -206,8 +206,8 @@ namespace MapView.Forms.MapObservers.TopViews
 			// 16 is half the width of the diamond
 			// 24 is the distance from the top of the diamond to the very top of the image
 
-			var hWidth  = (double)DrawContentService.HWidth;
-			var hHeight = (double)DrawContentService.HHeight;
+			var hWidth  = (double)_stuffer.HWidth;
+			var hHeight = (double)_stuffer.HHeight;
 
 			double x1 =  (x          / (hWidth * 2)) + (y / (hHeight * 2));
 			double x2 = -(x - y * 2) / (hWidth * 2);
@@ -225,8 +225,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		protected GraphicsPath CellPath(int xc, int yc)
 		{
-			var hWidth = DrawContentService.HWidth;
-			var hHeight = DrawContentService.HHeight ;
+			var hWidth = _stuffer.HWidth;
+			var hHeight = _stuffer.HHeight ;
 
 			_cell.Reset();
 			_cell.AddLine(
@@ -242,12 +242,12 @@ namespace MapView.Forms.MapObservers.TopViews
 			return _cell;
 		}
 
-		protected override void Render(Graphics g)
+		protected override void Render(Graphics backBuffer)
 		{
-			g.FillRectangle(SystemBrushes.Control, ClientRectangle);
+			backBuffer.FillRectangle(SystemBrushes.Control, ClientRectangle);
 
-			var hWidth  = DrawContentService.HWidth;
-			var hHeight = DrawContentService.HHeight;
+			var hWidth  = _stuffer.HWidth;
+			var hHeight = _stuffer.HHeight;
 
 			if (map != null)
 			{
@@ -262,31 +262,31 @@ namespace MapView.Forms.MapObservers.TopViews
 						MapTileBase mapTile = map[row, col];
 
 						if (mapTile != null)
-							RenderCell(mapTile, g, x, y);
+							RenderCell(mapTile, backBuffer, x, y);
 					}
 				}
 
 				for (int i = 0; i <= map.MapSize.Rows; i++)
-					g.DrawLine(
-							Pens["GridColor"],
-							_offX - i * hWidth,
-							_offY + i * hHeight,
-							(map.MapSize.Cols - i) * hWidth  + _offX,
-							(map.MapSize.Cols + i) * hHeight + _offY);
+					backBuffer.DrawLine(
+									Pens["GridColor"],
+									_offX - i * hWidth,
+									_offY + i * hHeight,
+									(map.MapSize.Cols - i) * hWidth  + _offX,
+									(map.MapSize.Cols + i) * hHeight + _offY);
 
 				for (int i = 0; i <= map.MapSize.Cols; i++)
-					g.DrawLine(
-							Pens["GridColor"],
-							_offX + i * hWidth,
-							_offY + i * hHeight,
-							i * hWidth  - map.MapSize.Rows * hWidth  + _offX,
-							i * hHeight + map.MapSize.Rows * hHeight + _offY);
+					backBuffer.DrawLine(
+									Pens["GridColor"],
+									_offX + i * hWidth,
+									_offY + i * hHeight,
+									i * hWidth  - map.MapSize.Rows * hWidth  + _offX,
+									i * hHeight + map.MapSize.Rows * hHeight + _offY);
 
 				if (_copyArea != null)
-					g.DrawPath(Pens["SelectColor"], _copyArea);
+					backBuffer.DrawPath(Pens["SelectColor"], _copyArea);
 
 //				if (selected != null) // clicked on
-//					g.DrawPath(new Pen(Brushes.Blue, 2), selected);
+//					backBuffer.DrawPath(new Pen(Brushes.Blue, 2), selected);
 
 				if (   _mR > -1
 					&& _mC > -1
@@ -297,7 +297,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					int yc = (_mC + _mR) * hHeight + _offY;
 
 					GraphicsPath selPath = CellPath(xc, yc);
-					g.DrawPath(Pens["MouseColor"], selPath);
+					backBuffer.DrawPath(Pens["MouseColor"], selPath);
 				}
 			}
 		}

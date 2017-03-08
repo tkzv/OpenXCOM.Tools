@@ -25,6 +25,7 @@ namespace DSShared.Windows
 					true);
 		}
 
+
 		/// <summary>
 		/// </summary>
 		protected override void OnPaint(PaintEventArgs e)
@@ -32,8 +33,10 @@ namespace DSShared.Windows
 			if (DesignMode)
 			{
 				base.OnPaint(e);
+
 				e.Graphics.DrawLine(Pens.Black, 0, 0, Width, Height);
 				e.Graphics.DrawLine(Pens.Black, 0, Height, Width, 0);
+
 				ControlPaint.DrawBorder3D(e.Graphics, ClientRectangle, Border3DStyle.Flat);
 			}
 			else
