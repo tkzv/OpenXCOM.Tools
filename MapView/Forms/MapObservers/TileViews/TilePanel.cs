@@ -16,17 +16,20 @@ namespace MapView.Forms.MapObservers.TileViews
 	{
 		private TileBase[] tiles;
 
-		private const int width  = 32;
-		private const int height = 40;
-		private const int space  = 4;
+		private const int _width  = 32;
+		private const int _height = 40;
+		private const int _space  =  4; // NOTE: includes the margin for both sides of '_width'.
 
-		private SolidBrush brush = new SolidBrush(Color.FromArgb(204, 204, 255));
-		private Pen pen = new Pen(Brushes.Red, 3);
+//		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
+		private Pen _pen = new Pen(Brushes.Red, 2);
 
-		private int startY = 0;
-		private int selectedNum;
+		private static Hashtable _brushes;
+
+		private int _startY = 0;
+		private int _sel;
+		private int _across = 1;
+
 		private VScrollBar _scrollBar;
-		private int numAcross = 1;
 
 		private TileType _type;
 
@@ -50,9 +53,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		};
 
 		public event SelectedTileTypeChanged TileChanged;
-		private static Hashtable brushes;
-//		private static PckFile extraFile;
 
+//		private static PckFile extraFile;
 //		public static PckFile ExtraFile
 //		{
 //			get { return extraFile; }
@@ -61,8 +63,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		public static Hashtable Colors
 		{
-			get { return brushes; }
-			set { brushes = value; }
+			get { return _brushes; }
+			set { _brushes = value; }
 		}
 
 
@@ -74,10 +76,10 @@ namespace MapView.Forms.MapObservers.TileViews
 			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
 
 			Controls.Add(_scrollBar);
-			MapViewPanel.ImageUpdate += tick;
+			MapViewPanel.ImageUpdate += tick; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
-			selectedNum = 0;
+			_sel = 0;
 
 			Globals.LoadExtras();
 		}
@@ -85,13 +87,13 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private void valChange(object sender, EventArgs e)
 		{
-			startY = -_scrollBar.Value;
+			_startY = -_scrollBar.Value;
 			Refresh();
 		}
 
 		protected override void OnResize(EventArgs eventargs)
 		{
-			numAcross = (Width - (_scrollBar.Visible ? _scrollBar.Width : 0)) / (width + space);
+			_across = (Width - (_scrollBar.Visible ? _scrollBar.Width : 0)) / (_width + _space);
 			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
 			_scrollBar.Height = Height;
 			_scrollBar.Maximum = Math.Max((PreferredHeight - Height) + 10, _scrollBar.Minimum);
@@ -102,10 +104,10 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		public int StartY
 		{
-			get { return startY; }
+			get { return _startY; }
 			set
 			{
-				startY = value;
+				_startY = value;
 				Refresh();
 			}
 		}
@@ -114,12 +116,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			get
 			{
-				if (tiles != null && numAcross > 0)
+				if (tiles != null && _across > 0)
 				{
-					if (tiles.Length % numAcross == 0)
-						return (tiles.Length / numAcross) * (height + space);
+					if (tiles.Length % _across == 0)
+						return (tiles.Length / _across) * (_height + _space);
 
-					return (1 + tiles.Length / numAcross) * (height + space);
+					return (1 + tiles.Length / _across) * (_height + _space);
 				}
 				return 0;
 			}
@@ -161,13 +163,13 @@ namespace MapView.Forms.MapObservers.TileViews
 						tiles = list.ToArray(); */
 					}
 
-					if (selectedNum >= tiles.Length)
-						selectedNum = 0;
+					if (_sel >= tiles.Length)
+						_sel = 0;
 				}
 				else
 				{
 					tiles = null;
-					selectedNum = 0;
+					_sel = 0;
 				}
 
 				OnResize(null);
@@ -204,14 +206,14 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (tiles != null)
 			{
-				int x = e.X / (width + space);
-				int y = (e.Y - startY) / (height + space);
+				int x =  e.X / (_width + _space);
+				int y = (e.Y - _startY) / (_height + _space);
 
-				if (x >= numAcross)
-					x = numAcross - 1;
+				if (x >= _across)
+					x = _across - 1;
 
-				selectedNum = y * numAcross + x;
-				selectedNum = (selectedNum < tiles.Length) ? selectedNum : tiles.Length - 1;
+				_sel = y * _across + x;
+				_sel = (_sel < tiles.Length) ? _sel : tiles.Length - 1;
 
 				if (TileChanged != null)
 					TileChanged(SelectedTile);
@@ -231,91 +233,85 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				Graphics g = e.Graphics;
 
-				int x = 0, y = 0;
-				const int bottomWidth  = width  + space;
-				const int bottomHeight = height + space;
+				int x = 0;
+				int y = 0;
+				const int width  = _width  + _space;
+				const int height = _height + _space;
+				int top, left;
 
 				foreach (var tile in tiles)
 				{
-					var bottomTop = startY + y * bottomHeight;
-					var bottomLeft = x * bottomWidth;
+					top  = _startY + y * height;
+					left = x * width;
 					var rect = new Rectangle(
-										bottomLeft, bottomTop,
-										bottomWidth, bottomHeight);
+										left,  top,
+										width, height);
 
-					if (tile != null &&
-						(_type == TileType.All || _type == tile.Info.TileType))
+					if (tile != null)
 					{
-						// Target Type
-						var targetType = tile.Info.TargetType.ToString();
-						if (brushes.ContainsKey(targetType))
+						if (_type == TileType.All || _type == tile.Info.TileType)
 						{
-							g.FillRectangle((SolidBrush) brushes[targetType], rect);
+							var targetType = tile.Info.TargetType.ToString();
+							if (_brushes.ContainsKey(targetType))
+								g.FillRectangle((SolidBrush)_brushes[targetType], rect);
+
+							g.DrawImage(
+									tile[MapViewPanel.Current].Image,
+									left,
+									top - tile.Info.TileOffset);
+
+							if (tile.Info.HumanDoor || tile.Info.UFODoor)
+								g.DrawString(
+										"Door",
+										this.Font,
+										Brushes.Black,
+										left,
+										top + PckImage.Height - Font.Height);
+
+							x = (x + 1) % _across;
+							if (x == 0)
+								y++;
 						}
-
-						// Image
-						g.DrawImage(
-								tile[MapViewPanel.Current].Image,
-								bottomLeft,
-								bottomTop - tile.Info.TileOffset);
-
-						// Door text
-						if (tile.Info.HumanDoor || tile.Info.UFODoor)
-							g.DrawString(
-									"Door",
-									this.Font,
-									Brushes.Black,
-									bottomLeft,
-									bottomTop + PckImage.Height - Font.Height);
-
-						x = (x + 1) % numAcross;
-						if (x == 0)
-							y++;
 					}
-					else if (tile == null)
+					else
 					{
 						g.FillRectangle(Brushes.AliceBlue, rect);
 
 						if (Globals.ExtraTiles != null)
 							g.DrawImage(
 									Globals.ExtraTiles[0].Image,
-									bottomLeft, bottomTop);
+									left, top);
 
-						x = (x + 1) % numAcross;
+						x = (x + 1) % _across;
 						if (x == 0)
 							y++;
 					}
 				}
 
 //				g.DrawRectangle(
-//							brush,
-//							(selectedNum % numAcross) * (width + space),
-//							startY + (selectedNum / numAcross) * (height + space),
-//							width  + space,
-//							height + space)
+//							_brush,
+//							(_sel % _across) * (_width + _space),
+//							_startY + (_sel / _across) * (_height + _space),
+//							_width  + _space,
+//							_height + _space)
 
-				for (int k = 0; k <= numAcross + 1; k++)
+				for (int k = 0; k < _across; k++)
 					g.DrawLine(
 							Pens.Black,
-							k * bottomWidth,
-							startY,
-							k * bottomWidth,
-							startY + PreferredHeight);
+							k * width, _startY,
+							k * width, _startY + PreferredHeight);
 
-				for (int k = 0; k <= PreferredHeight; k += bottomHeight)
+				for (int k = 0; k <= PreferredHeight; k += height)
 					g.DrawLine(
 							Pens.Black,
-							0,
-							startY + k,
-							numAcross * bottomWidth,
-							startY + k);
+							0,               _startY + k,
+							_across * width, _startY + k);
 
 				g.DrawRectangle(
-							pen,
-							(selectedNum % numAcross) * bottomWidth,
-							startY + (selectedNum / numAcross) * bottomHeight,
-							bottomWidth,
-							bottomHeight);
+							_pen,
+//							Pens.Red,
+							(_sel % _across) * width, _startY + (_sel / _across) * height,
+							width, height);
 			}
 		}
 
@@ -323,8 +319,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			get
 			{
-				if (selectedNum > -1 && selectedNum < tiles.Length)
-					return tiles[selectedNum];
+				if (_sel > -1 && _sel < tiles.Length)
+					return tiles[_sel];
 
 				return null;
 			}
@@ -333,13 +329,13 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				if (value != null)
 				{
-					selectedNum = value.MapId + 1;
+					_sel = value.MapId + 1;
 
 					if (TileChanged != null)
 						TileChanged(SelectedTile);
 
-					int y = startY + (selectedNum / numAcross) * (height + space);
-					int val = y - startY;
+					int y = _startY + (_sel / _across) * (_height + _space);
+					int val = y - _startY;
 
 					if (val > _scrollBar.Minimum)
 					{
@@ -349,7 +345,7 @@ namespace MapView.Forms.MapObservers.TileViews
 						_scrollBar.Value = _scrollBar.Minimum;
 				}
 				else
-					selectedNum = 0;
+					_sel = 0;
 			}
 		}
 

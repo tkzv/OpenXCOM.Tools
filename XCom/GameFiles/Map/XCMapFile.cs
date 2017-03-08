@@ -1,12 +1,13 @@
 using System;
-using System.IO;
 using System.Collections;
-using System.Drawing;
-using System.Windows.Forms;
 using System.Collections.Generic;
-//using XCom.Interfaces;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+
 using XCom.Interfaces.Base;
 using XCom.Services;
+
 
 namespace XCom
 {
@@ -16,6 +17,7 @@ namespace XCom
 	{
 		private readonly string _blankPath;
 		private readonly string[] _dependencies;
+
 
 		public XCMapFile(
 				string baseName,
@@ -66,6 +68,7 @@ namespace XCom
 				SaveBlanks();
 			}
 		}
+
 
 		public string BaseName { get; private set; }
 		public string BasePath { get; private set; }
@@ -127,7 +130,7 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// Writes a blank map to the Stream provided
+		/// Writes a blank Map to the stream provided.
 		/// </summary>
 		/// <param name="s"></param>
 		/// <param name="rows"></param>
@@ -153,8 +156,7 @@ namespace XCom
 		{
 			using (var s = File.Create(BasePath + BaseName + ".MAP"))
 			{
-				// add extraHeight to release mode
-				if (Rmp.ExtraHeight != 0)
+				if (Rmp.ExtraHeight != 0) // add extraHeight to release mode - see SetupRoutes() below_
 					foreach (RmpEntry route in Rmp)
 						route.Height += Rmp.ExtraHeight;
 
@@ -204,8 +206,6 @@ namespace XCom
 			var height = input.ReadByte();
 
 			MapSize = new MapSize(rows, cols, height);
-
-//			map = new MapTile[rows,cols,height];
 			MapData = new MapTileList(rows, cols, height);
 
 			for (int h = 0; h < height; h++)
@@ -245,8 +245,7 @@ namespace XCom
 												wrtCeiling);
 			if (newMap != null)
 			{
-				// update Routes
-				if (wrtCeiling && newH != MapSize.Height)
+				if (wrtCeiling && newH != MapSize.Height) // update Routes
 				{
 					var d = newH - MapSize.Height;
 					foreach (RmpEntry rmp in Rmp)
@@ -258,8 +257,7 @@ namespace XCom
 					}
 				}
 
-				// delete route-nodes outside the new bounds
-				if (   newC < MapSize.Cols
+				if (   newC < MapSize.Cols // delete route-nodes outside the new bounds
 					|| newR < MapSize.Rows
 					|| newH < MapSize.Height)
 				{
@@ -304,34 +302,32 @@ namespace XCom
 			}
 		}
 
-		public string GetDependecyName(TileBase selectedTile)
+		public string GetDependencyName(TileBase tile)
 		{
-			var dependencyId = -1;
+			int id = -1;
 
-			foreach (var tile in Tiles)
+			foreach (var t in Tiles)
 			{
-				if (tile.Id == 0)
-					dependencyId++;
+				if (t.Id == 0)
+					++id;
 
-				if (tile == selectedTile)
+				if (t == tile)
 					break;
 			}
 
-			if (dependencyId != -1 && dependencyId < _dependencies.Length)
-				return _dependencies[dependencyId];
+			if (id != -1 && id < _dependencies.Length)
+				return _dependencies[id];
 
 			return null;
 		}
 
 		private void SetupRoutes(RmpFile rmp)
 		{
-			// remove extraHeight from edit-mode
-			if (rmp.ExtraHeight != 0)
+			if (rmp.ExtraHeight != 0) // remove extraHeight from edit-mode - see Save() above^
 				foreach (RmpEntry route in rmp)
 					route.Height -= rmp.ExtraHeight;
 
-			// Set tile
-			foreach (RmpEntry re in rmp)
+			foreach (RmpEntry re in rmp) // set tile
 			{
 				var tile = this[re.Row, re.Col, re.Height];
 

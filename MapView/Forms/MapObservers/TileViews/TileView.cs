@@ -24,7 +24,6 @@ namespace MapView.Forms.MapObservers.TileViews
 	{
 		private IContainer components = null;
 		private MenuItem mcdInfoTab;
-//		private MenuItem menuItem1;
 
 		private TilePanel all;
 		private TilePanel[] panels;
@@ -77,13 +76,12 @@ namespace MapView.Forms.MapObservers.TileViews
 			AddPanel(objects,	objectsTab);
 		}
 
+
 		public void Initialize(IMainWindowsShowAllManager mainWindowsShowAllManager)
 		{
 			_mainWindowsShowAllManager = mainWindowsShowAllManager;
 		}
 
-
-		#region public events
 		public event MethodInvoker MapChanged;
 
 		private void OnMapChanged()
@@ -91,12 +89,6 @@ namespace MapView.Forms.MapObservers.TileViews
 			MethodInvoker handler = MapChanged;
 			if (handler != null)
 				handler();
-		}
-		#endregion
-		
-		private string BuildTitleString(int id, int mcd)
-		{
-			return "Tile View - id " + id + " - mcd " + mcd + " - file " + GetSelectedDependencyName();
 		}
 
 		private void tabs_Selected(object sender, TabControlEventArgs e)
@@ -107,12 +99,16 @@ namespace MapView.Forms.MapObservers.TileViews
 			if (tile != null && tile.Info is McdEntry)
 			{
 				f.Text = BuildTitleString(tile.MapId, tile.Id);
-				UpdateMcdText((McdEntry)tile.Info);
+
+				if (MCDInfoForm != null)
+					MCDInfoForm.UpdateData((McdEntry)tile.Info);
 			}
 			else
 			{
 				f.Text = "Tile View";
-				UpdateMcdText(null);
+
+				if (MCDInfoForm != null)
+					MCDInfoForm.UpdateData(null);
 			}
 		}
 
@@ -165,26 +161,19 @@ namespace MapView.Forms.MapObservers.TileViews
 			if (tile != null && tile.Info is McdEntry)
 			{
 				f.Text = BuildTitleString(tile.MapId, tile.Id);
-				UpdateMcdText((McdEntry)tile.Info);
+
+				if (MCDInfoForm != null)
+					MCDInfoForm.UpdateData((McdEntry)tile.Info);
 			}
 			else
 			{
 				f.Text = "Tile View";
-				UpdateMcdText(null);
+
+				if (MCDInfoForm != null)
+					MCDInfoForm.UpdateData(null);
 			}
 
 			OnSelectedTileTypeChanged(tile);
-		}
-
-		private void UpdateMcdText(McdEntry info)
-		{
-			if (MCDInfoForm != null)
-			{
-				if (info != null)
-					MCDInfoForm.UpdateData(info);
-				else
-					MCDInfoForm.ClearData();
-			}
 		}
 
 		public override IMap_Base Map
@@ -195,7 +184,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				Tiles = (value == null) ? null : value.Tiles;
 			}
 		}
-		
+
 		public System.Collections.Generic.List<TileBase> Tiles
 		{
 			set
@@ -215,6 +204,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				tabs.SelectedIndex = 0;
 				all.SelectedTile = value;
+
 				Refresh();
 			}
 		}
@@ -271,6 +261,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			if (!mcdInfoTab.Checked)
 			{
+				mcdInfoTab.Checked = true;
+
 				if (MCDInfoForm == null)
 				{
 					MCDInfoForm = new McdViewerForm();
@@ -282,21 +274,21 @@ namespace MapView.Forms.MapObservers.TileViews
 					if (tile != null && tile.Info is McdEntry)
 					{
 						f.Text = BuildTitleString(tile.MapId, tile.Id);
-						UpdateMcdText((McdEntry)tile.Info);
+						MCDInfoForm.UpdateData((McdEntry)tile.Info);
 					}
 					else
 					{
 						f.Text = "Tile View";
-						UpdateMcdText(null);
+						MCDInfoForm.UpdateData(null);
 					}
 				}
 
-				MCDInfoForm.Visible = true;
 //				MCDInfoForm.Location = new Point( // this is f'd.
 //											this.Location.X - MCDInfoForm.Width,
 //											this.Location.Y);
+				MCDInfoForm.Visible = true;
+
 				MCDInfoForm.Show();
-				mcdInfoTab.Checked = true;
 			}
 		}
 
@@ -314,9 +306,15 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				var map = Map as XCMapFile;
 				if (map != null)
-					return map.GetDependecyName(tile);
+					return map.GetDependencyName(tile);
 			}
 			return null;
+		}
+
+		private string BuildTitleString(int id, int mcd)
+		{
+			var dep = GetSelectedDependencyName();
+			return "Tile View - id " + id + " - mcd " + mcd + " - file " + (dep ?? "unknown");
 		}
 
 		private void VolutarMcdEditMenuItem_Click(object sender, EventArgs e)
@@ -324,7 +322,6 @@ namespace MapView.Forms.MapObservers.TileViews
 			if ((Map as XCMapFile) != null)
 			{
 				var pathService = new VolutarSettingService(Settings);
-
 				var path = pathService.GetEditorFilePath();
 
 				if (!string.IsNullOrEmpty(path))
