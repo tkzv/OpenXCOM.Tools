@@ -8,21 +8,31 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.RmpViews
 {
-	public class DrawContentService
+	/// <summary>
+	/// Draws floor- and wall- and content- blobs for TopView and RMP View.
+	/// </summary>
+	public class DrawContentService // kL_note: should be called DrawStuffService().
 	{
-		public DrawContentService()
-		{
-			_content = new GraphicsPath();
-			_floor = new GraphicsPath();
-		}
-
-		public int HWidth  = 8;
+		public int HWidth  = 8; // NOTE: 'H' means half.
 		public int HHeight = 4;
 
 		private readonly GraphicsPath _floor;
 		private readonly GraphicsPath _content;
-		private readonly ContentTypeService _contentTypeService = new ContentTypeService();
 
+
+		/// <summary>
+		/// cTor. Draws floor- and wall- and content- blobs for TopView and RMP View.
+		/// </summary>
+		public DrawContentService()
+		{
+			_floor   = new GraphicsPath();
+			_content = new GraphicsPath();
+		}
+
+
+		/// <summary>
+		/// Draws floor-blobs for TopView.
+		/// </summary>
 		public void DrawFloor(
 							Graphics g,
 							SolidBrush brush,
@@ -31,31 +41,31 @@ namespace MapView.Forms.MapObservers.RmpViews
 			g.FillPath(brush, GetFloorPath(x, y));
 		}
 
+		private const int _pad = 4;
+
+		/// <summary>
+		/// Draws wall- and content- blobs for TopView and RMP View.
+		/// </summary>
 		public void DrawContent(
 							Graphics g,
 							SolidPenBrush color,
 							int x, int y,
 							TileBase content)
 		{
-			var contentType = _contentTypeService.GetContentType(content);
-			var isDoor = _contentTypeService.IsDoor(content);
+			var ptTop	= new Point(
+								x,
+								y + _pad);
+			var ptBot	= new Point(
+								x,
+								y + (HHeight * 2) - _pad);
+			var ptLeft	= new Point(
+								x - HWidth + (_pad * 2),
+								y + HHeight);
+			var ptRight	= new Point(
+								x + HWidth - (_pad * 2),
+								y + HHeight);
 
-			const int TO_WALL_MARGIN = 4;
-
-			var topCorner		= new Point(
-										x,
-										y + TO_WALL_MARGIN);
-			var bottomCorner	= new Point(
-										x,
-										y + (HHeight * 2) - TO_WALL_MARGIN);
-			var leftCorner		= new Point(
-										x - HWidth + (TO_WALL_MARGIN * 2),
-										y + HHeight);
-			var rightCorner		= new Point(
-										x + HWidth - (TO_WALL_MARGIN * 2),
-										y + HHeight);
-
-			switch (contentType)
+			switch (ContentTypeService.GetContentType(content))
 			{
 				case ContentTypes.Content:
 					SetGroundPath(x, y);
@@ -74,113 +84,113 @@ namespace MapView.Forms.MapObservers.RmpViews
 				case ContentTypes.NorthFence:
 					g.DrawLine(
 							color.LightPen,
-							topCorner,
-							rightCorner);
+							ptTop,
+							ptRight);
 					break;
 
 				case ContentTypes.NorthWall:
 					g.DrawLine(
 							color.Pen,
-							topCorner,
-							rightCorner);
+							ptTop,
+							ptRight);
 
-					if (isDoor)
+					if (ContentTypeService.IsDoor(content))
 						g.DrawLine(
 								color.Pen,
-								topCorner,
-								Point.Add(rightCorner, new Size(-10, 4)));
+								ptTop,
+								Point.Add(ptRight, new Size(-10, 4)));
 					break;
 
 				case ContentTypes.WestFence:
 					g.DrawLine(
 							color.LightPen,
-							topCorner,
-							leftCorner);
+							ptTop,
+							ptLeft);
 					break;
 
 				case ContentTypes.WestWall:
 					g.DrawLine(
 							color.Pen,
-							topCorner,
-							leftCorner);
+							ptTop,
+							ptLeft);
 
-					if (isDoor)
+					if (ContentTypeService.IsDoor(content))
 						g.DrawLine(
 								color.Pen,
-								Point.Add(topCorner, new Size(6, 8)),
-								leftCorner);
+								Point.Add(ptTop, new Size(6, 8)),
+								ptLeft);
 					break;
 
 				case ContentTypes.NorthWallWithWindow:
 					DrawWindow(
 							g,
 							color,
-							topCorner,
-							rightCorner);
+							ptTop,
+							ptRight);
 					break;
 
 				case ContentTypes.WestWallWithWindow:
 					DrawWindow(
 							g,
 							color,
-							topCorner,
-							leftCorner);
+							ptTop,
+							ptLeft);
 					break;
 
 				case ContentTypes.SouthWall:
 					g.DrawLine(
 							color.Pen,
-							leftCorner,
-							bottomCorner);
+							ptLeft,
+							ptBot);
 					break;
 
 				case ContentTypes.EastWall:
 					g.DrawLine(
 							color.Pen,
-							bottomCorner,
-							rightCorner);
+							ptBot,
+							ptRight);
 					break;
 
 				case ContentTypes.NW_To_SE:
 					g.DrawLine(
 							color.Pen,
-							topCorner,
-							bottomCorner);
+							ptTop,
+							ptBot);
 					break;
 
 				case ContentTypes.NE_To_SW:
 					g.DrawLine(
 							color.Pen,
-							leftCorner,
-							rightCorner);
+							ptLeft,
+							ptRight);
 					break;
 
 				case ContentTypes.NorthWestCorner:
 					g.DrawLine(
 							color.Pen,
-							Point.Add(topCorner, new Size(-4, 0)),
-							Point.Add(topCorner, new Size( 4, 0)));
+							Point.Add(ptTop, new Size(-4, 0)),
+							Point.Add(ptTop, new Size( 4, 0)));
 					break;
 
 				case ContentTypes.NorthEastCorner:
 					g.DrawLine(
 							color.Pen,
-							Point.Add(rightCorner, new Size(0, -4)),
-							Point.Add(rightCorner, new Size(0,  4)));
+							Point.Add(ptRight, new Size(0, -4)),
+							Point.Add(ptRight, new Size(0,  4)));
 					break;
 
 				case ContentTypes.SouthEastCorner:
 					g.DrawLine(
 							color.Pen,
-							Point.Add(bottomCorner, new Size(-4, 0)),
-							Point.Add(bottomCorner, new Size( 4, 0)));
+							Point.Add(ptBot, new Size(-4, 0)),
+							Point.Add(ptBot, new Size( 4, 0)));
 					break;
 
 				case ContentTypes.SouthWestCorner:
 					g.DrawLine(
 							color.Pen,
-							Point.Add(leftCorner, new Size(0, -4)),
-							Point.Add(leftCorner, new Size(0,  4)));
+							Point.Add(ptLeft, new Size(0, -4)),
+							Point.Add(ptLeft, new Size(0,  4)));
 					break;
 			}
 		}
@@ -210,21 +220,21 @@ namespace MapView.Forms.MapObservers.RmpViews
 									SolidPenBrush color,
 									Point start, Point end)
 		{
-			var dist = Point.Subtract(end, new Size(start));
-			var size = new Size(dist.X / 3, dist.Y / 3);
-			var point2 = Point.Add(start, Size.Add(size, size));
+			var pt	= Point.Subtract(end, new Size(start));
+			var xy	= new Size(pt.X / 3, pt.Y / 3);
+			pt		= Point.Add(start, Size.Add(xy, xy));
 
 			g.DrawLine(
 					color.Pen,
 					start,
-					Point.Add(start, size));
+					Point.Add(start, xy));
 			g.DrawLine(
 					color.LightPen,
-					Point.Add(start, size),
-					point2);
+					Point.Add(start, xy),
+					pt);
 			g.DrawLine(
 					color.Pen,
-					point2,
+					pt,
 					end);
 		}
 

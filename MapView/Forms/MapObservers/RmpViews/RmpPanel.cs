@@ -337,7 +337,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 			if (_wallColor == null)
 				_wallColor = new SolidPenBrush(MapPens["WallColor"] );
 
-			_drawContentService.HWidth = DrawAreaWidth;
+			_drawContentService.HWidth  = DrawAreaWidth;
 			_drawContentService.HHeight = DrawAreaHeight;
 
 			var map = Map;

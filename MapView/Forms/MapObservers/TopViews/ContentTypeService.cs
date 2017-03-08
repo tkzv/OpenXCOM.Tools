@@ -6,9 +6,9 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TopViews
 {
-	public class ContentTypeService
+	public static class ContentTypeService
 	{
-		public ContentTypes GetContentType(TileBase content)
+		public static ContentTypes GetContentType(TileBase content)
 		{
 			var mcdEntry = content.Info as McdEntry;
 			if (mcdEntry != null)
@@ -108,7 +108,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			return false;
 		}
 
-		public bool IsDoor(TileBase content)
+		public static bool IsDoor(TileBase content)
 		{
 			var mcdEntry = content.Info as McdEntry;
 			if (mcdEntry != null

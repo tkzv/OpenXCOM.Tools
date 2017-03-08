@@ -18,6 +18,7 @@ namespace MapView
 		Panel
 	{
 		private IMap_Base map;
+
 		private Point _origin = new Point(100, 0);
 
 		private CursorSprite cursor;
@@ -29,15 +30,19 @@ namespace MapView
 
 		private Point _dragStart;
 		private Point _dragEnd;
+
 		private Pen dashPen;
+
 		private bool selectGrayscale = true;
 
 		private GraphicsPath underGrid;
 		private Brush transBrush;
 		private Color gridColor;
+
 		private bool useGrid = true;
-		private MapTileBase[,] copied;
 		private bool _drawSelectionBox;
+
+		private MapTileBase[,] copied;
 
 		public bool DrawSelectionBox
 		{

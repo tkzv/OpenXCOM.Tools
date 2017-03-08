@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Drawing;
+
 using XCom;
+
 
 namespace MapView
 {
@@ -10,7 +12,8 @@ namespace MapView
 	public delegate void ValueChangedDelegate(object sender, string keyword, object val);
 
 	/// <summary>
-	/// A wrapper around a Hashtable for Setting objects. Setting objects are intended to use with the CustomPropertyGrid
+	/// A wrapper around a Hashtable for Setting objects. Setting objects are
+	/// intended to use with the CustomPropertyGrid.
 	/// </summary>
 	public class Settings
 	{
@@ -27,6 +30,7 @@ namespace MapView
 			converters[t] = o;
 		}
 
+
 		public Settings()
 		{
 			settings = new Dictionary<string, Setting>();
@@ -39,6 +43,7 @@ namespace MapView
 			}
 		}
 
+
 		public static void ReadSettings(
 									VarCollection vc,
 									KeyVal kv,
@@ -48,11 +53,11 @@ namespace MapView
 			{
 				switch (kv.Keyword)
 				{
-					case "}": // all done
-						return;
-
 					case "{": // starting out
 						break;
+
+					case "}": // all done
+						return;
 
 					default:
 						if (currSettings [kv.Keyword] != null)
@@ -66,7 +71,7 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Get the key collection for this Settings object. Every key is a string
+		/// Gets the key collection for this Settings object. Every key is a string.
 		/// </summary>
 		public Dictionary<string,Setting>.KeyCollection Keys
 		{
@@ -74,7 +79,7 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Get/Set the Setting object tied to the input string
+		/// Gets/Sets the Setting object tied to the input string.
 		/// </summary>
 		public Setting this[string key]
 		{
@@ -101,14 +106,15 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// adds a setting to this settings object
+		/// Adds a setting to a specified object.
 		/// </summary>
 		/// <param name="name">property name</param>
 		/// <param name="val">start value of the property</param>
 		/// <param name="desc">property description</param>
 		/// <param name="category">property category</param>
 		/// <param name="update">event handler to recieve the PropertyValueChanged event</param>
-		/// <param name="reflect">if true, an internal event handler will be created - the refObj must not be null and the name must be the name of a property of the type that refObj is</param>
+		/// <param name="reflect">if true, an internal event handler will be created - the refObj
+		/// must not be null and the name must be the name of a property of the type that refObj is</param>
 		/// <param name="refObj">the object that will recieve the changed property values</param>
 		public void AddSetting(
 							string name,
@@ -119,7 +125,7 @@ namespace MapView
 							bool reflect,
 							object refObj)
 		{
-			name = name.Replace(" ", ""); // take out all spaces
+			name = name.Replace(" ", "");
 
 			Setting setting;
 			if (!settings.ContainsKey(name))
@@ -145,11 +151,11 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Gets the Setting object tied to the string. If there is no Setting object, one will be created with the defaultValue
+		/// Gets the Setting object tied to the string. If there is no Setting object, one will be created with the defaultValue.
 		/// </summary>
-		/// <param name="key">The name of the setting object</param>
+		/// <param name="key">the name of the setting object</param>
 		/// <param name="defaultvalue">if there is no Setting object tied to the string, a Setting will be created with this as its Value</param>
-		/// <returns>The Setting object tied to the string</returns>
+		/// <returns>the Setting object tied to the string</returns>
 		public Setting GetSetting(string key, object defaultvalue)
 		{
 			if (!settings.ContainsKey(key))
@@ -188,7 +194,7 @@ namespace MapView
 
 		private static string convertColor(object o)
 		{
-			Color c = (Color)o;
+			var c = (Color)o;
 			if (c.IsKnownColor || c.IsNamedColor || c.IsSystemColor)
 				return c.Name;
 
@@ -197,7 +203,7 @@ namespace MapView
 	}
 
 	/// <summary>
-	/// Stores information to be used in the CustomPropertyGrid
+	/// Stores information to be used in the CustomPropertyGrid.
 	/// </summary>
 	public class Setting
 	{
@@ -208,7 +214,7 @@ namespace MapView
 		public event ValueChangedDelegate ValueChanged;
 
 		private delegate object parseString(string s);
-		 
+
 		private static object parseBoolString(string s)
 		{
 			return bool.Parse(s);
@@ -218,19 +224,22 @@ namespace MapView
 		{
 			return int.Parse(s);
 		}
-	
+
 		private static object parseColorString(string s)
 		{
 			string[] vals = s.Split(',');
 
-			if (vals.Length == 1)
-				return Color.FromName(s);
+			switch (vals.Length)
+			{
+				case 1:
+					return Color.FromName(s);
 
-			if (vals.Length == 3)
-				return Color.FromArgb(
-								int.Parse(vals[0]),
-								int.Parse(vals[1]),
-								int.Parse(vals[2]));
+				case 3:
+					return Color.FromArgb(
+									int.Parse(vals[0]),
+									int.Parse(vals[1]),
+									int.Parse(vals[2]));
+			}
 
 			return Color.FromArgb(
 								int.Parse(vals[0]),
@@ -307,11 +316,13 @@ namespace MapView
 		public PropertyInfo pi;
 		public object obj;
 
+
 		public PropObj(object obj, string property)
 		{
 			this.obj = obj;
 			pi = obj.GetType().GetProperty(property);
 		}
+
 
 		public void SetValue(object o)
 		{

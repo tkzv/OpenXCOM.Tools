@@ -107,7 +107,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			SetSelectionRect();
 		}
 
-		protected void ViewDrag(object sender, EventArgs ex)
+		protected void ViewDrag(object sender, EventArgs e)
 		{
 			SetSelectionRect();
 		}

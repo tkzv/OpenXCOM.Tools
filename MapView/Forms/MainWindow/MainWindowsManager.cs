@@ -72,6 +72,10 @@ namespace MapView.Forms.MainWindow
 					SetMap(map, f);
 
 			MapViewPanel.Instance.MapView.Refresh();
+
+//			TopView.Refresh(); // kL ->
+//			TopRmpView.Refresh();
+//			RmpView.Refresh();
 		}
 
 		private static void _tileView_SelectedTileTypeChanged(TileBase newTile)

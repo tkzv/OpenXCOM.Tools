@@ -31,6 +31,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			InitializeComponent();
 
 			SuspendLayout();
+
 			_topViewPanel = new TopViewPanel();
 			_topViewPanel.Width  = 100;
 			_topViewPanel.Height = 100;

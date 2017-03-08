@@ -11,10 +11,12 @@ namespace MapView.Forms.MapObservers.TopViews
 		:
 		SimpleMapPanel
 	{
+
 		public TopViewPanel()
 		{
 			MapViewPanel.Instance.MapView.DragChanged += ViewDrag;
 		}
+
 
 		public ToolStripMenuItem Ground
 		{ get; set; }
@@ -31,10 +33,6 @@ namespace MapView.Forms.MapObservers.TopViews
 		public BottomPanel BottomPanel
 		{ get; set; }
 
-		private SolidPenBrush _northColor;
-		private SolidPenBrush _westColor;
-		private SolidPenBrush _contentColor;
-
 		public int MinHeight
 		{
 			get { return MinimumHeight; }
@@ -44,6 +42,10 @@ namespace MapView.Forms.MapObservers.TopViews
 				ParentSize(Width, Height);
 			}
 		}
+
+		private SolidPenBrush _northColor;
+		private SolidPenBrush _westColor;
+		private SolidPenBrush _contentColor;
 
 		protected override void RenderCell(
 										MapTileBase tile,
