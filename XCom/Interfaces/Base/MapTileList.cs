@@ -5,6 +5,7 @@
 		private readonly MapTileBase[] _mapData;
 		private readonly  MapPosition _mapPosition;
 
+
 		public MapTileList(int rows, int cols, int height)
 		{
 			_mapData = new MapTileBase[rows * cols * height];
@@ -13,6 +14,7 @@
 			_mapPosition.MaxC = cols;
 			_mapPosition.MaxH = height;
 		}
+
 
 		public MapTileBase this[int row, int col, int height]
 		{

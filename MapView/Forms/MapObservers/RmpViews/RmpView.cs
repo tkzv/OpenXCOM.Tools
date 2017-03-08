@@ -92,7 +92,6 @@ namespace MapView.Forms.MapObservers.RmpViews
 			cbUsage.Items.AddRange(RmpFile.SpawnUsage);
 
 			ClearSelected();
-//			base.Text = "";
 		}
 
 		private void options_click(object sender, EventArgs e)
@@ -122,15 +121,13 @@ namespace MapView.Forms.MapObservers.RmpViews
 		
 		private void RmpPanel_MouseMove(object sender, MouseEventArgs e)
 		{
-			XCMapTile t = _rmpPanel.GetTile(e.X, e.Y);
-			if (t != null && t.Rmp != null)
+			XCMapTile tile = _rmpPanel.GetTile(e.X, e.Y);
+			if (tile != null && tile.Rmp != null)
 			{
-				lblMouseOver.Text = "Over " + t.Rmp.Index;
+				lblMouseOver.Text = "Over " + tile.Rmp.Index;
 			}
 			else
-			{
 				lblMouseOver.Text = "";
-			}
 
 			_rmpPanel.Position = new Point(e.X, e.Y);
 			_rmpPanel.Refresh(); // mouseover refresh for RmpView.

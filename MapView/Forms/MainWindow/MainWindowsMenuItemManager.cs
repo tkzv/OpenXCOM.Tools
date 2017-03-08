@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Windows.Forms;
+
 using MapView.Forms.MapObservers;
+
 using XCom;
 using XCom.Interfaces.Base;
+
 
 namespace MapView.Forms.MainWindow
 {
@@ -23,6 +26,7 @@ namespace MapView.Forms.MainWindow
 		private readonly SettingsManager _settingsManager;
 		private readonly ConsoleSharedSpace _consoleSharedSpace;
 
+
 		public MainWindowWindowsManager(
 									SettingsManager settingsManager,
 									ConsoleSharedSpace consoleSharedSpace)
@@ -31,6 +35,7 @@ namespace MapView.Forms.MainWindow
 			_consoleSharedSpace = consoleSharedSpace;
 			_registeredForms = new Dictionary<string, Form>();
 		}
+
 
 		public void Register()
 		{

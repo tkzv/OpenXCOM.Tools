@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+
 using MapView.SettingServices;
+
 
 namespace MapView.Forms.MainWindow
 {
@@ -9,11 +11,13 @@ namespace MapView.Forms.MainWindow
 		private readonly Dictionary<string, Settings> _settingsHash;
 		private readonly SettingsService _settingsService;
 
+
 		public SettingsManager()
 		{
 			_settingsHash = new Dictionary<string, Settings>();
 			_settingsService = new SettingsService();
 		}
+
 
 		public void Add(string registryKey, Settings settings)
 		{
@@ -27,23 +31,21 @@ namespace MapView.Forms.MainWindow
 
 		public void Load(string file)
 		{
-			using (var reader = new StreamReader(file))
+			using (var sr = new StreamReader(file))
 			{
-				ReadMapViewSettings(reader);
+				ReadMapViewSettings(sr);
 			}
 		}
 
 		private void ReadMapViewSettings(StreamReader sr)
 		{
-			var vc = new XCom.VarCollection(sr);
-			var kv = vc.ReadLine();
-
-			while (kv != null)
+			var vars = new XCom.VarCollection(sr);
+			var l = vars.ReadLine();
+			while (l != null)
 			{
-				Settings.ReadSettings(vc, kv, _settingsHash[kv.Keyword]);
-				kv = vc.ReadLine();
+				Settings.ReadSettings(vars, l, _settingsHash[l.Keyword]);
+				l = vars.ReadLine();
 			}
-
 			sr.Close();
 		}
 

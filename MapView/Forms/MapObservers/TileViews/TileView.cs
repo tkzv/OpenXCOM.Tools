@@ -23,17 +23,21 @@ namespace MapView.Forms.MapObservers.TileViews
 		MapObserverControl
 	{
 		private IContainer components = null;
+
 		private MenuItem mcdInfoTab;
 
-		private TilePanel all;
+		private TilePanel allTiles;
 		private TilePanel[] panels;
+
 		private McdViewerForm MCDInfoForm;
+
 		private TabControl tabs;
 		private TabPage allTab;
 		private TabPage groundTab;
 		private TabPage objectsTab;
 		private TabPage nWallsTab;
 		private TabPage wWallsTab;
+
 		private Hashtable brushes;
 
 		private IMainWindowsShowAllManager _mainWindowsShowAllManager;
@@ -54,7 +58,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			tabs.Selected += tabs_Selected;
 
-			all			= new TilePanel(TileType.All);
+			allTiles	= new TilePanel(TileType.All);
 			var ground	= new TilePanel(TileType.Ground);
 			var wWalls	= new TilePanel(TileType.WestWall);
 			var nWalls	= new TilePanel(TileType.NorthWall);
@@ -62,14 +66,14 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			panels = new[]
 			{
-				all,
+				allTiles,
 				ground,
 				wWalls,
 				nWalls,
 				objects
 			};
 
-			AddPanel(all,		allTab);
+			AddPanel(allTiles,	allTab);
 			AddPanel(ground,	groundTab);
 			AddPanel(wWalls,	wWallsTab);
 			AddPanel(nWalls,	nWallsTab);
@@ -129,26 +133,24 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			brushes = new Hashtable();
 
-			ValueChangedDelegate bc = BrushChanged;
-			var settings = Settings;
-			foreach (string s in Enum.GetNames(typeof(SpecialType)))
+			foreach (string st in Enum.GetNames(typeof(SpecialType)))
 			{
-				brushes[s] = new SolidBrush(TilePanel._tileTypes[(int)Enum.Parse(typeof(SpecialType), s)]);
-				settings.AddSetting(
-								s,
-								((SolidBrush)brushes[s]).Color,
+				brushes[st] = new SolidBrush(TilePanel._tileTypes[(int)Enum.Parse(typeof(SpecialType), st)]);
+				Settings.AddSetting(
+								st,
+								((SolidBrush)brushes[st]).Color,
 								"Color of specified tile type",
 								"TileView",
-								bc,
+								BrushChanged,
 								false,
 								null);
 			}
-			VolutarSettingService.LoadDefaultSettings(settings);
+			VolutarSettingService.LoadDefaultSettings(Settings);
 
 			TilePanel.Colors = brushes;
 		}
 
-		private void AddPanel(TilePanel panel, TabPage page)
+		private void AddPanel(TilePanel panel, Control page)
 		{
 			panel.Dock = DockStyle.Fill;
 			page.Controls.Add(panel);
@@ -202,8 +204,8 @@ namespace MapView.Forms.MapObservers.TileViews
 			get { return panels[tabs.SelectedIndex].SelectedTile; }
 			set
 			{
+				allTiles.SelectedTile = value;
 				tabs.SelectedIndex = 0;
-				all.SelectedTile = value;
 
 				Refresh();
 			}

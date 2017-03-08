@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
+
 
 namespace XCom.Interfaces.Base
 {
@@ -16,12 +16,14 @@ namespace XCom.Interfaces.Base
 		// | <map name> -> map data
 		protected Dictionary<string, Dictionary<string, IMapDesc>> subsets;
 
+
 		protected ITileset(string name)
 		{
 			this.name = name;
 			maps = new Dictionary<string, IMapDesc>();
 			subsets = new Dictionary<string, Dictionary<string, IMapDesc>>();
 		}
+
 
 		public ICollection MapList
 		{

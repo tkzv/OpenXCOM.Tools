@@ -13,128 +13,137 @@ using DSShared.Windows;
 namespace DSShared.Lists
 {
 	/// <summary>
-	/// Delegate for the CustomList.RowClick event
+	/// Delegate for the CustomList.RowClick event.
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="clicked"></param>
 	public delegate void RowClickEventHandler(object sender, ObjRow clicked);
 
 	/// <summary>
-	/// Delegate for the CustomList.RowTextChange event
+	/// Delegate for the CustomList.RowTextChange event.
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="current"></param>
 	public delegate void RowTextChangeEventHandler(object sender, ObjRow current);
 
+
 	/// <summary>
-	/// A custom list view control allowing you to specify a list of columns that retrieve their row information via reflection
+	/// A custom list view control allowing you to specify a list of
+	/// columns that retrieve their row information via reflection.
 	/// </summary>
 	public class CustomList
 		:
 		Control
 	{
-		private readonly CustomListColumnCollection columns;
-		private List<ObjRow> items;
+		private readonly CustomListColumnCollection _columns;
+		private List<ObjRow> _items;
 
 		/// <summary>
-		/// The currently selected ObjRow
+		/// The currently selected ObjRow.
 		/// </summary>
-		protected ObjRow selected;
+		private ObjRow _sel;
 
 		/// <summary>
-		/// The last ObjRow clicked on
+		/// The last ObjRow clicked on.
 		/// </summary>
-		protected ObjRow clicked;
+		private ObjRow _clicked;
 
-		private int startY = 0;
-		private int yOffset = 0;
-		private int selRow = -1;
-		private VScrollBar vert;
-		private CustomListColumn overCol = null;
-		private DSShared.Windows.RegistryInfo ri;
-		private Type rowType;
-		private string name = "";
+		private int _startY = 0;
+		private int _yOffset = 0;
+		private int _selRow = -1;
+
+		private VScrollBar _scrollbar;
+
+		private CustomListColumn _overCol = null;
+
+		private DSShared.Windows.RegistryInfo _regInfo;
+
+		private Type _rowType;
+
+		private string _name = "";
 
 		/// <summary>
-		/// Occurs when a row is clicked
+		/// Occurs when a row is clicked.
 		/// </summary>
 		public event RowClickEventHandler RowClick;
 
 		/// <summary>
-		/// Occurs when the text is changed in a row
+		/// Occurs when the text is changed in a row.
 		/// </summary>
 		public event RowTextChangeEventHandler RowTextChange;
 
+
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:CustomList"/> class.
+		/// Initializes a new instance of the <see cref="T:DSShared.Lists.CustomList"/> class.
 		/// </summary>
 		public CustomList()
 		{
-			columns = new CustomListColumnCollection();
-			columns.OffX = 1;
-			columns.OffY = 1;
-			columns.Font=Font;
+			_columns = new CustomListColumnCollection();
+			_columns.OffX = 1;
+			_columns.OffY = 1;
+			_columns.Font=Font;
 
-			columns.RefreshEvent += new RefreshDelegate(Refresh);
-			columns.RowMoveOver += new RowMoveDelegate(mouseOverRows);
-			columns.RowClicked += new MouseEventHandler(rowClicked);
-			columns.Parent = this;
+			_columns.RefreshEvent += new RefreshDelegate(Refresh);
+			_columns.RowMoveOver += new RowMoveDelegate(mouseOverRows);
+			_columns.RowClicked += new MouseEventHandler(rowClicked);
+			_columns.Parent = this;
 
-			items = new List<ObjRow>();
+			_items = new List<ObjRow>();
 
 			SetStyle(ControlStyles.DoubleBuffer|ControlStyles.AllPaintingInWmPaint|ControlStyles.UserPaint,true);
 
-			startY = columns.HeaderHeight;
+			_startY = _columns.HeaderHeight;
 
-			rowType = typeof(ObjRow);
+			_rowType = typeof(ObjRow);
 		}
+
 
 		/// <summary>
 		/// Gets or sets the name of the control.
 		/// </summary>
 		/// <value></value>
-		/// <returns>The name of the control. The default is an empty string ("").</returns>
+		/// <returns>the name of the control. The default is an empty string ("")</returns>
 		public new string Name
 		{
-			get { return name; }
-			set { name = value; }
+			get { return _name; }
+			set { _name = value; }
 		}
 
 		/// <summary>
 		/// Gets or sets the type of the row.
 		/// </summary>
-		/// <value>The type of the row.</value>
+		/// <value>the type of the row</value>
 		[Browsable(false)]
 		[DefaultValue(typeof(ObjRow))]
 		public Type RowType
 		{
-			get { return rowType; }
-			set { rowType = value; }
+			get { return _rowType; }
+			set { _rowType = value; }
 		}
 
 		/// <summary>
 		/// Gets the items.
 		/// </summary>
-		/// <value>The items.</value>
+		/// <value>the items</value>
 		public List<ObjRow> Items
 		{
-			get { return items; }
+			get { return _items; }
 		}
 
 		/// <summary>
-		/// Gets or sets the registry info object.
+		/// Gets/Sets the registry info object.
 		/// </summary>
-		/// <value>The registry info.</value>
+		/// <value>the registry info</value>
 		[Browsable(false)]
 		[DefaultValue(null)]
 		public DSShared.Windows.RegistryInfo RegistryInfo
 		{
-			get { return ri; }
+			get { return _regInfo; }
 			set
 			{
-				ri = value;
-				ri.Loading += new RegistrySaveLoadHandler(loading);
-				ri.Saving += new RegistrySaveLoadHandler(saving);
+				_regInfo = value;
+				_regInfo.Loading += new RegistrySaveLoadHandler(loading);
+				_regInfo.Saving += new RegistrySaveLoadHandler(saving);
 			}
 		}
 
@@ -142,11 +151,11 @@ namespace DSShared.Lists
 		{
 			RegistryKey key = e.OpenKey;
 			Graphics g = Graphics.FromHwnd(this.Handle);
-			foreach (CustomListColumn cc in columns)
+			foreach (CustomListColumn cc in _columns)
 			{
 				try
 				{
-					cc.Width = (int)key.GetValue("strLen" + name + cc.Index, cc.Width);
+					cc.Width = (int)key.GetValue("strLen" + _name + cc.Index, cc.Width);
 				}
 				catch
 				{
@@ -158,164 +167,164 @@ namespace DSShared.Lists
 		private void saving(object sender, RegistrySaveLoadEventArgs e)
 		{
 			RegistryKey key = e.OpenKey;
-			foreach (CustomListColumn cc in columns)
-				key.SetValue("strLen" + name + cc.Index, cc.Width);
+			foreach (CustomListColumn cc in _columns)
+				key.SetValue("strLen" + _name + cc.Index, cc.Width);
 		}
 
 		private void rowClicked(object sender, MouseEventArgs e)
 		{
-//			int overY = (e.Y - (columns.HeaderHeight + yOffset)) / (Font.Height + columns.RowSpace * 2);
-			if (clicked != null)
-				clicked.UnClick();
+//			int overY = (e.Y - (_columns.HeaderHeight + _yOffset)) / (Font.Height + _columns.RowSpace * 2);
+			if (_clicked != null)
+				_clicked.UnClick();
 
-			if (selected != null && overCol != null)
-				selected.Click(overCol);
+			if (_sel != null && _overCol != null)
+				_sel.Click(_overCol);
 
-			clicked = selected;
+			_clicked = _sel;
 
-			if (RowClick != null && clicked != null)
-				RowClick(this, clicked);
+			if (RowClick != null && _clicked != null)
+				RowClick(this, _clicked);
 		}
 
 		/// <summary>
-		/// Gets the preferred height of the control. This is the draw height of all the rows
+		/// Gets the preferred height of the control. This is the draw height of all the rows.
 		/// </summary>
 		[Browsable(false)]
 		public int PreferredHeight
 		{
-			get { return columns.HeaderHeight + ((items.Count + 1) * RowHeight); }
+			get { return _columns.HeaderHeight + ((_items.Count + 1) * RowHeight); }
 		}
 
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.Resize"></see> event.
 		/// </summary>
-		/// <param name="e">An <see cref="T:System.EventArgs"></see> that contains the event data.</param>
+		/// <param name="e">a <see cref="T:System.EventArgs"></see> that contains the event data</param>
 		protected override void OnResize(EventArgs e)
 		{
 			base.OnResize(e);
-			columns.Width  = Width;
-			columns.Height = Height;
+			_columns.Width  = Width;
+			_columns.Height = Height;
 
-			if (vert != null)
+			if (_scrollbar != null)
 			{
-				vert.Value = vert.Minimum;
-				startY = columns.HeaderHeight + vert.Value;
+				_scrollbar.Value = _scrollbar.Minimum;
+				_startY = _columns.HeaderHeight + _scrollbar.Value;
 				if (PreferredHeight > Height)
 				{
-					vert.Maximum = (((items.Count + 1) * (RowHeight + 3))) - Height;
-					vert.Enabled = true;
+					_scrollbar.Maximum = (((_items.Count + 1) * (RowHeight + 3))) - Height;
+					_scrollbar.Enabled = true;
 				}
 				else
-					vert.Enabled = false;
+					_scrollbar.Enabled = false;
 			}
 			Refresh();
 		}
 
 		/// <summary>
-		/// Gets or sets the vertical scroll bar. 
+		/// Gets/Sets the vertical scroll-bar. 
 		/// </summary>
-		/// <value>The vert scroll.</value>
+		/// <value>the vertical scroll-bar</value>
 		[DefaultValue(null)]
 		public VScrollBar VertScroll
 		{
-			get { return vert; }
+			get { return _scrollbar; }
 			set
 			{
-				if (vert != null)
-					vert.Scroll -= new ScrollEventHandler(scroll);
+				if (_scrollbar != null)
+					_scrollbar.Scroll -= new ScrollEventHandler(scroll);
 
-				vert = value; 
-				vert.Minimum = 0; 
-				vert.Scroll += new ScrollEventHandler(scroll);
+				_scrollbar = value; 
+				_scrollbar.Minimum = 0; 
+				_scrollbar.Scroll += new ScrollEventHandler(scroll);
 			}
 		}
 
 		private void scroll(object sender, ScrollEventArgs e)
 		{
-			yOffset = -vert.Value;
+			_yOffset = -_scrollbar.Value;
 			Refresh();
 		}
 
 		private void mouseOverRows(int mouseY, CustomListColumn curCol)
 		{
-			int overY = (mouseY - (columns.HeaderHeight + yOffset)) / (Font.Height + columns.RowSpace * 2);
+			int overY = (mouseY - (_columns.HeaderHeight + _yOffset)) / (Font.Height + _columns.RowSpace * 2);
 			
-			if (selected != null)
-				selected.MouseLeave();
+			if (_sel != null)
+				_sel.MouseLeave();
 
-			if (curCol != null && overY > -1 && overY < items.Count)
+			if (curCol != null && overY > -1 && overY < _items.Count)
 			{
-				selRow = overY;
-				selected = items[selRow];
-				selected.MouseOver(curCol);
+				_selRow = overY;
+				_sel = _items[_selRow];
+				_sel.MouseOver(curCol);
 			}
 			else
-				selected = null;
+				_sel = null;
 
-			overCol = curCol;
+			_overCol = curCol;
 		}
 
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseMove"></see> event.
 		/// </summary>
-		/// <param name="e">A <see cref="T:System.Windows.Forms.MouseEventArgs"></see> that contains the event data.</param>
+		/// <param name="e">a <see cref="T:System.Windows.Forms.MouseEventArgs"></see> that contains the event data</param>
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			columns.MouseMove(e);
+			_columns.MouseMove(e);
 		}
 
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseDown"></see> event.
 		/// </summary>
-		/// <param name="e">A <see cref="T:System.Windows.Forms.MouseEventArgs"></see> that contains the event data.</param>
+		/// <param name="e">a <see cref="T:System.Windows.Forms.MouseEventArgs"></see> that contains the event data</param>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-			columns.MouseDown(e);
+			_columns.MouseDown(e);
 			Focus();
 		}
 
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseUp"></see> event.
 		/// </summary>
-		/// <param name="e">A <see cref="T:System.Windows.Forms.MouseEventArgs"></see> that contains the event data.</param>
+		/// <param name="e">a <see cref="T:System.Windows.Forms.MouseEventArgs"></see> that contains the event data</param>
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
-			columns.MouseUp(e);
+			_columns.MouseUp(e);
 		}
 
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.LostFocus"></see> event.
 		/// </summary>
-		/// <param name="e">An <see cref="T:System.EventArgs"></see> that contains the event data.</param>
+		/// <param name="e">a <see cref="T:System.EventArgs"></see> that contains the event data</param>
 		protected override void OnLostFocus(EventArgs e)
 		{
-			if (clicked != null)
-				clicked.UnClick();
+			if (_clicked != null)
+				_clicked.UnClick();
 
-			clicked = null;
+			_clicked = null;
 			Refresh();
 		}
 
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.Paint"></see> event.
 		/// </summary>
-		/// <param name="e">A <see cref="T:System.Windows.Forms.PaintEventArgs"></see> that contains the event data.</param>
+		/// <param name="e">a <see cref="T:System.Windows.Forms.PaintEventArgs"></see> that contains the event data</param>
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
 			int rowHeight = 0;
-			for (int i = 0; i < items.Count; i++)
+			for (int i = 0; i < _items.Count; i++)
 			{
-				var row = (ObjRow)items[i];
-				if (rowHeight + yOffset + row.Height > -1 && rowHeight + yOffset < Height)
-					row.Render(e, yOffset);
+				var row = (ObjRow)_items[i];
+				if (rowHeight + _yOffset + row.Height > -1 && rowHeight + _yOffset < Height)
+					row.Render(e, _yOffset);
 
 				rowHeight += row.Height;
 			}
-			columns.Render(e, rowHeight, yOffset);
+			_columns.Render(e, rowHeight, _yOffset);
 		}
 
 		// if row.equals(any other row) then you start to have weird behavior
@@ -323,25 +332,25 @@ namespace DSShared.Lists
 		/// <summary>
 		/// Deletes the row.
 		/// </summary>
-		/// <param name="row">The row to delete.</param>
+		/// <param name="row">the row to delete</param>
 		public virtual void DeleteRow(ObjRow row)
 		{
 			Object obj = null;
-			for (int i = 0; i < items.Count; i++)
+			for (int i = 0; i < _items.Count; i++)
 			{
 				if (obj != null) // move this row's object to the one above it, move obj to the end to delete
-					items[i - 1].Object = items[i].Object;
-				else if (items[i].Equals(row)) // found it, will start moving up on the next iteration
-					obj = items[i].Object;
+					_items[i - 1].Object = _items[i].Object;
+				else if (_items[i].Equals(row)) // found it, will start moving up on the next iteration
+					obj = _items[i].Object;
 			}
 
 			if (obj != null) // actually deleted something
 			{
-				items[items.Count - 1].Object = obj;
-				items[items.Count - 1].RefreshEvent -= new RefreshDelegate(Refresh);
+				_items[_items.Count - 1].Object = obj;
+				_items[_items.Count - 1].RefreshEvent -= new RefreshDelegate(Refresh);
 
-				items.Remove(items[items.Count - 1]);
-				startY -= Font.Height + columns.RowSpace * 2;
+				_items.Remove(_items[_items.Count - 1]);
+				_startY -= Font.Height + _columns.RowSpace * 2;
 
 				if (refreshOnAdd)
 					Refresh();
@@ -351,9 +360,9 @@ namespace DSShared.Lists
 		private bool refreshOnAdd = true;
 
 		/// <summary>
-		/// Gets or sets a value indicating whether to refresh the list when a row is added to the collection
+		/// Gets or sets a value indicating whether to refresh the list when a row is added to the collection.
 		/// </summary>
-		/// <value><c>true</c> if [refresh on add]; otherwise, <c>false</c>.</value>
+		/// <value><c>true</c> if [refresh on add]; otherwise, <c>false</c></value>
 		[Browsable(false)]
 		[DefaultValue(true)]
 		public bool RefreshOnAdd
@@ -363,31 +372,30 @@ namespace DSShared.Lists
 		}
 
 		/// <summary>
-		/// Adds an item to the collection. Creates an ObjRow and calls AddItem(ObjRow row)
+		/// Adds a row to the item-collection. Creates an ObjRow and calls AddItem(ObjRow row).
 		/// </summary>
-		/// <param name="o">The item to add</param>
+		/// <param name="o">the item to add</param>
 		public virtual void AddItem(object o)
 		{
-			ConstructorInfo ci = rowType.GetConstructor(new Type[]{ typeof(object) });
-			var row = (ObjRow)ci.Invoke(new object[]{ o });
-			AddItem(row);
+			ConstructorInfo ci = _rowType.GetConstructor(new Type[]{ typeof(object) });
+			AddItem((ObjRow)ci.Invoke(new object[]{ o })); // add row.
 		}
 
 		/// <summary>
-		/// Adds an ObjRow to the collection
+		/// Adds an ObjRow to the collection.
 		/// </summary>
-		/// <param name="row">The row to add</param>
+		/// <param name="row">the row to add</param>
 		public virtual void AddItem(ObjRow row)
 		{
-			row.Top = startY;
+			row.Top = _startY;
 			row.Width = Width;
 //			row.Height = RowHeight;
-			row.Height += Font.Height + columns.RowSpace * 2;
-			row.Columns = columns;
+			row.Height += Font.Height + _columns.RowSpace * 2;
+			row.Columns = _columns;
 			row.RefreshEvent += new RefreshDelegate(Refresh);
-			row.RowIndex = items.Count;
-			items.Add(row);
-			startY += Font.Height + columns.RowSpace * 2;
+			row.RowIndex = _items.Count;
+			_items.Add(row);
+			_startY += Font.Height + _columns.RowSpace * 2;
 
 			if (refreshOnAdd)
 				Refresh();
@@ -396,44 +404,45 @@ namespace DSShared.Lists
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.KeyPress"></see> event.
 		/// </summary>
-		/// <param name="e">A <see cref="T:System.Windows.Forms.KeyPressEventArgs"></see> that contains the event data.</param>
+		/// <param name="e">a <see cref="T:System.Windows.Forms.KeyPressEventArgs"></see> that contains the event data</param>
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
-			if (clicked != null)
+			if (_clicked != null)
 			{
-				clicked.KeyPress(e);
+				_clicked.KeyPress(e);
 				if (RowTextChange != null)
-					RowTextChange(this, clicked);
+					RowTextChange(this, _clicked);
 			}
 		}
 
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.KeyDown"></see> event.
 		/// </summary>
-		/// <param name="e">A <see cref="T:System.Windows.Forms.KeyEventArgs"></see> that contains the event data.</param>
+		/// <param name="e">a <see cref="T:System.Windows.Forms.KeyEventArgs"></see> that contains the event data</param>
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
-			if (clicked != null)
-				clicked.KeyDown(e);
+			if (_clicked != null)
+				_clicked.KeyDown(e);
 		}
 
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.KeyUp"></see> event.
 		/// </summary>
-		/// <param name="e">A <see cref="T:System.Windows.Forms.KeyEventArgs"></see> that contains the event data.</param>
+		/// <param name="e">a <see cref="T:System.Windows.Forms.KeyEventArgs"></see>
+		/// that contains the event data</param>
 		protected override void OnKeyUp(KeyEventArgs e)
 		{
-			if (clicked != null)
-				clicked.KeyUp(e);
+			if (_clicked != null)
+				_clicked.KeyUp(e);
 		}
 
 		/// <summary>
 		/// Gets the height of a row.
 		/// </summary>
-		/// <value>The height of a row.</value>
+		/// <value>the height of a row</value>
 		public int RowHeight
 		{
-			get { return Font.Height + columns.RowSpace * 2; }
+			get { return Font.Height + _columns.RowSpace * 2; }
 		}
 
 		/// <summary>
@@ -441,8 +450,8 @@ namespace DSShared.Lists
 		/// </summary>
 		public virtual void Clear()
 		{
-			items = new List<ObjRow>();
-			startY = columns.HeaderHeight;
+			_items = new List<ObjRow>();
+			_startY = _columns.HeaderHeight;
 			Refresh();
 		}
 
@@ -450,46 +459,53 @@ namespace DSShared.Lists
 		/// Gets or sets the font of the text displayed by the control.
 		/// </summary>
 		/// <value></value>
-		/// <returns>The <see cref="T:System.Drawing.Font"></see> to apply to the text displayed by the control. The default is the value of the <see cref="P:System.Windows.Forms.Control.DefaultFont"></see> property.</returns>
-		/// <PermissionSet><IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true"/><IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true"/><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/><IPermission class="System.Diagnostics.PerformanceCounterPermission, System, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true"/></PermissionSet>
+		/// <returns>the <see cref="T:System.Drawing.Font"></see> to apply to the text
+		/// displayed by the control. The default is the value of the
+		/// <see cref="P:System.Windows.Forms.Control.DefaultFont"></see> property</returns>
+		/// <PermissionSet>
+		/// <IPermission class="System.Security.Permissions.EnvironmentPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true"/>
+		/// <IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true"/>
+		/// <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/>
+		/// <IPermission class="System.Diagnostics.PerformanceCounterPermission, System, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true"/>
+		/// </PermissionSet>
 		public new Font Font
 		{
 			get { return base.Font;}
 			set
 			{
 				base.Font = value;
-				columns.Font = value;
+				_columns.Font = value;
 			}
 		}
 
 		/// <summary>
-		/// Adds a column to the collection
+		/// Adds a column to the collection.
 		/// </summary>
-		/// <param name="column">The column to add</param>
+		/// <param name="column">the column to add</param>
 		public void AddColumn(CustomListColumn column)
 		{
-			columns.Add(column);
+			_columns.Add(column);
 			column.ResizeTitle(Font);
 		}
 
 		/// <summary>
-		/// Gets a column by the specified title
+		/// Gets a column by the specified title.
 		/// </summary>
-		/// <param name="name">The name of the column to get</param>
+		/// <param name="name">the name of the column to get</param>
 		/// <returns></returns>
 		public CustomListColumn GetColumn(string name)
 		{
-			return columns.GetColumn(name);
+			return _columns.GetColumn(name);
 		}
 
 		/// <summary>
-		/// Gets the collection of columns that is displayed in the control
+		/// Gets the collection of columns that is displayed in the control.
 		/// </summary>
 		/// <value></value>
 		[Browsable(false)]
 		public CustomListColumnCollection Columns
 		{
-			get { return columns; }
+			get { return _columns; }
 		}
 	}
 }

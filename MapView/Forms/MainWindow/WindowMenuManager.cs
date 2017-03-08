@@ -1,135 +1,104 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+
 using MapView.Forms.MapObservers.RmpViews;
 using MapView.Forms.MapObservers.TopViews;
+
 using XCom;
-using XCom.Interfaces.Base;
+
 
 namespace MapView.Forms.MainWindow
 {
 	public class WindowMenuManager
 	{
-		private readonly MenuItem _showMenu;
-		private readonly MenuItem _miHelp;
+		private readonly MenuItem _show;
+		private readonly MenuItem _help;
 
-		private readonly List<MenuItem> _allMenuItems = new List<MenuItem>();
-		private readonly List<Form> _allForms = new List<Form>();
+		private readonly List<MenuItem>	_allItems = new List<MenuItem>();
+		private readonly List<Form>		_allForms = new List<Form>();
 
 		private Settings _settings;
 
 		private bool _isDisposed;
 
-		public WindowMenuManager(MenuItem showMenu, MenuItem miHelp)
+
+		public WindowMenuManager(MenuItem show, MenuItem help)
 		{
-			_showMenu = showMenu;
-			_miHelp = miHelp;
+			_show = show;
+			_help = help;
 		}
+
 
 		public void SetMenus(ConsoleForm consoleWindow, Settings settings)
 		{
 			_settings = settings;
 
-			RegisterForm(
-						MainWindowsManager.TileView,
-						"Tile View",
-						_showMenu,
-						"TileView");
+			RegisterForm(MainWindowsManager.TileView,		"Tile View",		_show, "TileView");
+			_show.MenuItems.Add(new MenuItem("-"));
+			RegisterForm(MainWindowsManager.TopView,		"Top View",			_show, "TopView");
+			RegisterForm(MainWindowsManager.RmpView,		"Route View",		_show, "RmpView");
+			RegisterForm(MainWindowsManager.TopRmpView,		"Top & Route View",	_show);
+			_show.MenuItems.Add(new MenuItem("-"));
+			RegisterForm(consoleWindow,						"Console",			_show);
 
-			_showMenu.MenuItems.Add(new MenuItem("-"));
-
-			RegisterForm(
-						MainWindowsManager.TopView,
-						"Top View",
-						_showMenu,
-						"TopView");
-			RegisterForm(
-						MainWindowsManager.RmpView,
-						"Route View",
-						_showMenu,
-						"RmpView");
-			RegisterForm(
-						MainWindowsManager.TopRmpView,
-						"Top & Route View",
-						_showMenu);
-
-			_showMenu.MenuItems.Add(new MenuItem("-"));
-
-			RegisterForm(
-						consoleWindow,
-						"Console",
-						_showMenu);
-
-			RegisterForm(
-						MainWindowsManager.HelpScreen,
-						"Quick Help",
-						_miHelp);
-			RegisterForm(
-						MainWindowsManager.AboutWindow,
-						"About",
-						_miHelp);
+			RegisterForm(MainWindowsManager.HelpScreen,		"Quick Help",		_help);
+			RegisterForm(MainWindowsManager.AboutWindow,	"About",			_help);
 
 			RegisterWindowMenuItemValue();
 		}
 
 		public void LoadState()
 		{
-			foreach (MenuItem mi in _showMenu.MenuItems)
+			foreach (MenuItem item in _show.MenuItems)
 			{
-				var settingName = GetWindowSettingName(mi);
-				if (_settings[settingName].ValueBool)
+				var label = GetWindowSettingName(item);
+				if (_settings[label].ValueBool)
 				{
-					mi.PerformClick();
+					item.PerformClick();
 				}
 				else
 				{
-					mi.PerformClick();
-					mi.PerformClick();
+					item.PerformClick();
+					item.PerformClick();
 				}
 			}
-			_showMenu.Enabled = true;
-/*			foreach (MenuItem mi in _showMenu.MenuItems)	// NOTE: Don't do this. Go figure.
-			{												// All the View-Panels will load ...
-				mi.PerformClick();							// regardless of their saved settings.
+			_show.Enabled = true;
+/*			foreach (MenuItem item in _show.MenuItems)	// NOTE: Don't do this. Go figure.
+			{											// All the View-Panels will load ...
+				item.PerformClick();					// regardless of their saved settings.
 
-				var settingName = GetWindowSettingName(mi);
-				if (!(_settings[settingName].ValueBool))
-					mi.PerformClick();
+				var label = GetWindowSettingName(item);
+				if (!(_settings[label].ValueBool))
+					item.PerformClick();
 			}
-			_showMenu.Enabled = true; */
+			_show.Enabled = true; */
 		}
 
 		public IMainWindowsShowAllManager CreateShowAll()
 		{
-			return new MainWindowsShowAllManager(_allForms, _allMenuItems);
+			return new MainWindowsShowAllManager(_allForms, _allItems);
 		}
 
 		private void RegisterWindowMenuItemValue()
 		{
-			foreach (MenuItem mi in _showMenu.MenuItems)
+			foreach (MenuItem item in _show.MenuItems)
 			{
-				var settingName = GetWindowSettingName(mi);
-
-				var defaultVal = true;
-				if (   (mi.Tag is TopViewForm)
-					|| (mi.Tag is RmpViewForm))
-				{
-					defaultVal = false;
-				}
+				var label = GetWindowSettingName(item);
 
 				_settings.AddSetting(
-								settingName,
-								defaultVal,
-								"Default display window - " + mi.Text,
+								label,
+								!(item.Tag is TopViewForm) && !(item.Tag is RmpViewForm),
+								"Default display window - " + item.Text,
 								"Windows",
 								null,
 								false,
 								null);
 
-				var form = mi.Tag as Form;
-				if (form != null)
+				var f = item.Tag as Form;
+				if (f != null)
 				{
-					form.VisibleChanged += (sender, a) =>
+					f.VisibleChanged += (sender, a) =>
 					{
 						if (_isDisposed)
 							return;
@@ -138,7 +107,7 @@ namespace MapView.Forms.MainWindow
 						if (senderForm == null)
 							return;
 
-						_settings[settingName].Value = senderForm.Visible;
+						_settings[label].Value = senderForm.Visible;
 					};
 				}
 			}
@@ -147,46 +116,47 @@ namespace MapView.Forms.MainWindow
 		private void RegisterForm(
 								Form form,
 								string title,
-								MenuItem parent,
+								Menu parent,
 								string registryKey = null)
 		{
 			form.Text = title;
-			var mi = new MenuItem(title);
-			mi.Tag = form;
 
-			parent.MenuItems.Add(mi);
-			mi.Click += FormMiClick;
+			var item = new MenuItem(title);
+			item.Tag = form;
+
+			parent.MenuItems.Add(item);
+			item.Click += FormItemClick;
 			form.Closing += (sender, e) =>
 			{
 				e.Cancel = true;
-				mi.Checked = false;
+				item.Checked = false;
 				form.Hide();
 			};
 
-			_allMenuItems.Add(mi);
+			_allItems.Add(item);
 			_allForms.Add(form);
 		}
 
-		private static void FormMiClick(object sender, EventArgs e)
+		private static void FormItemClick(object sender, EventArgs e)
 		{
-			var mi = (MenuItem)sender;
+			var item = (MenuItem)sender;
 
-			if (!mi.Checked)
+			if (!item.Checked)
 			{
-				((Form)mi.Tag).Show();
-				((Form)mi.Tag).WindowState = FormWindowState.Normal;
-				mi.Checked = true;
+				((Form)item.Tag).Show();
+				((Form)item.Tag).WindowState = FormWindowState.Normal;
+				item.Checked = true;
 			}
 			else
 			{
-				((Form)mi.Tag).Close();
-				mi.Checked = false;
+				((Form)item.Tag).Close();
+				item.Checked = false;
 			}
 		}
 
-		private static string GetWindowSettingName(MenuItem mi)
+		private static string GetWindowSettingName(MenuItem item)
 		{
-			return ("Window-" + mi.Text);
+			return ("Window-" + item.Text);
 		}
 
 		public void Dispose()

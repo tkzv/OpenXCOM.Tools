@@ -36,7 +36,7 @@
 			this.RouteViewControl.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.RouteViewControl.Location = new System.Drawing.Point(0, 0);
 			this.RouteViewControl.Name = "RouteViewControl";
-			this.RouteViewControl.Size = new System.Drawing.Size(592, 383);
+			this.RouteViewControl.Size = new System.Drawing.Size(624, 445);
 			this.RouteViewControl.TabIndex = 0;
 			// 
 			// RmpViewForm
@@ -44,7 +44,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
-			this.ClientSize = new System.Drawing.Size(592, 383);
+			this.ClientSize = new System.Drawing.Size(624, 445);
 			this.Controls.Add(this.RouteViewControl);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.KeyPreview = true;
@@ -52,6 +52,7 @@
 			this.ShowInTaskbar = false;
 			this.Text = "Waypoint View";
 			this.ResumeLayout(false);
+
 		}
 
 		#endregion

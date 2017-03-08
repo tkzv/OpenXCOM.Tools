@@ -36,14 +36,14 @@
 			this.TopViewControl.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TopViewControl.Location = new System.Drawing.Point(0, 0);
 			this.TopViewControl.Name = "TopViewControl";
-			this.TopViewControl.Size = new System.Drawing.Size(284, 241);
+			this.TopViewControl.Size = new System.Drawing.Size(624, 445);
 			this.TopViewControl.TabIndex = 1;
 			// 
 			// TopViewForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(284, 241);
+			this.ClientSize = new System.Drawing.Size(624, 445);
 			this.Controls.Add(this.TopViewControl);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "TopViewForm";
@@ -51,6 +51,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Top View";
 			this.ResumeLayout(false);
+
 		}
 
 		#endregion

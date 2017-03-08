@@ -24,11 +24,13 @@ namespace XCom.Interfaces.Base
 		public bool MapChanged
 		{ get; set; }
 
+
 		protected IMap_Base(string name, List<TileBase> tiles)
 		{
 			Name = name;
 			Tiles = tiles;
 		}
+
 
 		public string Name
 		{ get; protected set; }
@@ -38,7 +40,7 @@ namespace XCom.Interfaces.Base
 
 		public virtual void Save()
 		{
-			throw new Exception("Save() is not yet implemented");
+			throw new Exception("Save() is not implemented.");
 		}
 
 		public event HeightChangedDelegate HeightChanged;

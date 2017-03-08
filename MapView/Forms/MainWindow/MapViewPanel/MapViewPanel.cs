@@ -17,12 +17,12 @@ namespace MapView
 		private readonly HScrollBar _horiz;
 		private readonly VScrollBar _vert;
 
-		private static MapViewPanel _myInstance;
+		private static MapViewPanel _instance;
 
 
 		private MapViewPanel()
 		{
-			ImageUpdate += update;
+			ImageUpdate += update; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			_horiz = new HScrollBar();
 			_vert  = new VScrollBar();
@@ -38,15 +38,16 @@ namespace MapView
 			SetView(new MapView());
 		}
 
-		public void SetView(MapView v)
+
+		public void SetView(MapView view)
 		{
 			if (_mapView != null)
 			{
-				v.Map = _mapView.Map;
+				view.Map = _mapView.Map;
 				Controls.Remove(_mapView);
 			}
 
-			_mapView = v;
+			_mapView = view;
 
 			_mapView.Location = new Point(0, 0);
 			_mapView.BorderStyle = BorderStyle.Fixed3D;
@@ -79,12 +80,12 @@ namespace MapView
 		{
 			get
 			{
-				if (_myInstance == null)
+				if (_instance == null)
 				{
-					_myInstance = new MapViewPanel();
-					LogFile.Instance.WriteLine("Main view panel created");
+					_instance = new MapViewPanel();
+					LogFile.Instance.WriteLine("Map View panel created");
 				}
-				return _myInstance;
+				return _instance;
 			}
 		}
 
@@ -103,9 +104,9 @@ namespace MapView
 			OnResize(EventArgs.Empty);
 		}
 
-		protected override void OnResize(EventArgs e)
+		protected override void OnResize(EventArgs eventargs)
 		{
-			base.OnResize(e);
+			base.OnResize(eventargs);
 
 			if (Globals.AutoPckImageScale)
 				SetupMapSize();
@@ -116,7 +117,8 @@ namespace MapView
 			vert_Scroll(null, null);
 			horiz_Scroll(null, null);
 
-			int h = 0, w = 0;
+			int h = 0;
+			int w = 0;
 
 			_vert.Visible = (_mapView.Height > ClientSize.Height);
 			if (_vert.Visible)
@@ -175,19 +177,12 @@ namespace MapView
 				var wP = Width  / (double)size.Width;
 				var hP = Height / (double)size.Height;
 
-				if (wP > hP)
-				{
-					Globals.PckImageScale = hP; // accommodate based on height
-				}
-				else
-				{
-					Globals.PckImageScale = wP; // accommodate based on width
-				}
+				Globals.PckImageScale = (wP > hP) ? hP : wP;
 
 				if (Globals.PckImageScale > Globals.MaxPckImageScale)
 					Globals.PckImageScale = Globals.MaxPckImageScale;
 
-				if (Globals.PckImageScale < Globals.MinPckImageScale )
+				if (Globals.PckImageScale < Globals.MinPckImageScale)
 					Globals.PckImageScale = Globals.MinPckImageScale;
 			}
 
@@ -204,11 +199,13 @@ namespace MapView
 			get { return _mapView; }
 		}
 
+
 		/*** Timer stuff ***/
-		private static int current;
+		public static event EventHandler ImageUpdate;
+
 		private static Timer timer;
 		private static bool started;
-		public static event EventHandler ImageUpdate;
+		private static int current;
 
 		public static void Start()
 		{

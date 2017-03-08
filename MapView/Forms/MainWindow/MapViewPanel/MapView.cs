@@ -56,6 +56,7 @@ namespace MapView
 
 		public event EventHandler DragChanged;
 
+
 		public MapView()
 		{
 			map = null;
@@ -69,9 +70,9 @@ namespace MapView
 
 			gridColor = Color.FromArgb(175, 69, 100, 129);
 			transBrush = new SolidBrush(gridColor);
-
 			dashPen = new Pen(Brushes.Black, 1);
 		}
+
 
 		public void Paste()
 		{

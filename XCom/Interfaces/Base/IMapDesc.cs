@@ -1,8 +1,10 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using DSShared.Loadable;
+
 using DSShared.Interfaces;
+using DSShared.Loadable;
+
 
 namespace XCom.Interfaces.Base
 {
@@ -15,15 +17,17 @@ namespace XCom.Interfaces.Base
 		protected string expDesc = "No Description";
 		protected string ext = ".unused";
 
+
 		public IMapDesc()
 		{
-			throw new Exception("Parameterless constructor for IMapDesc should not be used");
+			throw new Exception("Parameterless constructor for IMapDesc should not be used.");
 		}
 
 		public IMapDesc(string name)
 		{
 			this.name = name;
 		}
+
 
 		public override string ToString()
 		{

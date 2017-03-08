@@ -31,8 +31,6 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// </summary>
 		private void InitializeComponent()
 		{
-			global::MapView.Settings settings1 = new global::MapView.Settings();
-			global::MapView.Settings settings2 = new global::MapView.Settings();
 			this.TopViewControl = new global::MapView.Forms.MapObservers.TopViews.TopView();
 			this.RouteViewControl = new global::MapView.Forms.MapObservers.RmpViews.RmpView();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -46,10 +44,10 @@ namespace MapView.Forms.MapObservers.TileViews
 			// TopViewControl
 			// 
 			this.TopViewControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.TopViewControl.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TopViewControl.Location = new System.Drawing.Point(3, 3);
 			this.TopViewControl.Name = "TopViewControl";
-			this.TopViewControl.Settings = settings1;
-			this.TopViewControl.Size = new System.Drawing.Size(612, 430);
+			this.TopViewControl.Size = new System.Drawing.Size(610, 414);
 			this.TopViewControl.TabIndex = 0;
 			// 
 			// RouteViewControl
@@ -58,7 +56,6 @@ namespace MapView.Forms.MapObservers.TileViews
 			this.RouteViewControl.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.RouteViewControl.Location = new System.Drawing.Point(3, 3);
 			this.RouteViewControl.Name = "RouteViewControl";
-			this.RouteViewControl.Settings = settings2;
 			this.RouteViewControl.Size = new System.Drawing.Size(612, 430);
 			this.RouteViewControl.TabIndex = 0;
 			// 
@@ -71,7 +68,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			this.tabControl1.Location = new System.Drawing.Point(0, 0);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(626, 461);
+			this.tabControl1.Size = new System.Drawing.Size(624, 445);
 			this.tabControl1.TabIndex = 1;
 			// 
 			// tabPage1
@@ -80,7 +77,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			this.tabPage1.Location = new System.Drawing.Point(4, 21);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(618, 436);
+			this.tabPage1.Size = new System.Drawing.Size(616, 420);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Top View";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -100,7 +97,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(626, 461);
+			this.ClientSize = new System.Drawing.Size(624, 445);
 			this.Controls.Add(this.tabControl1);
 			this.Name = "TopRmpViewForm";
 			this.ShowInTaskbar = false;
@@ -109,12 +106,14 @@ namespace MapView.Forms.MapObservers.TileViews
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage2.ResumeLayout(false);
 			this.ResumeLayout(false);
+
 		}
 
 		#endregion
 
 		public TopView TopViewControl;
 		public RmpView RouteViewControl;
+
 		private System.Windows.Forms.TabControl tabControl1;
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabPage tabPage2;

@@ -41,6 +41,7 @@ namespace MapView
 		private readonly MainWindowsManager _mainWindowsManager;
 		private readonly WindowMenuManager _windowMenuManager;
 
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -101,7 +102,7 @@ namespace MapView
 					Environment.Exit(-1);
 			}
 
-			GameInfo.ParseLine += parseLine;
+			GameInfo.ParseLine += parseLine; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			InitGameInfo(pathsFile);
 			LogFile.Instance.WriteLine("GameInfo.Init done");
@@ -169,7 +170,7 @@ namespace MapView
 				LogFile.Instance.WriteLine("User settings NOT loaded - no settings file to load");
 			}
 
-			OnResize(null);
+			OnResize(null); // FIX: Virtual member call in constructor.
 			this.Closing += new CancelEventHandler(closing);
 
 			_lf = new LoadingForm();
@@ -206,6 +207,7 @@ namespace MapView
 			LogFile.Instance.Close(); // TODO: Keep logfile open until the program closes.
 		}
 
+
 		private static void InitGameInfo(PathInfo pathsFile)
 		{
 			GameInfo.Init(Palette.TFTDBattle, pathsFile);
@@ -226,7 +228,7 @@ namespace MapView
 					if (line.Rest.EndsWith(@"\", StringComparison.Ordinal))
 						SharedSpace.Instance.GetObj("cursorFile", line.Rest + "CURSOR");
 					else
-						SharedSpace.Instance.GetObj("cursorFile", line.Rest + "\\CURSOR");
+						SharedSpace.Instance.GetObj("cursorFile", line.Rest + @"\CURSOR");
 					break;
 
 				case "logfile":
@@ -311,8 +313,9 @@ namespace MapView
 
 			public int CompareTo(object other)
 			{
-				if (other is SortableTreeNode)
-					return Text.CompareTo(((SortableTreeNode)other).Text); //, StringComparison.Ordinal
+				var node = other as SortableTreeNode;
+				if (node != null)
+					return String.CompareOrdinal(Text, node.Text);
 
 				return -1;
 			}
@@ -322,25 +325,25 @@ namespace MapView
 		{
 			foreach (string key in maps.Keys)
 			{
-				var mapNode = new SortableTreeNode(key);
-				mapNode.Tag = maps[key];
-				tn.Nodes.Add(mapNode);
+				var node = new SortableTreeNode(key);
+				node.Tag = maps[key];
+				tn.Nodes.Add(node);
 			}
 		}
 
-		private void AddTileset(ITileset tSet)
+		private void AddTileset(ITileset tileset)
 		{
-			var tSetNode = new SortableTreeNode(tSet.Name);
-			tSetNode.Tag = tSet;
-			mapList.Nodes.Add(tSetNode);
+			var node = new SortableTreeNode(tileset.Name);
+			node.Tag = tileset;
+			mapList.Nodes.Add(node);
 
-			foreach (string tSetMapGroup in tSet.Subsets.Keys)
+			foreach (string key in tileset.Subsets.Keys)
 			{
-				var tsGroup = new SortableTreeNode(tSetMapGroup);
-				tsGroup.Tag = tSet.Subsets[tSetMapGroup];
-				tSetNode.Nodes.Add(tsGroup);
+				var group = new SortableTreeNode(key);
+				group.Tag = tileset.Subsets[key];
+				node.Nodes.Add(group);
 
-				addMaps(tsGroup, tSet.Subsets[tSetMapGroup]);
+				addMaps(group, tileset.Subsets[key]);
 			}
 		}
 
@@ -516,7 +519,7 @@ namespace MapView
 			initList();
 		}
 
-		private void mapList_BeforeSelect(object sender, TreeViewCancelEventArgs e)
+		private void mapList_BeforeSelect(object sender, CancelEventArgs e)
 		{
 			if (NotifySave() == DialogResult.Cancel)
 			{
@@ -524,14 +527,15 @@ namespace MapView
 			}
 			else if (mapList.SelectedNode != null)
 			{
-				mapList.SelectedNode.BackColor = Color.Silver; // (de)colorize background-field of (de)selected label in the left-panel's MapBlocks' tree
+				// (de)colorize background-field of (de)selected label in the left-panel's MapBlocks' tree
+				mapList.SelectedNode.BackColor = SystemColors.Control; // Color.Silver, Color.Transparent
 			}
 		}
 
 		private void mapList_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			mapList.SelectedNode.BackColor = Color.Gold; // colorize background-field of selected label in the left-panel's MapBlocks' tree
-
+			// colorize background-field of selected label in the left-panel's MapBlocks' tree
+			mapList.SelectedNode.BackColor = Color.Gold;
 			LoadSelectedNodeMap();
 		}
 

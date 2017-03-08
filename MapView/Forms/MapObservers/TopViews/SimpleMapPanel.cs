@@ -23,8 +23,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		protected int MinimumHeight = 4;
 
 		private readonly GraphicsPath _cell;
-		private readonly GraphicsPath _copyArea;
-		private readonly GraphicsPath _selected;
+		private readonly GraphicsPath _copy;
+		private readonly GraphicsPath _sel;
 
 		private int _mR = -1;
 		private int _mC = -1;
@@ -34,9 +34,9 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		public SimpleMapPanel()
 		{
-			_cell		= new GraphicsPath();
-			_selected	= new GraphicsPath();
-			_copyArea	= new GraphicsPath();
+			_cell	= new GraphicsPath();
+			_sel	= new GraphicsPath();
+			_copy	= new GraphicsPath();
 		}
 
 
@@ -133,11 +133,11 @@ namespace MapView.Forms.MapObservers.TopViews
 							_offX + (s.X - e.Y) * hWidth - hWidth,
 							_offY + (s.X + e.Y) * hHeight + hHeight);
 
-			_copyArea.Reset();
-			_copyArea.AddLine(sel1, sel2);
-			_copyArea.AddLine(sel2, sel3);
-			_copyArea.AddLine(sel3, sel4);
-			_copyArea.CloseFigure();
+			_copy.Reset();
+			_copy.AddLine(sel1, sel2);
+			_copy.AddLine(sel2, sel3);
+			_copy.AddLine(sel3, sel4);
+			_copy.CloseFigure();
 
 			Refresh();
 		}
@@ -185,17 +185,17 @@ namespace MapView.Forms.MapObservers.TopViews
 			int xc = (pt.Col - pt.Row) * hWidth;
 			int yc = (pt.Col + pt.Row) * hHeight;
 
-			_selected.Reset();
-			_selected.AddLine(
-							xc, yc,
-							xc + hWidth, yc + hHeight);
-			_selected.AddLine(
-							xc + hWidth, yc + hHeight,
-							xc, yc + 2 * hHeight);
-			_selected.AddLine(
-							xc, yc + 2 * hHeight,
-							xc - hWidth, yc + hHeight);
-			_selected.CloseFigure();
+			_sel.Reset();
+			_sel.AddLine(
+					xc, yc,
+					xc + hWidth, yc + hHeight);
+			_sel.AddLine(
+					xc + hWidth, yc + hHeight,
+					xc, yc + 2 * hHeight);
+			_sel.AddLine(
+					xc, yc + 2 * hHeight,
+					xc - hWidth, yc + hHeight);
+			_sel.CloseFigure();
 
 			ViewDrag(null, null);
 			Refresh();
@@ -282,8 +282,8 @@ namespace MapView.Forms.MapObservers.TopViews
 									i * hWidth  - map.MapSize.Rows * hWidth  + _offX,
 									i * hHeight + map.MapSize.Rows * hHeight + _offY);
 
-				if (_copyArea != null)
-					backBuffer.DrawPath(Pens["SelectColor"], _copyArea);
+				if (_copy != null)
+					backBuffer.DrawPath(Pens["SelectColor"], _copy);
 
 //				if (selected != null) // clicked on
 //					backBuffer.DrawPath(new Pen(Brushes.Blue, 2), selected);

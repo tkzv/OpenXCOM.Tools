@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+
 using System.Windows.Forms;
+
 
 namespace MapView.Forms.MainWindow
 {
@@ -13,46 +15,48 @@ namespace MapView.Forms.MainWindow
 		:
 		IMainWindowsShowAllManager
 	{
+		private readonly IEnumerable<Form> _allForms;
+		private readonly IEnumerable<MenuItem> _allItems;
+
+		private List<Form> _forms;
+		private List<MenuItem> _items;
+
+
 		public MainWindowsShowAllManager(
 									IEnumerable<Form> allForms,
-									IEnumerable<MenuItem> allMenuItems)
+									IEnumerable<MenuItem> allItems)
 		{
 			_allForms = allForms;
-			_allMenuItems = allMenuItems;
+			_allItems = allItems;
 		}
 
-		private readonly IEnumerable<Form> _allForms;
-		private readonly IEnumerable<MenuItem> _allMenuItems;
-
-		private List<Form> _formList;
-		private List<MenuItem> _menuItems;
 
 		public void HideAll()
 		{
-			_menuItems = new List<MenuItem>();
-			foreach (var menu in _allMenuItems)
-				if (menu.Checked)
-					_menuItems.Add(menu);
+			_items = new List<MenuItem>();
+			foreach (var i in _allItems)
+				if (i.Checked)
+					_items.Add(i);
 
-			_formList = new List<Form>();
-			foreach (var form in _allForms)
-				if (form.Visible)
+			_forms = new List<Form>();
+			foreach (var f in _allForms)
+				if (f.Visible)
 				{
-					form.Close();
-					_formList.Add(form);
+					f.Close();
+					_forms.Add(f);
 				}
 		}
 
 		public void RestoreAll()
 		{
-			foreach (var form in _formList)
+			foreach (var f in _forms)
 			{
-				form.Show();
-				form.WindowState = FormWindowState.Normal;
+				f.Show();
+				f.WindowState = FormWindowState.Normal;
 			}
 
-			foreach (var menuItem in _menuItems)
-				menuItem.Checked = true;
+			foreach (var i in _items)
+				i.Checked = true;
 		}
 	}
 }

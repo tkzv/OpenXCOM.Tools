@@ -21,6 +21,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		private const int _space  =  4; // NOTE: includes the margin for both sides of '_width'.
 
 //		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
+
 		private Pen _pen = new Pen(Brushes.Red, 2);
 
 		private static Hashtable _brushes;
