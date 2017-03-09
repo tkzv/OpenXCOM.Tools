@@ -1,26 +1,22 @@
 using System;
-using System.Drawing;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
+
+using DSShared;
 
 using MapView.Forms.Error.WarningConsole;
 using MapView.Forms.MainWindow;
-using MapView.Forms.MapObservers.RmpViews;
-using MapView.Forms.MapObservers.TopViews;
 using MapView.SettingServices;
+
+using Microsoft.Win32;
 
 using XCom;
 using XCom.GameFiles.Map;
 using XCom.GameFiles.Map.RmpData;
 using XCom.Interfaces;
 using XCom.Interfaces.Base;
-
-using System.IO;
-
-using Microsoft.Win32;
-
-using DSShared;
 
 
 namespace MapView
@@ -264,17 +260,15 @@ namespace MapView
 					{
 						if ((bool)val)
 						{
-							foreach (XCTile t in MapViewPanel.Instance.Map.Tiles)
-							{
-								if (t.Info.UFODoor || t.Info.HumanDoor)
-									t.MakeAnimate();
-							}
+							foreach (XCTile tile in MapViewPanel.Instance.Map.Tiles)
+								if (tile.Info.UFODoor || tile.Info.HumanDoor)
+									tile.MakeAnimate();
 						}
 						else
 						{
-							foreach (XCTile t in MapViewPanel.Instance.Map.Tiles)
-								if (t.Info.UFODoor || t.Info.HumanDoor)
-									t.StopAnimate();
+							foreach (XCTile tile in MapViewPanel.Instance.Map.Tiles)
+								if (tile.Info.UFODoor || tile.Info.HumanDoor)
+									tile.StopAnimate();
 						}
 					}
 					break;
@@ -314,10 +308,8 @@ namespace MapView
 			public int CompareTo(object other)
 			{
 				var node = other as SortableTreeNode;
-				if (node != null)
-					return String.CompareOrdinal(Text, node.Text);
-
-				return -1;
+				return (node != null) ? String.CompareOrdinal(Text, node.Text)
+									  : -1;
 			}
 		}
 
@@ -571,9 +563,7 @@ namespace MapView
 					tsMapSize.Text = map.MapSize.ToString();
 				}
 				else
-				{
 					tsMapSize.Text = "Size: n/a";
-				}
 
 				if (miDoors.Checked) // turn off door animations
 				{

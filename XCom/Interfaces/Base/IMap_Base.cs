@@ -40,7 +40,7 @@ namespace XCom.Interfaces.Base
 
 		public virtual void Save()
 		{
-			throw new Exception("Save() is not implemented.");
+			throw new Exception("IMap_Base: Save() is not implemented."); // ... odd ....
 		}
 
 		public event HeightChangedDelegate HeightChanged;

@@ -1,6 +1,6 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 
 using DSShared.Interfaces;
 using DSShared.Loadable;
@@ -13,30 +13,25 @@ namespace XCom.Interfaces.Base
 		IAssemblyLoadable,
 		IOpenSave
 	{
-		protected string name;
-		protected string expDesc = "No Description";
-		protected string ext = ".unused";
+		protected string _name;
+		protected string _explorerDesc = "No Description";
+		protected string _ext = ".unused";
 
-
-		public IMapDesc()
-		{
-			throw new Exception("Parameterless constructor for IMapDesc should not be used.");
-		}
 
 		public IMapDesc(string name)
 		{
-			this.name = name;
+			_name = name;
 		}
 
 
 		public override string ToString()
 		{
-			return name;
+			return _name;
 		}
 
 		public string Name
 		{
-			get { return name; }
+			get { return _name; }
 		}
 
 		public virtual void Unload()
@@ -44,7 +39,7 @@ namespace XCom.Interfaces.Base
 
 		public virtual string FileFilter
 		{
-			get { return "*" + ext + " - " + expDesc + "|*" + ext; }
+			get { return "*" + _ext + " - " + _explorerDesc + "|*" + _ext; }
 		}
 
 		/// <summary>
@@ -61,7 +56,7 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public virtual string ExplorerDescription
 		{
-			get { return expDesc; }
+			get { return _explorerDesc; }
 		}
 	}
 }
