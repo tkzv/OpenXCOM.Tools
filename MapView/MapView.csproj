@@ -474,6 +474,8 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <StartAction>Project</StartAction>
+    <PostBuildEvent>copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Release\*.* C:\0xC_kL\editors\MapView_kL\
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
     <PlatformTarget>x86</PlatformTarget>

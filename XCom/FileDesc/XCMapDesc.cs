@@ -59,7 +59,8 @@ namespace XCom
 		public int CompareTo(object other)
 		{
 			var desc = other as XCMapDesc;
-			return (desc != null) ? String.CompareOrdinal(Basename, desc.Basename) : 1;
+			return (desc != null) ? String.CompareOrdinal(Basename, desc.Basename)
+								  : 1;
 		}
 	}
 }

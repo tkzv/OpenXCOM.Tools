@@ -14,7 +14,7 @@ namespace XCom.Interfaces.Base
 		IOpenSave
 	{
 		protected string _name;
-		protected string _explorerDesc = "No Description";
+		protected string _explorerDesc = "no Description";
 		protected string _ext = ".unused";
 
 
