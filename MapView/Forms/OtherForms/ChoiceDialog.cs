@@ -21,7 +21,7 @@ namespace MapView
 		public ChoiceDialog(string file)
 		{
 			InitializeComponent();
-			txt.Text = string.Format("{0} already exists. Do you want to overwrite the file?", file);
+			txt.Text = string.Format("{0} already exists.{1}{1}Do you want to overwrite the file?", file, Environment.NewLine);
 		}
 
 

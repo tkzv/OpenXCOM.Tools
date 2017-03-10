@@ -75,7 +75,7 @@ namespace MapView
 //			get { return new DSShared.PathInfo(pathsFile); }
 //		}
 
-		private void btnFindUFO_Click(object sender, System.EventArgs e)
+		private void btnFindUFO_Click(object sender, EventArgs e)
 		{
 			folderSelector.Description = "Select UFO directory";
 
@@ -88,7 +88,7 @@ namespace MapView
 			}
 		}
 
-		private void btnFindTFTD_Click(object sender, System.EventArgs e)
+		private void btnFindTFTD_Click(object sender, EventArgs e)
 		{
 			folderSelector.Description = "Select TFTD directory";
 
@@ -101,7 +101,7 @@ namespace MapView
 			}
 		}
 
-		private void okButton_Click(object sender, System.EventArgs e)
+		private void okButton_Click(object sender, EventArgs e)
 		{
 			var pathsFile = (PathInfo)SharedSpace.Instance["MV_PathsFile"];
 			pathsFile.EnsureDirectoryExists();
@@ -214,6 +214,12 @@ namespace MapView
 			}
 
 			DialogResult = DialogResult.OK;
+			Close();
+		}
+
+		private void cancelButton_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
 			Close();
 		}
 

@@ -8,9 +8,9 @@ namespace DSShared
 	/// </summary>
 	public class PathInfo
 	{
-		private string _path = "";
-		private string _file = "";
-		private string _ext  = "";
+		private string _path = String.Empty;
+		private string _file = String.Empty;
+		private string _ext  = String.Empty;
 
 
 		/// <summary>

@@ -3,25 +3,25 @@ namespace XCom
 	public class ConsoleSharedSpace
 	{
 		private const string X_CONSOLE = "xConsole";
-		private readonly SharedSpace _sharedSpace;
+
+		private readonly SharedSpace _share;
+
 
 		public ConsoleSharedSpace(SharedSpace sharedSpace)
 		{
-			_sharedSpace = sharedSpace;
+			_share = sharedSpace;
 		}
+
 
 		public ConsoleForm GetConsole()
 		{
-			var console = _sharedSpace.GetObj(X_CONSOLE) as ConsoleForm;
-			return console;
+			return _share.GetObj(X_CONSOLE) as ConsoleForm;
 		}
 
 		public ConsoleForm GetNewConsole()
 		{
 			var console = GetConsole();
-			if (console != null) return console;
-			console = (ConsoleForm) _sharedSpace.GetObj(X_CONSOLE, new ConsoleForm());
-			return console;
+			return console ?? (ConsoleForm)_share.GetObj(X_CONSOLE, new ConsoleForm());
 		}
 	}
 }

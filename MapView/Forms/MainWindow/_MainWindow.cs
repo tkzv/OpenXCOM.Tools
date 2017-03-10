@@ -56,37 +56,37 @@ namespace MapView
 
 			#region Setup SharedSpace information and paths
 
-			var sharedSpace = SharedSpace.Instance;
-			var consoleSharedSpace = new ConsoleSharedSpace(sharedSpace);
-			_warningHandler = new ConsoleWarningHandler(consoleSharedSpace);
+			var share = SharedSpace.Instance;
+			var consoleShare = new ConsoleSharedSpace(share);
+			_warningHandler = new ConsoleWarningHandler(consoleShare);
 
 			MainWindowsManager.MainToolStripButtonsFactory = new MainToolStripButtonsFactory(_mapView);
 
 			_mainWindowsManager = new MainWindowsManager();
 			_mainWindowWindowsManager = new MainWindowWindowsManager(
 																_settingsManager,
-																consoleSharedSpace);
+																consoleShare);
 
 			var settings = GetSettings();
-			_windowMenuManager.SetMenus(consoleSharedSpace.GetNewConsole(), settings);
+			_windowMenuManager.SetMenus(consoleShare.GetNewConsole(), settings);
 
 			MainWindowsManager.MainWindowsShowAllManager = _windowMenuManager.CreateShowAll();
 			MainWindowsManager.Initialize();
 
-			sharedSpace.GetObj("MapView",		this);
-			sharedSpace.GetObj("AppDir",		Environment.CurrentDirectory);
-			sharedSpace.GetObj("CustomDir",		Environment.CurrentDirectory + @"\custom");
-			sharedSpace.GetObj("SettingsDir",	Environment.CurrentDirectory + @"\settings");
+			share.GetObj("MapView",		this);
+			share.GetObj("AppDir",		Environment.CurrentDirectory);
+			share.GetObj("CustomDir",		Environment.CurrentDirectory + @"\custom");
+			share.GetObj("SettingsDir",	Environment.CurrentDirectory + @"\settings");
 
 			var pathsFile		= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "Paths",		"pth");
 			var settingsFile	= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "MVSettings",	"dat");
 			var mapeditFile		= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "MapEdit",	"dat");
 			var imagesFile		= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "Images",		"dat");
 
-			sharedSpace.GetObj("MV_PathsFile", pathsFile);
-			sharedSpace.GetObj(SettingsService.FILE_NAME, settingsFile);
-			sharedSpace.GetObj("MV_MapEditFile", mapeditFile);
-			sharedSpace.GetObj("MV_ImagesFile", imagesFile);
+			share.GetObj("MV_PathsFile", pathsFile);
+			share.GetObj(SettingsService.FILE_NAME, settingsFile);
+			share.GetObj("MV_MapEditFile", mapeditFile);
+			share.GetObj("MV_ImagesFile", imagesFile);
 
 			#endregion
 

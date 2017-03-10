@@ -1,12 +1,9 @@
 using System;
-using System.Drawing;
 using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
 
 using XCom;
-using XCom.Interfaces;
 using XCom.Interfaces.Base;
+
 
 namespace MapView
 {
@@ -29,7 +26,7 @@ namespace MapView
 		private System.Windows.Forms.GroupBox groupAnalyze;
 		private System.Windows.Forms.GroupBox groupInfo;
 
-		private IMap_Base map;
+		private IMap_Base _map;
 		private int slotsUsed = 0;
 
 		public MapInfoForm()
@@ -41,7 +38,7 @@ namespace MapView
 		{
 			set
 			{
-				map = value;
+				_map = value;
 				startAnalyzing();
 			}
 		}
@@ -49,67 +46,75 @@ namespace MapView
 		private void startAnalyzing()
 		{
 			groupAnalyze.Visible = true;
-			Hashtable imgHash = new Hashtable();
-			Hashtable mcdHash = new Hashtable();
-			groupInfo.Text = "Map: " + map.Name;
-			lblDimensions.Text = map.MapSize.Rows + "," + map.MapSize.Cols + "," + map.MapSize.Height;
+			var imgHash = new Hashtable();
+			var mcdHash = new Hashtable();
+			groupInfo.Text = "Map: " + _map.Name;
+			lblDimensions.Text = _map.MapSize.Rows + "," + _map.MapSize.Cols + "," + _map.MapSize.Height;
 
-			lblPckFiles.Text = "";
+			lblPckFiles.Text = String.Empty;
 			bool one = true;
 			int totalImages = 0;
 			int totalMcd = 0;
-			if (map is XCMapFile)
-				foreach (string s in ((XCMapFile)map).Dependencies)
+
+			var mapFile = _map as XCMapFile;
+			if (mapFile != null)
+			{
+				foreach (string st in mapFile.Dependencies)
 				{
 					if (one)
 						one = false;
 					else
 						lblPckFiles.Text += ",";
 
-					totalImages += GameInfo.ImageInfo[s].GetPckFile().Count;
-					totalMcd += GameInfo.ImageInfo[s].GetMcdFile().Count;
-					lblPckFiles.Text += s;
+					totalImages += GameInfo.ImageInfo[st].GetPckFile().Count;
+					totalMcd += GameInfo.ImageInfo[st].GetMcdFile().Count;
+					lblPckFiles.Text += st;
 				}
+			}
 
-			pBar.Maximum = map.MapSize.Rows * map.MapSize.Cols * map.MapSize.Height;
+			pBar.Maximum = _map.MapSize.Rows * _map.MapSize.Cols * _map.MapSize.Height;
 			pBar.Value = 0;
 
-			for (int h = 0; h < map.MapSize.Height; h++)
-				for (int r = 0; r < map.MapSize.Rows; r++)
-					for (int c = 0; c < map.MapSize.Cols; c++)
+			for (int h = 0; h < _map.MapSize.Height; h++)
+				for (int r = 0; r < _map.MapSize.Rows; r++)
+					for (int c = 0; c < _map.MapSize.Cols; c++)
 					{
-						XCMapTile tile = (XCMapTile)map[r, c, h];
+						var tile = (XCMapTile)_map[r, c, h];
 						if (!tile.Blank)
 						{
 							if (tile.Ground != null)
 							{
 								count(imgHash, mcdHash, tile.Ground);
-								if (tile.Ground is XCTile)
-									count(imgHash, mcdHash, ((XCTile)tile.Ground).Dead);
+								var tilePart = tile.Ground as XCTile;
+								if (tilePart != null)
+									count(imgHash, mcdHash, tilePart.Dead);
 								slotsUsed++;
 							}
 
 							if (tile.West != null)
 							{
 								count(imgHash, mcdHash, tile.West);
-								if (tile.West is XCTile)
-									count(imgHash, mcdHash, ((XCTile)tile.West).Dead);
+								var tilePart = tile.West as XCTile;
+								if (tilePart != null)
+									count(imgHash, mcdHash, tilePart.Dead);
 								slotsUsed++;
 							}
 
 							if (tile.North != null)
 							{
 								count(imgHash, mcdHash, tile.North);
-								if (tile.North is XCTile)
-									count(imgHash, mcdHash, ((XCTile)tile.North).Dead);
+								var tilePart = tile.North as XCTile;
+								if (tilePart != null)
+									count(imgHash, mcdHash, tilePart.Dead);
 								slotsUsed++;
 							}
 
 							if (tile.Content != null)
 							{
 								count(imgHash, mcdHash, tile.Content);
-								if (tile.Content is XCTile)
-									count(imgHash, mcdHash, ((XCTile)tile.Content).Dead);
+								var tilePart = tile.Content as XCTile;
+								if (tilePart != null)
+									count(imgHash, mcdHash, tilePart.Dead);
 								slotsUsed++;
 							}
 
@@ -130,7 +135,7 @@ namespace MapView
 			groupAnalyze.Visible = false;
 		}
 
-		private void count(Hashtable img, Hashtable mcd, TileBase tile)
+		private void count(IDictionary img, IDictionary mcd, TileBase tile)
 		{
 			if (tile != null)
 			{
@@ -140,6 +145,7 @@ namespace MapView
 				mcd[tile.Info.ID] = true;
 			}
 		}
+
 
 		#region Windows Form Designer generated code
 

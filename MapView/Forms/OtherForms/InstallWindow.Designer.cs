@@ -10,7 +10,7 @@ namespace MapView
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		/// <param name="disposing">true if managed resources should be disposed</param>
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && components != null)
@@ -19,7 +19,9 @@ namespace MapView
 			base.Dispose(disposing);
 		}
 
+
 		#region Windows Form Designer generated code
+
 		/// <summary>
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
@@ -36,6 +38,7 @@ namespace MapView
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.folderSelector = new System.Windows.Forms.FolderBrowserDialog();
+			this.cancelButton = new System.Windows.Forms.Button();
 			this.panel1.SuspendLayout();
 			this.panel2.SuspendLayout();
 			this.SuspendLayout();
@@ -45,7 +48,7 @@ namespace MapView
 			this.txtUFO.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.txtUFO.Location = new System.Drawing.Point(85, 0);
 			this.txtUFO.Name = "txtUFO";
-			this.txtUFO.Size = new System.Drawing.Size(347, 19);
+			this.txtUFO.Size = new System.Drawing.Size(344, 19);
 			this.txtUFO.TabIndex = 0;
 			// 
 			// txtTFTD
@@ -53,7 +56,7 @@ namespace MapView
 			this.txtTFTD.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.txtTFTD.Location = new System.Drawing.Point(85, 0);
 			this.txtTFTD.Name = "txtTFTD";
-			this.txtTFTD.Size = new System.Drawing.Size(347, 19);
+			this.txtTFTD.Size = new System.Drawing.Size(344, 19);
 			this.txtTFTD.TabIndex = 1;
 			// 
 			// label1
@@ -63,7 +66,7 @@ namespace MapView
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(85, 25);
 			this.label1.TabIndex = 2;
-			this.label1.Text = "UFO Directory";
+			this.label1.Text = "UFO Folder";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// label2
@@ -73,37 +76,37 @@ namespace MapView
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(85, 25);
 			this.label2.TabIndex = 3;
-			this.label2.Text = "TFTD Directory";
+			this.label2.Text = "TFTD Folder";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// btnFindUFO
 			// 
 			this.btnFindUFO.Dock = System.Windows.Forms.DockStyle.Right;
-			this.btnFindUFO.Location = new System.Drawing.Point(432, 0);
+			this.btnFindUFO.Location = new System.Drawing.Point(429, 0);
 			this.btnFindUFO.Name = "btnFindUFO";
-			this.btnFindUFO.Size = new System.Drawing.Size(42, 25);
+			this.btnFindUFO.Size = new System.Drawing.Size(45, 25);
 			this.btnFindUFO.TabIndex = 4;
-			this.btnFindUFO.Text = "Find";
+			this.btnFindUFO.Text = "...";
 			this.btnFindUFO.Click += new System.EventHandler(this.btnFindUFO_Click);
 			// 
 			// btnFindTFTD
 			// 
 			this.btnFindTFTD.Dock = System.Windows.Forms.DockStyle.Right;
-			this.btnFindTFTD.Location = new System.Drawing.Point(432, 0);
+			this.btnFindTFTD.Location = new System.Drawing.Point(429, 0);
 			this.btnFindTFTD.Name = "btnFindTFTD";
-			this.btnFindTFTD.Size = new System.Drawing.Size(42, 25);
+			this.btnFindTFTD.Size = new System.Drawing.Size(45, 25);
 			this.btnFindTFTD.TabIndex = 5;
-			this.btnFindTFTD.Text = "Find";
+			this.btnFindTFTD.Text = "...";
 			this.btnFindTFTD.Click += new System.EventHandler(this.btnFindTFTD_Click);
 			// 
 			// okButton
 			// 
 			this.okButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.okButton.Location = new System.Drawing.Point(170, 50);
+			this.okButton.Location = new System.Drawing.Point(85, 50);
 			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(135, 25);
+			this.okButton.Size = new System.Drawing.Size(165, 25);
 			this.okButton.TabIndex = 6;
-			this.okButton.Text = "The paths are correct";
+			this.okButton.Text = "the Paths are correct";
 			this.okButton.Click += new System.EventHandler(this.okButton_Click);
 			// 
 			// panel1
@@ -128,10 +131,21 @@ namespace MapView
 			this.panel2.Size = new System.Drawing.Size(474, 25);
 			this.panel2.TabIndex = 8;
 			// 
+			// cancelButton
+			// 
+			this.cancelButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.cancelButton.Location = new System.Drawing.Point(265, 50);
+			this.cancelButton.Name = "cancelButton";
+			this.cancelButton.Size = new System.Drawing.Size(165, 25);
+			this.cancelButton.TabIndex = 9;
+			this.cancelButton.Text = "Cancel";
+			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+			// 
 			// InstallWindow
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-			this.ClientSize = new System.Drawing.Size(474, 76);
+			this.ClientSize = new System.Drawing.Size(474, 81);
+			this.Controls.Add(this.cancelButton);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.okButton);
@@ -159,5 +173,6 @@ namespace MapView
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.FolderBrowserDialog folderSelector;
+		private System.Windows.Forms.Button cancelButton;
 	}
 }

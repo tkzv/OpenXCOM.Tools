@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using XCom.Interfaces;
+
 
 namespace XCom
 {
@@ -9,11 +9,12 @@ namespace XCom
 	{
 		private static SharedSpace _instance;
 
-		private readonly Dictionary<string, object> mySpace;
+		private readonly Dictionary<string, object> _share;
+
 
 		public SharedSpace()
 		{
-			mySpace = new Dictionary<string, object>();
+			_share = new Dictionary<string, object>();
 		}
 
 		public static SharedSpace Instance
@@ -27,50 +28,62 @@ namespace XCom
 			}
 		}
 
+
 		public object GetObj(string key)
 		{
 			return GetObj(key, null);
 		}
 
-		public object GetObj(string key, object defaultIfNull)
+		/// <summary>
+		/// Gets a value in the SharedSpace.
+		/// </summary>
+		/// <param name="key">the key to look for</param>
+		/// <param name="val">the object to add and return if the
+		/// current value doesn't exist or is null</param>
+		/// <returns>the value associated with the key as an object</returns>
+		public object GetObj(string key, object val)
 		{
-			if (!mySpace.ContainsKey(key))
-				mySpace.Add(key, defaultIfNull);
-			else if (mySpace[key] == null)
-				mySpace[key] = defaultIfNull;
+			if (!_share.ContainsKey(key))
+			{
+				_share.Add(key, val);
+			}
+			else if (_share[key] == null)
+			{
+				_share[key] = val;
+			}
 
-			return mySpace[key];
+			return _share[key];
 		}
 
 		public object this[string key]
 		{
-			get { return mySpace[key]; }
-			set { mySpace[key] = value; }
+			get { return _share[key]; }
+			set { _share[key] = value; }
 		}
 
 		public int GetInt(string key)
 		{
-			return (int)mySpace[key];
+			return (int)_share[key];
 		}
 
 		public string GetString(string key)
 		{
-			return (string)mySpace[key];
+			return (string)_share[key];
 		}
 
 		public double GetDouble(string key)
 		{
-			return (double)mySpace[key];
+			return (double)_share[key];
 		}
 
 		public List<IXCImageFile> GetImageModList()
 		{
-			return (List<IXCImageFile>)mySpace["ImageMods"];
+			return (List<IXCImageFile>)_share["ImageMods"];
 		}
 
 		public Dictionary<string, Palette> GetPaletteTable()
 		{
-			return (Dictionary<string, Palette>)mySpace["Palettes"];
+			return (Dictionary<string, Palette>)_share["Palettes"];
 		}
 	}
 }
