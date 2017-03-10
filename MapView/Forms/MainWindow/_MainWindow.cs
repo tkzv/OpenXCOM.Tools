@@ -201,7 +201,7 @@ namespace MapView
 			LogFile.Instance.WriteLine("About to show window");
 			Show();
 
-			LogFile.Instance.Close(); // TODO: Keep logfile open until the program closes.
+//			LogFile.Instance.Close(); // TODO: Keep logfile open until the program closes.
 		}
 
 
@@ -370,10 +370,9 @@ namespace MapView
 					riKey.SetValue("Left",		Left);
 					riKey.SetValue("Top",		Top);
 					riKey.SetValue("Width",		Width);
-					riKey.SetValue("Height",	Height - 18);	// TODO: That value governs where the bottom of the MapView window
-																// appears when re-opening the program. My old XP machine wants "-15"
-																// but it seems to depend on the personal desktop config of Windows
-																// itself. Ie, the difference is likely the height of the TitleBar ....
+					riKey.SetValue("Height",	Height // kL_note: not sure this is correct but works on my machine ->
+												- SystemInformation.CaptionHeight
+												+ SystemInformation.BorderSize.Height);
 
 //					riKey.SetValue("Animation", onItem.Checked.ToString());
 //					riKey.SetValue("Doors", miDoors.Checked.ToString());
@@ -393,10 +392,10 @@ namespace MapView
 			RegistryKey mvKey = swKey.CreateSubKey("MapView");
 			RegistryKey riKey = mvKey.CreateSubKey("MainView");
 
-			Left	= (int)riKey.GetValue("Left", Left);
-			Top		= (int)riKey.GetValue("Top", Top);
-			Width	= (int)riKey.GetValue("Width", Width);
-			Height	= (int)riKey.GetValue("Height", Height);
+			Left	= (int)riKey.GetValue("Left",	Left);
+			Top		= (int)riKey.GetValue("Top",	Top);
+			Width	= (int)riKey.GetValue("Width",	Width);
+			Height	= (int)riKey.GetValue("Height",	Height);
 
 			riKey.Close();
 			mvKey.Close();
