@@ -101,7 +101,7 @@ namespace XCom
 
 			if (!paletteHash.ContainsKey(path))
 			{
-				using (var pckStream = File.OpenRead(path + ".PCK"))
+				using (var pckStream = File.OpenRead(path + ".PCK")) // TODO: check if these catch lowercase extensions.
 				using (var tabStream = File.OpenRead(path + ".TAB"))
 				{
 					paletteHash.Add(path, new PckFile(

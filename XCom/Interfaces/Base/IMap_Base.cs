@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Text;
 
 using XCom.Services;
 
@@ -11,6 +10,7 @@ namespace XCom.Interfaces.Base
 {
 	public delegate void HeightChangedDelegate(IMap_Base sender, HeightChangedEventArgs e);
 	public delegate void SelectedTileChangedDelegate(IMap_Base sender, SelectedTileChangedEventArgs e);
+
 
 	/// <summary>
 	/// Abstract base class definining all common functionality of an editable map.
@@ -85,7 +85,7 @@ namespace XCom.Interfaces.Base
 			get { return _currentHeight; }
 			set
 			{
-				if (value >= 0 && value < MapSize.Height)
+				if (value < (byte)MapSize.Height)
 				{
 					var e = new HeightChangedEventArgs(_currentHeight, value);
 					_currentHeight = value;
@@ -134,10 +134,8 @@ namespace XCom.Interfaces.Base
 		{
 			get
 			{
-				if (MapData != null)
-					return MapData[row, col, height];
-
-				return null;
+				return (MapData != null) ? MapData[row, col, height]
+										 : null;
 			}
 
 			set { MapData[row, col, height] = value; }
@@ -170,8 +168,7 @@ namespace XCom.Interfaces.Base
 								int newH,
 								bool wrtCeiling)
 		{
-			var mapResizeService = new MapResizeService();
-			var newMap = mapResizeService.ResizeMap(
+			var newMap = MapResizeService.ResizeMap(
 												newR,
 												newC,
 												newH,

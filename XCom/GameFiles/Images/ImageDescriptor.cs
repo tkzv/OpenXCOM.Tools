@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
-using System.IO;
 using XCom.GameFiles.Map;
+
 
 namespace XCom
 {
 	/// <summary>
-	/// Describes information about imagesets: the path to the pck, tab and mcd files
+	/// Describes information about imagesets: the path to the PCK, TAB, and MCD files.
 	/// </summary>
 	public class ImageDescriptor
 		:
@@ -14,8 +14,10 @@ namespace XCom
 	{
 //		private PckFile myPck;
 //		private McdFile myMcd;
+
 		private readonly Hashtable _mcdTab;
-		 
+
+
 		public ImageDescriptor(string baseName, string path)
 		{
 			BaseName = baseName;
@@ -23,9 +25,11 @@ namespace XCom
 			_mcdTab = new Hashtable(3);
 		}
 
+
 		public PckFile GetPckFile(Palette p)
 		{
 			return GameInfo.CachePck(BasePath, BaseName, 2, p);
+
 //			new PckFile(File.OpenRead(basePath + basename + ".PCK"), File.OpenRead(basePath + basename + ".TAB"), 2, p, screen);
 //			GameInfo.GetPckFile(basename, basePath, p, 2, screen);
 		}
@@ -35,14 +39,14 @@ namespace XCom
 			return GetPckFile(GameInfo.DefaultPalette);
 		}
 
-		public McdFile GetMcdFile(Palette p, XcTileFactory _xcTileFactory)
+		public McdFile GetMcdFile(Palette palette, XcTileFactory _xcTileFactory)
 		{
-			if (_mcdTab[p] == null)
+			if (_mcdTab[palette] == null)
 			{
-				var tiles = _xcTileFactory.CreateTiles(BaseName, BasePath, GetPckFile(p));
-				_mcdTab[p] = new McdFile(tiles);
+				var tiles = _xcTileFactory.CreateTiles(BaseName, BasePath, GetPckFile(palette));
+				_mcdTab[palette] = new McdFile(tiles);
 			}
-			return (McdFile)_mcdTab[p];
+			return (McdFile)_mcdTab[palette];
 		}
 
 		public McdFile GetMcdFile()
@@ -57,12 +61,14 @@ namespace XCom
 
 		public int CompareTo(object other)
 		{
-			return BaseName.CompareTo(other.ToString());
+			return String.CompareOrdinal(BaseName, other.ToString());
 		}
 
-		public string BaseName { get; private set; }
+		public string BaseName
+		{ get; private set; }
 
-		public string BasePath { get; set; }
+		public string BasePath
+		{ get; set; }
 
 		public void ClearMcd()
 		{

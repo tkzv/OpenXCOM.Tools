@@ -1,8 +1,5 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
+
 
 namespace MapView
 {
@@ -13,10 +10,12 @@ namespace MapView
 		private System.Windows.Forms.ProgressBar progress;
 		private System.ComponentModel.Container components = null;
 
+
 		public LoadingForm()
 		{
 			InitializeComponent();
 		}
+
 
 		public void Update(int curr, int total)
 		{
@@ -24,7 +23,9 @@ namespace MapView
 			progress.Value = curr;
 		}
 
+
 		#region Windows Form Designer generated code
+
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>

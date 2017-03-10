@@ -1,24 +1,27 @@
 using System;
-using System.Collections;
 using System.IO;
-using System.Drawing;
+
 using XCom.Interfaces;
+
 
 namespace XCom
 {
 	public delegate void LoadingDelegate(int curr, int total);
 
+
 	public class PckFile
 		:
 		XCImageCollection
 	{
-		private int bpp;
+		private int _bpp;
+
 		public static readonly string TAB_EXT = ".tab";
 
 		public PckFile(
 					Stream pckFile,
 					Stream tabFile,
-					int bpp,Palette pal,
+					int bpp,
+					Palette pal,
 					int imgHeight,
 					int imgWidth)
 		{
@@ -27,10 +30,10 @@ namespace XCom
 
 			pckFile.Position = 0;
 
-			byte[] info = new byte[pckFile.Length];
+			var info = new byte[pckFile.Length];
 			pckFile.Read(info, 0, info.Length);
 
-			this.bpp = bpp;
+			_bpp = bpp;
 
 			Pal = pal;
 
@@ -38,8 +41,8 @@ namespace XCom
 			
 			if (tabFile != null)
 			{
-				offsets= new uint[(tabFile.Length/bpp) + 1];
-				BinaryReader br = new BinaryReader(tabFile);
+				offsets = new uint[(tabFile.Length / bpp) + 1];
+				var br = new BinaryReader(tabFile);
 
 				if (bpp == 2)
 					for (int i = 0; i < tabFile.Length / bpp; i++)
@@ -47,6 +50,7 @@ namespace XCom
 				else
 					for (int i = 0; i < tabFile.Length / bpp; i++)
 						offsets[i] = br.ReadUInt32();
+
 				br.Close();
 			}
 			else
@@ -59,7 +63,7 @@ namespace XCom
 
 			for (int i = 0; i < offsets.Length - 1; i++)
 			{
-				byte[] imgDat = new byte[offsets[i + 1] - offsets[i]];
+				var imgDat = new byte[offsets[i + 1] - offsets[i]];
 				for (int j = 0; j < imgDat.Length; j++)
 					imgDat[j] = info[offsets[i] + j];
 
@@ -90,7 +94,7 @@ namespace XCom
 
 		public int Bpp
 		{
-			get { return bpp; }
+			get { return _bpp; }
 		}
 
 		public static void Save(
@@ -99,8 +103,8 @@ namespace XCom
 							XCImageCollection images,
 							int bpp)
 		{
-			System.IO.BinaryWriter pck = new System.IO.BinaryWriter(System.IO.File.Create(directory + "\\" + file + ".pck"));
-			System.IO.BinaryWriter tab = new System.IO.BinaryWriter(System.IO.File.Create(directory + "\\" + file + TAB_EXT));
+			var pck = new BinaryWriter(File.Create(directory + @"\" + file + ".pck"));
+			var tab = new BinaryWriter(File.Create(directory + @"\" + file + TAB_EXT));
 
 			if (bpp == 2)
 			{

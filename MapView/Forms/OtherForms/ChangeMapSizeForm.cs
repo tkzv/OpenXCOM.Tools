@@ -1,12 +1,8 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
 using System.Windows.Forms;
 
-using XCom;
-using XCom.Interfaces;
 using XCom.Interfaces.Base;
+
 
 namespace MapView
 {
@@ -32,12 +28,13 @@ namespace MapView
 
 		private IMap_Base map;
 
+
 		public ChangeMapSizeForm()
 		{
 			InitializeComponent();
-
 			DialogResult = DialogResult.Cancel;
 		}
+
 
 		public IMap_Base Map
 		{
@@ -77,7 +74,43 @@ namespace MapView
 			get { return CeilingCheckBox.Checked; }
 		}
 
+		private void btnOk_Click(object sender, System.EventArgs e)
+		{
+			try
+			{
+				int.Parse(txtR.Text);
+				int.Parse(txtC.Text);
+				int.Parse(txtH.Text);
+
+				DialogResult = DialogResult.OK;
+				Close();
+			}
+			catch
+			{
+				MessageBox.Show(
+							this,
+							"Input must be whole numbers",
+							"Error",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Exclamation);
+			}
+		}
+
+		private void btnCancel_Click(object sender, System.EventArgs e)
+		{
+			Close();
+		}
+
+		private void txtH_TextChanged(object sender, EventArgs e)
+		{
+			int current;
+			int.TryParse(txtH.Text, out current);
+			CeilingCheckBox.Visible = (current != map.MapSize.Height);
+		}
+
+
 		#region Windows Form Designer generated code
+
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
@@ -257,44 +290,10 @@ namespace MapView
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "ChangeMapSizeForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Change map";
+			this.Text = "Change Map Size";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
 		#endregion
-
-		private void btnOk_Click(object sender, System.EventArgs e)
-		{
-			try
-			{
-				int.Parse(txtR.Text);
-				int.Parse(txtC.Text);
-				int.Parse(txtH.Text);
-
-				DialogResult = DialogResult.OK;
-				Close();
-			}
-			catch
-			{
-				MessageBox.Show(
-							this,
-							"Input must be whole numbers",
-							"Error",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Exclamation);
-			}
-		}
-
-		private void btnCancel_Click(object sender, System.EventArgs e)
-		{
-			Close();
-		}
-
-		private void txtH_TextChanged(object sender, EventArgs e)
-		{
-			int current;
-			int.TryParse(txtH.Text, out current);
-			CeilingCheckBox.Visible = (current != map.MapSize.Height);
-		}
 	}
 }

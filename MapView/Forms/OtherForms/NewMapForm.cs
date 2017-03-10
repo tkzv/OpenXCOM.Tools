@@ -1,8 +1,5 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
+
 
 namespace MapView
 {
@@ -19,38 +16,65 @@ namespace MapView
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.TextBox txtMapName;
 		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Button btnOk;
+
 		private System.ComponentModel.Container components = null;
 
-		private string name;
-		private byte r,c,h;
-		private System.Windows.Forms.Label label5;
+
+		private string _name;
+
+		private byte _cols;
+		private byte _rows;
+		private byte _height;
+
 
 		public NewMapForm()
 		{
 			InitializeComponent();
-			name = null;
+			_name = null;
 		}
+
 
 		public string MapName
 		{
-			get { return name; }
-		}
-
-		public byte MapRows
-		{
-			get { return r; }
+			get { return _name; }
 		}
 
 		public byte MapCols
 		{
-			get { return c; }
+			get { return _cols; }
+		}
+
+		public byte MapRows
+		{
+			get { return _rows; }
 		}
 
 		public byte MapHeight
 		{
-			get { return h; }
+			get { return _height; }
 		}
+
+		private void btnOk_Click(object sender, System.EventArgs e)
+		{
+			try
+			{
+				_name = txtMapName.Text;
+
+				_cols	= byte.Parse(txtCols.Text);
+				_rows	= byte.Parse(txtRows.Text);
+				_height	= byte.Parse(txtHeight.Text);
+
+				if (_cols % 10 == 0 && _rows % 10 == 0 && _height > 0
+					&& !String.IsNullOrEmpty(_name))
+				{
+					Close();
+				}
+			}
+			catch{} // TODO: that.
+		}
+
 
 		#region Windows Form Designer generated code
 		
@@ -87,14 +111,14 @@ namespace MapView
 			// 
 			// txtRows
 			// 
-			this.txtRows.Location = new System.Drawing.Point(15, 30);
+			this.txtRows.Location = new System.Drawing.Point(45, 30);
 			this.txtRows.Name = "txtRows";
 			this.txtRows.Size = new System.Drawing.Size(60, 19);
 			this.txtRows.TabIndex = 0;
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(15, 15);
+			this.label1.Location = new System.Drawing.Point(45, 15);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(35, 15);
 			this.label1.TabIndex = 1;
@@ -102,7 +126,7 @@ namespace MapView
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(90, 15);
+			this.label2.Location = new System.Drawing.Point(120, 15);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(55, 15);
 			this.label2.TabIndex = 3;
@@ -110,14 +134,14 @@ namespace MapView
 			// 
 			// txtCols
 			// 
-			this.txtCols.Location = new System.Drawing.Point(90, 30);
+			this.txtCols.Location = new System.Drawing.Point(120, 30);
 			this.txtCols.Name = "txtCols";
 			this.txtCols.Size = new System.Drawing.Size(60, 19);
 			this.txtCols.TabIndex = 2;
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(165, 15);
+			this.label3.Location = new System.Drawing.Point(195, 15);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(45, 15);
 			this.label3.TabIndex = 5;
@@ -125,24 +149,24 @@ namespace MapView
 			// 
 			// txtHeight
 			// 
-			this.txtHeight.Location = new System.Drawing.Point(165, 30);
+			this.txtHeight.Location = new System.Drawing.Point(195, 30);
 			this.txtHeight.Name = "txtHeight";
 			this.txtHeight.Size = new System.Drawing.Size(60, 19);
 			this.txtHeight.TabIndex = 4;
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(5, 65);
+			this.label4.Location = new System.Drawing.Point(5, 45);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(40, 15);
+			this.label4.Size = new System.Drawing.Size(35, 15);
 			this.label4.TabIndex = 7;
 			this.label4.Text = "Label";
 			// 
 			// txtMapName
 			// 
-			this.txtMapName.Location = new System.Drawing.Point(5, 80);
+			this.txtMapName.Location = new System.Drawing.Point(5, 60);
 			this.txtMapName.Name = "txtMapName";
-			this.txtMapName.Size = new System.Drawing.Size(235, 19);
+			this.txtMapName.Size = new System.Drawing.Size(305, 19);
 			this.txtMapName.TabIndex = 6;
 			// 
 			// groupBox1
@@ -153,16 +177,16 @@ namespace MapView
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.txtHeight);
-			this.groupBox1.Location = new System.Drawing.Point(5, 100);
+			this.groupBox1.Location = new System.Drawing.Point(5, 80);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(235, 60);
+			this.groupBox1.Size = new System.Drawing.Size(305, 60);
 			this.groupBox1.TabIndex = 8;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Dimensions";
 			// 
 			// btnOk
 			// 
-			this.btnOk.Location = new System.Drawing.Point(60, 165);
+			this.btnOk.Location = new System.Drawing.Point(95, 145);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(120, 25);
 			this.btnOk.TabIndex = 9;
@@ -171,18 +195,18 @@ namespace MapView
 			// 
 			// label5
 			// 
-			this.label5.ForeColor = System.Drawing.Color.MistyRose;
-			this.label5.Location = new System.Drawing.Point(5, 5);
+			this.label5.ForeColor = System.Drawing.SystemColors.ControlDark;
+			this.label5.Location = new System.Drawing.Point(5, 10);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(235, 50);
+			this.label5.Size = new System.Drawing.Size(305, 25);
 			this.label5.TabIndex = 10;
-			this.label5.Text = "For best results make maps in 10x10x4 or 20x20x4 pieces. Maps with other dimensio" +
-			"ns may or may not be accepted by the game engine.";
+			this.label5.Text = "Rows and Columns must be multiples of 10 (10, 20, 30, etc)"
+			+ " and Height must be 1 or more.";
 			// 
 			// NewMapForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-			this.ClientSize = new System.Drawing.Size(244, 197);
+			this.ClientSize = new System.Drawing.Size(314, 176);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.btnOk);
 			this.Controls.Add(this.groupBox1);
@@ -199,20 +223,8 @@ namespace MapView
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
+
 		}
 		#endregion
-
-		private void btnOk_Click(object sender, System.EventArgs e)
-		{
-			try
-			{
-				r = byte.Parse(txtRows.Text);
-				c = byte.Parse(txtCols.Text);
-				h = byte.Parse(txtHeight.Text);
-				name = txtMapName.Text;
-				Close();
-			}
-			catch{}
-		}
 	}
 }

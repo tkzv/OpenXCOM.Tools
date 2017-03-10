@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
 
 using XCom.Interfaces.Base;
 using XCom.Services;
@@ -138,7 +135,7 @@ namespace XCom
 		/// <param name="height"></param>
 		public static void NewMap(Stream s, byte rows, byte cols, byte height)
 		{
-			BinaryWriter bw = new BinaryWriter(s);
+			var bw = new BinaryWriter(s);
 			bw.Write(rows);
 			bw.Write(cols);
 			bw.Write(height);
@@ -234,9 +231,7 @@ namespace XCom
 									int newH,
 									bool wrtCeiling)
 		{
-			var mapResizeService = new MapResizeService();
-
-			var newMap = mapResizeService.ResizeMap(
+			var newMap = MapResizeService.ResizeMap(
 												newR,
 												newC,
 												newH,
@@ -271,7 +266,7 @@ namespace XCom
 			}
 		}
 
-		private XCMapTile createTile(List<TileBase> tiles, int q1, int q2, int q3, int q4)
+		private XCMapTile createTile(IList<TileBase> tiles, int q1, int q2, int q3, int q4)
 		{
 			try
 			{

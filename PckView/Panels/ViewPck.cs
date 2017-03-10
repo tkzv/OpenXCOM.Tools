@@ -1,19 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Forms;
 using System.Drawing;
-using System.Drawing.Imaging;
+using System.Windows.Forms;
+
 using PckView.Args;
 using PckView.Panels;
-using XCom.Interfaces;
+
 using XCom;
+using XCom.Interfaces;
+
 
 namespace PckView
 {
-
 	public delegate void PckViewMouseClicked(object sender, PckViewMouseClickArgs e);
 	public delegate void PckViewMouseMoved(int moveNum);
+
 
 	public class ViewPck
 		:
@@ -21,9 +23,9 @@ namespace PckView
 	{
 		private XCImageCollection myFile;
 
-		private int space = 2;
+		private const int PAD = 2;
 
-		private Color goodColor = Color.FromArgb(204,204,255);
+		private Color goodColor = Color.FromArgb(204, 204, 255);
 		private SolidBrush goodBrush = new SolidBrush(Color.FromArgb(204, 204, 255));
 
 		private int _moveX;
@@ -34,6 +36,7 @@ namespace PckView
 
 		public event PckViewMouseClicked ViewClicked;
 		public event PckViewMouseMoved ViewMoved;
+
 
 		public ViewPck()
 		{
@@ -47,7 +50,12 @@ namespace PckView
 			_selectedItems = new List<ViewPckItem>();
 		}
 
-		// saves a bitmap as a 8-bit image
+
+		/// <summary>
+		/// Saves a bitmap as an 8-bit image.
+		/// </summary>
+		/// <param name="file"></param>
+		/// <param name="pal"></param>
 		public void SaveBMP(string file, Palette pal)
 		{
 			Bmp.SaveBMP(file, myFile, pal, numAcross(), 1);
@@ -79,13 +87,7 @@ namespace PckView
 
 		public int PreferredHeight
 		{
-			get
-			{
-				if (myFile != null)
-					return calcHeight();
-
-				return 0;
-			}
+			get { return (myFile != null) ? calcHeight() : 0; }
 		}
 
 		public XCImageCollection Collection
@@ -93,12 +95,12 @@ namespace PckView
 			get { return myFile; }
 			set
 			{
-				myFile = value;
-				if (myFile != null)
+				if ((myFile = value) != null)
 					Height = calcHeight();
 
 				click(null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 				moving(null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+
 				Refresh();
 			}
 		}
@@ -132,8 +134,8 @@ namespace PckView
 		{
 			if (myFile != null)
 			{
-				int x = e.X / GetSpecialWidth(myFile.IXCFile.ImageSize.Width);
-				int y = (e.Y-_startY) / (myFile.IXCFile.ImageSize.Height + 2 * space);
+				int x =  e.X / GetSpecialWidth(myFile.IXCFile.ImageSize.Width);
+				int y = (e.Y - _startY) / (myFile.IXCFile.ImageSize.Height + 2 * PAD);
 
 				if (x != _moveX || y != _moveY)
 				{
@@ -153,8 +155,8 @@ namespace PckView
 		{
 			if (myFile != null)
 			{
-				var x = e.X / GetSpecialWidth(myFile.IXCFile.ImageSize.Width);
-				var y = (e.Y - _startY) / (myFile.IXCFile.ImageSize.Height + 2 * space);
+				var x =  e.X / GetSpecialWidth(myFile.IXCFile.ImageSize.Width);
+				var y = (e.Y - _startY) / (myFile.IXCFile.ImageSize.Height + 2 * PAD);
 
 				if (x >= numAcross())
 					x = numAcross() - 1;
@@ -217,33 +219,33 @@ namespace PckView
 					{
 						g.FillRectangle(
 									goodBrush,
-									selectedItem.X * specialWidth - space,
-									_startY + selectedItem.Y * (myFile.IXCFile.ImageSize.Height + 2 * space) - space,
+									selectedItem.X * specialWidth - PAD,
+									_startY + selectedItem.Y * (myFile.IXCFile.ImageSize.Height + 2 * PAD) - PAD,
 									specialWidth,
-									myFile.IXCFile.ImageSize.Height + 2 * space);
+									myFile.IXCFile.ImageSize.Height + 2 * PAD);
 					}
 					else
 					{
 						g.FillRectangle(
 									Brushes.Red,
-									selectedItem.X * specialWidth - space,
-									_startY + selectedItem.Y * (myFile.IXCFile.ImageSize.Height + 2 * space) - space,
+									selectedItem.X * specialWidth - PAD,
+									_startY + selectedItem.Y * (myFile.IXCFile.ImageSize.Height + 2 * PAD) - PAD,
 									specialWidth,
-									myFile.IXCFile.ImageSize.Height + 2 * space);
+									myFile.IXCFile.ImageSize.Height + 2 * PAD);
 					}
 				}
 
 				for (int i = 0; i < numAcross() + 1; i++)
 					g.DrawLine(
 							Pens.Black,
-							new Point(i * specialWidth - space,          _startY),
-							new Point(i * specialWidth - space, Height - _startY));
+							new Point(i * specialWidth - PAD,          _startY),
+							new Point(i * specialWidth - PAD, Height - _startY));
 
 				for (int i = 0; i < myFile.Count / numAcross() + 1; i++)
 					g.DrawLine(
 							Pens.Black,
-							new Point(0,     _startY + i * (myFile.IXCFile.ImageSize.Height + 2 * space) - space),
-							new Point(Width, _startY + i * (myFile.IXCFile.ImageSize.Height + 2 * space) - space));
+							new Point(0,     _startY + i * (myFile.IXCFile.ImageSize.Height + 2 * PAD) - PAD),
+							new Point(Width, _startY + i * (myFile.IXCFile.ImageSize.Height + 2 * PAD) - PAD));
 
 				for (int i = 0; i < myFile.Count; i++)
 				{
@@ -253,10 +255,9 @@ namespace PckView
 					{
 						g.DrawImage(
 								myFile[i].Image, x * specialWidth,
-								_startY + y * (myFile.IXCFile.ImageSize.Height + 2 * space));
+								_startY + y * (myFile.IXCFile.ImageSize.Height + 2 * PAD));
 					}
-					catch (Exception)
-					{}
+					catch {} // TODO: that.
 				}
 			}
 		}
@@ -308,12 +309,12 @@ namespace PckView
 		{
 			return Math.Max(
 						1,
-						(Width - 8) / (myFile.IXCFile.ImageSize.Width + 2 * space));
+						(Width - 8) / (myFile.IXCFile.ImageSize.Width + 2 * PAD));
 		}
 
 		private int calcHeight()
 		{
-			return (myFile.Count / numAcross()) * (myFile.IXCFile.ImageSize.Height + 2 * space) + 60;
+			return (myFile.Count / numAcross()) * (myFile.IXCFile.ImageSize.Height + 2 * PAD) + 60;
 		}
 
 		private int GetIndexOf(ViewPckItem selectedItem)
@@ -323,7 +324,7 @@ namespace PckView
 
 		private int GetSpecialWidth(int width)
 		{
-			return width + 2 * space;
+			return width + 2 * PAD;
 		}
 	}
 }

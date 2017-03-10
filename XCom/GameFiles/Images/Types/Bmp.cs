@@ -22,10 +22,12 @@ namespace XCom
 	public static class Bmp
 	{
 		public static event LoadingDelegate LoadingEvent;
+
 		public static readonly byte DefaultTransparentIndex = 0xFE;
 
 		// amount of space between saved bmp image blocks
 //		private static readonly int space = 1;
+
 
 		public static void Save(string path, Bitmap image)
 		{
@@ -40,7 +42,7 @@ namespace XCom
 
 			bw.Write('B');
 			bw.Write('M');
-			bw.Write(1078 + len); //14 + 40 + (4 * 256)
+			bw.Write(1078 + len); // 14 + 40 + (4 * 256)
 			bw.Write((int)0);
 			bw.Write((int)1078);
 
@@ -59,7 +61,7 @@ namespace XCom
 
 			Console.WriteLine("Colors");
 
-			//Console.WriteLine("File size should be: "+(1078+len+more));
+			//Console.WriteLine("File size should be: " + (1078 + len + more));
 
 //			byte[] bArr = new byte[256 * 4];
 			Color[] entries = image.Palette.Entries;
@@ -118,9 +120,9 @@ namespace XCom
 			Save24(new FileStream(path, FileMode.Create), image);
 		}
 
-		public static void Save24(Stream s, Bitmap image)
+		public static void Save24(Stream str, Bitmap image)
 		{
-			var bw = new BinaryWriter(s);
+			var bw = new BinaryWriter(str);
 
 			int more = 0;
 			while ((image.Width * 3 + more) % 4 != 0)
@@ -173,10 +175,10 @@ namespace XCom
 		/// <param name="palette">Palette to color the image with</param>
 		/// <returns></returns>
 		public static Bitmap MakeBitmap8(
-									int width,
-									int height,
-									byte[] idx,
-									ColorPalette palette)
+				int width,
+				int height,
+				byte[] idx,
+				ColorPalette palette)
 		{
 			var image = new Bitmap(
 								width, height,
@@ -291,10 +293,10 @@ namespace XCom
 		}
 
 		public static void Draw(
-							Bitmap src,
-							Bitmap dst,
-							int x,
-							int y)
+				Bitmap src,
+				Bitmap dst,
+				int x,
+				int y)
 		{
 			var destRect = new Rectangle(
 									0, 0,
@@ -575,11 +577,11 @@ namespace XCom
 		/// <param name="across">number of columns to use for images</param>
 		/// <param name="space"></param>
 		public static void SaveBMP(
-								string file,
-								XCImageCollection collection,
-								Palette pal,
-								int across,
-								int space)
+				string file,
+				XCImageCollection collection,
+				Palette pal,
+				int across,
+				int space)
 		{
 			if (collection.Count == 1)
 				across = 1;
@@ -612,11 +614,11 @@ namespace XCom
 		/// <param name="space"></param>
 		/// <returns></returns>
 		public static XCImageCollection Load(
-											Bitmap b,
-											Palette pal,
-											int imgWid,
-											int imgHei,
-											int space)
+				Bitmap b,
+				Palette pal,
+				int imgWid,
+				int imgHei,
+				int space)
 		{
 			var list = new XCImageCollection();
 
@@ -646,16 +648,16 @@ namespace XCom
 		}
 
 		public static XCImage LoadTile(
-									Bitmap src,
-									int imgNum,
-									Palette p,
-									int startX,
-									int startY,
-									int imgWid,
-									int imgHei)
+				Bitmap src,
+				int imgNum,
+				Palette p,
+				int startX,
+				int startY,
+				int imgWid,
+				int imgHei)
 		{
 			// image data in 8-bit form
-			byte[] data = new byte[imgWid * imgHei];
+			var data = new byte[imgWid * imgHei];
 
 			var srcRect = new Rectangle(
 									startX, startY,

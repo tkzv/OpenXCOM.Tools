@@ -1,10 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Text;
 using System.Windows.Forms;
 
 
@@ -37,7 +32,10 @@ namespace DSShared.Windows
 				e.Graphics.DrawLine(Pens.Black, 0, 0, Width, Height);
 				e.Graphics.DrawLine(Pens.Black, 0, Height, Width, 0);
 
-				ControlPaint.DrawBorder3D(e.Graphics, ClientRectangle, Border3DStyle.Flat);
+				ControlPaint.DrawBorder3D(
+										e.Graphics,
+										ClientRectangle,
+										Border3DStyle.Flat);
 			}
 			else
 				Render(e.Graphics);

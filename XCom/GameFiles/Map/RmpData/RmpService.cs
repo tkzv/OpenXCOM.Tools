@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
 
 using XCom.Interfaces.Base;
@@ -8,25 +7,26 @@ using XCom.Interfaces.Base;
 
 namespace XCom.GameFiles.Map.RmpData
 {
-	public class RmpService
+	public static class RmpService
 	{
-		public void ReviewRouteEntries(IMap_Base map)
+		public static void ReviewRouteEntries(IMap_Base baseMap)
 		{
-			var xMap = map as XCMapFile;
-			if (xMap != null)
+			var map = baseMap as XCMapFile;
+			if (map != null)
 			{
-				var entryOutside = new List<RmpEntry>();
-				foreach (RmpEntry entry in xMap.Rmp)
+				var incorrectEntries = new List<RmpEntry>();
+
+				foreach (RmpEntry entry in map.Rmp)
 					if (RmpFile.IsOutsideMap(
 										entry,
-										map.MapSize.Cols,
-										map.MapSize.Rows,
-										map.MapSize.Height))
+										baseMap.MapSize.Cols,
+										baseMap.MapSize.Rows,
+										baseMap.MapSize.Height))
 					{
-						entryOutside.Add(entry);
+						incorrectEntries.Add(entry);
 					}
 
-				if (entryOutside.Count > 0)
+				if (incorrectEntries.Count != 0)
 				{
 					var result = MessageBox.Show(
 											"There are route entries outside the bounds of this Map. Do you want to remove them?",
@@ -35,10 +35,10 @@ namespace XCom.GameFiles.Map.RmpData
 
 					if (result == DialogResult.Yes)
 					{
-						foreach (var rmpEntry in entryOutside)
-							xMap.Rmp.RemoveEntry(rmpEntry);
+						foreach (var rmpEntry in incorrectEntries)
+							map.Rmp.RemoveEntry(rmpEntry);
 
-						xMap.MapChanged = true;
+						map.MapChanged = true;
 					}
 				}
 			}

@@ -24,14 +24,14 @@ namespace MapView
 //	public delegate void MapChangedDelegate(object sender, SetMapEventArgs e);
 //	public delegate void StringDelegate(object sender, string args);
 
-	public partial class MainWindow
+	public sealed partial class MainWindow
 		:
 		Form
 	{
 		private readonly SettingsManager _settingsManager;
 
 		private readonly MapViewPanel _mapView;
-		private readonly LoadingForm _lf;
+		private readonly LoadingForm _loadingProgress;
 		private readonly IWarningHandler _warningHandler;
 		private readonly IMainWindowWindowsManager _mainWindowWindowsManager;
 		private readonly MainWindowsManager _mainWindowsManager;
@@ -166,11 +166,11 @@ namespace MapView
 				LogFile.Instance.WriteLine("User settings NOT loaded - no settings file to load");
 			}
 
-			OnResize(null); // FIX: Virtual member call in constructor.
+			OnResize(null);
 			this.Closing += new CancelEventHandler(closing);
 
-			_lf = new LoadingForm();
-			Bmp.LoadingEvent += _lf.Update;
+			_loadingProgress = new LoadingForm();
+			Bmp.LoadingEvent += _loadingProgress.Update;
 
 			// I should rewrite the hq2x wrapper for .NET sometime -- not the code it's pretty insane
 //			if (!File.Exists("hq2xa.dll"))
@@ -314,7 +314,7 @@ namespace MapView
 			}
 		}
 
-		private void addMaps(TreeNode tn, Dictionary<string, IMapDesc> maps)
+		private void addMaps(TreeNode tn, IDictionary<string, IMapDesc> maps)
 		{
 			foreach (string key in maps.Keys)
 			{
@@ -470,11 +470,11 @@ namespace MapView
 			MainWindowsManager.TopView.TopViewControl.BottomPanel.Refresh();
 		}
 
-		private static void myQuit(object sender, string command)
+/*		private static void myQuit(object sender, string command)
 		{
 			if (command == "OK")
 				Environment.Exit(0);
-		}
+		} */
 
 		private void onItem_Click(object sender, System.EventArgs e)
 		{
@@ -503,14 +503,20 @@ namespace MapView
 
 		private void miPaths_Click(object sender, System.EventArgs e)
 		{
-			var p = new PathsEditor(SharedSpace.Instance["MV_PathsFile"].ToString());
-			p.ShowDialog();
+			var paths = new PathsEditor(SharedSpace.Instance["MV_PathsFile"].ToString());
+			paths.ShowDialog();
 
 			var pathInfo = (PathInfo)SharedSpace.Instance["MV_PathsFile"];
 			InitGameInfo(pathInfo);
 			initList();
 		}
 
+		/// <summary>
+		/// De-colorizes the background-field of a previously selected label
+		/// in the left-panel's MapBlocks' tree.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void mapList_BeforeSelect(object sender, CancelEventArgs e)
 		{
 			if (NotifySave() == DialogResult.Cancel)
@@ -519,14 +525,18 @@ namespace MapView
 			}
 			else if (mapList.SelectedNode != null)
 			{
-				// (de)colorize background-field of (de)selected label in the left-panel's MapBlocks' tree
 				mapList.SelectedNode.BackColor = SystemColors.Control; // Color.Silver, Color.Transparent
 			}
 		}
 
+		/// <summary>
+		/// Colorizes the background-field of the newly selected label in the
+		/// left-panel's MapBlocks' tree.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void mapList_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			// colorize background-field of selected label in the left-panel's MapBlocks' tree
 			mapList.SelectedNode.BackColor = Color.Gold;
 			LoadSelectedNodeMap();
 		}
@@ -538,25 +548,24 @@ namespace MapView
 
 		private void LoadSelectedNodeMap()
 		{
-			var imd = mapList.SelectedNode.Tag as IMapDesc;
-			if (imd != null)
+			var desc = mapList.SelectedNode.Tag as IMapDesc;
+			if (desc != null)
 			{
 				miExport.Enabled = true;
 
-				var xcTileFactory = new XcTileFactory();
-				xcTileFactory.HandleWarning += _warningHandler.HandleWarning;
+				var tileFactory = new XcTileFactory();
+				tileFactory.HandleWarning += _warningHandler.HandleWarning;
 
-				var mapService = new XcMapFileService(xcTileFactory);
+				var mapService = new XcMapFileService(tileFactory);
 
-				var map = mapService.Load(imd as XCMapDesc);
+				var map = mapService.Load(desc as XCMapDesc);
 				_mapView.SetMap(map);
 
 				toolStrip.Enabled = true;
 
-				var rmpService = new RmpService();
-				rmpService.ReviewRouteEntries(map);
+				RmpService.ReviewRouteEntries(map);
 
-				statusMapName.Text = imd.Name;
+				statusMapName.Text = desc.Name;
 
 				tsMapSize.Text = (map != null) ? map.MapSize.ToString()
 											   : "size: n/a";
@@ -616,14 +625,15 @@ namespace MapView
 				saveFile.FileName = _mapView.Map.Name;
 				if (saveFile.ShowDialog() == DialogResult.OK)
 				{
-					_lf.Show();
+					_loadingProgress.Show();
+
 					try
 					{
 						_mapView.Map.SaveGif(saveFile.FileName);
 					}
 					finally
 					{
-						_lf.Hide();
+						_loadingProgress.Hide();
 					}
 				}
 			}

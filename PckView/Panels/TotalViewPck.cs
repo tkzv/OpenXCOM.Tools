@@ -1,51 +1,55 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Windows.Forms;
 using System.Drawing;
-using System.Collections;
+using System.Windows.Forms;
+
 using PckView.Args;
 using PckView.Panels;
+
 using XCom;
 using XCom.Interfaces;
 
+
 namespace PckView
 {
-	public delegate void XCImageCollectionHandler(object sender, XCImageCollectionSetEventArgs e);
-
-	public class TotalViewPck : Panel
+	public class TotalViewPck
+		:
+		Panel
 	{
-		private ViewPck view;
+		private readonly ViewPck view;
 
-		private VScrollBar scroll;
-		private StatusBar statusBar;
-		private StatusBarPanel statusOverTile;
-		private StatusBarPanel statusBPP;
+		private VScrollBar _scrollBar;
+		private StatusBar _statusBar;
+		private StatusBarPanel _statusOverTile;
+		private StatusBarPanel _statusBPP;
+
 		private int click;
 		private int move;
 
 		public event PckViewMouseClicked ViewClicked;
 		public event XCImageCollectionHandler XCImageCollectionSet;
 
+
 		public TotalViewPck()
 		{
-			scroll = new VScrollBar();
+			_scrollBar = new VScrollBar();
 
-			statusBar = new StatusBar();
-			statusOverTile = new StatusBarPanel();
-			statusOverTile.AutoSize = StatusBarPanelAutoSize.Spring;
-			statusBar.Panels.Add(statusOverTile);
-			statusBar.ShowPanels = true;
-			statusBar.Dock = DockStyle.Bottom;
+			_statusBar = new StatusBar();
+			_statusOverTile = new StatusBarPanel();
+			_statusOverTile.AutoSize = StatusBarPanelAutoSize.Spring;
+			_statusBar.Panels.Add(_statusOverTile);
+			_statusBar.ShowPanels = true;
+			_statusBar.Dock = DockStyle.Bottom;
 
-			statusBPP = new StatusBarPanel();
-			statusBPP.AutoSize = StatusBarPanelAutoSize.Contents;
-			statusBPP.Width = 50;
-			statusBPP.Alignment = HorizontalAlignment.Right;
-			statusBar.Panels.Add(statusBPP);
+			_statusBPP = new StatusBarPanel();
+			_statusBPP.AutoSize = StatusBarPanelAutoSize.Contents;
+			_statusBPP.Width = 50;
+			_statusBPP.Alignment = HorizontalAlignment.Right;
+			_statusBar.Panels.Add(_statusBPP);
 
-			scroll.Dock = System.Windows.Forms.DockStyle.Right;
-			scroll.Maximum = 5000;
-			scroll.Scroll += new System.Windows.Forms.ScrollEventHandler(this.scroll_Scroll);
+			_scrollBar.Dock = System.Windows.Forms.DockStyle.Right;
+			_scrollBar.Maximum = 5000;
+			_scrollBar.Scroll += this.scroll_Scroll;
 
 			view = new ViewPck();
 			view.Location = new Point(0, 0);
@@ -53,15 +57,12 @@ namespace PckView
 			view.ViewMoved += new PckViewMouseMoved(viewMoved);
 			view.Dock = DockStyle.Fill;
 			view.ViewClicked += new PckViewMouseClicked(viewClik);
-			scroll.Minimum = 0;
+			_scrollBar.Minimum = 0;
 
-			this.Controls.AddRange(new System.Windows.Forms.Control[] {
-																statusBar,
-																scroll,
-																view });
+			this.Controls.AddRange(new Control[] { _statusBar, _scrollBar, view });
 
 			view.SizeChanged += new EventHandler(viewSizeChange);
-			OnResize(null);
+			OnResize(null); // FIX: "Virtual member call in constructor."
 		}
 
 		public ViewPck View
@@ -77,11 +78,7 @@ namespace PckView
 
 		public Palette Pal
 		{
-			get
-			{
-				return view != null ? view.Pal : null;
-			}
-
+			get { return view != null ? view.Pal : null; }
 			set
 			{
 				if (view != null)
@@ -92,17 +89,17 @@ namespace PckView
 			}
 		}
 
-		protected override void OnResize(EventArgs e)
+		protected override void OnResize(EventArgs eventargs)
 		{
-			base.OnResize(e);
+			base.OnResize(eventargs);
 
 			if (view.PreferredHeight >= Height)
 			{
-				scroll.Visible = true;
-				scroll.Maximum = view.PreferredHeight - Height + 50;
+				_scrollBar.Visible = true;
+				_scrollBar.Maximum = view.PreferredHeight - Height + 50;
 			}
 			else
-				scroll.Visible = false;
+				_scrollBar.Visible = false;
 		}
 
 		public ReadOnlyCollection<ViewPckItemImage> SelectedItems
@@ -124,14 +121,14 @@ namespace PckView
 				{
 					view.Collection = value;
 					if (value is PckFile)
-						statusBPP.Text = "Bpp: " + ((PckFile)view.Collection).Bpp + "  ";
+						_statusBPP.Text = "Bpp: " + ((PckFile)view.Collection).Bpp + "  ";
 					else
-						statusBPP.Text = "";
+						_statusBPP.Text = String.Empty;
 
 					if (XCImageCollectionSet != null)
 						XCImageCollectionSet(this, new XCImageCollectionSetEventArgs(value));
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					if (XCImageCollectionSet != null)
 						XCImageCollectionSet(this, new XCImageCollectionSetEventArgs(null));
@@ -143,67 +140,73 @@ namespace PckView
 
 		private void viewSizeChange(object sender, EventArgs e)
 		{
-			scroll.Value = scroll.Minimum;
-			view.StartY = -scroll.Value;
+			_scrollBar.Value = _scrollBar.Minimum;
+			view.StartY = -_scrollBar.Value;
 			if (view.PreferredHeight >= Height)
 			{
-				scroll.Visible = true;
-				scroll.Maximum = view.PreferredHeight - Height;
+				_scrollBar.Visible = true;
+				_scrollBar.Maximum = view.PreferredHeight - Height;
 			}
 			else
-				scroll.Visible = false;
+				_scrollBar.Visible = false;
 		}
 
 		private void tileChooser_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
 //			view.Pck = ImageCollection.GetPckFile(tileChooser.SelectedItem.ToString());
 			view.Refresh();
-//			scroll.Maximum = Math.Max((view.Height - Height + tileChooser.Height + 50), scroll.Minimum);
-			scroll.Value = scroll.Minimum;
+//			_scrollBar.Maximum = Math.Max((view.Height - Height + tileChooser.Height + 50), _scrollBar.Minimum);
+			_scrollBar.Value = _scrollBar.Minimum;
 			scroll_Scroll(null, null);
 		}
 
 		private void scroll_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e)
 		{
-			view.StartY = -scroll.Value;
+			view.StartY = -_scrollBar.Value;
 			view.Refresh();
 		}
 
 		private void viewClicked(object sender, PckViewMouseClickArgs e)
 		{
 			click = e.ClickedPck;
-			statusOverTile.Text = "Selected: " + click + " Over: " + move;
+			_statusOverTile.Text = "Selected: " + click + " Over: " + move;
 		}
 
 		private void viewMoved(int x)
 		{
 			move = x;
-			statusOverTile.Text = "Selected: " + click + " Over: " + move;
+			_statusOverTile.Text = "Selected: " + click + " Over: " + move;
 		}
 
 		public void Hq2x()
 		{
 			view.Hq2x();
 		}
-		 
+
 		public void RemoveSelected()
 		{
 			view.RemoveSelected();
 		}
 	}
 
+
+	/// <summary>
+	/// EventArgs for XCImageCollectionSet.
+	/// </summary>
 	public class XCImageCollectionSetEventArgs
 	{
-		private XCImageCollection collection;
+		private readonly XCImageCollection _collection;
 
 		public XCImageCollectionSetEventArgs(XCImageCollection collection)
 		{
-			this.collection = collection;
+			_collection = collection;
 		}
 
 		public XCImageCollection Collection
 		{
-			get { return collection; }
+			get { return _collection; }
 		}
 	}
+
+	public delegate void XCImageCollectionHandler(object sender, XCImageCollectionSetEventArgs e);
 }

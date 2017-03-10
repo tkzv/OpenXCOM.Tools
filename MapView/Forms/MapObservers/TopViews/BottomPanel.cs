@@ -130,17 +130,18 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			var quad = (e.X - BottomPanelDrawService.startX) / BottomPanelDrawService.TOTAL_QUADRANT_SPACE;
+			var quad = (XCMapTile.MapQuadrant)((e.X - BottomPanelDrawService.startX) / BottomPanelDrawService.TOTAL_QUADRANT_SPACE);
 			switch (quad)
 			{
-				case (int)XCMapTile.MapQuadrant.Ground:
-				case (int)XCMapTile.MapQuadrant.West:
-				case (int)XCMapTile.MapQuadrant.North:
-				case (int)XCMapTile.MapQuadrant.Content:
-					SelectedQuadrant = (XCMapTile.MapQuadrant)quad;
+				case XCMapTile.MapQuadrant.Ground:
+				case XCMapTile.MapQuadrant.West:
+				case XCMapTile.MapQuadrant.North:
+				case XCMapTile.MapQuadrant.Content:
+					SelectedQuadrant = quad;
+
 					SetSelected(e.Button, e.Clicks);
 
-//					if (PanelClicked != null)
+//					if (PanelClicked != null) // TODO: investigate that <-
 //						PanelClicked(this, new EventArgs());
 
 					if (e.Button == MouseButtons.Right) // see SetSelected() above^
@@ -155,9 +156,9 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		protected override void Render(Graphics g)
+		protected override void Render(Graphics backBuffer)
 		{
-			_drawService.Draw(g, _mapTile, SelectedQuadrant);
+			_drawService.Draw(backBuffer, _mapTile, SelectedQuadrant);
 		}
 	}
 }

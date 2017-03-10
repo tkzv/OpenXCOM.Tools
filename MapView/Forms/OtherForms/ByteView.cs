@@ -1,8 +1,4 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
 
 using XCom;
 
@@ -43,7 +39,6 @@ namespace PckView
 				if (value != image)
 				{
 					image = value;
-
 //					printData();
 				}
 			}
@@ -73,6 +68,7 @@ namespace PckView
 				}
 			}
 		} */
+
 
 		#region Windows Form Designer generated code
 
@@ -115,7 +111,6 @@ namespace PckView
 
 			base.Dispose(disposing);
 		}
-
 		#endregion
 	}
 }
