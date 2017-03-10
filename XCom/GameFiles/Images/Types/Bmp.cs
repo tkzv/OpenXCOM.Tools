@@ -1,24 +1,25 @@
 //#define hq2xWorks
 
 using System;
-using System.Drawing;
-using System.IO;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
-using System.Reflection;
+using System.IO;
+
 using XCom.Interfaces;
 
-#if hq2xWorks
-using hq2x;
-#endif
+//#if hq2xWorks
+//using hq2x;
+//#endif
 
 // now why did I just *know* that the nutcase who writes the low-level code for
 // image-handling was going to cram everything together ....
 // And I'm the nutcase who just went through the whole thing adding whitespace.
 
+
 namespace XCom
 {
-	public class Bmp
+	public static class Bmp
 	{
 		public static event LoadingDelegate LoadingEvent;
 		public static readonly byte DefaultTransparentIndex = 0xFE;
@@ -29,7 +30,7 @@ namespace XCom
 		public static void Save(string path, Bitmap image)
 		{
 			Console.WriteLine("Start");
-			BinaryWriter bw = new BinaryWriter(new FileStream(path, FileMode.Create));
+			var bw = new BinaryWriter(new FileStream(path, FileMode.Create));
 
 			int more = 0;
 			while ((image.Width + more) % 4 != 0)
@@ -85,7 +86,7 @@ namespace XCom
 //			bw.Write(bArr);
 			Console.WriteLine("Table");
 
-			Dictionary<Color, byte> table = new Dictionary<Color, byte>();
+			var table = new Dictionary<Color, byte>();
 
 			int idx = 0;
 			foreach(Color c in image.Palette.Entries)
@@ -119,7 +120,7 @@ namespace XCom
 
 		public static void Save24(Stream s, Bitmap image)
 		{
-			BinaryWriter bw = new BinaryWriter(s);
+			var bw = new BinaryWriter(s);
 
 			int more = 0;
 			while ((image.Width * 3 + more) % 4 != 0)
@@ -149,7 +150,7 @@ namespace XCom
 			{
 				for (int j = 0; j < image.Width; j++)
 				{
-					Color c = image.GetPixel(j, i);
+					var c = image.GetPixel(j, i);
 					bw.Write((byte)c.B);
 					bw.Write((byte)c.G);
 					bw.Write((byte)c.R);
@@ -169,7 +170,7 @@ namespace XCom
 		/// <param name="width">width of final bitmap</param>
 		/// <param name="height">height of final bitmap</param>
 		/// <param name="idx">image data</param>
-		/// <param name="pal">Palette to color the image with</param>
+		/// <param name="palette">Palette to color the image with</param>
 		/// <returns></returns>
 		public static Bitmap MakeBitmap8(
 									int width,
@@ -177,17 +178,17 @@ namespace XCom
 									byte[] idx,
 									ColorPalette palette)
 		{
-			Bitmap image = new Bitmap(
-									width, height,
-									PixelFormat.Format8bppIndexed);
-			Rectangle rect = new Rectangle(
-										0, 0,
-										width, height);
+			var image = new Bitmap(
+								width, height,
+								PixelFormat.Format8bppIndexed);
+			var rect = new Rectangle(
+								0, 0,
+								width, height);
 
-			BitmapData bitmapData = image.LockBits(
-												rect,
-												ImageLockMode.WriteOnly,
-												PixelFormat.Format8bppIndexed);
+			var bitmapData = image.LockBits(
+										rect,
+										ImageLockMode.WriteOnly,
+										PixelFormat.Format8bppIndexed);
 
 			//Console.WriteLine("Bitmap created: {0},{1}", width, height);
 
@@ -195,7 +196,7 @@ namespace XCom
 			// Copy the pixels from the source image in this loop.
 			// Because you want an index, convert RGB to the appropriate
 			// palette index here.
-			IntPtr pixels = bitmapData.Scan0;
+			var pixels = bitmapData.Scan0;
 
 			unsafe
 			{
@@ -236,23 +237,23 @@ namespace XCom
 		
 		public static Bitmap MakeBitmap(int width, int height, ColorPalette pal)
 		{
-			Bitmap image = new Bitmap(
-									width, height,
-									PixelFormat.Format8bppIndexed);
-			Rectangle rect = new Rectangle(
-									0, 0,
-									width, height);
+			var image = new Bitmap(
+								width, height,
+								PixelFormat.Format8bppIndexed);
+			var rect = new Rectangle(
+								0, 0,
+								width, height);
 
-			BitmapData bitmapData = image.LockBits(
-												rect,
-												ImageLockMode.WriteOnly,
-												PixelFormat.Format8bppIndexed);
+			var bitmapData = image.LockBits(
+										rect,
+										ImageLockMode.WriteOnly,
+										PixelFormat.Format8bppIndexed);
 
 			// Write to the temporary buffer that is provided by LockBits.
 			// Copy the pixels from the source image in this loop.
 			// Because you want an index, convert RGB to the appropriate
 			// palette index here.
-			IntPtr pixels = bitmapData.Scan0;
+			var pixels = bitmapData.Scan0;
 
 			unsafe
 			{
@@ -291,30 +292,30 @@ namespace XCom
 
 		public static void Draw(
 							Bitmap src,
-							Bitmap dest,
+							Bitmap dst,
 							int x,
 							int y)
 		{
-			Rectangle destRect = new Rectangle(
-											0, 0,
-											dest.Width, dest.Height);
+			var destRect = new Rectangle(
+									0, 0,
+									dst.Width, dst.Height);
 
-			BitmapData destData = dest.LockBits(
-											destRect,
-											ImageLockMode.WriteOnly,
-											PixelFormat.Format8bppIndexed);
+			var destData = dst.LockBits(
+									destRect,
+									ImageLockMode.WriteOnly,
+									PixelFormat.Format8bppIndexed);
 
-			Rectangle srcRect = new Rectangle(
-											0, 0,
-											src.Width, src.Height);
+			var srcRect = new Rectangle(
+									0, 0,
+									src.Width, src.Height);
 
-			BitmapData srcData = src.LockBits(
-											srcRect,
-											ImageLockMode.ReadOnly,
-											PixelFormat.Format8bppIndexed);
+			var srcData = src.LockBits(
+									srcRect,
+									ImageLockMode.ReadOnly,
+									PixelFormat.Format8bppIndexed);
 
-			IntPtr srcPixels = srcData.Scan0;
-			IntPtr destPixels = destData.Scan0;
+			var srcPixels = srcData.Scan0;
+			var dstPixels = destData.Scan0;
 
 			unsafe
 			{
@@ -328,9 +329,9 @@ namespace XCom
 
 				byte* dBits;
 				if (destData.Stride > 0)
-					dBits = (byte*)destPixels.ToPointer();
+					dBits = (byte*)dstPixels.ToPointer();
 				else
-					dBits = (byte*)destPixels.ToPointer() + destData.Stride * (dest.Height - 1);
+					dBits = (byte*)dstPixels.ToPointer() + destData.Stride * (dst.Height - 1);
 
 				uint dStride = (uint)Math.Abs(destData.Stride);
 
@@ -341,26 +342,26 @@ namespace XCom
 //						byte* s8bppPixel = sBits + ((row / PckImage.Scale) * sStride + (col / PckImage.Scale));
 						byte* s8bppPixel = sBits + row * sStride + col;
 
-						if (*s8bppPixel != DefaultTransparentIndex && row + y < dest.Height)
+						if (*s8bppPixel != DefaultTransparentIndex && row + y < dst.Height)
 							*d8bppPixel = *s8bppPixel;
 					}
 			}
 			src.UnlockBits(srcData);
-			dest.UnlockBits(destData);
+			dst.UnlockBits(destData);
 		}
 
-		public static Rectangle GetBoundsRect(Bitmap src,int transparent)
+		public static Rectangle GetBoundsRect(Bitmap src, int transparent)
 		{
-			Rectangle srcRect = new Rectangle(
-											0, 0,
-											src.Width, src.Height);
+			var srcRect = new Rectangle(
+									0, 0,
+									src.Width, src.Height);
 
-			BitmapData srcData = src.LockBits(
-											srcRect,
-											ImageLockMode.ReadOnly,
-											PixelFormat.Format8bppIndexed);
+			var srcData = src.LockBits(
+									srcRect,
+									ImageLockMode.ReadOnly,
+									PixelFormat.Format8bppIndexed);
 
-			IntPtr srcPixels = srcData.Scan0;
+			var srcPixels = srcData.Scan0;
 
 			int minR, minC, maxR, maxC;
 			unsafe
@@ -426,34 +427,34 @@ namespace XCom
 							maxC - minC + 3, maxR - minR + 3);
 		}
 
-		public static Bitmap Crop(Bitmap src,Rectangle bounds)
+		public static Bitmap Crop(Bitmap src, Rectangle bounds)
 		{
 			//Console.WriteLine(
 			//				"Old size: {0},{1} New Size: {2},{3}",
 			//				src.Width, src.Height,
 			//				bounds.Width, bounds.Height);
 
-			Bitmap dest = MakeBitmap(bounds.Width, bounds.Height, src.Palette);
-			Rectangle destRect = new Rectangle(
-											0, 0,
-											dest.Width, dest.Height);
+			var dst = MakeBitmap(bounds.Width, bounds.Height, src.Palette);
+			var destRect = new Rectangle(
+									0, 0,
+									dst.Width, dst.Height);
 
-			BitmapData destData = dest.LockBits(
-											destRect,
-											ImageLockMode.WriteOnly,
-											PixelFormat.Format8bppIndexed);
+			var dstData = dst.LockBits(
+									destRect,
+									ImageLockMode.WriteOnly,
+									PixelFormat.Format8bppIndexed);
 
-			Rectangle srcRect = new Rectangle(
-											0, 0,
-											src.Width, src.Height);
+			var srcRect = new Rectangle(
+									0, 0,
+									src.Width, src.Height);
 
-			BitmapData srcData = src.LockBits(
-											srcRect,
-											ImageLockMode.ReadOnly,
-											PixelFormat.Format8bppIndexed);
+			var srcData = src.LockBits(
+									srcRect,
+									ImageLockMode.ReadOnly,
+									PixelFormat.Format8bppIndexed);
 
-			IntPtr srcPixels = srcData.Scan0;
-			IntPtr destPixels = destData.Scan0;
+			var srcPixels = srcData.Scan0;
+			var dstPixels = dstData.Scan0;
 
 			unsafe
 			{
@@ -466,12 +467,12 @@ namespace XCom
 				uint sStride = (uint)Math.Abs(srcData.Stride);
 
 				byte* dBits;
-				if (destData.Stride > 0)
-					dBits = (byte*)destPixels.ToPointer();
+				if (dstData.Stride > 0)
+					dBits = (byte*)dstPixels.ToPointer();
 				else
-					dBits = (byte*)destPixels.ToPointer() + destData.Stride * (dest.Height - 1);
+					dBits = (byte*)dstPixels.ToPointer() + dstData.Stride * (dst.Height - 1);
 
-				uint dStride = (uint)Math.Abs(destData.Stride);
+				uint dStride = (uint)Math.Abs(dstData.Stride);
 
 				for (uint row = 0; row < bounds.Height; row++)
 					for (uint col = 0; col < bounds.Width; col++)
@@ -479,13 +480,13 @@ namespace XCom
 						byte* s8bppPixel = sBits + (row + bounds.Y) * sStride + (col + bounds.X);
 						byte* d8bppPixel = dBits + row * dStride + col;
 
-//						if (*s8bppPixel != PckImage.TransparentIndex && row + y < dest.Height)
+//						if (*s8bppPixel != PckImage.TransparentIndex && row + y < dst.Height)
 						*d8bppPixel = *s8bppPixel;
 					}
 			}
 			src.UnlockBits(srcData);
-			dest.UnlockBits(destData);
-			return dest;
+			dst.UnlockBits(dstData);
+			return dst;
 		}
 
 		public static void FireLoadingEvent(int curr, int total)
@@ -572,6 +573,7 @@ namespace XCom
 		/// <param name="collection">image collection</param>
 		/// <param name="pal">Palette to color the images with</param>
 		/// <param name="across">number of columns to use for images</param>
+		/// <param name="space"></param>
 		public static void SaveBMP(
 								string file,
 								XCImageCollection collection,
@@ -586,7 +588,7 @@ namespace XCom
 			if (collection.Count % across == 0)
 				mod = 0;
 
-			Bitmap b = MakeBitmap(
+			var b = MakeBitmap(
 							across * (collection.IXCFile.ImageSize.Width + space) - space,
 							(collection.Count / across + mod) * (collection.IXCFile.ImageSize.Height + space) - space,
 							pal.Colors);
@@ -604,6 +606,10 @@ namespace XCom
 		/// Loads a previously saved sprite sheet as a generic collection to be saved later
 		/// </summary>
 		/// <param name="b">bitmap containing sprites</param>
+		/// <param name="pal"></param>
+		/// <param name="imgWid"></param>
+		/// <param name="imgHei"></param>
+		/// <param name="space"></param>
 		/// <returns></returns>
 		public static XCImageCollection Load(
 											Bitmap b,
@@ -612,7 +618,7 @@ namespace XCom
 											int imgHei,
 											int space)
 		{
-			XCImageCollection list = new XCImageCollection();
+			var list = new XCImageCollection();
 
 			int cols = (b.Width  + space) / (imgWid + space);
 			int rows = (b.Height + space) / (imgHei + space);
@@ -651,16 +657,16 @@ namespace XCom
 			// image data in 8-bit form
 			byte[] data = new byte[imgWid * imgHei];
 
-			Rectangle srcRect = new Rectangle(
-											startX, startY,
-											imgWid, imgHei);
+			var srcRect = new Rectangle(
+									startX, startY,
+									imgWid, imgHei);
 
-			BitmapData srcData = src.LockBits(
-											srcRect,
-											ImageLockMode.ReadOnly,
-											PixelFormat.Format8bppIndexed);
+			var srcData = src.LockBits(
+									srcRect,
+									ImageLockMode.ReadOnly,
+									PixelFormat.Format8bppIndexed);
 
-			IntPtr srcPixels = srcData.Scan0;
+			var srcPixels = srcData.Scan0;
 
 			unsafe
 			{
@@ -691,9 +697,9 @@ namespace XCom
 				return null;
 			else
 				return (XCImageCollection)mi.Invoke(null, new object[]{ b });
-		}
+		} */
 
-		public static XCImage LoadSingle(Bitmap src, int num, Palette pal, Type collectionType)
+/*		public static XCImage LoadSingle(Bitmap src, int num, Palette pal, Type collectionType)
 		{
 //			return PckFile.FromBmpSingle(src, num, pal);
 

@@ -14,7 +14,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		:
 		Panel
 	{
-		private TileBase[] tiles;
+		private TileBase[] _tiles;
 
 		private const int _width  = 32;
 		private const int _height = 40;
@@ -117,12 +117,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			get
 			{
-				if (tiles != null && _across > 0)
+				if (_tiles != null && _across > 0)
 				{
-					if (tiles.Length % _across == 0)
-						return (tiles.Length / _across) * (_height + _space);
+					if (_tiles.Length % _across == 0)
+						return (_tiles.Length / _across) * (_height + _space);
 
-					return (1 + tiles.Length / _across) * (_height + _space);
+					return (1 + _tiles.Length / _across) * (_height + _space);
 				}
 				return 0;
 			}
@@ -136,11 +136,11 @@ namespace MapView.Forms.MapObservers.TileViews
 				{
 					if (_type == TileType.All)
 					{
-						tiles = new TileBase[value.Count + 1];
-						tiles[0] = null;
+						_tiles = new TileBase[value.Count + 1];
+						_tiles[0] = null;
 
 						for (int i = 0; i < value.Count; i++)
-							tiles[i + 1] = value[i];
+							_tiles[i + 1] = value[i];
 					}
 					else
 					{
@@ -150,26 +150,26 @@ namespace MapView.Forms.MapObservers.TileViews
 							if (value[i].Info.TileType == _type)
 								++qtyTiles;
 
-						tiles = new TileBase[qtyTiles + 1];
-						tiles[0] = null;
+						_tiles = new TileBase[qtyTiles + 1];
+						_tiles[0] = null;
 
 						for (int i = 0, j = 1; i < value.Count; i++)
 							if (value[i].Info.TileType == _type)
-								tiles[j++] = value[i];
+								_tiles[j++] = value[i];
 
 /*						var list = new List<TileBase>(); // NOTE: Replaced by above^ to add 1st blank/erasure-tile to each tile-group.
 						for (int i = 0; i < value.Count; i++)
 							if (value[i].Info.TileType == _type)
 								list.Add(value[i]);
-						tiles = list.ToArray(); */
+						_tiles = list.ToArray(); */
 					}
 
-					if (_sel >= tiles.Length)
+					if (_sel >= _tiles.Length)
 						_sel = 0;
 				}
 				else
 				{
-					tiles = null;
+					_tiles = null;
 					_sel = 0;
 				}
 
@@ -177,7 +177,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
-		private const int scrollAmount = 20;
+		private const int SCROLL = 20;
 
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
@@ -187,15 +187,15 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (e.Delta < 0)
 			{
-				if (_scrollBar.Value + scrollAmount < _scrollBar.Maximum)
-					_scrollBar.Value += scrollAmount;
+				if (_scrollBar.Value + SCROLL < _scrollBar.Maximum)
+					_scrollBar.Value += SCROLL;
 				else
 					_scrollBar.Value = _scrollBar.Maximum;
 			}
 			else if (e.Delta > 0)
 			{
-				if (_scrollBar.Value - scrollAmount > _scrollBar.Minimum)
-					_scrollBar.Value -= scrollAmount;
+				if (_scrollBar.Value - SCROLL > _scrollBar.Minimum)
+					_scrollBar.Value -= SCROLL;
 				else
 					_scrollBar.Value = _scrollBar.Minimum;
 			}
@@ -205,7 +205,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			this.Focus();
 
-			if (tiles != null)
+			if (_tiles != null)
 			{
 				int x =  e.X / (_width + _space);
 				int y = (e.Y - _startY) / (_height + _space);
@@ -213,13 +213,18 @@ namespace MapView.Forms.MapObservers.TileViews
 				if (x >= _across)
 					x = _across - 1;
 
-				_sel = y * _across + x;
-				_sel = (_sel < tiles.Length) ? _sel : tiles.Length - 1;
+				int tileTest = y * _across + x;
+				if (tileTest < _tiles.Length)
+				{
+					_sel = tileTest;
+//					_sel = (_sel < _tiles.Length) ? _sel
+//												  : _tiles.Length - 1;
 
-				if (TileChanged != null)
-					TileChanged(SelectedTile);
+					if (TileChanged != null)
+						TileChanged(SelectedTile);
 
-				Refresh();
+					Refresh();
+				}
 			}
 		}
 
@@ -230,7 +235,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private void PaintTiles(PaintEventArgs e)
 		{
-			if (tiles != null)
+			if (_tiles != null)
 			{
 				Graphics g = e.Graphics;
 
@@ -240,7 +245,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				const int height = _height + _space;
 				int top, left;
 
-				foreach (var tile in tiles)
+				foreach (var tile in _tiles)
 				{
 					top  = y * height + _startY;
 					left = x * width;
@@ -320,8 +325,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			get
 			{
-				if (_sel > -1 && _sel < tiles.Length)
-					return tiles[_sel];
+				if (_sel > -1 && _sel < _tiles.Length)
+					return _tiles[_sel];
 
 				return null;
 			}

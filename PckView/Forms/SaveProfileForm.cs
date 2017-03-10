@@ -1,23 +1,26 @@
 using System;
-using System.Drawing;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows.Forms;
-using XCom.Interfaces;
-using XCom;
 using System.IO;
+using System.Windows.Forms;
+
+using XCom;
+using XCom.Interfaces;
+
 
 namespace PckView
 {
-	public partial class SaveProfileForm : System.Windows.Forms.Form
+	public partial class SaveProfileForm
+		:
+		System.Windows.Forms.Form
 	{
 		private ImgProfile profileInfo;
+
 		public SaveProfileForm()
 		{
 			InitializeComponent();
 			profileInfo = new ImgProfile();
 			DialogResult = DialogResult.Cancel;
-			DSShared.Windows.RegistryInfo ri = new DSShared.Windows.RegistryInfo(this);
+			var ri = new DSShared.Windows.RegistryInfo(this);
 
 			if (!Directory.Exists(XCom.SharedSpace.Instance["CustomDir"].ToString()))
 				Directory.CreateDirectory(XCom.SharedSpace.Instance["CustomDir"].ToString());
@@ -27,7 +30,7 @@ namespace PckView
 
 			txtOutDir.Text = saveFile.InitialDirectory + "\\" + saveFile.FileName;
 
-			saveFile.Filter = "Image Profiles|*" + xcProfile.PROFILE_EXT;			
+			saveFile.Filter = "Image Profiles|*" + xcProfile.PROFILE_EXT;
 
 			foreach (string key in ((Dictionary<string, Palette>)SharedSpace.Instance["Palettes"]).Keys)
 				cbPalette.Items.Add(key);
@@ -44,10 +47,10 @@ namespace PckView
 		{
 			txtInfo.Text = "";
 			
-			if(ImgType!= null)
-				txtInfo.Text+="Type: " + ImgType.ExplorerDescription + "\n";
+			if (ImgType != null)
+				txtInfo.Text += "Type: " + ImgType.ExplorerDescription + "\n";
 			
-			txtInfo.Text+="Width: " + ImgWid + "\nHeight: " + ImgHei;
+			txtInfo.Text += "Width: " + ImgWid + "\nHeight: " + ImgHei;
 		}
 
 		public int ImgWid
@@ -75,25 +78,25 @@ namespace PckView
 			{
 				profileInfo.FileString = value;
 
-				saveFile.FileName = value.Substring(0,value.LastIndexOf(".")) + xcProfile.PROFILE_EXT;
-				txtOutDir.Text = saveFile.InitialDirectory + "\\" + saveFile.FileName;
+				saveFile.FileName = value.Substring(0,value.LastIndexOf(".", StringComparison.Ordinal)) + xcProfile.PROFILE_EXT;
+				txtOutDir.Text = saveFile.InitialDirectory + @"\" + saveFile.FileName;
 			}
 		}
 
 		private void btnCancel_Click(object sender, System.EventArgs e)
-		{			
+		{
 			Close();
 		}
 
 		private void btnSave_Click(object sender, System.EventArgs e)
 		{
-			DialogResult = DialogResult.OK;
+			DialogResult = DialogResult.OK; // TODO: why 2 dialogresultOK's
 
 			profileInfo.Description = txtDesc.Text;
 			if (radioSingle.Checked)
 			{
-				string file = txtOutDir.Text.Substring(txtOutDir.Text.LastIndexOf("\\")+1);
-				file = file.Substring(0,file.LastIndexOf("."));
+				string file = txtOutDir.Text.Substring(txtOutDir.Text.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+				file = file.Substring(0, file.LastIndexOf(".", StringComparison.Ordinal));
 				profileInfo.OpenSingle = file;
 			}
 			profileInfo.Palette = cbPalette.SelectedItem.ToString();
@@ -101,8 +104,7 @@ namespace PckView
 
 			((PckViewForm)SharedSpace.Instance["PckView"]).LoadProfile(txtOutDir.Text);
 
-			DialogResult = DialogResult.OK;
-
+			DialogResult = DialogResult.OK; // TODO: why 2 dialogresultOK's
 			Close();
 		}
 

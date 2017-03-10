@@ -1,12 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
+
 using DSShared.Windows;
-using XCom.Interfaces.Base;
+
 
 namespace XCom
 {
@@ -19,22 +15,23 @@ namespace XCom
 			InitializeComponent();
 
 			XCom.xConsole.Init(100);
-			XCom.xConsole.BufferChanged += xConsole_BufferChanged;
+			XCom.xConsole.BufferChanged += xConsole_BufferChanged; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
-			new RegistryInfo(this);
+			new RegistryInfo(this); // <- looks like this writes some registry entries ....
 
 			SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
 		}
 
+
 		private void xConsole_BufferChanged(Node current)
 		{
-			string buffer = current.str+"\n";
-			Node curr = current.next;
+			string buffer = current._st + "\n";
+			Node curr = current._next;
 
 			while (current != curr)
 			{
-				buffer = buffer + curr.str + "\n";
-				curr = curr.next;
+				buffer = buffer + curr._st + "\n";
+				curr = curr._next;
 			}
 
 			consoleText.Text = buffer;

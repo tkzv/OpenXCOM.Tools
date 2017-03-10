@@ -1,78 +1,79 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using XCom.Interfaces;
+
 using XCom;
-using System.Windows.Forms;
+
 
 namespace XCom
 {
 	public delegate void BufferChangedDelegate(Node current);
 
+
 	public class xConsole
 	{
-		private static Node currLine = null;
-		private static int numNodes;
+		private static Node _curLine = null;
+		private static int _qtyNodes;
 
 		public static event BufferChangedDelegate BufferChanged;
+
 
 		private xConsole()
 		{}
 
+
 		public static Node CurrNode
 		{
-			get { return currLine; }
+			get { return _curLine; }
 		}
 
 		public static int NumNodes
 		{
-			get { return numNodes; }
+			get { return _qtyNodes; }
 		}
 
-		private static void makeNodes(int numLines)
+		private static void makeNodes(int qtyLines)
 		{
-			if (currLine == null)
+			if (_curLine == null)
 			{
-				currLine = new Node("");
-				currLine.next = new Node("");
+				_curLine = new Node(String.Empty);
+				_curLine._next = new Node(String.Empty);
 
-				Node curr = currLine.next;
-				Node last = currLine;
-				curr.last = last;
-				for (int i = 2; i < numLines; i++)
+				Node curNode = _curLine._next;
+				Node lastNode = _curLine;
+				curNode._last = lastNode;
+				for (int i = 2; i < qtyLines; i++)
 				{
-					curr.next = new Node("");
-					curr = curr.next;
-					curr.last = last.next;
-					last = last.next;
+					curNode._next = new Node(String.Empty);
+					curNode = curNode._next;
+					curNode._last = lastNode._next;
+					lastNode = lastNode._next;
 				}
 
-				curr.next = currLine;
-				currLine.last = curr;
+				curNode._next = _curLine;
+				_curLine._last = curNode;
 			}
 			else
 			{
-				if (numLines > numNodes)
+				if (qtyLines > _qtyNodes)
 				{
-					Node curr = currLine;
-					Node last = currLine.last;
+					Node curNode = _curLine;
+					Node lastNode = _curLine._last;
 
-					for (int i = 0; i < numLines - numNodes; i++)
+					for (int i = 0; i < qtyLines - _qtyNodes; i++)
 					{
-						Node n = new Node("");
-						n.next = curr;
-						n.last = last;
-						last.next = n;
-						curr.last = n;
-						last = n;
+						var node = new Node(String.Empty);
+						node._next = curNode;
+						node._last = lastNode;
+						lastNode._next = node;
+						curNode._last = node;
+						lastNode = node;
 					}
 				}
 				else
 				{
-					for (int i = 0; i < numNodes - numLines; i++)
+					for (int i = 0; i < _qtyNodes - qtyLines; i++)
 					{
-						currLine.last = currLine.last.last;
-						currLine.last.next = currLine;
+						_curLine._last = _curLine._last._last;
+						_curLine._last._next = _curLine;
 					}
 				}
 			}
@@ -89,35 +90,35 @@ namespace XCom
 //			}
 //		}
 
-		public static void Init(int numLines)
+		public static void Init(int qtyLines)
 		{			
-			makeNodes(numLines);
-			numNodes = numLines;
+			makeNodes(qtyLines);
+			_qtyNodes = qtyLines;
 		}
 
-		public static void AddLine(string s)
+		public static void AddLine(string st)
 		{
-			currLine = currLine.last;
-			currLine.str = s;
+			_curLine = _curLine._last;
+			_curLine._st = st;
 
 			if (BufferChanged != null)
-				BufferChanged(currLine);
+				BufferChanged(_curLine);
 		}
 
-		public static void SetLine(string s)
+		public static void SetLine(string st)
 		{
-			currLine.str = s;
+			_curLine._st = st;
 
 			if (BufferChanged != null)
-				BufferChanged(currLine);
+				BufferChanged(_curLine);
 		}
 
-		public static void AddToLine(string s)
+		public static void AddToLine(string st)
 		{
-			currLine.str += s;
+			_curLine._st += st;
 
 			if (BufferChanged != null)
-				BufferChanged(currLine);
+				BufferChanged(_curLine);
 		}
 
 //		public void KeyDown(object sender, KeyEventArgs e)
@@ -128,7 +129,7 @@ namespace XCom
 //					AddLine(command);
 //					if (ExecuteCommand != null)
 //						ExecuteCommand(command);
-//					command = "";
+//					command = String.Empty;
 //					break;
 //
 //				case Keys.ShiftKey:
@@ -146,27 +147,29 @@ namespace XCom
 //					break;
 //
 //				default:
-//					char ch = (((char)e.KeyValue) + "").ToLower()[0];
-//	
-////					if(myFont.KeyValid(ch))
-////					{
-////						if (shift)
-////							command += myFont.ShiftValue(ch);
-////						else
-////							command += ch;
-////					}
-////					else
-////					{
-////						ch = e.KeyCode.ToString()[0];
-////						System.Console.WriteLine(e.KeyCode.ToString());
-////						if (myFont.KeyValid(ch))
-////						{
-////							if (shift)
-////								command += myFont.ShiftValue(ch);
-////							else
-////								command += ch;
-////						}
-////					}
+//					char ch = (((char)e.KeyValue) + String.Empty).ToLower()[0];
+//
+/*
+//					if (myFont.KeyValid(ch))
+//					{
+//						if (shift)
+//							command += myFont.ShiftValue(ch);
+//						else
+//							command += ch;
+//					}
+//					else
+//					{
+//						ch = e.KeyCode.ToString()[0];
+//						System.Console.WriteLine(e.KeyCode.ToString());
+//						if (myFont.KeyValid(ch))
+//						{
+//							if (shift)
+//								command += myFont.ShiftValue(ch);
+//							else
+//								command += ch;
+//						}
+//					}
+*/
 //					break;
 //			}
 //		}
@@ -182,16 +185,24 @@ namespace XCom
 //		}
 	}
 
+
+	/// <summary>
+	/// class Node
+	/// </summary>
 	public class Node
 	{
-		public Node last;
-		public Node next;
-		public string str;
+		public Node _last;
+		public Node _next;
+		public string _st;
 
-		public Node(string str)
+		/// <summary>
+		/// cTor
+		/// </summary>
+		/// <param name="st"></param>
+		public Node(string st)
 		{
-			next = null;
-			this.str = str;
+			_next = null;
+			_st = st;
 		}
 	}
 }

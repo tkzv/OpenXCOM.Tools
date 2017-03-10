@@ -1,14 +1,17 @@
 ﻿using System;
 
+
 namespace MapView.Forms.Error
 {
-	public class ErrorWindowAdapter : IErrorHandler
+	public class ErrorWindowAdapter
+		:
+		IErrorHandler
 	{
 		public void HandleException(Exception exception)
 		{
-			using (var window = new ErrorWindow(exception))
+			using (var errorWindow = new ErrorWindow(exception))
 			{
-				window.ShowDialog();
+				errorWindow.ShowDialog();
 			}
 		}
 	}

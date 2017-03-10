@@ -14,9 +14,8 @@ namespace MapView
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && components != null)
-			{
 				components.Dispose();
-			}
+
 			base.Dispose(disposing);
 		}
 
@@ -46,7 +45,7 @@ namespace MapView
 			this.txtUFO.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.txtUFO.Location = new System.Drawing.Point(85, 0);
 			this.txtUFO.Name = "txtUFO";
-			this.txtUFO.Size = new System.Drawing.Size(325, 19);
+			this.txtUFO.Size = new System.Drawing.Size(347, 19);
 			this.txtUFO.TabIndex = 0;
 			// 
 			// txtTFTD
@@ -54,7 +53,7 @@ namespace MapView
 			this.txtTFTD.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.txtTFTD.Location = new System.Drawing.Point(85, 0);
 			this.txtTFTD.Name = "txtTFTD";
-			this.txtTFTD.Size = new System.Drawing.Size(325, 19);
+			this.txtTFTD.Size = new System.Drawing.Size(347, 19);
 			this.txtTFTD.TabIndex = 1;
 			// 
 			// label1
@@ -80,7 +79,7 @@ namespace MapView
 			// btnFindUFO
 			// 
 			this.btnFindUFO.Dock = System.Windows.Forms.DockStyle.Right;
-			this.btnFindUFO.Location = new System.Drawing.Point(410, 0);
+			this.btnFindUFO.Location = new System.Drawing.Point(432, 0);
 			this.btnFindUFO.Name = "btnFindUFO";
 			this.btnFindUFO.Size = new System.Drawing.Size(42, 25);
 			this.btnFindUFO.TabIndex = 4;
@@ -90,7 +89,7 @@ namespace MapView
 			// btnFindTFTD
 			// 
 			this.btnFindTFTD.Dock = System.Windows.Forms.DockStyle.Right;
-			this.btnFindTFTD.Location = new System.Drawing.Point(410, 0);
+			this.btnFindTFTD.Location = new System.Drawing.Point(432, 0);
 			this.btnFindTFTD.Name = "btnFindTFTD";
 			this.btnFindTFTD.Size = new System.Drawing.Size(42, 25);
 			this.btnFindTFTD.TabIndex = 5;
@@ -100,7 +99,7 @@ namespace MapView
 			// okButton
 			// 
 			this.okButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.okButton.Location = new System.Drawing.Point(155, 55);
+			this.okButton.Location = new System.Drawing.Point(170, 50);
 			this.okButton.Name = "okButton";
 			this.okButton.Size = new System.Drawing.Size(135, 25);
 			this.okButton.TabIndex = 6;
@@ -115,7 +114,7 @@ namespace MapView
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(452, 25);
+			this.panel1.Size = new System.Drawing.Size(474, 25);
 			this.panel1.TabIndex = 7;
 			// 
 			// panel2
@@ -126,13 +125,13 @@ namespace MapView
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel2.Location = new System.Drawing.Point(0, 25);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(452, 25);
+			this.panel2.Size = new System.Drawing.Size(474, 25);
 			this.panel2.TabIndex = 8;
 			// 
 			// InstallWindow
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-			this.ClientSize = new System.Drawing.Size(452, 84);
+			this.ClientSize = new System.Drawing.Size(474, 76);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.okButton);
@@ -146,6 +145,7 @@ namespace MapView
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
 			this.ResumeLayout(false);
+
 		}
 		#endregion
 

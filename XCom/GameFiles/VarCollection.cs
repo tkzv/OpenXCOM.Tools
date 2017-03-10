@@ -2,171 +2,245 @@ using System;
 using System.Collections;
 using System.IO;
 
+
 namespace XCom
 {
+	/// <summary>
+	/// class VarCollection
+	/// </summary>
 	public class VarCollection
 	{
-		private Hashtable vars;
-		private VarCollection other;
-		private string baseVar;
-		private StreamReader sr;
+		private Hashtable _vars;
 
+		private string _baseVar;
+
+		private VarCollection _other;
+
+		private StreamReader _sr;
+
+
+		// TODO: Document the following 5 contructors. Figure out why not all
+		// class variables are initialized.
+
+		/// <summary>
+		/// cTor
+		/// </summary>
 		public VarCollection()
 		{
-			vars = new Hashtable();
-			other=null;
-			baseVar="";
+			_vars = new Hashtable();
+			_other = null;
+			_baseVar = String.Empty;
 		}
 
-		public StreamReader BaseStream
-		{
-			get{return sr;}
-		}
-
+		/// <summary>
+		/// cTor
+		/// </summary>
 		public VarCollection(StreamReader sr)
 		{
-			this.sr=sr;
-			vars = new Hashtable();
-			other=null;
+			_sr = sr;
+
+			_vars = new Hashtable();
+			_other = null;
 		}
 
-		public VarCollection(string baseVar):this()
+		/// <summary>
+		/// cTor
+		/// </summary>
+		public VarCollection(string baseVar)
+			:
+			this()
 		{
-			this.baseVar=baseVar;
+			_baseVar = baseVar;
 		}
 
-		public VarCollection(VarCollection other):this()
+		/// <summary>
+		/// cTor
+		/// </summary>
+		public VarCollection(VarCollection other)
+			:
+			this()
 		{
-			this.other=other;
+			_other = other;
 		}
 
-		public VarCollection(StreamReader sr,VarCollection vars)
+		/// <summary>
+		/// cTor
+		/// </summary>
+		public VarCollection(StreamReader sr, VarCollection vars)
 		{
-			this.vars=new Hashtable();
-			this.sr=sr;
-			other=vars;
+			_vars = new Hashtable();
+			_sr = sr;
+			_other = vars;
 		}
 
-		public void AddVar(string flag, string val)
+
+		/// <summary>
+		/// property BaseStream
+		/// </summary>
+		public StreamReader BaseStream
 		{
-			if(vars[val]==null)
-				vars[val] = new Variable(baseVar,flag+":",val);
-			else
-				((Variable)vars[val]).Inc(flag+":");
+			get { return _sr; }
 		}
 
+		/// <summary>
+		/// property Other
+		/// </summary>
 		public VarCollection Other
 		{
-			get{return other;}
+			get { return _other; }
 		}
 
+		/// <summary>
+		/// property Vars
+		/// </summary>
 		public Hashtable Vars
 		{
-			get{return vars;}
+			get { return _vars; }
 		}
 
-		public string ParseVar(string line)
-		{			
-			foreach(string s in vars.Keys)
-				line = line.Replace(s,(string)vars[s]);
-
-			if(other!=null)
-				return other.ParseVar(line);
-
-			return line;
-		}
-
+		/// <summary>
+		/// property Variables
+		/// </summary>
 		public ICollection Variables
 		{
-			get{return vars.Keys;}
+			get { return _vars.Keys; }
 		}
 
+
+		/// <summary>
+		/// AddVar
+		/// </summary>
+		/// <param name="flag"></param>
+		/// <param name="val"></param>
+		public void AddVar(string flag, string val)
+		{
+			if (_vars[val] == null)
+				_vars[val] = new Variable(_baseVar, flag + ":", val);
+			else
+				((Variable)_vars[val]).Inc(flag + ":");
+		}
+
+		/// <summary>
+		/// ParseVar
+		/// </summary>
+		/// <param name="line"></param>
+		/// <returns>string</returns>
+		public string ParseVar(string line)
+		{
+			foreach (string st in _vars.Keys)
+				line = line.Replace(st, (string)_vars[st]);
+
+			return (_other != null) ? _other.ParseVar(line)
+									: line;
+		}
+
+		/// <summary>
+		/// property this[var]
+		/// </summary>
 		public string this[string var]
 		{
 			get
 			{
-				if(other == null || vars[var]!=null)
-					return (string)vars[var];
-				return other[var];
+				if (_other == null || _vars[var] != null)
+					return (string)_vars[var];
+
+				return _other[var];
 			}
-			set
-			{
-				vars[var]=value;
-			}
+			set { _vars[var] = value; }
 		}
 
+		/// <summary>
+		/// ReadLine
+		/// </summary>
+		/// <returns>KeyVal</returns>
 		public KeyVal ReadLine()
 		{
-			string line = ReadLine(sr,this);
-			if(line==null)
-				return null;
-			int idx = line.IndexOf(':');
-			if(idx>0)
-				return new KeyVal(line.Substring(0,idx),line.Substring(idx+1));
-			else
-				return new KeyVal(line,"");
+			string line = ReadLine(_sr, this);
+			if (line != null)
+			{
+				int idx = line.IndexOf(':');
+				return (idx > 0) ? new KeyVal(line.Substring(0, idx), line.Substring(idx + 1))
+								 : new KeyVal(line, String.Empty);
+			}
+			return null;
 		}
 
+		/// <summary>
+		/// ReadLine
+		/// </summary>
+		/// <param name="sr"></param>
+		/// <returns>string</returns>
 		public string ReadLine(StreamReader sr)
 		{
-			return ReadLine(sr,this);
+			return ReadLine(sr, this);
 		}
 
-		public static string ReadLine(StreamReader sr,VarCollection vars)
+		/// <summary>
+		/// ReadLine
+		/// </summary>
+		/// <param name="sr"></param>
+		/// <param name="vars"></param>
+		/// <returns>string</returns>
+		public static string ReadLine(StreamReader sr, VarCollection vars)
 		{
-			string line = "";
+			string line = String.Empty;
 
-			while(true)
+			while (true)
 			{
-				do //get a good line - not a comment or empty string
+				do // get a good line - not a comment or empty string
 				{
-					if(sr.Peek()!=-1)
-						line = sr.ReadLine().Trim();
-					else
+					if (sr.Peek() == -1) // zilch, exit.
 						return null;
-				}while(line.Length==0 || line[0]=='#');
 
-				if(line[0]=='$') //cache variable, get another line
+					line = sr.ReadLine().Trim();
+				}
+				while (line.Length == 0 || line[0] == '#');
+
+				if (line[0] == '$') // cache variable, get another line
 				{
 					int idx = line.IndexOf(':');
-					string var = line.Substring(0,idx);
-					string val = vars.ParseVar(line.Substring(idx+1));
-					vars[var]=val;
+					string var = line.Substring(0, idx);
+					string val = vars.ParseVar(line.Substring(idx + 1));
+					vars[var] = val;
 				}
-				else //got a line
+				else // got a line
 					break;
 			}
 
-			if(line.IndexOf("$")>0) //replace any variables the line might have
+			if (line.IndexOf("$", StringComparison.Ordinal) > 0) // replace any variables the line might have
 				line = vars.ParseVar(line);
 			
 			return line;
 		}
 	}
 
+
+	/// <summary>
+	/// class KeyVal - helper class for VarCollection
+	/// </summary>
 	public class KeyVal
 	{
-		private string keyword,rest;
+		private string _keyword, _rest;
 
 		public KeyVal(string keyword,string rest)
 		{
-			this.keyword=keyword;
-			this.rest=rest;
+			_keyword = keyword;
+			_rest = rest;
 		}
 
 		public string Keyword
 		{
-			get{return keyword;}
+			get { return _keyword; }
 		}
 
 		public string Rest
 		{
-			get{return rest;}
+			get { return _rest; }
 		}
 
 		public override string ToString()
 		{
-			return keyword+":"+rest;
+			return _keyword + ":" + _rest;
 		}
 	}
 }

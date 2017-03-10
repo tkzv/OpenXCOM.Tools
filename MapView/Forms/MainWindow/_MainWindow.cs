@@ -113,7 +113,7 @@ namespace MapView
 
 			_mapView.Dock = DockStyle.Fill;
 
-			instance = this;
+			_instance = this;
 
 			mapList.TreeViewNodeSorter = new System.Collections.CaseInsensitiveComparer();
 
@@ -200,6 +200,7 @@ namespace MapView
 
 			LogFile.Instance.WriteLine("About to show window");
 			Show();
+
 			LogFile.Instance.Close(); // TODO: Keep logfile open until the program closes.
 		}
 
@@ -209,11 +210,11 @@ namespace MapView
 			GameInfo.Init(Palette.TFTDBattle, pathsFile);
 		}
 
-		private static MainWindow instance;
+		private static MainWindow _instance;
 
 		public static MainWindow Instance
 		{
-			get { return instance; }
+			get { return _instance; }
 		}
 
 		private void parseLine(XCom.KeyVal line, XCom.VarCollection vars)
@@ -558,12 +559,8 @@ namespace MapView
 
 				statusMapName.Text = imd.Name;
 
-				if (map != null)
-				{
-					tsMapSize.Text = map.MapSize.ToString();
-				}
-				else
-					tsMapSize.Text = "Size: n/a";
+				tsMapSize.Text = (map != null) ? map.MapSize.ToString()
+											   : "size: n/a";
 
 				if (miDoors.Checked) // turn off door animations
 				{

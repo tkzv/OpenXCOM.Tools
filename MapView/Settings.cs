@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Drawing;
+using System.Reflection;
 
 using XCom;
 
@@ -10,6 +10,7 @@ namespace MapView
 {
 	public delegate string ConvertObject(object o);
 	public delegate void ValueChangedDelegate(object sender, string keyword, object val);
+
 
 	/// <summary>
 	/// A wrapper around a Hashtable for Setting objects. Setting objects are
@@ -45,13 +46,13 @@ namespace MapView
 
 
 		public static void ReadSettings(
-									VarCollection vc,
-									KeyVal kv,
-									Settings currSettings)
+									VarCollection vars,
+									KeyVal keyVal,
+									Settings curSettings)
 		{
-			while ((kv = vc.ReadLine()) != null)
+			while ((keyVal = vars.ReadLine()) != null)
 			{
-				switch (kv.Keyword)
+				switch (keyVal.Keyword)
 				{
 					case "{": // starting out
 						break;
@@ -60,10 +61,10 @@ namespace MapView
 						return;
 
 					default:
-						if (currSettings [kv.Keyword] != null)
+						if (curSettings[keyVal.Keyword] != null)
 						{
-							currSettings[kv.Keyword].Value = kv.Rest;
-							currSettings[kv.Keyword].FireUpdate(kv.Keyword);
+							curSettings[keyVal.Keyword].Value = keyVal.Rest;
+							curSettings[keyVal.Keyword].FireUpdate(keyVal.Keyword);
 						}
 						break;
 				}
@@ -186,10 +187,8 @@ namespace MapView
 
 		private string convert(object o)
 		{
-			if (converters.ContainsKey(o.GetType()))
-				return converters[o.GetType()](o);
-
-			return o.ToString();
+			return (converters.ContainsKey(o.GetType())) ? converters[o.GetType()](o)
+														 : o.ToString();
 		}
 
 		private static string convertColor(object o)
@@ -292,11 +291,14 @@ namespace MapView
 			}
 		}
 
-		public string Description { get; set; }
+		public string Description
+		{ get; set; }
 
-		public string Category { get; set; }
+		public string Category
+		{ get; set; }
 
-		public string Name { get; set; }
+		public string Name
+		{ get; set; }
 
 		public void FireUpdate(string key, object val)
 		{
@@ -311,6 +313,10 @@ namespace MapView
 		}
 	}
 
+
+	/// <summary>
+	/// struct PropObj
+	/// </summary>
 	internal struct PropObj
 	{
 		public PropertyInfo pi;

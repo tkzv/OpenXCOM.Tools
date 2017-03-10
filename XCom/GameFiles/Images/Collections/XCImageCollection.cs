@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using XCom.Interfaces;
+
 
 namespace XCom
 {
@@ -34,7 +34,7 @@ namespace XCom
 
 		public void Hq2x()
 		{
-			foreach(XCImage i in this)
+			foreach (XCImage i in this)
 				i.Hq2x();
 
 			scale *= 2;
@@ -45,7 +45,7 @@ namespace XCom
 			get { return pal; }
 			set
 			{
-				foreach(XCImage i in this)
+				foreach (XCImage i in this)
 					i.Image.Palette = value.Colors;
 
 				pal = value;
@@ -54,10 +54,11 @@ namespace XCom
 
 		public new XCImage this[int i]
 		{
-			get { return (i < Count && i >= 0 ? base[i] : null); }
+			get { return (i < Count && i > -1) ? base[i]
+											   : null; }
 			set
 			{
-				if (i < Count && i >= 0)
+				if (i < Count && i > -1)
 					base[i] = value;
 				else
 				{

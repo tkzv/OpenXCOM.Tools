@@ -2,31 +2,36 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Forms;
+
 using Microsoft.Win32;
+
 
 namespace DSShared.Windows
 {
 	/// <summary>
-	/// Delegate for use in the saving and loading events raised in the RegistryInfo class
+	/// Delegate for use in the saving and loading events raised in the RegistryInfo class.
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
 	public delegate void RegistrySaveLoadHandler(object sender, RegistrySaveLoadEventArgs e);
 
+
 	/// <summary>
-	/// a class to help facilitate the saving and loading of values into the registry in a central location
+	/// A class to help facilitate the saving and loading of values into the registry in a central location.
 	/// </summary>
 	public class RegistryInfo
 	{
-		private Dictionary<string,PropertyInfo> properties;
-		private object obj;
-		private string name;
-		private bool saveOnClose = true;
+		private Dictionary<string, PropertyInfo> _properties;
 
-		private static string regKey = "DSShared";
+		private object _obj;
+		private string _name;
+
+//		private bool _saveOnClose = true;
+
+		private const string _regKey = "DSShared"; // was static not const. Cf, property 'RegKey'.
 
 		/// <summary>
-		/// Event fired when retrieving values from the registry. This happens after the values are read and set in the object
+		/// Event fired when retrieving values from the registry. This happens after the values are read and set in the object.
 		/// </summary>
 		public event RegistrySaveLoadHandler Loading;
 
@@ -35,34 +40,35 @@ namespace DSShared.Windows
 		/// </summary>
 		public event RegistrySaveLoadHandler Saving;
 
-		RegistryKey swKey = null;
-		RegistryKey riKey = null;
-		RegistryKey ppKey = null;
+//		RegistryKey _swKey = null;
+//		RegistryKey _riKey = null;
+//		RegistryKey _ppKey = null;
 
-		/// <summary>
-		/// Changes the global registry key everything will be saved under
+/*		/// <summary>
+		/// Gets/Sets the global registry key everything will be saved under.
 		/// </summary>
-		public static string RegKey
+		private static string RegKey
 		{
-			get { return regKey; }
-			set { regKey = value; }
-		}
+			get { return _regKey; }
+			set { _regKey = value; }
+		} */
+
 
 		/// <summary>
-		/// Constructor that uses the name parameter as the registry key to save values under
+		/// Constructor that uses the name parameter as the registry key to save values under.
 		/// </summary>
 		/// <param name="obj">the object to save/load values into the registry</param>
 		/// <param name="name">the name of the registry key to save/load</param>
 		public RegistryInfo(object obj, string name)
 		{
-			this.obj = obj;
-			this.name = name;
+			_obj = obj;
+			_name = name;
 
-			properties = new Dictionary<string, PropertyInfo>();
+			_properties = new Dictionary<string, PropertyInfo>();
 
-			if (obj is Form)
+			var f = (obj as Form);
+			if (f != null)
 			{
-				var f = (Form) obj;
 				f.StartPosition = FormStartPosition.Manual;
 				f.Load += Load;
 				f.Closing += Closing;
@@ -71,49 +77,53 @@ namespace DSShared.Windows
 		}
 
 		/// <summary>
-		/// Constructor that uses the ToString() value of the object as the name of the constructor parameter
+		/// Constructor that uses the ToString() value of the object as the name of the constructor parameter.
 		/// </summary>
 		/// <param name="obj"></param>
 		public RegistryInfo(object obj)
 			:
-			this(obj, obj.GetType().ToString()){}
+			this(obj, obj.GetType().ToString())
+		{}
 
-		/// <summary>
+
+		// TODO: Implement a btn to clear registry keys. See 'PathsEditor'.
+
+/*		/// <summary>
 		/// Deletes the key located at HKEY_CURRENT_USER\Software\RegKey\
-		/// RegKey is the public static parameter of this class
+		/// RegKey is the public static parameter of this class.
 		/// </summary>
 		/// <param name="saveOnClose">if false, a future call to Save() will have no effect</param>
 		public void ClearKey(bool saveOnClose)
 		{
 			RegistryKey swKey = Registry.CurrentUser.CreateSubKey("Software");
-			RegistryKey riKey = swKey.CreateSubKey(regKey);
-			riKey.DeleteSubKey(name);
-			this.saveOnClose = saveOnClose;
-		}
+			RegistryKey riKey = swKey.CreateSubKey(_regKey);
+			riKey.DeleteSubKey(_name);
+			_saveOnClose = saveOnClose;
+		} */
 
-		/// <summary>
-		/// Calls ClearKey(false)
+/*		/// <summary>
+		/// Calls ClearKey(false).
 		/// </summary>
 		public void ClearKey()
 		{
 			ClearKey(false);
-		}
+		} */
 
 		/// <summary>
-		/// loads the specified values from the registry. parameters match those needed for a Form.Load event
+		/// Loads the specified values from the registry. Parameters match those needed for a Form.Load event.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		public void Load(object sender, EventArgs e)
+		private void Load(object sender, EventArgs e)
 		{
 			RegistryKey swKey = Registry.CurrentUser.CreateSubKey("Software");
-			RegistryKey riKey = swKey.CreateSubKey(regKey);
-			RegistryKey ppKey = riKey.CreateSubKey(name);
+			RegistryKey riKey = swKey.CreateSubKey(_regKey);
+			RegistryKey ppKey = riKey.CreateSubKey(_name);
 
-			foreach (string s in properties.Keys)
-				properties[s].SetValue(
-									obj,
-									ppKey.GetValue(s, properties[s].GetValue(obj, null)),
+			foreach (string st in _properties.Keys)
+				_properties[st].SetValue(
+									_obj,
+									ppKey.GetValue(st, _properties[st].GetValue(_obj, null)),
 									null);
 
 			if (Loading != null)
@@ -124,98 +134,99 @@ namespace DSShared.Windows
 			swKey.Close();
 		}
 
-		/// <summary>
-		/// Opens the registry key and returns it for custom read/write
+/*		/// <summary>
+		/// Opens the registry key and returns it for custom read/write.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>RegistryKey</returns>
 		public RegistryKey OpenKey()
 		{
-			if (swKey == null)
+			if (_swKey == null)
 			{
-				swKey = Registry.CurrentUser.CreateSubKey("Software");
-				riKey = swKey.CreateSubKey(regKey);
-				ppKey = riKey.CreateSubKey(name);
+				_swKey = Registry.CurrentUser.CreateSubKey("Software");
+				_riKey = _swKey.CreateSubKey(_regKey);
+				_ppKey = _riKey.CreateSubKey(_name);
 			}
-			return ppKey;
-		}
+			return _ppKey;
+		} */
 
-		/// <summary>
-		/// Closes the registry key previously opened by OpenKey()
+/*		/// <summary>
+		/// Closes the registry key previously opened by OpenKey().
 		/// </summary>
 		public void CloseKey()
 		{
-			if (ppKey != null)
+			if (_ppKey != null)
 			{
-				ppKey.Close();
-				riKey.Close();
-				swKey.Close();
+				_ppKey.Close();
+				_riKey.Close();
+				_swKey.Close();
 			}
-			ppKey =
-			riKey =
-			swKey = null;
-		}
+			_ppKey =
+			_riKey =
+			_swKey = null;
+		} */
 
 		/// <summary>
-		/// Adds properties to be saved/loaded
+		/// Adds properties to be saved/loaded.
 		/// </summary>
 		/// <param name="names">the names of the properties to be saved/loaded</param>
 		public void AddProperty(params string[] names)
 		{
-			Type t = obj.GetType();
-			foreach (string s in names)
-				AddProperty(t.GetProperty(s));
+			var type = _obj.GetType();
+			foreach (string st in names)
+				AddProperty(type.GetProperty(st));
 		}
 
 		/// <summary>
-		/// adds a property to be saved/loaded
+		/// Adds a property to be saved/loaded.
 		/// </summary>
 		/// <param name="property"></param>
-		public void AddProperty(PropertyInfo property)
+		private void AddProperty(PropertyInfo property)
 		{
-			properties[property.Name] = property;
+			_properties[property.Name] = property;
 		}
 
 		/// <summary>
-		/// Saves the specified values into the registry
+		/// Saves the specified values into the registry.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		public void Save(object sender, EventArgs e)
+		private void Save(object sender, EventArgs e)
 		{
-			var form = obj as Form;
+			var form = _obj as Form;
 			if (form != null)
 				form.WindowState = FormWindowState.Normal;
 
-			if (saveOnClose)
-			{
-				RegistryKey swKey = Registry.CurrentUser.CreateSubKey("Software");
-				RegistryKey riKey = swKey.CreateSubKey(regKey);
-				RegistryKey ppKey = riKey.CreateSubKey(name);
+//			if (_saveOnClose)
+//			{
+			RegistryKey swKey = Registry.CurrentUser.CreateSubKey("Software");
+			RegistryKey riKey = swKey.CreateSubKey(_regKey);
+			RegistryKey ppKey = riKey.CreateSubKey(_name);
 
-				foreach (string s in properties.Keys)
-					ppKey.SetValue(
-								s,
-								properties[s].GetValue(obj, null));
+			foreach (string st in _properties.Keys)
+				ppKey.SetValue(
+							st,
+							_properties[st].GetValue(_obj, null));
 
-				if (Saving != null)
-					Saving(this, new RegistrySaveLoadEventArgs(ppKey));
+			if (Saving != null)
+				Saving(this, new RegistrySaveLoadEventArgs(ppKey));
 
-				ppKey.Close();
-				riKey.Close();
-				swKey.Close();
-			}
+			ppKey.Close();
+			riKey.Close();
+			swKey.Close();
+//			}
 		}
 
 		/// <summary>
-		/// Method intended for use with Form.Closing events - directly calls Save
+		/// Method intended for use with Form.Closing events - directly calls Save().
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		public void Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		private void Closing(object sender, EventArgs e)
 		{
 			Save(sender, e);
 		}
 	}
+
 
 	/// <summary>
 	/// EventArgs for saving and loading events
@@ -224,23 +235,23 @@ namespace DSShared.Windows
 		:
 		EventArgs
 	{
-		private RegistryKey key;
+		private readonly RegistryKey _key;
 
 		/// <summary>
-		/// Constructor
+		/// cTor
 		/// </summary>
-		/// <param name="openKey">Registry key that has been opened for reading and writing to</param>
+		/// <param name="openKey">registry key that has been opened for reading and writing to</param>
 		public RegistrySaveLoadEventArgs(RegistryKey openKey)
 		{
-			this.key = openKey;
+			_key = openKey;
 		}
 
 		/// <summary>
-		/// The registry key that is now open for saving and loading to. Do not close the key when finished
+		/// The registry key that is now open for saving and loading to. Do not close the key when finished.
 		/// </summary>
 		public RegistryKey OpenKey
 		{
-			get { return key; }
+			get { return _key; }
 		}
 	}
 }

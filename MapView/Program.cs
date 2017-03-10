@@ -1,6 +1,5 @@
 using System;
-using System.Reflection;
-using System.Windows.Forms;
+
 
 namespace MapView
 {
@@ -9,19 +8,27 @@ namespace MapView
 		[STAThread]
 		public static void Main()
 		{
-#if RELEASE
-// NOTE: "RELEASE" doesn't seem to be defined anywhere.
-			ReleaseRun();
-#else
-			TestRun();
-#endif
+			var startup = new Startup();
+			startup.RunProgram();
 		}
+	}
+}
 
-		private static void ReleaseRun()
+
+//using System.Reflection;
+//using System.Windows.Forms;
+
+//#if RELEASE
+//			RunRelease(); // NOTE: "RELEASE" doesn't seem to be defined anywhere.
+//#else
+//			RunDebug();
+//#endif
+
+/*		private static void RunRelease()
 		{
 			// https://msdn.microsoft.com/en-us/library/system.appdomain.aspx
 			// Construct and initialize settings for a second AppDomain.
-			AppDomainSetup ads = new AppDomainSetup();
+			var ads = new AppDomainSetup();
 			ads.ApplicationBase = System.Environment.CurrentDirectory;
 			ads.DisallowBindingRedirects = false;
 			ads.DisallowCodeDownload = true;
@@ -32,20 +39,18 @@ namespace MapView
 
 			// Create an instance of MarshalByRefType in the second AppDomain.
 			// A proxy to the object is returned.
-			Startup startup = (Startup)ad2.CreateInstanceAndUnwrap(
-																Assembly.GetEntryAssembly().FullName,
-																typeof(Startup).FullName);
+			var startup = (Startup)ad2.CreateInstanceAndUnwrap(
+															Assembly.GetEntryAssembly().FullName,
+															typeof(Startup).FullName);
 
 			startup.RunProgram();
 
 			//Console.WriteLine("Disposing of appdomain");
 			AppDomain.Unload(ad2);
-		}
+		} */
 
-		private static void TestRun()
+/*		private static void RunDebug()
 		{
 			var startup = new Startup();
 			startup.RunProgram();
-		}
-	}
-}
+		} */

@@ -1,31 +1,29 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
 using System.Windows.Forms;
+
 
 namespace MapView
 {
 	public class TilesetForm
 		:
-		System.Windows.Forms.Form
+		Form
 	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox txtTileset;
-		private System.Windows.Forms.Button btnOk;
+		private Label label1;
+		private TextBox txtTileset;
+		private Button btnOk;
 		private System.ComponentModel.Container components = null;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
+		private Label label2;
+		private Label label3;
 
 		private string txt, mapPath, rmpPath, blanksPath;
 
-		private System.Windows.Forms.TextBox txtRmp;
-		private System.Windows.Forms.TextBox txtMap;
-		private System.Windows.Forms.Button btnFindMap;
-		private System.Windows.Forms.Button btnFindBlank;
-		private System.Windows.Forms.TextBox txtBlank;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Button btnFindRmp;
+		private TextBox txtRmp;
+		private TextBox txtMap;
+		private Button btnFindMap;
+		private Button btnFindBlank;
+		private TextBox txtBlank;
+		private Label label4;
+		private Button btnFindRmp;
 
 		public TilesetForm()
 		{
@@ -74,18 +72,18 @@ namespace MapView
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.txtTileset = new System.Windows.Forms.TextBox();
-			this.btnOk = new System.Windows.Forms.Button();
-			this.txtRmp = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.txtMap = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.btnFindMap = new System.Windows.Forms.Button();
-			this.btnFindRmp = new System.Windows.Forms.Button();
-			this.btnFindBlank = new System.Windows.Forms.Button();
-			this.txtBlank = new System.Windows.Forms.TextBox();
-			this.label4 = new System.Windows.Forms.Label();
+			this.label1 = new Label();
+			this.txtTileset = new TextBox();
+			this.btnOk = new Button();
+			this.txtRmp = new TextBox();
+			this.label2 = new Label();
+			this.txtMap = new TextBox();
+			this.label3 = new Label();
+			this.btnFindMap = new Button();
+			this.btnFindRmp = new Button();
+			this.btnFindBlank = new Button();
+			this.txtBlank = new TextBox();
+			this.label4 = new Label();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -200,11 +198,11 @@ namespace MapView
 			this.Controls.Add(this.btnOk);
 			this.Controls.Add(this.txtTileset);
 			this.Controls.Add(this.label1);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.FormBorderStyle = FormBorderStyle.FixedSingle;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TilesetForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.StartPosition = FormStartPosition.CenterParent;
 			this.Text = "TilesetForm";
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -213,7 +211,7 @@ namespace MapView
 
 		private void btnOk_Click(object sender, System.EventArgs e)
 		{
-			if (txtTileset.Text == "")
+			if (String.IsNullOrEmpty(txtTileset.Text))
 			{
 //				Dialog.ShowDialog(this, "You must specify a map name");
 				MessageBox.Show(
@@ -224,7 +222,7 @@ namespace MapView
 				return;
 			}
 
-			if (txtMap.Text == "")
+			if (String.IsNullOrEmpty(txtMap.Text))
 			{
 //				Dialog.ShowDialog(this, "You must have a map path");
 				MessageBox.Show(
@@ -235,7 +233,7 @@ namespace MapView
 				return;
 			}
 
-			if (txtRmp.Text == "")
+			if (String.IsNullOrEmpty(txtRmp.Text))
 			{
 				MessageBox.Show(
 							this,
@@ -245,7 +243,7 @@ namespace MapView
 				return;
 			}
 
-			if (txtBlank.Text == "")
+			if (String.IsNullOrEmpty(txtBlank.Text))
 			{
 				MessageBox.Show(
 							this,

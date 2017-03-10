@@ -1,63 +1,67 @@
 using System;
-using System.IO;
 using System.Collections;
+using System.IO;
+
 
 namespace XCom
 {
 	public class Variable
 	{
-		private static int count=0;
+		private readonly string _name;
+		private readonly string _value;
 
-		private string varName;
-		private string varValue;
-		private ArrayList list;
+		private static int _count = 0;
 
-		public Variable(string prefix,string post)
+		private readonly ArrayList _list;
+
+
+		public Variable(string prefix, string post)
 		{
-			varName = "${var"+(count++)+"}";
-			varValue=post;
-			list = new ArrayList();
-			list.Add(prefix);
+			_name = "${var" + (_count++) + "}";
+			_value = post;
+			_list = new ArrayList();
+			_list.Add(prefix);
 		}
+
+		public Variable(string baseVar, string prefix, string post)
+		{
+			_name = "${var" + baseVar + (_count++) + "}";
+			_value = post;
+			_list = new ArrayList();
+			_list.Add(prefix);
+		}
+
 
 		public string Name
 		{
-			get{return varName;}
+			get { return _name; }
 		}
 
 		public string Value
 		{
-			get{return varValue;}
-		}
-
-		public Variable(string baseVar,string prefix,string post)
-		{
-			varName = "${var"+baseVar+(count++)+"}";
-			varValue=post;
-			list = new ArrayList();
-			list.Add(prefix);
+			get { return _value; }
 		}
 
 		public void Inc(string prefix)
 		{
-			list.Add(prefix);
+			_list.Add(prefix);
 		}
 
 		public void Write(StreamWriter sw)
 		{
-			Write(sw,"");
+			Write(sw, String.Empty);
 		}
 
-		public void Write(StreamWriter sw, string pref)
+		public void Write(StreamWriter sw, string prefix)
 		{
-			if(list.Count>1)
+			if (_list.Count > 1)
 			{
-				sw.WriteLine("\n"+pref+varName+":"+varValue);
-				foreach(string pre in list)
-					sw.WriteLine(pref+pre+varName);
+				sw.WriteLine("\n" + prefix + _name + ":" + _value);
+				foreach (string st in _list)
+					sw.WriteLine(prefix + st + _name);
 			}
 			else
-				sw.WriteLine(pref+(string)list[0]+varValue);
+				sw.WriteLine(prefix + (string)_list[0] + _value);
 		}
 	}
 }

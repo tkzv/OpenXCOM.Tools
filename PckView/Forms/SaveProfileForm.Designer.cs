@@ -7,13 +7,9 @@ namespace PckView
 		/// </summary>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing)
-			{
-				if (components != null)
-				{
-					components.Dispose();
-				}
-			}
+			if (disposing && components != null)
+				components.Dispose();
+
 			base.Dispose(disposing);
 		}
 
@@ -59,8 +55,7 @@ namespace PckView
 			this.lblHelp.Name = "lblHelp";
 			this.lblHelp.Size = new System.Drawing.Size(474, 40);
 			this.lblHelp.TabIndex = 0;
-			this.lblHelp.Text = "Profiles saved in the \'custom\' directory will be automatically loaded upon progra" +
-				"m startup";
+			this.lblHelp.Text = "Profiles saved in the \'custom\' directory will be automatically loaded upon program startup";
 			// 
 			// groupBox1
 			// 

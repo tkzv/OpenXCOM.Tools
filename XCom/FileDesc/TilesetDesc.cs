@@ -8,31 +8,35 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
-	public class TilesetDesc:FileDesc
+	public class TilesetDesc
+		:
+		FileDesc
 	{
-		private readonly Dictionary<string, ITileset> tilesets;
+		private readonly Dictionary<string, ITileset> _tilesets;
+
 //		private double version;
 
 
 		public TilesetDesc()
 			:
-			base("")
+			base(String.Empty)
 		{
-			tilesets = new Dictionary<string, ITileset>();
+			_tilesets = new Dictionary<string, ITileset>();
 		}
 
-		public TilesetDesc(string inFile, VarCollection v)
+		public TilesetDesc(string inFile, VarCollection vars)
 			:
 			base(inFile)
 		{
-			tilesets = new Dictionary<string, ITileset>();
+			_tilesets = new Dictionary<string, ITileset>();
+
 			var sr = new StreamReader(File.OpenRead(inFile));
-			var vars = new VarCollection(sr, v);
+			var vars1 = new VarCollection(sr, vars);
 
 			string line, name, keyword;
 			int idx;
 
-			while ((line = vars.ReadLine(sr)) != null)
+			while ((line = vars1.ReadLine(sr)) != null)
 			{
 				idx = line.IndexOf(':');
 				name = line.Substring(idx + 1);
@@ -41,7 +45,7 @@ namespace XCom
 				switch (keyword.ToLower())
 				{
 					case "tileset":
-						line = VarCollection.ReadLine(sr, vars);
+						line = VarCollection.ReadLine(sr, vars1);
 						idx = line.IndexOf(':');
 						keyword = line.Substring(0, idx).ToLower();
 
@@ -51,16 +55,16 @@ namespace XCom
 								switch (int.Parse(line.Substring(idx + 1)))
 								{
 //									case 0:
-//										tilesets[name] = new Type0Tileset(name, sr, new VarCollection(vars));
+//										_tilesets[name] = new Type0Tileset(name, sr, new VarCollection(vars1));
 //										break;
 									case 1:
-										tilesets[name] = new XCTileset(name, sr, new VarCollection(vars));
+										_tilesets[name] = new XCTileset(name, sr, new VarCollection(vars1));
 										break;
 								}
 								break;
 
 							default:
-								Console.WriteLine("Type line not found: " + line);
+								Console.WriteLine(string.Format("Type line not found: {0}", line));
 								break;
 						}
 						break;
@@ -70,7 +74,7 @@ namespace XCom
 //						break;
 
 					default:
-						Console.WriteLine("Unknown line: " + line);
+						Console.WriteLine(string.Format("Unknown line: {0}", line));
 						break;
 				}
 			}
@@ -83,44 +87,46 @@ namespace XCom
 								string rmpPath,
 								string blankPath)
 		{
-			IXCTileset tSet = new XCTileset(name);
-			tSet.MapPath = mapPath;
-			tSet.RmpPath = rmpPath;
-			tSet.BlankPath = blankPath;
-			tilesets[name] = tSet;
-			return tSet;
+			var tileset = new XCTileset(name);
+
+			tileset.MapPath   = mapPath;
+			tileset.RmpPath   = rmpPath;
+			tileset.BlankPath = blankPath;
+
+			return (_tilesets[name] = tileset);
 		}
 
 		public Dictionary<string, ITileset> Tilesets
 		{
-			get { return tilesets; }
+			get { return _tilesets; }
 		}
 
 		public override void Save(string outFile)
 		{
-			var vc = new VarCollection("Path"); // iterate thru each tileset, call save on them
-			var sw = new StreamWriter(outFile);
+			var vars = new VarCollection("Path"); // iterate thru each tileset, call save on them
 
-			foreach (string s in tilesets.Keys)
+			foreach (string st in _tilesets.Keys)
 			{
-				var ts = (IXCTileset)tilesets[s];
-				if (ts != null)
+				var tileset = (IXCTileset)_tilesets[st];
+				if (tileset != null)
 				{
-					vc.AddVar("rootPath", ts.MapPath);
-					vc.AddVar("rmpPath", ts.RmpPath);
-					vc.AddVar("blankPath", ts.BlankPath);
+					vars.AddVar("rootPath",  tileset.MapPath);
+					vars.AddVar("rmpPath",   tileset.RmpPath);
+					vars.AddVar("blankPath", tileset.BlankPath);
 				}
 			}
 
-			foreach (string v in vc.Variables)
+			var sw = new StreamWriter(outFile);
+
+			foreach (string key in vars.Variables)
 			{
-				var var = (Variable)vc.Vars[v];
-				sw.WriteLine(var.Name + ":" + var.Value);
+				var val = (Variable)vars.Vars[key];
+				sw.WriteLine(string.Format("{0}:{1}", val.Name, val.Value));
 			}
 
-			foreach (string s in tilesets.Keys)
-				if (tilesets[s] != null)
-					((IXCTileset)tilesets[s]).Save(sw,vc);
+			foreach (string st in _tilesets.Keys)
+				if (_tilesets[st] != null)
+					((IXCTileset)_tilesets[st]).Save(sw, vars);
 
 			sw.Close();
 		}

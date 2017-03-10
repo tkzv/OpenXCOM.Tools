@@ -1,58 +1,55 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
-using System.Drawing;
-using XCom.Interfaces;
-using System.Reflection;
-using XCom.Interfaces.Base;
+
 
 namespace XCom
 {
-	public delegate void ParseLineDelegate(KeyVal kv, VarCollection vars);
+	public delegate void ParseLineDelegate(KeyVal keyVal, VarCollection vars);
 
-	public class GameInfo
+
+	public static class GameInfo
 	{
-		private static Palette currentPalette = Palette.UFOBattle;
-//		private static Palette currentPalette = Palette.TFTDBattle;
+		private static Palette _palette = Palette.UFOBattle;
+//		private static Palette _palette = Palette.TFTDBattle;
 
-		private static ImageInfo imageInfo;
-		private static TilesetDesc tileInfo;
+		private static ImageInfo _imageInfo;
+		private static TilesetDesc _tilesetDesc;
 //		private static IWarningHandler WarningHandler;
 
-		private static Dictionary<Palette, Dictionary<string, PckFile>> pckHash;
+		private static Dictionary<Palette, Dictionary<string, PckFile>> _pckHash;
 
 		public static event ParseLineDelegate ParseLine;
 
-		public static void Init(Palette p, DSShared.PathInfo paths)
+		public static void Init(Palette palette, DSShared.PathInfo paths)
 		{
-			currentPalette = p;
-			pckHash = new Dictionary<Palette, Dictionary<string, PckFile>>();
+			_palette = palette;
+			_pckHash = new Dictionary<Palette, Dictionary<string, PckFile>>();
 
-			VarCollection vars = new VarCollection(new StreamReader(File.OpenRead(paths.ToString())));
+			var vars = new VarCollection(new StreamReader(File.OpenRead(paths.ToString())));
 
 			Directory.SetCurrentDirectory(paths.Path);
 
 			xConsole.Init(20);
-			KeyVal kv = null;
 
-			while ((kv = vars.ReadLine()) != null)
+			KeyVal keyVal = null;
+			while ((keyVal = vars.ReadLine()) != null)
 			{
-				switch (kv.Keyword)
+				switch (keyVal.Keyword)
 				{
-					case "mapdata": /* mapedit */
-						tileInfo = new TilesetDesc(kv.Rest, vars);
+					case "mapdata": // MapEdit.dat ref in Paths.pth
+						_tilesetDesc = new TilesetDesc(keyVal.Rest, vars);
 						break;
 
-					case "images": /* mapedit */
-						imageInfo = new ImageInfo(kv.Rest, vars);
+					case "images": // Images.dat ref in Paths.pth
+						_imageInfo = new ImageInfo(keyVal.Rest, vars);
 						break;
 
 					default:
 						if (ParseLine != null)
-							ParseLine(kv, vars);
+							ParseLine(keyVal, vars);
 						else
-							xConsole.AddLine("Error in paths file: " + kv);
+							xConsole.AddLine("GameInfo: Error in Paths.pth file: " + keyVal);
 						break;
 				}
 			}
@@ -62,28 +59,28 @@ namespace XCom
 
 		public static ImageInfo ImageInfo
 		{
-			get { return imageInfo; }
+			get { return _imageInfo; }
 		}
 
 		public static TilesetDesc TilesetInfo
 		{
-			get { return tileInfo; }
+			get { return _tilesetDesc; }
 		}
 
 		public static Palette DefaultPalette
 		{
-			get { return currentPalette; }
-			set { currentPalette = value; }
+			get { return _palette; }
+			set { _palette = value; }
 		}
 
 		public static PckFile GetPckFile(string imageSet, Palette p)
 		{
-			return imageInfo.Images[imageSet].GetPckFile(p);
+			return _imageInfo.Images[imageSet].GetPckFile(p);
 		}
 
 		public static PckFile GetPckFile(string imageSet)
 		{
-			return GetPckFile(imageSet, currentPalette);
+			return GetPckFile(imageSet, _palette);
 		}
 
 		public static PckFile CachePck(
@@ -92,36 +89,36 @@ namespace XCom
 									int bpp,
 									Palette p)
 		{
-			if (pckHash == null)
-				pckHash = new Dictionary<Palette, Dictionary<string, PckFile>>();
+			if (_pckHash == null)
+				_pckHash = new Dictionary<Palette, Dictionary<string, PckFile>>();
 
-			if (!pckHash.ContainsKey(p))
-				pckHash.Add(p, new Dictionary<string, PckFile>());
+			if (!_pckHash.ContainsKey(p))
+				_pckHash.Add(p, new Dictionary<string, PckFile>());
 
-			//if(pckHash[p][basePath+basename]==null)
+//			if (_pckHash[p][basePath + basename] == null)
 			var path = basePath + basename;
-			var paleteHash = pckHash[p];
+			var paletteHash = _pckHash[p];
 
-			if (!paleteHash.ContainsKey(path))
+			if (!paletteHash.ContainsKey(path))
 			{
 				using (var pckStream = File.OpenRead(path + ".PCK"))
 				using (var tabStream = File.OpenRead(path + ".TAB"))
 				{
-					paleteHash.Add(path, new PckFile(
-													pckStream,
-													tabStream,
-													bpp,
-													p));
+					paletteHash.Add(path, new PckFile(
+												pckStream,
+												tabStream,
+												bpp,
+												p));
 				}
 			}
 
-			return pckHash[p][basePath + basename];
+			return _pckHash[p][basePath + basename];
 		}
 
-		public static void ClearPckCache(string basePath, string basename)
+		public static void ClearPckCache(string basePath, string baseName)
 		{
-			var path = basePath + basename;
-			foreach (var paleteHash in pckHash.Values)
+			var path = basePath + baseName;
+			foreach (var paleteHash in _pckHash.Values)
 				if (paleteHash.ContainsKey(path))
 					paleteHash.Remove(path);
 		}
