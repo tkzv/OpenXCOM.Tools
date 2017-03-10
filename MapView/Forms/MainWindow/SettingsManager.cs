@@ -9,13 +9,11 @@ namespace MapView.Forms.MainWindow
 	public class SettingsManager
 	{
 		private readonly Dictionary<string, Settings> _settingsHash;
-		private readonly SettingsService _settingsService;
 
 
 		public SettingsManager()
 		{
 			_settingsHash = new Dictionary<string, Settings>();
-			_settingsService = new SettingsService();
 		}
 
 
@@ -26,7 +24,7 @@ namespace MapView.Forms.MainWindow
 
 		public void Save()
 		{
-			_settingsService.Save(_settingsHash);
+			SettingsService.Save(_settingsHash);
 		}
 
 		public void Load(string file)
@@ -40,11 +38,11 @@ namespace MapView.Forms.MainWindow
 		private void ReadMapViewSettings(StreamReader sr)
 		{
 			var vars = new XCom.VarCollection(sr);
-			var l = vars.ReadLine();
-			while (l != null)
+			var line = vars.ReadLine();
+			while (line != null)
 			{
-				Settings.ReadSettings(vars, l, _settingsHash[l.Keyword]);
-				l = vars.ReadLine();
+				Settings.ReadSettings(vars, line, _settingsHash[line.Keyword]);
+				line = vars.ReadLine();
 			}
 			sr.Close();
 		}

@@ -1,5 +1,6 @@
 using System;
 
+
 namespace MapView
 {
 	public static class Globals
@@ -12,21 +13,22 @@ namespace MapView
 
 		public static readonly string RegistryKey = "MapView";
 
-		private static XCom.PckFile extraTiles = null;
+
+		private static XCom.PckFile _extraTiles = null;
 
 		public static XCom.PckFile ExtraTiles
 		{
-			get { return extraTiles; }
+			get { return _extraTiles; }
 		}
 
 		public static void LoadExtras()
 		{
-			if (extraTiles == null)
+			if (_extraTiles == null)
 			{
 				using (System.IO.Stream sPck = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("MapView._Embedded.Extra.PCK"))
 				using (System.IO.Stream sTab = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("MapView._Embedded.Extra.TAB"))
 				{
-					extraTiles = new XCom.PckFile(
+					_extraTiles = new XCom.PckFile(
 												sPck,
 												sTab,
 												2,

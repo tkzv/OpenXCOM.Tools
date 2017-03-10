@@ -103,7 +103,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			Refresh();
 		}
 
-		public int StartY
+/*		public int StartY
 		{
 			get { return _startY; }
 			set
@@ -111,9 +111,9 @@ namespace MapView.Forms.MapObservers.TileViews
 				_startY = value;
 				Refresh();
 			}
-		}
+		} */
 
-		public int PreferredHeight
+		private int PreferredHeight
 		{
 			get
 			{
@@ -128,7 +128,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
-		public System.Collections.Generic.List<TileBase> Tiles
+		public List<TileBase> Tiles
 		{
 			set
 			{
@@ -217,8 +217,6 @@ namespace MapView.Forms.MapObservers.TileViews
 				if (tileTest < _tiles.Length)
 				{
 					_sel = tileTest;
-//					_sel = (_sel < _tiles.Length) ? _sel
-//												  : _tiles.Length - 1;
 
 					if (TileChanged != null)
 						TileChanged(SelectedTile);
@@ -270,7 +268,7 @@ namespace MapView.Forms.MapObservers.TileViews
 							if (tile.Info.HumanDoor || tile.Info.UFODoor)
 								g.DrawString(
 										"Door",
-										this.Font,
+										Font,
 										Brushes.Black,
 										left,
 										top + PckImage.Height - Font.Height);
@@ -302,17 +300,17 @@ namespace MapView.Forms.MapObservers.TileViews
 //							_width  + _space,
 //							_height + _space)
 
-				for (int k = 0; k < _across; k++)
+				for (int i = 0; i <= _across; i++)
 					g.DrawLine(
 							Pens.Black,
-							k * width, _startY,
-							k * width, _startY + PreferredHeight);
+							i * width, _startY,
+							i * width, _startY + PreferredHeight);
 
-				for (int k = 0; k <= PreferredHeight; k += height)
+				for (int i = 0; i <= PreferredHeight; i += height)
 					g.DrawLine(
 							Pens.Black,
-							0,               _startY + k,
-							_across * width, _startY + k);
+							0,               _startY + i,
+							_across * width, _startY + i);
 
 				g.DrawRectangle(
 							_pen,

@@ -203,59 +203,59 @@ namespace MapView
 		/*** Timer stuff ***/
 		public static event EventHandler ImageUpdate;
 
-		private static Timer timer;
-		private static bool started;
-		private static int current;
+		private static Timer _timer;
+		private static bool _started;
+		private static int _current;
 
 		public static void Start()
 		{
-			if (timer == null)
+			if (_timer == null)
 			{
-				timer = new Timer();
-				timer.Interval = 100;
-				timer.Tick += tick;
-				timer.Start();
-				started = true;
+				_timer = new Timer();
+				_timer.Interval = 100;
+				_timer.Tick += tick;
+				_timer.Start();
+				_started = true;
 			}
 
-			if (!started)
+			if (!_started)
 			{
-				timer.Start();
-				started = true;
+				_timer.Start();
+				_started = true;
 			}
 		}
 
 		public static void Stop()
 		{
-			if (timer == null)
+			if (_timer == null)
 			{
-				timer = new Timer();
-				timer.Interval = 100;
-				timer.Tick += tick;
-				started = false;
+				_timer = new Timer();
+				_timer.Interval = 100;
+				_timer.Tick += tick;
+				_started = false;
 			}
 
-			if (started)
+			if (_started)
 			{
-				timer.Stop();
-				started = false;
+				_timer.Stop();
+				_started = false;
 			}
 		}
 
 		public static bool Updating
 		{
-			get { return started; }
+			get { return _started; }
 		}
 
 		public static int Interval
 		{
-			get { return timer.Interval; }
-			set { timer.Interval = value; }
+			get { return _timer.Interval; }
+			set { _timer.Interval = value; }
 		}
 
 		private static void tick(object sender, EventArgs e)
 		{
-			current = (current + 1) % 8;
+			_current = (_current + 1) % 8;
 
 			if (ImageUpdate != null)
 				ImageUpdate(null, null);
@@ -263,8 +263,8 @@ namespace MapView
 
 		public static int Current
 		{
-			get { return current; }
-			set { current = value; }
+			get { return _current; }
+			set { _current = value; }
 		}
 	}
 }
