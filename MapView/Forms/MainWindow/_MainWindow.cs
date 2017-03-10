@@ -201,7 +201,7 @@ namespace MapView
 			LogFile.Instance.WriteLine("About to show window");
 			Show();
 
-//			LogFile.Instance.Close(); // TODO: Keep logfile open until the program closes.
+			LogFile.Instance.Close(); // TODO: Keep logfile open until the program closes.
 		}
 
 
