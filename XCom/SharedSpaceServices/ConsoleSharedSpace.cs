@@ -15,13 +15,13 @@ namespace XCom
 
 		public ConsoleForm GetConsole()
 		{
-			return _share.GetObj(X_CONSOLE) as ConsoleForm;
+			return _share.AllocateObject(X_CONSOLE) as ConsoleForm;
 		}
 
 		public ConsoleForm GetNewConsole()
 		{
 			var console = GetConsole();
-			return console ?? (ConsoleForm)_share.GetObj(X_CONSOLE, new ConsoleForm());
+			return console ?? (ConsoleForm)_share.AllocateObject(X_CONSOLE, new ConsoleForm());
 		}
 	}
 }

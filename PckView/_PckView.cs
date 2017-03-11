@@ -25,7 +25,7 @@ namespace PckView
 {
 	public partial class PckViewForm
 		:
-		System.Windows.Forms.Form
+		Form
 	{
 		private TotalViewPck _totalViewPck;
 		private Palette currPal;
@@ -63,10 +63,10 @@ namespace PckView
 			FormClosed += (sender, e) => console.Close();
 
 			sharedSpace = SharedSpace.Instance;
-			sharedSpace.GetObj("PckView", this);
-			sharedSpace.GetObj("AppDir", Environment.CurrentDirectory);
-			sharedSpace.GetObj("CustomDir", Environment.CurrentDirectory + @"\custom");
-			sharedSpace.GetObj("SettingsDir", Environment.CurrentDirectory + @"\settings");
+			sharedSpace.AllocateObject("PckView", this);
+			sharedSpace.AllocateObject("AppDir", Environment.CurrentDirectory);
+			sharedSpace.AllocateObject("CustomDir", Environment.CurrentDirectory + @"\custom");
+			sharedSpace.AllocateObject("SettingsDir", Environment.CurrentDirectory + @"\settings");
 		
 			xConsole.AddLine("Current directory: " + sharedSpace["AppDir"]);
 			xConsole.AddLine("Custom directory: " + sharedSpace["CustomDir"].ToString());
@@ -76,9 +76,9 @@ namespace PckView
 			_totalViewPck.Dock = DockStyle.Fill;
 			DrawPanel.Controls.Add(_totalViewPck);
 
-			_totalViewPck.View.DoubleClick += new EventHandler(doubleClick);
-			_totalViewPck.ViewClicked += new PckViewMouseClicked(viewClicked);
-			_totalViewPck.XCImageCollectionSet += new XCImageCollectionHandler(v_XCImageCollectionSet);
+			_totalViewPck.View.DoubleClick += doubleClick;
+			_totalViewPck.ViewClicked += viewClicked;
+			_totalViewPck.XCImageCollectionSet += v_XCImageCollectionSet;
 			_totalViewPck.ContextMenu = makeContextMenu();
 
 			SaveMenuItem.Visible = false ;
@@ -116,13 +116,13 @@ namespace PckView
 				miHq2x.Visible = false;
 
 			loadedTypes = new LoadOfType<IXCImageFile>();
-			loadedTypes.OnLoad += new LoadOfType<IXCImageFile>.TypeLoadDelegate(loadedTypes_OnLoad);
+			loadedTypes.OnLoad += loadedTypes_OnLoad;
 			sharedSpace["ImageMods"] = loadedTypes.AllLoaded;
 
-//			loadedTypes.OnLoad += new LoadOfType<IXCFile>.TypeLoadDelegate(sortLoaded);
+//			loadedTypes.OnLoad += sortLoaded;
 
 			loadedTypes.LoadFrom(Assembly.GetExecutingAssembly());
-			loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(XCom.Interfaces.IXCImageFile)));
+			loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(IXCImageFile)));
 
 			if (Directory.Exists(sharedSpace["CustomDir"].ToString()))
 			{
@@ -316,7 +316,7 @@ namespace PckView
 			var mi2 = new MenuItem(pal.Name);
 			mi2.Tag = pal;
 			mi.MenuItems.Add(mi2);
-			mi2.Click += new EventHandler(palClick);
+			mi2.Click += palClick;
 //			palMI[mi2] = pal;
 			palMI[pal] = mi2;
 
@@ -461,14 +461,14 @@ namespace PckView
 			_currentFileBpp = bpp;
 
 			SaveMenuItem.Visible = true;
-			IXCImageFile filterIdx = openDictionary[7];
+			var filterIdx = openDictionary[7];
 
-			var fileName = Path.GetFileName(filePath);
+			var file = Path.GetFileName(filePath);
 			var path = Path.GetDirectoryName(filePath);
 
-			if (fileName != null)
+			if (file != null)
 			{
-				var images = LoadImageCollection(filterIdx, path, fileName.ToLower());
+				var images = LoadImageCollection(filterIdx, path, file.ToLower());
 				SetImages(images);
 				UpdateText();
 
@@ -717,13 +717,13 @@ namespace PckView
 						tens /= 10;
 					}
 
-					var pw = new ProgressWindow(this);
-					pw.Minimum = 0;
-					pw.Maximum = _totalViewPck.Collection.Count;
-					pw.Width = 300;
-					pw.Height = 50;
+					var progress = new ProgressWindow(this);
+					progress.Minimum = 0;
+					progress.Maximum = _totalViewPck.Collection.Count;
+					progress.Width = 300;
+					progress.Height = 50;
 
-					pw.Show();
+					progress.Show();
 					foreach (XCImage xc in _totalViewPck.Collection)
 					{
 						//Console.WriteLine("Save to: " + path + @"\" + fName + (xc.FileNum + countNum) + "." + ext);
@@ -734,9 +734,9 @@ namespace PckView
 																xc.FileNum) + "." + ext,
 								xc.Image);
 						//Console.WriteLine("---");
-						pw.Value = xc.FileNum;
+						progress.Value = xc.FileNum;
 					}
-					pw.Hide();
+					progress.Hide();
 				}
 			}
 		}
@@ -751,9 +751,12 @@ namespace PckView
 
 		private void miCompare_Click(object sender, EventArgs e)
 		{
-			XCImageCollection original = _totalViewPck.Collection;
+			var original = _totalViewPck.Collection;
+
 			openItem_Click(null, null);
-			XCImageCollection newCollection = _totalViewPck.Collection;
+
+			var newCollection = _totalViewPck.Collection;
+
 			_totalViewPck.Collection = original;
 
 			if (Controls.Contains(_totalViewPck))

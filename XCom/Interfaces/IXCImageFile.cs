@@ -1,28 +1,35 @@
 using System;
-using System.Windows.Forms;
 using System.Collections.Generic;
-using DSShared;
+
 using DSShared.Interfaces;
 using DSShared.Loadable;
+
 
 namespace XCom.Interfaces
 {
 	/// <summary>
-	/// Class that contains all information needed to read/save image files and collections.
-	/// This class should not be instantiated directly. Upon startup, objects from derived classes will be created and tracked
+	/// Class that contains all information needed to read/save image files and
+	/// collections.
+	/// This class should not be instantiated directly. Objects from derived
+	/// classes will be created and tracked on startup.
 	/// </summary>
 	public class IXCImageFile
 		:
-		IAssemblyLoadable,IOpenSave
+		IAssemblyLoadable,
+		IOpenSave
 	{
 		protected Palette defPal = Palette.UFOBattle;
 //		protected Palette defPal = Palette.TFTDBattle;
+
 		protected System.Drawing.Size imageSize;
+
 		protected xcFileOptions fileOptions = new xcFileOptions();
-		protected string ext = ".bad";
-		protected string expDesc = "Bad Description";
-//		private int fIdx = 0;
-		protected string author = "Author", desc = "Description";
+
+		protected string author		= "Author";
+		protected string desc		= "Description";
+		protected string expDesc	= "Bad Description";
+		protected string ext		= ".bad";
+
 		protected string singleFile = null;
 
 		public enum Filter
@@ -32,6 +39,7 @@ namespace XCom.Interfaces
 			Custom,
 			Bmp
 		};
+
 
 		#region AssemblyLoadable implementation
 
@@ -70,8 +78,9 @@ namespace XCom.Interfaces
 		}
 		#endregion
 
+
 		/// <summary>
-		/// read only access to the file extension
+		/// Read only access to the file extension.
 		/// </summary>
 		public virtual string FileExtension
 		{
@@ -83,10 +92,11 @@ namespace XCom.Interfaces
 
 		/// <summary>
 		/// It is not recommended to instantiate objects of this type directly.
-		/// See PckView.xcProfile for a generic implementation that does not throw runtime exceptions
+		/// See PckView.xcProfile for a generic implementation that does not
+		/// throw runtime exceptions
 		/// </summary>
-		/// <param name="width">Default width</param>
-		/// <param name="height">Default Height</param>
+		/// <param name="width">default width</param>
+		/// <param name="height">default height</param>
 		public IXCImageFile(int width, int height)
 		{
 			imageSize = new System.Drawing.Size(width,height);
@@ -94,14 +104,15 @@ namespace XCom.Interfaces
 		}
 
 		/// <summary>
-		/// Creates an object of this class with width and height of 0
+		/// Creates an object of this class with width and height of 0.
 		/// </summary>
 		public IXCImageFile()
 			:
-			this(0, 0){}
+			this(0, 0)
+		{}
 
 		/// <summary>
-		/// Who wrote this class
+		/// Gets who wrote this class.
 		/// </summary>
 		public string Author
 		{
@@ -109,7 +120,7 @@ namespace XCom.Interfaces
 		}
 
 		/// <summary>
-		/// Short description of this class
+		/// Short description of this class.
 		/// </summary>
 		public string Description
 		{
@@ -117,25 +128,26 @@ namespace XCom.Interfaces
 		}
 
 		/// <summary>
-		/// Load a file and return a collection of images
+		/// Loads a file and return a collection of images.
 		/// </summary>
 		/// <param name="directory"></param>
 		/// <param name="file"></param>
 		/// <param name="imgWid"></param>
 		/// <param name="imgHei"></param>
+		/// <param name="pal"></param>
 		/// <returns></returns>
 		protected virtual XCImageCollection LoadFileOverride(
-														string directory,
-														string file,
-														int imgWid,
-														int imgHei,
-														Palette pal)
+				string directory,
+				string file,
+				int imgWid,
+				int imgHei,
+				Palette pal)
 		{
 			throw new Exception("Override not yet implemented: IXCFile::LoadFileOverride(...)");
 		}
 
 		/// <summary>
-		/// Calls LoadFile with ImageSize.Width and ImageSize.Height
+		/// Calls LoadFile with ImageSize.Width and ImageSize.Height.
 		/// </summary>
 		/// <param name="directory"></param>
 		/// <param name="file"></param>
@@ -151,7 +163,7 @@ namespace XCom.Interfaces
 
 		/// <summary>
 		/// Method that calls the overloaded load function in order to do some
-		/// similar functionality across all instances of this class
+		/// similar functionality across all instances of this class.
 		/// </summary>
 		/// <param name="directory"></param>
 		/// <param name="file"></param>
@@ -159,10 +171,10 @@ namespace XCom.Interfaces
 		/// <param name="imgHei"></param>
 		/// <returns></returns>
 		public XCImageCollection LoadFile(
-										string directory,
-										string file,
-										int imgWid,
-										int imgHei)
+				string directory,
+				string file,
+				int imgWid,
+				int imgHei)
 		{
 			return LoadFile(
 						directory,
@@ -173,11 +185,11 @@ namespace XCom.Interfaces
 		}
 
 		public XCImageCollection LoadFile(
-										string directory,
-										string file,
-										int imgWid,
-										int imgHei,
-										Palette pal)
+				string directory,
+				string file,
+				int imgWid,
+				int imgHei,
+				Palette pal)
 		{
 			XCImageCollection ixc = LoadFileOverride(
 												directory,
@@ -210,8 +222,8 @@ namespace XCom.Interfaces
 		/// <summary>
 		/// Saves a collection
 		/// </summary>
-		/// <param name="directory">Directory to save to</param>
-		/// <param name="file">Filename</param>
+		/// <param name="directory">directory to save to</param>
+		/// <param name="file">file</param>
 		/// <param name="images">images to save in this format</param>
 		public virtual void SaveCollection(string directory, string file, XCImageCollection images)
 		{
@@ -235,8 +247,8 @@ namespace XCom.Interfaces
 		}
 
 		/// <summary>
-		/// The complete file.extension that this object will open. If null, then this object will open files
-		/// based on the FileExtension property
+		/// The complete file.extension that this object will open. If null,
+		/// then this object will open files based on the FileExtension property.
 		/// </summary>
 		public virtual string SingleFileName
 		{
@@ -244,7 +256,8 @@ namespace XCom.Interfaces
 		}
 	}
 
-	public class xcFileOptions
+
+		public class xcFileOptions
 	{
 		private Dictionary<IXCImageFile.Filter, bool> filters;
 		private int bitDepth = 8;
@@ -256,10 +269,10 @@ namespace XCom.Interfaces
 		{}
 
 		public xcFileOptions(
-						bool save,
-						bool bmp,
-						bool open,
-						bool custom)
+				bool save,
+				bool bmp,
+				bool open,
+				bool custom)
 		{
 			filters = new Dictionary<IXCImageFile.Filter, bool>();
 			Init(
@@ -270,15 +283,15 @@ namespace XCom.Interfaces
 		}
 
 		public void Init(
-					bool save,
-					bool bmp,
-					bool open,
-					bool custom)
+				bool save,
+				bool bmp,
+				bool open,
+				bool custom)
 		{
-			filters[IXCImageFile.Filter.Bmp] = bmp;
-			filters[IXCImageFile.Filter.Custom] = custom;
-			filters[IXCImageFile.Filter.Open] = open;
-			filters[IXCImageFile.Filter.Save] = save;
+			filters[IXCImageFile.Filter.Bmp]	= bmp;
+			filters[IXCImageFile.Filter.Custom]	= custom;
+			filters[IXCImageFile.Filter.Open]	= open;
+			filters[IXCImageFile.Filter.Save]	= save;
 		}
 
 		public bool this[IXCImageFile.Filter filter]

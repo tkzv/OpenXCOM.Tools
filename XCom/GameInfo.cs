@@ -73,54 +73,50 @@ namespace XCom
 			set { _palette = value; }
 		}
 
-		public static PckFile GetPckFile(string imageSet, Palette p)
-		{
-			return _imageInfo.Images[imageSet].GetPckFile(p);
-		}
-
 		public static PckFile GetPckFile(string imageSet)
 		{
-			return GetPckFile(imageSet, _palette);
+			return _imageInfo.Images[imageSet].GetPckFile(_palette);
 		}
 
-		public static PckFile CachePck(
-									string basePath,
-									string basename,
-									int bpp,
-									Palette p)
+		public static PckFile CachePckFile(
+				string basePath,
+				string baseName,
+				int bpp,
+				Palette pal)
 		{
 			if (_pckHash == null)
 				_pckHash = new Dictionary<Palette, Dictionary<string, PckFile>>();
 
-			if (!_pckHash.ContainsKey(p))
-				_pckHash.Add(p, new Dictionary<string, PckFile>());
+			if (!_pckHash.ContainsKey(pal))
+				_pckHash.Add(pal, new Dictionary<string, PckFile>());
 
-//			if (_pckHash[p][basePath + basename] == null)
-			var path = basePath + basename;
-			var paletteHash = _pckHash[p];
+//			if (_pckHash[pal][basePath + baseName] == null)
+			var path = basePath + baseName;
 
-			if (!paletteHash.ContainsKey(path))
+			var palHash = _pckHash[pal];
+			if (!palHash.ContainsKey(path))
 			{
 				using (var pckStream = File.OpenRead(path + ".PCK")) // TODO: check if these catch lowercase extensions.
 				using (var tabStream = File.OpenRead(path + ".TAB"))
 				{
-					paletteHash.Add(path, new PckFile(
+					palHash.Add(path, new PckFile(
 												pckStream,
 												tabStream,
 												bpp,
-												p));
+												pal));
 				}
 			}
 
-			return _pckHash[p][basePath + basename];
+			return _pckHash[pal][path];
 		}
 
 		public static void ClearPckCache(string basePath, string baseName)
 		{
 			var path = basePath + baseName;
-			foreach (var paleteHash in _pckHash.Values)
-				if (paleteHash.ContainsKey(path))
-					paleteHash.Remove(path);
+
+			foreach (var palHash in _pckHash.Values)
+//				if (palHash.ContainsKey(path)) // kL_note: should not be needed here.
+				palHash.Remove(path);
 		}
 	}
 }

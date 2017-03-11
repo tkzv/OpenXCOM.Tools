@@ -29,19 +29,21 @@ namespace XCom
 		}
 
 
-		public object GetObj(string key)
+		public object AllocateObject(string key)
 		{
-			return GetObj(key, null);
+			return AllocateObject(key, null);
 		}
 
 		/// <summary>
-		/// Gets a value in the SharedSpace.
+		/// Allocates a key-val pair in the SharedSpace and returns the value
+		/// that is assigned. This does not change the value of an existing key
+		/// unless its value is null.
 		/// </summary>
 		/// <param name="key">the key to look for</param>
-		/// <param name="val">the object to add and return if the
-		/// current value doesn't exist or is null</param>
+		/// <param name="val">the object to add if the current value doesn't
+		/// exist or is null</param>
 		/// <returns>the value associated with the key as an object</returns>
-		public object GetObj(string key, object val)
+		public object AllocateObject(string key, object val)
 		{
 			if (!_share.ContainsKey(key))
 			{

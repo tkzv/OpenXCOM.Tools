@@ -1,47 +1,50 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using XCom.Interfaces;
-using DSShared;
 using System.IO;
-using XCom;
 using System.Windows.Forms;
+
+using DSShared;
+
+using XCom;
+using XCom.Interfaces;
+
 
 namespace PckView
 {
 	public class ImgProfile
 	{
-		public ImgProfile()
-		{}
+		private int imgWid = 0; // NOTE: class-vars are default-initialized.
+		private int imgHei = 0;
 
-		private int imgWid = 0, imgHei = 0;
-		private IXCImageFile imgType = null;
-		private string desc = "";
-		private string defPal = "";
-		private string single = "";
-		private string ext = "";
+		private IXCImageFile imgType;
+
+		private string desc		= String.Empty;
+		private string defPal	= String.Empty;
+		private string single	= String.Empty;
+		private string ext		= String.Empty;
 
 		public static List<xcProfile> LoadFile(string inFile)
 		{
-			StreamReader sr = new StreamReader(inFile);
-			VarCollection_Structure vs = new VarCollection_Structure(sr);
+			var sr = new StreamReader(inFile);
+			var vars = new VarCollection_Structure(sr);
 			sr.Close();
 
-			List<xcProfile> profileList = new List<xcProfile>();
+			var profiles = new List<xcProfile>();
 
-			foreach (string s in vs.KeyValList.Keys)
+			foreach (string st in vars.KeyValList.Keys)
 			{
-				ImgProfile profile = new ImgProfile();
-				Dictionary<string, DSShared.KeyVal> info = vs.KeyValList[s].SubHash;
-				profile.ext = info["open"].Rest;
-				profile.imgHei = int.Parse(info["height"].Rest);
-				profile.imgWid = int.Parse(info["width"].Rest);
-				profile.desc = s;
-				profile.defPal = info["palette"].Rest;
-				profile.ext = info["open"].Rest;
-				
+				var profile = new ImgProfile();
+
+				Dictionary<string, DSShared.KeyVal> info = vars.KeyValList[st].SubHash;
+
+				profile.desc	= st;
+				profile.ext		= info["open"].Rest;
+				profile.imgWid	= int.Parse(info["width"].Rest);
+				profile.imgHei	= int.Parse(info["height"].Rest);
+				profile.defPal	= info["palette"].Rest;
+
 				if (info.ContainsKey("openSingle") && info["openSingle"] != null)
-					profile.single = info["openSingle"].Rest+info["open"].Rest;
+					profile.single = info["openSingle"].Rest + info["open"].Rest;
 
 				foreach (IXCImageFile ixc in SharedSpace.Instance.GetImageModList())
 					if (ixc.ExplorerDescription == info["codec"].Rest)
@@ -50,10 +53,10 @@ namespace PckView
 						break;
 					}
 
-				profileList.Add(new xcProfile(profile));
+				profiles.Add(new xcProfile(profile));
 			}
 
-			return profileList;
+			return profiles;
 		}
 
 		public string OpenSingle
@@ -114,15 +117,16 @@ namespace PckView
 									MessageBoxButtons.YesNo,
 									MessageBoxIcon.Warning) == DialogResult.Yes;
 				
-			StreamWriter sw = new StreamWriter(outFile, append);
+			var sw = new StreamWriter(outFile, append);
 			sw.WriteLine(Description);
 			sw.WriteLine("{");
 
 			sw.WriteLine("\tcodec:" + ImgType.ExplorerDescription);
-			sw.WriteLine("\topen:." + ext.Substring(ext.LastIndexOf(".") + 1));
+			sw.WriteLine("\topen:." + ext.Substring(ext.LastIndexOf(".", StringComparison.Ordinal) + 1));
 			sw.WriteLine("\twidth:" + ImgWid);
 			sw.WriteLine("\theight:" + ImgHei);
 			sw.WriteLine("\tpalette:" + Palette);
+
 			if (single != "")
 				sw.WriteLine("\topenSingle:" + single);
 

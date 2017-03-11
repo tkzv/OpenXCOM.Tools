@@ -1,58 +1,60 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
+
 
 namespace DSShared
 {
 	/// <summary>
-	/// Class to automatically parse out a VC file into a tree structure
+	/// Class to automatically parse out a VC file into a tree structure.
 	/// </summary>
 	public class VarCollection_Structure
 	{
-		private KeyVal root;
+		private KeyVal _keyValParent;
+
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
-		/// <param name="sr">File to read</param>
+		/// <param name="sr">file to read</param>
 		public VarCollection_Structure(StreamReader sr)
 		{
-			VarCollection vc = new VarCollection(sr);
-
-			root = new KeyVal("parent", "parent");
-			root.SubHash = new Dictionary<string, KeyVal>();
+			_keyValParent = new KeyVal("parent", "parent");
+			_keyValParent.SubHash = new Dictionary<string, KeyVal>();
 			
-			parse_block(vc,root);
+			var vars = new VarCollection(sr);
+			parse_block(vars, _keyValParent);
 		}
+
 
 		/// <summary>
-		/// VC structure of the file
+		/// VC structure of the file.
 		/// </summary>
-		public Dictionary<string,KeyVal> KeyValList
+		public Dictionary<string, KeyVal> KeyValList
 		{
-			get { return root.SubHash; }
+			get { return _keyValParent.SubHash; }
 		}
 
-		private void parse_block(VarCollection vc,KeyVal parent)
+		private void parse_block(VarCollection vars, KeyVal keyValParent)
 		{
-			KeyVal kv;
-			KeyVal lastKV = null;
-			while (vc.ReadLine(out kv))
+			KeyVal keyVal;
+			KeyVal keyVal0 = null;
+
+			while (vars.ReadLine(out keyVal))
 			{
-				switch (kv.Keyword)
+				switch (keyVal.Keyword)
 				{
 					case "{":
-						lastKV.SubHash = new Dictionary<string, KeyVal>();
-						parse_block(vc, lastKV);
+						keyVal0.SubHash = new Dictionary<string, KeyVal>();
+						parse_block(vars, keyVal0);
 						break;
 
 					case "}":
 						return;
 
 					default:
-						parent.SubHash[kv.Keyword] = kv;
-						lastKV = kv;
+						keyValParent.SubHash[keyVal.Keyword] = keyVal;
+						keyVal0 = keyVal;
 						break;
 				}
 			}

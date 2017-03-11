@@ -11,24 +11,28 @@ namespace PckView
 {
 	public partial class SaveProfileForm
 		:
-		System.Windows.Forms.Form
+		Form
 	{
 		private ImgProfile profileInfo;
+
 
 		public SaveProfileForm()
 		{
 			InitializeComponent();
+
 			profileInfo = new ImgProfile();
-			DialogResult = DialogResult.Cancel;
+
+			DialogResult = DialogResult.Cancel; // TODO: why 2 dialogresultCancel's
+
 			var ri = new DSShared.Windows.RegistryInfo(this);
 
-			if (!Directory.Exists(XCom.SharedSpace.Instance["CustomDir"].ToString()))
-				Directory.CreateDirectory(XCom.SharedSpace.Instance["CustomDir"].ToString());
+			if (!Directory.Exists(SharedSpace.Instance["CustomDir"].ToString()))
+				Directory.CreateDirectory(SharedSpace.Instance["CustomDir"].ToString());
 
-			saveFile.InitialDirectory = XCom.SharedSpace.Instance["CustomDir"].ToString();
+			saveFile.InitialDirectory = SharedSpace.Instance["CustomDir"].ToString();
 			saveFile.FileName = "profile.pvp";
 
-			txtOutDir.Text = saveFile.InitialDirectory + "\\" + saveFile.FileName;
+			txtOutDir.Text = saveFile.InitialDirectory + @"\" + saveFile.FileName;
 
 			saveFile.Filter = "Image Profiles|*" + xcProfile.PROFILE_EXT;
 
@@ -40,12 +44,13 @@ namespace PckView
 
 			restring();
 
-			DialogResult = DialogResult.Cancel;
+			DialogResult = DialogResult.Cancel; // TODO: why 2 dialogresultCancel's
 		}
+
 
 		private void restring()
 		{
-			txtInfo.Text = "";
+			txtInfo.Text = String.Empty;
 			
 			if (ImgType != null)
 				txtInfo.Text += "Type: " + ImgType.ExplorerDescription + "\n";

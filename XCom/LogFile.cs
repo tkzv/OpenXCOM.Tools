@@ -1,73 +1,77 @@
 using System;
 using System.IO;
 
+
 namespace XCom
 {
 	public class LogFile
 	{
-		private StreamWriter sw;
+		private static readonly string DebugLogFile = "debug.log";
+		private static LogFile _file;
 
-		private static LogFile myFile;
-		public static readonly string DefaultFile = "debug.log";
-		private static bool debugOn = false;
+		private static bool _on = false;
 
-		private LogFile(string filename)
+		private readonly StreamWriter _sw;
+
+
+		private LogFile(string file)
 		{
-			if (debugOn)
-				sw = new StreamWriter(File.Open(filename, FileMode.Create));
+			if (_on)
+				_sw = new StreamWriter(File.Open(file, FileMode.Create));
 		}
+
 
 		public static bool DebugOn
 		{
-			get { return debugOn; }
-			set { debugOn = value; }
+			get { return _on; }
+			set { _on = value; }
 		}
 
 		public static LogFile Instance
 		{
-			get { return Init(DefaultFile); }
+			get { return Init(DebugLogFile); }
 		}
 
-		public static LogFile Init(string filename)
+		public static LogFile Init(string file)
 		{
 #if DEBUG
-			debugOn = true;
+			_on = true;
 #endif
-			if (myFile == null)
-				myFile = new LogFile(filename);
+			if (_file == null)
+				_file = new LogFile(file);
 
-			return myFile;
+			return _file;
 		}
 
 		public void Write(string text)
 		{
-//			if ((debugOn || sw != null) && sw != null)	// wft.
-//			if (debugOn && sw != null)					// kL
-			if (sw != null)								// your choice.
+//			if ((_on || _sw != null) && _sw != null)	// wft.
+//			if (_on && _sw != null)						// kL
+			if (_sw != null)							// your choice.
 			{
-				sw.Write(text);
-				sw.Flush();
+				_sw.Write(text);
+				_sw.Flush();
 			}
 		}
 
 		public void WriteLine(string text)
 		{
-//			if ((debugOn || sw != null) && sw != null)	// wft.
-//			if (debugOn && sw != null)					// kL
-			if (sw != null)								// your choice.
+//			if ((_on || _sw != null) && _sw != null)	// wft.
+//			if (_on && _sw != null)						// kL
+			if (_sw != null)							// your choice.
 			{
-				sw.WriteLine(text);
-				sw.Flush();
+				_sw.WriteLine(text);
+				_sw.Flush();
 			}
 		}
 
 		public void Close()
 		{
-//			if ((debugOn || sw != null) && sw != null)	// wft.
-//			if (debugOn && sw != null)					// kL
-			if (sw != null)								// your choice.
+//			if ((_on || _sw != null) && _sw != null)	// wft.
+//			if (_on && _sw != null)						// kL
+			if (_sw != null)							// your choice.
 			{
-				sw.Close();
+				_sw.Close();
 			}
 		}
 	}

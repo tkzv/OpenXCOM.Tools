@@ -47,7 +47,7 @@ namespace MapView
 			_settingsManager = new SettingsManager();
 			_windowMenuManager = new WindowMenuManager(showMenu, miHelp);
 
-			loadDefaults();
+			LoadDefaults();
 
 			Palette.UFOBattle.SetTransparent(true);
 			Palette.TFTDBattle.SetTransparent(true);
@@ -73,20 +73,20 @@ namespace MapView
 			MainWindowsManager.MainWindowsShowAllManager = _windowMenuManager.CreateShowAll();
 			MainWindowsManager.Initialize();
 
-			share.GetObj("MapView",		this);
-			share.GetObj("AppDir",		Environment.CurrentDirectory);
-			share.GetObj("CustomDir",		Environment.CurrentDirectory + @"\custom");
-			share.GetObj("SettingsDir",	Environment.CurrentDirectory + @"\settings");
+			share.AllocateObject("MapView",		this);
+			share.AllocateObject("AppDir",		Environment.CurrentDirectory);
+			share.AllocateObject("CustomDir",	Environment.CurrentDirectory + @"\custom");
+			share.AllocateObject("SettingsDir",	Environment.CurrentDirectory + @"\settings");
 
-			var pathsFile		= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "Paths",		"pth");
 			var settingsFile	= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "MVSettings",	"dat");
+			var pathsFile		= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "Paths",		"pth");
 			var mapeditFile		= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "MapEdit",	"dat");
 			var imagesFile		= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "Images",		"dat");
 
-			share.GetObj("MV_PathsFile", pathsFile);
-			share.GetObj(SettingsService.FILE_NAME, settingsFile);
-			share.GetObj("MV_MapEditFile", mapeditFile);
-			share.GetObj("MV_ImagesFile", imagesFile);
+			share.AllocateObject(SettingsService.MV_SETTINGS_FILE, settingsFile);
+			share.AllocateObject("MV_PathsFile", pathsFile);
+			share.AllocateObject("MV_MapEditFile", mapeditFile);
+			share.AllocateObject("MV_ImagesFile", imagesFile);
 
 			#endregion
 
@@ -109,7 +109,7 @@ namespace MapView
 
 			LogFile.Instance.WriteLine("Palette transparencies set");
 
-			MapViewPanel.ImageUpdate += new EventHandler(update);
+			MapViewPanel.ImageUpdate += update; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			_mapView.Dock = DockStyle.Fill;
 
@@ -127,7 +127,7 @@ namespace MapView
 
 			try
 			{
-				_mapView.MapView.CursorSprite = new CursorSprite(GameInfo.CachePck(
+				_mapView.MapView.CursorSprite = new CursorSprite(GameInfo.CachePckFile(
 																				SharedSpace.Instance.GetString("cursorFile"),
 																				"",
 																				2,
@@ -137,7 +137,7 @@ namespace MapView
 			{
 				try
 				{
-					_mapView.MapView.CursorSprite = new CursorSprite(GameInfo.CachePck(
+					_mapView.MapView.CursorSprite = new CursorSprite(GameInfo.CachePckFile(
 																				SharedSpace.Instance.GetString("cursorFile"),
 																				"",
 																				4,
@@ -148,7 +148,6 @@ namespace MapView
 					_mapView.Cursor = null;
 				}
 			}
-
 			LogFile.Instance.WriteLine("Cursor loaded");
 
 			initList();
@@ -223,9 +222,9 @@ namespace MapView
 			{
 				case "cursor":
 					if (line.Rest.EndsWith(@"\", StringComparison.Ordinal))
-						SharedSpace.Instance.GetObj("cursorFile", line.Rest + "CURSOR");
+						SharedSpace.Instance.AllocateObject("cursorFile", line.Rest + "CURSOR");
 					else
-						SharedSpace.Instance.GetObj("cursorFile", line.Rest + @"\CURSOR");
+						SharedSpace.Instance.AllocateObject("cursorFile", line.Rest + @"\CURSOR");
 					break;
 
 				case "logfile":
@@ -386,7 +385,7 @@ namespace MapView
 			}
 		}
 
-		private void loadDefaults()
+		private void LoadDefaults()
 		{
 			RegistryKey swKey = Registry.CurrentUser.CreateSubKey("Software");
 			RegistryKey mvKey = swKey.CreateSubKey("MapView");

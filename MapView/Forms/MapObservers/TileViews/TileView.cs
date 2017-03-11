@@ -213,16 +213,17 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private void EditPckMenuItem_Click(object sender, EventArgs e)
 		{
-			var dependencyName = GetSelectedDependencyName();
-			if (dependencyName != null)
+			var dep = GetSelectedDependencyName();
+			if (dep != null)
 			{
-				var image = GameInfo.ImageInfo[dependencyName];
-				if (image != null)
+				var imageInfo = GameInfo.ImageInfo[dep];
+				if (imageInfo != null)
 				{
-					var path = image.BasePath + image.BaseName + ".PCK";
-					if (!File.Exists(path))
+					var pathfilext = imageInfo.BasePath + imageInfo.BaseName + ".PCK";
+
+					if (!File.Exists(pathfilext))
 					{
-						MessageBox.Show("File does not exist: " + path);
+						MessageBox.Show("File does not exist: " + pathfilext);
 					}
 					else
 					{
@@ -230,9 +231,9 @@ namespace MapView.Forms.MapObservers.TileViews
 
 						using (var editor = new PckViewForm())
 						{
-							var pckFile = image.GetPckFile();
+							var pckFile = imageInfo.GetPckFile();
 							editor.SelectedPalette = pckFile.Pal.Name;
-							editor.LoadPckFile(path, pckFile.Bpp);
+							editor.LoadPckFile(pathfilext, pckFile.Bpp);
 
 							var parent = FindForm();
 
@@ -246,8 +247,8 @@ namespace MapView.Forms.MapObservers.TileViews
 							editor.ShowDialog(owner);
 							if (editor.SavedFile)
 							{
-								GameInfo.ImageInfo.Images[dependencyName].ClearMcd();
-								GameInfo.ClearPckCache(image.BasePath, image.BaseName);
+								GameInfo.ImageInfo.Images[dep].ClearMcdTable();
+								GameInfo.ClearPckCache(imageInfo.BasePath, imageInfo.BaseName);
 
 								OnMapChanged();
 							}

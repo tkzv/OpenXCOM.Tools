@@ -1,7 +1,8 @@
 using System;
+
 using XCom;
 using XCom.Interfaces;
-using System.Collections.Generic;
+
 
 namespace PckView
 {
@@ -9,22 +10,21 @@ namespace PckView
 		:
 		IXCImageFile
 	{
-		private IXCImageFile codec;
 		public static readonly string PROFILE_EXT = ".pvp";
+
+		private IXCImageFile _codec;
+
 
 		public xcProfile()
 			:
 			base(0, 0)
 		{
 			fileOptions.Init(false, false, false, false);
-//			fileOptions.BmpDialog = false;
-//			fileOptions.OpenDialog = false;
-//			fileOptions.SaveDialog = false;
-//			fileOptions.CustomDialog = false;
+
+			author	= "Ben Ratzlaff";
+			desc	= "Provides profile support";
 
 			ext = PROFILE_EXT;
-			author = "Ben Ratzlaff";
-			desc = "Provides profile support";
 		}
 
 		public xcProfile(ImgProfile profile)
@@ -32,22 +32,16 @@ namespace PckView
 			base(0, 0)
 		{
 			imageSize = new System.Drawing.Size(profile.ImgWid, profile.ImgHei);
-			codec = profile.ImgType;
-			expDesc = profile.Description;
-			ext = profile.Extension;
-			author = "Profile";
-			desc = profile.Description;
+
+			_codec = profile.ImgType;
+
+			desc	= profile.Description;
+			expDesc	= profile.Description;
+			ext		= profile.Extension;
+			author	= "Profile";
 
 			if (profile.OpenSingle != "")
 				singleFile = profile.OpenSingle;
-
-//			fileOptions.BmpDialog = true;
-//			fileOptions.OpenDialog = true;
-
-			// since it is loading off of an already generic implementation
-			// it should let that implementation determine how this format be saved
-//			fileOptions.SaveDialog = false;
-//			fileOptions.CustomDialog = false;
 
 			fileOptions.Init(false, true, true, false);
 
@@ -64,20 +58,21 @@ namespace PckView
 			}
 		}
 
+
 		public IXCImageFile Codec
 		{
-			get { return codec; }
-			set { codec = value; }
+			get { return _codec; }
+			set { _codec = value; }
 		}
 
 		protected override XCom.XCImageCollection LoadFileOverride(
-																string directory,
-																string file,
-																int imgWid,
-																int imgHei,
-																Palette pal)
+				string directory,
+				string file,
+				int imgWid,
+				int imgHei,
+				Palette pal)
 		{
-			return codec.LoadFile(
+			return _codec.LoadFile(
 								directory,
 								file,
 								imgWid,
@@ -86,11 +81,11 @@ namespace PckView
 		}
 
 		public override void SaveCollection(
-										string directory,
-										string file,
-										XCom.XCImageCollection images)
+				string directory,
+				string file,
+				XCom.XCImageCollection images)
 		{
-			codec.SaveCollection(
+			_codec.SaveCollection(
 							directory,
 							file,
 							images);

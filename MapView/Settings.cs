@@ -8,7 +8,7 @@ using XCom;
 
 namespace MapView
 {
-	public delegate string ConvertObject(object o);
+	public delegate string ConvertObject(object obj);
 	public delegate void ValueChangedDelegate(object sender, string keyword, object val);
 
 
@@ -18,37 +18,37 @@ namespace MapView
 	/// </summary>
 	public class Settings
 	{
-		private Dictionary<string,Setting> settings;
-		private Dictionary<string,PropObj> propObj;
+		private Dictionary<string, Setting> _settings;
+		private Dictionary<string, PropertyObject> _propertyObject;
 
 		private static Dictionary<Type,ConvertObject> converters;
 
-		public static void AddConverter(Type t, ConvertObject o)
+		public static void AddConverter(Type t, ConvertObject obj)
 		{
 			if (converters == null)
 				converters = new Dictionary<Type, ConvertObject>();
 
-			converters[t] = o;
+			converters[t] = obj;
 		}
 
 
 		public Settings()
 		{
-			settings = new Dictionary<string, Setting>();
-			propObj = new Dictionary<string, PropObj>();
+			_settings = new Dictionary<string, Setting>();
+			_propertyObject = new Dictionary<string, PropertyObject>();
 
 			if (converters == null)
 			{
 				converters = new Dictionary<Type,ConvertObject>();
-				converters[typeof(Color)] = new ConvertObject(convertColor);
+				converters[typeof(Color)] = new ConvertObject(ConvertColor);
 			}
 		}
 
 
 		public static void ReadSettings(
-									VarCollection vars,
-									KeyVal keyVal,
-									Settings curSettings)
+				VarCollection vars,
+				KeyVal keyVal,
+				Settings curSettings)
 		{
 			while ((keyVal = vars.ReadLine()) != null)
 			{
@@ -76,7 +76,7 @@ namespace MapView
 		/// </summary>
 		public Dictionary<string,Setting>.KeyCollection Keys
 		{
-			get { return settings.Keys; }
+			get { return _settings.Keys; }
 		}
 
 		/// <summary>
@@ -86,21 +86,19 @@ namespace MapView
 		{
 			get
 			{
-				key = key.Replace(" ", "");
-				if (settings.ContainsKey(key))
-					return settings[key];
-
-				return null;
+				key = key.Replace(" ", String.Empty);
+				return (_settings.ContainsKey(key)) ? _settings[key]
+													: null;
 			}
 
 			set
 			{
-				key = key.Replace(" ", "");
-				if (!settings.ContainsKey(key))
-					settings.Add(key, value);
+				key = key.Replace(" ", String.Empty);
+				if (!_settings.ContainsKey(key))
+					_settings.Add(key, value);
 				else
 				{
-					settings[key] = value;
+					_settings[key] = value;
 					value.Name = key;
 				}
 			}
@@ -118,25 +116,25 @@ namespace MapView
 		/// must not be null and the name must be the name of a property of the type that refObj is</param>
 		/// <param name="refObj">the object that will recieve the changed property values</param>
 		public void AddSetting(
-							string name,
-							object val,
-							string desc,
-							string category,
-							ValueChangedDelegate update,
-							bool reflect,
-							object refObj)
+				string name,
+				object val,
+				string desc,
+				string category,
+				ValueChangedDelegate update,
+				bool reflect,
+				object refObj)
 		{
-			name = name.Replace(" ", "");
+			name = name.Replace(" ", String.Empty);
 
 			Setting setting;
-			if (!settings.ContainsKey(name))
+			if (!_settings.ContainsKey(name))
 			{
 				setting = new Setting(val, desc, category);
-				settings[name] = setting;
+				_settings[name] = setting;
 			}
 			else
 			{
-				setting = settings[name];
+				setting = _settings[name];
 				setting.Value = val;
 				setting.Description = desc;
 			}
@@ -146,58 +144,60 @@ namespace MapView
 
 			if (reflect && refObj != null)
 			{
-				propObj[name] = new PropObj(refObj, name);
-				this[name].ValueChanged += reflectEvent;
+				_propertyObject[name] = new PropertyObject(refObj, name);
+				this[name].ValueChanged += ReflectEvent;
 			}
 		}
 
 		/// <summary>
-		/// Gets the Setting object tied to the string. If there is no Setting object, one will be created with the defaultValue.
+		/// Gets the Setting object tied to the string. If there is no Setting
+		/// object, one will be created with the defaultValue.
 		/// </summary>
 		/// <param name="key">the name of the setting object</param>
-		/// <param name="defaultvalue">if there is no Setting object tied to the string, a Setting will be created with this as its Value</param>
+		/// <param name="val">if there is no Setting object tied to the
+		/// string, a Setting will be created with this as its Value</param>
 		/// <returns>the Setting object tied to the string</returns>
-		public Setting GetSetting(string key, object defaultvalue)
+		public Setting GetSetting(string key, object val)
 		{
-			if (!settings.ContainsKey(key))
+			if (!_settings.ContainsKey(key))
 			{
-				var item = new Setting(defaultvalue, null, null);
-				settings.Add(key, item);
+				var item = new Setting(val, null, null);
+				_settings.Add(key, item);
 				item.Name = key;
 			}
-			return settings[key];
+			return _settings[key];
 		}
 
-		private void reflectEvent(object sender,string key, object val)
+		private void ReflectEvent(object sender, string key, object val)
 		{
 //			System.Windows.Forms.PropertyValueChangedEventArgs pe = (System.Windows.Forms.PropertyValueChangedEventArgs)e;
-			propObj[key].SetValue(val);
+			_propertyObject[key].SetValue(val);
 		}
 
-		public void Save(string name, System.IO.StreamWriter sw)
+		public void Save(string line, System.IO.StreamWriter sw)
 		{
-			sw.WriteLine(name);
+			sw.WriteLine(line);
 			sw.WriteLine("{");
 
-			foreach (string s in settings.Keys)
-				sw.WriteLine("\t" + s + ":" + convert(this[s].Value));
+			foreach (string st in _settings.Keys)
+				sw.WriteLine("\t" + st + ":" + Convert(this[st].Value));
 
 			sw.WriteLine("}");
 		}
 
-		private string convert(object o)
+		private string Convert(object obj)
 		{
-			return (converters.ContainsKey(o.GetType())) ? converters[o.GetType()](o)
-														 : o.ToString();
+			return (converters.ContainsKey(obj.GetType())) ? converters[obj.GetType()](obj)
+														   : obj.ToString();
 		}
 
-		private static string convertColor(object o)
+		private static string ConvertColor(object obj)
 		{
-			var c = (Color)o;
-			if (c.IsKnownColor || c.IsNamedColor || c.IsSystemColor)
-				return c.Name;
+			var color = (Color)obj;
+			if (color.IsKnownColor || color.IsNamedColor || color.IsSystemColor)
+				return color.Name;
 
-			return c.A + "," + c.R + "," + c.G + "," + c.B;
+			return string.Format("{0},{1},{2},{3}", color.A, color.R, color.G, color.B);
 		}
 	}
 
@@ -256,6 +256,7 @@ namespace MapView
 			if (converters == null)
 			{
 				converters = new Dictionary<Type, parseString>();
+
 				converters[typeof(int)]   = parseIntString;
 				converters[typeof(Color)] = parseColorString;
 				converters[typeof(bool)]  = parseBoolString;
@@ -315,24 +316,24 @@ namespace MapView
 
 
 	/// <summary>
-	/// struct PropObj
+	/// struct PropertyObject
 	/// </summary>
-	internal struct PropObj
+	internal struct PropertyObject
 	{
-		public PropertyInfo pi;
-		public object obj;
+		public PropertyInfo _info;
+		public object _obj;
 
 
-		public PropObj(object obj, string property)
+		public PropertyObject(object obj, string property)
 		{
-			this.obj = obj;
-			pi = obj.GetType().GetProperty(property);
+			_obj  = obj;
+			_info = obj.GetType().GetProperty(property);
 		}
 
 
-		public void SetValue(object o)
+		public void SetValue(object obj)
 		{
-			pi.SetValue(obj, o, new object[]{});
+			_info.SetValue(_obj, obj, new object[]{});
 		}
 	}
 }
