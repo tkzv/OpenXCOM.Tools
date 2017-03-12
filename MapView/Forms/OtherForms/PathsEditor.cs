@@ -99,7 +99,13 @@ namespace MapView
 
 			InitializeComponent();
 
-			Size = MinimumSize; // fu .net
+			// WORKAROUND: See note in 'PathsEditor' cTor.
+			var size = new System.Drawing.Size();
+			size.Width  = 0;
+			size.Height = 0;
+			MaximumSize = size; // fu.net
+//			MinimumSize = size; // keep min size.
+
 
 			txtMap.Text    = GameInfo.TilesetInfo.Path;
 			txtImages.Text = GameInfo.ImageInfo.Path;
@@ -561,7 +567,7 @@ namespace MapView
 			{
 				if (treeMaps.SelectedNode.Parent != null) // add to here
 				{
-					string path = txtRoot.Text + nf.MapName + ".MAP";
+					string path = txtRoot.Text + nf.MapName + XCMapFile.MapExt;
 					if (File.Exists(path))
 					{
 						var dialog = new ChoiceDialog(path);
@@ -576,7 +582,7 @@ namespace MapView
 								nf.MapRows,
 								nf.MapCols,
 								nf.MapHeight);
-					var fs = File.OpenWrite(txtRmp.Text + nf.MapName + ".RMP");
+					var fs = File.OpenWrite(txtRmp.Text + nf.MapName + RmpFile.RouteExt);
 					fs.Close();
 
 					IXCTileset tileset;
@@ -906,7 +912,7 @@ namespace MapView
 			this.tabs.Location = new System.Drawing.Point(0, 0);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(634, 616);
+			this.tabs.Size = new System.Drawing.Size(632, 534);
 			this.tabs.TabIndex = 0;
 			// 
 			// tabPaths
@@ -927,7 +933,7 @@ namespace MapView
 			this.tabPaths.Controls.Add(this.label1);
 			this.tabPaths.Location = new System.Drawing.Point(4, 21);
 			this.tabPaths.Name = "tabPaths";
-			this.tabPaths.Size = new System.Drawing.Size(626, 591);
+			this.tabPaths.Size = new System.Drawing.Size(624, 509);
 			this.tabPaths.TabIndex = 0;
 			this.tabPaths.Text = "Paths";
 			// 
@@ -952,7 +958,7 @@ namespace MapView
 			// btnFindImage
 			// 
 			this.btnFindImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnFindImage.Location = new System.Drawing.Point(495, 35);
+			this.btnFindImage.Location = new System.Drawing.Point(493, 35);
 			this.btnFindImage.Name = "btnFindImage";
 			this.btnFindImage.Size = new System.Drawing.Size(70, 20);
 			this.btnFindImage.TabIndex = 11;
@@ -962,7 +968,7 @@ namespace MapView
 			// btnFindMap
 			// 
 			this.btnFindMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnFindMap.Location = new System.Drawing.Point(495, 10);
+			this.btnFindMap.Location = new System.Drawing.Point(493, 10);
 			this.btnFindMap.Name = "btnFindMap";
 			this.btnFindMap.Size = new System.Drawing.Size(70, 20);
 			this.btnFindMap.TabIndex = 10;
@@ -975,7 +981,7 @@ namespace MapView
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.txtPalettes.Location = new System.Drawing.Point(70, 85);
 			this.txtPalettes.Name = "txtPalettes";
-			this.txtPalettes.Size = new System.Drawing.Size(420, 19);
+			this.txtPalettes.Size = new System.Drawing.Size(418, 19);
 			this.txtPalettes.TabIndex = 9;
 			this.txtPalettes.Visible = false;
 			// 
@@ -1011,7 +1017,7 @@ namespace MapView
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.txtCursor.Location = new System.Drawing.Point(70, 60);
 			this.txtCursor.Name = "txtCursor";
-			this.txtCursor.Size = new System.Drawing.Size(420, 19);
+			this.txtCursor.Size = new System.Drawing.Size(418, 19);
 			this.txtCursor.TabIndex = 5;
 			// 
 			// txtImages
@@ -1020,7 +1026,7 @@ namespace MapView
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.txtImages.Location = new System.Drawing.Point(70, 35);
 			this.txtImages.Name = "txtImages";
-			this.txtImages.Size = new System.Drawing.Size(420, 19);
+			this.txtImages.Size = new System.Drawing.Size(418, 19);
 			this.txtImages.TabIndex = 4;
 			// 
 			// txtMap
@@ -1029,7 +1035,7 @@ namespace MapView
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.txtMap.Location = new System.Drawing.Point(70, 10);
 			this.txtMap.Name = "txtMap";
-			this.txtMap.Size = new System.Drawing.Size(420, 19);
+			this.txtMap.Size = new System.Drawing.Size(418, 19);
 			this.txtMap.TabIndex = 3;
 			// 
 			// label3
@@ -1063,9 +1069,9 @@ namespace MapView
 			this.tabMaps.Controls.Add(this.treeMaps);
 			this.tabMaps.Controls.Add(this.btnSaveMapEdit);
 			this.tabMaps.Controls.Add(this.btnEditTree);
-			this.tabMaps.Location = new System.Drawing.Point(4, 21);
+			this.tabMaps.Location = new System.Drawing.Point(4, 22);
 			this.tabMaps.Name = "tabMaps";
-			this.tabMaps.Size = new System.Drawing.Size(626, 591);
+			this.tabMaps.Size = new System.Drawing.Size(624, 508);
 			this.tabMaps.TabIndex = 1;
 			this.tabMaps.Text = "Map Files";
 			// 
@@ -1086,7 +1092,7 @@ namespace MapView
 			this.grpMap.Enabled = false;
 			this.grpMap.Location = new System.Drawing.Point(240, 170);
 			this.grpMap.Name = "grpMap";
-			this.grpMap.Size = new System.Drawing.Size(385, 423);
+			this.grpMap.Size = new System.Drawing.Size(385, 340);
 			this.grpMap.TabIndex = 2;
 			this.grpMap.TabStop = false;
 			this.grpMap.Text = "MAP BLOCK";
@@ -1153,7 +1159,7 @@ namespace MapView
 			this.listAllImages.Location = new System.Drawing.Point(225, 30);
 			this.listAllImages.Name = "listAllImages";
 			this.listAllImages.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.listAllImages.Size = new System.Drawing.Size(155, 364);
+			this.listAllImages.Size = new System.Drawing.Size(155, 304);
 			this.listAllImages.TabIndex = 3;
 			// 
 			// label9
@@ -1171,7 +1177,7 @@ namespace MapView
 			this.listMapImages.ItemHeight = 12;
 			this.listMapImages.Location = new System.Drawing.Point(5, 30);
 			this.listMapImages.Name = "listMapImages";
-			this.listMapImages.Size = new System.Drawing.Size(155, 364);
+			this.listMapImages.Size = new System.Drawing.Size(155, 304);
 			this.listMapImages.TabIndex = 1;
 			// 
 			// label8
@@ -1279,7 +1285,7 @@ namespace MapView
 			this.treeMaps.ContextMenu = this.cmTree;
 			this.treeMaps.Location = new System.Drawing.Point(0, 35);
 			this.treeMaps.Name = "treeMaps";
-			this.treeMaps.Size = new System.Drawing.Size(240, 555);
+			this.treeMaps.Size = new System.Drawing.Size(240, 472);
 			this.treeMaps.TabIndex = 0;
 			this.treeMaps.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeMaps_AfterSelect);
 			// 
@@ -1369,9 +1375,9 @@ namespace MapView
 			this.tabImages.Controls.Add(this.label4);
 			this.tabImages.Controls.Add(this.txtImagePath);
 			this.tabImages.Controls.Add(this.lstImages);
-			this.tabImages.Location = new System.Drawing.Point(4, 21);
+			this.tabImages.Location = new System.Drawing.Point(4, 22);
 			this.tabImages.Name = "tabImages";
-			this.tabImages.Size = new System.Drawing.Size(626, 591);
+			this.tabImages.Size = new System.Drawing.Size(624, 508);
 			this.tabImages.TabIndex = 2;
 			this.tabImages.Text = "Image Files";
 			// 
@@ -1390,7 +1396,7 @@ namespace MapView
 			this.txtImage2.Location = new System.Drawing.Point(245, 212);
 			this.txtImage2.Name = "txtImage2";
 			this.txtImage2.ReadOnly = true;
-			this.txtImage2.Size = new System.Drawing.Size(375, 19);
+			this.txtImage2.Size = new System.Drawing.Size(373, 19);
 			this.txtImage2.TabIndex = 12;
 			// 
 			// btnSaveImages
@@ -1417,7 +1423,7 @@ namespace MapView
 			this.txtImagePath.Location = new System.Drawing.Point(245, 112);
 			this.txtImagePath.Name = "txtImagePath";
 			this.txtImagePath.ReadOnly = true;
-			this.txtImagePath.Size = new System.Drawing.Size(375, 19);
+			this.txtImagePath.Size = new System.Drawing.Size(373, 19);
 			this.txtImagePath.TabIndex = 1;
 			this.txtImagePath.TextChanged += new System.EventHandler(this.txtImagePath_TextChanged);
 			// 
@@ -1428,7 +1434,7 @@ namespace MapView
 			this.lstImages.ItemHeight = 12;
 			this.lstImages.Location = new System.Drawing.Point(0, 0);
 			this.lstImages.Name = "lstImages";
-			this.lstImages.Size = new System.Drawing.Size(240, 591);
+			this.lstImages.Size = new System.Drawing.Size(240, 508);
 			this.lstImages.TabIndex = 0;
 			this.lstImages.SelectedIndexChanged += new System.EventHandler(this.lstImages_SelectedIndexChanged);
 			// 
@@ -1457,15 +1463,14 @@ namespace MapView
 			// PathsEditor
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-			this.ClientSize = new System.Drawing.Size(634, 616);
+			this.ClientSize = new System.Drawing.Size(632, 534);
 			this.Controls.Add(this.tabs);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(640, 640);
+			this.MaximumSize = new System.Drawing.Size(640, 560);
 			this.Menu = this.mainMenu;
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(640, 640);
+			this.MinimumSize = new System.Drawing.Size(640, 560);
 			this.Name = "PathsEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Paths Editor";

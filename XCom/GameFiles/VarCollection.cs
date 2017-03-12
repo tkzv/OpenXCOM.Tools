@@ -220,13 +220,16 @@ namespace XCom
 	/// </summary>
 	public class KeyVal
 	{
-		private string _keyword, _rest;
+		private readonly string _keyword;
+		private readonly string _rest;
 
-		public KeyVal(string keyword,string rest)
+
+		public KeyVal(string keyword, string rest)
 		{
 			_keyword = keyword;
 			_rest = rest;
 		}
+
 
 		public string Keyword
 		{

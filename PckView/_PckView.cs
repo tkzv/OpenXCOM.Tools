@@ -63,13 +63,14 @@ namespace PckView
 			FormClosed += (sender, e) => console.Close();
 
 			sharedSpace = SharedSpace.Instance;
-			sharedSpace.AllocateObject("PckView", this);
-			sharedSpace.AllocateObject("AppDir", Environment.CurrentDirectory);
-			sharedSpace.AllocateObject("CustomDir", Environment.CurrentDirectory + @"\custom");
-			sharedSpace.AllocateObject("SettingsDir", Environment.CurrentDirectory + @"\settings");
+			sharedSpace.AllocateObject("PckView",		this);
+			sharedSpace.AllocateObject("AppDir",		Environment.CurrentDirectory);
+			sharedSpace.AllocateObject("SettingsDir",	Environment.CurrentDirectory + @"\settings");
+			sharedSpace.AllocateObject("CustomDir",		Environment.CurrentDirectory + @"\custom");
 		
-			xConsole.AddLine("Current directory: " + sharedSpace["AppDir"]);
-			xConsole.AddLine("Custom directory: " + sharedSpace["CustomDir"].ToString());
+			xConsole.AddLine("Current directory: "  + sharedSpace["AppDir"]);
+			xConsole.AddLine("Settings directory: " + sharedSpace["SettingsDir"].ToString());
+			xConsole.AddLine("Custom directory: "   + sharedSpace["CustomDir"].ToString());
 			#endregion
 
 			_totalViewPck = new TotalViewPck();
@@ -112,8 +113,7 @@ namespace PckView
 			ri.AddProperty("FilterIndex");
 			ri.AddProperty("SelectedPalette");
 
-			if (!File.Exists("hq2xa.dll"))
-				miHq2x.Visible = false;
+			miHq2x.Visible &= File.Exists("hq2xa.dll");
 
 			loadedTypes = new LoadOfType<IXCImageFile>();
 			loadedTypes.OnLoad += loadedTypes_OnLoad;
@@ -124,20 +124,20 @@ namespace PckView
 			loadedTypes.LoadFrom(Assembly.GetExecutingAssembly());
 			loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(IXCImageFile)));
 
-			if (Directory.Exists(sharedSpace["CustomDir"].ToString()))
+			string dirCustom = sharedSpace["CustomDir"].ToString();
+			if (Directory.Exists(dirCustom))
 			{
-				//Console.WriteLine("Custom directory exists: " + sharedSpace["CustomDir"].ToString());
-				xConsole.AddLine("Custom directory exists: " + sharedSpace["CustomDir"].ToString());
-				foreach (string s in Directory.GetFiles(sharedSpace["CustomDir"].ToString()))
+				xConsole.AddLine("Custom directory exists: " + dirCustom);
+				foreach (string st in Directory.GetFiles(dirCustom))
 				{
-					if (s.EndsWith(".dll", StringComparison.Ordinal))
+					if (st.EndsWith(".dll", StringComparison.Ordinal))
 					{
-						xConsole.AddLine("Loading dll: " + s);
-						loadedTypes.LoadFrom(Assembly.LoadFrom(s));
+						xConsole.AddLine("Loading dll: " + st);
+						loadedTypes.LoadFrom(Assembly.LoadFrom(st));
 					}
-					else if (s.EndsWith(xcProfile.PROFILE_EXT, StringComparison.Ordinal))
+					else if (st.EndsWith(xcProfile.PROFILE_EXT, StringComparison.Ordinal))
 					{
-						foreach (xcProfile ip in ImgProfile.LoadFile(s))
+						foreach (xcProfile ip in ImgProfile.LoadFile(st))
 							loadedTypes.Add(ip);
 					}
 				}
@@ -157,13 +157,14 @@ namespace PckView
 
 		private void v_XCImageCollectionSet(object sender, XCImageCollectionSetEventArgs e)
 		{
-			var enabled = e.Collection != null;
-			saveitem.Enabled = enabled;
-			transItem.Enabled = enabled;
-			bytesMenu.Enabled = enabled;
+			bool enabled = (e.Collection != null);
+
+			saveitem.Enabled  =
+			transItem.Enabled =
+			bytesMenu.Enabled =
 			miPalette.Enabled = enabled;
 
-			if (e.Collection != null)
+			if (enabled)
 			{
 				bytesMenu.Enabled =
 				miPalette.Enabled =

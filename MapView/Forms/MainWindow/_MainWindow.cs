@@ -40,19 +40,50 @@ namespace MapView
 
 		public MainWindow()
 		{
-			InitializeComponent();
+			LogFile.CreateLogFile();
+			LogFile.WriteLine("Starting MAIN MapView window ...");
 
-			_mapView = MapViewPanel.Instance;
+			InitializeComponent();
+			LogFile.WriteLine("MapView window created");
+
+			// WORKAROUND: The size of the form in the designer keeps increasing
+			// (for whatever reason) based on the
+			// 'SystemInformation.CaptionButtonSize.Height' value (the titlebar
+			// height - note that 'SystemInformation.CaptionHeight' seems to be
+			// 1 pixel larger, which (for whatever reason) is not the
+			// 'SystemInformation.BorderSize.Height'). To prevent all that, in
+			// the designer cap the form's Size by setting its MaximumSize to
+			// the Size - but now run this code that sets the MaximumSize to
+			// "0,0" (unlimited, as wanted). And, as a safety, do the same thing
+			// with MinimumSize ....
+			//
+			// - observed & tested in SharpDevelop 5.1
+			//
+			// NOTE: This code (the constructor of a Form) shouldn't run when
+			// opening the designer; it appears to run only when actually
+			// running the application:
+
+			var size = new Size();
+			size.Width  = 0;
+			size.Height = 0;
+			MaximumSize = size; // fu.net
+			MinimumSize = size;
+
+
+			_mapView = MapViewPanel.Instance; // "MapView panel created"
 
 			_settingsManager = new SettingsManager();
 			_windowMenuManager = new WindowMenuManager(showMenu, miHelp);
+			LogFile.WriteLine("Quick Help and About created");
 
 			LoadDefaults();
+			LogFile.WriteLine("Default settings loaded");
 
 			Palette.UFOBattle.SetTransparent(true);
 			Palette.TFTDBattle.SetTransparent(true);
 			Palette.UFOBattle.Grayscale.SetTransparent(true);
 			Palette.TFTDBattle.Grayscale.SetTransparent(true);
+			LogFile.WriteLine("Palette transparencies set");
 
 			#region Setup SharedSpace information and paths
 
@@ -63,51 +94,53 @@ namespace MapView
 			MainWindowsManager.MainToolStripButtonsFactory = new MainToolStripButtonsFactory(_mapView);
 
 			_mainWindowsManager = new MainWindowsManager();
-			_mainWindowWindowsManager = new MainWindowWindowsManager(
-																_settingsManager,
-																consoleShare);
+			_mainWindowWindowsManager = new MainWindowWindowsManager(_settingsManager, consoleShare);
 
-			var settings = GetSettings();
-			_windowMenuManager.SetMenus(consoleShare.GetNewConsole(), settings);
+			_windowMenuManager.SetMenus(consoleShare.GetNewConsole(), GetSettings());
 
 			MainWindowsManager.MainWindowsShowAllManager = _windowMenuManager.CreateShowAll();
 			MainWindowsManager.Initialize();
+			LogFile.WriteLine("MainWindowsManager initialized");
 
 			share.AllocateObject("MapView",		this);
 			share.AllocateObject("AppDir",		Environment.CurrentDirectory);
-			share.AllocateObject("CustomDir",	Environment.CurrentDirectory + @"\custom");
 			share.AllocateObject("SettingsDir",	Environment.CurrentDirectory + @"\settings");
+//			share.AllocateObject("CustomDir",	Environment.CurrentDirectory + @"\custom");	// I think this is needed only for PckView.
+																							// and so I'll assume '_PckView' handles it.
+			LogFile.WriteLine("Environment set");
 
-			var settingsFile	= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "MVSettings",	"dat");
-			var pathsFile		= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "Paths",		"pth");
-			var mapeditFile		= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "MapEdit",	"dat");
-			var imagesFile		= new PathInfo(SharedSpace.Instance.GetString("SettingsDir"), "Images",		"dat");
+			var dir = SharedSpace.Instance.GetString("SettingsDir");
+			var fileSettings	= new PathInfo(dir, "MVSettings",	"dat");
+			var filePaths		= new PathInfo(dir, "Paths",		"pth");
+			var fileMapEdit		= new PathInfo(dir, "MapEdit",		"dat");
+			var fileImages		= new PathInfo(dir, "Images",		"dat");
 
-			share.AllocateObject(SettingsService.MV_SETTINGS_FILE, settingsFile);
-			share.AllocateObject("MV_PathsFile", pathsFile);
-			share.AllocateObject("MV_MapEditFile", mapeditFile);
-			share.AllocateObject("MV_ImagesFile", imagesFile);
+			share.AllocateObject(SettingsService.MV_SETTINGS_FILE, fileSettings);
+			share.AllocateObject("MV_PathsFile",	filePaths);
+			share.AllocateObject("MV_MapEditFile",	fileMapEdit);
+			share.AllocateObject("MV_ImagesFile",	fileImages);
+			LogFile.WriteLine("Paths set");
 
 			#endregion
 
-			if (!pathsFile.Exists())
+			if (!filePaths.Exists())
 			{
 				var iw = new InstallWindow();
 
 				if (iw.ShowDialog(this) != DialogResult.OK)
 					Environment.Exit(-1);
 			}
+			LogFile.WriteLine("Installation checked");
 
 			GameInfo.ParseLine += parseLine; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			LogFile.WriteLine("Line parsed");
 
-			InitGameInfo(pathsFile);
-			LogFile.Instance.WriteLine("GameInfo.Init done");
+			InitGameInfo(filePaths);
+			LogFile.WriteLine("GameInfo initialized");
 
 			_mainWindowWindowsManager.Register();
 
 			MainWindowsManager.TileView.TileViewControl.MapChanged += TileView_MapChanged;
-
-			LogFile.Instance.WriteLine("Palette transparencies set");
 
 			MapViewPanel.ImageUpdate += update; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
@@ -122,14 +155,11 @@ namespace MapView
 			toolStrip.Enabled = false;
 			toolStrip.Items.Add(new ToolStripSeparator());
 
-			LogFile.Instance.WriteLine("Main view window created");
-			LogFile.Instance.WriteLine("Default settings loaded");
-
 			try
 			{
 				_mapView.MapView.CursorSprite = new CursorSprite(GameInfo.CachePckFile(
 																				SharedSpace.Instance.GetString("cursorFile"),
-																				"",
+																				String.Empty,
 																				2,
 																				Palette.UFOBattle));
 			}
@@ -139,7 +169,7 @@ namespace MapView
 				{
 					_mapView.MapView.CursorSprite = new CursorSprite(GameInfo.CachePckFile(
 																				SharedSpace.Instance.GetString("cursorFile"),
-																				"",
+																				String.Empty,
 																				4,
 																				Palette.TFTDBattle));
 				}
@@ -148,22 +178,19 @@ namespace MapView
 					_mapView.Cursor = null;
 				}
 			}
-			LogFile.Instance.WriteLine("Cursor loaded");
+			LogFile.WriteLine("Cursor loaded");
 
 			initList();
+			LogFile.WriteLine("Tilesets created and loaded to MapView's tree panel");
 
-			LogFile.Instance.WriteLine("Map list created");
-			LogFile.Instance.WriteLine("Quick help and About created");
-
-			if (settingsFile.Exists())
+			if (fileSettings.Exists())
 			{
-				_settingsManager.Load(settingsFile.ToString());
-				LogFile.Instance.WriteLine("User settings loaded");
+				_settingsManager.Load(fileSettings.ToString());
+				LogFile.WriteLine("User settings loaded");
 			}
 			else
-			{
-				LogFile.Instance.WriteLine("User settings NOT loaded - no settings file to load");
-			}
+				LogFile.WriteLine("User settings NOT loaded - no settings file to load");
+
 
 			OnResize(null);
 			this.Closing += new CancelEventHandler(closing);
@@ -175,7 +202,7 @@ namespace MapView
 //			if (!File.Exists("hq2xa.dll"))
 			miHq.Visible = false;
 
-//			LogFile.Instance.WriteLine("Loading user-made plugins");
+//			LogFile.WriteLine("Loading user-made plugins");
 
 			/****************************************/
 			// Copied from PckView
@@ -197,16 +224,15 @@ namespace MapView
 //			}
 			/****************************************/
 
-			LogFile.Instance.WriteLine("About to show window");
+			LogFile.WriteLine("About to show Main window");
 			Show();
-
-			LogFile.Instance.Close(); // TODO: Keep logfile open until the program closes.
 		}
 
 
-		private static void InitGameInfo(PathInfo pathsFile)
+		private static void InitGameInfo(PathInfo filePaths)
 		{
-			GameInfo.Init(Palette.TFTDBattle, pathsFile);
+			GameInfo.Init(Palette.UFOBattle, filePaths);
+//			GameInfo.Init(Palette.TFTDBattle, filePaths);
 		}
 
 		private static MainWindow _instance;
@@ -227,16 +253,16 @@ namespace MapView
 						SharedSpace.Instance.AllocateObject("cursorFile", line.Rest + @"\CURSOR");
 					break;
 
-				case "logfile":
-					try
-					{
-						LogFile.DebugOn = bool.Parse(line.Rest);
-					}
-					catch
-					{
-						Console.WriteLine("Could not parse logfile line");
-					}
-					break;
+//				case "logfile":
+//					try
+//					{
+//						LogFile.DebugOn = bool.Parse(line.Rest);
+//					}
+//					catch
+//					{
+//						Console.WriteLine("Could not parse logfile line.");
+//					}
+//					break;
 			}
 		}
 
@@ -369,9 +395,7 @@ namespace MapView
 					riKey.SetValue("Left",		Left);
 					riKey.SetValue("Top",		Top);
 					riKey.SetValue("Width",		Width);
-					riKey.SetValue("Height",	Height // kL_note: not sure this is correct but works on my machine ->
-												- SystemInformation.CaptionHeight
-												+ SystemInformation.BorderSize.Height);
+					riKey.SetValue("Height",	Height - SystemInformation.CaptionButtonSize.Height);
 
 //					riKey.SetValue("Animation", onItem.Checked.ToString());
 //					riKey.SetValue("Doors", miDoors.Checked.ToString());
@@ -502,10 +526,12 @@ namespace MapView
 
 		private void miPaths_Click(object sender, System.EventArgs e)
 		{
-			var paths = new PathsEditor(SharedSpace.Instance["MV_PathsFile"].ToString());
+			var share = SharedSpace.Instance["MV_PathsFile"];
+
+			var paths = new PathsEditor(share.ToString());
 			paths.ShowDialog();
 
-			var pathInfo = (PathInfo)SharedSpace.Instance["MV_PathsFile"];
+			var pathInfo = (PathInfo)share;
 			InitGameInfo(pathInfo);
 			initList();
 		}
@@ -537,15 +563,15 @@ namespace MapView
 		private void mapList_AfterSelect(object sender, TreeViewEventArgs e)
 		{
 			mapList.SelectedNode.BackColor = Color.Gold;
-			LoadSelectedNodeMap();
+			LoadSelectedMap();
 		}
 
 		private void TileView_MapChanged()
 		{
-			LoadSelectedNodeMap();
+			LoadSelectedMap();
 		}
 
-		private void LoadSelectedNodeMap()
+		private void LoadSelectedMap()
 		{
 			var desc = mapList.SelectedNode.Tag as IMapDesc;
 			if (desc != null)

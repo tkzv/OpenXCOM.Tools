@@ -1,78 +1,49 @@
 using System;
+
+#if DEBUG
 using System.IO;
+#endif
 
 
 namespace XCom
 {
-	public class LogFile
+	public static class LogFile
 	{
+#if DEBUG
 		private static readonly string DebugLogFile = "debug.log";
-		private static LogFile _file;
+#endif
 
-		private static bool _on = false;
-
-		private readonly StreamWriter _sw;
-
-
-		private LogFile(string file)
-		{
-			if (_on)
-				_sw = new StreamWriter(File.Open(file, FileMode.Create));
-		}
-
-
-		public static bool DebugOn
-		{
-			get { return _on; }
-			set { _on = value; }
-		}
-
-		public static LogFile Instance
-		{
-			get { return Init(DebugLogFile); }
-		}
-
-		public static LogFile Init(string file)
+		/// <summary>
+		/// Creates a logfile or Cleans the old one.
+		/// </summary>
+		public static void CreateLogFile()
 		{
 #if DEBUG
-			_on = true;
+			using (var sw = new StreamWriter(File.Open( // clean the old logfile
+													DebugLogFile,
+													FileMode.Create,
+													FileAccess.Write,
+													FileShare.None)))
+			{}
 #endif
-			if (_file == null)
-				_file = new LogFile(file);
-
-			return _file;
 		}
 
-		public void Write(string text)
+		/// <summary>
+		/// Writes a line to the logfile.
+		/// </summary>
+		/// <param name="line">the line to write</param>
+		public static void WriteLine(string line)
 		{
-//			if ((_on || _sw != null) && _sw != null)	// wft.
-//			if (_on && _sw != null)						// kL
-			if (_sw != null)							// your choice.
+#if DEBUG
+			using (var sw = new StreamWriter(File.Open(
+													DebugLogFile,
+													FileMode.Append,
+													FileAccess.Write,
+													FileShare.None)))
 			{
-				_sw.Write(text);
-				_sw.Flush();
+				sw.WriteLine(line);
 			}
-		}
-
-		public void WriteLine(string text)
-		{
-//			if ((_on || _sw != null) && _sw != null)	// wft.
-//			if (_on && _sw != null)						// kL
-			if (_sw != null)							// your choice.
-			{
-				_sw.WriteLine(text);
-				_sw.Flush();
-			}
-		}
-
-		public void Close()
-		{
-//			if ((_on || _sw != null) && _sw != null)	// wft.
-//			if (_on && _sw != null)						// kL
-			if (_sw != null)							// your choice.
-			{
-				_sw.Close();
-			}
+#endif
 		}
 	}
 }

@@ -52,16 +52,20 @@ namespace XCom.Interfaces
 				{
 					case "palette":
 						if (rest.ToLower() == "ufo")
+						{
 							myPal = Palette.UFOBattle;
+						}
 						else if (rest.ToLower() == "tftd")
+						{
 							myPal = Palette.TFTDBattle;
+						}
 						else
 							myPal = Palette.GetPalette(rest);
 						break;
 
 					case "dll":
-						string dllName = rest.Substring(rest.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
-						Console.WriteLine(name + " is in dll " + dllName);
+						string dll = rest.Substring(rest.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+						Console.WriteLine(name + " is in dll " + dll);
 						break;
 
 					case "rootpath":
@@ -111,7 +115,7 @@ namespace XCom.Interfaces
 
 					default:
 						// user-defined keyword
-						ParseLine(keywordLow, rest, sr, vars);
+						ParseLine(keywordLow, rest, sr, vars); // FIX: "Virtual member call in a constructor."
 						break;
 				}
 			}
@@ -170,10 +174,10 @@ namespace XCom.Interfaces
 		}
 
 		public virtual void ParseLine(
-									string keyword,
-									string line,
-									StreamReader sr,
-									VarCollection vars)
+				string keyword,
+				string line,
+				StreamReader sr,
+				VarCollection vars)
 		{}
 
 		public virtual void AddMap(string name, string subset)

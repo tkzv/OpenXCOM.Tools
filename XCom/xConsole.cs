@@ -85,7 +85,6 @@ namespace XCom
 //			{
 //				if (console == null)
 //					console = new xConsole(20);
-//
 //				return console;
 //			}
 //		}

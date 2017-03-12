@@ -1,88 +1,91 @@
 using System;
 using System.IO;
 
+
 namespace XCom
 {
 	public static class BlankFile
 	{
-		public static readonly string Extension = ".BLK";
+		public static readonly string BlankExt = ".BLK";
 
 		public static void LoadBlanks(
-									string basename,
-									string blankPath,
-									XCMapFile myFile)
+				string baseName,
+				string blankPath,
+				XCMapFile file)
 		{
-			var br = new BinaryReader(File.OpenRead(blankPath + basename + Extension));
-
-			bool flip = true;
-			int curr = 0;
-
-			while (br.BaseStream.Length > br.BaseStream.Position)
+			using (var br = new BinaryReader(File.OpenRead(blankPath + baseName + BlankExt)))
 			{
-				UInt16 v = br.ReadUInt16();
+				bool flip = true;
+				int curr = 0;
 
-				if (flip)
+				while (br.BaseStream.Length > br.BaseStream.Position)
 				{
-					for (int i = curr; i < curr + v; i++)
-					{
-						int h = i / (myFile.MapSize.Rows * myFile.MapSize.Cols);
-						int c = i % myFile.MapSize.Cols;
-						int r = (i / myFile.MapSize.Cols) - h * myFile.MapSize.Rows;
+					UInt16 v = br.ReadUInt16();
 
-						((XCMapTile)myFile[r, c, h]).DrawAbove = false;
+					if (flip)
+					{
+						for (int i = curr; i < curr + v; i++)
+						{
+							int h = i / (file.MapSize.Rows * file.MapSize.Cols);
+							int c = i % file.MapSize.Cols;
+							int r = (i / file.MapSize.Cols) - h * file.MapSize.Rows;
+
+							((XCMapTile)file[r, c, h]).DrawAbove = false;
+						}
 					}
+
+					curr += v;
+					flip = !flip;
 				}
 
-				curr += v;
-				flip = !flip;
+//				br.Close(); // NOTE: the 'using' block closes the stream.
 			}
-
-			br.Close();
 		}
 
 		public static void SaveBlanks(
-								string basename,
-								string blankPath,
-								XCMapFile myFile)
+				string baseName,
+				string blankPath,
+				XCMapFile file)
 		{
 			if (!Directory.Exists(blankPath))
 				Directory.CreateDirectory(blankPath);
 
-			var bw = new BinaryWriter(new FileStream(blankPath + basename + Extension, FileMode.Create));
+			using (var bw = new BinaryWriter(new FileStream(blankPath + baseName + BlankExt, FileMode.Create)))
+			{
+				UInt16 curr = 0;
+				bool flip = true;
 
-			UInt16 curr = 0;
-			bool flip = true;
-
-			for (int h = 0; h < myFile.MapSize.Height; h++)
-				for (int r = 0; r < myFile.MapSize.Rows; r++)
-					for (int c = 0; c < myFile.MapSize.Cols; c++)
-					{
-						if (flip)
+				for (int h = 0; h < file.MapSize.Height; h++)
+					for (int r = 0; r < file.MapSize.Rows; r++)
+						for (int c = 0; c < file.MapSize.Cols; c++)
 						{
-							if (((XCMapTile)myFile[r, c, h]).DrawAbove)
+							if (flip)
 							{
-								flip =! flip;
-								bw.Write(curr);
-								curr = 1;
+								if (((XCMapTile)file[r, c, h]).DrawAbove)
+								{
+									flip = !flip;
+									bw.Write(curr);
+									curr = 1;
+								}
+								else
+									curr++;
 							}
 							else
-								curr++;
-						}
-						else
-						{
-							if (((XCMapTile)myFile[r, c, h]).DrawAbove)
-								curr++;
-							else
 							{
-								flip =! flip;
-								bw.Write(curr);
-								curr = 1;
+								if (((XCMapTile)file[r, c, h]).DrawAbove)
+									curr++;
+								else
+								{
+									flip = !flip;
+									bw.Write(curr);
+									curr = 1;
+								}
 							}
 						}
-					}
 
-			bw.Flush();
-			bw.Close();
+//				bw.Flush();
+//				bw.Close(); // NOTE: the 'using' block flushes & closes the stream.
+			}
 		}
 	}
 }

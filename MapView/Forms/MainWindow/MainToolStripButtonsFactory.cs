@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
-using MapView.Forms.MapObservers.TopViews;
+
 using MapView.Properties;
+
 
 namespace MapView.Forms.MainWindow
 {
@@ -20,7 +19,8 @@ namespace MapView.Forms.MainWindow
 		}
 
 		/// <summary>
-		/// Adds buttons for Up,Down,Cut,Copy and Paste to a toolstrip as well as sets some properties for the toolstrip
+		/// Adds buttons for Up,Down,Cut,Copy and Paste to a toolstrip as well
+		/// as sets some properties for the toolstrip.
 		/// </summary>
 		/// <param name="toolStrip"></param>
 		public void MakeToolstrip(ToolStrip toolStrip)

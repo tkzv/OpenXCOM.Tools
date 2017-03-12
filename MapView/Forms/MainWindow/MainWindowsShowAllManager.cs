@@ -23,8 +23,8 @@ namespace MapView.Forms.MainWindow
 
 
 		public MainWindowsShowAllManager(
-									IEnumerable<Form> allForms,
-									IEnumerable<MenuItem> allItems)
+				IEnumerable<Form> allForms,
+				IEnumerable<MenuItem> allItems)
 		{
 			_allForms = allForms;
 			_allItems = allItems;

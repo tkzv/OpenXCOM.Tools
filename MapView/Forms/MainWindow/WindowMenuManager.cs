@@ -36,11 +36,14 @@ namespace MapView.Forms.MainWindow
 
 			RegisterForm(MainWindowsManager.TileView,		"Tile View",		_show, "TileView");
 			_show.MenuItems.Add(new MenuItem("-"));
+
 			RegisterForm(MainWindowsManager.TopView,		"Top View",			_show, "TopView");
 			RegisterForm(MainWindowsManager.RmpView,		"Route View",		_show, "RmpView");
 			RegisterForm(MainWindowsManager.TopRmpView,		"Top & Route View",	_show);
 			_show.MenuItems.Add(new MenuItem("-"));
+
 			RegisterForm(consoleWindow,						"Console",			_show);
+
 
 			RegisterForm(MainWindowsManager.HelpScreen,		"Quick Help",		_help);
 			RegisterForm(MainWindowsManager.AboutWindow,	"About",			_help);
@@ -63,7 +66,6 @@ namespace MapView.Forms.MainWindow
 					item.PerformClick();
 				}
 			}
-			_show.Enabled = true;
 /*			foreach (MenuItem item in _show.MenuItems)	// NOTE: Don't do this. Go figure.
 			{											// All the View-Panels will load ...
 				item.PerformClick();					// regardless of their saved settings.
@@ -71,8 +73,8 @@ namespace MapView.Forms.MainWindow
 				var label = GetWindowSettingName(item);
 				if (!(_settings[label].ValueBool))
 					item.PerformClick();
-			}
-			_show.Enabled = true; */
+			} */
+			_show.Enabled = true;
 		}
 
 		public IMainWindowsShowAllManager CreateShowAll()
@@ -114,10 +116,10 @@ namespace MapView.Forms.MainWindow
 		}
 
 		private void RegisterForm(
-								Form form,
-								string title,
-								Menu parent,
-								string registryKey = null)
+				Form form,
+				string title,
+				Menu parent,
+				string registryKey = null)
 		{
 			form.Text = title;
 

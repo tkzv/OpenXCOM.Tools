@@ -20,8 +20,8 @@ namespace MapView.SettingServices
 					if (settingsHash.ContainsKey(st))
 						settingsHash[st].Save(st, sw);
 
-				sw.Flush();
-				sw.Close();
+//				sw.Flush();
+//				sw.Close(); // NOTE: the 'using' block flushes & closes the stream.
 			}
 		}
 	}

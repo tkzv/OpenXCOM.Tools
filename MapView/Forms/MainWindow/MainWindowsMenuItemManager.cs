@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 using System.Windows.Forms;
 
 using MapView.Forms.MapObservers;
 
 using XCom;
-using XCom.Interfaces.Base;
 
 
 namespace MapView.Forms.MainWindow
@@ -28,8 +25,8 @@ namespace MapView.Forms.MainWindow
 
 
 		public MainWindowWindowsManager(
-									SettingsManager settingsManager,
-									ConsoleSharedSpace consoleSharedSpace)
+				SettingsManager settingsManager,
+				ConsoleSharedSpace consoleSharedSpace)
 		{
 			_settingsManager = settingsManager;
 			_consoleSharedSpace = consoleSharedSpace;
@@ -65,32 +62,32 @@ namespace MapView.Forms.MainWindow
 				MainWindowsManager.RmpView.RouteViewControl.RegistryInfo;
 		}
 
-		private void RegisterForm(Form form, string title, string registryKey = null)
+		private void RegisterForm(Form f, string title, string registryKey = null)
 		{
-			form.Text = title;
+			f.Text = title;
 
-			var observerForm = form as IMapObserverFormProvider;
+			var observerForm = f as IMapObserverFormProvider;
 			if (observerForm != null)
 			{
 				var observer = observerForm.MapObserver;
 				observer.LoadDefaultSettings();
-				observer.RegistryInfo = new DSShared.Windows.RegistryInfo(form, registryKey);
+				observer.RegistryInfo = new DSShared.Windows.RegistryInfo(f, registryKey);
 				_settingsManager.Add(registryKey, observer.Settings);
 			}
 
-			form.ShowInTaskbar = false;
-			form.FormBorderStyle = FormBorderStyle.SizableToolWindow;
+			f.ShowInTaskbar = false;
+			f.FormBorderStyle = FormBorderStyle.SizableToolWindow;
 
-			_registeredForms.Add(title, form);
+			_registeredForms.Add(title, f);
 		}
 
 		public void CloseAll()
 		{
 			foreach (string key in _registeredForms.Keys)
 			{
-				Form form = _registeredForms[key];
-				form.WindowState = FormWindowState.Normal;
-				form.Close();
+				var f = _registeredForms[key];
+				f.WindowState = FormWindowState.Normal;
+				f.Close();
 			}
 		}
 	}

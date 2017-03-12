@@ -83,7 +83,7 @@ namespace MapView
 				if (_instance == null)
 				{
 					_instance = new MapViewPanel();
-					LogFile.Instance.WriteLine("Map View panel created");
+					LogFile.WriteLine("MapView panel created");
 				}
 				return _instance;
 			}

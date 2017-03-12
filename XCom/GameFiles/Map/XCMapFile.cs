@@ -15,6 +15,8 @@ namespace XCom
 		private readonly string _blankPath;
 		private readonly string[] _dependencies;
 
+		public static readonly string MapExt = ".MAP";
+
 
 		public XCMapFile(
 				string baseName,
@@ -32,7 +34,7 @@ namespace XCom
 			_dependencies = depList;
 			Rmp = rmp;
 
-			var filePath = basePath + baseName + ".MAP";
+			var filePath = basePath + baseName + MapExt;
 			if (!File.Exists(filePath))
 			{
 				throw new FileNotFoundException(filePath);
@@ -45,7 +47,7 @@ namespace XCom
 
 			SetupRoutes(rmp);
 
-			if (File.Exists(blankPath + baseName + BlankFile.Extension))
+			if (File.Exists(blankPath + baseName + BlankFile.BlankExt))
 			{
 				try
 				{
@@ -151,46 +153,46 @@ namespace XCom
 
 		public override void Save()
 		{
-			using (var s = File.Create(BasePath + BaseName + ".MAP"))
+			using (var fs = File.Create(BasePath + BaseName + MapExt))
 			{
 				if (Rmp.ExtraHeight != 0) // add ExtraHeight to save - see SetupRoutes() below_
 					foreach (RmpEntry route in Rmp)
 						route.Height += Rmp.ExtraHeight;
 
 				Rmp.Save();
-				s.WriteByte((byte)MapSize.Rows);
-				s.WriteByte((byte)MapSize.Cols);
-				s.WriteByte((byte)MapSize.Height);
+				fs.WriteByte((byte)MapSize.Rows);
+				fs.WriteByte((byte)MapSize.Cols);
+				fs.WriteByte((byte)MapSize.Height);
 
 				for (int h = 0; h < MapSize.Height; h++)
 					for (int r = 0; r < MapSize.Rows; r++)
 						for (int c = 0; c < MapSize.Cols; c++)
 						{
-							var xcmt = (XCMapTile) this[r, c, h];
+							var tile = (XCMapTile)this[r, c, h];
 
-							if (xcmt.Ground == null)
-								s.WriteByte(0);
+							if (tile.Ground == null)
+								fs.WriteByte(0);
 							else
-								s.WriteByte((byte)(xcmt.Ground.MapId + 2));
+								fs.WriteByte((byte)(tile.Ground.MapId + 2));
 
-							if (xcmt.West == null)
-								s.WriteByte(0);
+							if (tile.West == null)
+								fs.WriteByte(0);
 							else
-								s.WriteByte((byte)(xcmt.West.MapId + 2));
+								fs.WriteByte((byte)(tile.West.MapId + 2));
 
-							if (xcmt.North == null)
-								s.WriteByte(0);
+							if (tile.North == null)
+								fs.WriteByte(0);
 							else
-								s.WriteByte((byte)(xcmt.North.MapId + 2));
+								fs.WriteByte((byte)(tile.North.MapId + 2));
 
-							if (xcmt.Content == null)
-								s.WriteByte(0);
+							if (tile.Content == null)
+								fs.WriteByte(0);
 							else
-								s.WriteByte((byte)(xcmt.Content.MapId + 2));
+								fs.WriteByte((byte)(tile.Content.MapId + 2));
 						}
 
-				s.WriteByte(Rmp.ExtraHeight);
-				s.Close();
+				fs.WriteByte(Rmp.ExtraHeight);
+//				fs.Close(); // NOTE: the 'using' block flushes & closes the stream.
 			}
 			MapChanged = false;
 		}

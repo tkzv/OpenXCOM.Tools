@@ -46,7 +46,7 @@ namespace XCom
 					_images[keyVal.Keyword.ToUpper()] = img;
 				}
 
-				sr.Close();
+//				sr.Close(); // NOTE: the 'using' block closes the stream.
 			}
 		}
 
@@ -73,8 +73,8 @@ namespace XCom
 				foreach (string basePath in vars.Keys)
 					vars[basePath].Write(sw);
 
-				sw.Flush();
-				sw.Close();
+//				sw.Flush();
+//				sw.Close(); // NOTE: the 'using' block flushes & closes the stream.
 			}
 		}
 

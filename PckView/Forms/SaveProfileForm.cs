@@ -26,10 +26,11 @@ namespace PckView
 
 			var ri = new DSShared.Windows.RegistryInfo(this);
 
-			if (!Directory.Exists(SharedSpace.Instance["CustomDir"].ToString()))
-				Directory.CreateDirectory(SharedSpace.Instance["CustomDir"].ToString());
+			string dirCustom = SharedSpace.Instance["CustomDir"].ToString();
+			if (!Directory.Exists(dirCustom))
+				Directory.CreateDirectory(dirCustom);
 
-			saveFile.InitialDirectory = SharedSpace.Instance["CustomDir"].ToString();
+			saveFile.InitialDirectory = dirCustom;
 			saveFile.FileName = "profile.pvp";
 
 			txtOutDir.Text = saveFile.InitialDirectory + @"\" + saveFile.FileName;

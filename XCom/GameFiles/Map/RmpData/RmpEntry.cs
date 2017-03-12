@@ -1,5 +1,6 @@
 using System.IO;
 
+
 namespace XCom
 {
 	public class RmpEntry
@@ -26,10 +27,12 @@ namespace XCom
 
 		#endregion
 
+
 		private readonly byte _row;
 		private readonly byte _col;
 		private int _height;
 		private readonly Link[] _links;
+
 
 		public RmpEntry(byte idx, byte[] data)
 		{
@@ -78,13 +81,11 @@ namespace XCom
 			Spawn = 0;
 		}
 
-		public override bool Equals(object o)
-		{
-			var entry = o as RmpEntry;
-			if (entry != null)
-				return (Index == entry.Index);
 
-			return false;
+		public override bool Equals(object obj)
+		{
+			var entry = obj as RmpEntry;
+			return (entry == null || Index == entry.Index);
 		}
 
 		public override int GetHashCode()

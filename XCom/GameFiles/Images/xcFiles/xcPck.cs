@@ -1,6 +1,8 @@
 using System;
-using XCom.Interfaces;
 using System.Windows.Forms;
+
+using XCom.Interfaces;
+
 
 namespace XCom.GameFiles.Images.xcFiles
 {
@@ -11,6 +13,7 @@ namespace XCom.GameFiles.Images.xcFiles
 		private const string TAB_EXT = ".tab";
 		private Panel savePanel;
 		private RadioButton radio2, radio4;
+
 
 		public xcPck()
 			:
@@ -23,22 +26,23 @@ namespace XCom.GameFiles.Images.xcFiles
 			expDesc = "Pck File";
 		}
 
-		protected override XCImageCollection LoadFileOverride(
-														string directory,
-														string file,
-														int imgWid,
-														int imgHei,
-														Palette pal)
-		{
-			System.IO.Stream tabStream = null;
-			string tabBase = file.Substring(0, file.LastIndexOf("."));
-			var tabFilePath = directory + "\\" + tabBase + TAB_EXT;
 
+		protected override XCImageCollection LoadFileOverride(
+				string directory,
+				string file,
+				int imgWid,
+				int imgHei,
+				Palette pal)
+		{
+			string tabBase = file.Substring(0, file.LastIndexOf(".", StringComparison.Ordinal));
+			var tabFilePath = directory + @"\" + tabBase + TAB_EXT;
+
+			System.IO.Stream tabStream = null;
 			if (System.IO.File.Exists(tabFilePath))
 				tabStream = System.IO.File.OpenRead(tabFilePath);
 
 			using (tabStream)
-			using (var pckStream = System.IO.File.OpenRead(directory + "\\" + file))
+			using (var pckStream = System.IO.File.OpenRead(directory + @"\" + file))
 			{
 				try
 				{
@@ -63,7 +67,7 @@ namespace XCom.GameFiles.Images.xcFiles
 			}
 		}
 
-		private System.Windows.Forms.Panel SavingOptions
+		private Panel SavingOptions
 		{
 			get
 			{
@@ -71,10 +75,10 @@ namespace XCom.GameFiles.Images.xcFiles
 				{
 					savePanel = new Panel();
 
-					GroupBox gb = new GroupBox();
+					var gb = new GroupBox();
 					gb.Text = "Bpp Options";
 
-					Panel top = new Panel();
+					var top = new Panel();
 					top.Dock = DockStyle.Top;
 					top.Height = 50;
 
@@ -86,15 +90,15 @@ namespace XCom.GameFiles.Images.xcFiles
 					radio2.TextAlign = System.Drawing.ContentAlignment.TopLeft;
 					radio2.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
 					radio2.Checked = true;
-					radio2.CheckedChanged += new EventHandler(checkChange);
+					radio2.CheckedChanged += checkChange;
 
-					Label l = new Label();
+					var l = new Label();
 					l.Text = "UFO/TFTD Terrain\nUFO Units";
 					l.Dock = DockStyle.Fill;
 
 					top.Controls.AddRange(new Control[]{ l, radio2 });
 
-					Panel mid = new Panel();
+					var mid = new Panel();
 					mid.Dock = DockStyle.Fill;
 
 					radio4 = new RadioButton();
@@ -103,7 +107,7 @@ namespace XCom.GameFiles.Images.xcFiles
 					radio4.Width = radio2.Width;
 					radio4.TextAlign = System.Drawing.ContentAlignment.TopLeft;
 					radio4.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-					radio4.CheckedChanged += new EventHandler(checkChange);
+					radio4.CheckedChanged += checkChange;
 
 					l = new Label();
 					l.Text = "TFTD Units";
@@ -114,14 +118,16 @@ namespace XCom.GameFiles.Images.xcFiles
 					gb.Controls.AddRange(new Control[]{ mid, top });
 					gb.Dock = DockStyle.Left;
 
-					Panel left = new Panel();
+					var left = new Panel();
 					left.Dock = DockStyle.Top;
 					left.Height = 100;
 
 					left.Controls.Add(gb);
 
 					l = new Label();
-					l.Text = "If you are unsure about the correct bpp option, open up the original .pck file and see what the number is in the lower right of the main screen";
+					l.Text = "If you are unsure about the correct bpp option,"
+						+ " open up the original .pck file and see what the number"
+						+ " is in the lower right of the main screen.";
 					l.Dock = DockStyle.Fill;
 
 					savePanel.Controls.AddRange(new Control[]{ l, left });
@@ -135,38 +141,47 @@ namespace XCom.GameFiles.Images.xcFiles
 
 		private void checkChange(object sender, EventArgs e)
 		{
-			if (sender == radio2 && radio2.Checked)
-				radio4.Checked = false;
-			else if (sender == radio4 && radio4.Checked)
-				radio2.Checked = false;
+			radio2.Checked = (sender == radio2);
+			radio4.Checked = (sender == radio4);
 		}
 
-		// Method to save a collection in its original format
-		public override void SaveCollection(string directory, string file, XCImageCollection images)
+		/// <summary>
+		/// Method to save a collection in its original format.
+		/// </summary>
+		/// <param name="directory"></param>
+		/// <param name="file"></param>
+		/// <param name="images"></param>
+		public override void SaveCollection(
+				string directory,
+				string file,
+				XCImageCollection images)
 		{
 			var ib = new DSShared.Windows.InputBox("Enter Pck Options", SavingOptions);
 			if (ib.ShowDialog() == DialogResult.OK)
 			{
-				int bpp = 4;
-				if (radio2.Checked)
-					bpp = 2;
-
-				PckFile.Save(directory, file, images, bpp);
+				PckFile.Save(
+						directory,
+						file,
+						images,
+						(radio2.Checked) ? 2 : 4);
 			}
 		}
 	}
 
+
+	/// <summary>
+	///  class xcPckTab
+	/// </summary>
 	public class xcPckTab
 		:
 		xcPck
 	{
 		public xcPckTab()
 		{
-			ext = ".tab";
-			author = "Ben Ratzlaff";
-			desc = "Opens tab files as pck";
-
-			expDesc = "Tab File";
+			author	= "Ben Ratzlaff";
+			desc	= "Opens tab files as pck";
+			ext		= ".tab";
+			expDesc	= "Tab File";
 
 			fileOptions.Init(false, false, false, false);
 		}
@@ -178,7 +193,7 @@ namespace XCom.GameFiles.Images.xcFiles
 														int imgHei,
 														Palette pal)
 		{
-			string fileBase = file.Substring(0, file.IndexOf("."));
+			string fileBase = file.Substring(0, file.IndexOf(".", StringComparison.Ordinal));
 			return base.LoadFileOverride(
 									directory,
 									fileBase + ".pck",

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 
 using DSShared.Interfaces;
 using DSShared.Loadable;
@@ -39,7 +37,7 @@ namespace XCom.Interfaces.Base
 
 		public virtual string FileFilter
 		{
-			get { return "*" + _ext + " - " + _explorerDesc + "|*" + _ext; }
+			get { return string.Format("*{0} - {1}|*{0}", _ext, _explorerDesc); }
 		}
 
 		/// <summary>

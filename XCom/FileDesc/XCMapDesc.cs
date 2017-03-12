@@ -12,22 +12,22 @@ namespace XCom
 		IMapDesc
 	{
 		public XCMapDesc(
-				string basename,
+				string baseName,
 				string basePath,
 				string blankPath,
 				string rmpPath,
 				string[] dependencies,
 				Palette palette)
 			:
-				base(basename)
+				base(baseName)
 		{
-			Palette = palette;
-			Basename = basename;
-			BasePath = basePath;
-			RmpPath = rmpPath;
-			BlankPath = blankPath;
-			Dependencies = dependencies;
-			IsStatic = false;
+			Palette			= palette;
+			BaseName		= baseName;
+			BasePath		= basePath;
+			RmpPath			= rmpPath;
+			BlankPath		= blankPath;
+			Dependencies	= dependencies;
+			IsStatic		= false;
 		}
 
 		public string[] Dependencies
@@ -36,7 +36,7 @@ namespace XCom
 		public Palette Palette
 		{ get; protected set; }
 
-		public string Basename
+		public string BaseName
 		{ get; protected set; }
 
 		public string BasePath
@@ -53,13 +53,13 @@ namespace XCom
 
 		public string FilePath
 		{
-			get { return BasePath + Basename + ".MAP"; }
+			get { return BasePath + BaseName + XCMapFile.MapExt; }
 		}
 
 		public int CompareTo(object other)
 		{
 			var desc = other as XCMapDesc;
-			return (desc != null) ? String.CompareOrdinal(Basename, desc.Basename)
+			return (desc != null) ? String.CompareOrdinal(BaseName, desc.BaseName)
 								  : 1;
 		}
 	}

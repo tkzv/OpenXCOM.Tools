@@ -21,17 +21,15 @@ namespace XCom
 
 		public static event ParseLineDelegate ParseLine;
 
-		public static void Init(Palette palette, DSShared.PathInfo paths)
+		public static void Init(Palette pal, DSShared.PathInfo paths)
 		{
-			_palette = palette;
+			Directory.SetCurrentDirectory(paths.Path);
+			xConsole.Init(20);
+
+			_palette = pal;
 			_pckHash = new Dictionary<Palette, Dictionary<string, PckFile>>();
 
 			var vars = new VarCollection(new StreamReader(File.OpenRead(paths.ToString())));
-
-			Directory.SetCurrentDirectory(paths.Path);
-
-			xConsole.Init(20);
-
 			KeyVal keyVal = null;
 			while ((keyVal = vars.ReadLine()) != null)
 			{
@@ -55,6 +53,8 @@ namespace XCom
 			}
 
 			vars.BaseStream.Close();
+
+			Directory.SetCurrentDirectory(SharedSpace.Instance.GetString("AppDir"));
 		}
 
 		public static ImageInfo ImageInfo
@@ -91,23 +91,23 @@ namespace XCom
 				_pckHash.Add(pal, new Dictionary<string, PckFile>());
 
 //			if (_pckHash[pal][basePath + baseName] == null)
-			var path = basePath + baseName;
+			var pathfile = basePath + baseName;
 
 			var palHash = _pckHash[pal];
-			if (!palHash.ContainsKey(path))
+			if (!palHash.ContainsKey(pathfile))
 			{
-				using (var pckStream = File.OpenRead(path + ".PCK")) // TODO: check if these catch lowercase extensions.
-				using (var tabStream = File.OpenRead(path + ".TAB"))
+				using (var pckStream = File.OpenRead(pathfile + ".PCK")) // TODO: check if these catch lowercase extensions.
+				using (var tabStream = File.OpenRead(pathfile + ".TAB"))
 				{
-					palHash.Add(path, new PckFile(
-												pckStream,
-												tabStream,
-												bpp,
-												pal));
+					palHash.Add(pathfile, new PckFile(
+													pckStream,
+													tabStream,
+													bpp,
+													pal));
 				}
 			}
 
-			return _pckHash[pal][path];
+			return _pckHash[pal][pathfile];
 		}
 
 		public static void ClearPckCache(string basePath, string baseName)

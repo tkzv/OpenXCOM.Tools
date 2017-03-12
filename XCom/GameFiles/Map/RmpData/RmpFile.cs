@@ -1,7 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Collections;
+
 
 // when determining spawn positions the following nodes are tried
 // Leader > Nav > Eng> Unknown8 > Med > Soldier > Any
@@ -86,10 +87,13 @@ observed
 */
 
 #endregion
+
+
 namespace XCom
 {
 	public enum UnitType
-		: byte
+		:
+		byte
 	{
 		Any = 0,
 		Flying,
@@ -99,7 +103,8 @@ namespace XCom
 	};
 
 	public enum UnitRankUFO
-		: byte
+		:
+		byte
 	{
 		Civilian = 0,
 		XCom,
@@ -113,7 +118,8 @@ namespace XCom
 	};
 
 	public enum UnitRankTFTD
-		: byte
+		:
+		byte
 	{
 		Civilian = 0,
 		XCom,
@@ -127,7 +133,8 @@ namespace XCom
 	};
 
 	public enum SpawnUsage
-		: byte
+		:
+		byte
 	{
 		NoSpawn	= 0,
 		Spawn1	= 1,
@@ -143,7 +150,8 @@ namespace XCom
 	};
 
 	public enum NodeImportance
-		: byte
+		:
+		byte
 	{
 		Zero = 0,
 		One,
@@ -159,7 +167,8 @@ namespace XCom
 	};
 
 	public enum BaseModuleAttack
-		: byte
+		:
+		byte
 	{
 		Zero = 0,
 		One,
@@ -175,7 +184,8 @@ namespace XCom
 	};
 
 	public enum LinkTypes
-		: byte
+		:
+		byte
 	{
 		NotUsed		= 0xFF,
 		ExitNorth	= 0xFE,
@@ -190,7 +200,7 @@ namespace XCom
 		IEnumerable<RmpEntry>
 	{
 		private readonly List<RmpEntry> _entries;
-		private readonly string _basename;
+		private readonly string _baseName;
 		private readonly string _basePath;
 
 		public static readonly object[] UnitRankUFO =
@@ -234,15 +244,20 @@ namespace XCom
 			new StrEnum("10:Spawn",		XCom.SpawnUsage.Spawn10)
 		};
 
-		internal RmpFile(string basename, string basePath)
+
+		public static readonly string RouteExt = ".RMP";
+
+		internal RmpFile(string baseName, string basePath)
 		{
-			_basename = basename;
+			_baseName = baseName;
 			_basePath = basePath;
+
 			_entries = new List<RmpEntry>();
 
-			if (File.Exists(basePath + basename + ".RMP"))
+			string pathfilext = basePath + baseName + RouteExt;
+			if (File.Exists(pathfilext))
 			{
-				var bs = new BufferedStream(File.OpenRead(basePath + basename + ".RMP"));
+				var bs = new BufferedStream(File.OpenRead(pathfilext));
 
 				for (byte i = 0; i < bs.Length / 24; i++)
 				{
@@ -254,9 +269,10 @@ namespace XCom
 			}
 		}
 
+
 		public void Save()
 		{
-			Save(File.Create(_basePath + _basename + ".RMP"));
+			Save(File.Create(_basePath + _baseName + RouteExt));
 		}
 
 		public void Save(FileStream fs)
@@ -296,28 +312,28 @@ namespace XCom
 		public byte ExtraHeight
 		{ get; set; }
 
-		public void RemoveEntry(RmpEntry r)
+		public void RemoveEntry(RmpEntry entry)
 		{
-			int oldIdx = r.Index;
+			int entryId = entry.Index;
 
-			_entries.Remove(r);
+			_entries.Remove(entry);
 
-			foreach (var rr in _entries)
+			foreach (var re in _entries)
 			{
-				if (rr.Index > oldIdx)
-					rr.Index--;
+				if (re.Index > entryId)
+					re.Index--;
 
-				for (int i = 0; i < 5; i++)
+				for (int i = 0; i != 5; ++i)
 				{
-					var l = rr[i];
+					var line = re[i];
 
-					if (l.Index == oldIdx)
+					if (line.Index == entryId)
 					{
-						l.Index = Link.NOT_USED;
+						line.Index = Link.NOT_USED;
 					}
-					else if (l.Index > oldIdx && l.Index < 0xFB)
+					else if (line.Index > entryId && line.Index < Link.EXIT_WEST)
 					{
-						l.Index--;
+						line.Index--;
 					}
 				}
 			}
@@ -334,22 +350,22 @@ namespace XCom
 		{
 			var toDelete = new List<RmpEntry>();
 
-			foreach (var entry in _entries)
-				if (IsOutsideMap(entry, newC, newR, newH))
-					toDelete.Add(entry);
+			foreach (var re in _entries)
+				if (IsOutsideMap(re, newC, newR, newH))
+					toDelete.Add(re);
 
-			foreach (var entry in toDelete)
-				RemoveEntry(entry);
+			foreach (var re in toDelete)
+				RemoveEntry(re);
 		}
 
 		public static bool IsOutsideMap(
-									RmpEntry entry,
-									int cols,
-									int rows,
-									int height)
+				RmpEntry entry,
+				int cols,
+				int rows,
+				int height)
 		{
-			return entry.Col < 0    || entry.Col >= cols
-				|| entry.Row < 0    || entry.Row >= rows
+			return entry.Col    < 0 || entry.Col    >= cols
+				|| entry.Row    < 0 || entry.Row    >= rows
 				|| entry.Height < 0 || entry.Height >= height;
 		}
 
