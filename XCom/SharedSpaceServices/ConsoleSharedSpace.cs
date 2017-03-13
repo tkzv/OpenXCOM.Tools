@@ -7,9 +7,9 @@ namespace XCom
 		private readonly SharedSpace _share;
 
 
-		public ConsoleSharedSpace(SharedSpace sharedSpace)
+		public ConsoleSharedSpace(SharedSpace share)
 		{
-			_share = sharedSpace;
+			_share = share;
 		}
 
 

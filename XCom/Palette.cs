@@ -143,7 +143,7 @@ namespace XCom
 		public Palette(Stream str)
 		{
 			var input = new StreamReader(str);
-			string[] line = new string[0];
+			var line = new string[0];
 			name = input.ReadLine();
 
 			var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed);
@@ -159,9 +159,9 @@ namespace XCom
 				}
 				line = allLine.Split(',');
 				_colorPalette.Entries[i] = Color.FromArgb(
-											int.Parse(line[0]),
-											int.Parse(line[1]),
-											int.Parse(line[2]));
+													int.Parse(line[0]),
+													int.Parse(line[1]),
+													int.Parse(line[2]));
 			}
 			b.Dispose();
 

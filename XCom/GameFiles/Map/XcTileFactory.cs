@@ -2,48 +2,55 @@
 using System.IO;
 using XCom.Interfaces;
 
+
 namespace XCom.GameFiles.Map
 {
-	public class XcTileFactory: IWarningNotifier
+	public class XcTileFactory
+		:
+		IWarningNotifier
 	{
-		public XCTile[] CreateTiles(string basename, string directory, PckFile pckFile)
+		public XCTile[] CreateTiles(
+				string baseName,
+				string directory,
+				PckFile pckFile)
 		{
-			var file = new BufferedStream(File.OpenRead(directory + basename + ".MCD"));
-			int diff = 0;
-			if (basename == "XBASES05")
-				diff = 3;
-			const int TILE_SIZE = 62;
-			var tiles = new XCTile[(((int) file.Length) / TILE_SIZE) - diff];
-			var factory = new McdEntryFactory();
+			int diff = (baseName == "XBASES05") ? 3 : 0; // TODO: wtf.
 
-			for (var i = 0; i < tiles.Length; i++)
+			const int TOTAL = 62;
+
+			using (var file = new BufferedStream(File.OpenRead(directory + baseName + ".MCD")))
 			{
-				var info = new byte[TILE_SIZE];
-				file.Read(info, 0, TILE_SIZE);
-				var mcdEntry = factory.Create(info);
+				var tiles = new XCTile[(((int) file.Length) / TOTAL) - diff];
 
-				var dead = GetDeadValue(basename, i, mcdEntry, tiles);
-				var alternate = GetAlternate(basename, i, mcdEntry, tiles);
-				var tile = new XCTile(i, pckFile, mcdEntry, tiles);
-				tile.Dead = dead;
-				tile.Alternate = alternate;
-				tiles[i] = tile;
+				for (int i = 0; i != tiles.Length; ++i)
+				{
+					var info = new byte[TOTAL];
+					file.Read(info, 0, TOTAL);
+					var mcdEntry = McdEntryFactory.Create(info);
+
+					var dead = GetDeadValue(baseName, i, mcdEntry, tiles);
+					var alternate = GetAlternate(baseName, i, mcdEntry, tiles);
+					var tile = new XCTile(i, pckFile, mcdEntry, tiles);
+					tile.Dead = dead;
+					tile.Alternate = alternate;
+					tiles[i] = tile;
+				}
+
+//				file.Close(); // NOTE: the 'using' block closes the stream.
+
+				return tiles;
 			}
-
-			file.Close();
-
-			return tiles;
 		}
 
-		private XCTile GetAlternate(string basename, int index, McdEntry info, XCTile[] tiles)
+		private XCTile GetAlternate(string baseName, int index, McdEntry info, XCTile[] tiles)
 		{
-			if (info.UFODoor || info.HumanDoor || info.Alt_MCD != 0)
+			if (info.UfoDoor || info.HumanDoor || info.Alt_MCD != 0)
 			{
 				if (tiles.Length < info.Alt_MCD)
 				{
 					OnHandleWarning(string.Format(
 						"In the MCD file {3}, the tile entry {0} have an invalid alternative tile (# {1} of {2} tiles)",
-						index, info.Alt_MCD, tiles.Length, basename));
+						index, info.Alt_MCD, tiles.Length, baseName));
 					return null;
 				}
 				return tiles[info.Alt_MCD];
@@ -51,7 +58,7 @@ namespace XCom.GameFiles.Map
 			return null;
 		}
 
-		private XCTile GetDeadValue(string basename, int index, McdEntry info, XCTile[] tiles)
+		private XCTile GetDeadValue(string baseName, int index, McdEntry info, XCTile[] tiles)
 		{
 			try
 			{
@@ -64,12 +71,13 @@ namespace XCom.GameFiles.Map
 			{
 				OnHandleWarning(string.Format(
 					"In the MCD file {3}, the tile entry {0} have an invalid dead tile (# {1} of {2} tiles)",
-					index, info.Alt_MCD, tiles.Length, basename));
+					index, info.Alt_MCD, tiles.Length, baseName));
 			}
 			return null;
 		}
 
 		public event Action<string> HandleWarning;
+
 		protected virtual void OnHandleWarning(string message)
 		{
 			Action<string> handler = HandleWarning;

@@ -1,10 +1,8 @@
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+
 using XCom.Interfaces;
+
 
 namespace XCom
 {
@@ -13,19 +11,20 @@ namespace XCom
 		:
 		XCImage
 	{
-		private PckFile pckFile;
-		private int mapID;
-		private byte[] expanded;
+//		private int _mapId;
+
+		private readonly PckFile pckFile;
+		private readonly byte[] expanded;
 		private int moveIdx = -1;
 		private byte moveVal = 0;
 
-		private int staticID;
-		private static int globalStaticID = 0;
+		private static int _globalStaticId = 0;
+		private int _staticId;
 
-		public static int Width = 32;
+		public static int Width  = 32;
 		public static int Height = 40;
 
-		private static readonly byte TransIdx = 0xFE;
+		private const byte TransIdx = 0xFE;
 
 		internal PckImage(
 				int imageNum,
@@ -55,13 +54,13 @@ namespace XCom
 			this.fileNum = imageNum;
 //			this.imageNum = imageNum;
 //			this.idx = idx;
-			staticID = globalStaticID++;
+			_staticId = _globalStaticId++;
 
+			Width  = width;
 			Height = height;
-			Width = width;
 
-//			image = new Bitmap(Width,Height,PixelFormat.Format8bppIndexed);
-			expanded = new byte[Width*Height];
+//			image = new Bitmap(Width, Height, PixelFormat.Format8bppIndexed);
+			expanded = new byte[Width * Height];
 
 			for (int i = 0; i < expanded.Length; i++)
 				expanded[i] = TransparentIndex;
@@ -96,12 +95,12 @@ namespace XCom
 			}
 			this.idx = expanded;
 		
-			image = Bmp.MakeBitmap8(
+			_image = Bmp.MakeBitmap8(
 								Width,
 								Height,
 								expanded,
 								pal.Colors);
-			gray = Bmp.MakeBitmap8(
+			_gray = Bmp.MakeBitmap8(
 								Width,
 								Height,
 								expanded,
@@ -113,7 +112,7 @@ namespace XCom
 			int count = 0;
 			bool flag = true;
 			byte[] input = tile.Bytes;
-			List<byte> bytes = new List<byte>();
+			var bytes = new List<byte>();
 //			Color trans = pal.Transparent;
 //			pal.SetTransparent(false);
 
@@ -134,7 +133,7 @@ namespace XCom
 							bytes.Add((byte)(count / tile.Image.Width));	// # of initial rows to skip
 							count = (byte)(count % tile.Image.Width);		// where we currently are in the transparent row
 							flag = false;
-							//Console.WriteLine("count, lines: {0}, cells {1}",count/PckImage.IMAGE_WIDTH,count%PckImage.IMAGE_WIDTH);
+							//Console.WriteLine("count, lines: {0}, cells {1}", count/PckImage.IMAGE_WIDTH, count%PckImage.IMAGE_WIDTH);
 						}
 
 						while (count >= 255)
@@ -181,9 +180,9 @@ namespace XCom
 //				base.Hq2x();
 //		}
 
-		public int StaticID
+		public int StaticId
 		{
-			get { return staticID; }
+			get { return _staticId; }
 		}
 
 		public static Type GetCollectionType()
@@ -193,12 +192,12 @@ namespace XCom
 
 		public void ReImage()
 		{
-			image = Bmp.MakeBitmap8(
+			_image = Bmp.MakeBitmap8(
 								Width,
 								Height,
 								expanded,
 								Palette.Colors);
-			gray = Bmp.MakeBitmap8(
+			_gray = Bmp.MakeBitmap8(
 								Width,
 								Height,
 								expanded,
@@ -234,28 +233,28 @@ namespace XCom
 				}
 			}
 		
-			image = Bmp.MakeBitmap8(
+			_image = Bmp.MakeBitmap8(
 								Width,
 								Height,
 								expanded,
 								Palette.Colors);
-			gray = Bmp.MakeBitmap8(
+			_gray = Bmp.MakeBitmap8(
 								Width,
 								Height,
 								expanded,
 								Palette.Grayscale.Colors);
 		}
 
-		public int MapID
+/*		public int MapId
 		{
-			get { return mapID; }
-			set { mapID = value; }
-		}
+			get { return _mapId; }
+			set { _mapId = value; }
+		} */
 
-		public override bool Equals(object other)
+		public override bool Equals(object obj)
 		{
-			if (other is PckImage)
-				return ToString().Equals(other.ToString());
+			if (obj is PckImage)
+				return ToString().Equals(obj.ToString());
 
 			return false;
 		}

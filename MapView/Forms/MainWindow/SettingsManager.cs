@@ -31,20 +31,15 @@ namespace MapView.Forms.MainWindow
 		{
 			using (var sr = new StreamReader(file))
 			{
-				ReadMapViewSettings(sr);
-			}
-		}
+				var vars = new XCom.VarCollection(sr);
 
-		private void ReadMapViewSettings(StreamReader sr)
-		{
-			var vars = new XCom.VarCollection(sr);
-			var line = vars.ReadLine();
-			while (line != null)
-			{
-				Settings.ReadSettings(vars, line, _settingsHash[line.Keyword]);
-				line = vars.ReadLine();
+				XCom.KeyVal line = null;
+				while ((line = vars.ReadLine()) != null)
+				{
+					Settings.ReadSettings(vars, line, _settingsHash[line.Keyword]);
+				}
+//				sr.Close(); // NOTE: the 'using' block closes the stream.
 			}
-			sr.Close();
 		}
 
 		public Settings this[string key]

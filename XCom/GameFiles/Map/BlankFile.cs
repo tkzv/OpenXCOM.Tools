@@ -11,12 +11,13 @@ namespace XCom
 		public static void LoadBlanks(
 				string baseName,
 				string blankPath,
-				XCMapFile file)
+				XCom.Interfaces.Base.IMap_Base file)
+//				XCMapFile file)
 		{
 			using (var br = new BinaryReader(File.OpenRead(blankPath + baseName + BlankExt)))
 			{
 				bool flip = true;
-				int curr = 0;
+				int cur = 0;
 
 				while (br.BaseStream.Length > br.BaseStream.Position)
 				{
@@ -24,7 +25,7 @@ namespace XCom
 
 					if (flip)
 					{
-						for (int i = curr; i < curr + v; i++)
+						for (int i = cur; i < cur + v; i++)
 						{
 							int h = i / (file.MapSize.Rows * file.MapSize.Cols);
 							int c = i % file.MapSize.Cols;
@@ -34,7 +35,7 @@ namespace XCom
 						}
 					}
 
-					curr += v;
+					cur += v;
 					flip = !flip;
 				}
 
@@ -45,14 +46,15 @@ namespace XCom
 		public static void SaveBlanks(
 				string baseName,
 				string blankPath,
-				XCMapFile file)
+				XCom.Interfaces.Base.IMap_Base file)
+//				XCMapFile file)
 		{
 			if (!Directory.Exists(blankPath))
 				Directory.CreateDirectory(blankPath);
 
 			using (var bw = new BinaryWriter(new FileStream(blankPath + baseName + BlankExt, FileMode.Create)))
 			{
-				UInt16 curr = 0;
+				UInt16 cur = 0;
 				bool flip = true;
 
 				for (int h = 0; h < file.MapSize.Height; h++)
@@ -64,21 +66,21 @@ namespace XCom
 								if (((XCMapTile)file[r, c, h]).DrawAbove)
 								{
 									flip = !flip;
-									bw.Write(curr);
-									curr = 1;
+									bw.Write(cur);
+									cur = 1;
 								}
 								else
-									curr++;
+									cur++;
 							}
 							else
 							{
 								if (((XCMapTile)file[r, c, h]).DrawAbove)
-									curr++;
+									cur++;
 								else
 								{
 									flip = !flip;
-									bw.Write(curr);
-									curr = 1;
+									bw.Write(cur);
+									cur = 1;
 								}
 							}
 						}

@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using XCom.Interfaces;
 using System.IO;
 
-namespace XCom.GameFiles.Images.xcFiles
+using XCom.Interfaces;
+
+
+namespace XCom.GameFiles.Images.XCFiles
 {
 	public class xcBdy
 		:
@@ -19,50 +19,51 @@ namespace XCom.GameFiles.Images.xcFiles
 			:
 			base(wid, hei)
 		{
-			ext = ".bdy";
-			author = "Ben Ratzlaff";
-			desc = "Bdy file codec";
+			author	= "Ben Ratzlaff";
+			ext		= ".bdy";
+			desc	= "Bdy file codec";
+			expDesc	= "BDY Image";
 
-			defPal = Palette.TFTDResearch;
-
-			expDesc = "BDY Image";
+			defPal = Palette.UFOResearch;
 
 			fileOptions.Init(true, false, true, true);
 		}
 
 		protected override XCImageCollection LoadFileOverride(
-														string directory,
-														string file,
-														int imgWid,
-														int imgHei,
-														Palette pal)
+				string directory,
+				string file,
+				int imgWid,
+				int imgHei,
+				Palette pal)
 		{
-			XCImageCollection collect = new XCImageCollection();
-			XCImage img = new BDYImage(
-									pal,
-									File.OpenRead(directory + "\\" + file),
-									imgWid,
-									imgHei);
-			collect.Add(img);
+			var collection = new XCImageCollection();
+			XCImage image = new BdyImage(
+										pal,
+										File.OpenRead(directory + @"\" + file),
+										imgWid,
+										imgHei);
+			collection.Add(image);
 
-			return collect;
+			return collection;
 		}
 
 		public override void SaveCollection(
-										string directory,
-										string file,
-										XCImageCollection images)
+				string directory,
+				string file,
+				XCImageCollection images)
 		{
-			if (images.Count == 1)
+			switch (images.Count)
 			{
-				BDYImage.Save(images[0].Bytes, File.OpenWrite(directory + "\\" + file + ext));
-			}
-			else
-			{
-				for (int i = 0; i < images.Count; i++)
-					BDYImage.Save(
-								images[i].Bytes,
-								File.OpenWrite(directory + "\\" + file + i.ToString() + ext));
+				case 1:
+					BdyImage.Save(images[0].Bytes, File.OpenWrite(directory + @"\" + file + ext));
+					break;
+
+				default:
+					for (int i = 0; i < images.Count; i++)
+						BdyImage.Save(
+									images[i].Bytes,
+									File.OpenWrite(directory + @"\" + file + i.ToString() + ext));
+					break;
 			}
 		}
 	}

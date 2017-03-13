@@ -1,25 +1,27 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
-using XCom.Interfaces;
+
 using XCom;
-using System.IO;
+using XCom.Interfaces;
+
 
 namespace PckView
 {
 	public class xcDotNet:IXCImageFile
 	{
-		public xcDotNet() : this(32, 40) { }
+		public xcDotNet()
+			:
+			this(32, 40)
+		{}
 
 		public xcDotNet(int wid, int hei)
-			: base(wid, hei)
+			:
+			base(wid, hei)
 		{
-			ext = ".*";
-			author = "Ben Ratzlaff";
-			desc = "Interface for any file type the .net framework can load";
-
-			expDesc = ".net image loader";
+			author	= "Ben Ratzlaff";
+			ext		= ".*";
+			desc	= "Interface for any file type the .net framework can load";
+			expDesc	= ".net image loader";
 
 			fileOptions.Init(false, false, true, true);
 			fileOptions.BitDepth = 32;
@@ -30,27 +32,35 @@ namespace PckView
 			return true;
 		}
 
-		protected override XCImageCollection LoadFileOverride(string directory, string file, int imgWid, int imgHei, Palette pal)
+		protected override XCImageCollection LoadFileOverride(
+				string directory,
+				string file,
+				int imgWid,
+				int imgHei,
+				Palette pal)
 		{
-			Image img = Image.FromFile(directory + "\\" + file);
-			System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(img);
-			BmpForm bmf = new BmpForm();
-			bmf.Bitmap = bmp;
+			var img = Image.FromFile(directory + @"\" + file);
+			var bmp = new System.Drawing.Bitmap(img);
+			var bmf = new BmpForm();
 
-			xConsole.AddLine("File: " + directory + "\\" + file);
+			bmf.SetBitmapFormData(bmp);
+
+			xConsole.AddLine("File: " + directory + @"\" + file);
 			if (bmf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
 				imageSize = bmf.SelectedSize;
-
 				return new DotNetCollection(bmp, imgWid, imgHei, bmf.SelectedSpace);
 			}
 
-			return null;			
+			return null;
 		}
 
-		public override void SaveCollection(string directory, string file, XCImageCollection images)
+/*		public override void SaveCollection(
+				string directory,
+				string file,
+				XCImageCollection images)
 		{
-			DotNetCollection.Save(directory + "\\" + file, images);
-		}
+			DotNetCollection.Save(directory + @"\" + file, images); // TODO: This is a call to an empty function.
+		} */
 	}
 }

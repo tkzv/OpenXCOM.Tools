@@ -1,7 +1,9 @@
 using System;
+
 using XCom.Interfaces;
 
-namespace XCom.GameFiles.Images.xcFiles
+
+namespace XCom.GameFiles.Images.XCFiles
 {
 	public class xcUncompressed
 		:
@@ -16,11 +18,10 @@ namespace XCom.GameFiles.Images.xcFiles
 			:
 			base(wid, hei)
 		{
-			ext = ".unused";
-			author = "Ben Ratzlaff";
-			desc = "Base class for opening uncompressed image files";
-
-			expDesc = "Uncompressed Images";
+			author	= "Ben Ratzlaff";
+			ext		= ".unused";
+			desc	= "Base class for opening uncompressed image files";
+			expDesc	= "Uncompressed Images";
 
 			fileOptions.Init(false, false, false, true);
 
@@ -31,11 +32,11 @@ namespace XCom.GameFiles.Images.xcFiles
 		}
 
 		protected override XCImageCollection LoadFileOverride(
-														string directory,
-														string file,
-														int imgWid,
-														int imgHei,
-														Palette pal)
+				string directory,
+				string file,
+				int imgWid,
+				int imgHei,
+				Palette pal)
 		{
 			return new UncompressedCollection(
 										imgWid,
@@ -45,9 +46,9 @@ namespace XCom.GameFiles.Images.xcFiles
 		}
 
 		public override void SaveCollection(
-										string directory,
-										string file,
-										XCImageCollection images)
+				string directory,
+				string file,
+				XCImageCollection images)
 		{
 			UncompressedCollection.Save(
 									directory,

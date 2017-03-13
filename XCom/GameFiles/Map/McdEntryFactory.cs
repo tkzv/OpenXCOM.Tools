@@ -1,10 +1,11 @@
 using System.Drawing;
 
+
 namespace XCom
 {
-	public class McdEntryFactory
+	public static class McdEntryFactory
 	{
-		public McdEntry Create(byte[] info)
+		public static McdEntry Create(byte[] info)
 		{
 			var entry = new McdEntry();
 
@@ -41,7 +42,7 @@ namespace XCom
 			entry.Unknown28 = info[28];
 			entry.Unknown29 = info[29];
 
-			entry.UFODoor		= info[30] == 1;
+			entry.UfoDoor		= info[30] == 1;
 			entry.StopLOS		= info[31] != 1;				// unsigned char Stop_LOS;			// You cannot see through this tile.
 			entry.NoGround		= info[32] == 1;				// unsigned char No_Floor;			// If 1, then a non-flying unit can't stand here
 			entry.BigWall		= info[33] == 1;

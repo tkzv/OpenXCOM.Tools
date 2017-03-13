@@ -1,7 +1,8 @@
 using System;
-using System.IO;
 using System.Drawing;
+
 using XCom;
+
 
 namespace MapView
 {
@@ -14,30 +15,33 @@ namespace MapView
 		Throw
 	};
 
-	public class CursorSprite
+
+	internal class CursorSprite
 	{
-		private CursorState state;
-		private PckFile cursorFile;
+		private CursorState _state;
+		private readonly PckFile _file;
 
-		public CursorSprite(PckFile cursorFile)
+
+		public CursorSprite(PckFile file)
 		{
-			state = CursorState.Select;
-			this.cursorFile=cursorFile;
+			_state = CursorState.Select;
+			_file = file;
 
-			foreach (PckImage pi in cursorFile)
-				pi.Image.MakeTransparent(cursorFile.Pal.Transparent);
+			foreach (PckImage image in file)
+				image.Image.MakeTransparent(file.Pal.Transparent);
 		}
 
-		public CursorState State
-		{
-			get { return state; }
-			set { state = value; }
-		}
 
-		public PckFile PckFile
+		/*		public CursorState State
 		{
-			get { return cursorFile; }
-		}
+			get { return _state; }
+			set { _state = value; }
+		} */
+
+/*		public PckFile PckFile
+		{
+			get { return _file; }
+		} */
 
 		public void DrawHigh(
 						Graphics g,
@@ -46,16 +50,14 @@ namespace MapView
 						bool top)
 		{
 			Bitmap image;
-			if (top && state != CursorState.Aim)
+			if (top && _state != CursorState.Aim)
 			{
-				if (over)
-					image = cursorFile[1].Image;
-				else
-					image = cursorFile[0].Image;
+				image = (over) ? _file[1].Image
+							   : _file[0].Image;
 			}
 			else
 			{
-				image = cursorFile[2].Image;
+				image = _file[2].Image;
 			}
 
 			g.DrawImage(
@@ -74,35 +76,33 @@ namespace MapView
 		{
 			Bitmap image;
 
-			if (top && state != CursorState.Aim)
+			if (top && _state != CursorState.Aim)
 			{
-				if (over)
-					image = cursorFile[4].Image;
-				else
-					image = cursorFile[3].Image;
+				image = (over) ? _file[4].Image
+							   : _file[3].Image;
 
-				switch (state)
+				switch (_state)
 				{
 					case CursorState.SelectMControl:
-						image = cursorFile[11 + i % 2].Image;
+						image = _file[11 + i % 2].Image;
 						break;
 
 					case CursorState.Throw:
-						image = cursorFile[15 + i % 2].Image;
+						image = _file[15 + i % 2].Image;
 						break;
 
 					case CursorState.Waypoint:
-						image = cursorFile[13 + i % 2].Image;
+						image = _file[13 + i % 2].Image;
 						break;
 				}
 			}
 			else if (top) // top and aim
 			{
-				image = cursorFile[7 + i % 4].Image;
+				image = _file[7 + i % 4].Image;
 			}
 			else
 			{
-				image = cursorFile[5].Image;
+				image = _file[5].Image;
 			}
 
 			g.DrawImage(

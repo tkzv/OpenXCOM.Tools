@@ -49,7 +49,7 @@ namespace XCom
 
 						case 0xFFFD:
 						{
-							image = Bmp.MakeBitmap8(
+							_image = Bmp.MakeBitmap8(
 												width,
 												height,
 												idx,
@@ -64,7 +64,7 @@ namespace XCom
 			catch
 			{}
 
-			image = Bmp.MakeBitmap8(
+			_image = Bmp.MakeBitmap8(
 								width,
 								height,
 								idx,

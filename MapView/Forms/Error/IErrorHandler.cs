@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace MapView.Forms.Error
+namespace MapView.Forms.XCError
 {
 	public interface IErrorHandler
 	{

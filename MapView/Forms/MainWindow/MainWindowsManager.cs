@@ -74,7 +74,7 @@ namespace MapView.Forms.MainWindow
 
 			MapViewPanel.Instance.MapView.Refresh();
 
-//			TopView.Refresh(); // kL ->
+//			TopView.Refresh(); // TODO: fix TopView selector when loading or changing Maps.
 //			TopRmpView.Refresh();
 //			RmpView.Refresh();
 		}

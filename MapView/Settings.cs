@@ -8,9 +8,9 @@ using XCom;
 
 namespace MapView
 {
-	public delegate string ConvertObject(object obj);
-	public delegate void ValueChangedDelegate(object sender, string keyword, object val);
-
+	public delegate string ConvertObject(object valu);										// fu.FxCop - your dictionary doesn't work
+	public delegate void ValueChangedDelegate(object sender, string keyword, object valu);	// for "val" but does for "valu". Note that
+																							// "cur" is considered 'proper spelling'. lulz!
 
 	/// <summary>
 	/// A wrapper around a Hashtable for Setting objects. Setting objects are
@@ -21,14 +21,14 @@ namespace MapView
 		private Dictionary<string, Setting> _settings;
 		private Dictionary<string, PropertyObject> _propertyObject;
 
-		private static Dictionary<Type,ConvertObject> converters;
+		private static Dictionary<Type,ConvertObject> _converters;
 
-		public static void AddConverter(Type t, ConvertObject obj)
+		public static void AddConverter(Type type, ConvertObject val)
 		{
-			if (converters == null)
-				converters = new Dictionary<Type, ConvertObject>();
+			if (_converters == null)
+				_converters = new Dictionary<Type, ConvertObject>();
 
-			converters[t] = obj;
+			_converters[type] = val;
 		}
 
 
@@ -37,10 +37,10 @@ namespace MapView
 			_settings = new Dictionary<string, Setting>();
 			_propertyObject = new Dictionary<string, PropertyObject>();
 
-			if (converters == null)
+			if (_converters == null)
 			{
-				converters = new Dictionary<Type,ConvertObject>();
-				converters[typeof(Color)] = new ConvertObject(ConvertColor);
+				_converters = new Dictionary<Type,ConvertObject>();
+				_converters[typeof(Color)] = new ConvertObject(ConvertColor);
 			}
 		}
 
@@ -74,7 +74,7 @@ namespace MapView
 		/// <summary>
 		/// Gets the key collection for this Settings object. Every key is a string.
 		/// </summary>
-		public Dictionary<string,Setting>.KeyCollection Keys
+		public Dictionary<string, Setting>.KeyCollection Keys
 		{
 			get { return _settings.Keys; }
 		}
@@ -187,8 +187,8 @@ namespace MapView
 
 		private string Convert(object obj)
 		{
-			return (converters.ContainsKey(obj.GetType())) ? converters[obj.GetType()](obj)
-														   : obj.ToString();
+			return (_converters.ContainsKey(obj.GetType())) ? _converters[obj.GetType()](obj)
+															: obj.ToString();
 		}
 
 		private static string ConvertColor(object obj)
@@ -208,7 +208,7 @@ namespace MapView
 	{
 		private object _val;
 
-		private static Dictionary<Type,parseString> converters;
+		private static Dictionary<Type,parseString> _converters;
 
 		public event ValueChangedDelegate ValueChanged;
 
@@ -221,7 +221,7 @@ namespace MapView
 
 		private static object parseIntString(string s)
 		{
-			return int.Parse(s);
+			return int.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
 		}
 
 		private static object parseColorString(string s)
@@ -235,17 +235,18 @@ namespace MapView
 
 				case 3:
 					return Color.FromArgb(
-									int.Parse(vals[0]),
-									int.Parse(vals[1]),
-									int.Parse(vals[2]));
+									int.Parse(vals[0], System.Globalization.CultureInfo.InvariantCulture),
+									int.Parse(vals[1], System.Globalization.CultureInfo.InvariantCulture),
+									int.Parse(vals[2], System.Globalization.CultureInfo.InvariantCulture));
 			}
 
 			return Color.FromArgb(
-								int.Parse(vals[0]),
-								int.Parse(vals[1]),
-								int.Parse(vals[2]),
-								int.Parse(vals[3]));
+								int.Parse(vals[0], System.Globalization.CultureInfo.InvariantCulture),
+								int.Parse(vals[1], System.Globalization.CultureInfo.InvariantCulture),
+								int.Parse(vals[2], System.Globalization.CultureInfo.InvariantCulture),
+								int.Parse(vals[3], System.Globalization.CultureInfo.InvariantCulture));
 		}
+
 
 		public Setting(object val, string desc, string category)
 		{
@@ -253,15 +254,16 @@ namespace MapView
 			Description = desc;
 			Category = category;
 
-			if (converters == null)
+			if (_converters == null)
 			{
-				converters = new Dictionary<Type, parseString>();
+				_converters = new Dictionary<Type, parseString>();
 
-				converters[typeof(int)]   = parseIntString;
-				converters[typeof(Color)] = parseColorString;
-				converters[typeof(bool)]  = parseBoolString;
+				_converters[typeof(int)]   = parseIntString;
+				_converters[typeof(Color)] = parseColorString;
+				_converters[typeof(bool)]  = parseBoolString;
 			}
 		}
+
 
 		public bool ValueBool
 		{
@@ -282,10 +284,14 @@ namespace MapView
 				if (_val != null)
 				{
 					var type = _val.GetType();
-					if (converters.ContainsKey(type) && value is string)
+					if (_converters.ContainsKey(type))
 					{
-						_val = converters[type]((string)value);
-						return;
+						var val = value as string;
+						if (val != null)
+						{
+							_val = _converters[type](val);
+							return;
+						}
 					}
 				}
 				_val = value;

@@ -1,22 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 
 namespace XCom.Interfaces.Base
 {
 	public class MapPosition
 	{
-		public int MaxH;
-		public int MaxC;
-		public int MaxR;
-		public int H;
-		public int C;
-		public int R;
+		public int _rMax;
+		public int _cMax;
+		public int _hMax;
+		public int _r;
+		public int _c;
+		public int _h;
 
-		public int GetIntLocation()
+		public int LocationId
 		{
-			return (MaxR * MaxC * H) + (MaxC * R) + C;
+			get { return (_rMax * _cMax * _h) + (_cMax * _r) + _c; }
 		}
 	}
 }

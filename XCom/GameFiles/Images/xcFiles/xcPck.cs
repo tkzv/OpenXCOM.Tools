@@ -4,26 +4,27 @@ using System.Windows.Forms;
 using XCom.Interfaces;
 
 
-namespace XCom.GameFiles.Images.xcFiles
+namespace XCom.GameFiles.Images.XCFiles
 {
 	public class xcPck
 		:
 		IXCImageFile
 	{
 		private const string TAB_EXT = ".tab";
-		private Panel savePanel;
-		private RadioButton radio2, radio4;
+
+		private Panel _savePanel;
+		private RadioButton _radio2;
+		private RadioButton _radio4;
 
 
 		public xcPck()
 			:
-			base(32,40)
+			base(32, 40)
 		{
-			ext = ".pck";
-			author = "Ben Ratzlaff";
-			desc = "Standard pck file codec";
-
-			expDesc = "Pck File";
+			author	= "Ben Ratzlaff";
+			ext		= ".pck";
+			desc	= "Standard pck file codec";
+			expDesc	= "Pck File";
 		}
 
 
@@ -71,9 +72,9 @@ namespace XCom.GameFiles.Images.xcFiles
 		{
 			get
 			{
-				if (savePanel == null)
+				if (_savePanel == null)
 				{
-					savePanel = new Panel();
+					_savePanel = new Panel();
 
 					var gb = new GroupBox();
 					gb.Text = "Bpp Options";
@@ -82,38 +83,38 @@ namespace XCom.GameFiles.Images.xcFiles
 					top.Dock = DockStyle.Top;
 					top.Height = 50;
 
-					radio2 = new RadioButton();
-					radio2.Text = "2";
-					radio2.Dock = DockStyle.Left;
-					radio2.Height = 50;
-					radio2.Width = 40;
-					radio2.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-					radio2.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-					radio2.Checked = true;
-					radio2.CheckedChanged += checkChange;
+					_radio2 = new RadioButton();
+					_radio2.Text = "2";
+					_radio2.Dock = DockStyle.Left;
+					_radio2.Height = 50;
+					_radio2.Width = 40;
+					_radio2.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+					_radio2.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+					_radio2.Checked = true;
+					_radio2.CheckedChanged += checkChange;
 
-					var l = new Label();
-					l.Text = "UFO/TFTD Terrain\nUFO Units";
-					l.Dock = DockStyle.Fill;
+					var label = new Label();
+					label.Text = "UFO/TFTD Terrain\nUFO Units";
+					label.Dock = DockStyle.Fill;
 
-					top.Controls.AddRange(new Control[]{ l, radio2 });
+					top.Controls.AddRange(new Control[]{ label, _radio2 });
 
 					var mid = new Panel();
 					mid.Dock = DockStyle.Fill;
 
-					radio4 = new RadioButton();
-					radio4.Text = "4";
-					radio4.Dock = DockStyle.Left;
-					radio4.Width = radio2.Width;
-					radio4.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-					radio4.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-					radio4.CheckedChanged += checkChange;
+					_radio4 = new RadioButton();
+					_radio4.Text = "4";
+					_radio4.Dock = DockStyle.Left;
+					_radio4.Width = _radio2.Width;
+					_radio4.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+					_radio4.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+					_radio4.CheckedChanged += checkChange;
 
-					l = new Label();
-					l.Text = "TFTD Units";
-					l.Dock = DockStyle.Fill;
+					label = new Label();
+					label.Text = "TFTD Units";
+					label.Dock = DockStyle.Fill;
 
-					mid.Controls.AddRange(new Control[]{ l, radio4 });
+					mid.Controls.AddRange(new Control[]{ label, _radio4 });
 
 					gb.Controls.AddRange(new Control[]{ mid, top });
 					gb.Dock = DockStyle.Left;
@@ -124,25 +125,25 @@ namespace XCom.GameFiles.Images.xcFiles
 
 					left.Controls.Add(gb);
 
-					l = new Label();
-					l.Text = "If you are unsure about the correct bpp option,"
+					label = new Label();
+					label.Text = "If you are unsure about the correct bpp option,"
 						+ " open up the original .pck file and see what the number"
 						+ " is in the lower right of the main screen.";
-					l.Dock = DockStyle.Fill;
+					label.Dock = DockStyle.Fill;
 
-					savePanel.Controls.AddRange(new Control[]{ l, left });
+					_savePanel.Controls.AddRange(new Control[]{ label, left });
 				}
 
-				return savePanel;
+				return _savePanel;
 			}
 
-			set { savePanel = value; }
+//			set { _savePanel = value; }
 		}
 
 		private void checkChange(object sender, EventArgs e)
 		{
-			radio2.Checked = (sender == radio2);
-			radio4.Checked = (sender == radio4);
+			_radio2.Checked = (sender == _radio2);
+			_radio4.Checked = (sender == _radio4);
 		}
 
 		/// <summary>
@@ -163,7 +164,7 @@ namespace XCom.GameFiles.Images.xcFiles
 						directory,
 						file,
 						images,
-						(radio2.Checked) ? 2 : 4);
+						(_radio2.Checked) ? 2 : 4);
 			}
 		}
 	}
@@ -179,19 +180,19 @@ namespace XCom.GameFiles.Images.xcFiles
 		public xcPckTab()
 		{
 			author	= "Ben Ratzlaff";
-			desc	= "Opens tab files as pck";
 			ext		= ".tab";
+			desc	= "Opens tab files as pck";
 			expDesc	= "Tab File";
 
 			fileOptions.Init(false, false, false, false);
 		}
 
 		protected override XCImageCollection LoadFileOverride(
-														string directory,
-														string file,
-														int imgWid,
-														int imgHei,
-														Palette pal)
+				string directory,
+				string file,
+				int imgWid,
+				int imgHei,
+				Palette pal)
 		{
 			string fileBase = file.Substring(0, file.IndexOf(".", StringComparison.Ordinal));
 			return base.LoadFileOverride(

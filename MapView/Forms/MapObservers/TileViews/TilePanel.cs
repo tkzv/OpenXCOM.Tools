@@ -265,7 +265,7 @@ namespace MapView.Forms.MapObservers.TileViews
 									left,
 									top - tile.Info.TileOffset);
 
-							if (tile.Info.HumanDoor || tile.Info.UFODoor)
+							if (tile.Info.HumanDoor || tile.Info.UfoDoor)
 								g.DrawString(
 										"Door",
 										Font,

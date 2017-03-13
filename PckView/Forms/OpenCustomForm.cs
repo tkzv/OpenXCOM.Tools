@@ -14,14 +14,13 @@ namespace PckView
 
 		public event TryDecodeEventHandler TryClick;
 
+
 		public OpenCustomForm(string directory, string file)
 		{
 			_directory = directory;
 			_file = file;
 
 			InitializeComponent();
-
-			//Console.WriteLine("File: " + file);
 
 			var ri = new DSShared.Windows.RegistryInfo(this);
 			ri.AddProperty("WidVal");
@@ -31,11 +30,12 @@ namespace PckView
 
 			foreach (XCom.Interfaces.IXCImageFile imageFile in sharedSpace.GetImageModList())
 				if (imageFile.FileOptions[XCom.Interfaces.IXCImageFile.Filter.Custom])
-					cbTypes.Items.Add(new BmpForm.cbItem(imageFile, imageFile.ExplorerDescription));
+					cbTypes.Items.Add(new BmpForm.CbxItem(imageFile, imageFile.ExplorerDescription));
 
 			if (cbTypes.Items.Count > 0)
 				cbTypes.SelectedIndex = 0;
 		}
+
 
 		public string ErrorString
 		{
@@ -49,7 +49,7 @@ namespace PckView
 			set
 			{
 				scrollWid.Value = value;
-				wid_Scroll(null,null);
+				wid_Scroll(null, null);
 			}
 		}
 
@@ -84,13 +84,13 @@ namespace PckView
 													scrollHei.Value,
 													_directory,
 													_file,
-													((BmpForm.cbItem)cbTypes.SelectedItem)._imageFile));
+													((BmpForm.CbxItem)cbTypes.SelectedItem)._imageFile));
 					txtErr.Text = String.Empty;
 					Height = 184;
 				}
 				catch (Exception ex)
 				{
-					txtErr.Text = ex.Message + "\n" + ex.StackTrace;
+					txtErr.Text = ex.Message + System.Environment.NewLine + ex.StackTrace;
 					if (Height <= 184)
 						Height = 184 + 200;
 				}
@@ -102,7 +102,7 @@ namespace PckView
 			var spf = new SaveProfileForm();
 			spf.ImgHei = scrollHei.Value;
 			spf.ImgWid = scrollWid.Value;
-			spf.ImgType = ((BmpForm.cbItem)cbTypes.SelectedItem)._imageFile;
+			spf.ImgType = ((BmpForm.CbxItem)cbTypes.SelectedItem)._imageFile;
 			spf.FileString = _file;
 
 			if (spf.ShowDialog(this) == DialogResult.OK)
@@ -112,7 +112,7 @@ namespace PckView
 		private void txtWid_TextChanged(object sender, EventArgs e)
 		{
 			int val = scrollWid.Value;
-			int.TryParse(txtWid.Text, out val);
+			int.TryParse(txtWid.Text, out val); // TODO: Parse() / InvariantCulture.
 			if (val >= scrollWid.Minimum && val <= scrollWid.Maximum)
 				scrollWid.Value = val;
 		}
@@ -120,14 +120,16 @@ namespace PckView
 		private void txtHei_TextChanged(object sender, EventArgs e)
 		{
 			int val = scrollHei.Value;
-			int.TryParse(txtHei.Text, out val);
+			int.TryParse(txtHei.Text, out val); // TODO: Parse() / InvariantCulture.
 			if (val >= scrollHei.Minimum && val <= scrollHei.Maximum)
 				scrollHei.Value = val;
 		}
 	}
 
 
-	public class TryDecodeEventArgs:EventArgs
+	public class TryDecodeEventArgs
+		:
+		EventArgs
 	{
 		private readonly int _width;
 		private readonly int _height;
@@ -137,6 +139,7 @@ namespace PckView
 
 		private readonly XCom.Interfaces.IXCImageFile _imageFile;
 
+
 		public TryDecodeEventArgs(
 				int width,
 				int height,
@@ -144,12 +147,13 @@ namespace PckView
 				string file,
 				XCom.Interfaces.IXCImageFile imageFile)
 		{
-			this._imageFile = imageFile;
-			this._file = file;
-			this._width = width;
-			this._height = height;
-			this._directory = directory;
+			_imageFile	= imageFile;
+			_file		= file;
+			_width		= width;
+			_height		= height;
+			_directory	= directory;
 		}
+
 
 		public XCom.Interfaces.IXCImageFile XCFile
 		{

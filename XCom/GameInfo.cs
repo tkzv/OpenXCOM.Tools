@@ -21,6 +21,7 @@ namespace XCom
 
 		public static event ParseLineDelegate ParseLine;
 
+
 		public static void Init(Palette pal, DSShared.PathInfo paths)
 		{
 			Directory.SetCurrentDirectory(paths.Path);
@@ -29,30 +30,34 @@ namespace XCom
 			_palette = pal;
 			_pckHash = new Dictionary<Palette, Dictionary<string, PckFile>>();
 
-			var vars = new VarCollection(new StreamReader(File.OpenRead(paths.ToString())));
-			KeyVal keyVal = null;
-			while ((keyVal = vars.ReadLine()) != null)
+			using (var sr = new StreamReader(File.OpenRead(paths.ToString())))
 			{
-				switch (keyVal.Keyword)
+				var vars = new VarCollection(sr);
+
+				KeyVal keyVal = null;
+				while ((keyVal = vars.ReadLine()) != null)
 				{
-					case "mapdata": // MapEdit.dat ref in Paths.pth
-						_tilesetDesc = new TilesetDesc(keyVal.Rest, vars);
-						break;
+					switch (keyVal.Keyword)
+					{
+						case "mapdata": // MapEdit.dat ref in Paths.pth
+							_tilesetDesc = new TilesetDesc(keyVal.Rest, vars);
+							break;
 
-					case "images": // Images.dat ref in Paths.pth
-						_imageInfo = new ImageInfo(keyVal.Rest, vars);
-						break;
+						case "images": // Images.dat ref in Paths.pth
+							_imageInfo = new ImageInfo(keyVal.Rest, vars);
+							break;
 
-					default:
-						if (ParseLine != null)
-							ParseLine(keyVal, vars);
-						else
-							xConsole.AddLine("GameInfo: Error in Paths.pth file: " + keyVal);
-						break;
+						default:
+							if (ParseLine != null)
+								ParseLine(keyVal, vars);
+							else
+								xConsole.AddLine("GameInfo: Error in Paths.pth file: " + keyVal);
+							break;
+					}
 				}
-			}
 
-			vars.BaseStream.Close();
+//				vars.BaseStream.Close(); // NOTE: the 'using' block closes the stream.
+			}
 
 			Directory.SetCurrentDirectory(SharedSpace.Instance.GetString("AppDir"));
 		}

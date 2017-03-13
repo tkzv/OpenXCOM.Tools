@@ -5,7 +5,7 @@ namespace XCom.Interfaces.Base
 {
 	public interface IInfo
 	{
-		int ID
+		int Id
 		{ get; }
 
 		sbyte TileOffset
@@ -20,7 +20,7 @@ namespace XCom.Interfaces.Base
 		bool HumanDoor
 		{ get; }
 
-		bool UFODoor
+		bool UfoDoor
 		{ get; }
 	}
 }

@@ -62,9 +62,9 @@ namespace MapView
 			{
 				_name = txtMapName.Text;
 
-				_cols	= byte.Parse(txtCols.Text);
-				_rows	= byte.Parse(txtRows.Text);
-				_height	= byte.Parse(txtHeight.Text);
+				_cols	= byte.Parse(txtCols.Text, System.Globalization.CultureInfo.InvariantCulture);
+				_rows	= byte.Parse(txtRows.Text, System.Globalization.CultureInfo.InvariantCulture);
+				_height	= byte.Parse(txtHeight.Text, System.Globalization.CultureInfo.InvariantCulture);
 
 				if (_cols % 10 == 0 && _rows % 10 == 0 && _height > 0
 					&& !String.IsNullOrEmpty(_name))

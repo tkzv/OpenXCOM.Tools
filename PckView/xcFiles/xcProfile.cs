@@ -22,9 +22,8 @@ namespace PckView
 			fileOptions.Init(false, false, false, false);
 
 			author	= "Ben Ratzlaff";
+			ext		= PROFILE_EXT;
 			desc	= "Provides profile support";
-
-			ext = PROFILE_EXT;
 		}
 
 		public xcProfile(ImgProfile profile)
@@ -54,7 +53,6 @@ namespace PckView
 			catch
 			{
 				defPal = XCom.Palette.UFOBattle;
-//				defPal = XCom.Palette.TFTDBattle;
 			}
 		}
 

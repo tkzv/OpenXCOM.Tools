@@ -59,6 +59,7 @@ namespace XCom
 						for (int r = 0; r < MapSize.Rows; r++)
 							for (int c = 0; c < MapSize.Cols; c++)
 								this[r, c, h].DrawAbove = true;
+					throw;
 				}
 			}
 			else if (!string.IsNullOrEmpty(blankPath))

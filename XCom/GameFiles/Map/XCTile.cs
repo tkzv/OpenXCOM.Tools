@@ -10,30 +10,34 @@ namespace XCom
 		:
 		XCom.Interfaces.Base.TileBase
 	{
-		private readonly PckFile _myFile;
+		private readonly PckFile _file;
 		private readonly McdEntry _info;
-		private const int NUM_IMAGES = 8;
 
 
-		public XCTile(int id, PckFile file, McdEntry info, XCTile[] tiles)
+		public XCTile(
+			int id,
+			PckFile file,
+			McdEntry info,
+			XCTile[] tiles)
 			:
 			base(id)
 		{
-			this.info = info;
-			_info = info;
-			Tiles = tiles;
-			_myFile = file;
+			_file  = file;
+			_info  = info;
+			Info   = info;
+			Tiles  = tiles;
 
-			image = new XCImage[NUM_IMAGES];
+			_images = new XCImage[8]; // every tile-part contains refs to 8 sprites.
 
-			if (!info.UFODoor && !info.HumanDoor)
+			if (!info.UfoDoor && !info.HumanDoor)
 				MakeAnimate();
 			else
 				StopAnimate();
 
-			Dead = null;
+			Dead      = null;
 			Alternate = null;
 		}
+
 
 		public XCTile[] Tiles
 		{ get; private set; }
@@ -46,26 +50,26 @@ namespace XCom
 
 		public void MakeAnimate()
 		{
-			image[0] = _myFile[_info.Image1];
-			image[1] = _myFile[_info.Image2];
-			image[2] = _myFile[_info.Image3];
-			image[3] = _myFile[_info.Image4];
-			image[4] = _myFile[_info.Image5];
-			image[5] = _myFile[_info.Image6];
-			image[6] = _myFile[_info.Image7];
-			image[7] = _myFile[_info.Image8];
+			_images[0] = _file[_info.Image1];
+			_images[1] = _file[_info.Image2];
+			_images[2] = _file[_info.Image3];
+			_images[3] = _file[_info.Image4];
+			_images[4] = _file[_info.Image5];
+			_images[5] = _file[_info.Image6];
+			_images[6] = _file[_info.Image7];
+			_images[7] = _file[_info.Image8];
 		}
 
 		public void StopAnimate()
 		{
-			image[0] = _myFile[_info.Image1];
-			image[1] = _myFile[_info.Image1];
-			image[2] = _myFile[_info.Image1];
-			image[3] = _myFile[_info.Image1];
-			image[4] = _myFile[_info.Image1];
-			image[5] = _myFile[_info.Image1];
-			image[6] = _myFile[_info.Image1];
-			image[7] = _myFile[_info.Image1];
+			_images[0] = _file[_info.Image1];
+			_images[1] = _file[_info.Image1];
+			_images[2] = _file[_info.Image1];
+			_images[3] = _file[_info.Image1];
+			_images[4] = _file[_info.Image1];
+			_images[5] = _file[_info.Image1];
+			_images[6] = _file[_info.Image1];
+			_images[7] = _file[_info.Image1];
 		}
 	}
 }

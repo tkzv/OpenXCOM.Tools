@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Windows.Forms;
 
-using MapView.Forms.Error;
+using MapView.Forms.XCError;
 
 
 namespace MapView

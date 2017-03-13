@@ -277,18 +277,19 @@ namespace MapView.Forms.MapObservers.RmpViews
 		{
 			if (_currEntry == null)
 			{
-				gbNodeInfo.Enabled = false;
-				groupBox1.Enabled = false;
-				groupBox2.Enabled = false;
+				gbNodeInfo.Enabled   =
+				groupBox1.Enabled    =
+				groupBox2.Enabled    =
 				LinkGroupBox.Enabled = false;
 			}
 			else
 			{
-				gbNodeInfo.Enabled = true;
-				groupBox1.Enabled = true;
-				groupBox2.Enabled = true;
-				gbNodeInfo.SuspendLayout();
+				gbNodeInfo.Enabled   =
+				groupBox1.Enabled    =
+				groupBox2.Enabled    =
 				LinkGroupBox.Enabled = true;
+
+				gbNodeInfo.SuspendLayout();
 				LinkGroupBox.SuspendLayout();
 
 				_loadingGui = true;
@@ -368,11 +369,11 @@ namespace MapView.Forms.MapObservers.RmpViews
 				cbUse4.SelectedItem = _currEntry[3].UType;
 				cbUse5.SelectedItem = _currEntry[4].UType;
 
-				txtDist1.Text = Convert.ToString(_currEntry[0].Distance);
-				txtDist2.Text = Convert.ToString(_currEntry[1].Distance);
-				txtDist3.Text = Convert.ToString(_currEntry[2].Distance);
-				txtDist4.Text = Convert.ToString(_currEntry[3].Distance);
-				txtDist5.Text = Convert.ToString(_currEntry[4].Distance);
+				txtDist1.Text = Convert.ToString(_currEntry[0].Distance, System.Globalization.CultureInfo.InvariantCulture);
+				txtDist2.Text = Convert.ToString(_currEntry[1].Distance, System.Globalization.CultureInfo.InvariantCulture);
+				txtDist3.Text = Convert.ToString(_currEntry[2].Distance, System.Globalization.CultureInfo.InvariantCulture);
+				txtDist4.Text = Convert.ToString(_currEntry[3].Distance, System.Globalization.CultureInfo.InvariantCulture);
+				txtDist5.Text = Convert.ToString(_currEntry[4].Distance, System.Globalization.CultureInfo.InvariantCulture);
 
 				gbNodeInfo.ResumeLayout();
 				gbNodeInfo.ResumeLayout();
@@ -397,7 +398,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 				_loadingMap = true;
 				try
 				{
-					HeightDifTextbox.Text = _map.Rmp.ExtraHeight.ToString();
+					HeightDifTextbox.Text = _map.Rmp.ExtraHeight.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
 					ClearSelected();
 
@@ -432,6 +433,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 		public override void SelectedTileChanged(IMap_Base sender, SelectedTileChangedEventArgs e)
 		{
 			Text = string.Format(
+							System.Globalization.CultureInfo.InvariantCulture,
 							"Position\nc:{0} r:{1}",
 							e.MapPosition.Col, e.MapPosition.Row);
 		}
@@ -471,7 +473,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 									Math.Pow(from.Col - to.Col, 2) +
 									Math.Pow(from.Height - to.Height, 2));
 			if (result != null)
-				result.Text = dist.ToString();
+				result.Text = dist.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
 			return (byte)dist;
 		}
@@ -635,11 +637,11 @@ namespace MapView.Forms.MapObservers.RmpViews
 			{
 				try
 				{
-					_currEntry[0].Distance = byte.Parse(txtDist1.Text);
+					_currEntry[0].Distance = byte.Parse(txtDist1.Text, System.Globalization.CultureInfo.InvariantCulture);
 				}
 				catch
 				{
-					txtDist1.Text = _currEntry[0].Distance.ToString();
+					txtDist1.Text = _currEntry[0].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
 				}
 			}
 		}
@@ -651,11 +653,11 @@ namespace MapView.Forms.MapObservers.RmpViews
 				case Keys.Enter:
 					try
 					{
-						_currEntry[0].Distance = byte.Parse(txtDist1.Text);
+						_currEntry[0].Distance = byte.Parse(txtDist1.Text, System.Globalization.CultureInfo.InvariantCulture);
 					}
 					catch
 					{
-						txtDist1.Text = _currEntry[0].Distance.ToString();
+						txtDist1.Text = _currEntry[0].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
 					}
 					break;
 			}
@@ -667,11 +669,11 @@ namespace MapView.Forms.MapObservers.RmpViews
 			{
 				try
 				{
-					_currEntry[1].Distance = byte.Parse(txtDist2.Text);
+					_currEntry[1].Distance = byte.Parse(txtDist2.Text, System.Globalization.CultureInfo.InvariantCulture);
 				}
 				catch
 				{
-					txtDist2.Text = _currEntry[1].Distance.ToString();
+					txtDist2.Text = _currEntry[1].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
 				}
 			}
 		}
@@ -683,11 +685,11 @@ namespace MapView.Forms.MapObservers.RmpViews
 				case Keys.Enter:
 					try
 					{
-						_currEntry[1].Distance = byte.Parse(txtDist2.Text);
+						_currEntry[1].Distance = byte.Parse(txtDist2.Text, System.Globalization.CultureInfo.InvariantCulture);
 					}
 					catch
 					{
-						txtDist2.Text = _currEntry[1].Distance.ToString();
+						txtDist2.Text = _currEntry[1].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
 					}
 					break;
 			}
@@ -699,11 +701,11 @@ namespace MapView.Forms.MapObservers.RmpViews
 			{
 				try
 				{
-					_currEntry[2].Distance = byte.Parse(txtDist3.Text);
+					_currEntry[2].Distance = byte.Parse(txtDist3.Text, System.Globalization.CultureInfo.InvariantCulture);
 				}
 				catch
 				{
-					txtDist3.Text = _currEntry[2].Distance.ToString();
+					txtDist3.Text = _currEntry[2].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
 				}
 			}
 		}
@@ -715,11 +717,11 @@ namespace MapView.Forms.MapObservers.RmpViews
 				case Keys.Enter:
 					try
 					{
-						_currEntry[2].Distance = byte.Parse(txtDist3.Text);
+						_currEntry[2].Distance = byte.Parse(txtDist3.Text, System.Globalization.CultureInfo.InvariantCulture);
 					}
 					catch
 					{
-						txtDist3.Text = _currEntry[2].Distance.ToString();
+						txtDist3.Text = _currEntry[2].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
 					}
 					break;
 			}
@@ -731,11 +733,11 @@ namespace MapView.Forms.MapObservers.RmpViews
 			{
 				try
 				{
-					_currEntry[3].Distance = byte.Parse(txtDist4.Text);
+					_currEntry[3].Distance = byte.Parse(txtDist4.Text, System.Globalization.CultureInfo.InvariantCulture);
 				}
 				catch
 				{
-					txtDist4.Text = _currEntry[3].Distance.ToString();
+					txtDist4.Text = _currEntry[3].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
 				}
 			}
 		}
@@ -747,11 +749,11 @@ namespace MapView.Forms.MapObservers.RmpViews
 				case Keys.Enter:
 					try
 					{
-						_currEntry[3].Distance = byte.Parse(txtDist4.Text);
+						_currEntry[3].Distance = byte.Parse(txtDist4.Text, System.Globalization.CultureInfo.InvariantCulture);
 					}
 					catch
 					{
-						txtDist4.Text = _currEntry[3].Distance.ToString();
+						txtDist4.Text = _currEntry[3].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
 					}
 					break;
 			}
@@ -763,11 +765,11 @@ namespace MapView.Forms.MapObservers.RmpViews
 			{
 				try
 				{
-					_currEntry[4].Distance = byte.Parse(txtDist5.Text);
+					_currEntry[4].Distance = byte.Parse(txtDist5.Text, System.Globalization.CultureInfo.InvariantCulture);
 				}
 				catch
 				{
-					txtDist5.Text = _currEntry[4].Distance.ToString();
+					txtDist5.Text = _currEntry[4].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
 				}
 			}
 		}
@@ -779,11 +781,11 @@ namespace MapView.Forms.MapObservers.RmpViews
 				case Keys.Enter:
 					try
 					{
-						_currEntry[4].Distance = byte.Parse(txtDist5.Text);
+						_currEntry[4].Distance = byte.Parse(txtDist5.Text, System.Globalization.CultureInfo.InvariantCulture);
 					}
 					catch
 					{
-						txtDist5.Text = _currEntry[4].Distance.ToString();
+						txtDist5.Text = _currEntry[4].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
 					}
 					break;
 			}
@@ -911,6 +913,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 		private void copyNode_Click(object sender, EventArgs e)
 		{
 			var nodeText = string.Format(
+									System.Globalization.CultureInfo.InvariantCulture,
 									"MVNode|{0}|{1}|{2}|{3}|{4}",
 									cbType.SelectedIndex,
 									cbRank1.SelectedIndex,
@@ -925,11 +928,11 @@ namespace MapView.Forms.MapObservers.RmpViews
 			var nodeData = Clipboard.GetText().Split('|');
 			if (nodeData[0] == "MVNode")
 			{
-				cbType.SelectedIndex			= Int32.Parse(nodeData[1]);
-				cbRank1.SelectedIndex			= Int32.Parse(nodeData[2]);
-				cbRank2.SelectedIndex			= Int32.Parse(nodeData[3]);
-				AttackBaseCombo.SelectedIndex	= Int32.Parse(nodeData[4]);
-				cbUsage.SelectedIndex			= Int32.Parse(nodeData[5]);
+				cbType.SelectedIndex			= Int32.Parse(nodeData[1], System.Globalization.CultureInfo.InvariantCulture);
+				cbRank1.SelectedIndex			= Int32.Parse(nodeData[2], System.Globalization.CultureInfo.InvariantCulture);
+				cbRank2.SelectedIndex			= Int32.Parse(nodeData[3], System.Globalization.CultureInfo.InvariantCulture);
+				AttackBaseCombo.SelectedIndex	= Int32.Parse(nodeData[4], System.Globalization.CultureInfo.InvariantCulture);
+				cbUsage.SelectedIndex			= Int32.Parse(nodeData[5], System.Globalization.CultureInfo.InvariantCulture);
 			}
 		}
 
@@ -982,15 +985,19 @@ namespace MapView.Forms.MapObservers.RmpViews
 
 		private void HeightDifTextbox_TextChanged(object sender, EventArgs e)
 		{
-			byte byt;
-			if (byte.TryParse(HeightDifTextbox.Text, out byt))
+			byte bite;
+			if (byte.TryParse(
+						HeightDifTextbox.Text,
+						System.Globalization.NumberStyles.Integer,
+						System.Globalization.CultureInfo.InvariantCulture,
+						out bite))
 			{
-				_map.Rmp.ExtraHeight = byt;
+				_map.Rmp.ExtraHeight = bite;
 			}
 			else
 			{
 				_map.Rmp.ExtraHeight = 0;
-				HeightDifTextbox.Text = _map.Rmp.ExtraHeight.ToString();
+				HeightDifTextbox.Text = _map.Rmp.ExtraHeight.ToString(System.Globalization.CultureInfo.InvariantCulture);
 			}
 
 			_map.MapChanged |= !_loadingMap;

@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 
 
-namespace MapView.Forms.Error
+namespace MapView.Forms.XCError
 {
 	public partial class ErrorWindow
 		:

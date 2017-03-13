@@ -189,9 +189,9 @@ namespace MapView
 			}
 		}
 
-		public global::MapView.CursorSprite CursorSprite
+		internal CursorSprite CursorSprite
 		{
-			get { return cursor; }
+//			get { return cursor; }
 			set
 			{
 				cursor = value;

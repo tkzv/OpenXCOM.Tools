@@ -11,7 +11,7 @@ namespace XCom.Services
 				int newH,
 				MapSize mapSize,
 				MapTileList oldMapTileList,
-				bool wrtCeiling)
+				bool toCeiling)
 		{
 			if (   newR != 0
 				&& newC != 0
@@ -27,7 +27,7 @@ namespace XCom.Services
 						{
 							int hCopy = h;
 							int hCurrent = h;
-							if (wrtCeiling)
+							if (toCeiling)
 							{
 								hCopy = mapSize.Height - h - 1;
 								hCurrent = newH - h - 1;

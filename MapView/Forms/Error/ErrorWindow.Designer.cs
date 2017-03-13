@@ -1,4 +1,4 @@
-﻿namespace MapView.Forms.Error
+﻿namespace MapView.Forms.XCError
 {
 	partial class ErrorWindow
 	{

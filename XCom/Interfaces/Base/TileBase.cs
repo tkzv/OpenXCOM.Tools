@@ -4,19 +4,20 @@ using System;
 namespace XCom.Interfaces.Base
 {
 	/// <summary>
-	/// This class provides all the necessary information to draw an animated sprite.
+	/// Provides all the necessary information to animate a tilepart.
 	/// </summary>
 	public class TileBase
 	{
-		protected XCImage[] image;
-		protected IInfo info;
+		protected XCImage[] _images;
+
+		private IInfo _info;
 
 
 		public TileBase(int id)
 		{
-			this.Id = id;
+			Id = id;
 			MapId = -1;
-			info = null;
+			_info = null;
 		}
 
 
@@ -24,10 +25,7 @@ namespace XCom.Interfaces.Base
 		/// This is the ID unique to this TileBase after it has been loaded.
 		/// </summary>
 		public int Id
-		{
-			get;
-			protected set;
-		}
+		{ get; protected set; }
 
 		/// <summary>
 		/// This is the ID by which the map knows this tile by.
@@ -42,16 +40,18 @@ namespace XCom.Interfaces.Base
 		/// <returns></returns>
 		public XCImage this[int i]
 		{
-			get { return image[i]; }
-			set { image[i] = value; }
+			get { return _images[i]; }
+			set { _images[i] = value; }
 		}
 
 		/// <summary>
 		/// Gets the image array used to animate this tile.
 		/// </summary>
+//		public System.Collections.ObjectModel.Collection<XCImage> Images
 		public XCImage[] Images
 		{
-			get { return image; }
+			get { return _images; }
+			set { _images = value; }
 		}
 
 		/// <summary>
@@ -59,7 +59,8 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public IInfo Info
 		{
-			get { return info; }
+			get { return _info; }
+			set { _info = value; }
 		}
 	}
 }

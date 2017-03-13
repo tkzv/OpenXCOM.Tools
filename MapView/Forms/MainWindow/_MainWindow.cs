@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 using DSShared;
 
-using MapView.Forms.Error.WarningConsole;
+using MapView.Forms.XCError.WarningConsole;
 using MapView.Forms.MainWindow;
 using MapView.SettingServices;
 
@@ -244,7 +244,7 @@ namespace MapView
 
 		private void parseLine(XCom.KeyVal line, XCom.VarCollection vars)
 		{
-			switch (line.Keyword.ToLower())
+			switch (line.Keyword.ToLower(System.Globalization.CultureInfo.InvariantCulture))
 			{
 				case "cursor":
 					if (line.Rest.EndsWith(@"\", StringComparison.Ordinal))
@@ -287,13 +287,13 @@ namespace MapView
 						if ((bool)val)
 						{
 							foreach (XCTile tile in MapViewPanel.Instance.Map.Tiles)
-								if (tile.Info.UFODoor || tile.Info.HumanDoor)
+								if (tile.Info.UfoDoor || tile.Info.HumanDoor)
 									tile.MakeAnimate();
 						}
 						else
 						{
 							foreach (XCTile tile in MapViewPanel.Instance.Map.Tiles)
-								if (tile.Info.UFODoor || tile.Info.HumanDoor)
+								if (tile.Info.UfoDoor || tile.Info.HumanDoor)
 									tile.StopAnimate();
 						}
 					}
@@ -679,7 +679,7 @@ namespace MapView
 			miDoors.Checked = !miDoors.Checked;
 
 			foreach (XCTile t in _mapView.Map.Tiles)
-				if (t.Info.UFODoor || t.Info.HumanDoor)
+				if (t.Info.UfoDoor || t.Info.HumanDoor)
 				{
 					if (miDoors.Checked)
 						t.MakeAnimate();
@@ -692,7 +692,7 @@ namespace MapView
 		{
 			if (_mapView.MapView.Map != null)
 			{
-				using (var cmf = new ChangeMapSizeForm())
+				using (var cmf = new ChangeMapSize())
 				{
 					cmf.Map = _mapView.MapView.Map;
 					if (cmf.ShowDialog(this) == DialogResult.OK)
@@ -701,7 +701,7 @@ namespace MapView
 									cmf.NewRows,
 									cmf.NewCols,
 									cmf.NewHeight,
-									cmf.AddHeightToCelling);
+									cmf.AddHeightToCeiling);
 						_mapView.ForceResize();
 					}
 				}

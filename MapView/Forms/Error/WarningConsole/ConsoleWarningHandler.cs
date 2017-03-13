@@ -1,29 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
+
 using XCom;
 using XCom.Interfaces;
 
-namespace MapView.Forms.Error.WarningConsole
+
+namespace MapView.Forms.XCError.WarningConsole
 {
 	public class ConsoleWarningHandler
 		:
 		IWarningHandler
 	{
-		private readonly ConsoleSharedSpace _consoleSharedSpace;
+		private readonly ConsoleSharedSpace _consoleShare;
 
-		public ConsoleWarningHandler(ConsoleSharedSpace consoleSharedSpace)
+		public ConsoleWarningHandler(ConsoleSharedSpace consoleShare)
 		{
-			_consoleSharedSpace = consoleSharedSpace;
+			_consoleShare = consoleShare;
 		}
 
 		public void HandleWarning(string message)
 		{
-			var console = _consoleSharedSpace.GetConsole();
+			var console = _consoleShare.GetConsole();
 			if (console == null)
 			{
-				console = _consoleSharedSpace.GetNewConsole();
+				console = _consoleShare.GetNewConsole();
 				console.Show();
 			}
 			xConsole.AddLine("WARNING: " + message);

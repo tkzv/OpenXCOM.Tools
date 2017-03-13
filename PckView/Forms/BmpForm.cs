@@ -12,17 +12,15 @@ namespace PckView
 		private Bitmap _bmp = null;
 		private Pen _pen;
 
-//		private XCom.SharedSpace space;
 
-
-		public class cbItem
+		public class CbxItem
 		{
 			public XCom.Interfaces.IXCImageFile _imageFile;
 
 			public string _text;
 
 
-			public cbItem(XCom.Interfaces.IXCImageFile imageFile, string text)
+			public CbxItem(XCom.Interfaces.IXCImageFile imageFile, string text)
 			{
 				_imageFile = imageFile;
 				_text = text;
@@ -49,7 +47,7 @@ namespace PckView
 
 			foreach (XCom.Interfaces.IXCImageFile xcf in XCom.SharedSpace.Instance.GetImageModList())
 				if (xcf.FileOptions[XCom.Interfaces.IXCImageFile.Filter.Bmp])
-					cbTypes.Items.Add(new cbItem(xcf, xcf.ExplorerDescription));
+					cbTypes.Items.Add(new CbxItem(xcf, xcf.ExplorerDescription));
 
 			if (cbTypes.Items.Count > 0)
 				cbTypes.SelectedIndex = 0;
@@ -62,7 +60,10 @@ namespace PckView
 			set
 			{
 				string[] cols = value.Split('|');
-				_pen.Color = Color.FromArgb(int.Parse(cols[0]), int.Parse(cols[1]), int.Parse(cols[2]));
+				_pen.Color = Color.FromArgb(
+										int.Parse(cols[0], System.Globalization.CultureInfo.InvariantCulture), // System.Globalization.NumberStyles.Integer),
+										int.Parse(cols[1], System.Globalization.CultureInfo.InvariantCulture),
+										int.Parse(cols[2], System.Globalization.CultureInfo.InvariantCulture));
 			}
 		}
 
@@ -79,21 +80,18 @@ namespace PckView
 			get { return scrollSpace.Value; }
 		}
 
-		public Bitmap Bitmap
+		public void SetBitmapFormData(Bitmap bmp)
 		{
-			set
-			{
-				_bmp = value;
-				guess();
-				Refresh();
-			}
+			_bmp = bmp;
+			guess();
+			Refresh();
 		}
 
 		private void guess()
 		{
-			if (_bmp != null && cbTypes.Items.Count > 0)
+			if (_bmp != null && cbTypes.Items.Count != 0)
 			{
-				foreach (cbItem cb in cbTypes.Items)
+				foreach (CbxItem cb in cbTypes.Items)
 				{
 					XCom.Interfaces.IXCImageFile imageFile = cb._imageFile;
 					if (   (_bmp.Width  + 1) % (imageFile.ImageSize.Width  + 1) == 0
@@ -108,19 +106,19 @@ namespace PckView
 
 		private void scrollWidth_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e)
 		{
-			txtWidth.Text = scrollWidth.Value.ToString();
+			txtWidth.Text = scrollWidth.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 			drawPanel.Refresh();
 		}
 
 		private void scrollHeight_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e)
 		{
-			txtHeight.Text = scrollHeight.Value.ToString();
+			txtHeight.Text = scrollHeight.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 			drawPanel.Refresh();
 		}
 
 		private void scrollSpace_Scroll(object sender, ScrollEventArgs e)
 		{
-			txtSpace.Text = scrollSpace.Value.ToString();
+			txtSpace.Text = scrollSpace.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 			drawPanel.Refresh();
 		}
 
@@ -157,9 +155,9 @@ namespace PckView
 
 		private void cbTypes_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
-			scrollWidth.Value  = ((cbItem)cbTypes.SelectedItem)._imageFile.ImageSize.Width;
-			scrollHeight.Value = ((cbItem)cbTypes.SelectedItem)._imageFile.ImageSize.Height;
-			scrollSpace.Value  = ((cbItem)cbTypes.SelectedItem)._imageFile.FileOptions.Space;
+			scrollWidth.Value  = ((CbxItem)cbTypes.SelectedItem)._imageFile.ImageSize.Width;
+			scrollHeight.Value = ((CbxItem)cbTypes.SelectedItem)._imageFile.ImageSize.Height;
+			scrollSpace.Value  = ((CbxItem)cbTypes.SelectedItem)._imageFile.FileOptions.Pad;
 
 			scrollWidth_Scroll(null, null);
 			scrollHeight_Scroll(null, null);
@@ -170,7 +168,7 @@ namespace PckView
 		{
 			try
 			{
-				scrollWidth.Value = int.Parse(txtWidth.Text);
+				scrollWidth.Value = int.Parse(txtWidth.Text, System.Globalization.CultureInfo.InvariantCulture);
 				scrollWidth_Scroll(null, null);
 			}
 			catch {} // TODO: that.
@@ -180,7 +178,7 @@ namespace PckView
 		{
 			try
 			{
-				scrollHeight.Value = int.Parse(txtHeight.Text);
+				scrollHeight.Value = int.Parse(txtHeight.Text, System.Globalization.CultureInfo.InvariantCulture);
 				scrollHeight_Scroll(null, null);
 			}
 			catch {} // TODO: that.
@@ -190,7 +188,7 @@ namespace PckView
 		{
 			try
 			{
-				scrollSpace.Value = int.Parse(txtSpace.Text);
+				scrollSpace.Value = int.Parse(txtSpace.Text, System.Globalization.CultureInfo.InvariantCulture);
 				scrollSpace_Scroll(null, null);
 			}
 			catch {} // TODO: that.

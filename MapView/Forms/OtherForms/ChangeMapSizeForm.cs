@@ -6,9 +6,9 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	public class ChangeMapSizeForm
+	public class ChangeMapSize
 		:
-		System.Windows.Forms.Form
+		Form
 	{
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox txtR;
@@ -29,7 +29,7 @@ namespace MapView
 		private IMap_Base map;
 
 
-		public ChangeMapSizeForm()
+		public ChangeMapSize()
 		{
 			InitializeComponent();
 			DialogResult = DialogResult.Cancel;
@@ -45,42 +45,42 @@ namespace MapView
 				if (map != null)
 				{
 					txtR.Text =
-					oldR.Text = map.MapSize.Rows.ToString();
+					oldR.Text = map.MapSize.Rows.ToString(System.Globalization.CultureInfo.InvariantCulture);
 					txtC.Text =
-					oldC.Text = map.MapSize.Cols.ToString();
+					oldC.Text = map.MapSize.Cols.ToString(System.Globalization.CultureInfo.InvariantCulture);
 					txtH.Text =
-					oldH.Text = map.MapSize.Height.ToString();
+					oldH.Text = map.MapSize.Height.ToString(System.Globalization.CultureInfo.InvariantCulture);
 				}
 			}
 		}
 
 		public int NewRows
 		{
-			get { return int.Parse(txtR.Text); }
+			get { return int.Parse(txtR.Text, System.Globalization.CultureInfo.InvariantCulture); }
 		}
 
 		public int NewCols
 		{
-			get { return int.Parse(txtC.Text); }
+			get { return int.Parse(txtC.Text, System.Globalization.CultureInfo.InvariantCulture); }
 		}
 
 		public int NewHeight
 		{
-			get { return int.Parse(txtH.Text); }
+			get { return int.Parse(txtH.Text, System.Globalization.CultureInfo.InvariantCulture); }
 		}
 
-		public bool AddHeightToCelling
+		public bool AddHeightToCeiling
 		{
 			get { return CeilingCheckBox.Checked; }
 		}
 
-		private void btnOk_Click(object sender, System.EventArgs e)
+		private void btnOk_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				int.Parse(txtR.Text);
-				int.Parse(txtC.Text);
-				int.Parse(txtH.Text);
+				int.Parse(txtR.Text, System.Globalization.CultureInfo.InvariantCulture);
+				int.Parse(txtC.Text, System.Globalization.CultureInfo.InvariantCulture);
+				int.Parse(txtH.Text, System.Globalization.CultureInfo.InvariantCulture);
 
 				DialogResult = DialogResult.OK;
 				Close();
@@ -92,19 +92,21 @@ namespace MapView
 							"Input must be whole numbers",
 							"Error",
 							MessageBoxButtons.OK,
-							MessageBoxIcon.Exclamation);
+							MessageBoxIcon.Exclamation,
+							MessageBoxDefaultButton.Button1,
+							0);
+				throw;
 			}
 		}
 
-		private void btnCancel_Click(object sender, System.EventArgs e)
+		private void btnCancel_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
 
 		private void txtH_TextChanged(object sender, EventArgs e)
 		{
-			int current;
-			int.TryParse(txtH.Text, out current);
+			int current = int.Parse(txtH.Text, System.Globalization.CultureInfo.InvariantCulture);
 			CeilingCheckBox.Visible = (current != map.MapSize.Height);
 		}
 
@@ -267,7 +269,7 @@ namespace MapView
 			this.CeilingCheckBox.UseVisualStyleBackColor = true;
 			this.CeilingCheckBox.Visible = false;
 			// 
-			// ChangeMapSizeForm
+			// ChangeMapSize
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(278, 172);
@@ -288,7 +290,7 @@ namespace MapView
 			this.Controls.Add(this.label1);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Name = "ChangeMapSizeForm";
+			this.Name = "ChangeMapSize";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Change Map Size";
 			this.ResumeLayout(false);

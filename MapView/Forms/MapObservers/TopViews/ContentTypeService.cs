@@ -112,7 +112,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			var mcdEntry = content.Info as McdEntry;
 			if (mcdEntry != null
-				&& (mcdEntry.HumanDoor || mcdEntry.UFODoor))
+				&& (mcdEntry.HumanDoor || mcdEntry.UfoDoor))
 			{
 				return true;
 			}

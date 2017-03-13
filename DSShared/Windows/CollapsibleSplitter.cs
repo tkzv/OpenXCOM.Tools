@@ -150,7 +150,7 @@ namespace DSShared.Windows
 		#region Constructor
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:CollapsibleSplitter"/> class.
+		/// Initializes a new instance of the <see cref="T:DSShared.Windows.CollapsibleSplitter"/> class.
 		/// </summary>
 		public CollapsibleSplitter()
 		{
@@ -379,10 +379,8 @@ namespace DSShared.Windows
 
 			if (controlToHide != null)
 			{
-				if (controlToHide.Visible)
-					currentState = SplitterState.Expanded;
-				else
-					currentState = SplitterState.Collapsed;
+				currentState = (controlToHide.Visible) ? SplitterState.Expanded
+													   : SplitterState.Collapsed;
 			}
 		}
 

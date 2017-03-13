@@ -1,9 +1,7 @@
 using System;
-using System.Drawing;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Reflection;
 using System.Diagnostics;
+using System.Reflection;
+
 
 namespace PckView
 {
@@ -18,6 +16,7 @@ namespace PckView
 			FileVersionInfo info = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
 #if DEBUG
 			lblVer.Text = string.Format(
+									System.Globalization.CultureInfo.InvariantCulture,
 									"Debug version {0},{1},{2},{3}",
 									info.FileMajorPart,
 									info.FileMinorPart,
@@ -25,6 +24,7 @@ namespace PckView
 									info.FilePrivatePart);
 #else
 			lblVer.Text = string.Format(
+									System.Globalization.CultureInfo.InvariantCulture,
 									"Release version {0},{1},{2},{3}",
 									info.FileMajorPart,
 									info.FileMinorPart,

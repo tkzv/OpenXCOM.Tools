@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using XCom.Interfaces;
 using System.IO;
 
-namespace XCom.GameFiles.Images.xcFiles
+using XCom.Interfaces;
+
+
+namespace XCom.GameFiles.Images.XCFiles
 {
 	public class xcSpk
 		:
@@ -19,28 +19,27 @@ namespace XCom.GameFiles.Images.xcFiles
 			:
 			base(wid, hei)
 		{
-			ext = ".spk";
-			author = "Ben Ratzlaff";
-			desc = "Spk file codec";
+			author	= "Ben Ratzlaff";
+			ext		= ".spk";
+			desc	= "Spk file codec";
+			expDesc	= "SPK Image";
 
 			defPal = Palette.UFOResearch;
-
-			expDesc = "SPK Image";
 
 			fileOptions.Init(true, false, true, true);
 		}
 
 		protected override XCImageCollection LoadFileOverride(
-														string directory,
-														string file,
-														int imgWid,
-														int imgHei,
-														Palette pal)
+				string directory,
+				string file,
+				int imgWid,
+				int imgHei,
+				Palette pal)
 		{
-			XCImageCollection collect = new XCImageCollection();
+			var collect = new XCImageCollection();
 			XCImage img = new SPKImage(
 									pal,
-									File.OpenRead(directory + "\\" + file),
+									File.OpenRead(directory + @"\" + file),
 									imgWid,
 									imgHei);
 			collect.Add(img);
@@ -49,22 +48,24 @@ namespace XCom.GameFiles.Images.xcFiles
 		}
 
 		public override void SaveCollection(
-										string directory,
-										string file,
-										XCImageCollection images)
+				string directory,
+				string file,
+				XCImageCollection images)
 		{
-			if (images.Count == 1)
+			switch (images.Count)
 			{
-				SPKImage.Save(
-							images[0].Bytes,
-							File.OpenWrite(directory + "\\" + file + ext));
-			}
-			else
-			{
-				for (int i = 0; i < images.Count; i++)
+				case 1:
 					SPKImage.Save(
-								images[i].Bytes,
-								File.OpenWrite(directory + "\\" + file + i.ToString() + ext));
+								images[0].Bytes,
+								File.OpenWrite(directory + @"\" + file + ext));
+					break;
+
+				default:
+					for (int i = 0; i < images.Count; i++)
+						SPKImage.Save(
+									images[i].Bytes,
+									File.OpenWrite(directory + @"\" + file + i.ToString() + ext));
+					break;
 			}
 		}
 	}

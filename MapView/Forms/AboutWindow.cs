@@ -1,13 +1,11 @@
 using System;
 using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
+
 
 namespace MapView
 {
 	/// <summary>
-	/// Displays the About box
+	/// Displays the About box.
 	/// </summary>
 	public partial class AboutWindow
 		:
@@ -22,15 +20,16 @@ namespace MapView
 					   + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Build + "."
 					   + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision;
 
+			lblVersion.Text = "MapView " + ver;
 #if DEBUG
-			lblVersion.Text = "MapView " + ver + " kL_d";
+			lblVersion.Text += " kL_d";
 #else
-			lblVersion.Text = "MapView " + ver + " kL_r";
+			lblVersion.Text += " kL_r";
 #endif
-			lblVersion.Text += "\n\n2017 jan 3";
+			lblVersion.Text += Environment.NewLine + Environment.NewLine + "2017";
 		}
 
-		private Point _originalLocation;
+		private Point _loc;
 		private bool _moving;
 		private double _lastPoint;
 
@@ -41,13 +40,11 @@ namespace MapView
 
 		private void MoveWindow()
 		{
-			_moving = true;
 			try
 			{
-				_lastPoint += 0.02;
-				var loc = GetLocation(_lastPoint);
-				Location = loc;
-				MoveTimer.Interval = 30;
+				MoveTimer.Interval = 1000;
+				_moving = true;
+				Location = GetLocation(_lastPoint += 0.01);
 			}
 			finally
 			{
@@ -55,30 +52,39 @@ namespace MapView
 			}
 		}
 
-		private Point GetLocation(double point)
+		private Point GetLocation(double delta)
 		{
 			var loc = Location;
-			loc.X = (int)(_originalLocation.X + (Math.Sin(point) * 50));
-			loc.Y = (int)(_originalLocation.Y + (Math.Cos(point) * 50));
+			loc.X = (int)(_loc.X + (Math.Sin(delta) * 50));
+			loc.Y = (int)(_loc.Y + (Math.Cos(delta) * 50));
 			return loc;
 		}
 
 		private void AboutWindow_LocationChanged(object sender, EventArgs e)
 		{
-			if (_moving) return;
-			var locationBeforeMove = new Size(GetLocation(_lastPoint));
-			var distance = new Size(Location - locationBeforeMove);
-			_originalLocation += distance;
+			if (!_moving)
+			{
+				var locationBeforeMove = new Size(GetLocation(_lastPoint));
+				var distance = new Size(Location - locationBeforeMove);
+				_loc += distance;
 
-			MoveTimer.Enabled = false;
-			MoveTimer.Enabled = true;
-			MoveTimer.Interval = 500;
+				MoveTimer.Interval = 1000;
+				MoveTimer.Enabled = true;
+			}
 		}
 
 		private void AboutWindow_Shown(object sender, EventArgs e)
 		{
-			_originalLocation = Location;
+			_loc = Location;
 			MoveWindow();
+		}
+
+		private void keyClose(object sender, System.Windows.Forms.KeyEventArgs e)
+		{
+			if (e.KeyCode == System.Windows.Forms.Keys.Escape)
+			{
+				Close();
+			}
 		}
 	}
 }

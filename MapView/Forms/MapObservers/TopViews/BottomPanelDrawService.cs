@@ -91,7 +91,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							startX,
 							startY - mapTile.Ground.Info.TileOffset);
 
-				if (mapTile.Ground.Info.HumanDoor || mapTile.Ground.Info.UFODoor)
+				if (mapTile.Ground.Info.HumanDoor || mapTile.Ground.Info.UfoDoor)
 					g.DrawString(
 							"Door",
 							Font,
@@ -120,7 +120,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							startX + TOTAL_QUADRANT_SPACE,
 							startY - mapTile.West.Info.TileOffset);
 
-				if (mapTile.West.Info.HumanDoor || mapTile.West.Info.UFODoor)
+				if (mapTile.West.Info.HumanDoor || mapTile.West.Info.UfoDoor)
 					g.DrawString(
 							"Door",
 							Font,
@@ -149,7 +149,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							startX + TOTAL_QUADRANT_SPACE * 2,
 							startY - mapTile.North.Info.TileOffset);
 
-				if (mapTile.North.Info.HumanDoor || mapTile.North.Info.UFODoor)
+				if (mapTile.North.Info.HumanDoor || mapTile.North.Info.UfoDoor)
 					g.DrawString(
 							"Door",
 							Font,
@@ -178,7 +178,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							startX + TOTAL_QUADRANT_SPACE * 3,
 							startY - mapTile.Content.Info.TileOffset);
 
-				if (mapTile.Content.Info.HumanDoor || mapTile.Content.Info.UFODoor)
+				if (mapTile.Content.Info.HumanDoor || mapTile.Content.Info.UfoDoor)
 					g.DrawString(
 							"Door",
 							Font,

@@ -19,7 +19,6 @@ namespace XCom.Interfaces
 		IOpenSave
 	{
 		protected Palette defPal = Palette.UFOBattle;
-//		protected Palette defPal = Palette.TFTDBattle;
 
 		protected System.Drawing.Size imageSize;
 
@@ -47,10 +46,8 @@ namespace XCom.Interfaces
 		{
 			get
 			{
-				if (singleFile != null)
-					return singleFile + " - " + expDesc + "|" + singleFile;
-
-				return "*" + ext + " - " + expDesc + "|*" + ext;
+				return (singleFile != null) ? singleFile + " - " + expDesc + "|" + singleFile
+											: "*" + ext + " - " + expDesc + "|*" + ext;
 			}
 		}
 
@@ -257,11 +254,11 @@ namespace XCom.Interfaces
 	}
 
 
-		public class xcFileOptions
+	public class xcFileOptions
 	{
-		private Dictionary<IXCImageFile.Filter, bool> filters;
-		private int bitDepth = 8;
-		private int space = 1;
+		private Dictionary<IXCImageFile.Filter, bool> _filters;
+		private int _bpp = 8;
+		private int _pad = 1;
 
 		public xcFileOptions()
 			:
@@ -274,7 +271,7 @@ namespace XCom.Interfaces
 				bool open,
 				bool custom)
 		{
-			filters = new Dictionary<IXCImageFile.Filter, bool>();
+			_filters = new Dictionary<IXCImageFile.Filter, bool>();
 			Init(
 				save,
 				bmp,
@@ -288,27 +285,27 @@ namespace XCom.Interfaces
 				bool open,
 				bool custom)
 		{
-			filters[IXCImageFile.Filter.Bmp]	= bmp;
-			filters[IXCImageFile.Filter.Custom]	= custom;
-			filters[IXCImageFile.Filter.Open]	= open;
-			filters[IXCImageFile.Filter.Save]	= save;
+			_filters[IXCImageFile.Filter.Bmp]		= bmp;
+			_filters[IXCImageFile.Filter.Custom]	= custom;
+			_filters[IXCImageFile.Filter.Open]		= open;
+			_filters[IXCImageFile.Filter.Save]		= save;
 		}
 
 		public bool this[IXCImageFile.Filter filter]
 		{
-			get { return filters[filter]; }
+			get { return _filters[filter]; }
 		}
 
 		public int BitDepth
 		{
-			get { return bitDepth; }
-			set { bitDepth = value; }
+			get { return _bpp; }
+			set { _bpp = value; }
 		}
 
-		public int Space
+		public int Pad
 		{
-			get { return space; }
-			set { space = value; }
+			get { return _pad; }
+			set { _pad = value; }
 		}
 	}
 }

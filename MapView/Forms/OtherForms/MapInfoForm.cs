@@ -135,14 +135,18 @@ namespace MapView
 			groupAnalyze.Visible = false;
 		}
 
-		private void count(IDictionary img, IDictionary mcd, TileBase tile)
+		private void count(
+				IDictionary sprites,
+				IDictionary records,
+				TileBase tile)
 		{
 			if (tile != null)
 			{
-				foreach (PckImage pi in tile.Images)
-					img[pi.StaticID] = true;
+				var frames = tile.Images;
+				foreach (PckImage frame in frames)
+					sprites[frame.StaticId] = true;
 
-				mcd[tile.Info.ID] = true;
+				records[tile.Info.Id] = true;
 			}
 		}
 

@@ -73,10 +73,10 @@ namespace XCom
 
 		internal McdEntry()
 		{
-			ID = _globalStaticId++;
+			Id = _globalStaticId++;
 		}
 
-		public int ID { get; private set; }
+		public int Id { get; private set; }
 
 		public Rectangle Bounds { get; set; }
 
@@ -116,7 +116,7 @@ namespace XCom
 		public byte Unknown28 { get; set; }													// unsigned char u62;
 		public byte Unknown29 { get; set; }													// unsigned char u62;
 
-		public bool UFODoor		{ get; set; }			// info[30]==1;}}														// If it's a UFO door it uses only Frame[0] until it is walked through, then it animates once and becomes Alt_MCD. It changes back at the end of the turn.
+		public bool UfoDoor		{ get; set; }			// info[30]==1;}}														// If it's a UFO door it uses only Frame[0] until it is walked through, then it animates once and becomes Alt_MCD. It changes back at the end of the turn.
 		public bool StopLOS		{ get; set; }			// info[31]!=1;}}					// unsigned char Stop_LOS;			// You cannot see through this tile.
 		public bool NoGround	{ get; set; }			// info[32]==1;}}					// unsigned char No_Floor;			// If 1, then a non-flying unit can't stand here
 		public bool BigWall		{ get; set; }			// info[33]==1;}}					// unsigned char Big_Wall;			// It's an object (tile type 3), but it acts like a wall

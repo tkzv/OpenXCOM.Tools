@@ -115,12 +115,12 @@ namespace XCom
 			Console.WriteLine("Done");
 		}
 
-		public static void Save24(string path, Bitmap image)
+/*		public static void Save24(string path, Bitmap image)
 		{
 			Save24(new FileStream(path, FileMode.Create), image);
-		}
+		} */
 
-		public static void Save24(Stream str, Bitmap image)
+/*		public static void Save24(Stream str, Bitmap image)
 		{
 			var bw = new BinaryWriter(str);
 
@@ -164,7 +164,7 @@ namespace XCom
 
 			bw.Flush();
 			bw.Close();
-		}
+		} */
 
 		/// <summary>
 		/// Creates a TRUE 8-bit indexed bitmap from the specified byte array
@@ -491,13 +491,13 @@ namespace XCom
 			return dst;
 		}
 
-		public static void FireLoadingEvent(int curr, int total)
+		public static void FireLoadingEvent(int cur, int total)
 		{
 			if (LoadingEvent != null)
-				LoadingEvent(curr, total);
+				LoadingEvent(cur, total);
 		}
 
-		public static unsafe Bitmap Hq2x(Bitmap image)
+		public static unsafe Bitmap Hq2x(/*Bitmap image*/)
 		{
 #if hq2xWorks
 			CImage in24 = new CImage();
@@ -575,13 +575,13 @@ namespace XCom
 		/// <param name="collection">image collection</param>
 		/// <param name="pal">Palette to color the images with</param>
 		/// <param name="across">number of columns to use for images</param>
-		/// <param name="space"></param>
+		/// <param name="pad"></param>
 		public static void SaveBMP(
 				string file,
 				XCImageCollection collection,
 				Palette pal,
 				int across,
-				int space)
+				int pad)
 		{
 			if (collection.Count == 1)
 				across = 1;
@@ -591,14 +591,14 @@ namespace XCom
 				mod = 0;
 
 			var b = MakeBitmap(
-							across * (collection.IXCFile.ImageSize.Width + space) - space,
-							(collection.Count / across + mod) * (collection.IXCFile.ImageSize.Height + space) - space,
+							across * (collection.IXCFile.ImageSize.Width + pad) - pad,
+							(collection.Count / across + mod) * (collection.IXCFile.ImageSize.Height + pad) - pad,
 							pal.Colors);
 
 			for (int i = 0; i < collection.Count; i++)
 			{
-				int x = i % across * (collection.IXCFile.ImageSize.Width  + space);
-				int y = i / across * (collection.IXCFile.ImageSize.Height + space);
+				int x = i % across * (collection.IXCFile.ImageSize.Width  + pad);
+				int y = i / across * (collection.IXCFile.ImageSize.Height + pad);
 				Draw(collection[i].Image, b, x, y);
 			}
 			Save(file, b);
@@ -607,39 +607,39 @@ namespace XCom
 		/// <summary>
 		/// Loads a previously saved sprite sheet as a generic collection to be saved later
 		/// </summary>
-		/// <param name="b">bitmap containing sprites</param>
+		/// <param name="bmp">bitmap containing sprites</param>
 		/// <param name="pal"></param>
-		/// <param name="imgWid"></param>
-		/// <param name="imgHei"></param>
-		/// <param name="space"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="pad"></param>
 		/// <returns></returns>
 		public static XCImageCollection Load(
-				Bitmap b,
+				Bitmap bmp,
 				Palette pal,
-				int imgWid,
-				int imgHei,
-				int space)
+				int width,
+				int height,
+				int pad)
 		{
 			var list = new XCImageCollection();
 
-			int cols = (b.Width  + space) / (imgWid + space);
-			int rows = (b.Height + space) / (imgHei + space);
+			int cols = (bmp.Width  + pad) / (width  + pad);
+			int rows = (bmp.Height + pad) / (height + pad);
 
-			int num = 0;
+			int frame = 0;
 
-			//Console.WriteLine("Image: {0},{1} -> {2},{3}", b.Width, b.Height, cols, rows);
+			//Console.WriteLine("Image: {0},{1} -> {2},{3}", bmp.Width, bmp.Height, cols, rows);
 			for (int i = 0; i < cols * rows; i++)
 			{
-				int x = (i % cols) * (imgWid + space);
-				int y = (i / cols) * (imgHei + space);
-				//Console.WriteLine("{0}: {1},{2} -> {3}", num, x, y, PckImage.Width);
+				int x = (i % cols) * (width  + pad);
+				int y = (i / cols) * (height + pad);
+				//Console.WriteLine("{0}: {1},{2} -> {3}", frame, x, y, PckImage.Width);
 				list.Add(LoadTile(
-								b,
-								num++,
+								bmp,
+								frame++,
 								pal,
 								x,y,
-								imgWid,imgHei));
-				FireLoadingEvent(num, rows * cols);
+								width,height));
+				FireLoadingEvent(frame, rows * cols);
 			}
 
 			list.Pal = pal;
@@ -649,19 +649,19 @@ namespace XCom
 
 		public static XCImage LoadTile(
 				Bitmap src,
-				int imgNum,
-				Palette p,
-				int startX,
-				int startY,
-				int imgWid,
-				int imgHei)
+				int frame,
+				Palette pal,
+				int x,
+				int y,
+				int width,
+				int height)
 		{
 			// image data in 8-bit form
-			var data = new byte[imgWid * imgHei];
+			var data = new byte[width * height];
 
 			var srcRect = new Rectangle(
-									startX, startY,
-									imgWid, imgHei);
+									x, y,
+									width, height);
 
 			var srcData = src.LockBits(
 									srcRect,
@@ -680,14 +680,14 @@ namespace XCom
 				
 				uint sStride = (uint)Math.Abs(srcData.Stride);
 
-				for (uint row = 0, i = 0; row < imgHei; row++)
-					for (uint col = 0; col < imgWid; col++)
+				for (uint row = 0, i = 0; row < height; row++)
+					for (uint col = 0; col < width; col++)
 						data[i++] = *(sBits + row * sStride + col);
 			}
 
 			src.UnlockBits(srcData);
 
-			return new XCImage(data, imgWid, imgHei, p, imgNum);
+			return new XCImage(data, width, height, pal, frame);
 		}
 
 /*		public static XCImageCollection Load(string file, Type collectionType)

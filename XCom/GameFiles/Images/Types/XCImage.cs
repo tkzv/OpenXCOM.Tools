@@ -9,25 +9,35 @@ namespace XCom.Interfaces
 	{
 		protected byte[] idx;
 		protected int fileNum;
-		protected Bitmap image;
-		protected Bitmap gray;
-		private Palette palette;
-		private byte transparent = 0xFE;
+		protected Bitmap _image;
+		protected Bitmap _gray;
 
-		// entries must not be compressed
+		private const byte transparent = 0xFE;
+
+		private Palette palette;
+
+
+		/// <summary>
+		/// Entries must not be compressed.
+		/// </summary>
+		/// <param name="entries"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="pal"></param>
+		/// <param name="idx"></param>
 		public XCImage(
-					byte[] entries,
-					int width,
-					int height,
-					Palette pal,
-					int idx)
+				byte[] entries,
+				int width,
+				int height,
+				Palette pal,
+				int idx)
 		{
 			fileNum = idx;
 			this.idx = entries;
 			palette = pal;
 
 			if (pal != null)
-				image = Bmp.MakeBitmap8(
+				_image = Bmp.MakeBitmap8(
 									width,
 									height,
 									entries,
@@ -44,13 +54,14 @@ namespace XCom.Interfaces
 				-1)
 		{}
 
-		public XCImage(Bitmap b,int idx)
+		public XCImage(Bitmap bmp, int idx)
 		{
 			fileNum = idx;
-			image = b;
+			_image = bmp;
 			this.idx = null;
 			palette = null;
 		}
+
 
 		public byte[] Bytes
 		{
@@ -65,7 +76,7 @@ namespace XCom.Interfaces
 
 		public Bitmap Image
 		{
-			get { return image; }
+			get { return _image; }
 		}
 
 		public Palette Palette
@@ -75,8 +86,8 @@ namespace XCom.Interfaces
 			{
 				palette = value;
 
-				if (image != null)
-					image.Palette = palette.Colors;
+				if (_image != null)
+					_image.Palette = palette.Colors;
 			}
 		}
 
@@ -87,34 +98,33 @@ namespace XCom.Interfaces
 
 		public Bitmap Gray
 		{
-			get { return gray; }
+			get { return _gray; }
 		}
 
 		public object Clone()
 		{
 			if (idx != null)
 			{
-				byte[] b = new byte[idx.Length];
-				for (int i = 0; i < b.Length; i++)
-					b[i] = idx[i];
+				var bites = new byte[idx.Length];
+				for (int i = 0; i != bites.Length; ++i)
+					bites[i] = idx[i];
 
 				return new XCImage(
-								b,
-								image.Width,
-								image.Height,
+								bites,
+								_image.Width,
+								_image.Height,
 								palette,
 								fileNum);
 			}
 
-			if (image != null)
-				return new XCImage((Bitmap)image.Clone(), fileNum);
+			return (_image != null) ? new XCImage((Bitmap)_image.Clone(), fileNum)
+									: null;
 
-			return null;
 		}
 
 		public virtual void Hq2x()
 		{
-			image = Bmp.Hq2x(image);
+			_image = Bmp.Hq2x(/*_image*/);
 		}
 	}
 }

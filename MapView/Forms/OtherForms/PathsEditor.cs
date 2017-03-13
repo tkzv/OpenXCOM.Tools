@@ -99,7 +99,7 @@ namespace MapView
 
 			InitializeComponent();
 
-			// WORKAROUND: See note in 'PathsEditor' cTor.
+			// WORKAROUND: See note in 'MainWindow' cTor.
 			var size = new System.Drawing.Size();
 			size.Width  = 0;
 			size.Height = 0;

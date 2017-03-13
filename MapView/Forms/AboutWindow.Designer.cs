@@ -13,14 +13,14 @@ namespace MapView
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (components != null))
-			{
+			if (disposing && components != null)
 				components.Dispose();
-			}
+
 			base.Dispose(disposing);
 		}
 
 		#region Windows Form Designer generated code
+
 		/// <summary>
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
@@ -74,7 +74,7 @@ namespace MapView
 			// MoveTimer
 			// 
 			this.MoveTimer.Enabled = true;
-			this.MoveTimer.Interval = 30;
+			this.MoveTimer.Interval = 1000;
 			this.MoveTimer.Tick += new System.EventHandler(this.MoveTimer_Tick);
 			// 
 			// label4
@@ -102,15 +102,17 @@ namespace MapView
 			this.Text = "About";
 			this.Shown += new System.EventHandler(this.AboutWindow_Shown);
 			this.LocationChanged += new System.EventHandler(this.AboutWindow_LocationChanged);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyClose);
 			this.ResumeLayout(false);
+
 		}
-		private System.Windows.Forms.Label label4;
 		#endregion
 
+		private System.Windows.Forms.Label lblVersion;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label lblVersion;
 		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Timer MoveTimer;
 	}
 }

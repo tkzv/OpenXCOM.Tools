@@ -17,10 +17,10 @@ namespace MapView
 		}
 
 
-		public void Update(int curr, int total)
+		public void Update(int cur, int total)
 		{
+			progress.Value = cur;
 			progress.Maximum = total;
-			progress.Value = curr;
 		}
 
 
