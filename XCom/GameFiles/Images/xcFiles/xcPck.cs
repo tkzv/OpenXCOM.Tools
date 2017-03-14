@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Windows.Forms;
 
@@ -10,7 +11,7 @@ namespace XCom.GameFiles.Images.XCFiles
 		:
 		IXCImageFile
 	{
-		private const string TAB_EXT = ".tab";
+		private const string TabExt = ".tab";
 
 		private Panel _savePanel;
 		private RadioButton _radio2;
@@ -31,12 +32,12 @@ namespace XCom.GameFiles.Images.XCFiles
 		protected override XCImageCollection LoadFileOverride(
 				string directory,
 				string file,
-				int imgWid,
-				int imgHei,
+				int width,
+				int height,
 				Palette pal)
 		{
 			string tabBase = file.Substring(0, file.LastIndexOf(".", StringComparison.Ordinal));
-			var tabFilePath = directory + @"\" + tabBase + TAB_EXT;
+			var tabFilePath = directory + @"\" + tabBase + TabExt;
 
 			System.IO.Stream tabStream = null;
 			if (System.IO.File.Exists(tabFilePath))
@@ -52,8 +53,8 @@ namespace XCom.GameFiles.Images.XCFiles
 									tabStream,
 									2,
 									pal,
-									imgHei,
-									imgWid);
+									width,
+									height);
 				}
 				catch (Exception)
 				{
@@ -62,8 +63,8 @@ namespace XCom.GameFiles.Images.XCFiles
 									tabStream,
 									4,
 									pal,
-									imgHei,
-									imgWid);
+									width,
+									height);
 				}
 			}
 		}
@@ -171,7 +172,7 @@ namespace XCom.GameFiles.Images.XCFiles
 
 
 	/// <summary>
-	///  class xcPckTab
+	/// class xcPckTab
 	/// </summary>
 	public class xcPckTab
 		:
@@ -184,23 +185,24 @@ namespace XCom.GameFiles.Images.XCFiles
 			desc	= "Opens tab files as pck";
 			expDesc	= "Tab File";
 
-			fileOptions.Init(false, false, false, false);
+			_fileOptions.Init(false, false, false, false);
 		}
 
 		protected override XCImageCollection LoadFileOverride(
 				string directory,
 				string file,
-				int imgWid,
-				int imgHei,
+				int width,
+				int height,
 				Palette pal)
 		{
 			string fileBase = file.Substring(0, file.IndexOf(".", StringComparison.Ordinal));
 			return base.LoadFileOverride(
 									directory,
 									fileBase + ".pck",
-									imgWid,
-									imgHei,
+									width,
+									height,
 									pal);
 		}
 	}
 }
+*/

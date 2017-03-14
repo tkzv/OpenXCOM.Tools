@@ -9,7 +9,7 @@ namespace PckView
 {
 	public partial class BmpForm
 	{
-		private Bitmap _bmp = null;
+		private Bitmap _bmp;
 		private Pen _pen;
 
 

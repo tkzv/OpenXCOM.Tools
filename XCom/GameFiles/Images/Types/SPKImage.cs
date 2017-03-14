@@ -1,29 +1,30 @@
+/*
 using System;
-using System.IO;
-using System.Drawing;
 using System.Collections;
+using System.IO;
+
 using XCom.Interfaces;
+
 
 namespace XCom
 {
-	public class SPKImage
+	public class SpkImage
 		:
 		XCImage
 	{
-		public SPKImage(
-					Palette p,
-					Stream s,
+		public SpkImage(
+					Palette pal,
+					Stream str,
 					int width,
 					int height)
 		{
-//			int transparent = 254;
-			idx = new byte[width * height];
-			for (int i = 0; i < idx.Length; i++)
-				idx[i] = 254;
+			_id = new byte[width * height];
+			for (int i = 0; i < _id.Length; i++)
+				_id[i] = 254;
 
 			long pix = 0;
 
-			BinaryReader data = new BinaryReader(s);
+			var data = new BinaryReader(str);
 
 			try
 			{
@@ -43,7 +44,7 @@ namespace XCom
 						{
 							long val = data.ReadUInt16() * 2;
 							while (val-- > 0)
-								idx[pix++] = data.ReadByte();
+								_id[pix++] = data.ReadByte();
 							break;
 						}
 
@@ -52,34 +53,35 @@ namespace XCom
 							_image = Bmp.MakeBitmap8(
 												width,
 												height,
-												idx,
-												p.Colors);
-							Palette = p;
+												_id,
+												pal.Colors);
+							Palette = pal;
 							data.Close();
 							return;
 						}
 					}
 				}
 			}
-			catch
-			{}
+			catch {} // TODO: that.
 
 			_image = Bmp.MakeBitmap8(
 								width,
 								height,
-								idx,
-								p.Colors);
-			Palette = p;
+								_id,
+								pal.Colors);
+			Palette = pal;
 			data.Close();
 		}
 
 		public static void Save(byte[] img, Stream file)
 		{
-			byte transparent = 254;
-			//Console.WriteLine("length: " + img.Length);
-			BinaryWriter data = new BinaryWriter(file);
+			const byte transparent = 254;
 
-			ArrayList toWrite = new ArrayList();
+			//Console.WriteLine("length: " + img.Length);
+
+			var data = new BinaryWriter(file);
+			var toWrite = new ArrayList();
+
 			int count = 0;
 
 			for (int i = 0; i < img.Length; i++)
@@ -123,12 +125,15 @@ namespace XCom
 
 			data.Write((ushort)0xFFFE);
 			data.Write((ushort)(toWrite.Count / 2));
+
 			foreach(byte b in toWrite)
 				data.Write((byte)b);
 
 			data.Write((ushort)0xFFFD);
+
 			data.Flush();
 			data.Close();
 		}
 	}
 }
+*/

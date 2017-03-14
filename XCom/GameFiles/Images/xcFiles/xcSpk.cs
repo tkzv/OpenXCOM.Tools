@@ -1,3 +1,4 @@
+/*
 using System;
 using System.IO;
 
@@ -24,27 +25,26 @@ namespace XCom.GameFiles.Images.XCFiles
 			desc	= "Spk file codec";
 			expDesc	= "SPK Image";
 
-			defPal = Palette.UFOResearch;
+			_palDefault = Palette.UFOResearch;
 
-			fileOptions.Init(true, false, true, true);
+			_fileOptions.Init(true, false, true, true);
 		}
 
 		protected override XCImageCollection LoadFileOverride(
 				string directory,
 				string file,
-				int imgWid,
-				int imgHei,
+				int width,
+				int height,
 				Palette pal)
 		{
-			var collect = new XCImageCollection();
-			XCImage img = new SPKImage(
+			var collection = new XCImageCollection();
+			var image = new SPKImage(
 									pal,
 									File.OpenRead(directory + @"\" + file),
-									imgWid,
-									imgHei);
-			collect.Add(img);
-
-			return collect;
+									width,
+									height);
+			collection.Add(image);
+			return collection;
 		}
 
 		public override void SaveCollection(
@@ -70,3 +70,4 @@ namespace XCom.GameFiles.Images.XCFiles
 		}
 	}
 }
+*/

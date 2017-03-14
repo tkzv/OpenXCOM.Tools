@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Drawing;
 
@@ -7,7 +8,9 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	public class xcDotNet:IXCImageFile
+	public class xcDotNet
+		:
+		IXCImageFile
 	{
 		public xcDotNet()
 			:
@@ -23,8 +26,8 @@ namespace PckView
 			desc	= "Interface for any file type the .net framework can load";
 			expDesc	= ".net image loader";
 
-			fileOptions.Init(false, false, true, true);
-			fileOptions.BitDepth = 32;
+			_fileOptions.Init(false, false, true, true);
+			_fileOptions.BitDepth = 32;
 		}
 
 		public override bool RegisterFile()
@@ -35,8 +38,8 @@ namespace PckView
 		protected override XCImageCollection LoadFileOverride(
 				string directory,
 				string file,
-				int imgWid,
-				int imgHei,
+				int width,
+				int height,
 				Palette pal)
 		{
 			var img = Image.FromFile(directory + @"\" + file);
@@ -48,19 +51,20 @@ namespace PckView
 			xConsole.AddLine("File: " + directory + @"\" + file);
 			if (bmf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				imageSize = bmf.SelectedSize;
-				return new DotNetCollection(bmp, imgWid, imgHei, bmf.SelectedSpace);
+				_imageSize = bmf.SelectedSize;
+				return new DotNetCollection(bmp, width, height, bmf.SelectedSpace);
 			}
 
 			return null;
 		}
 
-/*		public override void SaveCollection(
+		public override void SaveCollection(
 				string directory,
 				string file,
 				XCImageCollection images)
 		{
-			DotNetCollection.Save(directory + @"\" + file, images); // TODO: This is a call to an empty function.
-		} */
+			DotNetCollection.Save(directory + @"\" + file, images);
+		}
 	}
 }
+*/

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+
 using XCom.Interfaces;
 
 
@@ -9,60 +10,64 @@ namespace XCom
 		:
 		List<XCImage>
 	{
-		protected string name,path;
-		private Palette pal;
-		protected int scale = 1;
-		private XCom.Interfaces.IXCImageFile ixcFile;
+		private string _name;
+		private string _path;
+
+		private Palette _pal;
+
+		private int _scale = 1;
+
+		private IXCImageFile _file;
+
 
 		public string Name
 		{
-			get { return name; }
-			set { name = value; }
+			get { return _name; }
+			set { _name = value; }
 		}
 
 		public string Path
 		{
-			get { return path; }
-			set { path = value; }
+			get { return _path; }
+			set { _path = value; }
 		}
 
 		public IXCImageFile IXCFile
 		{
-			get { return ixcFile; }
-			set { ixcFile = value; }
+			get { return _file; }
+			set { _file = value; }
 		}
 
 		public void Hq2x()
 		{
-			foreach (XCImage i in this)
-				i.Hq2x();
+			foreach (XCImage image in this)
+				image.Hq2x();
 
-			scale *= 2;
+			_scale *= 2;
 		}
 
 		public virtual Palette Pal
 		{
-			get { return pal; }
+			get { return _pal; }
 			set
 			{
-				foreach (XCImage i in this)
-					i.Image.Palette = value.Colors;
-
-				pal = value;
+				_pal = value;
+				foreach (XCImage image in this)
+					image.Image.Palette = _pal.Colors;
 			}
 		}
 
 		public new XCImage this[int i]
 		{
-			get { return (i < Count && i > -1) ? base[i]
+			get { return (i > -1 && i < Count) ? base[i]
 											   : null; }
 			set
 			{
-				if (i < Count && i > -1)
+				if (i > -1 && i < Count)
 					base[i] = value;
 				else
 				{
-					value.FileNum = Count;
+					value.FileId = Count;
 					Add(value);
 				}
 			}

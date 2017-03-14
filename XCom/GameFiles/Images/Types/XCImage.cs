@@ -1,20 +1,21 @@
 using System;
 using System.Drawing;
 
+
 namespace XCom.Interfaces
 {
 	public class XCImage
 		:
 		ICloneable
 	{
-		protected byte[] idx;
-		protected int fileNum;
+		protected byte[] _id;
+		protected int _fileId;
 		protected Bitmap _image;
 		protected Bitmap _gray;
 
-		private const byte transparent = 0xFE;
+		private const byte _transparent = 0xFE;
 
-		private Palette palette;
+		private Palette _palette;
 
 
 		/// <summary>
@@ -24,17 +25,17 @@ namespace XCom.Interfaces
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="pal"></param>
-		/// <param name="idx"></param>
+		/// <param name="id"></param>
 		public XCImage(
 				byte[] entries,
 				int width,
 				int height,
 				Palette pal,
-				int idx)
+				int id)
 		{
-			fileNum = idx;
-			this.idx = entries;
-			palette = pal;
+			_fileId = id;
+			_id = entries;
+			_palette = pal;
 
 			if (pal != null)
 				_image = Bmp.MakeBitmap8(
@@ -48,30 +49,29 @@ namespace XCom.Interfaces
 			:
 			this(
 				new byte[]{},
-				0,
-				0,
+				0, 0,
 				null,
 				-1)
 		{}
 
 		public XCImage(Bitmap bmp, int idx)
 		{
-			fileNum = idx;
+			_fileId = idx;
 			_image = bmp;
-			this.idx = null;
-			palette = null;
+			_id = null;
+			_palette = null;
 		}
 
 
 		public byte[] Bytes
 		{
-			get { return idx; }
+			get { return _id; }
 		}
 
-		public int FileNum
+		public int FileId
 		{
-			get { return fileNum; }
-			set { fileNum = value; }
+			get { return _fileId; }
+			set { _fileId = value; }
 		}
 
 		public Bitmap Image
@@ -81,19 +81,19 @@ namespace XCom.Interfaces
 
 		public Palette Palette
 		{
-			get { return palette; }
+			get { return _palette; }
 			set
 			{
-				palette = value;
+				_palette = value;
 
 				if (_image != null)
-					_image.Palette = palette.Colors;
+					_image.Palette = _palette.Colors;
 			}
 		}
 
 		public virtual byte TransparentIndex
 		{
-			get { return transparent; }
+			get { return _transparent; }
 		}
 
 		public Bitmap Gray
@@ -103,21 +103,21 @@ namespace XCom.Interfaces
 
 		public object Clone()
 		{
-			if (idx != null)
+			if (_id != null)
 			{
-				var bites = new byte[idx.Length];
+				var bites = new byte[_id.Length];
 				for (int i = 0; i != bites.Length; ++i)
-					bites[i] = idx[i];
+					bites[i] = _id[i];
 
 				return new XCImage(
 								bites,
 								_image.Width,
 								_image.Height,
-								palette,
-								fileNum);
+								_palette,
+								_fileId);
 			}
 
-			return (_image != null) ? new XCImage((Bitmap)_image.Clone(), fileNum)
+			return (_image != null) ? new XCImage((Bitmap)_image.Clone(), _fileId)
 									: null;
 
 		}

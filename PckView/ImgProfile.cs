@@ -13,23 +13,24 @@ namespace PckView
 {
 	public class ImgProfile
 	{
-		private int imgWid = 0; // NOTE: class-vars are default-initialized.
-		private int imgHei = 0;
+		private int _width  = 0; // NOTE: class-vars are default-initialized.
+		private int _height = 0;
 
-		private IXCImageFile imgType;
+		private IXCImageFile _imageType;
 
-		private string desc		= String.Empty;
-		private string defPal	= String.Empty;
-		private string single	= String.Empty;
-		private string ext		= String.Empty;
+		private string desc   = String.Empty;
+		private string defPal = String.Empty;
+		private string single = String.Empty;
+		private string ext    = String.Empty;
 
-		public static List<xcProfile> LoadFile(string inFile)
+
+		public static List<XCProfile> LoadFile(string inFile)
 		{
 			var sr = new StreamReader(inFile);
 			var vars = new VarCollection_Structure(sr);
 			sr.Close();
 
-			var profiles = new List<xcProfile>();
+			var profiles = new List<XCProfile>();
 
 			foreach (string st in vars.KeyValList.Keys)
 			{
@@ -39,8 +40,8 @@ namespace PckView
 
 				profile.desc	= st;
 				profile.ext		= info["open"].Rest;
-				profile.imgWid	= int.Parse(info["width"].Rest);
-				profile.imgHei	= int.Parse(info["height"].Rest);
+				profile._width	= int.Parse(info["width"].Rest);
+				profile._height	= int.Parse(info["height"].Rest);
 				profile.defPal	= info["palette"].Rest;
 
 				if (info.ContainsKey("openSingle") && info["openSingle"] != null)
@@ -49,11 +50,11 @@ namespace PckView
 				foreach (IXCImageFile ixc in SharedSpace.Instance.GetImageModList())
 					if (ixc.ExplorerDescription == info["codec"].Rest)
 					{
-						profile.imgType = ixc;
+						profile._imageType = ixc;
 						break;
 					}
 
-				profiles.Add(new xcProfile(profile));
+				profiles.Add(new XCProfile(profile));
 			}
 
 			return profiles;
@@ -77,22 +78,22 @@ namespace PckView
 			set { desc = value; }
 		}
 
-		public int ImgWid
+		public int Width
 		{
-			get { return imgWid; }
-			set { imgWid = value; }
+			get { return _width; }
+			set { _width = value; }
 		}
 
-		public int ImgHei
+		public int Height
 		{
-			get { return imgHei; }
-			set { imgHei = value; }
+			get { return _height; }
+			set { _height = value; }
 		}
 
 		public IXCImageFile ImgType
 		{
-			get { return imgType; }
-			set { imgType = value; }
+			get { return _imageType; }
+			set { _imageType = value; }
 		}
 
 		public string Extension
@@ -123,16 +124,16 @@ namespace PckView
 
 			sw.WriteLine("\tcodec:" + ImgType.ExplorerDescription);
 			sw.WriteLine("\topen:." + ext.Substring(ext.LastIndexOf(".", StringComparison.Ordinal) + 1));
-			sw.WriteLine("\twidth:" + ImgWid);
-			sw.WriteLine("\theight:" + ImgHei);
+			sw.WriteLine("\twidth:" + Width);
+			sw.WriteLine("\theight:" + Height);
 			sw.WriteLine("\tpalette:" + Palette);
 
-			if (single != "")
+			if (single != String.Empty)
 				sw.WriteLine("\topenSingle:" + single);
 
 			// here would be the place to put decoder-specific settings
 
-			sw.WriteLine("}\n");
+			sw.WriteLine("}" + Environment.NewLine);
 			sw.Close();
 		}
 	}

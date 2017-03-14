@@ -1,3 +1,4 @@
+/*
 using System;
 
 using XCom.Interfaces;
@@ -14,16 +15,16 @@ namespace XCom.GameFiles.Images.XCFiles
 			this(0, 0)
 		{}
 
-		public xcUncompressed(int wid, int hei)
+		public xcUncompressed(int width, int height)
 			:
-			base(wid, hei)
+			base(width, height)
 		{
 			author	= "Ben Ratzlaff";
 			ext		= ".unused";
 			desc	= "Base class for opening uncompressed image files";
 			expDesc	= "Uncompressed Images";
 
-			fileOptions.Init(false, false, false, true);
+			_fileOptions.Init(false, false, false, true);
 
 //			fileOptions[Filter.Bmp]		= false;
 //			fileOptions[Filter.Save]	= false;
@@ -31,17 +32,18 @@ namespace XCom.GameFiles.Images.XCFiles
 //			fileOptions[Filter.Custom]	= true;
 		}
 
+
 		protected override XCImageCollection LoadFileOverride(
 				string directory,
 				string file,
-				int imgWid,
-				int imgHei,
+				int width,
+				int height,
 				Palette pal)
 		{
 			return new UncompressedCollection(
-										imgWid,
-										imgHei,
-										System.IO.File.OpenRead(directory + "\\" + file),
+										width,
+										height,
+										System.IO.File.OpenRead(directory + @"\" + file),
 										pal);
 		}
 
@@ -58,3 +60,4 @@ namespace XCom.GameFiles.Images.XCFiles
 		}
 	}
 }
+*/

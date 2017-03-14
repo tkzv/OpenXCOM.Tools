@@ -135,9 +135,9 @@ namespace PckView
 						xConsole.AddLine("Loading dll: " + st);
 						loadedTypes.LoadFrom(Assembly.LoadFrom(st));
 					}
-					else if (st.EndsWith(xcProfile.PROFILE_EXT, StringComparison.Ordinal))
+					else if (st.EndsWith(XCProfile.ProfileExt, StringComparison.Ordinal))
 					{
-						foreach (xcProfile ip in ImgProfile.LoadFile(st))
+						foreach (XCProfile ip in ImgProfile.LoadFile(st))
 							loadedTypes.Add(ip);
 					}
 				}
@@ -183,7 +183,7 @@ namespace PckView
 
 		public void LoadProfile(string s)
 		{
-			foreach (xcProfile ip in ImgProfile.LoadFile(s))
+			foreach (XCProfile ip in ImgProfile.LoadFile(s))
 				loadedTypes.Add(ip);
 
 			osFilter.SetFilter(IXCImageFile.Filter.Open);
@@ -529,10 +529,10 @@ namespace PckView
 				{
 					string file = _totalViewPck.Collection.Name.Substring(0, _totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal));
 					string ext  = _totalViewPck.Collection.Name.Substring(_totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal) + 1);
-					saveBmpSingle.FileName = file + selected.Image.FileNum;
+					saveBmpSingle.FileName = file + selected.Image.FileId;
 				}
 				else
-					saveBmpSingle.FileName = _totalViewPck.Collection.Name + selected.Image.FileNum;
+					saveBmpSingle.FileName = _totalViewPck.Collection.Name + selected.Image.FileId;
 
 				if (saveBmpSingle.ShowDialog() == DialogResult.OK)
 					Bmp.Save(saveBmpSingle.FileName, selected.Image.Image);
@@ -732,10 +732,10 @@ namespace PckView
 						Bmp.Save(
 								path + @"\" + fName + string.Format(
 																"{0:" + zeros + "}",
-																xc.FileNum) + "." + ext,
+																xc.FileId) + "." + ext,
 								xc.Image);
 						//Console.WriteLine("---");
-						progress.Value = xc.FileNum;
+						progress.Value = xc.FileId;
 					}
 					progress.Hide();
 				}

@@ -11,7 +11,7 @@ namespace PckView
 			:
 			base(0, 0)
 		{
-			fileOptions.Init(false, false, true, false);
+			_fileOptions.Init(false, false, true, false);
 
 //			fileOptions[Filter.Bmp] = false;
 //			fileOptions[Filter.Save] = false;

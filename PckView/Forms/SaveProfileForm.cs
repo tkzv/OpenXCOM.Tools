@@ -13,14 +13,14 @@ namespace PckView
 		:
 		Form
 	{
-		private ImgProfile profileInfo;
+		private ImgProfile _profile;
 
 
 		public SaveProfileForm()
 		{
 			InitializeComponent();
 
-			profileInfo = new ImgProfile();
+			_profile = new ImgProfile();
 
 			DialogResult = DialogResult.Cancel; // TODO: why 2 dialogresultCancel's
 
@@ -35,7 +35,7 @@ namespace PckView
 
 			txtOutDir.Text = saveFile.InitialDirectory + @"\" + saveFile.FileName;
 
-			saveFile.Filter = "Image Profiles|*" + xcProfile.PROFILE_EXT;
+			saveFile.Filter = "Image Profiles|*" + XCProfile.ProfileExt;
 
 			foreach (string key in ((Dictionary<string, Palette>)SharedSpace.Instance["Palettes"]).Keys)
 				cbPalette.Items.Add(key);
@@ -61,30 +61,30 @@ namespace PckView
 
 		public int ImgWid
 		{
-			get { return profileInfo.ImgWid; }
-			set { profileInfo.ImgWid = value; restring(); }
+			get { return _profile.Width; }
+			set { _profile.Width = value; restring(); }
 		}
 
 		public int ImgHei
 		{
-			get { return profileInfo.ImgHei; }
-			set { profileInfo.ImgHei = value; restring(); }
+			get { return _profile.Height; }
+			set { _profile.Height = value; restring(); }
 		}
 
 		public IXCImageFile ImgType
 		{
-			get { return profileInfo.ImgType; }
-			set { profileInfo.ImgType = value; restring(); }
+			get { return _profile.ImgType; }
+			set { _profile.ImgType = value; restring(); }
 		}
 
 		public string FileString
 		{
-			get { return profileInfo.FileString; }
+			get { return _profile.FileString; }
 			set 
 			{
-				profileInfo.FileString = value;
+				_profile.FileString = value;
 
-				saveFile.FileName = value.Substring(0,value.LastIndexOf(".", StringComparison.Ordinal)) + xcProfile.PROFILE_EXT;
+				saveFile.FileName = value.Substring(0,value.LastIndexOf(".", StringComparison.Ordinal)) + XCProfile.ProfileExt;
 				txtOutDir.Text = saveFile.InitialDirectory + @"\" + saveFile.FileName;
 			}
 		}
@@ -98,15 +98,15 @@ namespace PckView
 		{
 			DialogResult = DialogResult.OK; // TODO: why 2 dialogresultOK's
 
-			profileInfo.Description = txtDesc.Text;
+			_profile.Description = txtDesc.Text;
 			if (radioSingle.Checked)
 			{
 				string file = txtOutDir.Text.Substring(txtOutDir.Text.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
 				file = file.Substring(0, file.LastIndexOf(".", StringComparison.Ordinal));
-				profileInfo.OpenSingle = file;
+				_profile.OpenSingle = file;
 			}
-			profileInfo.Palette = cbPalette.SelectedItem.ToString();
-			profileInfo.SaveProfile(txtOutDir.Text);
+			_profile.Palette = cbPalette.SelectedItem.ToString();
+			_profile.SaveProfile(txtOutDir.Text);
 
 			((PckViewForm)SharedSpace.Instance["PckView"]).LoadProfile(txtOutDir.Text);
 
@@ -122,7 +122,7 @@ namespace PckView
 
 		private void cbPalette_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			profileInfo.Palette = cbPalette.SelectedText;
+			_profile.Palette = cbPalette.SelectedText;
 		}
 	}
 }

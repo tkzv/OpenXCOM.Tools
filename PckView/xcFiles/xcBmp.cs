@@ -1,3 +1,4 @@
+/*
 using System;
 
 using XCom.Interfaces;
@@ -18,7 +19,7 @@ namespace PckView
 //			fileOptions.OpenDialog = true;
 //			fileOptions.CustomDialog = false;
 
-			fileOptions.Init(true, false, true, false);
+			_fileOptions.Init(true, false, true, false);
 
 			author	= "Ben Ratzlaff";
 			ext		= ".bmp";
@@ -29,8 +30,8 @@ namespace PckView
 		protected override XCom.XCImageCollection LoadFileOverride(
 				string directory,
 				string file,
-				int imgWid,
-				int imgHei,
+				int width,
+				int height,
 				XCom.Palette pal)
 		{
 			var bmp = new System.Drawing.Bitmap(directory + @"\" + file);
@@ -40,12 +41,12 @@ namespace PckView
 
 			if (bmf.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				imageSize = bmf.SelectedSize;
+				_imageSize = bmf.SelectedSize;
 				return XCom.Bmp.Load(
 								bmp,
 								pal,
-								imageSize.Width,
-								imageSize.Height,
+								_imageSize.Width,
+								_imageSize.Height,
 								bmf.SelectedSpace);
 			}
 			return null;
@@ -61,3 +62,4 @@ namespace PckView
 		}
 	}
 }
+*/

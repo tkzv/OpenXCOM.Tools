@@ -1,3 +1,4 @@
+/*
 using System;
 using System.IO;
 
@@ -24,24 +25,24 @@ namespace XCom.GameFiles.Images.XCFiles
 			desc	= "Bdy file codec";
 			expDesc	= "BDY Image";
 
-			defPal = Palette.UFOResearch;
+			_palDefault = Palette.UFOResearch;
 
-			fileOptions.Init(true, false, true, true);
+			_fileOptions.Init(true, false, true, true);
 		}
 
 		protected override XCImageCollection LoadFileOverride(
 				string directory,
 				string file,
-				int imgWid,
-				int imgHei,
+				int width,
+				int height,
 				Palette pal)
 		{
 			var collection = new XCImageCollection();
-			XCImage image = new BdyImage(
-										pal,
-										File.OpenRead(directory + @"\" + file),
-										imgWid,
-										imgHei);
+			var image = new BdyImage(
+									pal,
+									File.OpenRead(directory + @"\" + file),
+									width,
+									height);
 			collection.Add(image);
 
 			return collection;
@@ -68,3 +69,4 @@ namespace XCom.GameFiles.Images.XCFiles
 		}
 	}
 }
+*/

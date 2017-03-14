@@ -423,7 +423,6 @@ namespace MapView.Forms.MapObservers.RmpViews
 			this._contentPane.Name = "_contentPane";
 			this._contentPane.Size = new System.Drawing.Size(660, 177);
 			this._contentPane.TabIndex = 2;
-			this._contentPane.Paint += new System.Windows.Forms.PaintEventHandler(this._contentPanePaint);
 			// 
 			// menuStrip1
 			// 
@@ -473,7 +472,6 @@ namespace MapView.Forms.MapObservers.RmpViews
 			"Connect Two ways"});
 			this.connectNodesToolStripMenuItem.Name = "connectNodesToolStripMenuItem";
 			this.connectNodesToolStripMenuItem.Size = new System.Drawing.Size(154, 20);
-			this.connectNodesToolStripMenuItem.Click += new System.EventHandler(this.ConnectNodesToolStripMenuItemClick);
 			// 
 			// extraHeightToolStripMenuItem
 			// 
@@ -490,7 +488,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 			this.HeightDifTextbox.Name = "HeightDifTextbox";
 			this.HeightDifTextbox.Size = new System.Drawing.Size(100, 20);
 			this.HeightDifTextbox.ToolTipText = "This amount will be added to the link\'s vertical position. Helps in UFO maps when" +
-	" the UFO terrain maps have basement floors.";
+			" the UFO terrain maps have basement floors.";
 			this.HeightDifTextbox.TextChanged += new System.EventHandler(this.HeightDifTextbox_TextChanged);
 			// 
 			// LinkGroupBox

@@ -6,79 +6,79 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	public class xcProfile
+	public class XCProfile
 		:
 		IXCImageFile
 	{
-		public static readonly string PROFILE_EXT = ".pvp";
+		public static readonly string ProfileExt = ".pvp";
 
-		private IXCImageFile _codec;
+		private readonly IXCImageFile _codec;
 
 
-		public xcProfile()
+/*		public XCProfile()
 			:
 			base(0, 0)
 		{
-			fileOptions.Init(false, false, false, false);
+			_fileOptions.Init(false, false, false, false);
 
 			author	= "Ben Ratzlaff";
-			ext		= PROFILE_EXT;
+			ext		= ProfileExt;
 			desc	= "Provides profile support";
-		}
+		} */
 
-		public xcProfile(ImgProfile profile)
+		public XCProfile(ImgProfile profile)
 			:
 			base(0, 0)
 		{
-			imageSize = new System.Drawing.Size(profile.ImgWid, profile.ImgHei);
+			_imageSize = new System.Drawing.Size(profile.Width, profile.Height);
 
 			_codec = profile.ImgType;
 
+			author	= "Profile";
+			ext		= profile.Extension;
 			desc	= profile.Description;
 			expDesc	= profile.Description;
-			ext		= profile.Extension;
-			author	= "Profile";
 
-			if (profile.OpenSingle != "")
-				singleFile = profile.OpenSingle;
+			if (profile.OpenSingle != Environment.NewLine)
+				_singleFile = profile.OpenSingle;
 
-			fileOptions.Init(false, true, true, false);
+			_fileOptions.Init(false, true, true, false);
 
 			xConsole.AddLine("Profile created: " + desc);
 
 			try
 			{
-				defPal = XCom.SharedSpace.Instance.GetPaletteTable()[profile.Palette];
+				_palDefault = XCom.SharedSpace.Instance.GetPaletteTable()[profile.Palette];
 			}
 			catch
 			{
-				defPal = XCom.Palette.UFOBattle;
+				_palDefault = XCom.Palette.UFOBattle;
 			}
 		}
 
 
-		public IXCImageFile Codec
+/*		public IXCImageFile Codec
 		{
 			get { return _codec; }
 			set { _codec = value; }
-		}
+		} */
 
-		protected override XCom.XCImageCollection LoadFileOverride(
+/*		protected override XCImageCollection LoadFileOverride(
 				string directory,
 				string file,
-				int imgWid,
-				int imgHei,
+				int width,
+				int height,
 				Palette pal)
 		{
 			return _codec.LoadFile(
 								directory,
 								file,
-								imgWid,
-								imgHei,
+								width,
+								height,
 								pal);
-		}
+		} */
 
-		public override void SaveCollection(
+/*		public override void SaveCollection(
 				string directory,
 				string file,
 				XCom.XCImageCollection images)
@@ -87,6 +87,6 @@ namespace PckView
 							directory,
 							file,
 							images);
-		}
+		} */
 	}
 }

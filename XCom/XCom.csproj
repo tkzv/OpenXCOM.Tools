@@ -109,7 +109,7 @@
     <Compile Include="GameFiles\Map\SpecialType.cs" />
     <Compile Include="GameFiles\Map\XcMapFileService.cs" />
     <Compile Include="GameFiles\Map\XcTileFactory.cs" />
-    <Compile Include="Interfaces\Base\MapLocation.cs" />
+    <Compile Include="Interfaces\Base\MapPosition.cs" />
     <Compile Include="Interfaces\Base\MapTileList.cs" />
     <Compile Include="Services\MapResizeService.cs" />
     <Compile Include="Interfaces\Base\MapTileBase.cs" />

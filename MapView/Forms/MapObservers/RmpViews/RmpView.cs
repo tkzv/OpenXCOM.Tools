@@ -34,6 +34,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 
 		private readonly List<object> _byteList = new List<object>();
 
+
 		public RmpView()
 		{
 			InitializeComponent();
@@ -93,6 +94,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 
 			ClearSelected();
 		}
+
 
 		private void options_click(object sender, EventArgs e)
 		{
@@ -1030,16 +1032,6 @@ namespace MapView.Forms.MapObservers.RmpViews
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Warning);
 			}
-		}
-
-		void _contentPanePaint(object sender, PaintEventArgs e)
-		{
-			// TODO: Implement _contentPanePaint
-		}
-
-		void ConnectNodesToolStripMenuItemClick(object sender, EventArgs e)
-		{
-			// TODO: Implement ConnectNodesToolStripMenuItemClick
 		}
 	}
 }

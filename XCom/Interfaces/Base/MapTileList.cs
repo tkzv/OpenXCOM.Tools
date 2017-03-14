@@ -9,11 +9,7 @@
 		public MapTileList(int rows, int cols, int height)
 		{
 			_mapData = new MapTileBase[rows * cols * height];
-
-			_mapPos = new MapPosition();
-			_mapPos._rMax = rows;
-			_mapPos._cMax = cols;
-			_mapPos._hMax = height;
+			_mapPos  = new MapPosition(rows,  cols,  height);
 		}
 
 
@@ -21,31 +17,31 @@
 		{
 			get
 			{
-				if (   row    <= _mapPos._rMax
-					&& col    <= _mapPos._cMax
-					&& height <= _mapPos._hMax)
+				if (   row    <= _mapPos.MaxRows
+					&& col    <= _mapPos.MaxCols
+					&& height <= _mapPos.MaxHeight)
 				{
-					var i = GetIndex(row, col, height);
-					if (i < _mapData.Length)
-						return _mapData[i];
+					var id = GetIndex(row, col, height);
+					if (id < _mapData.Length)
+						return _mapData[id];
 				}
 				return null;
 			}
 
 			set
 			{
-				var i = GetIndex(row, col, height);
-				_mapData[i] = value;
+				var id = GetIndex(row, col, height);
+				_mapData[id] = value;
 			}
 		}
 
 		private int GetIndex(int row, int col, int height)
 		{
-			_mapPos._r = row;
-			_mapPos._c = col;
-			_mapPos._h = height;
+			_mapPos.Rows   = row;
+			_mapPos.Cols   = col;
+			_mapPos.Height = height;
 
-			return _mapPos.LocationId;
+			return _mapPos.GetLocationId();
 		}
 	}
 }

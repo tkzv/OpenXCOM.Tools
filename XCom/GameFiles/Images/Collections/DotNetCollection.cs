@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -123,16 +124,17 @@ namespace XCom
 		}
 
 
-/*		public static void Save(string outFile, XCImageCollection images)
-		{} */
+		public static void Save(string outFile, XCImageCollection images)
+		{}
 
-/*		/// <summary>
+		/// <summary>
 		/// 32-bit images dont have palettes.
 		/// </summary>
 		public override Palette Pal
 		{
 			get { return null; }
 //			set {}
-		} */
+		}
 	}
 }
+*/

@@ -7,7 +7,7 @@ namespace MapView
 		:
 		System.Windows.Forms.Form
 	{
-		private System.Windows.Forms.ProgressBar progress;
+		private System.Windows.Forms.ProgressBar _progress;
 		private System.ComponentModel.Container components = null;
 
 
@@ -19,8 +19,8 @@ namespace MapView
 
 		public void Update(int cur, int total)
 		{
-			progress.Value = cur;
-			progress.Maximum = total;
+			_progress.Value = cur;
+			_progress.Maximum = total;
 		}
 
 
@@ -43,23 +43,23 @@ namespace MapView
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.progress = new System.Windows.Forms.ProgressBar();
+			this._progress = new System.Windows.Forms.ProgressBar();
 			this.SuspendLayout();
 			// 
 			// progress
 			// 
-			this.progress.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.progress.Location = new System.Drawing.Point(0, 0);
-			this.progress.Name = "progress";
-			this.progress.Size = new System.Drawing.Size(292, 27);
-			this.progress.TabIndex = 0;
+			this._progress.Dock = System.Windows.Forms.DockStyle.Fill;
+			this._progress.Location = new System.Drawing.Point(0, 0);
+			this._progress.Name = "progress";
+			this._progress.Size = new System.Drawing.Size(292, 27);
+			this._progress.TabIndex = 0;
 			// 
 			// LoadingForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(292, 27);
 			this.ControlBox = false;
-			this.Controls.Add(this.progress);
+			this.Controls.Add(this._progress);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "LoadingForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

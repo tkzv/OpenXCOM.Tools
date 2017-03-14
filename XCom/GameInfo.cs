@@ -11,11 +11,9 @@ namespace XCom
 	public static class GameInfo
 	{
 		private static Palette _palette = Palette.UFOBattle;
-//		private static Palette _palette = Palette.TFTDBattle;
 
 		private static ImageInfo _imageInfo;
 		private static TilesetDesc _tilesetDesc;
-//		private static IWarningHandler WarningHandler;
 
 		private static Dictionary<Palette, Dictionary<string, PckFile>> _pckHash;
 

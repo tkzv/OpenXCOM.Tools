@@ -6,7 +6,7 @@ using XCom.Interfaces;
 
 namespace XCom
 {
-	public delegate void LoadingDelegate(int curr, int total);
+	public delegate void LoadingDelegate(int cur, int total);
 
 
 	public class PckFile
@@ -15,15 +15,16 @@ namespace XCom
 	{
 		private int _bpp;
 
-		public static readonly string TAB_EXT = ".tab";
+		public static readonly string TabExt = ".tab";
+
 
 		public PckFile(
 					Stream pckFile,
 					Stream tabFile,
 					int bpp,
 					Palette pal,
-					int imgHeight,
-					int imgWidth)
+					int width,
+					int height)
 		{
 			if (tabFile != null)
 				tabFile.Position = 0;
@@ -34,7 +35,6 @@ namespace XCom
 			pckFile.Read(info, 0, info.Length);
 
 			_bpp = bpp;
-
 			Pal = pal;
 
 			uint[] offsets;
@@ -72,8 +72,8 @@ namespace XCom
 							imgDat,
 							pal,
 							this,
-							imgHeight,
-							imgWidth));
+							width,
+							height));
 			}
 		}
 
@@ -88,9 +88,9 @@ namespace XCom
 				tabFile,
 				bpp,
 				pal,
-				40,
-				32)
+				32, 40)
 		{}
+
 
 		public int Bpp
 		{
@@ -98,37 +98,44 @@ namespace XCom
 		}
 
 		public static void Save(
-							string directory,
-							string file,
-							XCImageCollection images,
-							int bpp)
+				string directory,
+				string file,
+				XCImageCollection images,
+				int bpp)
 		{
-			var pck = new BinaryWriter(File.Create(directory + @"\" + file + ".pck"));
-			var tab = new BinaryWriter(File.Create(directory + @"\" + file + TAB_EXT));
-
-			if (bpp == 2)
+			using (var pck = new BinaryWriter(File.Create(directory + @"\" + file + ".pck")))
+			using (var tab = new BinaryWriter(File.Create(directory + @"\" + file + TabExt)))
 			{
-				ushort count = 0;
-				foreach (XCImage img in images)
+				switch (bpp)
 				{
-					tab.Write((ushort)count);
-					ushort encLen = (ushort)PckImage.EncodePck(pck, img);
-					count += encLen;
-				}
-			}
-			else
-			{
-				uint count = 0;
-				foreach(XCImage img in images)
-				{
-					tab.Write((uint)count);
-					uint encLen = (uint)PckImage.EncodePck(pck, img);
-					count += encLen;
-				}
-			}
+					case 2:
+					{
+						ushort count = 0;
+						foreach (XCImage image in images)
+						{
+							tab.Write((ushort)count);
+							ushort encLen = (ushort)PckImage.EncodePck(pck, image);
+							count += encLen;
+						}
+						break;
+					}
 
-			pck.Close();
-			tab.Close();
+					default:
+					{
+						uint count = 0;
+						foreach(XCImage image in images)
+						{
+							tab.Write((uint)count);
+							uint encLen = (uint)PckImage.EncodePck(pck, image);
+							count += encLen;
+						}
+						break;
+					}
+				}
+
+//				pck.Close(); // NOTE: the 'using' block flushes and closes the stream.
+//				tab.Close();
+			}
 		}
 	}
 }
