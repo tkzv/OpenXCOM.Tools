@@ -17,8 +17,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		MapObserverControl
 	{
 		private readonly Dictionary<ToolStripMenuItem, int> _visibleHash;
-		private Dictionary<string, SolidBrush> _brushes;
+
 		private Dictionary<string, Pen> _pens;
+		private Dictionary<string, SolidBrush> _brushes;
 
 		private readonly TopViewPanel _topViewPanel;
 		private MainToolStripButtonsFactory _mainToolStripButtonsFactory;
@@ -92,7 +93,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private void VisibleClick(object sender, EventArgs e)
 		{
-			((ToolStripMenuItem)sender).Checked = !((ToolStripMenuItem)sender).Checked;
+			var ts = sender as ToolStripMenuItem;
+			ts.Checked = !ts.Checked;
 
 			if (VisibleTileChanged != null)
 				VisibleTileChanged(this, new EventArgs());
@@ -181,24 +183,24 @@ namespace MapView.Forms.MapObservers.TopViews
 			Invalidate();
 		}
 
-		public void Fill_Click(object sender, EventArgs evt)
+		public void FillClick(object sender, EventArgs e)
 		{
 			var map = MapViewPanel.Instance.MapView.Map;
 
 			if (map != null)
 			{
-				var s = new Point(0, 0);
-				var e = new Point(0, 0);
+				var start = new Point(0, 0);
+				var end   = new Point(0, 0);
 
-				s.X = Math.Min(MapViewPanel.Instance.MapView.DragStart.X, MapViewPanel.Instance.MapView.DragEnd.X);
-				s.Y = Math.Min(MapViewPanel.Instance.MapView.DragStart.Y, MapViewPanel.Instance.MapView.DragEnd.Y);
+				start.X = Math.Min(MapViewPanel.Instance.MapView.DragStart.X, MapViewPanel.Instance.MapView.DragEnd.X);
+				start.Y = Math.Min(MapViewPanel.Instance.MapView.DragStart.Y, MapViewPanel.Instance.MapView.DragEnd.Y);
 	
-				e.X = Math.Max(MapViewPanel.Instance.MapView.DragStart.X, MapViewPanel.Instance.MapView.DragEnd.X);
-				e.Y = Math.Max(MapViewPanel.Instance.MapView.DragStart.Y, MapViewPanel.Instance.MapView.DragEnd.Y);
+				end.X = Math.Max(MapViewPanel.Instance.MapView.DragStart.X, MapViewPanel.Instance.MapView.DragEnd.X);
+				end.Y = Math.Max(MapViewPanel.Instance.MapView.DragStart.Y, MapViewPanel.Instance.MapView.DragEnd.Y);
 
 				var tileView = MainWindowsManager.TileView.TileViewControl;
-				for (int c = s.X; c <= e.X; c++)
-					for (int r = s.Y; r <= e.Y; r++)
+				for (int c = start.X; c <= end.X; c++)
+					for (int r = start.Y; r <= end.Y; r++)
 						((XCMapTile)map[r, c])[bottom.SelectedQuadrant] = tileView.SelectedTile;
 
 				map.MapChanged = true;

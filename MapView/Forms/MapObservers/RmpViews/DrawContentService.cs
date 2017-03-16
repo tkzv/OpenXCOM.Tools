@@ -34,9 +34,9 @@ namespace MapView.Forms.MapObservers.RmpViews
 		/// Draws floor-blobs for TopView.
 		/// </summary>
 		public void DrawFloor(
-							Graphics g,
-							SolidBrush brush,
-							int x, int y)
+				Graphics g,
+				SolidBrush brush,
+				int x, int y)
 		{
 			g.FillPath(brush, GetFloorPath(x, y));
 		}
@@ -47,10 +47,10 @@ namespace MapView.Forms.MapObservers.RmpViews
 		/// Draws wall- and content- blobs for TopView and RMP View.
 		/// </summary>
 		public void DrawContent(
-							Graphics g,
-							SolidPenBrush color,
-							int x, int y,
-							TileBase content)
+				Graphics g,
+				SolidPenBrush color,
+				int x, int y,
+				TileBase content)
 		{
 			var ptTop	= new Point(
 								x,
@@ -67,28 +67,28 @@ namespace MapView.Forms.MapObservers.RmpViews
 
 			switch (ContentTypeService.GetContentType(content))
 			{
-				case ContentTypes.Content:
+				case ContentType.Content:
 					SetGroundPath(x, y);
 					g.FillPath(
 							color.Brush,
 							_content);
 					break;
 
-				case ContentTypes.Ground:
+				case ContentType.Ground:
 					SetGroundPath(x, y);
 					g.FillPath(
 							color.LightBrush,
 							_content);
 					break;
 
-				case ContentTypes.NorthFence:
+				case ContentType.NorthFence:
 					g.DrawLine(
 							color.LightPen,
 							ptTop,
 							ptRight);
 					break;
 
-				case ContentTypes.NorthWall:
+				case ContentType.NorthWall:
 					g.DrawLine(
 							color.Pen,
 							ptTop,
@@ -101,14 +101,14 @@ namespace MapView.Forms.MapObservers.RmpViews
 								Point.Add(ptRight, new Size(-10, 4)));
 					break;
 
-				case ContentTypes.WestFence:
+				case ContentType.WestFence:
 					g.DrawLine(
 							color.LightPen,
 							ptTop,
 							ptLeft);
 					break;
 
-				case ContentTypes.WestWall:
+				case ContentType.WestWall:
 					g.DrawLine(
 							color.Pen,
 							ptTop,
@@ -121,7 +121,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 								ptLeft);
 					break;
 
-				case ContentTypes.NorthWallWithWindow:
+				case ContentType.NorthWallWindow:
 					DrawWindow(
 							g,
 							color,
@@ -129,7 +129,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 							ptRight);
 					break;
 
-				case ContentTypes.WestWallWithWindow:
+				case ContentType.WestWallWindow:
 					DrawWindow(
 							g,
 							color,
@@ -137,56 +137,56 @@ namespace MapView.Forms.MapObservers.RmpViews
 							ptLeft);
 					break;
 
-				case ContentTypes.SouthWall:
+				case ContentType.SouthWall:
 					g.DrawLine(
 							color.Pen,
 							ptLeft,
 							ptBot);
 					break;
 
-				case ContentTypes.EastWall:
+				case ContentType.EastWall:
 					g.DrawLine(
 							color.Pen,
 							ptBot,
 							ptRight);
 					break;
 
-				case ContentTypes.NW_To_SE:
+				case ContentType.NorthwestSoutheast:
 					g.DrawLine(
 							color.Pen,
 							ptTop,
 							ptBot);
 					break;
 
-				case ContentTypes.NE_To_SW:
+				case ContentType.NortheastSouthwest:
 					g.DrawLine(
 							color.Pen,
 							ptLeft,
 							ptRight);
 					break;
 
-				case ContentTypes.NorthWestCorner:
+				case ContentType.NorthwestCorner:
 					g.DrawLine(
 							color.Pen,
 							Point.Add(ptTop, new Size(-4, 0)),
 							Point.Add(ptTop, new Size( 4, 0)));
 					break;
 
-				case ContentTypes.NorthEastCorner:
+				case ContentType.NortheastCorner:
 					g.DrawLine(
 							color.Pen,
 							Point.Add(ptRight, new Size(0, -4)),
 							Point.Add(ptRight, new Size(0,  4)));
 					break;
 
-				case ContentTypes.SouthEastCorner:
+				case ContentType.SoutheastCorner:
 					g.DrawLine(
 							color.Pen,
 							Point.Add(ptBot, new Size(-4, 0)),
 							Point.Add(ptBot, new Size( 4, 0)));
 					break;
 
-				case ContentTypes.SouthWestCorner:
+				case ContentType.SouthwestCorner:
 					g.DrawLine(
 							color.Pen,
 							Point.Add(ptLeft, new Size(0, -4)),
@@ -216,9 +216,9 @@ namespace MapView.Forms.MapObservers.RmpViews
 		}
 
 		private static void DrawWindow(
-									Graphics g,
-									SolidPenBrush color,
-									Point start, Point end)
+				Graphics g,
+				SolidPenBrush color,
+				Point start, Point end)
 		{
 			var pt	= Point.Subtract(end, new Size(start));
 			var xy	= new Size(pt.X / 3, pt.Y / 3);

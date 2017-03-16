@@ -56,6 +56,6 @@
 
 		#endregion
 
-		public TopView TopViewControl;
+		private TopView TopViewControl;
 	}
 }

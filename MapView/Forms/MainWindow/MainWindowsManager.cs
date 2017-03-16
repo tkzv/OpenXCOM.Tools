@@ -52,7 +52,7 @@ namespace MapView.Forms.MainWindow
 		public static void Initialize()
 		{
 			TopRmpView.TopViewControl.Initialize(MainToolStripButtonsFactory);
-			TopView.TopViewControl.Initialize(MainToolStripButtonsFactory);
+			TopView.Control.Initialize(MainToolStripButtonsFactory);
 			TileView.TileViewControl.Initialize(MainWindowsShowAllManager);
 			TileView.TileViewControl.SelectedTileTypeChanged += _tileView_SelectedTileTypeChanged;
 		}
@@ -65,7 +65,7 @@ namespace MapView.Forms.MainWindow
 				TopRmpView.RouteViewControl,
 				TileView.TileViewControl,
 				RmpView.RouteViewControl,
-				TopView.TopViewControl
+				TopView.Control
 			};
 
 			foreach (var f in maps) // iterate all Forms/Views/Controls (take your pick.).
@@ -82,7 +82,7 @@ namespace MapView.Forms.MainWindow
 		private static void _tileView_SelectedTileTypeChanged(TileBase newTile)
 		{
 			if (newTile != null && newTile.Info != null)
-				TopView.TopViewControl.SelectQuadrant(newTile.Info.TileType);
+				TopView.Control.SelectQuadrant(newTile.Info.TileType);
 		}
 
 		private void SetMap(IMap_Base newMap, IMap_Observer observer)

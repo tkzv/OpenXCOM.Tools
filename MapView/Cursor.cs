@@ -32,7 +32,7 @@ namespace MapView
 		}
 
 
-		/*		public CursorState State
+/*		public CursorState State
 		{
 			get { return _state; }
 			set { _state = value; }

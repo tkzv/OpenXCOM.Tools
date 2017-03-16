@@ -9,12 +9,12 @@ namespace MapView.SettingServices
 {
 	public static class SettingsService
 	{
-		public const string MV_SETTINGS_FILE = "MV_SettingsFile";
+		public const string SettingsFile = "MV_SettingsFile";
 
 
 		public static void Save(Dictionary<string, Settings> settingsHash)
 		{
-			using (var sw = new StreamWriter(SharedSpace.Instance[MV_SETTINGS_FILE].ToString()))
+			using (var sw = new StreamWriter(SharedSpace.Instance[SettingsFile].ToString()))
 			{
 				foreach (string st in settingsHash.Keys)
 					if (settingsHash.ContainsKey(st))

@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-using MapView.Forms.MainWindow;
-
 using XCom;
 
 
 namespace MapView.Forms.MapObservers.RmpViews
 {
 	public delegate void MapPanelClickDelegate(object sender, MapPanelClickEventArgs e);
+
 
 	public class MapPanel
 		:

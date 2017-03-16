@@ -37,7 +37,7 @@ namespace MapView.Forms.MainWindow
 		public void Register()
 		{
 			MainWindowsManager.TopRmpView.TopViewControl.Settings =
-				MainWindowsManager.TopView.TopViewControl.Settings;
+				MainWindowsManager.TopView.Control.Settings;
 
 			MainWindowsManager.TopRmpView.RouteViewControl.Settings =
 				MainWindowsManager.RmpView.RouteViewControl.Settings;
@@ -56,7 +56,7 @@ namespace MapView.Forms.MainWindow
 			RegisterForm(MainWindowsManager.AboutWindow, "About");
 
 			MainWindowsManager.TopRmpView.TopViewControl.RegistryInfo =
-				MainWindowsManager.TopView.TopViewControl.RegistryInfo;
+				MainWindowsManager.TopView.Control.RegistryInfo;
 
 			MainWindowsManager.TopRmpView.RouteViewControl.RegistryInfo =
 				MainWindowsManager.RmpView.RouteViewControl.RegistryInfo;

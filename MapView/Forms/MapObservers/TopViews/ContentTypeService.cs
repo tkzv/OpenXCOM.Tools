@@ -8,7 +8,7 @@ namespace MapView.Forms.MapObservers.TopViews
 {
 	public static class ContentTypeService
 	{
-		public static ContentTypes GetContentType(TileBase content)
+		public static ContentType GetContentType(TileBase content)
 		{
 			var mcdEntry = content.Info as McdEntry;
 			if (mcdEntry != null)
@@ -19,63 +19,63 @@ namespace MapView.Forms.MapObservers.TopViews
 				allButGround.RemoveAt(0);
 
 				if (AllLoftWith(allButGround, new[]{ 0 }))
-					return ContentTypes.Ground;
+					return ContentType.Ground;
 
 				if (AllLoftWith(loftList, new[]{ 24, 26 }))
-					return ContentTypes.EastWall;
+					return ContentType.EastWall;
 
 				if (AllLoftWith(loftList, new[]{ 23, 25 }))
-					return ContentTypes.SouthWall;
+					return ContentType.SouthWall;
 
 				if (AllLoftWith(loftList, new[]{ 8, 10, 12, 14, 38 })
 					&& HasAnyLoftWith(loftList, new[]{ 38 }))
 				{
-					return ContentTypes.NorthWallWithWindow;
+					return ContentType.NorthWallWindow;
 				}
 
 				if (AllLoftWith(loftList, new[]{ 8, 10, 12, 14, 38, 0, 39, 77 })
 					&& HasAnyLoftWith(loftList, new[]{ 0 }))
 				{
-					return ContentTypes.NorthFence;
+					return ContentType.NorthFence;
 				}
 
 				if (AllLoftWith(loftList, new[]{ 8, 10, 12, 14, 16, 18, 20, 21 }))
-					return ContentTypes.NorthWall;
+					return ContentType.NorthWall;
 
 				if (AllLoftWith(loftList, new[]{ 7, 9, 11, 13, 37 })
 					&& HasAnyLoftWith(loftList, new[]{ 37 }))
 				{
-					return ContentTypes.WestWallWithWindow;
+					return ContentType.WestWallWindow;
 				}
 
 				if (AllLoftWith(loftList, new[]{ 7, 9, 11, 13, 37,0, 39, 76 })
 					&& HasAnyLoftWith(loftList, new[]{ 0 }))
 				{
-					return ContentTypes.WestFence;
+					return ContentType.WestFence;
 				}
 
 				if (AllLoftWith(loftList, new[]{ 7, 9, 11, 13, 15, 17, 19, 22 }))
-					return ContentTypes.WestWall;
+					return ContentType.WestWall;
 
 				if (AllLoftWith(loftList, new[]{ 35 }))
-					return ContentTypes.NW_To_SE;
+					return ContentType.NorthwestSoutheast;
 
 				if (AllLoftWith(loftList, new[]{ 36 }))
-					return ContentTypes.NE_To_SW;
+					return ContentType.NortheastSouthwest;
 
 				if (AllLoftWith(loftList, new[]{ 39, 40, 41, 103 }))
-					return ContentTypes.NorthWestCorner;
+					return ContentType.NorthwestCorner;
 
 				if (AllLoftWith(loftList, new[]{ 100 }))
-					return ContentTypes.NorthEastCorner;
+					return ContentType.NortheastCorner;
 
 				if (AllLoftWith(loftList, new[]{ 106 }))
-					return ContentTypes.SouthWestCorner;
+					return ContentType.SouthwestCorner;
 
 				if (AllLoftWith(loftList, new[]{ 109 }))
-					return ContentTypes.SouthEastCorner;
+					return ContentType.SoutheastCorner;
 			}
-			return ContentTypes.Content;
+			return ContentType.Content;
 		}
 
 		private static bool AllLoftWith(IEnumerable<byte> loftList, int[] numbers)
@@ -120,23 +120,23 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 	}
 
-	public enum ContentTypes
+	public enum ContentType
 	{
 		Content,
 		EastWall,
 		SouthWall,
 		NorthWall,
 		WestWall,
-		NW_To_SE,
-		NE_To_SW,
-		NorthWallWithWindow,
-		WestWallWithWindow,
+		NorthwestSoutheast,
+		NortheastSouthwest,
+		NorthWallWindow,
+		WestWallWindow,
 		Ground,
 		NorthFence,
 		WestFence,
-		NorthWestCorner,
-		NorthEastCorner,
-		SouthWestCorner,
-		SouthEastCorner
+		NorthwestCorner,
+		NortheastCorner,
+		SouthwestCorner,
+		SoutheastCorner
 	}
 }

@@ -12,7 +12,13 @@ namespace MapView.Forms.MapObservers.TopViews
 			InitializeComponent();
 		}
 
-		public MapObserverControl MapObserver
+
+		public TopView Control // TODO: Consolidate this w/ MapObserver.
+		{
+			get { return TopViewControl; }
+		}
+
+		public MapObserverControl MapObserver // TODO: Consolidate this w/ Control.
 		{
 			get { return TopViewControl; }
 		}

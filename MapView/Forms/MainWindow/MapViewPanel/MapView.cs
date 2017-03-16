@@ -531,7 +531,7 @@ namespace MapView
 
 		private static void DrawTile(Graphics g, XCMapTile mt, int x, int y)
 		{
-			var topView = MainWindowsManager.TopView.TopViewControl;
+			var topView = MainWindowsManager.TopView.Control;
 			if (mt.Ground != null && topView.GroundVisible)
 				DrawTile(g, x, y, mt.Ground);
 
@@ -547,7 +547,7 @@ namespace MapView
 
 		private void DrawTileGray(Graphics g, XCMapTile mt, int x, int y)
 		{
-			var topView = MainWindowsManager.TopView.TopViewControl;
+			var topView = MainWindowsManager.TopView.Control;
 			if (mt.Ground != null && topView.GroundVisible)
 				DrawTileGray(g, x, y, mt.Ground);
 

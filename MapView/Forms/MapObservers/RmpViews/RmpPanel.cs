@@ -14,7 +14,12 @@ namespace MapView.Forms.MapObservers.RmpViews
 		:
 		MapPanel
 	{
-		public Point Position = new Point(-1, -1);
+		private Point _pos = new Point(-1, -1);
+		public Point Pos
+		{
+			get { return _pos; }
+			set { _pos = value; }
+		}
 
 		private readonly Font _font = new Font("Courier New", 22, FontStyle.Bold);
 
@@ -61,23 +66,23 @@ namespace MapView.Forms.MapObservers.RmpViews
 
 		private void DrawInformation(Graphics g)
 		{
-			var posT = GetTile(Position.X, Position.Y);
+			var posT = GetTile(Pos.X, Pos.Y);
 
 			if (posT != null)
 			{
 				var textHeight = (int)g.MeasureString("X", Font).Height;
 				var overlayPos = new Rectangle(
-											Position.X + 18, Position.Y,
+											Pos.X + 18, Pos.Y,
 											200, textHeight + 10);
 
 				if (posT.Rmp != null)
 					overlayPos.Height += textHeight * 4;
 
 				if (overlayPos.X + overlayPos.Width > ClientRectangle.Width)
-					overlayPos.X = Position.X - overlayPos.Width - 8;
+					overlayPos.X = Pos.X - overlayPos.Width - 8;
 
 				if (overlayPos.Y + overlayPos.Height > ClientRectangle.Height)
-					overlayPos.Y = Position.X - overlayPos.Height;
+					overlayPos.Y = Pos.X - overlayPos.Height;
 
 				g.FillRectangle(new SolidBrush(Color.FromArgb(192, 0, 0, 0)), overlayPos);
 				g.FillRectangle(
@@ -90,7 +95,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 				var textLeft = overlayPos.X + 5;
 				var textTop  = overlayPos.Y + 5;
 
-				var pt = GetTileCoordinates(Position.X, Position.Y);
+				var pt = GetTileCoordinates(Pos.X, Pos.Y);
 				g.DrawString(
 							"Tile (c:" + pt.X + " r:" + pt.Y + ")",
 							Font,
@@ -314,14 +319,8 @@ namespace MapView.Forms.MapObservers.RmpViews
 
 			if (value > 0)
 			{
-				if (value > max)
-				{
-					value = NODE_VAL_MAX;
-				}
-				else
-				{
-					value = (int)(Math.Ceiling((double)value / max * NODE_VAL_MAX));
-				}
+				value = (value > max) ? NODE_VAL_MAX
+									  : (int)(Math.Ceiling((double)value / max * NODE_VAL_MAX));
 
 				g.FillRectangle(
 							color,
@@ -335,7 +334,7 @@ namespace MapView.Forms.MapObservers.RmpViews
 		private void DrawWallsAndContent(Graphics g)
 		{
 			if (_wallColor == null)
-				_wallColor = new SolidPenBrush(MapPens["WallColor"] );
+				_wallColor = new SolidPenBrush(MapPens["WallColor"]);
 
 			_drawContentService.HWidth  = DrawAreaWidth;
 			_drawContentService.HHeight = DrawAreaHeight;

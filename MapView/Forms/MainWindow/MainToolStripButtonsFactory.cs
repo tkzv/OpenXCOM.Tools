@@ -61,7 +61,7 @@ namespace MapView.Forms.MainWindow
 			btnFill.ToolTipText = "Fill";
 			btnFill.Click += delegate(object sender, EventArgs e)
 			{
-				MainWindowsManager.TopView.TopViewControl.Fill_Click(sender, e);
+				MainWindowsManager.TopView.Control.FillClick(sender, e);
 				Refresh();
 			};
 

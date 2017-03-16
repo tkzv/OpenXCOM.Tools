@@ -115,7 +115,7 @@ namespace MapView
 			var fileMapEdit		= new PathInfo(dir, "MapEdit",		"dat");
 			var fileImages		= new PathInfo(dir, "Images",		"dat");
 
-			share.AllocateObject(SettingsService.MV_SETTINGS_FILE, fileSettings);
+			share.AllocateObject(SettingsService.SettingsFile, fileSettings);
 			share.AllocateObject("MV_PathsFile",	filePaths);
 			share.AllocateObject("MV_MapEditFile",	fileMapEdit);
 			share.AllocateObject("MV_ImagesFile",	fileImages);
@@ -490,7 +490,7 @@ namespace MapView
 
 		private void update(object sender, EventArgs e)
 		{
-			MainWindowsManager.TopView.TopViewControl.BottomPanel.Refresh();
+			MainWindowsManager.TopView.Control.BottomPanel.Refresh();
 		}
 
 /*		private static void myQuit(object sender, string command)

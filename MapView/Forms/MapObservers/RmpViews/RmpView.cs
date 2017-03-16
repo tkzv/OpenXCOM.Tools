@@ -129,9 +129,9 @@ namespace MapView.Forms.MapObservers.RmpViews
 				lblMouseOver.Text = "Over " + tile.Rmp.Index;
 			}
 			else
-				lblMouseOver.Text = "";
+				lblMouseOver.Text = String.Empty;
 
-			_rmpPanel.Position = new Point(e.X, e.Y);
+			_rmpPanel.Pos = new Point(e.X, e.Y);
 			_rmpPanel.Refresh(); // mouseover refresh for RmpView.
 		}
 
@@ -471,8 +471,8 @@ namespace MapView.Forms.MapObservers.RmpViews
 		private byte calcLinkDistance(RmpEntry from, RmpEntry to, TextBox result)
 		{
 			var dist = (int)Math.Sqrt(
-									Math.Pow(from.Row - to.Row, 2) +
-									Math.Pow(from.Col - to.Col, 2) +
+									Math.Pow(from.Row    - to.Row,    2) +
+									Math.Pow(from.Col    - to.Col,    2) +
 									Math.Pow(from.Height - to.Height, 2));
 			if (result != null)
 				result.Text = dist.ToString(System.Globalization.CultureInfo.InvariantCulture);

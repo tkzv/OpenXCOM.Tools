@@ -324,8 +324,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			if ((Map as XCMapFile) != null)
 			{
-				var pathService = new VolutarSettingService(Settings);
-				var path = pathService.GetEditorFilePath();
+				var service = new VolutarSettingService(Settings);
+				var path = service.FullPath;
 
 				if (!string.IsNullOrEmpty(path))
 					Process.Start(new ProcessStartInfo(path));

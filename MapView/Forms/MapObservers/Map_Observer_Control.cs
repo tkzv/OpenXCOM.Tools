@@ -1,7 +1,8 @@
 using System;
-using System.ComponentModel;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
+
+using DSShared.Windows;
 
 using XCom.Interfaces.Base;
 
@@ -10,24 +11,27 @@ namespace MapView
 {
 	public class Map_Observer_Control
 		:
-		DSShared.Windows.DoubleBufferControl,
-		XCom.Interfaces.Base.IMap_Observer
+		DoubleBufferControl,
+		IMap_Observer
 	{
 		protected IMap_Base map;
 
-		private DSShared.Windows.RegistryInfo registryInfo;
+		private RegistryInfo _regInfo;
+
 		private readonly Dictionary<string, IMap_Observer> moreObservers;
+
 
 		public Map_Observer_Control()
 		{
 			moreObservers = new Dictionary<string, IMap_Observer>();
 		}
 
+
 		#region IMap_Observer Members
 
 		[Browsable(false)]
 		[DefaultValue(null)]
-		public virtual XCom.Interfaces.Base.IMap_Base Map
+		public virtual IMap_Base Map
 		{
 			get { return map; }
 			set { map = value; Refresh(); }
@@ -45,33 +49,33 @@ namespace MapView
 
 		[Browsable(false)]
 		[DefaultValue(null)]
-		public DSShared.Windows.RegistryInfo RegistryInfo
+		public RegistryInfo RegistryInfo
 		{
-			get { return registryInfo; }
+			get { return _regInfo; }
 			set
 			{
-				registryInfo = value;
+				_regInfo = value;
 
-				value.Loading += delegate(object sender, DSShared.Windows.RegistrySaveLoadEventArgs e)
+				value.Loading += delegate(object sender, RegistrySaveLoadEventArgs e)
 				{
 					OnRISettingsLoad(e);
 				};
 
-				value.Saving += delegate(object sender, DSShared.Windows.RegistrySaveLoadEventArgs e)
+				value.Saving += delegate(object sender, RegistrySaveLoadEventArgs e)
 				{
 					OnRISettingsSave(e);
 				};
 			}
 		}
 
-		protected virtual void OnRISettingsSave(DSShared.Windows.RegistrySaveLoadEventArgs e)
+		protected virtual void OnRISettingsSave(RegistrySaveLoadEventArgs e)
 		{}
 
-		protected virtual void OnRISettingsLoad(DSShared.Windows.RegistrySaveLoadEventArgs e)
+		protected virtual void OnRISettingsLoad(RegistrySaveLoadEventArgs e)
 		{}
 
 		[Browsable(false)]
-		public Dictionary<string, XCom.Interfaces.Base.IMap_Observer> MoreObservers
+		public Dictionary<string, IMap_Observer> MoreObservers
 		{
 			get { return moreObservers; }
 		}

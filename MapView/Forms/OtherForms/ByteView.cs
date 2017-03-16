@@ -12,7 +12,7 @@ namespace PckView
 		:
 		System.Windows.Forms.Form
 	{
-		private PckImage image;
+		private PckImage _image;
 
 		private System.Windows.Forms.RichTextBox output;
 
@@ -22,25 +22,22 @@ namespace PckView
 		private readonly System.ComponentModel.Container components = null;
 
 
-		public ByteView(PckImage img)
+		public ByteView(PckImage image)
 		{
 			InitializeComponent();
 
-			image = img;
+			_image = image;
 
 //			printData();
 		}
 
 
-		public PckImage Image
+		public void SetImage(PckImage image)
 		{
-			set
+			if (image != _image)
 			{
-				if (value != image)
-				{
-					image = value;
-//					printData();
-				}
+				_image = image;
+//				printData();
 			}
 		}
 

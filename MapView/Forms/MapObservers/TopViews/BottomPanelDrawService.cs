@@ -74,7 +74,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					break;
 			}
 
-			var topView = MainWindowsManager.TopView.TopViewControl;
+			var topView = MainWindowsManager.TopView.Control;
 
 			if (!topView.GroundVisible) // Ground not visible
 				g.FillRectangle(

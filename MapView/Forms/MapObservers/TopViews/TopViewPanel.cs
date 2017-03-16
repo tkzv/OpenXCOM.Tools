@@ -33,29 +33,20 @@ namespace MapView.Forms.MapObservers.TopViews
 		public BottomPanel BottomPanel
 		{ get; set; }
 
-		public int MinHeight
-		{
-			get { return MinimumHeight; }
-			set
-			{
-				MinimumHeight = value;
-				ParentSize(Width, Height);
-			}
-		}
 
 		private SolidPenBrush _colorWest;
 		private SolidPenBrush _colorNorth;
 		private SolidPenBrush _colorContent;
 
 		protected override void RenderCell(
-										MapTileBase tile,
-										Graphics g,
-										int x, int y)
+				MapTileBase tile,
+				Graphics g,
+				int x, int y)
 		{
 			var mapTile = (XCMapTile)tile;
 
 			if (mapTile.Ground != null && Ground.Checked)
-				_stuffer.DrawFloor(
+				DrawService.DrawFloor(
 								g,
 								Brushes["GroundColor"],
 								x, y);
@@ -65,7 +56,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				_colorNorth = new SolidPenBrush(Pens["NorthColor"]);
 
 			if (mapTile.North != null && North.Checked)
-				_stuffer.DrawContent(
+				DrawService.DrawContent(
 								g,
 								_colorNorth,
 								x, y,
@@ -76,7 +67,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				_colorWest = new SolidPenBrush(Pens["WestColor"]);
 
 			if (mapTile.West != null && West.Checked)
-				_stuffer.DrawContent(
+				DrawService.DrawContent(
 								g,
 								_colorWest,
 								x, y,
@@ -87,7 +78,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				_colorContent = new SolidPenBrush(Brushes["ContentColor"], _colorNorth.Pen.Width);
 
 			if (mapTile.Content != null && Content.Checked)
-				_stuffer.DrawContent(
+				DrawService.DrawContent(
 								g,
 								_colorContent,
 								x, y,
