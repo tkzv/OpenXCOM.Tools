@@ -7,12 +7,12 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
-	public class XcMapFileService
+	public class XCMapFileService
 	{
-		private readonly XcTileFactory _xcTileFactory;
+		private readonly XCTileFactory _xcTileFactory;
 
 
-		public XcMapFileService(XcTileFactory xcTileFactory)
+		public XCMapFileService(XCTileFactory xcTileFactory)
 		{
 			_xcTileFactory = xcTileFactory;
 		}
@@ -36,7 +36,7 @@ namespace XCom
 					}
 				}
 
-				var rmp = new RmpFile(imd.BaseName, imd.RmpPath);
+				var rmp = new RouteFile(imd.BaseName, imd.RmpPath);
 				var map = new XCMapFile(
 									imd.BaseName,
 									imd.BasePath,

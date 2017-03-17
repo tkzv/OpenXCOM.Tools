@@ -200,8 +200,8 @@ namespace MapView
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(305, 25);
 			this.label5.TabIndex = 10;
-			this.label5.Text = "Rows and Columns must be multiples of 10 (10, 20, 30, etc)"
-			+ " and Height must be 1 or more.";
+			this.label5.Text = "Rows and Columns must be multiples of 10 (10, 20, 30, etc) and Height must be 1 o" +
+	"r more.";
 			// 
 			// NewMapForm
 			// 
@@ -213,12 +213,16 @@ namespace MapView
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.txtMapName);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(320, 200);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(320, 200);
 			this.Name = "NewMapForm";
+			this.ShowIcon = false;
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "New Map";
+			this.Text = "Create Map";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);

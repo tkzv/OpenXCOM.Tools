@@ -1,26 +1,29 @@
 using System;
 
+
 namespace XCom
 {
 	public struct StrEnum
 	{
-		private string display;
-		private object enumeration;
+		private readonly object _enumeration;
+		private string _display;
+
 
 		public StrEnum(string display, object enumeration)
 		{
-			this.display = display;
-			this.enumeration = enumeration;
+			_display = display;
+			_enumeration = enumeration;
 		}
+
 
 		public override string ToString()
 		{
-			return display;
+			return _display;
 		}
 
 		public object Enum
 		{
-			get { return enumeration; }
+			get { return _enumeration; }
 		}
 	}
 }

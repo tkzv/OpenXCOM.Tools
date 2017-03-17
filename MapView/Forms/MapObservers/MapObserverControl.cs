@@ -14,16 +14,18 @@ namespace MapView
 		UserControl,
 		IMap_Observer
 	{
-		private IMap_Base _map;
+		private IMap_Base _baseMap;
 
-		private RegistryInfo _registryInfo;
+		private RegistryInfo _regInfo;
 		private readonly Dictionary<string, IMap_Observer> _moreObservers;
+
 
 		public MapObserverControl()
 		{
 			_moreObservers = new Dictionary<string, IMap_Observer>();
 			Settings = new Settings();
 		}
+
 
 		public virtual void LoadDefaultSettings()
 		{}
@@ -39,10 +41,10 @@ namespace MapView
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public RegistryInfo RegistryInfo
 		{
-			get { return _registryInfo; }
+			get { return _regInfo; }
 			set
 			{
-				_registryInfo = value;
+				_regInfo = value;
 				value.Loading += (sender, e) => OnRISettingsLoad(e);
 				value.Saving  += (sender, e) => OnRISettingsSave(e);
 			}
@@ -57,10 +59,10 @@ namespace MapView
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public virtual IMap_Base Map
 		{
-			get { return _map; }
+			get { return _baseMap; }
 			set
 			{
-				_map = value;
+				_baseMap = value;
 				Refresh();
 			}
 		}
@@ -68,10 +70,8 @@ namespace MapView
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
-			if (e.Delta < 0)
-				_map.Up();
-			else
-				_map.Down();
+			if		(e.Delta < 0) _baseMap.Up();
+			else if (e.Delta > 0) _baseMap.Down();
 		}
 
 		public virtual void HeightChanged(IMap_Base sender, HeightChangedEventArgs e)

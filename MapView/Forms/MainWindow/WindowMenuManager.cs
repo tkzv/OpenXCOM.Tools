@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-using MapView.Forms.MapObservers.RmpViews;
+using MapView.Forms.MapObservers.RouteViews;
 using MapView.Forms.MapObservers.TopViews;
 
 using XCom;
@@ -38,8 +38,8 @@ namespace MapView.Forms.MainWindow
 			_show.MenuItems.Add(new MenuItem("-"));
 
 			RegisterForm(MainWindowsManager.TopView,		"Top View",			_show, "TopView");
-			RegisterForm(MainWindowsManager.RmpView,		"Route View",		_show, "RmpView");
-			RegisterForm(MainWindowsManager.TopRmpView,		"Top & Route View",	_show);
+			RegisterForm(MainWindowsManager.RouteView,		"Route View",		_show, "RmpView");
+			RegisterForm(MainWindowsManager.TopRouteView,	"Top & Route View",	_show);
 			_show.MenuItems.Add(new MenuItem("-"));
 
 			RegisterForm(consoleWindow,						"Console",			_show);
@@ -90,7 +90,7 @@ namespace MapView.Forms.MainWindow
 
 				_settings.AddSetting(
 								label,
-								!(item.Tag is TopViewForm) && !(item.Tag is RmpViewForm),
+								!(item.Tag is TopViewForm) && !(item.Tag is RouteViewForm),
 								"Default display window - " + item.Text,
 								"Windows",
 								null,

@@ -14,9 +14,8 @@ namespace XCom
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && (components != null))
-			{
 				components.Dispose();
-			}
+
 			base.Dispose(disposing);
 		}
 
@@ -34,46 +33,49 @@ namespace XCom
 			this.miClose = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
-			//
+			// 
 			// consoleText
-			//
+			// 
 			this.consoleText.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.consoleText.Location = new System.Drawing.Point(0, 24);
 			this.consoleText.Name = "consoleText";
-			this.consoleText.Size = new System.Drawing.Size(292, 242);
+			this.consoleText.Size = new System.Drawing.Size(492, 250);
 			this.consoleText.TabIndex = 0;
 			this.consoleText.Text = "";
-			//
+			// 
 			// menuStrip1
-			//
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.fileToolStripMenuItem });
+			// 
+			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.fileToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(292, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(492, 24);
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
-			//
+			// 
 			// fileToolStripMenuItem
-			//
-			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.miClose });
+			// 
+			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.miClose});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
 			this.fileToolStripMenuItem.Text = "File";
-			//
+			// 
 			// miClose
-			//
+			// 
 			this.miClose.Name = "miClose";
-			this.miClose.Size = new System.Drawing.Size(152, 22);
+			this.miClose.Size = new System.Drawing.Size(109, 22);
 			this.miClose.Text = "Close";
 			this.miClose.Click += new System.EventHandler(this.miClose_Click);
-			//
+			// 
 			// ConsoleForm
-			//
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(292, 266);
+			this.ClientSize = new System.Drawing.Size(492, 274);
 			this.Controls.Add(this.consoleText);
 			this.Controls.Add(this.menuStrip1);
+			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "ConsoleForm";
 			this.Text = "Output Console";
@@ -81,6 +83,7 @@ namespace XCom
 			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
+
 		}
 
 		#endregion

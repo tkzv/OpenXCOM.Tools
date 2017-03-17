@@ -14,8 +14,8 @@ namespace XCom
 		{
 			InitializeComponent();
 
-			XCom.xConsole.Init(100);
-			XCom.xConsole.BufferChanged += xConsole_BufferChanged; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			xConsole.Init(100);
+			xConsole.BufferChanged += xConsole_BufferChanged; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			new RegistryInfo(this); // <- looks like this writes some registry entries ....
 

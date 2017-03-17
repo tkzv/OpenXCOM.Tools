@@ -153,7 +153,7 @@ namespace MapView.Forms.MainWindow
 		private static void Refresh()
 		{
 			MainWindowsManager.TopView.Refresh();
-			MainWindowsManager.RmpView.Refresh();
+			MainWindowsManager.RouteView.Refresh();
 		}
 
 		private void ActivatePasteButtons()
@@ -164,14 +164,14 @@ namespace MapView.Forms.MainWindow
 
 		private void btnDown_Click(object sender, EventArgs e)
 		{
-			if (MapViewPanel.Instance.MapView.Map != null)
-				MapViewPanel.Instance.MapView.Map.Down();
+			if (MapViewPanel.Instance.MapView.BaseMap != null)
+				MapViewPanel.Instance.MapView.BaseMap.Down();
 		}
 
 		private void btnUp_Click(object sender, EventArgs e)
 		{
-			if (MapViewPanel.Instance.MapView.Map != null)
-				MapViewPanel.Instance.MapView.Map.Up();
+			if (MapViewPanel.Instance.MapView.BaseMap != null)
+				MapViewPanel.Instance.MapView.BaseMap.Up();
 		}
 	}
 }

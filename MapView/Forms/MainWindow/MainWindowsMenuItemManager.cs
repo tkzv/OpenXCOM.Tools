@@ -21,48 +21,48 @@ namespace MapView.Forms.MainWindow
 	{
 		private readonly Dictionary<string, Form> _registeredForms;
 		private readonly SettingsManager _settingsManager;
-		private readonly ConsoleSharedSpace _consoleSharedSpace;
+		private readonly ConsoleSharedSpace _consoleShare;
 
 
 		public MainWindowWindowsManager(
 				SettingsManager settingsManager,
-				ConsoleSharedSpace consoleSharedSpace)
+				ConsoleSharedSpace consoleShare)
 		{
 			_settingsManager = settingsManager;
-			_consoleSharedSpace = consoleSharedSpace;
+			_consoleShare = consoleShare;
 			_registeredForms = new Dictionary<string, Form>();
 		}
 
 
 		public void Register()
 		{
-			MainWindowsManager.TopRmpView.TopViewControl.Settings =
+			MainWindowsManager.TopRouteView.TopViewControl.Settings =
 				MainWindowsManager.TopView.Control.Settings;
 
-			MainWindowsManager.TopRmpView.RouteViewControl.Settings =
-				MainWindowsManager.RmpView.RouteViewControl.Settings;
+			MainWindowsManager.TopRouteView.RouteViewControl.Settings =
+				MainWindowsManager.RouteView.RouteViewControl.Settings;
 
-			MainWindowsManager.TopRmpView.TopViewControl.LoadDefaultSettings();
-			MainWindowsManager.TopRmpView.RouteViewControl.LoadDefaultSettings();
+			MainWindowsManager.TopRouteView.TopViewControl.LoadDefaultSettings();
+			MainWindowsManager.TopRouteView.RouteViewControl.LoadDefaultSettings();
 
 			RegisterForm(MainWindowsManager.TopView,	"Top View",			"TopView");
-			RegisterForm(MainWindowsManager.RmpView,	"Route View",		"RmpView");
-			RegisterForm(MainWindowsManager.TopRmpView,	"Top & Route View");
+			RegisterForm(MainWindowsManager.RouteView,	"Route View",		"RmpView");
+			RegisterForm(MainWindowsManager.TopRouteView,	"Top-Route View");
 			RegisterForm(MainWindowsManager.TileView,	"Tile View",		"TileView");
 
-			RegisterForm(_consoleSharedSpace.GetNewConsole(), "Console");
+			RegisterForm(_consoleShare.GetNewConsole(), "Console");
 
 			RegisterForm(MainWindowsManager.HelpScreen, "Quick Help");
 			RegisterForm(MainWindowsManager.AboutWindow, "About");
 
-			MainWindowsManager.TopRmpView.TopViewControl.RegistryInfo =
+			MainWindowsManager.TopRouteView.TopViewControl.RegistryInfo = // TODO: check if this should really be registered.
 				MainWindowsManager.TopView.Control.RegistryInfo;
 
-			MainWindowsManager.TopRmpView.RouteViewControl.RegistryInfo =
-				MainWindowsManager.RmpView.RouteViewControl.RegistryInfo;
+			MainWindowsManager.TopRouteView.RouteViewControl.RegistryInfo = // TODO: check if this should really be registered.
+				MainWindowsManager.RouteView.RouteViewControl.RegistryInfo;
 		}
 
-		private void RegisterForm(Form f, string title, string registryKey = null)
+		private void RegisterForm(Form f, string title, string regkey = null)
 		{
 			f.Text = title;
 
@@ -71,8 +71,8 @@ namespace MapView.Forms.MainWindow
 			{
 				var observer = observerForm.MapObserver;
 				observer.LoadDefaultSettings();
-				observer.RegistryInfo = new DSShared.Windows.RegistryInfo(f, registryKey);
-				_settingsManager.Add(registryKey, observer.Settings);
+				observer.RegistryInfo = new DSShared.Windows.RegistryInfo(f, regkey);
+				_settingsManager.Add(regkey, observer.Settings);
 			}
 
 			f.ShowInTaskbar = false;
@@ -87,6 +87,7 @@ namespace MapView.Forms.MainWindow
 			{
 				var f = _registeredForms[key];
 				f.WindowState = FormWindowState.Normal;
+
 				f.Close();
 			}
 		}

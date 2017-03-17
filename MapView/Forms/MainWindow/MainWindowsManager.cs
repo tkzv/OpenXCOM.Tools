@@ -1,4 +1,4 @@
-﻿using MapView.Forms.MapObservers.RmpViews;
+﻿using MapView.Forms.MapObservers.RouteViews;
 using MapView.Forms.MapObservers.TileViews;
 using MapView.Forms.MapObservers.TopViews;
 
@@ -14,19 +14,19 @@ namespace MapView.Forms.MainWindow
 
 		private static TopViewForm		_topView;
 		private static TileViewForm		_tileView;
-		private static RmpViewForm		_rmpView;
-		private static TopRmpViewForm	_topRmpView;
+		private static RouteViewForm	_routeView;
+		private static TopRouteViewForm	_topRouteView;
 		private static HelpScreen		_helpScreen;
 		private static AboutWindow		_aboutWindow;
 
-		public static TopRmpViewForm TopRmpView
+		public static TopRouteViewForm TopRouteView
 		{
-			get { return _topRmpView ?? (_topRmpView = new TopRmpViewForm()); }
+			get { return _topRouteView ?? (_topRouteView = new TopRouteViewForm()); }
 		}
 
-		public static RmpViewForm RmpView
+		public static RouteViewForm RouteView
 		{
-			get { return _rmpView ?? (_rmpView = new RmpViewForm()); }
+			get { return _routeView ?? (_routeView = new RouteViewForm()); }
 		}
 
 		public static TopViewForm TopView
@@ -51,20 +51,20 @@ namespace MapView.Forms.MainWindow
 
 		public static void Initialize()
 		{
-			TopRmpView.TopViewControl.Initialize(MainToolStripButtonsFactory);
+			TopRouteView.TopViewControl.Initialize(MainToolStripButtonsFactory);
 			TopView.Control.Initialize(MainToolStripButtonsFactory);
 			TileView.TileViewControl.Initialize(MainWindowsShowAllManager);
-			TileView.TileViewControl.SelectedTileTypeChanged += _tileView_SelectedTileTypeChanged;
+			TileView.TileViewControl.SelectedTileTypeChanged_view += _tileView_SelectedTileTypeChanged;
 		}
 
 		public void SetMap(IMap_Base map)
 		{
 			var maps = new IMap_Observer[]
 			{
-				TopRmpView.TopViewControl,
-				TopRmpView.RouteViewControl,
+				TopRouteView.TopViewControl,
+				TopRouteView.RouteViewControl,
 				TileView.TileViewControl,
-				RmpView.RouteViewControl,
+				RouteView.RouteViewControl,
 				TopView.Control
 			};
 

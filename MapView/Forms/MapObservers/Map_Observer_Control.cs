@@ -29,8 +29,7 @@ namespace MapView
 
 		#region IMap_Observer Members
 
-		[Browsable(false)]
-		[DefaultValue(null)]
+		[Browsable(false), DefaultValue(null)]
 		public virtual IMap_Base Map
 		{
 			get { return map; }

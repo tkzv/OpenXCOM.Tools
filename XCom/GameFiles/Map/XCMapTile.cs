@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Collections;
 
-using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
 
@@ -13,7 +10,7 @@ namespace XCom
 		:
 		MapTileBase
 	{
-		public enum MapQuadrant
+		public enum QuadrantType
 		{
 			Ground,
 			West,
@@ -21,7 +18,7 @@ namespace XCom
 			Content
 		};
 
-		private RmpEntry _rmpInfo;
+		private RouteNode _routeInfo;
 
 		private TileBase _ground;
 		private TileBase _north;
@@ -32,10 +29,10 @@ namespace XCom
 
 
 		internal XCMapTile(
-						TileBase ground,
-						TileBase west,
-						TileBase north,
-						TileBase content)
+				TileBase ground,
+				TileBase west,
+				TileBase north,
+				TileBase content)
 		{
 			_ground  = ground;
 			_north   = north;
@@ -62,16 +59,16 @@ namespace XCom
 			set { _blank = value; }
 		}
 
-		public TileBase this[MapQuadrant quad]
+		public TileBase this[QuadrantType quad]
 		{
 			get
 			{
 				switch (quad)
 				{
-					case MapQuadrant.Ground:	return Ground;
-					case MapQuadrant.West:		return West;
-					case MapQuadrant.North:		return North;
-					case MapQuadrant.Content:	return Content;
+					case QuadrantType.Ground:	return Ground;
+					case QuadrantType.West:		return West;
+					case QuadrantType.North:	return North;
+					case QuadrantType.Content:	return Content;
 				}
 				return null;
 			}
@@ -82,31 +79,31 @@ namespace XCom
 		public TileBase North
 		{
 			get { return _north; }
-			set { ChangeMapQuadrant(MapQuadrant.North, value); }
+			set { ChangeMapQuadrant(QuadrantType.North, value); }
 		}
 
 		public TileBase Content
 		{
 			get { return _content; }
-			set { ChangeMapQuadrant(MapQuadrant.Content, value); }
+			set { ChangeMapQuadrant(QuadrantType.Content, value); }
 		}
 
 		public TileBase Ground
 		{
 			get { return _ground; }
-			set { ChangeMapQuadrant(MapQuadrant.Ground, value); }
+			set { ChangeMapQuadrant(QuadrantType.Ground, value); }
 		}
 
 		public TileBase West
 		{
 			get { return _west; }
-			set { ChangeMapQuadrant(MapQuadrant.West, value); }
+			set { ChangeMapQuadrant(QuadrantType.West, value); }
 		}
 
-		public RmpEntry Rmp
+		public RouteNode Node
 		{
-			get { return _rmpInfo; }
-			set { _rmpInfo = value; }
+			get { return _routeInfo; }
+			set { _routeInfo = value; }
 		}
 
 		public override TileBase[] UsedTiles
@@ -124,14 +121,14 @@ namespace XCom
 			}
 		}
 
-		private void ChangeMapQuadrant(MapQuadrant quad, TileBase value)
+		private void ChangeMapQuadrant(QuadrantType quad, TileBase value)
 		{
 			switch (quad)
 			{
-				case MapQuadrant.Ground:	_ground = value;	break;
-				case MapQuadrant.West:		_west = value;		break;
-				case MapQuadrant.North:		_north = value;		break;
-				case MapQuadrant.Content:	_content = value;	break;
+				case QuadrantType.Ground:	_ground = value;	break;
+				case QuadrantType.West:		_west = value;		break;
+				case QuadrantType.North:	_north = value;		break;
+				case QuadrantType.Content:	_content = value;	break;
 			}
 		}
 	}

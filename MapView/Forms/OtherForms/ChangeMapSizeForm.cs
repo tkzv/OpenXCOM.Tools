@@ -10,23 +10,26 @@ namespace MapView
 		:
 		Form
 	{
+		private System.ComponentModel.Container components = null;
+
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox txtR;
-		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.TextBox txtC;
+		private System.Windows.Forms.TextBox txtR;
 		private System.Windows.Forms.TextBox txtH;
 		private System.Windows.Forms.Button btnOk;
 		private System.Windows.Forms.Button btnCancel;
-		private System.ComponentModel.Container components = null;
 		private System.Windows.Forms.TextBox oldC;
 		private System.Windows.Forms.TextBox oldR;
 		private System.Windows.Forms.TextBox oldH;
-		private CheckBox CeilingCheckBox;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label2;
 
-		private IMap_Base map;
+		private CheckBox CeilingCheckBox;
+		private IMap_Base _baseMap;
 
 
 		public ChangeMapSize()
@@ -38,35 +41,41 @@ namespace MapView
 
 		public IMap_Base Map
 		{
-			get { return map; }
+			get { return _baseMap; }
 			set
 			{
-				map = value;
-				if (map != null)
+				if ((_baseMap = value) != null)
 				{
-					txtR.Text =
-					oldR.Text = map.MapSize.Rows.ToString(System.Globalization.CultureInfo.InvariantCulture);
-					txtC.Text =
-					oldC.Text = map.MapSize.Cols.ToString(System.Globalization.CultureInfo.InvariantCulture);
-					txtH.Text =
-					oldH.Text = map.MapSize.Height.ToString(System.Globalization.CultureInfo.InvariantCulture);
+					oldR.Text =
+					txtR.Text = _baseMap.MapSize.Rows.ToString(System.Globalization.CultureInfo.InvariantCulture);
+					oldC.Text =
+					txtC.Text = _baseMap.MapSize.Cols.ToString(System.Globalization.CultureInfo.InvariantCulture);
+					oldH.Text =
+					txtH.Text = _baseMap.MapSize.Height.ToString(System.Globalization.CultureInfo.InvariantCulture);
 				}
 			}
 		}
 
+		private int _rows;
+		private int _cols;
+		private int _height;
+
 		public int NewRows
 		{
-			get { return int.Parse(txtR.Text, System.Globalization.CultureInfo.InvariantCulture); }
+			get { return _rows; }
+			private set { _rows = value; }
 		}
 
 		public int NewCols
 		{
-			get { return int.Parse(txtC.Text, System.Globalization.CultureInfo.InvariantCulture); }
+			get { return _cols; }
+			private set { _cols = value; }
 		}
 
 		public int NewHeight
 		{
-			get { return int.Parse(txtH.Text, System.Globalization.CultureInfo.InvariantCulture); }
+			get { return _height; }
+			private set { _height = value; }
 		}
 
 		public bool AddHeightToCeiling
@@ -78,18 +87,65 @@ namespace MapView
 		{
 			try
 			{
-				int.Parse(txtR.Text, System.Globalization.CultureInfo.InvariantCulture);
-				int.Parse(txtC.Text, System.Globalization.CultureInfo.InvariantCulture);
-				int.Parse(txtH.Text, System.Globalization.CultureInfo.InvariantCulture);
+				var icon = MessageBoxIcon.None;
+				string title = null;
+				string message = null;
 
-				DialogResult = DialogResult.OK;
-				Close();
+				_cols   = int.Parse(txtC.Text, System.Globalization.CultureInfo.InvariantCulture);
+				_rows   = int.Parse(txtR.Text, System.Globalization.CultureInfo.InvariantCulture);
+				_height = int.Parse(txtH.Text, System.Globalization.CultureInfo.InvariantCulture);
+
+				if (_cols > 0 && _rows > 0 && _height > 0)
+				{
+					if (_cols % 10 == 0 && _rows % 10 == 0)
+					{
+						int colsOld   = int.Parse(oldC.Text, System.Globalization.CultureInfo.InvariantCulture);
+						int rowsOld   = int.Parse(oldR.Text, System.Globalization.CultureInfo.InvariantCulture);
+						int heightOld = int.Parse(oldH.Text, System.Globalization.CultureInfo.InvariantCulture);
+
+						if (colsOld != _cols || rowsOld != _rows || heightOld != _height)
+						{
+							DialogResult = DialogResult.OK;
+							Close();
+						}
+						else
+						{
+							icon = MessageBoxIcon.Information;
+							title = "Notice";
+							message = "The new size is the same as the old size.";
+						}
+					}
+					else
+					{
+						icon = MessageBoxIcon.Exclamation;
+						title = "Error";
+						message = "Columns and Rows must be evenly divisible by 10.";
+					}
+				}
+				else
+				{
+					icon = MessageBoxIcon.Exclamation;
+					title = "Error";
+					message = "Values must be positive integers greater than 0.";
+				}
+
+				if (icon != MessageBoxIcon.None)
+				{
+					MessageBox.Show(
+								this,
+								message,
+								title,
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Exclamation,
+								MessageBoxDefaultButton.Button1,
+								0);
+				}
 			}
 			catch
 			{
 				MessageBox.Show(
 							this,
-							"Input must be whole numbers",
+							"Columns and Rows must be evenly divisible by 10 and Height must be 1 or more.",
 							"Error",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Exclamation,
@@ -107,7 +163,7 @@ namespace MapView
 		private void txtH_TextChanged(object sender, EventArgs e)
 		{
 			int current = int.Parse(txtH.Text, System.Globalization.CultureInfo.InvariantCulture);
-			CeilingCheckBox.Visible = (current != map.MapSize.Height);
+			CeilingCheckBox.Visible = (current != _baseMap.MapSize.Height);
 		}
 
 
@@ -133,9 +189,7 @@ namespace MapView
 			this.oldC = new System.Windows.Forms.TextBox();
 			this.oldR = new System.Windows.Forms.TextBox();
 			this.oldH = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
 			this.txtR = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
@@ -144,11 +198,15 @@ namespace MapView
 			this.btnOk = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.CeilingCheckBox = new System.Windows.Forms.CheckBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// oldC
 			// 
-			this.oldC.Location = new System.Drawing.Point(55, 40);
+			this.oldC.Location = new System.Drawing.Point(70, 55);
 			this.oldC.Name = "oldC";
 			this.oldC.ReadOnly = true;
 			this.oldC.Size = new System.Drawing.Size(45, 19);
@@ -156,7 +214,7 @@ namespace MapView
 			// 
 			// oldR
 			// 
-			this.oldR.Location = new System.Drawing.Point(5, 40);
+			this.oldR.Location = new System.Drawing.Point(20, 55);
 			this.oldR.Name = "oldR";
 			this.oldR.ReadOnly = true;
 			this.oldR.Size = new System.Drawing.Size(45, 19);
@@ -164,38 +222,22 @@ namespace MapView
 			// 
 			// oldH
 			// 
-			this.oldH.Location = new System.Drawing.Point(105, 40);
+			this.oldH.Location = new System.Drawing.Point(120, 55);
 			this.oldH.Name = "oldH";
 			this.oldH.ReadOnly = true;
 			this.oldH.Size = new System.Drawing.Size(45, 19);
 			this.oldH.TabIndex = 8;
 			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(5, 10);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(55, 15);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Old Size";
-			// 
 			// txtR
 			// 
-			this.txtR.Location = new System.Drawing.Point(5, 90);
+			this.txtR.Location = new System.Drawing.Point(20, 95);
 			this.txtR.Name = "txtR";
 			this.txtR.Size = new System.Drawing.Size(45, 19);
 			this.txtR.TabIndex = 1;
 			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(5, 75);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(55, 15);
-			this.label2.TabIndex = 5;
-			this.label2.Text = "New Size";
-			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(55, 25);
+			this.label3.Location = new System.Drawing.Point(70, 40);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(45, 15);
 			this.label3.TabIndex = 6;
@@ -204,7 +246,7 @@ namespace MapView
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(5, 25);
+			this.label4.Location = new System.Drawing.Point(20, 40);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(45, 15);
 			this.label4.TabIndex = 7;
@@ -213,7 +255,7 @@ namespace MapView
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(105, 25);
+			this.label5.Location = new System.Drawing.Point(120, 40);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(45, 15);
 			this.label5.TabIndex = 8;
@@ -222,14 +264,14 @@ namespace MapView
 			// 
 			// txtC
 			// 
-			this.txtC.Location = new System.Drawing.Point(55, 90);
+			this.txtC.Location = new System.Drawing.Point(70, 95);
 			this.txtC.Name = "txtC";
 			this.txtC.Size = new System.Drawing.Size(45, 19);
 			this.txtC.TabIndex = 2;
 			// 
 			// txtH
 			// 
-			this.txtH.Location = new System.Drawing.Point(105, 90);
+			this.txtH.Location = new System.Drawing.Point(120, 95);
 			this.txtH.Name = "txtH";
 			this.txtH.Size = new System.Drawing.Size(45, 19);
 			this.txtH.TabIndex = 3;
@@ -238,9 +280,9 @@ namespace MapView
 			// btnOk
 			// 
 			this.btnOk.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnOk.Location = new System.Drawing.Point(105, 125);
+			this.btnOk.Location = new System.Drawing.Point(125, 130);
 			this.btnOk.Name = "btnOk";
-			this.btnOk.Size = new System.Drawing.Size(80, 40);
+			this.btnOk.Size = new System.Drawing.Size(85, 40);
 			this.btnOk.TabIndex = 4;
 			this.btnOk.Text = "OK";
 			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
@@ -248,9 +290,9 @@ namespace MapView
 			// btnCancel
 			// 
 			this.btnCancel.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.btnCancel.Location = new System.Drawing.Point(190, 125);
+			this.btnCancel.Location = new System.Drawing.Point(220, 130);
 			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(80, 40);
+			this.btnCancel.Size = new System.Drawing.Size(85, 40);
 			this.btnCancel.TabIndex = 5;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -261,19 +303,59 @@ namespace MapView
 			this.CeilingCheckBox.Checked = true;
 			this.CeilingCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.CeilingCheckBox.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.CeilingCheckBox.Location = new System.Drawing.Point(160, 90);
+			this.CeilingCheckBox.Location = new System.Drawing.Point(190, 95);
 			this.CeilingCheckBox.Name = "CeilingCheckBox";
-			this.CeilingCheckBox.Size = new System.Drawing.Size(81, 16);
+			this.CeilingCheckBox.Size = new System.Drawing.Size(99, 16);
 			this.CeilingCheckBox.TabIndex = 9;
-			this.CeilingCheckBox.Text = "to Ceiling";
+			this.CeilingCheckBox.Text = "add to ceiling";
 			this.CeilingCheckBox.UseVisualStyleBackColor = true;
 			this.CeilingCheckBox.Visible = false;
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(120, 80);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(45, 15);
+			this.label1.TabIndex = 12;
+			this.label1.Text = "h";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// label6
+			// 
+			this.label6.Location = new System.Drawing.Point(20, 80);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(45, 15);
+			this.label6.TabIndex = 11;
+			this.label6.Text = "r";
+			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// label7
+			// 
+			this.label7.Location = new System.Drawing.Point(70, 80);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(45, 15);
+			this.label7.TabIndex = 10;
+			this.label7.Text = "c";
+			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(5, 5);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(305, 28);
+			this.label2.TabIndex = 13;
+			this.label2.Text = "Rows and Columns must be multiples of 10 (10, 20, 30, etc) and Height must be 1 o" +
+	"r more.";
 			// 
 			// ChangeMapSize
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-			this.ClientSize = new System.Drawing.Size(278, 172);
+			this.ClientSize = new System.Drawing.Size(314, 176);
 			this.ControlBox = false;
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.label6);
+			this.Controls.Add(this.label7);
 			this.Controls.Add(this.CeilingCheckBox);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
@@ -282,19 +364,24 @@ namespace MapView
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
-			this.Controls.Add(this.label2);
 			this.Controls.Add(this.txtR);
 			this.Controls.Add(this.oldC);
 			this.Controls.Add(this.oldH);
 			this.Controls.Add(this.oldR);
-			this.Controls.Add(this.label1);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(320, 200);
+			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(320, 200);
 			this.Name = "ChangeMapSize";
+			this.ShowIcon = false;
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Change Map Size";
 			this.ResumeLayout(false);
 			this.PerformLayout();
+
 		}
 		#endregion
 	}

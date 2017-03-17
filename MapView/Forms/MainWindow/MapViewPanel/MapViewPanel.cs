@@ -43,7 +43,7 @@ namespace MapView
 		{
 			if (_mapView != null)
 			{
-				view.Map = _mapView.Map;
+				view.BaseMap = _mapView.BaseMap;
 				Controls.Remove(_mapView);
 			}
 
@@ -89,9 +89,9 @@ namespace MapView
 			}
 		}
 
-		public IMap_Base Map
+		public IMap_Base BaseMap
 		{
-			get { return _mapView.Map; }
+			get { return _mapView.BaseMap; }
 		}
 
 		private void update(object sender, EventArgs e)
@@ -162,7 +162,7 @@ namespace MapView
 
 		public void SetMap(IMap_Base map)
 		{
-			_mapView.Map = map;
+			_mapView.BaseMap = map;
 			_mapView.Focus();
 
 			OnResize(null);

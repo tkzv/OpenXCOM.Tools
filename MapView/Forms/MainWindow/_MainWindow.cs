@@ -14,7 +14,7 @@ using Microsoft.Win32;
 
 using XCom;
 using XCom.GameFiles.Map;
-using XCom.GameFiles.Map.RmpData;
+using XCom.GameFiles.Map.RouteData;
 using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
@@ -30,7 +30,7 @@ namespace MapView
 	{
 		private readonly SettingsManager _settingsManager;
 
-		private readonly MapViewPanel _mapView;
+		private readonly MapViewPanel _mapViewPanel;
 		private readonly LoadingForm _loadingProgress;
 		private readonly IWarningHandler _warningHandler;
 		private readonly IMainWindowWindowsManager _mainWindowWindowsManager;
@@ -70,7 +70,7 @@ namespace MapView
 			MinimumSize = size;
 
 
-			_mapView = MapViewPanel.Instance; // "MapView panel created"
+			_mapViewPanel = MapViewPanel.Instance; // "MapView panel created"
 
 			_settingsManager = new SettingsManager();
 			_windowMenuManager = new WindowMenuManager(showMenu, miHelp);
@@ -91,7 +91,7 @@ namespace MapView
 			var consoleShare = new ConsoleSharedSpace(share);
 			_warningHandler = new ConsoleWarningHandler(consoleShare);
 
-			MainWindowsManager.MainToolStripButtonsFactory = new MainToolStripButtonsFactory(_mapView);
+			MainWindowsManager.MainToolStripButtonsFactory = new MainToolStripButtonsFactory(_mapViewPanel);
 
 			_mainWindowsManager = new MainWindowsManager();
 			_mainWindowWindowsManager = new MainWindowWindowsManager(_settingsManager, consoleShare);
@@ -144,38 +144,38 @@ namespace MapView
 
 			MapViewPanel.ImageUpdate += update; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
-			_mapView.Dock = DockStyle.Fill;
+			_mapViewPanel.Dock = DockStyle.Fill;
 
 			_instance = this;
 
 			mapList.TreeViewNodeSorter = new System.Collections.CaseInsensitiveComparer();
 
-			toolStripContainer1.ContentPanel.Controls.Add(_mapView);
+			toolStripContainer1.ContentPanel.Controls.Add(_mapViewPanel);
 			MainWindowsManager.MainToolStripButtonsFactory.MakeToolstrip(toolStrip);
 			toolStrip.Enabled = false;
 			toolStrip.Items.Add(new ToolStripSeparator());
 
 			try
 			{
-				_mapView.MapView.CursorSprite = new CursorSprite(GameInfo.CachePckFile(
-																				SharedSpace.Instance.GetString("cursorFile"),
-																				String.Empty,
-																				2,
-																				Palette.UFOBattle));
+				_mapViewPanel.MapView.CursorSprite = new CursorSprite(GameInfo.CachePckFile(
+															SharedSpace.Instance.GetString("cursorFile"),
+															String.Empty,
+															2,
+															Palette.UFOBattle));
 			}
 			catch
 			{
 				try
 				{
-					_mapView.MapView.CursorSprite = new CursorSprite(GameInfo.CachePckFile(
-																				SharedSpace.Instance.GetString("cursorFile"),
-																				String.Empty,
-																				4,
-																				Palette.TFTDBattle));
+					_mapViewPanel.MapView.CursorSprite = new CursorSprite(GameInfo.CachePckFile(
+															SharedSpace.Instance.GetString("cursorFile"),
+															String.Empty,
+															4,
+															Palette.TFTDBattle));
 				}
 				catch
 				{
-					_mapView.Cursor = null;
+					_mapViewPanel.Cursor = null;
 				}
 			}
 			LogFile.WriteLine("Cursor loaded");
@@ -232,7 +232,6 @@ namespace MapView
 		private static void InitGameInfo(PathInfo filePaths)
 		{
 			GameInfo.Init(Palette.UFOBattle, filePaths);
-//			GameInfo.Init(Palette.TFTDBattle, filePaths);
 		}
 
 		private static MainWindow _instance;
@@ -282,17 +281,17 @@ namespace MapView
 					break;
 
 				case "Doors":
-					if (MapViewPanel.Instance.Map != null)
+					if (MapViewPanel.Instance.BaseMap != null)
 					{
 						if ((bool)val)
 						{
-							foreach (XCTile tile in MapViewPanel.Instance.Map.Tiles)
+							foreach (XCTile tile in MapViewPanel.Instance.BaseMap.Tiles)
 								if (tile.Info.UfoDoor || tile.Info.HumanDoor)
 									tile.MakeAnimate();
 						}
 						else
 						{
-							foreach (XCTile tile in MapViewPanel.Instance.Map.Tiles)
+							foreach (XCTile tile in MapViewPanel.Instance.BaseMap.Tiles)
 								if (tile.Info.UfoDoor || tile.Info.HumanDoor)
 									tile.StopAnimate();
 						}
@@ -385,24 +384,24 @@ namespace MapView
 
 				if (PathsEditor.SaveRegistry)
 				{
-					RegistryKey swKey = Registry.CurrentUser.CreateSubKey("Software");
-					RegistryKey mvKey = swKey.CreateSubKey("MapView");
-					RegistryKey riKey = mvKey.CreateSubKey("MainView");
+					var keySoftware = Registry.CurrentUser.CreateSubKey("Software");
+					var keyMapView  = keySoftware.CreateSubKey("MapView");
+					var keyMainView = keyMapView.CreateSubKey("MainView");
 
 					_mainWindowWindowsManager.CloseAll();
 
 					WindowState = FormWindowState.Normal;
-					riKey.SetValue("Left",		Left);
-					riKey.SetValue("Top",		Top);
-					riKey.SetValue("Width",		Width);
-					riKey.SetValue("Height",	Height - SystemInformation.CaptionButtonSize.Height);
+					keyMainView.SetValue("Left",	Left);
+					keyMainView.SetValue("Top",		Top);
+					keyMainView.SetValue("Width",	Width);
+					keyMainView.SetValue("Height",	Height - SystemInformation.CaptionButtonSize.Height);
 
 //					riKey.SetValue("Animation", onItem.Checked.ToString());
 //					riKey.SetValue("Doors", miDoors.Checked.ToString());
 
-					riKey.Close();
-					mvKey.Close();
-					swKey.Close();
+					keyMainView.Close();
+					keyMapView.Close();
+					keySoftware.Close();
 				}
 
 				_settingsManager.Save();
@@ -411,43 +410,43 @@ namespace MapView
 
 		private void LoadDefaults()
 		{
-			RegistryKey swKey = Registry.CurrentUser.CreateSubKey("Software");
-			RegistryKey mvKey = swKey.CreateSubKey("MapView");
-			RegistryKey riKey = mvKey.CreateSubKey("MainView");
+			var keySoftware = Registry.CurrentUser.CreateSubKey("Software");
+			var keyMapView  = keySoftware.CreateSubKey("MapView");
+			var keyMainView = keyMapView.CreateSubKey("MainView");
 
-			Left	= (int)riKey.GetValue("Left",	Left);
-			Top		= (int)riKey.GetValue("Top",	Top);
-			Width	= (int)riKey.GetValue("Width",	Width);
-			Height	= (int)riKey.GetValue("Height",	Height);
+			Left	= (int)keyMainView.GetValue("Left",		Left);
+			Top		= (int)keyMainView.GetValue("Top",		Top);
+			Width	= (int)keyMainView.GetValue("Width",	Width);
+			Height	= (int)keyMainView.GetValue("Height",	Height);
 
-			riKey.Close();
-			mvKey.Close();
-			swKey.Close();
+			keyMainView.Close();
+			keyMapView.Close();
+			keySoftware.Close();
 
 			var settings = new Settings();
 
 //			Color.FromArgb(175, 69, 100, 129)
 
-			var eh = new ValueChangedDelegate(ChangeSetting);
+			var change = new ValueChangedDelegate(ChangeSetting);
 
 			settings.AddSetting(
 							"Animation",
 							MapViewPanel.Updating,
 							"If true the map will animate itself",
 							"Main",
-							eh, false, null);
+							change, false, null);
 			settings.AddSetting(
 							"Doors",
 							false,
 							"If true the door tiles will animate themselves",
 							"Main",
-							eh, false, null);
+							change, false, null);
 			settings.AddSetting(
 							"SaveWindowPositions",
 							PathsEditor.SaveRegistry,
 							"If true the window positions and sizes will be saved in the windows registry",
 							"Main",
-							eh, false, null);
+							change, false, null);
 			settings.AddSetting(
 							"UseGrid",
 							MapViewPanel.Instance.MapView.UseGrid,
@@ -511,10 +510,10 @@ namespace MapView
 
 		private void saveItem_Click(object sender, System.EventArgs e)
 		{
-			if (_mapView.Map != null)
+			if (_mapViewPanel.BaseMap != null)
 			{
-				_mapView.Map.Save();
-				xConsole.AddLine("Saved: " + _mapView.Map.Name);
+				_mapViewPanel.BaseMap.Save();
+				xConsole.AddLine("Saved: " + _mapViewPanel.BaseMap.Name);
 			}
 		}
 
@@ -550,7 +549,7 @@ namespace MapView
 			}
 			else if (mapList.SelectedNode != null)
 			{
-				mapList.SelectedNode.BackColor = SystemColors.Control; // Color.Silver, Color.Transparent
+				mapList.SelectedNode.BackColor = SystemColors.Control;
 			}
 		}
 
@@ -578,17 +577,17 @@ namespace MapView
 			{
 				miExport.Enabled = true;
 
-				var tileFactory = new XcTileFactory();
+				var tileFactory = new XCTileFactory();
 				tileFactory.HandleWarning += _warningHandler.HandleWarning;
 
-				var mapService = new XcMapFileService(tileFactory);
+				var mapService = new XCMapFileService(tileFactory);
 
 				var map = mapService.Load(desc as XCMapDesc);
-				_mapView.SetMap(map);
+				_mapViewPanel.SetMap(map);
 
 				toolStrip.Enabled = true;
 
-				RmpService.ReviewRouteEntries(map);
+				RouteService.ReviewRouteEntries(map);
 
 				statusMapName.Text = desc.Name;
 
@@ -612,7 +611,7 @@ namespace MapView
 
 		private DialogResult NotifySave()
 		{
-			if (_mapView.Map != null && _mapView.Map.MapChanged)
+			if (_mapViewPanel.BaseMap != null && _mapViewPanel.BaseMap.MapChanged)
 			{
 				switch (MessageBox.Show(
 									this,
@@ -626,7 +625,7 @@ namespace MapView
 						break;
 
 					case DialogResult.Yes:		// save
-						_mapView.Map.Save();
+						_mapViewPanel.BaseMap.Save();
 						break;
 
 					case DialogResult.Cancel:	// do nothing
@@ -645,16 +644,16 @@ namespace MapView
 
 		private void miSaveImage_Click(object sender, System.EventArgs e)
 		{
-			if (_mapView.Map != null)
+			if (_mapViewPanel.BaseMap != null)
 			{
-				saveFile.FileName = _mapView.Map.Name;
+				saveFile.FileName = _mapViewPanel.BaseMap.Name;
 				if (saveFile.ShowDialog() == DialogResult.OK)
 				{
 					_loadingProgress.Show();
 
 					try
 					{
-						_mapView.Map.SaveGif(saveFile.FileName);
+						_mapViewPanel.BaseMap.SaveGif(saveFile.FileName);
 					}
 					finally
 					{
@@ -666,11 +665,11 @@ namespace MapView
 
 		private void miHq_Click(object sender, System.EventArgs e)
 		{
-			var map = _mapView.Map as XCMapFile;
+			var map = _mapViewPanel.BaseMap as XCMapFile;
 			if (map != null)
 			{
 				map.Hq2x();
-				_mapView.OnResize();
+				_mapViewPanel.OnResize();
 			}
 		}
 
@@ -678,31 +677,31 @@ namespace MapView
 		{
 			miDoors.Checked = !miDoors.Checked;
 
-			foreach (XCTile t in _mapView.Map.Tiles)
-				if (t.Info.UfoDoor || t.Info.HumanDoor)
+			foreach (XCTile tile in _mapViewPanel.BaseMap.Tiles)
+				if (tile.Info.UfoDoor || tile.Info.HumanDoor)
 				{
 					if (miDoors.Checked)
-						t.MakeAnimate();
+						tile.MakeAnimate();
 					else
-						t.StopAnimate();
+						tile.StopAnimate();
 				}
 		}
 
 		private void miResize_Click(object sender, System.EventArgs e)
 		{
-			if (_mapView.MapView.Map != null)
+			if (_mapViewPanel.MapView.BaseMap != null)
 			{
-				using (var cmf = new ChangeMapSize())
+				using (var f = new ChangeMapSize())
 				{
-					cmf.Map = _mapView.MapView.Map;
-					if (cmf.ShowDialog(this) == DialogResult.OK)
+					f.Map = _mapViewPanel.MapView.BaseMap;
+					if (f.ShowDialog(this) == DialogResult.OK)
 					{
-						cmf.Map.ResizeTo(
-									cmf.NewRows,
-									cmf.NewCols,
-									cmf.NewHeight,
-									cmf.AddHeightToCeiling);
-						_mapView.ForceResize();
+						f.Map.ResizeTo(
+									f.NewRows,
+									f.NewCols,
+									f.NewHeight,
+									f.AddHeightToCeiling);
+						_mapViewPanel.ForceResize();
 					}
 				}
 			}
@@ -729,11 +728,11 @@ namespace MapView
 
 		private void miInfo_Click(object sender, System.EventArgs e)
 		{
-			if (_mapView.Map != null)
+			if (_mapViewPanel.BaseMap != null)
 			{
-				var mif = new MapInfoForm();
-				mif.Show();
-				mif.Map = _mapView.Map;
+				var f = new MapInfoForm();
+				f.Show();
+				f.BaseMap = _mapViewPanel.BaseMap;
 			}
 		}
 
@@ -772,7 +771,7 @@ namespace MapView
 
 		private void drawSelectionBoxButton_Click(object sender, EventArgs e)
 		{
-			_mapView.MapView.DrawSelectionBox = !_mapView.MapView.DrawSelectionBox;
+			_mapViewPanel.MapView.DrawSelectionBox = !_mapViewPanel.MapView.DrawSelectionBox;
 			drawSelectionBoxButton.Checked = !drawSelectionBoxButton.Checked;
 		}
 
@@ -784,11 +783,11 @@ namespace MapView
 				Globals.AutoPckImageScale = false;
 				AutoZoomButton.Checked = false;
 
-				_mapView.SetupMapSize();
+				_mapViewPanel.SetupMapSize();
 
 				Refresh();
 
-				_mapView.OnResize();
+				_mapViewPanel.OnResize();
 			}
 		}
 
@@ -800,11 +799,11 @@ namespace MapView
 				Globals.AutoPckImageScale = false;
 				AutoZoomButton.Checked = false;
 
-				_mapView.SetupMapSize();
+				_mapViewPanel.SetupMapSize();
 
 				Refresh();
 
-				_mapView.OnResize();
+				_mapViewPanel.OnResize();
 			}
 		}
 
@@ -817,11 +816,11 @@ namespace MapView
 
 			AutoZoomButton.Checked = !AutoZoomButton.Checked;
 
-			_mapView.SetupMapSize();
+			_mapViewPanel.SetupMapSize();
 
 			Refresh();
 
-			_mapView.OnResize();
+			_mapViewPanel.OnResize();
 		}
 
 		public void StatusBarPrintPosition(int col, int row)

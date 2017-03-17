@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+
 using XCom.Interfaces;
 
 
 namespace XCom.GameFiles.Map
 {
-	public class XcTileFactory
+	public class XCTileFactory
 		:
 		IWarningNotifier
 	{
@@ -42,36 +43,48 @@ namespace XCom.GameFiles.Map
 			}
 		}
 
-		private XCTile GetAlternate(string baseName, int index, McdEntry info, XCTile[] tiles)
+		private XCTile GetAlternate(
+				string baseName,
+				int index,
+				McdEntry info,
+				XCTile[] tiles)
 		{
 			if (info.UfoDoor || info.HumanDoor || info.Alt_MCD != 0)
 			{
 				if (tiles.Length < info.Alt_MCD)
 				{
 					OnHandleWarning(string.Format(
-						"In the MCD file {3}, the tile entry {0} have an invalid alternative tile (# {1} of {2} tiles)",
-						index, info.Alt_MCD, tiles.Length, baseName));
-					return null;
+							"In the MCD file {3}, the tile entry {0} has an invalid alternative tile (# {1} of {2} tiles).",
+							index,
+							info.Alt_MCD,
+							tiles.Length,
+							baseName));
 				}
-				return tiles[info.Alt_MCD];
+				else
+					return tiles[info.Alt_MCD];
 			}
 			return null;
 		}
 
-		private XCTile GetDeadValue(string baseName, int index, McdEntry info, XCTile[] tiles)
+		private XCTile GetDeadValue(
+				string baseName,
+				int index,
+				McdEntry info,
+				XCTile[] tiles)
 		{
 			try
 			{
 				if (info.DieTile != 0)
-				{
 					return tiles[(info).DieTile];
-				}
 			}
 			catch
 			{
 				OnHandleWarning(string.Format(
-					"In the MCD file {3}, the tile entry {0} have an invalid dead tile (# {1} of {2} tiles)",
-					index, info.Alt_MCD, tiles.Length, baseName));
+						"In the MCD file {3}, the tile entry {0} has an invalid dead tile (# {1} of {2} tiles).",
+						index,
+						info.Alt_MCD,
+						tiles.Length,
+						baseName));
 			}
 			return null;
 		}

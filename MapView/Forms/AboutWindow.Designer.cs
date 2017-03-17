@@ -89,15 +89,21 @@ namespace MapView
 			// AboutWindow
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-			this.ClientSize = new System.Drawing.Size(314, 177);
+			this.ClientSize = new System.Drawing.Size(314, 176);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.lblVersion);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(320, 200);
+			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(320, 200);
 			this.Name = "AboutWindow";
+			this.ShowIcon = false;
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "About";
 			this.Shown += new System.EventHandler(this.AboutWindow_Shown);

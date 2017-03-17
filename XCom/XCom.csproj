@@ -103,12 +103,12 @@
     <Compile Include="GameFiles\Images\xcFiles\xcBdy.cs" />
     <Compile Include="GameFiles\Images\xcFiles\xcSpk.cs" />
     <Compile Include="GameFiles\Map\McdEntryFactory.cs" />
-    <Compile Include="GameFiles\Map\RmpData\Link.cs" />
-    <Compile Include="GameFiles\Map\RmpData\RmpEntry.cs" />
-    <Compile Include="GameFiles\Map\RmpData\RmpService.cs" />
+    <Compile Include="GameFiles\Map\RouteData\Link.cs" />
+    <Compile Include="GameFiles\Map\RouteData\RouteNode.cs" />
+    <Compile Include="GameFiles\Map\RouteData\RouteService.cs" />
     <Compile Include="GameFiles\Map\SpecialType.cs" />
-    <Compile Include="GameFiles\Map\XcMapFileService.cs" />
-    <Compile Include="GameFiles\Map\XcTileFactory.cs" />
+    <Compile Include="GameFiles\Map\XCMapFileService.cs" />
+    <Compile Include="GameFiles\Map\XCTileFactory.cs" />
     <Compile Include="Interfaces\Base\MapPosition.cs" />
     <Compile Include="Interfaces\Base\MapTileList.cs" />
     <Compile Include="Services\MapResizeService.cs" />
@@ -174,7 +174,7 @@
     <Compile Include="GameFiles\Map\McdFile.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Map\RmpData\RmpFile.cs">
+    <Compile Include="GameFiles\Map\RouteData\RouteFile.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Map\StrEnum.cs">

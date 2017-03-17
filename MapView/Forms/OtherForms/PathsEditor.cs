@@ -582,7 +582,7 @@ namespace MapView
 								nf.MapRows,
 								nf.MapCols,
 								nf.MapHeight);
-					var fs = File.OpenWrite(txtRmp.Text + nf.MapName + RmpFile.RouteExt);
+					var fs = File.OpenWrite(txtRmp.Text + nf.MapName + RouteFile.RouteExt);
 					fs.Close();
 
 					IXCTileset tileset;
@@ -624,11 +624,8 @@ namespace MapView
 			{
 				if (treeMaps.SelectedNode.Parent != null) // add to here
 				{
-					TreeNode tn;
-					if (treeMaps.SelectedNode.Parent.Parent == null)
-						tn = treeMaps.SelectedNode;
-					else
-						tn = treeMaps.SelectedNode.Parent;
+					var tn = (treeMaps.SelectedNode.Parent.Parent == null) ? treeMaps.SelectedNode
+																		   : treeMaps.SelectedNode.Parent;
 
 					var tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Text];
 					foreach (string file in openFile.FileNames)
@@ -766,20 +763,23 @@ namespace MapView
 		private void btnCopy_Click(object sender, System.EventArgs e)
 		{
 			var tileset = getCurrentTileset();
-			_images = new string[((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies.Length];
 
-			for (int i = 0; i < ((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies.Length; i++)
+			int length = ((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies.Length;
+			_images = new string[length];
+
+			for (int i = 0; i != length; ++i)
 				_images[i] = ((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies[i];
 		}
 
 		private void btnPaste_Click(object sender, System.EventArgs e)
 		{
 			var tileset = getCurrentTileset();
+
 			((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies = new string[_images.Length];
 
 			listMapImages.Items.Clear();
 
-			for (int i = 0; i < _images.Length; i++)
+			for (int i = 0; i != _images.Length; ++i)
 			{
 				((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies[i] = _images[i];
 				listMapImages.Items.Add(_images[i]);

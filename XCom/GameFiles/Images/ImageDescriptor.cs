@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+
 using XCom.GameFiles.Map;
 
 
@@ -34,7 +35,7 @@ namespace XCom
 			return GetPckFile(GameInfo.DefaultPalette);
 		}
 
-		public McdFile GetMcdFile(Palette palette, XcTileFactory _xcTileFactory)
+		public McdFile GetMcdFile(Palette palette, XCTileFactory _xcTileFactory)
 		{
 			if (_mcdTable[palette] == null)
 			{
@@ -46,7 +47,7 @@ namespace XCom
 
 		public McdFile GetMcdFile()
 		{
-			return GetMcdFile(GameInfo.DefaultPalette, new XcTileFactory());
+			return GetMcdFile(GameInfo.DefaultPalette, new XCTileFactory());
 		}
 
 		public override string ToString()
