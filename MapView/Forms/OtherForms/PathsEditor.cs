@@ -560,14 +560,14 @@ namespace MapView
 
 		private void addNewMap_Click(object sender, System.EventArgs e)
 		{
-			var nf = new NewMapForm();
-			nf.ShowDialog(this);
+			var f = new NewMapForm();
+			f.ShowDialog(this);
 
-			if (nf.MapName != null)
+			if (f.MapName != null)
 			{
 				if (treeMaps.SelectedNode.Parent != null) // add to here
 				{
-					string path = txtRoot.Text + nf.MapName + XCMapFile.MapExt;
+					string path = txtRoot.Text + f.MapName + XCMapFile.MapExt;
 					if (File.Exists(path))
 					{
 						var dialog = new ChoiceDialog(path);
@@ -577,12 +577,12 @@ namespace MapView
 							return;
 					}
 
-					XCMapFile.NewMap(
-								File.OpenWrite(path),
-								nf.MapRows,
-								nf.MapCols,
-								nf.MapHeight);
-					var fs = File.OpenWrite(txtRmp.Text + nf.MapName + RouteFile.RouteExt);
+					XCMapFile.CreateMap(
+									File.OpenWrite(path),
+									f.MapRows,
+									f.MapCols,
+									f.MapHeight);
+					var fs = File.OpenWrite(txtRmp.Text + f.MapName + RouteFile.RouteExt); // wrap this in a 'using' block.
 					fs.Close();
 
 					IXCTileset tileset;
@@ -591,17 +591,17 @@ namespace MapView
 					if (treeMaps.SelectedNode.Parent.Parent == null)
 					{
 						tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[treeMaps.SelectedNode.Parent.Text];
-						treeMaps.SelectedNode.Nodes.Add(nf.MapName);
+						treeMaps.SelectedNode.Nodes.Add(f.MapName);
 						label = treeMaps.SelectedNode.Text;
 					}
 					else
 					{
 						tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[treeMaps.SelectedNode.Parent.Parent.Text];
-						treeMaps.SelectedNode.Parent.Nodes.Add(nf.MapName);
+						treeMaps.SelectedNode.Parent.Nodes.Add(f.MapName);
 						label = treeMaps.SelectedNode.Parent.Text;
 					}
 
-					tileset.AddMap(nf.MapName, label);
+					tileset.AddMap(f.MapName, label);
 
 //					saveMapedit();
 				}

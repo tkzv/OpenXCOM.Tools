@@ -17,9 +17,10 @@ namespace XCom.Interfaces.Base
 	/// </summary>
 	public class IMap_Base
 	{
+		protected MapTileList MapData;
+
 		private byte _curHeight;
 		private MapLocation _selLoc;
-		protected MapTileList MapData;
 
 		public bool MapChanged
 		{ get; set; }
@@ -54,7 +55,7 @@ namespace XCom.Interfaces.Base
 			if (_curHeight > 0)
 			{
 				var e = new HeightChangedEventArgs(_curHeight, _curHeight - 1);
-				_curHeight--;
+				--_curHeight;
 
 				if (HeightChanged != null)
 					HeightChanged(this, e);
@@ -68,7 +69,7 @@ namespace XCom.Interfaces.Base
 		{
 			if (_curHeight < MapSize.Height - 1)
 			{
-				_curHeight++;
+				++_curHeight;
 				var e = new HeightChangedEventArgs(_curHeight, _curHeight + 1);
 
 				if (HeightChanged != null)
@@ -213,14 +214,14 @@ namespace XCom.Interfaces.Base
 				for (int h = MapSize.Height - 1; h >= _curHeight; h--)
 				{
 					for (int
-						row = 0, startX = start.X, startY = start.Y + h * 24;
-						row < MapSize.Rows;
-						row++, startX -= hWid, startY += hHeight)
+							row = 0, startX = start.X, startY = start.Y + h * 24;
+							row < MapSize.Rows;
+							row++, startX -= hWid, startY += hHeight)
 					{
 						for (int
-							col = 0, x = startX, y = startY;
-							col < MapSize.Cols;
-							col++, x += hWid, y += hHeight, curr++)
+								col = 0, x = startX, y = startY;
+								col < MapSize.Cols;
+								col++, x += hWid, y += hHeight, curr++)
 						{
 							var tiles = this[row, col, h].UsedTiles;
 							foreach (var tileBase in tiles)

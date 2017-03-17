@@ -33,7 +33,7 @@ namespace MapView
 
 		private bool _selectGrayscale = true;
 
-		private GraphicsPath gridUnder;
+		private GraphicsPath _gridUnder;
 		private Brush _brushTrans;
 		private Color _colorGrid;
 
@@ -218,8 +218,13 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// Scrolls the z-axis for MapView.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
+			base.OnMouseWheel(e);
 			if		(e.Delta < 0) _baseMap.Up();
 			else if	(e.Delta > 0) _baseMap.Down();
 		}
@@ -481,7 +486,7 @@ namespace MapView
 				var xMax = _baseMap.MapSize.Rows * hWidth;
 				var yMax = _baseMap.MapSize.Rows * hHeight;
 
-				gridUnder = new GraphicsPath();
+				_gridUnder = new GraphicsPath();
 
 				var pt0 = new Point(x, y);
 				var pt1 = new Point(
@@ -492,12 +497,12 @@ namespace MapView
 								y + (_baseMap.MapSize.Rows + _baseMap.MapSize.Cols) * hHeight);
 				var pt3 = new Point(x - xMax, yMax + y);
 
-				gridUnder.AddLine(pt0, pt1);
-				gridUnder.AddLine(pt1, pt2);
-				gridUnder.AddLine(pt2, pt3);
-				gridUnder.CloseFigure();
+				_gridUnder.AddLine(pt0, pt1);
+				_gridUnder.AddLine(pt1, pt2);
+				_gridUnder.AddLine(pt2, pt3);
+				_gridUnder.CloseFigure();
 
-				g.FillPath(_brushTrans, gridUnder);
+				g.FillPath(_brushTrans, _gridUnder);
 
 				for (var i = 0; i <= _baseMap.MapSize.Rows; i++)
 					g.DrawLine(

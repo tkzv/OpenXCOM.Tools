@@ -44,7 +44,7 @@ namespace XCom
 				throw new FileNotFoundException(filePath);
 			}
 
-			for (int i = 0; i < tiles.Count; i++)
+			for (int i = 0; i != tiles.Count; ++i)
 				tiles[i].MapId = i;
 
 			ReadMap(File.OpenRead(filePath), tiles);
@@ -59,9 +59,9 @@ namespace XCom
 				}
 				catch
 				{
-					for (int h = 0; h < MapSize.Height; h++)
-						for (int r = 0; r < MapSize.Rows; r++)
-							for (int c = 0; c < MapSize.Cols; c++)
+					for (int h = 0; h != MapSize.Height; ++h)
+						for (int r = 0; r != MapSize.Rows; ++r)
+							for (int c = 0; c != MapSize.Cols; ++c)
 								this[r, c, h].DrawAbove = true;
 					throw;
 				}
@@ -69,33 +69,35 @@ namespace XCom
 			else if (!string.IsNullOrEmpty(blankPath))
 			{
 				CalcDrawAbove();
-				SaveBlanks();
+				SaveBlanks(); // TODO: what's this for
 			}
 		}
 
 
-		public string BaseName { get; private set; }
-		public string BasePath { get; private set; }
+		public string BaseName
+		{ get; private set; }
+
+		public string BasePath
+		{ get; private set; }
 
 		public void Hq2x()
 		{
-			// instead i would want to make an image of the whole map and run that through hq2x
-			foreach (string s in _deps)
-				foreach (PckImage pi in GameInfo.GetPckFile(s))
-					pi.Hq2x();
+			foreach (string st in _deps) // instead i would want to make an image of the whole map and run that through hq2x
+				foreach (var image in GameInfo.GetPckFile(st))
+					image.Hq2x();
 
 			PckImage.Width  *= 2;
 			PckImage.Height *= 2;
 		}
 
-		public RouteNode AddRmp(MapLocation loc)
+		public RouteNode AddRouteNode(MapLocation loc)
 		{
-			RouteNode re = RouteFile.AddEntry(
+			var node = RouteFile.AddEntry(
 									(byte)loc.Row,
 									(byte)loc.Col,
 									(byte)loc.Height);
-			((XCMapTile)this[re.Row, re.Col, re.Height]).Node = re;
-			return re;
+			((XCMapTile)this[node.Row, node.Col, node.Height]).Node = node;
+			return node;
 		}
 
 		public string[] Dependencies
@@ -140,24 +142,26 @@ namespace XCom
 		/// <param name="rows"></param>
 		/// <param name="cols"></param>
 		/// <param name="height"></param>
-		public static void NewMap(
+		public static void CreateMap(
 				Stream str,
 				byte rows,
 				byte cols,
 				byte height)
 		{
-			var bw = new BinaryWriter(str);
-			bw.Write(rows);
-			bw.Write(cols);
-			bw.Write(height);
-
-			for (int h = 0; h < height; h++)
-				for (int r = 0; r < rows; r++)
-					for (int c = 0; c < cols; c++)
-						bw.Write((int)0);
-
-			bw.Flush();
-			bw.Close();
+			using (var bw = new BinaryWriter(str))
+			{
+				bw.Write(rows);
+				bw.Write(cols);
+				bw.Write(height);
+	
+				for (int h = 0; h < height; h++)
+					for (int r = 0; r < rows; r++)
+						for (int c = 0; c < cols; c++)
+							bw.Write((int)0);
+	
+//				bw.Flush();
+//				bw.Close(); // NOTE: the 'using' block flushes & closes the stream.
+			}
 		}
 
 		public override void Save()
@@ -169,13 +173,14 @@ namespace XCom
 						route.Height += RouteFile.ExtraHeight;
 
 				RouteFile.Save();
+
 				fs.WriteByte((byte)MapSize.Rows);
 				fs.WriteByte((byte)MapSize.Cols);
 				fs.WriteByte((byte)MapSize.Height);
 
-				for (int h = 0; h < MapSize.Height; h++)
-					for (int r = 0; r < MapSize.Rows; r++)
-						for (int c = 0; c < MapSize.Cols; c++)
+				for (int h = 0; h != MapSize.Height; ++h)
+					for (int r = 0; r != MapSize.Rows; ++r)
+						for (int c = 0; c != MapSize.Cols; ++c)
 						{
 							var tile = (XCMapTile)this[r, c, h];
 
@@ -201,6 +206,7 @@ namespace XCom
 						}
 
 				fs.WriteByte(RouteFile.ExtraHeight);
+
 //				fs.Close(); // NOTE: the 'using' block flushes & closes the stream.
 			}
 			MapChanged = false;
@@ -208,30 +214,32 @@ namespace XCom
 
 		private void ReadMap(Stream str, List<TileBase> tiles)
 		{
-			var input = new BufferedStream(str);
-			var rows   = input.ReadByte();
-			var cols   = input.ReadByte();
-			var height = input.ReadByte();
-
-			MapSize = new MapSize(rows, cols, height);
-			MapData = new MapTileList(rows, cols, height);
-
-			for (int h = 0; h < height; h++)
-				for (int r = 0; r < rows; r++)
-					for (int c = 0; c < cols; c++)
-					{
-						int q1 = input.ReadByte();
-						int q2 = input.ReadByte();
-						int q3 = input.ReadByte();
-						int q4 = input.ReadByte();
-
-						this[r, c, h] = createTile(tiles, q1, q2, q3, q4);
-					}
-
-			if (input.Position < input.Length)
-				RouteFile.ExtraHeight = (byte) input.ReadByte();
-
-			input.Close();
+			using (var input = new BufferedStream(str))
+			{
+				var rows   = input.ReadByte();
+				var cols   = input.ReadByte();
+				var height = input.ReadByte();
+	
+				MapSize = new MapSize(rows, cols, height);
+				MapData = new MapTileList(rows, cols, height);
+	
+				for (int h = 0; h != height; ++h)
+					for (int r = 0; r != rows; ++r)
+						for (int c = 0; c != cols; ++c)
+						{
+							int q1 = input.ReadByte();
+							int q2 = input.ReadByte();
+							int q3 = input.ReadByte();
+							int q4 = input.ReadByte();
+	
+							this[r, c, h] = createTile(tiles, q1, q2, q3, q4);
+						}
+	
+				if (input.Position < input.Length)
+					RouteFile.ExtraHeight = (byte) input.ReadByte();
+	
+//				input.Close(); // NOTE: the 'using' block closes the stream.
+			}
 		}
 
 		public RouteFile RouteFile
@@ -245,24 +253,24 @@ namespace XCom
 				int newH,
 				bool wrtCeiling)
 		{
-			var newMap = MapResizeService.ResizeMap(
-												newR,
-												newC,
-												newH,
-												MapSize,
-												MapData,
-												wrtCeiling);
-			if (newMap != null)
+			var map = MapResizeService.ResizeMap(
+											newR,
+											newC,
+											newH,
+											MapSize,
+											MapData,
+											wrtCeiling);
+			if (map != null)
 			{
 				if (wrtCeiling && newH != MapSize.Height) // update Routes
 				{
 					var d = newH - MapSize.Height;
-					foreach (RouteNode rmp in RouteFile)
+					foreach (RouteNode node in RouteFile)
 					{
 						if (newH < MapSize.Height)
-							rmp.Height = (byte)(rmp.Height + d);
+							node.Height = (byte)(node.Height + d);
 						else
-							rmp.Height += (byte)d;
+							node.Height += (byte)d;
 					}
 				}
 
@@ -273,7 +281,7 @@ namespace XCom
 					RouteFile.CheckRouteEntries(newC, newR, newH);
 				}
 
-				MapData = newMap;
+				MapData = map;
 				MapSize = new MapSize(newR, newC, newH);
 				CurrentHeight = (byte)(MapSize.Height - 1);
 				MapChanged = true;
@@ -320,12 +328,12 @@ namespace XCom
 		{
 			int id = -1;
 
-			foreach (var t in Tiles)
+			foreach (var tile0 in Tiles)
 			{
-				if (t.Id == 0)
+				if (tile0.Id == 0)
 					++id;
 
-				if (t == tile)
+				if (tile0 == tile)
 					break;
 			}
 

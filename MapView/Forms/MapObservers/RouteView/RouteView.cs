@@ -171,7 +171,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					_mapFile.MapChanged = true;
 
-					_nodeSelected = _mapFile.AddRmp(e.ClickLocation);
+					_nodeSelected = _mapFile.AddRouteNode(e.ClickLocation);
 
 					ConnectCreatedNode(nodePre);
 				}

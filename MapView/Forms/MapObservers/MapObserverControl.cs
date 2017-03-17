@@ -67,6 +67,10 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// Scrolls the z-axis for TopView and RouteView.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);

@@ -367,11 +367,11 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		protected override void OnMouseWheel(MouseEventArgs e)
+/*		protected override void OnMouseWheel(MouseEventArgs e) // doesn't appear to do anything.
 		{
-			base.OnMouseWheel(e);
-			if (e.Delta < 0) map.Up();
-			else             map.Down();
-		}
+//			base.OnMouseWheel(e);
+//			if		(e.Delta < 0) map.Up();
+//			else if	(e.Delta > 0) map.Down();
+		} */
 	}
 }
