@@ -20,7 +20,7 @@ namespace XCom.Interfaces.Base
 		public TileBase(int id)
 		{
 			Id = id;
-			MapListId = -1;
+			TileListId = -1;
 			_info = null;
 		}
 
@@ -34,7 +34,7 @@ namespace XCom.Interfaces.Base
 		/// <summary>
 		/// This is the ID by which the Map knows this tile by.
 		/// </summary>
-		public int MapListId
+		public int TileListId
 		{ get; set; }
 
 		/// <summary>

@@ -337,7 +337,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tbLink3Dist.Size = new System.Drawing.Size(30, 19);
 			this.tbLink3Dist.TabIndex = 30;
 			this.tbLink3Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLink3Dist_KeyDown);
-			this.tbLink3Dist.Leave += new System.EventHandler(this.tbLink2Dist_Leave);
+			this.tbLink3Dist.Leave += new System.EventHandler(this.tbLink3Dist_Leave);
 			// 
 			// tbLink2Dist
 			// 

@@ -46,7 +46,7 @@ namespace XCom
 			}
 
 			for (int i = 0; i != tiles.Count; ++i)
-				tiles[i].MapListId = i;
+				tiles[i].TileListId = i;
 
 			ReadMapFile(File.OpenRead(filePath), tiles);
 
@@ -248,22 +248,22 @@ namespace XCom
 							if (tile.Ground == null)
 								fs.WriteByte(0);
 							else
-								fs.WriteByte((byte)(tile.Ground.MapListId + 2)); // why "+2" -> reserved for the 2 Blank tiles.
+								fs.WriteByte((byte)(tile.Ground.TileListId + 2)); // why "+2" -> reserved for the 2 Blank tiles.
 
 							if (tile.West == null)
 								fs.WriteByte(0);
 							else
-								fs.WriteByte((byte)(tile.West.MapListId + 2));
+								fs.WriteByte((byte)(tile.West.TileListId + 2));
 
 							if (tile.North == null)
 								fs.WriteByte(0);
 							else
-								fs.WriteByte((byte)(tile.North.MapListId + 2));
+								fs.WriteByte((byte)(tile.North.TileListId + 2));
 
 							if (tile.Content == null)
 								fs.WriteByte(0);
 							else
-								fs.WriteByte((byte)(tile.Content.MapListId + 2));
+								fs.WriteByte((byte)(tile.Content.TileListId + 2));
 						}
 
 				fs.WriteByte(RouteFile.ExtraHeight); // <- NON-STANDARD <-| See also ReadMapFile() above^

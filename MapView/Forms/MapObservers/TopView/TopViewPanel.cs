@@ -18,11 +18,6 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 
-		public TopViewPanel Instance
-		{
-			get { return this; }
-		}
-
 		public ToolStripMenuItem Ground
 		{ get; set; }
 

@@ -160,10 +160,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				if (node != null && !_nodeSelected.Equals(node)) // NOTE: a null node "Equals" any valid node ....
 				{
 					if (args.MouseEventArgs.Button == MouseButtons.Right)
-					{
-						// connect
 						ConnectNode(node);
-					}
 
 					_nodeSelected = node;
 					FillNodeInformation();
@@ -175,7 +172,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 						_mapFile.MapChanged = true;
 						node = _mapFile.AddRouteNode(args.ClickLocation);
 
-						// connect
 						ConnectNode(node);
 					}
 
@@ -206,8 +202,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				if (linkId != -1)
 				{
 					_nodeSelected[linkId].Destination = node.Index;
-					_nodeSelected[linkId].Distance = calcLinkDistance(_nodeSelected, node);
-					// TODO: work in UsableType.
+					_nodeSelected[linkId].Distance = CalculateLinkDistance(_nodeSelected, node);
 				}
 
 				if (type == ConnectNodeType.ConnectTwoWays)
@@ -216,41 +211,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 					if (linkId != -1)
 					{
 						node[linkId].Destination = _nodeSelected.Index;
-						node[linkId].Distance = calcLinkDistance(node, _nodeSelected);
-						// TODO: work in UsableType.
+						node[linkId].Distance = CalculateLinkDistance(node, _nodeSelected);
 					}
 				}
 			}
 		}
-
-/*		private void ConnectCreatedNode(RouteNode node)
-		{
-			if (node != null)
-			{
-				var type = GetConnectionSetting();
-				if (type != ConnectNodeType.DontConnect)
-				{
-					var linkId = GetOpenLinkSlot(node);
-					if (linkId != -1)
-					{
-						node[linkId].Destination = (byte)(_mapFile.RouteFile.Length - 1);
-						node[linkId].Distance = calcLinkDistance(
-															node,
-															_nodeSelected,
-															null);
-					}
-
-					if (type == ConnectNodeType.ConnectTwoWays)
-					{
-						_nodeSelected[0].Destination = node.Index;
-						_nodeSelected[0].Distance = calcLinkDistance(
-																_nodeSelected,
-																node,
-																tbLink1Dist);
-					}
-				}
-			}
-		} */
 
 		private static int GetOpenLinkSlot(RouteNode node, int idOther = -1)
 		{
@@ -541,10 +506,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 						if (_nodeSelected[linkId].Destination < Link.EXIT_WEST)
 						{
 							var node = _mapFile.RouteFile[_nodeSelected[linkId].Destination];
-							_nodeSelected[linkId].Distance = calcLinkDistance(
-																		_nodeSelected,
-																		node,
-																		textBox);
+							_nodeSelected[linkId].Distance = CalculateLinkDistance(
+																				_nodeSelected,
+																				node,
+																				textBox);
 						}
 						else
 							_nodeSelected[linkId].Distance = 0;
@@ -566,7 +531,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private static byte calcLinkDistance(
+		private static byte CalculateLinkDistance(
 				RouteNode nodeA,
 				RouteNode nodeB,
 				Control textBox = null)
