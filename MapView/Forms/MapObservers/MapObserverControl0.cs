@@ -9,7 +9,7 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	public class MapObserverControl
+	public class MapObserverControl0
 		:
 		UserControl,
 		IMap_Observer
@@ -20,7 +20,7 @@ namespace MapView
 		private readonly Dictionary<string, IMap_Observer> _moreObservers;
 
 
-		public MapObserverControl()
+		public MapObserverControl0()
 		{
 			_moreObservers = new Dictionary<string, IMap_Observer>();
 			Settings = new Settings();

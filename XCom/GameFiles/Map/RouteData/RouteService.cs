@@ -9,27 +9,32 @@ namespace XCom.GameFiles.Map.RouteData
 {
 	public static class RouteService
 	{
-		public static void ReviewRouteEntries(IMap_Base baseMap)
+		/// <summary>
+		/// Checks for and if necessary deletes nodes that are outside of a
+		/// Map's x/y/z bounds. See also RouteFile.CheckNodeBounds().
+		/// </summary>
+		/// <param name="baseMap"></param>
+		public static void CheckNodeBounds(IMap_Base baseMap)
 		{
-			var map = baseMap as XCMapFile;
-			if (map != null)
+			var mapFile = baseMap as XCMapFile;
+			if (mapFile != null)
 			{
-				var incorrectEntries = new List<RouteNode>();
+				var invalid = new List<RouteNode>();
 
-				foreach (RouteNode node in map.RouteFile)
+				foreach (RouteNode node in mapFile.RouteFile)
 					if (RouteFile.IsOutsideMap(
 										node,
 										baseMap.MapSize.Cols,
 										baseMap.MapSize.Rows,
 										baseMap.MapSize.Height))
 					{
-						incorrectEntries.Add(node);
+						invalid.Add(node);
 					}
 
-				if (incorrectEntries.Count != 0)
+				if (invalid.Count != 0)
 				{
 					var result = MessageBox.Show(
-											"There are route entries outside the bounds of this Map. Do you want to remove them?",
+											"There are route nodes outside the bounds of this Map. Do you want to remove them?",
 											"Invalid Nodes",
 											MessageBoxButtons.YesNo,
 											MessageBoxIcon.Question,
@@ -38,10 +43,10 @@ namespace XCom.GameFiles.Map.RouteData
 
 					if (result == DialogResult.Yes)
 					{
-						foreach (var rmpEntry in incorrectEntries)
-							map.RouteFile.RemoveEntry(rmpEntry);
+						foreach (var node in invalid)
+							mapFile.RouteFile.Delete(node);
 
-						map.MapChanged = true;
+						mapFile.MapChanged = true;
 					}
 				}
 			}

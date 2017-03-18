@@ -9,19 +9,19 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	public class Map_Observer_Control
+	public class MapObserverControl1
 		:
 		DoubleBufferControl,
 		IMap_Observer
 	{
-		protected IMap_Base map;
+		private IMap_Base _baseMap;
 
 		private RegistryInfo _regInfo;
 
 		private readonly Dictionary<string, IMap_Observer> moreObservers;
 
 
-		public Map_Observer_Control()
+		public MapObserverControl1()
 		{
 			moreObservers = new Dictionary<string, IMap_Observer>();
 		}
@@ -29,11 +29,15 @@ namespace MapView
 
 		#region IMap_Observer Members
 
-		[Browsable(false), DefaultValue(null)]
+		[Browsable(false), DefaultValue(null)] // DefaultValue *cough
 		public virtual IMap_Base Map
 		{
-			get { return map; }
-			set { map = value; Refresh(); }
+			get { return _baseMap; }
+			set
+			{
+				_baseMap = value;
+				Refresh();
+			}
 		}
 
 		public virtual void HeightChanged(IMap_Base sender, HeightChangedEventArgs e)
@@ -46,9 +50,8 @@ namespace MapView
 			Refresh();
 		}
 
-		[Browsable(false)]
-		[DefaultValue(null)]
-		public RegistryInfo RegistryInfo
+		[Browsable(false), DefaultValue(null)]	// "A DefaultValueAttribute will not cause a member to be automatically initialized
+		public RegistryInfo RegistryInfo		// with the attribute's value. You must set the initial value in your code."
 		{
 			get { return _regInfo; }
 			set

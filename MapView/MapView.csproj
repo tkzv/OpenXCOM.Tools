@@ -192,10 +192,10 @@
     <Compile Include="Forms\MainWindow\MainWindowsManager.cs" />
     <Compile Include="Forms\MainWindow\MainWindowsMenuItemManager.cs" />
     <Compile Include="Forms\MainWindow\MainWindowsShowAllManager.cs" />
-    <Compile Include="Forms\MapObservers\Map_Observer_Control.cs">
+    <Compile Include="Forms\MapObservers\MapObserverControl1.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\MapObservers\MapObserverControl.cs">
+    <Compile Include="Forms\MapObservers\MapObserverControl0.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\MapObservers\TileView\TilePanel.cs">

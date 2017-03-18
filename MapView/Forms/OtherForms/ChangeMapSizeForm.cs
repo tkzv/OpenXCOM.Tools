@@ -6,7 +6,7 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	public class ChangeMapSize
+	public class ChangeMapSizeForm
 		:
 		Form
 	{
@@ -32,7 +32,7 @@ namespace MapView
 		private IMap_Base _baseMap;
 
 
-		public ChangeMapSize()
+		public ChangeMapSizeForm()
 		{
 			InitializeComponent();
 			DialogResult = DialogResult.Cancel;

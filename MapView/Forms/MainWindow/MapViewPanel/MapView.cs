@@ -294,7 +294,7 @@ namespace MapView
 			}
 		}
 
-		public IMap_Base BaseMap
+		public IMap_Base Map
 		{
 			get { return _baseMap; }
 			set

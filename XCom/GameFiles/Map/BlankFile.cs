@@ -8,6 +8,7 @@ namespace XCom
 	{
 		public static readonly string BlankExt = ".BLK";
 
+
 		public static void LoadBlanks(
 				string baseName,
 				string blankPath,
@@ -17,25 +18,25 @@ namespace XCom
 			using (var br = new BinaryReader(File.OpenRead(blankPath + baseName + BlankExt)))
 			{
 				bool flip = true;
-				int cur = 0;
+				int i = 0;
 
 				while (br.BaseStream.Length > br.BaseStream.Position)
 				{
-					UInt16 v = br.ReadUInt16();
+					int inconspicuousVariable = (int)br.ReadUInt16();
 
 					if (flip)
 					{
-						for (int i = cur; i < cur + v; i++)
+						for (int j = i; j < i + inconspicuousVariable; ++j)
 						{
-							int h = i / (file.MapSize.Rows * file.MapSize.Cols);
-							int c = i % file.MapSize.Cols;
-							int r = (i / file.MapSize.Cols) - h * file.MapSize.Rows;
+							int h =  j / (file.MapSize.Rows  * file.MapSize.Cols);
+							int c =  j %  file.MapSize.Cols;
+							int r = (j /  file.MapSize.Cols) - file.MapSize.Rows * h;
 
 							((XCMapTile)file[r, c, h]).DrawAbove = false;
 						}
 					}
 
-					cur += v;
+					i += inconspicuousVariable;
 					flip = !flip;
 				}
 
@@ -54,35 +55,23 @@ namespace XCom
 
 			using (var bw = new BinaryWriter(new FileStream(blankPath + baseName + BlankExt, FileMode.Create)))
 			{
-				UInt16 cur = 0;
 				bool flip = true;
+				UInt16 i = 0;
 
-				for (int h = 0; h < file.MapSize.Height; h++)
-					for (int r = 0; r < file.MapSize.Rows; r++)
-						for (int c = 0; c < file.MapSize.Cols; c++)
+				for (int h = 0; h != file.MapSize.Height; ++h)
+					for (int r = 0; r != file.MapSize.Rows; ++r)
+						for (int c = 0; c != file.MapSize.Cols; ++c)
 						{
-							if (flip)
+							if (   ( flip &&  ((XCMapTile)file[r, c, h]).DrawAbove)
+								|| (!flip && !((XCMapTile)file[r, c, h]).DrawAbove))
 							{
-								if (((XCMapTile)file[r, c, h]).DrawAbove)
-								{
-									flip = !flip;
-									bw.Write(cur);
-									cur = 1;
-								}
-								else
-									cur++;
+								bw.Write(i);
+
+								flip = !flip;
+								i = 1;
 							}
 							else
-							{
-								if (((XCMapTile)file[r, c, h]).DrawAbove)
-									cur++;
-								else
-								{
-									flip = !flip;
-									bw.Write(cur);
-									cur = 1;
-								}
-							}
+								++i;
 						}
 
 //				bw.Flush();

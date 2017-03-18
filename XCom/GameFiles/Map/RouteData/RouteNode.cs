@@ -95,7 +95,11 @@ namespace XCom
 			return Index;
 		}
 
-		public void Save(FileStream fs) // TODO: wrap this in a 'using' block
+		/// <summary>
+		/// Writes data to the stream provided by RouteFile.Save().
+		/// </summary>
+		/// <param name="fs">the FileStream provided by RouteFile.Save()</param>
+		public void Save(FileStream fs)
 		{
 //			fs.Write(data, 0, data.Length);
 

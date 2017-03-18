@@ -13,10 +13,14 @@ namespace XCom.Interfaces.Base
 		private IInfo _info;
 
 
+		/// <summary>
+		/// Instantiates a blank tile.
+		/// </summary>
+		/// <param name="id"></param>
 		public TileBase(int id)
 		{
 			Id = id;
-			MapId = -1;
+			MapListId = -1;
 			_info = null;
 		}
 
@@ -28,9 +32,9 @@ namespace XCom.Interfaces.Base
 		{ get; protected set; }
 
 		/// <summary>
-		/// This is the ID by which the map knows this tile by.
+		/// This is the ID by which the Map knows this tile by.
 		/// </summary>
-		public int MapId
+		public int MapListId
 		{ get; set; }
 
 		/// <summary>
@@ -45,7 +49,7 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Gets the image array used to animate this tile.
+		/// Gets the image-array used to animate this tile.
 		/// </summary>
 //		public System.Collections.ObjectModel.Collection<XCImage> Images
 		public XCImage[] Images

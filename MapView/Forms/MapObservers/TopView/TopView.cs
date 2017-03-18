@@ -14,7 +14,7 @@ namespace MapView.Forms.MapObservers.TopViews
 {
 	public partial class TopView
 		:
-		MapObserverControl
+		MapObserverControl0
 	{
 		private readonly Dictionary<ToolStripMenuItem, int> _visibleHash;
 
@@ -125,67 +125,9 @@ namespace MapView.Forms.MapObservers.TopViews
 				riKey.SetValue("vis" + _visibleHash[mi], mi.Checked);
 		}
 
-		public override void LoadDefaultSettings()
-		{
-			_brushes = new Dictionary<string, SolidBrush>();
-			_pens = new Dictionary<string, Pen>();
-
-			_brushes.Add("GroundColor", new SolidBrush(Color.Orange));
-			_brushes.Add("ContentColor", new SolidBrush(Color.Green));
-			_brushes.Add("SelectTileColor", bottom.SelectColor);
-
-			var northPen = new Pen(new SolidBrush(Color.Red), 4);
-			_pens.Add("NorthColor", northPen);
-			_pens.Add("NorthWidth", northPen);
-
-			var westPen = new Pen(new SolidBrush(Color.Red), 4);
-			_pens.Add("WestColor", westPen);
-			_pens.Add("WestWidth", westPen);
-
-			var selPen = new Pen(new SolidBrush(Color.Black), 2);
-			_pens.Add("SelectColor", selPen);
-			_pens.Add("SelectWidth", selPen);
-
-			var gridPen = new Pen(new SolidBrush(Color.Black), 1);
-			_pens.Add("GridColor", gridPen);
-			_pens.Add("GridWidth", gridPen);
-
-			var mousePen = new Pen(new SolidBrush(Color.Blue), 2);
-			_pens.Add("MouseColor", mousePen);
-			_pens.Add("MouseWidth", mousePen);
-
-			ValueChangedDelegate bc = BrushChanged;
-			ValueChangedDelegate pc = PenColorChanged;
-			ValueChangedDelegate pw = PenWidthChanged;
-			ValueChangedDelegate dh = DiamondHeight;
-
-			Settings.AddSetting("GroundColor",		Color.Orange,				"Color of the ground tile indicator",			"Tile",		bc, false, null);
-			Settings.AddSetting("NorthColor",		Color.Red,					"Color of the north tile indicator",			"Tile",		pc, false, null);
-			Settings.AddSetting("WestColor",		Color.Red,					"Color of the west tile indicator",				"Tile",		pc, false, null);
-			Settings.AddSetting("ContentColor",		Color.Green,				"Color of the content tile indicator",			"Tile",		bc, false, null);
-			Settings.AddSetting("NorthWidth",		4,							"Width of the north tile indicator in pixels",	"Tile",		pw, false, null);
-			Settings.AddSetting("WestWidth",		4,							"Width of the west tile indicator in pixels",	"Tile",		pw, false, null);
-			Settings.AddSetting("SelectColor",		Color.Black,				"Color of the selection line",					"Select",	pc, false, null);
-			Settings.AddSetting("SelectWidth",		2,							"Width of the selection line in pixels",		"Select",	pw, false, null);
-			Settings.AddSetting("GridColor",		Color.Black,				"Color of the grid lines",						"Grid",		pc, false, null);
-			Settings.AddSetting("GridWidth",		1,							"Width of the grid lines",						"Grid",		pw, false, null);
-			Settings.AddSetting("MouseWidth",		2,							"Width of the mouse-over indicator",			"Grid",		pw, false, null);
-			Settings.AddSetting("MouseColor",		Color.Blue,					"Color of the mouse-over indicator",			"Grid",		pc, false, null);
-			Settings.AddSetting("SelectTileColor",	Color.LightBlue,			"Background color of the selected tile part",	"Other",	bc, false, null);
-			Settings.AddSetting("DiamondMinHeight",	_topViewPanel.MinHeight,	"Minimum height of the grid tiles",				"Tile",		dh, false, null);
-
-			_topViewPanel.Brushes =
-			bottom.Brushes        = _brushes;
-
-			_topViewPanel.Pens =
-			bottom.Pens        = _pens;
-
-			Invalidate();
-		}
-
 		public void FillClick(object sender, EventArgs e)
 		{
-			var map = MapViewPanel.Instance.MapView.BaseMap;
+			var map = MapViewPanel.Instance.MapView.Map;
 
 			if (map != null)
 			{
@@ -289,6 +231,67 @@ namespace MapView.Forms.MapObservers.TopViews
 					BottomPanel.SelectedQuadrant = XCMapTile.QuadrantType.Content;
 					break;
 			}
+		}
+
+		/// <summary>
+		/// Loads default settings for TopView in TopRouteView screen.
+		/// </summary>
+		public override void LoadDefaultSettings()
+		{
+			_brushes = new Dictionary<string, SolidBrush>();
+			_pens = new Dictionary<string, Pen>();
+
+			_brushes.Add("GroundColor", new SolidBrush(Color.Orange));
+			_brushes.Add("ContentColor", new SolidBrush(Color.Green));
+			_brushes.Add("SelectTileColor", bottom.SelectColor);
+
+			var northPen = new Pen(new SolidBrush(Color.Red), 4);
+			_pens.Add("NorthColor", northPen);
+			_pens.Add("NorthWidth", northPen);
+
+			var westPen = new Pen(new SolidBrush(Color.Red), 4);
+			_pens.Add("WestColor", westPen);
+			_pens.Add("WestWidth", westPen);
+
+			var selPen = new Pen(new SolidBrush(Color.Black), 2);
+			_pens.Add("SelectColor", selPen);
+			_pens.Add("SelectWidth", selPen);
+
+			var gridPen = new Pen(new SolidBrush(Color.Black), 1);
+			_pens.Add("GridColor", gridPen);
+			_pens.Add("GridWidth", gridPen);
+
+			var mousePen = new Pen(new SolidBrush(Color.Blue), 2);
+			_pens.Add("MouseColor", mousePen);
+			_pens.Add("MouseWidth", mousePen);
+
+			ValueChangedDelegate bc = BrushChanged;
+			ValueChangedDelegate pc = PenColorChanged;
+			ValueChangedDelegate pw = PenWidthChanged;
+			ValueChangedDelegate dh = DiamondHeight;
+
+			Settings.AddSetting("GroundColor",		Color.Orange,				"Color of the ground tile indicator",			"Tile",		bc, false, null);
+			Settings.AddSetting("NorthColor",		Color.Red,					"Color of the north tile indicator",			"Tile",		pc, false, null);
+			Settings.AddSetting("WestColor",		Color.Red,					"Color of the west tile indicator",				"Tile",		pc, false, null);
+			Settings.AddSetting("ContentColor",		Color.Green,				"Color of the content tile indicator",			"Tile",		bc, false, null);
+			Settings.AddSetting("NorthWidth",		4,							"Width of the north tile indicator in pixels",	"Tile",		pw, false, null);
+			Settings.AddSetting("WestWidth",		4,							"Width of the west tile indicator in pixels",	"Tile",		pw, false, null);
+			Settings.AddSetting("SelectColor",		Color.Black,				"Color of the selection line",					"Select",	pc, false, null);
+			Settings.AddSetting("SelectWidth",		2,							"Width of the selection line in pixels",		"Select",	pw, false, null);
+			Settings.AddSetting("GridColor",		Color.Black,				"Color of the grid lines",						"Grid",		pc, false, null);
+			Settings.AddSetting("GridWidth",		1,							"Width of the grid lines",						"Grid",		pw, false, null);
+			Settings.AddSetting("MouseWidth",		2,							"Width of the mouse-over indicator",			"Grid",		pw, false, null);
+			Settings.AddSetting("MouseColor",		Color.Blue,					"Color of the mouse-over indicator",			"Grid",		pc, false, null);
+			Settings.AddSetting("SelectTileColor",	Color.LightBlue,			"Background color of the selected tile part",	"Other",	bc, false, null);
+			Settings.AddSetting("DiamondMinHeight",	_topViewPanel.MinHeight,	"Minimum height of the grid tiles",				"Tile",		dh, false, null);
+
+			_topViewPanel.Brushes =
+			bottom.Brushes        = _brushes;
+
+			_topViewPanel.Pens =
+			bottom.Pens        = _pens;
+
+			Invalidate();
 		}
 	}
 }

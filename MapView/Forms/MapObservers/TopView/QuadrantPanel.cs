@@ -14,7 +14,7 @@ namespace MapView.Forms.MapObservers.TopViews
 {
 	public class QuadrantPanel // NOTE: These are not "quadrants"; they are tile-part types.
 		:
-		Map_Observer_Control
+		MapObserverControl1
 	{
 		private XCMapTile _mapTile;
 		private MapLocation _lastLoc;
@@ -22,8 +22,6 @@ namespace MapView.Forms.MapObservers.TopViews
 		private readonly QuadrantPanelDrawService _drawService;
 
 		private XCMapTile.QuadrantType _selQuadrant;
-
-//		public event EventHandler PanelClicked;
 
 
 		public QuadrantPanel()
@@ -111,14 +109,14 @@ namespace MapView.Forms.MapObservers.TopViews
 				}
 			}
 
-			map.MapChanged = true;
+			Map.MapChanged = true;
 			Refresh();
 		}
 
 		public override void HeightChanged(IMap_Base sender, HeightChangedEventArgs e)
 		{
 			_lastLoc.Height = e.NewHeight;
-			_mapTile = map[_lastLoc.Row, _lastLoc.Col] as XCMapTile;
+			_mapTile = Map[_lastLoc.Row, _lastLoc.Col] as XCMapTile;
 			Refresh();
 		}
 
@@ -141,9 +139,6 @@ namespace MapView.Forms.MapObservers.TopViews
 					SelectedQuadrant = quad;
 
 					SetSelected(e.Button, e.Clicks);
-
-//					if (PanelClicked != null) // TODO: investigate that <-
-//						PanelClicked(this, new EventArgs());
 
 					if (e.Button == MouseButtons.Right) // see SetSelected() above^
 					{

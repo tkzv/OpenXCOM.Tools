@@ -185,9 +185,7 @@ namespace PckView
 							_selectedItems.Remove(existingItem);
 						}
 						else
-						{
 							_selectedItems.Add(selected);
-						}
 					}
 					else
 					{
@@ -208,7 +206,7 @@ namespace PckView
 
 		private void paint(object sender, PaintEventArgs e)
 		{
-			if (_collection != null && _collection.Count > 0)
+			if (_collection != null && _collection.Count != 0)
 			{
 				var g = e.Graphics;
 

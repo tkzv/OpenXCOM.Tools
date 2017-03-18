@@ -15,7 +15,7 @@ namespace MapView.Forms.MapObservers.TopViews
 {
 	public class SimpleMapPanel
 		:
-		Map_Observer_Control
+		MapObserverControl1
 	{
 		private int _offX = 0;
 		private int _offY = 0;
@@ -57,18 +57,18 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		public void ParentSize(int width, int height)
 		{
-			if (map != null)
+			if (Map != null)
 			{
 				var hWidth  = _drawService.HWidth;
 				var hHeight = _drawService.HHeight;
 				
 				int curWidth = hWidth;
 
-				if (map.MapSize.Rows > 0 || map.MapSize.Cols > 0)
+				if (Map.MapSize.Rows > 0 || Map.MapSize.Cols > 0)
 				{
 					if (height > width / 2) // use width
 					{
-						hWidth = width / (map.MapSize.Rows + map.MapSize.Cols);
+						hWidth = width / (Map.MapSize.Rows + Map.MapSize.Cols);
 
 						if (hWidth % 2 != 0)
 							hWidth--;
@@ -77,7 +77,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					}
 					else // use height
 					{
-						hHeight = height / (map.MapSize.Rows + map.MapSize.Cols);
+						hHeight = height / (Map.MapSize.Rows + Map.MapSize.Cols);
 						hWidth = hHeight * 2;
 					}
 				}
@@ -91,13 +91,13 @@ namespace MapView.Forms.MapObservers.TopViews
 				_drawService.HWidth  = hWidth;
 				_drawService.HHeight = hHeight;
 
-				_offX = 4 + map.MapSize.Rows * hWidth;
+				_offX = 4 + Map.MapSize.Rows * hWidth;
 				_offY = 4;
 
 				if (curWidth != hWidth)
 				{
-					Width  = 8 + (map.MapSize.Rows + map.MapSize.Cols) * hWidth;
-					Height = 8 + (map.MapSize.Rows + map.MapSize.Cols) * hHeight;
+					Width  = 8 + (Map.MapSize.Rows + Map.MapSize.Cols) * hWidth;
+					Height = 8 + (Map.MapSize.Rows + Map.MapSize.Cols) * hHeight;
 
 					Refresh();
 				}
@@ -109,7 +109,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			set
 			{
-				map = value;
+				base.Map = value;
 				_drawService.HWidth = 7;
 				ParentSize(Parent.Width, Parent.Height);
 
@@ -130,24 +130,24 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private void SetSelectionRect()
 		{
-			var s = GetDragStart();
-			var e = GetDragEnd();
+			var start = GetDragStart();
+			var end   = GetDragEnd();
 
 			var hWidth  = _drawService.HWidth;
 			var hHeight = _drawService.HHeight;
 
 			var sel1 = new Point(
-							_offX + (s.X - s.Y) * hWidth,
-							_offY + (s.X + s.Y) * hHeight);
+							_offX + (start.X - start.Y) * hWidth,
+							_offY + (start.X + start.Y) * hHeight);
 			var sel2 = new Point(
-							_offX + (e.X - s.Y) * hWidth + hWidth,
-							_offY + (e.X + s.Y) * hHeight + hHeight);
+							_offX + (end.X - start.Y) * hWidth + hWidth,
+							_offY + (end.X + start.Y) * hHeight + hHeight);
 			var sel3 = new Point(
-							_offX + (e.X - e.Y) * hWidth,
-							_offY + (e.X + e.Y) * hHeight + hHeight + hHeight);
+							_offX + (end.X - end.Y) * hWidth,
+							_offY + (end.X + end.Y) * hHeight + hHeight + hHeight);
 			var sel4 = new Point(
-							_offX + (s.X - e.Y) * hWidth - hWidth,
-							_offY + (s.X + e.Y) * hHeight + hHeight);
+							_offX + (start.X - end.Y) * hWidth - hWidth,
+							_offY + (start.X + end.Y) * hHeight + hHeight);
 
 			_copy.Reset();
 			_copy.AddLine(sel1, sel2);
@@ -160,26 +160,26 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private static Point GetDragStart()
 		{
-			var s = new Point(0, 0);
-			s.X = Math.Min(
-						MapViewPanel.Instance.MapView.DragStart.X,
-						MapViewPanel.Instance.MapView.DragEnd.X);
-			s.Y = Math.Min(
-						MapViewPanel.Instance.MapView.DragStart.Y,
-						MapViewPanel.Instance.MapView.DragEnd.Y);
-			return s;
+			var start = new Point(0, 0);
+			start.X = Math.Min(
+							MapViewPanel.Instance.MapView.DragStart.X,
+							MapViewPanel.Instance.MapView.DragEnd.X);
+			start.Y = Math.Min(
+							MapViewPanel.Instance.MapView.DragStart.Y,
+							MapViewPanel.Instance.MapView.DragEnd.Y);
+			return start;
 		}
 
 		private static Point GetDragEnd()
 		{
-			var e = new Point(0, 0);
-			e.X = Math.Max(
+			var end = new Point(0, 0);
+			end.X = Math.Max(
 						MapViewPanel.Instance.MapView.DragStart.X,
 						MapViewPanel.Instance.MapView.DragEnd.X);
-			e.Y = Math.Max(
+			end.Y = Math.Max(
 						MapViewPanel.Instance.MapView.DragStart.Y,
 						MapViewPanel.Instance.MapView.DragEnd.Y);
-			return e;
+			return end;
 		}
 
 		[Browsable(false), DefaultValue(null)] // NOTE: DefaultValue has meaning only for the designer. Fortunately the default value of the class variable *is* null.
@@ -218,6 +218,93 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh();
 		}
 
+		protected virtual void RenderCell(
+				MapTileBase tile,
+				Graphics g,
+				int x, int y)
+		{}
+
+		protected override void Render(Graphics backBuffer)
+		{
+			backBuffer.FillRectangle(SystemBrushes.Control, ClientRectangle);
+
+			var hWidth  = _drawService.HWidth;
+			var hHeight = _drawService.HHeight;
+
+			if (Map != null)
+			{
+				for (int
+						r = 0, startX = _offX, startY = _offY;
+						r < Map.MapSize.Rows;
+						r++, startX -= hWidth, startY += hHeight)
+				{
+					for (int
+							c = 0, x = startX, y = startY;
+							c < Map.MapSize.Cols;
+							c++, x += hWidth, y += hHeight)
+					{
+						var mapTile = Map[r, c] as MapTileBase;
+						if (mapTile != null)
+							RenderCell(mapTile, backBuffer, x, y);
+					}
+				}
+
+				for (int i = 0; i <= Map.MapSize.Rows; i++)
+					backBuffer.DrawLine(
+									Pens["GridColor"],
+									_offX - i * hWidth,
+									_offY + i * hHeight,
+									(Map.MapSize.Cols - i) * hWidth  + _offX,
+									(Map.MapSize.Cols + i) * hHeight + _offY);
+
+				for (int i = 0; i <= Map.MapSize.Cols; i++)
+					backBuffer.DrawLine(
+									Pens["GridColor"],
+									_offX + i * hWidth,
+									_offY + i * hHeight,
+									i * hWidth  - Map.MapSize.Rows * hWidth  + _offX,
+									i * hHeight + Map.MapSize.Rows * hHeight + _offY);
+
+				if (_copy != null)
+					backBuffer.DrawPath(Pens["SelectColor"], _copy);
+
+//				if (selected != null) // clicked on
+//					backBuffer.DrawPath(new Pen(Brushes.Blue, 2), selected);
+
+				if (   _mR > -1
+					&& _mC > -1
+					&& _mR < Map.MapSize.Rows
+					&& _mC < Map.MapSize.Cols)
+				{
+					int x = (_mC - _mR) * hWidth  + _offX;
+					int y = (_mC + _mR) * hHeight + _offY;
+
+					var selPath = CellPath(x, y);
+					backBuffer.DrawPath(Pens["MouseColor"], selPath);
+				}
+			}
+		}
+
+		private GraphicsPath CellPath(int x, int y)
+		{
+			var hWidth  = _drawService.HWidth;
+			var hHeight = _drawService.HHeight ;
+
+			_cell.Reset();
+			_cell.AddLine(
+						x, y,
+						x + hWidth, y + hHeight);
+			_cell.AddLine(
+						x + hWidth, y + hHeight,
+						x, y + 2 * hHeight);
+			_cell.AddLine(
+						x, y + 2 * hHeight,
+						x - hWidth, y + hHeight);
+			_cell.CloseFigure();
+
+			return _cell;
+		}
+
 		private Point ConvertCoordsDiamond(int x, int y)
 		{
 			// 16 is half the width of the diamond
@@ -234,111 +321,24 @@ namespace MapView.Forms.MapObservers.TopViews
 						(int)Math.Floor(x2));
 		}
 
-		protected virtual void RenderCell(
-				MapTileBase tile,
-				Graphics g,
-				int x, int y)
-		{}
-
-		protected GraphicsPath CellPath(int x, int y)
-		{
-			var hWidth  = _drawService.HWidth;
-			var hHeight = _drawService.HHeight ;
-
-			_cell.Reset();
-			_cell.AddLine(
-						x, y,
-						x + hWidth, y + hHeight);
-			_cell.AddLine(
-						x + hWidth, y + hHeight,
-						x, y + 2 * hHeight);
-			_cell.AddLine(
-						x, y + 2 * hHeight,
-						x - hWidth, y + hHeight);
-			_cell.CloseFigure();
-			return _cell;
-		}
-
-		protected override void Render(Graphics backBuffer)
-		{
-			backBuffer.FillRectangle(SystemBrushes.Control, ClientRectangle);
-
-			var hWidth  = _drawService.HWidth;
-			var hHeight = _drawService.HHeight;
-
-			if (map != null)
-			{
-				for (int
-						r = 0, startX = _offX, startY = _offY;
-						r < map.MapSize.Rows;
-						r++, startX -= hWidth, startY += hHeight)
-				{
-					for (int
-							c = 0, x = startX, y = startY;
-							c < map.MapSize.Cols;
-							c++, x += hWidth, y += hHeight)
-					{
-						MapTileBase mapTile = map[r, c];
-
-						if (mapTile != null)
-							RenderCell(mapTile, backBuffer, x, y);
-					}
-				}
-
-				for (int i = 0; i <= map.MapSize.Rows; i++)
-					backBuffer.DrawLine(
-									Pens["GridColor"],
-									_offX - i * hWidth,
-									_offY + i * hHeight,
-									(map.MapSize.Cols - i) * hWidth  + _offX,
-									(map.MapSize.Cols + i) * hHeight + _offY);
-
-				for (int i = 0; i <= map.MapSize.Cols; i++)
-					backBuffer.DrawLine(
-									Pens["GridColor"],
-									_offX + i * hWidth,
-									_offY + i * hHeight,
-									i * hWidth  - map.MapSize.Rows * hWidth  + _offX,
-									i * hHeight + map.MapSize.Rows * hHeight + _offY);
-
-				if (_copy != null)
-					backBuffer.DrawPath(Pens["SelectColor"], _copy);
-
-//				if (selected != null) // clicked on
-//					backBuffer.DrawPath(new Pen(Brushes.Blue, 2), selected);
-
-				if (   _mR > -1
-					&& _mC > -1
-					&& _mR < map.MapSize.Rows
-					&& _mC < map.MapSize.Cols)
-				{
-					int x = (_mC - _mR) * hWidth  + _offX;
-					int y = (_mC + _mR) * hHeight + _offY;
-
-					GraphicsPath selPath = CellPath(x, y);
-					backBuffer.DrawPath(Pens["MouseColor"], selPath);
-				}
-			}
-		}
+		private bool _mDown = false;
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (map != null)
+			if (Map != null)
 			{
 				var pt = ConvertCoordsDiamond(
 											e.X - _offX,
 											e.Y - _offY);
-				map.SelectedTile = new MapLocation(
+				Map.SelectedTile = new MapLocation(
 												pt.Y,
 												pt.X,
-												map.CurrentHeight);
+												Map.CurrentHeight);
 
 				_mDown = true;
 				MapViewPanel.Instance.MapView.SetDrag(pt, pt);
 			}
 		}
-
-		private bool _mDown = false;
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
@@ -367,11 +367,15 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-/*		protected override void OnMouseWheel(MouseEventArgs e) // doesn't appear to do anything.
+		/// <summary>
+		/// Scrolls the z-axis for TopRouteView. Sort of ....
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnMouseWheel(MouseEventArgs e)
 		{
-//			base.OnMouseWheel(e);
-//			if		(e.Delta < 0) map.Up();
-//			else if	(e.Delta > 0) map.Down();
-		} */
+			base.OnMouseWheel(e);
+			if		(e.Delta < 0) base.Map.Up();
+			else if	(e.Delta > 0) base.Map.Down();
+		}
 	}
 }

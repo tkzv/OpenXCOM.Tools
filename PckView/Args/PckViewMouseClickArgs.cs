@@ -1,26 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Forms;
+
 
 namespace PckView.Args
 {
-	public class PckViewMouseClickArgs : MouseEventArgs
+	public class PckViewMouseClickArgs
+		:
+		MouseEventArgs
 	{
+		public readonly int _clicked;
+
+
 		public PckViewMouseClickArgs(
-				MouseEventArgs eventArgs,
-				int clickedPck)
+				MouseEventArgs args,
+				int clicked)
 			:
 			base(
-				eventArgs.Button,
-				eventArgs.Clicks,
-				eventArgs.X,
-				eventArgs.Y,
-				eventArgs.Delta)
+				args.Button,
+				args.Clicks,
+				args.X,
+				args.Y,
+				args.Delta)
 		{
-			ClickedPck = clickedPck;
+			_clicked = clicked;
 		}
-
-		public readonly int ClickedPck;
 	}
 }

@@ -391,13 +391,14 @@ namespace MapView
 					_mainWindowWindowsManager.CloseAll();
 
 					WindowState = FormWindowState.Normal;
+
 					keyMainView.SetValue("Left",	Left);
 					keyMainView.SetValue("Top",		Top);
 					keyMainView.SetValue("Width",	Width);
 					keyMainView.SetValue("Height",	Height - SystemInformation.CaptionButtonSize.Height);
 
-//					riKey.SetValue("Animation", onItem.Checked.ToString());
-//					riKey.SetValue("Doors", miDoors.Checked.ToString());
+//					keyMainView.SetValue("Animation", onItem.Checked.ToString());
+//					keyMainView.SetValue("Doors", miDoors.Checked.ToString());
 
 					keyMainView.Close();
 					keyMapView.Close();
@@ -587,7 +588,7 @@ namespace MapView
 
 				toolStrip.Enabled = true;
 
-				RouteService.ReviewRouteEntries(map);
+				RouteService.CheckNodeBounds(map);
 
 				statusMapName.Text = desc.Name;
 
@@ -615,11 +616,12 @@ namespace MapView
 			{
 				switch (MessageBox.Show(
 									this,
-									"Map changed, do you wish to save?",
-									"Save map?",
+									"Do you wish to save?",
+									"Map Changed",
 									MessageBoxButtons.YesNoCancel,
 									MessageBoxIcon.Question,
-									MessageBoxDefaultButton.Button1))
+									MessageBoxDefaultButton.Button1,
+									0))
 				{
 					case DialogResult.No:		// don't save
 						break;
@@ -689,11 +691,11 @@ namespace MapView
 
 		private void miResize_Click(object sender, System.EventArgs e)
 		{
-			if (_mapViewPanel.MapView.BaseMap != null)
+			if (_mapViewPanel.MapView.Map != null)
 			{
-				using (var f = new ChangeMapSize())
+				using (var f = new ChangeMapSizeForm())
 				{
-					f.Map = _mapViewPanel.MapView.BaseMap;
+					f.Map = _mapViewPanel.MapView.Map;
 					if (f.ShowDialog(this) == DialogResult.OK)
 					{
 						f.Map.ResizeTo(

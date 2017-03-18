@@ -164,14 +164,14 @@ namespace MapView.Forms.MainWindow
 
 		private void btnDown_Click(object sender, EventArgs e)
 		{
-			if (MapViewPanel.Instance.MapView.BaseMap != null)
-				MapViewPanel.Instance.MapView.BaseMap.Down();
+			if (MapViewPanel.Instance.MapView.Map != null)
+				MapViewPanel.Instance.MapView.Map.Down();
 		}
 
 		private void btnUp_Click(object sender, EventArgs e)
 		{
-			if (MapViewPanel.Instance.MapView.BaseMap != null)
-				MapViewPanel.Instance.MapView.BaseMap.Up();
+			if (MapViewPanel.Instance.MapView.Map != null)
+				MapViewPanel.Instance.MapView.Map.Up();
 		}
 	}
 }

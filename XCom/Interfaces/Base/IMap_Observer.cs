@@ -20,6 +20,7 @@ namespace XCom.Interfaces.Base
 		{ get; set; }
 	}
 
+
 	/// <summary>
 	/// EventArgs with an IMap_Base for when a SetMap event fires.
 	/// </summary>
@@ -27,18 +28,18 @@ namespace XCom.Interfaces.Base
 		:
 		EventArgs
 	{
-		private readonly IMap_Base _map;
+		private readonly IMap_Base _baseMap;
 
 
-		public SetMapEventArgs(IMap_Base map)
+		public SetMapEventArgs(IMap_Base baseMap)
 		{
-			_map = map;
+			_baseMap = baseMap;
 		}
 
 
 		public IMap_Base Map
 		{
-			get { return _map; }
+			get { return _baseMap; }
 		}
 	}
 
@@ -79,25 +80,25 @@ namespace XCom.Interfaces.Base
 		:
 		EventArgs
 	{
-		private readonly int _hNew;
-		private readonly int _hOld;
+		private readonly int _heightNew;
+		private readonly int _heightOld;
 
 
-		public HeightChangedEventArgs(int hOld, int hNew)
+		public HeightChangedEventArgs(int heightOld, int heightNew)
 		{
-			_hNew = hNew;
-			_hOld = hOld;
+			_heightNew = heightNew;
+			_heightOld = heightOld;
 		}
 
 
 		public int NewHeight
 		{
-			get { return _hNew; }
+			get { return _heightNew; }
 		}
 
 		public int OldHeight
 		{
-			get { return _hOld; }
+			get { return _heightOld; }
 		}
 	}
 }

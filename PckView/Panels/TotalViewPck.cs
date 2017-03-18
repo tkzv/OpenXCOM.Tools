@@ -121,7 +121,9 @@ namespace PckView
 				{
 					view.Collection = value;
 					if (value is PckFile)
+					{
 						_statusBPP.Text = "Bpp: " + ((PckFile)view.Collection).Bpp + "  ";
+					}
 					else
 						_statusBPP.Text = String.Empty;
 
@@ -151,7 +153,7 @@ namespace PckView
 				_scrollBar.Visible = false;
 		}
 
-		private void tileChooser_SelectedIndexChanged(object sender, System.EventArgs e)
+		private void tileChooser_SelectedIndexChanged(object sender, EventArgs e)
 		{
 //			view.Pck = ImageCollection.GetPckFile(tileChooser.SelectedItem.ToString());
 			view.Refresh();
@@ -168,7 +170,7 @@ namespace PckView
 
 		private void viewClicked(object sender, PckViewMouseClickArgs e)
 		{
-			click = e.ClickedPck;
+			click = e._clicked;
 			_statusOverTile.Text = "Selected: " + click + " Over: " + move;
 		}
 

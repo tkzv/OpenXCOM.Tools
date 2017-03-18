@@ -79,7 +79,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			return new Point(-1, -1);
 		}
 
-		public void ClearSelected()
+		public void DeselectLocation()
 		{
 			ClickPoint = new Point(-1, -1);
 		}

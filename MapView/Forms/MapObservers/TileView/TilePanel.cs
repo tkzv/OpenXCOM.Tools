@@ -329,7 +329,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				if (value != null)
 				{
-					_sel = value.MapId + 1;
+					_sel = value.MapListId + 1;
 
 					if (SelectedTileTypeChanged_panel != null)
 						SelectedTileTypeChanged_panel(SelectedTile);

@@ -20,7 +20,7 @@ namespace MapView.Forms.MapObservers.TileViews
 {
 	public partial class TileView
 		:
-		MapObserverControl
+		MapObserverControl0
 	{
 		private IContainer components = null;
 
@@ -102,7 +102,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			var tile = SelectedTile;
 			if (tile != null && tile.Info is McdEntry)
 			{
-				f.Text = BuildTitleString(tile.MapId, tile.Id);
+				f.Text = BuildTitleString(tile.MapListId, tile.Id);
 
 				if (MCDInfoForm != null)
 					MCDInfoForm.UpdateData((McdEntry)tile.Info);
@@ -162,7 +162,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			var f = FindForm();
 			if (tile != null && tile.Info is McdEntry)
 			{
-				f.Text = BuildTitleString(tile.MapId, tile.Id);
+				f.Text = BuildTitleString(tile.MapListId, tile.Id);
 
 				if (MCDInfoForm != null)
 					MCDInfoForm.UpdateData((McdEntry)tile.Info);
@@ -285,7 +285,7 @@ namespace MapView.Forms.MapObservers.TileViews
 					var tile = SelectedTile;
 					if (tile != null && tile.Info is McdEntry)
 					{
-						f.Text = BuildTitleString(tile.MapId, tile.Id);
+						f.Text = BuildTitleString(tile.MapListId, tile.Id);
 						MCDInfoForm.UpdateData((McdEntry)tile.Info);
 					}
 					else

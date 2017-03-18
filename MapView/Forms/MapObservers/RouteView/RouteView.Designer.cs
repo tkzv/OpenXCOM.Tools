@@ -27,43 +27,43 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.cbLink5 = new System.Windows.Forms.ComboBox();
-			this.cbLink4 = new System.Windows.Forms.ComboBox();
-			this.cbLink3 = new System.Windows.Forms.ComboBox();
-			this.cbLink2 = new System.Windows.Forms.ComboBox();
-			this.cbLink1 = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.cbRank2 = new System.Windows.Forms.ComboBox();
-			this.cbRank1 = new System.Windows.Forms.ComboBox();
-			this.cbType = new System.Windows.Forms.ComboBox();
-			this.lblUsage = new System.Windows.Forms.Label();
-			this.lblRank2 = new System.Windows.Forms.Label();
-			this.lblRank1 = new System.Windows.Forms.Label();
-			this.rankLabel = new System.Windows.Forms.Label();
-			this.idxLabel = new System.Windows.Forms.Label();
-			this.gbNodeInfo = new System.Windows.Forms.GroupBox();
-			this.cbUsage = new System.Windows.Forms.ComboBox();
-			this.pasteNode = new System.Windows.Forms.Button();
-			this.lblMouseOver = new System.Windows.Forms.Label();
-			this.copyNode = new System.Windows.Forms.Button();
-			this.btnRemove = new System.Windows.Forms.Button();
-			this.idxLabel2 = new System.Windows.Forms.Label();
-			this.txtDist5 = new System.Windows.Forms.TextBox();
-			this.txtDist4 = new System.Windows.Forms.TextBox();
-			this.txtDist3 = new System.Windows.Forms.TextBox();
-			this.txtDist2 = new System.Windows.Forms.TextBox();
-			this.txtDist1 = new System.Windows.Forms.TextBox();
-			this.label7 = new System.Windows.Forms.Label();
-			this.cbUse5 = new System.Windows.Forms.ComboBox();
-			this.cbUse4 = new System.Windows.Forms.ComboBox();
-			this.cbUse3 = new System.Windows.Forms.ComboBox();
-			this.cbUse2 = new System.Windows.Forms.ComboBox();
-			this.cbUse1 = new System.Windows.Forms.ComboBox();
-			this.label6 = new System.Windows.Forms.Label();
+			this.cbLink5Dest = new System.Windows.Forms.ComboBox();
+			this.cbLink4Dest = new System.Windows.Forms.ComboBox();
+			this.cbLink3Dest = new System.Windows.Forms.ComboBox();
+			this.cbLink2Dest = new System.Windows.Forms.ComboBox();
+			this.cbLink1Dest = new System.Windows.Forms.ComboBox();
+			this.labelLink5 = new System.Windows.Forms.Label();
+			this.labelLink4 = new System.Windows.Forms.Label();
+			this.labelLink3 = new System.Windows.Forms.Label();
+			this.labelLink2 = new System.Windows.Forms.Label();
+			this.labelLink1 = new System.Windows.Forms.Label();
+			this.cbPriority = new System.Windows.Forms.ComboBox();
+			this.cbSpawnRank = new System.Windows.Forms.ComboBox();
+			this.cbUnitType = new System.Windows.Forms.ComboBox();
+			this.labelSpawnWeight = new System.Windows.Forms.Label();
+			this.labelPriority = new System.Windows.Forms.Label();
+			this.labelSpawnRank = new System.Windows.Forms.Label();
+			this.labelUnitType = new System.Windows.Forms.Label();
+			this.labelSelectedPos = new System.Windows.Forms.Label();
+			this.gbSpawnData = new System.Windows.Forms.GroupBox();
+			this.cbSpawnWeight = new System.Windows.Forms.ComboBox();
+			this.btnPaste = new System.Windows.Forms.Button();
+			this.labelCurrentMouseOver = new System.Windows.Forms.Label();
+			this.btnCopy = new System.Windows.Forms.Button();
+			this.btnDelete = new System.Windows.Forms.Button();
+			this.labelSelected = new System.Windows.Forms.Label();
+			this.tbLink5Dist = new System.Windows.Forms.TextBox();
+			this.tbLink4Dist = new System.Windows.Forms.TextBox();
+			this.tbLink3Dist = new System.Windows.Forms.TextBox();
+			this.tbLink2Dist = new System.Windows.Forms.TextBox();
+			this.tbLink1Dist = new System.Windows.Forms.TextBox();
+			this.labelDist = new System.Windows.Forms.Label();
+			this.cbLink5UnitType = new System.Windows.Forms.ComboBox();
+			this.cbLink4UnitType = new System.Windows.Forms.ComboBox();
+			this.cbLink3UnitType = new System.Windows.Forms.ComboBox();
+			this.cbLink2UnitType = new System.Windows.Forms.ComboBox();
+			this.cbLink1UnitType = new System.Windows.Forms.ComboBox();
+			this.labelUnitInfo = new System.Windows.Forms.Label();
 			this._contentPanel = new System.Windows.Forms.Panel();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.miEdit = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,347 +71,347 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.makeAllNodeRank0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.connectNodesToolStripMenuItem = new System.Windows.Forms.ToolStripComboBox();
 			this.extraHeightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.HeightDifTextbox = new System.Windows.Forms.ToolStripTextBox();
-			this.LinkGroupBox = new System.Windows.Forms.GroupBox();
+			this.textboxExtraHeight = new System.Windows.Forms.ToolStripTextBox();
+			this.gbLinkData = new System.Windows.Forms.GroupBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.panel2 = new System.Windows.Forms.Panel();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.AttackBaseCombo = new System.Windows.Forms.ComboBox();
-			this.label8 = new System.Windows.Forms.Label();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.gbPatrolData = new System.Windows.Forms.GroupBox();
+			this.cbAttack = new System.Windows.Forms.ComboBox();
+			this.labelAttack = new System.Windows.Forms.Label();
+			this.gbNodeData = new System.Windows.Forms.GroupBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.gbNodeInfo.SuspendLayout();
+			this.gbSpawnData.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
-			this.LinkGroupBox.SuspendLayout();
+			this.gbLinkData.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.panel2.SuspendLayout();
-			this.groupBox1.SuspendLayout();
-			this.groupBox2.SuspendLayout();
+			this.gbPatrolData.SuspendLayout();
+			this.gbNodeData.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// cbLink5
-			// 
-			this.cbLink5.Location = new System.Drawing.Point(45, 130);
-			this.cbLink5.Name = "cbLink5";
-			this.cbLink5.Size = new System.Drawing.Size(75, 20);
-			this.cbLink5.TabIndex = 20;
-			this.cbLink5.SelectedIndexChanged += new System.EventHandler(this.cbLink5_SelectedIndexChanged);
-			this.cbLink5.Leave += new System.EventHandler(this.cbLink5_Leave);
-			// 
-			// cbLink4
-			// 
-			this.cbLink4.Location = new System.Drawing.Point(45, 105);
-			this.cbLink4.Name = "cbLink4";
-			this.cbLink4.Size = new System.Drawing.Size(75, 20);
-			this.cbLink4.TabIndex = 19;
-			this.cbLink4.SelectedIndexChanged += new System.EventHandler(this.cbLink4_SelectedIndexChanged);
-			this.cbLink4.Leave += new System.EventHandler(this.cbLink4_Leave);
-			// 
-			// cbLink3
-			// 
-			this.cbLink3.Location = new System.Drawing.Point(45, 80);
-			this.cbLink3.Name = "cbLink3";
-			this.cbLink3.Size = new System.Drawing.Size(75, 20);
-			this.cbLink3.TabIndex = 18;
-			this.cbLink3.SelectedIndexChanged += new System.EventHandler(this.cbLink3_SelectedIndexChanged);
-			this.cbLink3.Leave += new System.EventHandler(this.cbLink3_Leave);
-			// 
-			// cbLink2
-			// 
-			this.cbLink2.Location = new System.Drawing.Point(45, 55);
-			this.cbLink2.Name = "cbLink2";
-			this.cbLink2.Size = new System.Drawing.Size(75, 20);
-			this.cbLink2.TabIndex = 17;
-			this.cbLink2.SelectedIndexChanged += new System.EventHandler(this.cbLink2_SelectedIndexChanged);
-			this.cbLink2.Leave += new System.EventHandler(this.cbLink2_Leave);
-			// 
-			// cbLink1
-			// 
-			this.cbLink1.Location = new System.Drawing.Point(45, 30);
-			this.cbLink1.Name = "cbLink1";
-			this.cbLink1.Size = new System.Drawing.Size(75, 20);
-			this.cbLink1.TabIndex = 16;
-			this.cbLink1.SelectedIndexChanged += new System.EventHandler(this.cbLink1_SelectedIndexChanged);
-			this.cbLink1.Leave += new System.EventHandler(this.cbLink1_Leave);
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(5, 135);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(40, 15);
-			this.label1.TabIndex = 15;
-			this.label1.Text = "Link5";
-			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(5, 110);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(40, 15);
-			this.label2.TabIndex = 14;
-			this.label2.Text = "Link4";
-			// 
-			// label3
-			// 
-			this.label3.Location = new System.Drawing.Point(5, 85);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(40, 15);
-			this.label3.TabIndex = 13;
-			this.label3.Text = "Link3";
-			// 
-			// label4
-			// 
-			this.label4.Location = new System.Drawing.Point(5, 60);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(40, 15);
-			this.label4.TabIndex = 12;
-			this.label4.Text = "Link2";
-			// 
-			// label5
-			// 
-			this.label5.Location = new System.Drawing.Point(5, 35);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(40, 15);
-			this.label5.TabIndex = 11;
-			this.label5.Text = "Link1";
-			// 
-			// cbRank2
-			// 
-			this.cbRank2.Location = new System.Drawing.Point(85, 40);
-			this.cbRank2.Name = "cbRank2";
-			this.cbRank2.Size = new System.Drawing.Size(130, 20);
-			this.cbRank2.TabIndex = 8;
-			this.toolTip1.SetToolTip(this.cbRank2, "How likely an alien will go to this location");
-			this.cbRank2.SelectedIndexChanged += new System.EventHandler(this.cbRank2_SelectedIndexChanged);
-			// 
-			// cbRank1
-			// 
-			this.cbRank1.Location = new System.Drawing.Point(85, 15);
-			this.cbRank1.Name = "cbRank1";
-			this.cbRank1.Size = new System.Drawing.Size(130, 20);
-			this.cbRank1.TabIndex = 7;
-			this.toolTip1.SetToolTip(this.cbRank1, "Rank must be 0 if this isn\'t a UFO or UFO base, else will not spawn");
-			this.cbRank1.SelectedIndexChanged += new System.EventHandler(this.cbRank1_SelectedIndexChanged);
-			// 
-			// cbType
-			// 
-			this.cbType.Location = new System.Drawing.Point(85, 15);
-			this.cbType.Name = "cbType";
-			this.cbType.Size = new System.Drawing.Size(130, 20);
-			this.cbType.TabIndex = 6;
-			this.cbType.SelectedIndexChanged += new System.EventHandler(this.cbType_SelectedIndexChanged);
-			// 
-			// lblUsage
-			// 
-			this.lblUsage.Location = new System.Drawing.Point(10, 40);
-			this.lblUsage.Name = "lblUsage";
-			this.lblUsage.Size = new System.Drawing.Size(75, 25);
-			this.lblUsage.TabIndex = 5;
-			this.lblUsage.Text = "Weight";
-			this.lblUsage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// lblRank2
-			// 
-			this.lblRank2.Location = new System.Drawing.Point(10, 40);
-			this.lblRank2.Name = "lblRank2";
-			this.lblRank2.Size = new System.Drawing.Size(75, 25);
-			this.lblRank2.TabIndex = 3;
-			this.lblRank2.Text = "Priority";
-			this.lblRank2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// lblRank1
-			// 
-			this.lblRank1.Location = new System.Drawing.Point(10, 15);
-			this.lblRank1.Name = "lblRank1";
-			this.lblRank1.Size = new System.Drawing.Size(75, 25);
-			this.lblRank1.TabIndex = 2;
-			this.lblRank1.Text = "Rank";
-			this.lblRank1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// rankLabel
-			// 
-			this.rankLabel.Location = new System.Drawing.Point(10, 15);
-			this.rankLabel.Name = "rankLabel";
-			this.rankLabel.Size = new System.Drawing.Size(75, 25);
-			this.rankLabel.TabIndex = 1;
-			this.rankLabel.Text = "Unit Type";
-			this.rankLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// idxLabel
-			// 
-			this.idxLabel.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.idxLabel.Location = new System.Drawing.Point(10, 15);
-			this.idxLabel.Name = "idxLabel";
-			this.idxLabel.Size = new System.Drawing.Size(100, 30);
-			this.idxLabel.TabIndex = 0;
-			// 
-			// gbNodeInfo
-			// 
-			this.gbNodeInfo.Controls.Add(this.cbRank1);
-			this.gbNodeInfo.Controls.Add(this.lblRank1);
-			this.gbNodeInfo.Controls.Add(this.lblUsage);
-			this.gbNodeInfo.Controls.Add(this.cbUsage);
-			this.gbNodeInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.gbNodeInfo.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.gbNodeInfo.Location = new System.Drawing.Point(0, 145);
-			this.gbNodeInfo.Name = "gbNodeInfo";
-			this.gbNodeInfo.Size = new System.Drawing.Size(289, 91);
-			this.gbNodeInfo.TabIndex = 1;
-			this.gbNodeInfo.TabStop = false;
-			this.gbNodeInfo.Text = "Spawn data";
-			// 
-			// cbUsage
-			// 
-			this.cbUsage.Location = new System.Drawing.Point(85, 40);
-			this.cbUsage.Name = "cbUsage";
-			this.cbUsage.Size = new System.Drawing.Size(130, 20);
-			this.cbUsage.TabIndex = 10;
-			this.cbUsage.SelectedIndexChanged += new System.EventHandler(this.cbUsage_SelectedIndexChanged);
-			// 
-			// pasteNode
-			// 
-			this.pasteNode.Location = new System.Drawing.Point(105, 165);
-			this.pasteNode.Name = "pasteNode";
-			this.pasteNode.Size = new System.Drawing.Size(85, 30);
-			this.pasteNode.TabIndex = 35;
-			this.pasteNode.Text = "Paste";
-			this.pasteNode.Click += new System.EventHandler(this.pasteNode_Click);
-			// 
-			// lblMouseOver
-			// 
-			this.lblMouseOver.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblMouseOver.ForeColor = System.Drawing.Color.Sienna;
-			this.lblMouseOver.Location = new System.Drawing.Point(195, 15);
-			this.lblMouseOver.Name = "lblMouseOver";
-			this.lblMouseOver.Size = new System.Drawing.Size(85, 30);
-			this.lblMouseOver.TabIndex = 2;
-			// 
-			// copyNode
-			// 
-			this.copyNode.Location = new System.Drawing.Point(15, 165);
-			this.copyNode.Name = "copyNode";
-			this.copyNode.Size = new System.Drawing.Size(85, 30);
-			this.copyNode.TabIndex = 34;
-			this.copyNode.Text = "Copy";
-			this.copyNode.Click += new System.EventHandler(this.copyNode_Click);
-			// 
-			// btnRemove
-			// 
-			this.btnRemove.Location = new System.Drawing.Point(195, 165);
-			this.btnRemove.Name = "btnRemove";
-			this.btnRemove.Size = new System.Drawing.Size(85, 30);
-			this.btnRemove.TabIndex = 36;
-			this.btnRemove.Text = "Delete";
-			this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
-			// 
-			// idxLabel2
-			// 
-			this.idxLabel2.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.idxLabel2.ForeColor = System.Drawing.Color.Orchid;
-			this.idxLabel2.Location = new System.Drawing.Point(110, 15);
-			this.idxLabel2.Name = "idxLabel2";
-			this.idxLabel2.Size = new System.Drawing.Size(85, 30);
-			this.idxLabel2.TabIndex = 2;
-			// 
-			// txtDist5
-			// 
-			this.txtDist5.Location = new System.Drawing.Point(240, 130);
-			this.txtDist5.Name = "txtDist5";
-			this.txtDist5.Size = new System.Drawing.Size(30, 19);
-			this.txtDist5.TabIndex = 32;
-			this.txtDist5.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDist5_KeyDown);
-			this.txtDist5.Leave += new System.EventHandler(this.txtDist5_Leave);
-			// 
-			// txtDist4
-			// 
-			this.txtDist4.Location = new System.Drawing.Point(240, 105);
-			this.txtDist4.Name = "txtDist4";
-			this.txtDist4.Size = new System.Drawing.Size(30, 19);
-			this.txtDist4.TabIndex = 31;
-			this.txtDist4.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDist4_KeyDown);
-			this.txtDist4.Leave += new System.EventHandler(this.txtDist4_Leave);
-			// 
-			// txtDist3
-			// 
-			this.txtDist3.Location = new System.Drawing.Point(240, 80);
-			this.txtDist3.Name = "txtDist3";
-			this.txtDist3.Size = new System.Drawing.Size(30, 19);
-			this.txtDist3.TabIndex = 30;
-			this.txtDist3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDist3_KeyDown);
-			this.txtDist3.Leave += new System.EventHandler(this.txtDist3_Leave);
-			// 
-			// txtDist2
-			// 
-			this.txtDist2.Location = new System.Drawing.Point(240, 55);
-			this.txtDist2.Name = "txtDist2";
-			this.txtDist2.Size = new System.Drawing.Size(30, 19);
-			this.txtDist2.TabIndex = 29;
-			this.txtDist2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDist2_KeyDown);
-			this.txtDist2.Leave += new System.EventHandler(this.txtDist2_Leave);
-			// 
-			// txtDist1
-			// 
-			this.txtDist1.Location = new System.Drawing.Point(240, 30);
-			this.txtDist1.Name = "txtDist1";
-			this.txtDist1.Size = new System.Drawing.Size(30, 19);
-			this.txtDist1.TabIndex = 28;
-			this.txtDist1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtDist1_KeyDown);
-			this.txtDist1.Leave += new System.EventHandler(this.txtDist1_Leave);
-			// 
-			// label7
-			// 
-			this.label7.Location = new System.Drawing.Point(240, 15);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(30, 15);
-			this.label7.TabIndex = 27;
-			this.label7.Text = "Dist";
-			// 
-			// cbUse5
-			// 
-			this.cbUse5.Location = new System.Drawing.Point(125, 130);
-			this.cbUse5.Name = "cbUse5";
-			this.cbUse5.Size = new System.Drawing.Size(110, 20);
-			this.cbUse5.TabIndex = 26;
-			this.cbUse5.SelectedIndexChanged += new System.EventHandler(this.cbUse5_SelectedIndexChanged);
-			// 
-			// cbUse4
-			// 
-			this.cbUse4.Location = new System.Drawing.Point(125, 105);
-			this.cbUse4.Name = "cbUse4";
-			this.cbUse4.Size = new System.Drawing.Size(110, 20);
-			this.cbUse4.TabIndex = 25;
-			this.cbUse4.SelectedIndexChanged += new System.EventHandler(this.cbUse4_SelectedIndexChanged);
-			// 
-			// cbUse3
-			// 
-			this.cbUse3.Location = new System.Drawing.Point(125, 80);
-			this.cbUse3.Name = "cbUse3";
-			this.cbUse3.Size = new System.Drawing.Size(110, 20);
-			this.cbUse3.TabIndex = 24;
-			this.cbUse3.SelectedIndexChanged += new System.EventHandler(this.cbUse3_SelectedIndexChanged);
-			// 
-			// cbUse2
-			// 
-			this.cbUse2.Location = new System.Drawing.Point(125, 55);
-			this.cbUse2.Name = "cbUse2";
-			this.cbUse2.Size = new System.Drawing.Size(110, 20);
-			this.cbUse2.TabIndex = 23;
-			this.cbUse2.SelectedIndexChanged += new System.EventHandler(this.cbUse2_SelectedIndexChanged);
-			// 
-			// cbUse1
-			// 
-			this.cbUse1.Location = new System.Drawing.Point(125, 30);
-			this.cbUse1.Name = "cbUse1";
-			this.cbUse1.Size = new System.Drawing.Size(110, 20);
-			this.cbUse1.TabIndex = 22;
-			this.cbUse1.SelectedIndexChanged += new System.EventHandler(this.cbUse1_SelectedIndexChanged);
-			// 
-			// label6
-			// 
-			this.label6.Location = new System.Drawing.Point(125, 15);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(55, 15);
-			this.label6.TabIndex = 21;
-			this.label6.Text = "Unit Info";
+			// cbLink5Dest
+			// 
+			this.cbLink5Dest.Location = new System.Drawing.Point(45, 130);
+			this.cbLink5Dest.Name = "cbLink5Dest";
+			this.cbLink5Dest.Size = new System.Drawing.Size(75, 20);
+			this.cbLink5Dest.TabIndex = 20;
+			this.cbLink5Dest.SelectedIndexChanged += new System.EventHandler(this.cbLink5Dest_SelectedIndexChanged);
+			this.cbLink5Dest.Leave += new System.EventHandler(this.cbLink5Dest_Leave);
+			// 
+			// cbLink4Dest
+			// 
+			this.cbLink4Dest.Location = new System.Drawing.Point(45, 105);
+			this.cbLink4Dest.Name = "cbLink4Dest";
+			this.cbLink4Dest.Size = new System.Drawing.Size(75, 20);
+			this.cbLink4Dest.TabIndex = 19;
+			this.cbLink4Dest.SelectedIndexChanged += new System.EventHandler(this.cbLink4Dest_SelectedIndexChanged);
+			this.cbLink4Dest.Leave += new System.EventHandler(this.cbLink4Dest_Leave);
+			// 
+			// cbLink3Dest
+			// 
+			this.cbLink3Dest.Location = new System.Drawing.Point(45, 80);
+			this.cbLink3Dest.Name = "cbLink3Dest";
+			this.cbLink3Dest.Size = new System.Drawing.Size(75, 20);
+			this.cbLink3Dest.TabIndex = 18;
+			this.cbLink3Dest.SelectedIndexChanged += new System.EventHandler(this.cbLink3Dest_SelectedIndexChanged);
+			this.cbLink3Dest.Leave += new System.EventHandler(this.cbLink3Dest_Leave);
+			// 
+			// cbLink2Dest
+			// 
+			this.cbLink2Dest.Location = new System.Drawing.Point(45, 55);
+			this.cbLink2Dest.Name = "cbLink2Dest";
+			this.cbLink2Dest.Size = new System.Drawing.Size(75, 20);
+			this.cbLink2Dest.TabIndex = 17;
+			this.cbLink2Dest.SelectedIndexChanged += new System.EventHandler(this.cbLink2_SelectedIndexChanged);
+			this.cbLink2Dest.Leave += new System.EventHandler(this.cbLink2Dest_Leave);
+			// 
+			// cbLink1Dest
+			// 
+			this.cbLink1Dest.Location = new System.Drawing.Point(45, 30);
+			this.cbLink1Dest.Name = "cbLink1Dest";
+			this.cbLink1Dest.Size = new System.Drawing.Size(75, 20);
+			this.cbLink1Dest.TabIndex = 16;
+			this.cbLink1Dest.SelectedIndexChanged += new System.EventHandler(this.cbLink1Dest_SelectedIndexChanged);
+			this.cbLink1Dest.Leave += new System.EventHandler(this.cbLink1Dest_Leave);
+			// 
+			// labelLink5
+			// 
+			this.labelLink5.Location = new System.Drawing.Point(5, 135);
+			this.labelLink5.Name = "labelLink5";
+			this.labelLink5.Size = new System.Drawing.Size(40, 15);
+			this.labelLink5.TabIndex = 15;
+			this.labelLink5.Text = "Link5";
+			// 
+			// labelLink4
+			// 
+			this.labelLink4.Location = new System.Drawing.Point(5, 110);
+			this.labelLink4.Name = "labelLink4";
+			this.labelLink4.Size = new System.Drawing.Size(40, 15);
+			this.labelLink4.TabIndex = 14;
+			this.labelLink4.Text = "Link4";
+			// 
+			// labelLink3
+			// 
+			this.labelLink3.Location = new System.Drawing.Point(5, 85);
+			this.labelLink3.Name = "labelLink3";
+			this.labelLink3.Size = new System.Drawing.Size(40, 15);
+			this.labelLink3.TabIndex = 13;
+			this.labelLink3.Text = "Link3";
+			// 
+			// labelLink2
+			// 
+			this.labelLink2.Location = new System.Drawing.Point(5, 60);
+			this.labelLink2.Name = "labelLink2";
+			this.labelLink2.Size = new System.Drawing.Size(40, 15);
+			this.labelLink2.TabIndex = 12;
+			this.labelLink2.Text = "Link2";
+			// 
+			// labelLink1
+			// 
+			this.labelLink1.Location = new System.Drawing.Point(5, 35);
+			this.labelLink1.Name = "labelLink1";
+			this.labelLink1.Size = new System.Drawing.Size(40, 15);
+			this.labelLink1.TabIndex = 11;
+			this.labelLink1.Text = "Link1";
+			// 
+			// cbPriority
+			// 
+			this.cbPriority.Location = new System.Drawing.Point(85, 40);
+			this.cbPriority.Name = "cbPriority";
+			this.cbPriority.Size = new System.Drawing.Size(130, 20);
+			this.cbPriority.TabIndex = 8;
+			this.toolTip1.SetToolTip(this.cbPriority, "How likely an alien will go to this location");
+			this.cbPriority.SelectedIndexChanged += new System.EventHandler(this.cbPriority_SelectedIndexChanged);
+			// 
+			// cbSpawnRank
+			// 
+			this.cbSpawnRank.Location = new System.Drawing.Point(85, 15);
+			this.cbSpawnRank.Name = "cbSpawnRank";
+			this.cbSpawnRank.Size = new System.Drawing.Size(130, 20);
+			this.cbSpawnRank.TabIndex = 7;
+			this.toolTip1.SetToolTip(this.cbSpawnRank, "Rank must be 0 if this isn\'t a UFO or UFO base, else will not spawn");
+			this.cbSpawnRank.SelectedIndexChanged += new System.EventHandler(this.cbSpawnRank_SelectedIndexChanged);
+			// 
+			// cbUnitType
+			// 
+			this.cbUnitType.Location = new System.Drawing.Point(85, 15);
+			this.cbUnitType.Name = "cbUnitType";
+			this.cbUnitType.Size = new System.Drawing.Size(130, 20);
+			this.cbUnitType.TabIndex = 6;
+			this.cbUnitType.SelectedIndexChanged += new System.EventHandler(this.cbUnitType_SelectedIndexChanged);
+			// 
+			// labelSpawnWeight
+			// 
+			this.labelSpawnWeight.Location = new System.Drawing.Point(10, 45);
+			this.labelSpawnWeight.Name = "labelSpawnWeight";
+			this.labelSpawnWeight.Size = new System.Drawing.Size(75, 15);
+			this.labelSpawnWeight.TabIndex = 5;
+			this.labelSpawnWeight.Text = "Weight";
+			this.labelSpawnWeight.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// labelPriority
+			// 
+			this.labelPriority.Location = new System.Drawing.Point(10, 45);
+			this.labelPriority.Name = "labelPriority";
+			this.labelPriority.Size = new System.Drawing.Size(75, 15);
+			this.labelPriority.TabIndex = 3;
+			this.labelPriority.Text = "Priority";
+			this.labelPriority.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// labelSpawnRank
+			// 
+			this.labelSpawnRank.Location = new System.Drawing.Point(10, 20);
+			this.labelSpawnRank.Name = "labelSpawnRank";
+			this.labelSpawnRank.Size = new System.Drawing.Size(75, 15);
+			this.labelSpawnRank.TabIndex = 2;
+			this.labelSpawnRank.Text = "Rank";
+			this.labelSpawnRank.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// labelUnitType
+			// 
+			this.labelUnitType.Location = new System.Drawing.Point(10, 20);
+			this.labelUnitType.Name = "labelUnitType";
+			this.labelUnitType.Size = new System.Drawing.Size(75, 15);
+			this.labelUnitType.TabIndex = 1;
+			this.labelUnitType.Text = "Unit Type";
+			this.labelUnitType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// labelSelectedPos
+			// 
+			this.labelSelectedPos.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelSelectedPos.Location = new System.Drawing.Point(10, 15);
+			this.labelSelectedPos.Name = "labelSelectedPos";
+			this.labelSelectedPos.Size = new System.Drawing.Size(100, 30);
+			this.labelSelectedPos.TabIndex = 0;
+			// 
+			// gbSpawnData
+			// 
+			this.gbSpawnData.Controls.Add(this.cbSpawnRank);
+			this.gbSpawnData.Controls.Add(this.labelSpawnRank);
+			this.gbSpawnData.Controls.Add(this.labelSpawnWeight);
+			this.gbSpawnData.Controls.Add(this.cbSpawnWeight);
+			this.gbSpawnData.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.gbSpawnData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.gbSpawnData.Location = new System.Drawing.Point(0, 145);
+			this.gbSpawnData.Name = "gbSpawnData";
+			this.gbSpawnData.Size = new System.Drawing.Size(289, 91);
+			this.gbSpawnData.TabIndex = 1;
+			this.gbSpawnData.TabStop = false;
+			this.gbSpawnData.Text = "Spawn data";
+			// 
+			// cbSpawnWeight
+			// 
+			this.cbSpawnWeight.Location = new System.Drawing.Point(85, 40);
+			this.cbSpawnWeight.Name = "cbSpawnWeight";
+			this.cbSpawnWeight.Size = new System.Drawing.Size(130, 20);
+			this.cbSpawnWeight.TabIndex = 10;
+			this.cbSpawnWeight.SelectedIndexChanged += new System.EventHandler(this.cbSpawnWeight_SelectedIndexChanged);
+			// 
+			// btnPaste
+			// 
+			this.btnPaste.Location = new System.Drawing.Point(105, 165);
+			this.btnPaste.Name = "btnPaste";
+			this.btnPaste.Size = new System.Drawing.Size(85, 30);
+			this.btnPaste.TabIndex = 35;
+			this.btnPaste.Text = "Paste";
+			this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
+			// 
+			// labelCurrentMouseOver
+			// 
+			this.labelCurrentMouseOver.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelCurrentMouseOver.ForeColor = System.Drawing.Color.Sienna;
+			this.labelCurrentMouseOver.Location = new System.Drawing.Point(195, 15);
+			this.labelCurrentMouseOver.Name = "labelCurrentMouseOver";
+			this.labelCurrentMouseOver.Size = new System.Drawing.Size(85, 30);
+			this.labelCurrentMouseOver.TabIndex = 2;
+			// 
+			// btnCopy
+			// 
+			this.btnCopy.Location = new System.Drawing.Point(15, 165);
+			this.btnCopy.Name = "btnCopy";
+			this.btnCopy.Size = new System.Drawing.Size(85, 30);
+			this.btnCopy.TabIndex = 34;
+			this.btnCopy.Text = "Copy";
+			this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
+			// 
+			// btnDelete
+			// 
+			this.btnDelete.Location = new System.Drawing.Point(195, 165);
+			this.btnDelete.Name = "btnDelete";
+			this.btnDelete.Size = new System.Drawing.Size(85, 30);
+			this.btnDelete.TabIndex = 36;
+			this.btnDelete.Text = "Delete";
+			this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+			// 
+			// labelSelected
+			// 
+			this.labelSelected.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelSelected.ForeColor = System.Drawing.Color.Orchid;
+			this.labelSelected.Location = new System.Drawing.Point(110, 15);
+			this.labelSelected.Name = "labelSelected";
+			this.labelSelected.Size = new System.Drawing.Size(85, 30);
+			this.labelSelected.TabIndex = 2;
+			// 
+			// tbLink5Dist
+			// 
+			this.tbLink5Dist.Location = new System.Drawing.Point(240, 130);
+			this.tbLink5Dist.Name = "tbLink5Dist";
+			this.tbLink5Dist.Size = new System.Drawing.Size(30, 19);
+			this.tbLink5Dist.TabIndex = 32;
+			this.tbLink5Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLink5Dist_KeyDown);
+			this.tbLink5Dist.Leave += new System.EventHandler(this.tbLink5Dist_Leave);
+			// 
+			// tbLink4Dist
+			// 
+			this.tbLink4Dist.Location = new System.Drawing.Point(240, 105);
+			this.tbLink4Dist.Name = "tbLink4Dist";
+			this.tbLink4Dist.Size = new System.Drawing.Size(30, 19);
+			this.tbLink4Dist.TabIndex = 31;
+			this.tbLink4Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLink4Dist_KeyDown);
+			this.tbLink4Dist.Leave += new System.EventHandler(this.tbLink4Dist_Leave);
+			// 
+			// tbLink3Dist
+			// 
+			this.tbLink3Dist.Location = new System.Drawing.Point(240, 80);
+			this.tbLink3Dist.Name = "tbLink3Dist";
+			this.tbLink3Dist.Size = new System.Drawing.Size(30, 19);
+			this.tbLink3Dist.TabIndex = 30;
+			this.tbLink3Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLink3Dist_KeyDown);
+			this.tbLink3Dist.Leave += new System.EventHandler(this.tbLink2Dist_Leave);
+			// 
+			// tbLink2Dist
+			// 
+			this.tbLink2Dist.Location = new System.Drawing.Point(240, 55);
+			this.tbLink2Dist.Name = "tbLink2Dist";
+			this.tbLink2Dist.Size = new System.Drawing.Size(30, 19);
+			this.tbLink2Dist.TabIndex = 29;
+			this.tbLink2Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLink2Dist_KeyDown);
+			this.tbLink2Dist.Leave += new System.EventHandler(this.tbLink2Dist_Leave);
+			// 
+			// tbLink1Dist
+			// 
+			this.tbLink1Dist.Location = new System.Drawing.Point(240, 30);
+			this.tbLink1Dist.Name = "tbLink1Dist";
+			this.tbLink1Dist.Size = new System.Drawing.Size(30, 19);
+			this.tbLink1Dist.TabIndex = 28;
+			this.tbLink1Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLink1Dist_KeyDown);
+			this.tbLink1Dist.Leave += new System.EventHandler(this.tbLink1Dist_Leave);
+			// 
+			// labelDist
+			// 
+			this.labelDist.Location = new System.Drawing.Point(240, 15);
+			this.labelDist.Name = "labelDist";
+			this.labelDist.Size = new System.Drawing.Size(30, 15);
+			this.labelDist.TabIndex = 27;
+			this.labelDist.Text = "Dist";
+			// 
+			// cbLink5UnitType
+			// 
+			this.cbLink5UnitType.Location = new System.Drawing.Point(125, 130);
+			this.cbLink5UnitType.Name = "cbLink5UnitType";
+			this.cbLink5UnitType.Size = new System.Drawing.Size(110, 20);
+			this.cbLink5UnitType.TabIndex = 26;
+			this.cbLink5UnitType.SelectedIndexChanged += new System.EventHandler(this.cbLink5UnitType_SelectedIndexChanged);
+			// 
+			// cbLink4UnitType
+			// 
+			this.cbLink4UnitType.Location = new System.Drawing.Point(125, 105);
+			this.cbLink4UnitType.Name = "cbLink4UnitType";
+			this.cbLink4UnitType.Size = new System.Drawing.Size(110, 20);
+			this.cbLink4UnitType.TabIndex = 25;
+			this.cbLink4UnitType.SelectedIndexChanged += new System.EventHandler(this.cbLink4UnitType_SelectedIndexChanged);
+			// 
+			// cbLink3UnitType
+			// 
+			this.cbLink3UnitType.Location = new System.Drawing.Point(125, 80);
+			this.cbLink3UnitType.Name = "cbLink3UnitType";
+			this.cbLink3UnitType.Size = new System.Drawing.Size(110, 20);
+			this.cbLink3UnitType.TabIndex = 24;
+			this.cbLink3UnitType.SelectedIndexChanged += new System.EventHandler(this.cbLink3UnitType_SelectedIndexChanged);
+			// 
+			// cbLink2UnitType
+			// 
+			this.cbLink2UnitType.Location = new System.Drawing.Point(125, 55);
+			this.cbLink2UnitType.Name = "cbLink2UnitType";
+			this.cbLink2UnitType.Size = new System.Drawing.Size(110, 20);
+			this.cbLink2UnitType.TabIndex = 23;
+			this.cbLink2UnitType.SelectedIndexChanged += new System.EventHandler(this.cbLink2UnitType_SelectedIndexChanged);
+			// 
+			// cbLink1UnitType
+			// 
+			this.cbLink1UnitType.Location = new System.Drawing.Point(125, 30);
+			this.cbLink1UnitType.Name = "cbLink1UnitType";
+			this.cbLink1UnitType.Size = new System.Drawing.Size(110, 20);
+			this.cbLink1UnitType.TabIndex = 22;
+			this.cbLink1UnitType.SelectedIndexChanged += new System.EventHandler(this.cbLink1UnitType_SelectedIndexChanged);
+			// 
+			// labelUnitInfo
+			// 
+			this.labelUnitInfo.Location = new System.Drawing.Point(125, 15);
+			this.labelUnitInfo.Name = "labelUnitInfo";
+			this.labelUnitInfo.Size = new System.Drawing.Size(55, 15);
+			this.labelUnitInfo.TabIndex = 21;
+			this.labelUnitInfo.Text = "Unit Info";
 			// 
 			// _contentPanel
 			// 
@@ -430,7 +430,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.miEdit,
 			this.connectNodesToolStripMenuItem,
 			this.extraHeightToolStripMenuItem,
-			this.HeightDifTextbox});
+			this.textboxExtraHeight});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(640, 24);
@@ -481,54 +481,54 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.extraHeightToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
 			this.extraHeightToolStripMenuItem.Text = "Extra Height";
 			// 
-			// HeightDifTextbox
+			// textboxExtraHeight
 			// 
-			this.HeightDifTextbox.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.HeightDifTextbox.Name = "HeightDifTextbox";
-			this.HeightDifTextbox.Size = new System.Drawing.Size(100, 20);
-			this.HeightDifTextbox.ToolTipText = "This amount will be added to the link\'s vertical position. Helps in UFO maps when" +
+			this.textboxExtraHeight.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.textboxExtraHeight.Name = "textboxExtraHeight";
+			this.textboxExtraHeight.Size = new System.Drawing.Size(100, 20);
+			this.textboxExtraHeight.ToolTipText = "This amount will be added to the link\'s vertical position. Helps in UFO maps when" +
 	" the UFO terrain maps have basement floors.";
-			this.HeightDifTextbox.TextChanged += new System.EventHandler(this.HeightDifTextbox_TextChanged);
+			this.textboxExtraHeight.TextChanged += new System.EventHandler(this.ExtraHeight_TextChanged);
 			// 
-			// LinkGroupBox
+			// gbLinkData
 			// 
-			this.LinkGroupBox.Controls.Add(this.label5);
-			this.LinkGroupBox.Controls.Add(this.pasteNode);
-			this.LinkGroupBox.Controls.Add(this.txtDist5);
-			this.LinkGroupBox.Controls.Add(this.cbLink5);
-			this.LinkGroupBox.Controls.Add(this.copyNode);
-			this.LinkGroupBox.Controls.Add(this.txtDist4);
-			this.LinkGroupBox.Controls.Add(this.btnRemove);
-			this.LinkGroupBox.Controls.Add(this.cbLink3);
-			this.LinkGroupBox.Controls.Add(this.txtDist3);
-			this.LinkGroupBox.Controls.Add(this.cbLink2);
-			this.LinkGroupBox.Controls.Add(this.txtDist2);
-			this.LinkGroupBox.Controls.Add(this.cbLink1);
-			this.LinkGroupBox.Controls.Add(this.txtDist1);
-			this.LinkGroupBox.Controls.Add(this.label4);
-			this.LinkGroupBox.Controls.Add(this.label7);
-			this.LinkGroupBox.Controls.Add(this.label3);
-			this.LinkGroupBox.Controls.Add(this.cbUse5);
-			this.LinkGroupBox.Controls.Add(this.cbLink4);
-			this.LinkGroupBox.Controls.Add(this.cbUse4);
-			this.LinkGroupBox.Controls.Add(this.label1);
-			this.LinkGroupBox.Controls.Add(this.cbUse3);
-			this.LinkGroupBox.Controls.Add(this.label2);
-			this.LinkGroupBox.Controls.Add(this.cbUse2);
-			this.LinkGroupBox.Controls.Add(this.label6);
-			this.LinkGroupBox.Controls.Add(this.cbUse1);
-			this.LinkGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.LinkGroupBox.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.LinkGroupBox.Location = new System.Drawing.Point(289, 3);
-			this.LinkGroupBox.Name = "LinkGroupBox";
-			this.LinkGroupBox.Size = new System.Drawing.Size(351, 236);
-			this.LinkGroupBox.TabIndex = 3;
-			this.LinkGroupBox.TabStop = false;
-			this.LinkGroupBox.Text = "Link data";
+			this.gbLinkData.Controls.Add(this.labelLink1);
+			this.gbLinkData.Controls.Add(this.btnPaste);
+			this.gbLinkData.Controls.Add(this.tbLink5Dist);
+			this.gbLinkData.Controls.Add(this.cbLink5Dest);
+			this.gbLinkData.Controls.Add(this.btnCopy);
+			this.gbLinkData.Controls.Add(this.tbLink4Dist);
+			this.gbLinkData.Controls.Add(this.btnDelete);
+			this.gbLinkData.Controls.Add(this.cbLink3Dest);
+			this.gbLinkData.Controls.Add(this.tbLink3Dist);
+			this.gbLinkData.Controls.Add(this.cbLink2Dest);
+			this.gbLinkData.Controls.Add(this.tbLink2Dist);
+			this.gbLinkData.Controls.Add(this.cbLink1Dest);
+			this.gbLinkData.Controls.Add(this.tbLink1Dist);
+			this.gbLinkData.Controls.Add(this.labelLink2);
+			this.gbLinkData.Controls.Add(this.labelDist);
+			this.gbLinkData.Controls.Add(this.labelLink3);
+			this.gbLinkData.Controls.Add(this.cbLink5UnitType);
+			this.gbLinkData.Controls.Add(this.cbLink4Dest);
+			this.gbLinkData.Controls.Add(this.cbLink4UnitType);
+			this.gbLinkData.Controls.Add(this.labelLink5);
+			this.gbLinkData.Controls.Add(this.cbLink3UnitType);
+			this.gbLinkData.Controls.Add(this.labelLink4);
+			this.gbLinkData.Controls.Add(this.cbLink2UnitType);
+			this.gbLinkData.Controls.Add(this.labelUnitInfo);
+			this.gbLinkData.Controls.Add(this.cbLink1UnitType);
+			this.gbLinkData.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.gbLinkData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.gbLinkData.Location = new System.Drawing.Point(289, 3);
+			this.gbLinkData.Name = "gbLinkData";
+			this.gbLinkData.Size = new System.Drawing.Size(351, 236);
+			this.gbLinkData.TabIndex = 3;
+			this.gbLinkData.TabStop = false;
+			this.gbLinkData.Text = "Link data";
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.LinkGroupBox);
+			this.panel1.Controls.Add(this.gbLinkData);
 			this.panel1.Controls.Add(this.panel2);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.panel1.Location = new System.Drawing.Point(0, 241);
@@ -539,62 +539,62 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// panel2
 			// 
-			this.panel2.Controls.Add(this.gbNodeInfo);
-			this.panel2.Controls.Add(this.groupBox1);
-			this.panel2.Controls.Add(this.groupBox2);
+			this.panel2.Controls.Add(this.gbSpawnData);
+			this.panel2.Controls.Add(this.gbPatrolData);
+			this.panel2.Controls.Add(this.gbNodeData);
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
 			this.panel2.Location = new System.Drawing.Point(0, 3);
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(289, 236);
 			this.panel2.TabIndex = 11;
 			// 
-			// groupBox1
+			// gbPatrolData
 			// 
-			this.groupBox1.Controls.Add(this.cbType);
-			this.groupBox1.Controls.Add(this.AttackBaseCombo);
-			this.groupBox1.Controls.Add(this.cbRank2);
-			this.groupBox1.Controls.Add(this.label8);
-			this.groupBox1.Controls.Add(this.rankLabel);
-			this.groupBox1.Controls.Add(this.lblRank2);
-			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox1.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.groupBox1.Location = new System.Drawing.Point(0, 50);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(289, 95);
-			this.groupBox1.TabIndex = 11;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Patrol data";
+			this.gbPatrolData.Controls.Add(this.cbUnitType);
+			this.gbPatrolData.Controls.Add(this.cbAttack);
+			this.gbPatrolData.Controls.Add(this.cbPriority);
+			this.gbPatrolData.Controls.Add(this.labelAttack);
+			this.gbPatrolData.Controls.Add(this.labelUnitType);
+			this.gbPatrolData.Controls.Add(this.labelPriority);
+			this.gbPatrolData.Dock = System.Windows.Forms.DockStyle.Top;
+			this.gbPatrolData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.gbPatrolData.Location = new System.Drawing.Point(0, 50);
+			this.gbPatrolData.Name = "gbPatrolData";
+			this.gbPatrolData.Size = new System.Drawing.Size(289, 95);
+			this.gbPatrolData.TabIndex = 11;
+			this.gbPatrolData.TabStop = false;
+			this.gbPatrolData.Text = "Patrol data";
 			// 
-			// AttackBaseCombo
+			// cbAttack
 			// 
-			this.AttackBaseCombo.Location = new System.Drawing.Point(85, 65);
-			this.AttackBaseCombo.Name = "AttackBaseCombo";
-			this.AttackBaseCombo.Size = new System.Drawing.Size(130, 20);
-			this.AttackBaseCombo.TabIndex = 8;
-			this.toolTip1.SetToolTip(this.AttackBaseCombo, "How likely an alien may start shooting base modules.");
-			this.AttackBaseCombo.SelectedIndexChanged += new System.EventHandler(this.AttackBaseCombo_SelectedIndexChanged);
+			this.cbAttack.Location = new System.Drawing.Point(85, 65);
+			this.cbAttack.Name = "cbAttack";
+			this.cbAttack.Size = new System.Drawing.Size(130, 20);
+			this.cbAttack.TabIndex = 8;
+			this.toolTip1.SetToolTip(this.cbAttack, "How likely an alien may start shooting base modules.");
+			this.cbAttack.SelectedIndexChanged += new System.EventHandler(this.cbAttack_SelectedIndexChanged);
 			// 
-			// label8
+			// labelAttack
 			// 
-			this.label8.Location = new System.Drawing.Point(10, 65);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(75, 25);
-			this.label8.TabIndex = 3;
-			this.label8.Text = "Attack Base";
-			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.labelAttack.Location = new System.Drawing.Point(10, 70);
+			this.labelAttack.Name = "labelAttack";
+			this.labelAttack.Size = new System.Drawing.Size(75, 15);
+			this.labelAttack.TabIndex = 3;
+			this.labelAttack.Text = "Attack Base";
+			this.labelAttack.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// groupBox2
+			// gbNodeData
 			// 
-			this.groupBox2.Controls.Add(this.lblMouseOver);
-			this.groupBox2.Controls.Add(this.idxLabel);
-			this.groupBox2.Controls.Add(this.idxLabel2);
-			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-			this.groupBox2.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.groupBox2.Location = new System.Drawing.Point(0, 0);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(289, 50);
-			this.groupBox2.TabIndex = 1;
-			this.groupBox2.TabStop = false;
+			this.gbNodeData.Controls.Add(this.labelCurrentMouseOver);
+			this.gbNodeData.Controls.Add(this.labelSelectedPos);
+			this.gbNodeData.Controls.Add(this.labelSelected);
+			this.gbNodeData.Dock = System.Windows.Forms.DockStyle.Top;
+			this.gbNodeData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.gbNodeData.Location = new System.Drawing.Point(0, 0);
+			this.gbNodeData.Name = "gbNodeData";
+			this.gbNodeData.Size = new System.Drawing.Size(289, 50);
+			this.gbNodeData.TabIndex = 1;
+			this.gbNodeData.TabStop = false;
 			// 
 			// RouteView
 			// 
@@ -605,72 +605,72 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.Name = "RouteView";
 			this.Size = new System.Drawing.Size(640, 480);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.RmpView_KeyDown);
-			this.gbNodeInfo.ResumeLayout(false);
+			this.gbSpawnData.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.LinkGroupBox.ResumeLayout(false);
-			this.LinkGroupBox.PerformLayout();
+			this.gbLinkData.ResumeLayout(false);
+			this.gbLinkData.PerformLayout();
 			this.panel1.ResumeLayout(false);
 			this.panel2.ResumeLayout(false);
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox2.ResumeLayout(false);
+			this.gbPatrolData.ResumeLayout(false);
+			this.gbNodeData.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
 		}
 		#endregion
 
-		private System.Windows.Forms.Label idxLabel;
-		private System.Windows.Forms.Label rankLabel;
-		private System.Windows.Forms.ComboBox cbType;
-		private System.Windows.Forms.ComboBox cbRank1;
-		private System.Windows.Forms.ComboBox cbRank2;
-		private System.Windows.Forms.Label lblRank1;
-		private System.Windows.Forms.Label lblRank2;
-		private System.Windows.Forms.Label lblUsage;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.ComboBox cbLink1;
-		private System.Windows.Forms.ComboBox cbLink2;
-		private System.Windows.Forms.ComboBox cbLink3;
-		private System.Windows.Forms.ComboBox cbLink4;
-		private System.Windows.Forms.ComboBox cbLink5;
-		private System.Windows.Forms.GroupBox gbNodeInfo;
-		private System.Windows.Forms.Button btnRemove;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.ComboBox cbUse1;
-		private System.Windows.Forms.ComboBox cbUse2;
-		private System.Windows.Forms.ComboBox cbUse3;
-		private System.Windows.Forms.ComboBox cbUse4;
-		private System.Windows.Forms.ComboBox cbUse5;
-		private System.Windows.Forms.TextBox txtDist1;
-		private System.Windows.Forms.TextBox txtDist2;
-		private System.Windows.Forms.TextBox txtDist3;
-		private System.Windows.Forms.TextBox txtDist4;
-		private System.Windows.Forms.TextBox txtDist5;
-		private System.Windows.Forms.Label idxLabel2;
-		private System.Windows.Forms.ComboBox cbUsage;
-		private System.Windows.Forms.Label lblMouseOver;
+		private System.Windows.Forms.Label labelSelectedPos;
+		private System.Windows.Forms.Label labelUnitType;
+		private System.Windows.Forms.ComboBox cbUnitType;
+		private System.Windows.Forms.ComboBox cbSpawnRank;
+		private System.Windows.Forms.ComboBox cbPriority;
+		private System.Windows.Forms.Label labelSpawnRank;
+		private System.Windows.Forms.Label labelPriority;
+		private System.Windows.Forms.Label labelSpawnWeight;
+		private System.Windows.Forms.Label labelLink5;
+		private System.Windows.Forms.Label labelLink4;
+		private System.Windows.Forms.Label labelLink3;
+		private System.Windows.Forms.Label labelLink2;
+		private System.Windows.Forms.Label labelLink1;
+		private System.Windows.Forms.ComboBox cbLink1Dest;
+		private System.Windows.Forms.ComboBox cbLink2Dest;
+		private System.Windows.Forms.ComboBox cbLink3Dest;
+		private System.Windows.Forms.ComboBox cbLink4Dest;
+		private System.Windows.Forms.ComboBox cbLink5Dest;
+		private System.Windows.Forms.GroupBox gbSpawnData;
+		private System.Windows.Forms.Button btnDelete;
+		private System.Windows.Forms.Label labelUnitInfo;
+		private System.Windows.Forms.Label labelDist;
+		private System.Windows.Forms.ComboBox cbLink1UnitType;
+		private System.Windows.Forms.ComboBox cbLink2UnitType;
+		private System.Windows.Forms.ComboBox cbLink3UnitType;
+		private System.Windows.Forms.ComboBox cbLink4UnitType;
+		private System.Windows.Forms.ComboBox cbLink5UnitType;
+		private System.Windows.Forms.TextBox tbLink1Dist;
+		private System.Windows.Forms.TextBox tbLink2Dist;
+		private System.Windows.Forms.TextBox tbLink3Dist;
+		private System.Windows.Forms.TextBox tbLink4Dist;
+		private System.Windows.Forms.TextBox tbLink5Dist;
+		private System.Windows.Forms.Label labelSelected;
+		private System.Windows.Forms.ComboBox cbSpawnWeight;
+		private System.Windows.Forms.Label labelCurrentMouseOver;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem miEdit;
 		private System.Windows.Forms.ToolStripMenuItem miOptions;
-		private System.Windows.Forms.Button pasteNode;
-		private System.Windows.Forms.Button copyNode;
+		private System.Windows.Forms.Button btnPaste;
+		private System.Windows.Forms.Button btnCopy;
 		private System.Windows.Forms.ToolStripComboBox connectNodesToolStripMenuItem;
-		private System.Windows.Forms.GroupBox LinkGroupBox;
+		private System.Windows.Forms.GroupBox gbLinkData;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.ToolStripMenuItem extraHeightToolStripMenuItem;
-		private System.Windows.Forms.ToolStripTextBox HeightDifTextbox;
+		private System.Windows.Forms.ToolStripTextBox textboxExtraHeight;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.Panel panel2;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.ComboBox AttackBaseCombo;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.GroupBox gbPatrolData;
+		private System.Windows.Forms.ComboBox cbAttack;
+		private System.Windows.Forms.Label labelAttack;
+		private System.Windows.Forms.GroupBox gbNodeData;
 		private System.Windows.Forms.ToolStripMenuItem makeAllNodeRank0ToolStripMenuItem;
 	}
 }

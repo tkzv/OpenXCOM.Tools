@@ -20,7 +20,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			get { return controlRouteView; }
 		}
 
-		public MapObserverControl MapObserver
+		public MapObserverControl0 MapObserver
 		{
 			get { return controlRouteView; }
 		}

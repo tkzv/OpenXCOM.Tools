@@ -9,41 +9,42 @@ namespace XCom
 {
 	public class XCMapFileService
 	{
-		private readonly XCTileFactory _xcTileFactory;
+		private readonly XCTileFactory _tileFactory;
 
 
-		public XCMapFileService(XCTileFactory xcTileFactory)
+		public XCMapFileService(XCTileFactory tileFactory)
 		{
-			_xcTileFactory = xcTileFactory;
+			_tileFactory = tileFactory;
 		}
 
 
-		public IMap_Base Load(XCMapDesc imd)
+		public IMap_Base Load(XCMapDesc desc)
 		{
-			if (imd != null && File.Exists(imd.FilePath))
+			if (desc != null && File.Exists(desc.FilePath))
 			{
 				var tiles = new List<TileBase>();
 
 				var images = GameInfo.ImageInfo;
-				foreach (string dep in imd.Dependencies)
+				foreach (string dep in desc.Dependencies)
 				{
 					var image = images[dep];
 					if (image != null)
 					{
-						var mcd = image.GetMcdFile(imd.Palette, _xcTileFactory);
-						foreach (XCTile tile in mcd)
+						var MCD = image.GetMcdFile(desc.Palette, _tileFactory);
+						foreach (XCTile tile in MCD)
 							tiles.Add(tile);
 					}
 				}
 
-				var rmp = new RouteFile(imd.BaseName, imd.RmpPath);
-				var map = new XCMapFile(
-									imd.BaseName,
-									imd.BasePath,
-									imd.BlankPath,
-									tiles,
-									imd.Dependencies, rmp);
-				return map;
+				var RMP = new RouteFile(desc.BaseName, desc.RmpPath);
+				var MAP = new XCMapFile(
+										desc.BaseName,
+										desc.BasePath,
+										desc.BlankPath,
+										tiles,
+										desc.Dependencies,
+										RMP);
+				return MAP;
 			}
 			return null;
 		}

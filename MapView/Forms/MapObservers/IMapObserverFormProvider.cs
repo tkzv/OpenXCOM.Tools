@@ -5,7 +5,7 @@ namespace MapView.Forms.MapObservers
 {
 	public interface IMapObserverFormProvider
 	{
-		MapObserverControl MapObserver
+		MapObserverControl0 MapObserver
 		{ get; }
 	}
 }

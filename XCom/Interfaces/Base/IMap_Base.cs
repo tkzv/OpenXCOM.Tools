@@ -13,7 +13,7 @@ namespace XCom.Interfaces.Base
 
 
 	/// <summary>
-	/// Abstract base class definining all common functionality of an editable map.
+	/// Abstract base class definining all common functionality of an editable Map.
 	/// </summary>
 	public class IMap_Base
 	{
@@ -22,6 +22,10 @@ namespace XCom.Interfaces.Base
 		private byte _curHeight;
 		private MapLocation _selLoc;
 
+
+		/// <summary>
+		/// User is shown the "Do you want to save?" dialog if true.
+		/// </summary>
 		public bool MapChanged
 		{ get; set; }
 
@@ -48,32 +52,32 @@ namespace XCom.Interfaces.Base
 		public event SelectedTileChangedDelegate SelectedTileChanged;
 
 		/// <summary>
-		/// Changes the currentHeight property and fires a HeightChanged event.
+		/// Changes the '_curHeight' property and fires a HeightChanged event.
 		/// </summary>
 		public void Up()
 		{
 			if (_curHeight > 0)
 			{
-				var e = new HeightChangedEventArgs(_curHeight, _curHeight - 1);
+				var args = new HeightChangedEventArgs(_curHeight, _curHeight - 1);
 				--_curHeight;
 
 				if (HeightChanged != null)
-					HeightChanged(this, e);
+					HeightChanged(this, args);
 			}
 		}
 
 		/// <summary>
-		/// Changes the currentHeight property and fires a HeightChanged event.
+		/// Changes the '_curHeight' property and fires a HeightChanged event.
 		/// </summary>
 		public void Down()
 		{
 			if (_curHeight < MapSize.Height - 1)
 			{
 				++_curHeight;
-				var e = new HeightChangedEventArgs(_curHeight, _curHeight + 1);
+				var args = new HeightChangedEventArgs(_curHeight, _curHeight + 1);
 
 				if (HeightChanged != null)
-					HeightChanged(this, e);
+					HeightChanged(this, args);
 			}
 		}
 
@@ -88,17 +92,17 @@ namespace XCom.Interfaces.Base
 			{
 				if (value < (byte)MapSize.Height)
 				{
-					var e = new HeightChangedEventArgs(_curHeight, value);
+					var args = new HeightChangedEventArgs(_curHeight, value);
 					_curHeight = value;
 
 					if (HeightChanged != null)
-						HeightChanged(this, e);
+						HeightChanged(this, args);
 				}
 			}
 		}
 
 		/// <summary>
-		/// Gets the current size of the map
+		/// Gets the current size of the Map.
 		/// </summary>
 		public MapSize MapSize
 		{ get; protected set; }
@@ -116,10 +120,10 @@ namespace XCom.Interfaces.Base
 				{
 					_selLoc = value;
 					var tile = this[_selLoc.Row, _selLoc.Col];
-					var stc = new SelectedTileChangedEventArgs(value, tile);
+					var args = new SelectedTileChangedEventArgs(value, tile);
 
 					if (SelectedTileChanged != null)
-						SelectedTileChanged(this, stc);
+						SelectedTileChanged(this, args);
 				}
 			}
 		}
@@ -164,10 +168,10 @@ namespace XCom.Interfaces.Base
 		}
 
 		public virtual void ResizeTo(
-								int newR,
-								int newC,
-								int newH,
-								bool wrtCeiling)
+				int newR,
+				int newC,
+				int newH,
+				bool wrtCeiling)
 		{
 			var newMap = MapResizeService.ResizeMap(
 												newR,
@@ -216,12 +220,12 @@ namespace XCom.Interfaces.Base
 					for (int
 							row = 0, startX = start.X, startY = start.Y + h * 24;
 							row < MapSize.Rows;
-							row++, startX -= hWid, startY += hHeight)
+							++row, startX -= hWid, startY += hHeight)
 					{
 						for (int
 								col = 0, x = startX, y = startY;
 								col < MapSize.Cols;
-								col++, x += hWid, y += hHeight, curr++)
+								++col, x += hWid, y += hHeight, ++curr)
 						{
 							var tiles = this[row, col, h].UsedTiles;
 							foreach (var tileBase in tiles)
@@ -249,9 +253,9 @@ namespace XCom.Interfaces.Base
 
 		private Palette GetFirstGroundPalette()
 		{
-			for (int h = 0; h < MapSize.Height; h++)
-				for (int r = 0; r < MapSize.Rows; r++)
-					for (int c = 0; c < MapSize.Cols; c++)
+			for (int h = 0; h != MapSize.Height; ++h)
+				for (int r = 0; r != MapSize.Rows; ++r)
+					for (int c = 0; c != MapSize.Cols; ++c)
 					{
 						var tile = (XCMapTile)this[r, c, h];
 						if (tile.Ground != null)

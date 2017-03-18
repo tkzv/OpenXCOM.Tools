@@ -18,7 +18,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			get { return TopViewControl; }
 		}
 
-		public MapObserverControl MapObserver // TODO: Consolidate this w/ Control.
+		public MapObserverControl0 MapObserver // TODO: Consolidate this w/ Control.
 		{
 			get { return TopViewControl; }
 		}

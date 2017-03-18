@@ -39,8 +39,8 @@ namespace XCom
 			_west    = west;
 			_content = content;
 
-			DrawAbove = true;
 			_blank = false;
+			DrawAbove = true;
 		}
 
 		public static XCMapTile BlankTile

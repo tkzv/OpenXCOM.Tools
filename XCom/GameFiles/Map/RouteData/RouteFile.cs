@@ -202,8 +202,11 @@ namespace XCom
 	{
 		private readonly List<RouteNode> _nodes;
 
+		public static readonly string RouteExt = ".RMP";
+
 		private readonly string _baseName;
 		private readonly string _basePath;
+
 
 		public static readonly object[] UnitRankUFO =
 		{
@@ -247,8 +250,6 @@ namespace XCom
 		};
 
 
-		public static readonly string RouteExt = ".RMP";
-
 		internal RouteFile(string baseName, string basePath)
 		{
 			_baseName = baseName;
@@ -272,18 +273,27 @@ namespace XCom
 		}
 
 
+		/// <summary>
+		/// Saves the .RMP file.
+		/// </summary>
 		public void Save() // TODO: wrap this in a 'using' block
 		{
-			Save(File.Create(_basePath + _baseName + RouteExt));
-		}
+//			Save(File.Create(_basePath + _baseName + RouteExt));
+			using (var fs = File.Create(_basePath + _baseName + RouteExt))
+			{
+				for (int i = 0; i != _nodes.Count; ++i)
+					_nodes[i].Save(fs); // -> RouteNode.Save() writes the node-data
 
-		public void Save(FileStream fs) // TODO: wrap this in a 'using' block
-		{
-			for (int i = 0; i < _nodes.Count; i++)
-				_nodes[i].Save(fs);
-
-			fs.Close();
+//				fs.Close(); // NOTE: the 'using' block (flushes &) closes the stream.
+			}
 		}
+//		public void Save(FileStream fs) // TODO: wrap this in a 'using' block
+//		{
+//			for (int i = 0; i != _nodes.Count; ++i)
+//				_nodes[i].Save(fs);
+//
+//			fs.Close();
+//		}
 
 		IEnumerator<RouteNode> IEnumerable<RouteNode>.GetEnumerator()
 		{
@@ -314,7 +324,7 @@ namespace XCom
 		public byte ExtraHeight
 		{ get; set; }
 
-		public void RemoveEntry(RouteNode node)
+		public void Delete(RouteNode node)
 		{
 			int nodeId = node.Index;
 
@@ -341,7 +351,7 @@ namespace XCom
 			}
 		}
 
-		public RouteNode AddEntry(byte row, byte col, byte height)
+		public RouteNode Add(byte row, byte col, byte height)
 		{
 			var node = new RouteNode((byte)_nodes.Count, row, col, height);
 			_nodes.Add(node);
@@ -349,7 +359,14 @@ namespace XCom
 			return node;
 		}
 
-		public void CheckRouteEntries(int newC, int newR, int newH)
+		/// <summary>
+		/// Checks for and if necessary deletes nodes that are outside of a
+		/// Map's x/y/z bounds. See also RouteService.CheckNodeBounds().
+		/// </summary>
+		/// <param name="newC"></param>
+		/// <param name="newR"></param>
+		/// <param name="newH"></param>
+		public void CheckNodeBounds(int newC, int newR, int newH)
 		{
 			var deletions = new List<RouteNode>();
 
@@ -358,7 +375,7 @@ namespace XCom
 					deletions.Add(node);
 
 			foreach (var entry in deletions)
-				RemoveEntry(entry);
+				Delete(entry);
 		}
 
 		public static bool IsOutsideMap(
