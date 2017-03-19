@@ -339,8 +339,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (_wallColor == null)
 				_wallColor = new SolidPenBrush(MapPens["WallColor"]);
 
-			_drawContentService.HWidth  = DrawAreaWidth;
-			_drawContentService.HHeight = DrawAreaHeight;
+			_drawContentService.HalfWidth  = DrawAreaWidth;
+			_drawContentService.HalfHeight = DrawAreaHeight;
 
 			var map = MapFile;
 			for (int

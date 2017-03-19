@@ -51,7 +51,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			// toolStripContainer2.ContentPanel
 			// 
 			this.toolStripContainer2.ContentPanel.Controls.Add(this.center);
-			this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(484, 213);
+			this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(615, 359);
 			this.toolStripContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer2.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			// 
@@ -65,7 +65,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			// toolStripContainer2.RightToolStripPanel
 			// 
 			this.toolStripContainer2.RightToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.toolStripContainer2.Size = new System.Drawing.Size(509, 238);
+			this.toolStripContainer2.Size = new System.Drawing.Size(640, 384);
 			this.toolStripContainer2.TabIndex = 4;
 			this.toolStripContainer2.Text = "toolStripContainer2";
 			// 
@@ -79,7 +79,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.center.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.center.Location = new System.Drawing.Point(0, 0);
 			this.center.Name = "center";
-			this.center.Size = new System.Drawing.Size(484, 213);
+			this.center.Size = new System.Drawing.Size(615, 359);
 			this.center.TabIndex = 2;
 			// 
 			// toolStrip
@@ -99,11 +99,11 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.bottom.Brushes = null;
 			this.bottom.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.bottom.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.bottom.Location = new System.Drawing.Point(0, 263);
+			this.bottom.Location = new System.Drawing.Point(0, 409);
 			this.bottom.Name = "bottom";
 			this.bottom.Pens = null;
 			this.bottom.SelectedQuadrant = XCom.XCMapTile.QuadrantType.Ground;
-			this.bottom.Size = new System.Drawing.Size(509, 71);
+			this.bottom.Size = new System.Drawing.Size(640, 71);
 			this.bottom.TabIndex = 0;
 			this.bottom.Text = "bottom";
 			// 
@@ -115,7 +115,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.toolStripDropDownButton1});
 			this.MainToolStrip.Location = new System.Drawing.Point(0, 0);
 			this.MainToolStrip.Name = "MainToolStrip";
-			this.MainToolStrip.Size = new System.Drawing.Size(509, 25);
+			this.MainToolStrip.Size = new System.Drawing.Size(640, 25);
 			this.MainToolStrip.TabIndex = 0;
 			this.MainToolStrip.Text = "toolStrip1";
 			// 
@@ -142,7 +142,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
 			this.optionsToolStripMenuItem.Text = "Options";
 			this.optionsToolStripMenuItem.Click += new System.EventHandler(this.options_click);
 			// 
@@ -153,7 +153,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.Controls.Add(this.MainToolStrip);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "TopView";
-			this.Size = new System.Drawing.Size(509, 334);
+			this.Size = new System.Drawing.Size(640, 480);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TopView_KeyDown);
 			this.toolStripContainer2.ContentPanel.ResumeLayout(false);
 			this.toolStripContainer2.LeftToolStripPanel.ResumeLayout(false);

@@ -20,7 +20,7 @@ namespace MapView.Forms.MainWindow
 
 		private Settings _settings;
 
-		private bool _isDisposed;
+		private bool _disposed;
 
 
 		public WindowMenuManager(MenuItem show, MenuItem help)
@@ -30,16 +30,16 @@ namespace MapView.Forms.MainWindow
 		}
 
 
-		public void SetMenus(ConsoleForm consoleWindow, Settings settings)
+		public void SetMenus(ConsoleForm consoleWindow, Settings settings) // NOTE: has nothing to do with the Registry.
 		{
 			_settings = settings;
 
-			RegisterForm(MainWindowsManager.TileView,		"Tile View",		_show, "TileView");
+			RegisterForm(MainWindowsManager.TileView,		"Tile View",		_show);//, "TileView");
 			_show.MenuItems.Add(new MenuItem("-"));
 
-			RegisterForm(MainWindowsManager.TopView,		"Top View",			_show, "TopView");
-			RegisterForm(MainWindowsManager.RouteView,		"Route View",		_show, "RmpView");
-			RegisterForm(MainWindowsManager.TopRouteView,	"Top & Route View",	_show);
+			RegisterForm(MainWindowsManager.TopView,		"Top View",			_show);//, "TopView");
+			RegisterForm(MainWindowsManager.RouteView,		"Route View",		_show);//, "RmpView");
+			RegisterForm(MainWindowsManager.TopRouteView,	"TopRoute View",	_show);
 			_show.MenuItems.Add(new MenuItem("-"));
 
 			RegisterForm(consoleWindow,						"Console",			_show);
@@ -82,7 +82,7 @@ namespace MapView.Forms.MainWindow
 			return new MainWindowsShowAllManager(_allForms, _allItems);
 		}
 
-		private void RegisterWindowMenuItemValue()
+		private void RegisterWindowMenuItemValue() // NOTE: has nothing to do with the Registry.
 		{
 			foreach (MenuItem item in _show.MenuItems)
 			{
@@ -102,7 +102,7 @@ namespace MapView.Forms.MainWindow
 				{
 					f.VisibleChanged += (sender, a) =>
 					{
-						if (_isDisposed)
+						if (_disposed)
 							return;
 
 						var senderForm = sender as Form;
@@ -115,28 +115,30 @@ namespace MapView.Forms.MainWindow
 			}
 		}
 
-		private void RegisterForm(
-				Form form,
-				string title,
-				Menu parent,
-				string registryKey = null)
+		private void RegisterForm( // NOTE: has nothing to do with the Registry.
+				Form f,
+				string caption,
+				Menu parent)
+//				string registryKey = null)
 		{
-			form.Text = title;
+			f.Text = caption;
 
-			var item = new MenuItem(title);
-			item.Tag = form;
+			var item = new MenuItem(caption);
+			item.Tag = f;
 
 			parent.MenuItems.Add(item);
+
 			item.Click += FormItemClick;
-			form.Closing += (sender, e) =>
+
+			f.Closing += (sender, e) =>
 			{
 				e.Cancel = true;
 				item.Checked = false;
-				form.Hide();
+				f.Hide();
 			};
 
 			_allItems.Add(item);
-			_allForms.Add(form);
+			_allForms.Add(f);
 		}
 
 		private static void FormItemClick(object sender, EventArgs e)
@@ -147,11 +149,13 @@ namespace MapView.Forms.MainWindow
 			{
 				((Form)item.Tag).Show();
 				((Form)item.Tag).WindowState = FormWindowState.Normal;
+
 				item.Checked = true;
 			}
 			else
 			{
 				((Form)item.Tag).Close();
+
 				item.Checked = false;
 			}
 		}
@@ -163,7 +167,7 @@ namespace MapView.Forms.MainWindow
 
 		public void Dispose()
 		{
-			_isDisposed = true;
+			_disposed = true;
 		}
 	}
 }

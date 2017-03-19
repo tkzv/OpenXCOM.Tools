@@ -11,10 +11,20 @@ namespace MapView.Forms.MapObservers.RouteViews
 	/// <summary>
 	/// Draws floor- and wall- and content- blobs for TopView and RMP View.
 	/// </summary>
-	public class DrawContentService // kL_note: should be called DrawStuffService().
-	{
-		public int HWidth  = 8; // NOTE: 'H' means half.
-		public int HHeight = 4;
+	public class DrawContentService	// Warning CA1001: Implement IDisposable on 'DrawContentService' because
+	{								// it creates members of the following IDisposable types: 'GraphicsPath'.
+		private int _halfWidth = 8;
+		public int HalfWidth
+		{
+			get { return _halfWidth; }
+			set { _halfWidth = value; }
+		}
+		private int _halfHeight = 4;
+		public int HalfHeight
+		{
+			get { return _halfHeight; }
+			set { _halfHeight = value; }
+		}
 
 		private readonly GraphicsPath _floor;
 		private readonly GraphicsPath _content;
@@ -35,7 +45,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		public void DrawFloor(
 				Graphics g,
-				SolidBrush brush,
+				Brush brush,
 				int x, int y)
 		{
 			g.FillPath(brush, GetFloorPath(x, y));
@@ -54,16 +64,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			var ptTop	= new Point(
 								x,
-								y + _pad);
+								(y > int.MaxValue - _pad) ? int.MaxValue : y + _pad); // <- FxCop ...
 			var ptBot	= new Point(
 								x,
-								y + (HHeight * 2) - _pad);
+								y + (_halfHeight * 2) - _pad);
 			var ptLeft	= new Point(
-								x - HWidth + (_pad * 2),
-								y + HHeight);
+								x - _halfWidth + (_pad * 2),
+								y + _halfHeight);
 			var ptRight	= new Point(
-								x + HWidth - (_pad * 2),
-								y + HHeight);
+								x + _halfWidth - (_pad * 2),
+								y + _halfHeight);
 
 			switch (ContentTypeService.GetContentType(content))
 			{
@@ -197,8 +207,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void SetGroundPath(int x, int y)
 		{
-			var w = HWidth  / 2;
-			var h = HHeight / 2;
+			var w = _halfWidth  / 2;
+			var h = _halfHeight / 2;
 
 			y += h;
 
@@ -243,13 +253,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_floor.Reset();
 			_floor.AddLine(
 						x, y,
-						x + HWidth, y + HHeight);
+						x + _halfWidth, y + _halfHeight);
 			_floor.AddLine(
-						x + HWidth, y + HHeight,
-						x, y + HHeight * 2);
+						x + _halfWidth, y + _halfHeight,
+						x, y + _halfHeight * 2);
 			_floor.AddLine(
-						x, y + HHeight * 2,
-						x - HWidth, y + HHeight);
+						x, y + _halfHeight * 2,
+						x - _halfWidth, y + _halfHeight);
 			_floor.CloseFigure();
 
 			return _floor;

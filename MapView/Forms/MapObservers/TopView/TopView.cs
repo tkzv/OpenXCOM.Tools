@@ -18,8 +18,8 @@ namespace MapView.Forms.MapObservers.TopViews
 	{
 		private readonly Dictionary<ToolStripMenuItem, int> _visibleHash;
 
-		private Dictionary<string, Pen> _pens;
-		private Dictionary<string, SolidBrush> _brushes;
+		private Dictionary<string, Pen> _topPens;
+		private Dictionary<string, SolidBrush> _topBrushes;
 
 		private readonly TopViewPanel _topViewPanel;
 		private MainToolStripButtonsFactory _mainToolStripButtonsFactory;
@@ -111,7 +111,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		protected override void OnRISettingsLoad(DSShared.Windows.RegistrySaveLoadEventArgs e)
 		{
 			bottom.Height = 74;
-			RegistryKey riKey = e.OpenKey;
+			RegistryKey riKey = e.OpenRegistryKey;
 
 			foreach (var mi in _visibleHash.Keys)
 				mi.Checked = bool.Parse((string)riKey.GetValue("vis" + _visibleHash[mi], "true"));
@@ -119,7 +119,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		protected override void OnRISettingsSave(DSShared.Windows.RegistrySaveLoadEventArgs e)
 		{
-			RegistryKey riKey = e.OpenKey;
+			RegistryKey riKey = e.OpenRegistryKey;
 
 			foreach (var mi in _visibleHash.Keys)
 				riKey.SetValue("vis" + _visibleHash[mi], mi.Checked);
@@ -161,23 +161,23 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private void BrushChanged(object sender, string key, object val)
 		{
-			_brushes[key].Color = (Color)val;
+			_topBrushes[key].Color = (Color)val;
 
 			if (key == "SelectTileColor")
-				bottom.SelectColor = _brushes[key];
+				bottom.SelectColor = _topBrushes[key];
 
 			Refresh();
 		}
 
 		private void PenColorChanged(object sender, string key, object val)
 		{
-			_pens[key].Color = (Color)val;
+			_topPens[key].Color = (Color)val;
 			Refresh();
 		}
 
 		private void PenWidthChanged(object sender, string key, object val)
 		{
-			_pens[key].Width = (int)val;
+			_topPens[key].Width = (int)val;
 			Refresh();
 		}
 
@@ -238,32 +238,32 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		public override void LoadDefaultSettings()
 		{
-			_brushes = new Dictionary<string, SolidBrush>();
-			_pens = new Dictionary<string, Pen>();
+			_topBrushes = new Dictionary<string, SolidBrush>();
+			_topPens = new Dictionary<string, Pen>();
 
-			_brushes.Add("GroundColor", new SolidBrush(Color.Orange));
-			_brushes.Add("ContentColor", new SolidBrush(Color.Green));
-			_brushes.Add("SelectTileColor", bottom.SelectColor);
+			_topBrushes.Add("GroundColor", new SolidBrush(Color.Orange));
+			_topBrushes.Add("ContentColor", new SolidBrush(Color.Green));
+			_topBrushes.Add("SelectTileColor", bottom.SelectColor);
 
 			var northPen = new Pen(new SolidBrush(Color.Red), 4);
-			_pens.Add("NorthColor", northPen);
-			_pens.Add("NorthWidth", northPen);
+			_topPens.Add("NorthColor", northPen);
+			_topPens.Add("NorthWidth", northPen);
 
 			var westPen = new Pen(new SolidBrush(Color.Red), 4);
-			_pens.Add("WestColor", westPen);
-			_pens.Add("WestWidth", westPen);
+			_topPens.Add("WestColor", westPen);
+			_topPens.Add("WestWidth", westPen);
 
 			var selPen = new Pen(new SolidBrush(Color.Black), 2);
-			_pens.Add("SelectColor", selPen);
-			_pens.Add("SelectWidth", selPen);
+			_topPens.Add("SelectColor", selPen);
+			_topPens.Add("SelectWidth", selPen);
 
 			var gridPen = new Pen(new SolidBrush(Color.Black), 1);
-			_pens.Add("GridColor", gridPen);
-			_pens.Add("GridWidth", gridPen);
+			_topPens.Add("GridColor", gridPen);
+			_topPens.Add("GridWidth", gridPen);
 
 			var mousePen = new Pen(new SolidBrush(Color.Blue), 2);
-			_pens.Add("MouseColor", mousePen);
-			_pens.Add("MouseWidth", mousePen);
+			_topPens.Add("MouseColor", mousePen);
+			_topPens.Add("MouseWidth", mousePen);
 
 			ValueChangedDelegate bc = BrushChanged;
 			ValueChangedDelegate pc = PenColorChanged;
@@ -286,10 +286,10 @@ namespace MapView.Forms.MapObservers.TopViews
 			Settings.AddSetting("DiamondMinHeight",	_topViewPanel.MinHeight,	"Minimum height of the grid tiles",				"Tile",		dh, false, null);
 
 			_topViewPanel.Brushes =
-			bottom.Brushes        = _brushes;
+			bottom.Brushes        = _topBrushes;
 
 			_topViewPanel.Pens =
-			bottom.Pens        = _pens;
+			bottom.Pens        = _topPens;
 
 			Invalidate();
 		}

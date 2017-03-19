@@ -28,14 +28,12 @@ namespace MapView.Forms.MapObservers.TopViews
 		private int _mC = -1;
 
 		private DrawContentService _drawService = new DrawContentService();
-
 		protected DrawContentService DrawService
 		{
 			get { return _drawService; }
 		}
 
 		private int _heightMin = 4;
-
 		public int MinHeight
 		{
 			get { return _heightMin; }
@@ -59,8 +57,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			if (Map != null)
 			{
-				var hWidth  = _drawService.HWidth;
-				var hHeight = _drawService.HHeight;
+				var hWidth  = _drawService.HalfWidth;
+				var hHeight = _drawService.HalfHeight;
 				
 				int curWidth = hWidth;
 
@@ -88,8 +86,8 @@ namespace MapView.Forms.MapObservers.TopViews
 					hHeight = _heightMin;
 				}
 
-				_drawService.HWidth  = hWidth;
-				_drawService.HHeight = hHeight;
+				_drawService.HalfWidth  = hWidth;
+				_drawService.HalfHeight = hHeight;
 
 				_offX = 4 + Map.MapSize.Rows * hWidth;
 				_offY = 4;
@@ -110,7 +108,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			set
 			{
 				base.Map = value;
-				_drawService.HWidth = 7;
+				_drawService.HalfWidth = 7;
 				ParentSize(Parent.Width, Parent.Height);
 
 				Refresh();
@@ -133,8 +131,8 @@ namespace MapView.Forms.MapObservers.TopViews
 			var start = GetDragStart();
 			var end   = GetDragEnd();
 
-			var hWidth  = _drawService.HWidth;
-			var hHeight = _drawService.HHeight;
+			var hWidth  = _drawService.HalfWidth;
+			var hHeight = _drawService.HalfHeight;
 
 			var sel1 = new Point(
 							_offX + (start.X - start.Y) * hWidth,
@@ -195,8 +193,8 @@ namespace MapView.Forms.MapObservers.TopViews
 			MapLocation pt = e.MapPosition;
 //			Text = "c: " + pt.Col + " r: " + pt.Row; // I don't think this actually prints anywhere.
 
-			var hWidth  = _drawService.HWidth;
-			var hHeight = _drawService.HHeight;
+			var hWidth  = _drawService.HalfWidth;
+			var hHeight = _drawService.HalfHeight;
 
 			int xc = (pt.Col - pt.Row) * hWidth;
 			int yc = (pt.Col + pt.Row) * hHeight;
@@ -228,8 +226,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			backBuffer.FillRectangle(SystemBrushes.Control, ClientRectangle);
 
-			var hWidth  = _drawService.HWidth;
-			var hHeight = _drawService.HHeight;
+			var hWidth  = _drawService.HalfWidth;
+			var hHeight = _drawService.HalfHeight;
 
 			if (Map != null)
 			{
@@ -287,8 +285,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private GraphicsPath CellPath(int x, int y)
 		{
-			var hWidth  = _drawService.HWidth;
-			var hHeight = _drawService.HHeight ;
+			var hWidth  = _drawService.HalfWidth;
+			var hHeight = _drawService.HalfHeight ;
 
 			_cell.Reset();
 			_cell.AddLine(
@@ -310,8 +308,8 @@ namespace MapView.Forms.MapObservers.TopViews
 			// 16 is half the width of the diamond
 			// 24 is the distance from the top of the diamond to the very top of the image
 
-			var hWidth  = (double)_drawService.HWidth;
-			var hHeight = (double)_drawService.HHeight;
+			var hWidth  = (double)_drawService.HalfWidth;
+			var hHeight = (double)_drawService.HalfHeight;
 
 			double x1 =  (x          / (hWidth * 2)) + (y / (hHeight * 2));
 			double x2 = -(x - y * 2) / (hWidth * 2);
@@ -367,8 +365,8 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		/// <summary>
-		/// Scrolls the z-axis for TopRouteView. Sort of ....
+/*		/// <summary>
+		/// Scrolls the z-axis for TopRouteView. Sort of .... no, well no it doesn't.
 		/// </summary>
 		/// <param name="e"></param>
 		protected override void OnMouseWheel(MouseEventArgs e)
@@ -376,6 +374,6 @@ namespace MapView.Forms.MapObservers.TopViews
 			base.OnMouseWheel(e);
 			if		(e.Delta < 0) base.Map.Up();
 			else if	(e.Delta > 0) base.Map.Down();
-		}
+		} */
 	}
 }

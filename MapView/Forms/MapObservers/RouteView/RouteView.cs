@@ -190,13 +190,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (connectNodesToolStripMenuItem.Text == "Connect Two ways")
 				return ConnectNodeType.ConnectTwoWays;
 
-			return ConnectNodeType.DontConnect;
+			return ConnectNodeType.DoNotConnect;
 		}
 
 		private void ConnectNode(RouteNode node)
 		{
 			var type = GetConnectionSetting();
-			if (type != ConnectNodeType.DontConnect)
+			if (type != ConnectNodeType.DoNotConnect)
 			{
 				int linkId = GetOpenLinkSlot(_nodeSelected, node.Index);
 				if (linkId != -1)

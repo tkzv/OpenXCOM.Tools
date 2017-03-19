@@ -14,6 +14,15 @@ namespace MapView.Forms.MapObservers.TileViews
 	{
 //		public RegistryInfo RegistryInfo;
 
+
+		public TopRouteViewForm()
+		{
+			InitializeComponent();
+
+//			RegistryInfo = new RegistryInfo(this, "TopRouteViewForm");
+		}
+
+
 		public TopView TopViewControl
 		{
 			get { return controlTopView; }
@@ -24,14 +33,6 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			get { return controlRouteView; }
 			set { controlRouteView = value; }
-		}
-
-
-		public TopRouteViewForm()
-		{
-			InitializeComponent();
-
-//			RegistryInfo = new RegistryInfo(this, "TopRmpViewForm");
 		}
 	}
 }

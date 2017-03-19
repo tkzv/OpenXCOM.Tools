@@ -2,7 +2,7 @@
 {
 	public enum ConnectNodeType
 	{
-		DontConnect,
+		DoNotConnect,
 		ConnectOneWay,
 		ConnectTwoWays
 	}

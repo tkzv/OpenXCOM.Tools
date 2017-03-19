@@ -8,31 +8,63 @@ using XCom;
 
 namespace MapView.Forms.MapObservers.RouteViews
 {
-	public delegate void MapPanelClickDelegate(object sender, MapPanelClickEventArgs e);
+//	public delegate void MapPanelClickDelegate(object sender, MapPanelClickEventArgs e);
 
 
 	public class MapPanel
 		:
 		UserControl
 	{
+		public event EventHandler<MapPanelClickEventArgs> MapPanelClicked;
+//		public event MapPanelClickDelegate MapPanelClicked;
+
+
+
 		private XCMapFile _mapFile;
 
-		public Point ClickPoint;
-		protected Point Origin;
+		private Point _clickPoint;
+		protected Point ClickPoint
+		{
+			get { return _clickPoint; }
+			set { _clickPoint = value; }
+		}
 
-		protected int DrawAreaWidth  = 8;
-		protected int DrawAreaHeight = 4;
+		private Point _origin;
+		protected Point Origin
+		{
+			get { return _origin; }
+			set { _origin = value; }
+		}
 
-		public event MapPanelClickDelegate MapPanelClicked;
+		private int _drawAreaWidth = 8;
+		protected int DrawAreaWidth
+		{
+			get { return _drawAreaWidth; }
+			set { _drawAreaWidth = value; }
+		}
+		private int _drawAreaHeight = 4;
+		protected int DrawAreaHeight
+		{
+			get { return _drawAreaHeight; }
+			set { _drawAreaHeight = value; }
+		}
 
-		public Dictionary<string, Pen> MapPens;
-		public Dictionary<string, SolidBrush> MapBrushes;
+		private readonly Dictionary<string, Pen> _mapPens;
+		public Dictionary<string, Pen> MapPens
+		{
+			get { return _mapPens; }
+		}
+		private readonly Dictionary<string, SolidBrush> _mapBrushes;
+		public Dictionary<string, SolidBrush> MapBrushes
+		{
+			get { return _mapBrushes; }
+		}
 
 
 		public MapPanel()
 		{
-			MapPens    = new Dictionary<string, Pen>();
-			MapBrushes = new Dictionary<string, SolidBrush>();
+			_mapPens    = new Dictionary<string, Pen>();
+			_mapBrushes = new Dictionary<string, SolidBrush>();
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
 		}
@@ -81,7 +113,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		public void DeselectLocation()
 		{
-			ClickPoint = new Point(-1, -1);
+			_clickPoint = new Point(-1, -1);
 		}
 
 		protected override void OnMouseDown(MouseEventArgs e)
@@ -97,11 +129,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 						var tile = _mapFile[pt.Y, pt.X];
 						if (tile != null)
 						{
-							ClickPoint = pt;
+							_clickPoint = pt;
 
 							_mapFile.SelectedTile = new MapLocation(
-															ClickPoint.Y,
-															ClickPoint.X,
+															_clickPoint.Y,
+															_clickPoint.X,
 															_mapFile.CurrentHeight);
 
 							MapViewPanel.Instance.MapView.SetDrag(pt, pt);
@@ -110,8 +142,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 							args.ClickTile = tile;
 							args.MouseEventArgs = e;
 							args.ClickLocation = new MapLocation(
-															ClickPoint.Y,
-															ClickPoint.X,
+															_clickPoint.Y,
+															_clickPoint.X,
 															_mapFile.CurrentHeight);
 							MapPanelClicked(this, args);
 
@@ -130,32 +162,32 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				if (Height > Width / 2) // use width
 				{
-					DrawAreaWidth = Width / (_mapFile.MapSize.Rows + _mapFile.MapSize.Cols + 1);
+					_drawAreaWidth = Width / (_mapFile.MapSize.Rows + _mapFile.MapSize.Cols + 1);
 
-					if (DrawAreaWidth % 2 != 0)
-						DrawAreaWidth--;
+					if (_drawAreaWidth % 2 != 0)
+						_drawAreaWidth--;
 
-					DrawAreaHeight = DrawAreaWidth / 2;
+					_drawAreaHeight = _drawAreaWidth / 2;
 				}
 				else // use height
 				{
-					DrawAreaHeight = Height / (_mapFile.MapSize.Rows + _mapFile.MapSize.Cols);
-					DrawAreaWidth  = DrawAreaHeight * 2;
+					_drawAreaHeight = Height / (_mapFile.MapSize.Rows + _mapFile.MapSize.Cols);
+					_drawAreaWidth  = _drawAreaHeight * 2;
 				}
 
-				Origin = new Point(_mapFile.MapSize.Rows * DrawAreaWidth, 0);
+				_origin = new Point(_mapFile.MapSize.Rows * _drawAreaWidth, 0);
 				Refresh();
 			}
 		}
 
 		private Point ConvertCoordsDiamond(int ptX, int ptY)
 		{
-			int x = ptX - Origin.X;
-			int y = ptY - Origin.Y;
+			int x = ptX - _origin.X;
+			int y = ptY - _origin.Y;
 
-			double x1 = ((double)x / (DrawAreaWidth  * 2))
-					  + ((double)y / (DrawAreaHeight * 2));
-			double x2 = -((double)x - (double)y * 2) / (DrawAreaWidth * 2);
+			double x1 = ((double)x / (_drawAreaWidth  * 2))
+					  + ((double)y / (_drawAreaHeight * 2));
+			double x2 = -((double)x - (double)y * 2) / (_drawAreaWidth * 2);
 
 			return new Point(
 						(int)Math.Floor(x1),

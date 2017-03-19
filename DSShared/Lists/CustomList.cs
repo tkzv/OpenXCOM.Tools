@@ -149,7 +149,7 @@ namespace DSShared.Lists
 
 		private void loading(object sender, RegistrySaveLoadEventArgs e)
 		{
-			RegistryKey key = e.OpenKey;
+			RegistryKey key = e.OpenRegistryKey;
 			Graphics g = Graphics.FromHwnd(this.Handle);
 			foreach (CustomListColumn cc in _columns)
 			{
@@ -166,7 +166,7 @@ namespace DSShared.Lists
 
 		private void saving(object sender, RegistrySaveLoadEventArgs e)
 		{
-			RegistryKey key = e.OpenKey;
+			RegistryKey key = e.OpenRegistryKey;
 			foreach (CustomListColumn cc in _columns)
 				key.SetValue("strLen" + _name + cc.Index, cc.Width);
 		}

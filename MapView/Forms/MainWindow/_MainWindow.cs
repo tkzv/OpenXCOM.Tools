@@ -24,6 +24,7 @@ namespace MapView
 //	public delegate void MapChangedDelegate(object sender, SetMapEventArgs e);
 //	public delegate void StringDelegate(object sender, string args);
 
+
 	public sealed partial class MainWindow
 		:
 		Form
@@ -67,7 +68,7 @@ namespace MapView
 			size.Width  = 0;
 			size.Height = 0;
 			MaximumSize = size; // fu.net
-			MinimumSize = size;
+//			MinimumSize = size;
 
 
 			_mapViewPanel = MapViewPanel.Instance; // "MapView panel created"
@@ -180,7 +181,7 @@ namespace MapView
 			}
 			LogFile.WriteLine("Cursor loaded");
 
-			initList();
+			InitList();
 			LogFile.WriteLine("Tilesets created and loaded to MapView's tree panel");
 
 			if (fileSettings.Exists())
@@ -364,7 +365,7 @@ namespace MapView
 			}
 		}
 
-		private void initList()
+		private void InitList()
 		{
 			mapList.Nodes.Clear();
 
@@ -533,7 +534,7 @@ namespace MapView
 
 			var pathInfo = (PathInfo)share;
 			InitGameInfo(pathInfo);
-			initList();
+			InitList();
 		}
 
 		/// <summary>
@@ -616,7 +617,7 @@ namespace MapView
 			{
 				switch (MessageBox.Show(
 									this,
-									"Do you wish to save?",
+									"Do you want to save changes?",
 									"Map Changed",
 									MessageBoxButtons.YesNoCancel,
 									MessageBoxIcon.Question,
@@ -709,13 +710,13 @@ namespace MapView
 			}
 		}
 
-		private bool windowFlag = false;
+		private bool _windowFlag = false;
 
 		private void MainWindow_Activated(object sender, System.EventArgs e)
 		{
-			if (!windowFlag)
+			if (!_windowFlag)
 			{
-				windowFlag = true;
+				_windowFlag = true;
 
 				foreach (MenuItem mi in showMenu.MenuItems)
 					if (mi.Checked)
@@ -724,7 +725,7 @@ namespace MapView
 				Focus();
 				BringToFront();
 
-				windowFlag = false;
+				_windowFlag = false;
 			}
 		}
 
