@@ -82,7 +82,7 @@ namespace MapView
 
 			if (folderBrowser.ShowDialog(this) == DialogResult.OK)
 			{
-				tbUfo.Text = folderBrowser.SelectedPath;
+				tbUfo.Text = @folderBrowser.SelectedPath;
 
 				if (folderBrowser.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))
 					tbUfo.Text = tbUfo.Text.Substring(0, tbUfo.Text.Length - 1);
@@ -95,7 +95,7 @@ namespace MapView
 
 			if (folderBrowser.ShowDialog(this) == DialogResult.OK)
 			{
-				tbTftd.Text = folderBrowser.SelectedPath;
+				tbTftd.Text = @folderBrowser.SelectedPath;
 
 				if (folderBrowser.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))
 					tbTftd.Text = tbTftd.Text.Substring(0, tbTftd.Text.Length - 1);
@@ -183,9 +183,9 @@ namespace MapView
 						using (var sw = new StreamWriter(fs))
 						{
 							writeFile(sr, sw);
-							sw.Flush();
-							sw.Close();
-							sr.Close();
+//							sw.Flush();
+//							sw.Close();
+//							sr.Close();
 						}
 	
 				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
