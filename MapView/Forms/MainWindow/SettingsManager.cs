@@ -3,28 +3,30 @@ using System.IO;
 
 using MapView.SettingServices;
 
+using XCom;
+
 
 namespace MapView.Forms.MainWindow
 {
 	public class SettingsManager
 	{
-		private readonly Dictionary<string, Settings> _settingsHash;
+		private readonly Dictionary<string, Settings> _dictSettings;
 
 
 		public SettingsManager()
 		{
-			_settingsHash = new Dictionary<string, Settings>();
+			_dictSettings = new Dictionary<string, Settings>();
 		}
 
 
 		public void Add(string registryKey, Settings settings)
 		{
-			_settingsHash.Add(registryKey, settings);
+			_dictSettings.Add(registryKey, settings);
 		}
 
 		public void Save()
 		{
-			SettingsService.Save(_settingsHash);
+			SettingsService.Save(_dictSettings);
 		}
 
 		public void Load(string file)
@@ -33,10 +35,10 @@ namespace MapView.Forms.MainWindow
 			{
 				var vars = new XCom.VarCollection(sr);
 
-				XCom.KeyVal line = null;
+				KeyVal line;
 				while ((line = vars.ReadLine()) != null)
 				{
-					Settings.ReadSettings(vars, line, _settingsHash[line.Keyword]);
+					Settings.ReadSettings(vars, line, _dictSettings[line.Keyword]);
 				}
 //				sr.Close(); // NOTE: the 'using' block closes the stream.
 			}
@@ -44,8 +46,8 @@ namespace MapView.Forms.MainWindow
 
 		public Settings this[string key]
 		{
-			get { return _settingsHash[key]; }
-			set { _settingsHash[key] = value; }
+			get { return _dictSettings[key]; }
+			set { _dictSettings[key] = value; }
 		}
 	}
 }

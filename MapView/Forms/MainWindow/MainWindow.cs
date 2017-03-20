@@ -34,9 +34,9 @@ namespace MapView
 		private readonly MapViewPanel _mapViewPanel;
 		private readonly LoadingForm _loadingProgress;
 		private readonly IWarningHandler _warningHandler;
-		private readonly IMainWindowWindowsManager _mainWindowWindowsManager;
+		private readonly IMainViewsManager _mainViewsManager;
 		private readonly MainWindowsManager _mainWindowsManager;
-		private readonly WindowMenuManager _windowMenuManager;
+		private readonly MainMenusManager _mainMenusManager;
 
 
 		public MainWindow()
@@ -71,10 +71,11 @@ namespace MapView
 //			MinimumSize = size;
 
 
-			_mapViewPanel = MapViewPanel.Instance; // "MapView panel created"
+			_mapViewPanel = MapViewPanel.Instance;
+			LogFile.WriteLine("MapView panel created");
 
 			_settingsManager = new SettingsManager();
-			_windowMenuManager = new WindowMenuManager(showMenu, miHelp);
+			_mainMenusManager = new MainMenusManager(showMenu, miHelp);
 			LogFile.WriteLine("Quick Help and About created");
 
 			LoadDefaults();
@@ -92,54 +93,55 @@ namespace MapView
 			var consoleShare = new ConsoleSharedSpace(share);
 			_warningHandler = new ConsoleWarningHandler(consoleShare);
 
-			MainWindowsManager.MainToolStripButtonsFactory = new MainToolStripButtonsFactory(_mapViewPanel);
+			MainWindowsManager.EditButtonsFactory = new EditButtonsFactory(_mapViewPanel);
 
 			_mainWindowsManager = new MainWindowsManager();
-			_mainWindowWindowsManager = new MainWindowWindowsManager(_settingsManager, consoleShare);
+			_mainViewsManager = new MainViewsManager(_settingsManager, consoleShare);
 
-			_windowMenuManager.SetMenus(consoleShare.GetNewConsole(), GetSettings());
+			_mainMenusManager.PopulateMenus(consoleShare.GetNewConsole(), GetSettings());
 
-			MainWindowsManager.MainWindowsShowAllManager = _windowMenuManager.CreateShowAll();
+			MainWindowsManager.MainWindowsShowAllManager = _mainMenusManager.CreateShowAll();
 			MainWindowsManager.Initialize();
 			LogFile.WriteLine("MainWindowsManager initialized");
 
-			share.AllocateObject("MapView",		this);
-			share.AllocateObject("AppDir",		Environment.CurrentDirectory);
-			share.AllocateObject("SettingsDir",	Environment.CurrentDirectory + @"\settings");
-//			share.AllocateObject("CustomDir",	Environment.CurrentDirectory + @"\custom");	// I think this is needed only for PckView.
-																							// and so I'll assume '_PckView' handles it.
+			share.AllocateObject("MapView", this);
+			share.AllocateObject(SharedSpace.AppDir,      Environment.CurrentDirectory);
+			share.AllocateObject(SharedSpace.SettingsDir, Environment.CurrentDirectory + @"\settings");
+
+			// I think this is needed only for PckView. so I'll assume '_PckView' can handle it.
+//			share.AllocateObject(SharedSpace.CustomDir, Environment.CurrentDirectory + @"\custom");
+
 			LogFile.WriteLine("Environment set");
 
-			var dir = SharedSpace.Instance.GetString("SettingsDir");
-			var fileSettings	= new PathInfo(dir, "MVSettings",	"dat");
-			var filePaths		= new PathInfo(dir, "Paths",		"pth");
-			var fileMapEdit		= new PathInfo(dir, "MapEdit",		"dat");
-			var fileImages		= new PathInfo(dir, "Images",		"dat");
+			var dir = SharedSpace.Instance.GetString(SharedSpace.SettingsDir);
+			var infoSettings = new PathInfo(dir, "MVSettings", "cfg");
+			var infoPaths    = new PathInfo(dir, "Paths",      "cfg");
+			var infoMapEdit  = new PathInfo(dir, "MapEdit",    "cfg");
+			var infoImages   = new PathInfo(dir, "Images",     "cfg");
 
-			share.AllocateObject(SettingsService.SettingsFile, fileSettings);
-			share.AllocateObject("MV_PathsFile",	filePaths);
-			share.AllocateObject("MV_MapEditFile",	fileMapEdit);
-			share.AllocateObject("MV_ImagesFile",	fileImages);
+			share.AllocateObject(SettingsService.SettingsFile, infoSettings);
+			share.AllocateObject(PathInfo.PathsFile,           infoPaths);
+			share.AllocateObject(PathInfo.MapEditFile,         infoMapEdit);
+			share.AllocateObject(PathInfo.ImagesFile,          infoImages);
 			LogFile.WriteLine("Paths set");
 
 			#endregion
 
-			if (!filePaths.Exists())
+			if (!infoPaths.FileExists())
 			{
-				var iw = new InstallWindow();
-
-				if (iw.ShowDialog(this) != DialogResult.OK)
-					Environment.Exit(-1);
+				var install = new InstallWindow();
+				if (install.ShowDialog(this) != DialogResult.OK)
+					Environment.Exit(-1); // wtf -1
 			}
 			LogFile.WriteLine("Installation checked");
 
 			GameInfo.ParseLine += parseLine; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 			LogFile.WriteLine("Line parsed");
 
-			InitGameInfo(filePaths);
+			InitGameInfo(infoPaths);
 			LogFile.WriteLine("GameInfo initialized");
 
-			_mainWindowWindowsManager.Register();
+			_mainViewsManager.ManageViews();
 
 			MainWindowsManager.TileView.TileViewControl.MapChanged += TileView_MapChanged;
 
@@ -152,7 +154,7 @@ namespace MapView
 			mapList.TreeViewNodeSorter = new System.Collections.CaseInsensitiveComparer();
 
 			toolStripContainer1.ContentPanel.Controls.Add(_mapViewPanel);
-			MainWindowsManager.MainToolStripButtonsFactory.MakeToolstrip(toolStrip);
+			MainWindowsManager.EditButtonsFactory.MakeToolstrip(toolStrip);
 			toolStrip.Enabled = false;
 			toolStrip.Items.Add(new ToolStripSeparator());
 
@@ -182,11 +184,11 @@ namespace MapView
 			LogFile.WriteLine("Cursor loaded");
 
 			InitList();
-			LogFile.WriteLine("Tilesets created and loaded to MapView's tree panel");
+			LogFile.WriteLine("Tilesets created and loaded to Main window's tree panel");
 
-			if (fileSettings.Exists())
+			if (infoSettings.FileExists())
 			{
-				_settingsManager.Load(fileSettings.ToString());
+				_settingsManager.Load(infoSettings.FullPath());
 				LogFile.WriteLine("User settings loaded");
 			}
 			else
@@ -194,7 +196,7 @@ namespace MapView
 
 
 			OnResize(null);
-			this.Closing += new CancelEventHandler(closing);
+			this.Closing += new CancelEventHandler(CloseAllSaveRegistry);
 
 			_loadingProgress = new LoadingForm();
 			Bmp.LoadingEvent += _loadingProgress.Update;
@@ -213,10 +215,10 @@ namespace MapView
 			// There are no currently loadable maps in this assembly so this is more for future use
 //			loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(XCom.Interfaces.Base.IMapDesc)));
 
-//			if (Directory.Exists(sharedSpace["CustomDir"].ToString()))
+//			if (Directory.Exists(sharedSpace[SharedSpace.CustomDir].ToString()))
 //			{
-//				xConsole.AddLine("Custom directory exists: " + sharedSpace["CustomDir"].ToString());
-//				foreach (string s in Directory.GetFiles(sharedSpace["CustomDir"].ToString()))
+//				xConsole.AddLine("Custom directory exists: " + sharedSpace[SharedSpace.CustomDir].ToString());
+//				foreach (string s in Directory.GetFiles(sharedSpace[SharedSpace.CustomDir].ToString()))
 //					if (s.EndsWith(".dll"))
 //					{
 //						xConsole.AddLine("Loading dll: " + s);
@@ -373,15 +375,15 @@ namespace MapView
 				AddTileset(GameInfo.TilesetInfo.Tilesets[key]);
 		}
 
-		private void closing(object sender, CancelEventArgs e)
+		private void CloseAllSaveRegistry(object sender, CancelEventArgs args)
 		{
 			if (NotifySave() == DialogResult.Cancel)
 			{
-				e.Cancel = true;
+				args.Cancel = true;
 			}
 			else
 			{
-				_windowMenuManager.Dispose();
+				_mainMenusManager.Dispose();
 
 				if (PathsEditor.SaveRegistry)
 				{
@@ -389,7 +391,7 @@ namespace MapView
 					var keyMapView  = keySoftware.CreateSubKey("MapView");
 					var keyMainView = keyMapView.CreateSubKey("MainView");
 
-					_mainWindowWindowsManager.CloseAll();
+					_mainViewsManager.CloseAllViews();
 
 					WindowState = FormWindowState.Normal;
 
@@ -519,15 +521,15 @@ namespace MapView
 			}
 		}
 
-		private void quititem_Click(object sender, System.EventArgs e)
+		private void miQuit_Click(object sender, System.EventArgs e)
 		{
-			closing(null, new CancelEventArgs(true));
+			CloseAllSaveRegistry(null, new CancelEventArgs(true));
 			Environment.Exit(0);
 		}
 
 		private void miPaths_Click(object sender, System.EventArgs e)
 		{
-			var share = SharedSpace.Instance["MV_PathsFile"];
+			var share = SharedSpace.Instance[PathInfo.PathsFile];
 
 			var paths = new PathsEditor(share.ToString());
 			paths.ShowDialog();
@@ -603,7 +605,7 @@ namespace MapView
 				}
 
 				if (!showMenu.Enabled) // open all the forms in the show menu once
-					_windowMenuManager.LoadState();
+					_mainMenusManager.LoadState();
 
 				_mainWindowsManager.SetMap(map); // reset all observer events
 			}

@@ -1,4 +1,6 @@
+/*
 using System;
+
 
 namespace MapView
 {
@@ -8,7 +10,7 @@ namespace MapView
 	{
 		public string UpdatePath
 		{
-			get { return ""; }
+			get { return String.Empty; }
 		}
 
 		public string DisplayDescription
@@ -17,3 +19,4 @@ namespace MapView
 		}
 	}
 }
+*/

@@ -1,7 +1,6 @@
+/*
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
+
 
 namespace PckView
 {
@@ -9,7 +8,7 @@ namespace PckView
 	{
 		public string UpdatePath
 		{
-			get { return ""; }
+			get { return String.Empty; }
 		}
 
 		public string DisplayDescription
@@ -18,3 +17,4 @@ namespace PckView
 		}
 	}
 }
+*/

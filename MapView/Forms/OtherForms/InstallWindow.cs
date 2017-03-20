@@ -15,12 +15,12 @@ namespace MapView
 		:
 		Form
 	{
-//		private string pathsFile	= "Paths.pth";
-//		private string mapFile		= "MapEdit.dat";
-//		private string imageFile	= "Images.dat";
-//		private string miscFile		= "Misc.dat";
+//		private string pathsFile = "Paths.pth";
+//		private string mapFile   = "MapEdit.dat";
+//		private string imageFile = "Images.dat";
+//		private string miscFile  = "Misc.dat";
 
-//		private string _runPath		= String.Empty;
+//		private string _runPath  = String.Empty;
 
 		private XCom.VarCollection _vars;
 
@@ -35,6 +35,7 @@ namespace MapView
 
 			_vars = new XCom.VarCollection();
 
+			// NOTE: Add your own personal XCOM resources-dir here if desired:
 			var dirsUfo = new List<string>();
 			dirsUfo.Add(@"C:\0xC_kL\data");
 //			dirsUfo.Add(@"C:\ufo");
@@ -57,14 +58,14 @@ namespace MapView
 			foreach (string path in dirsUfo)
 				if (Directory.Exists(path))
 				{
-					txtUFO.Text = path;
+					tbUfo.Text = path;
 					break;
 				}
 
 			foreach (string path in dirsTftd)
 				if (Directory.Exists(path))
 				{
-					txtTFTD.Text = path;
+					tbTftd.Text = path;
 					break;
 				}
 		}
@@ -75,63 +76,65 @@ namespace MapView
 //			get { return new DSShared.PathInfo(pathsFile); }
 //		}
 
-		private void btnFindUFO_Click(object sender, EventArgs e)
+		private void btnFindUfo_Click(object sender, EventArgs e)
 		{
-			folderSelector.Description = "Select UFO directory";
+			folderBrowser.Description = "Select UFO directory";
 
-			if (folderSelector.ShowDialog(this) == DialogResult.OK)
+			if (folderBrowser.ShowDialog(this) == DialogResult.OK)
 			{
-				txtUFO.Text = @folderSelector.SelectedPath;
+				tbUfo.Text = folderBrowser.SelectedPath;
 
-				if (folderSelector.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))
-					txtUFO.Text = txtUFO.Text.Substring(0, txtUFO.Text.Length - 1);
+				if (folderBrowser.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))
+					tbUfo.Text = tbUfo.Text.Substring(0, tbUfo.Text.Length - 1);
 			}
 		}
 
-		private void btnFindTFTD_Click(object sender, EventArgs e)
+		private void btnFindTftd_Click(object sender, EventArgs e)
 		{
-			folderSelector.Description = "Select TFTD directory";
+			folderBrowser.Description = "Select TFTD directory";
 
-			if (folderSelector.ShowDialog(this) == DialogResult.OK)
+			if (folderBrowser.ShowDialog(this) == DialogResult.OK)
 			{
-				txtTFTD.Text = folderSelector.SelectedPath;
+				tbTftd.Text = folderBrowser.SelectedPath;
 
-				if (folderSelector.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))
-					txtTFTD.Text = txtTFTD.Text.Substring(0, txtTFTD.Text.Length - 1);
+				if (folderBrowser.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))
+					tbTftd.Text = tbTftd.Text.Substring(0, tbTftd.Text.Length - 1);
 			}
 		}
 
-		private void okButton_Click(object sender, EventArgs e)
+		private void btnOk_Click(object sender, EventArgs e)
 		{
-			var pathsFile = (PathInfo)SharedSpace.Instance["MV_PathsFile"];
-			pathsFile.EnsureDirectoryExists();
-			((PathInfo)SharedSpace.Instance["MV_MapEditFile"]).EnsureDirectoryExists();
-			((PathInfo)SharedSpace.Instance["MV_ImagesFile"]).EnsureDirectoryExists();
+			var info = (PathInfo)SharedSpace.Instance[PathInfo.PathsFile];
+			info.CreateDirectory();
+			((PathInfo)SharedSpace.Instance[PathInfo.MapEditFile]).CreateDirectory();
+			((PathInfo)SharedSpace.Instance[PathInfo.ImagesFile]).CreateDirectory();
 
-			var sw = new StreamWriter(new FileStream(pathsFile.ToString(), FileMode.Create));
+			// 'pfe' = path+file+extension
+			string pfeMapEdit = SharedSpace.Instance[PathInfo.MapEditFile].ToString();
+			string pfeImages  = SharedSpace.Instance[PathInfo.ImagesFile].ToString();
 
-			if (!String.IsNullOrEmpty(txtUFO.Text))
-				sw.WriteLine("${ufo}:" + txtUFO.Text);
+			// TODO: Check for and delete the old paths-config file, since the
+			// installer can be rerun from the PathsEditor.
+			using (var sw = new StreamWriter(new FileStream(info.FullPath(), FileMode.Create)))
+			{
+				if (!String.IsNullOrEmpty(tbUfo.Text))
+					sw.WriteLine("${ufo}:" + tbUfo.Text);
 
-			if (!String.IsNullOrEmpty(txtTFTD.Text))
-				sw.WriteLine("${tftd}:" + txtTFTD.Text);
+				if (!String.IsNullOrEmpty(tbTftd.Text))
+					sw.WriteLine("${tftd}:" + tbTftd.Text);
 
-			string mapFile		= SharedSpace.Instance["MV_MapEditFile"].ToString();
-			string imageFile	= SharedSpace.Instance["MV_ImagesFile"].ToString();
-			string runPath		= SharedSpace.Instance.GetString("AppDir");
+				sw.WriteLine("mapdata:" + pfeMapEdit);
+				sw.WriteLine("images:"  + pfeImages);
 
-			sw.WriteLine("mapdata:" + @mapFile);
-			sw.WriteLine("images:" + @imageFile);
-//			sw.WriteLine("misc:" + @miscFile);
+				sw.WriteLine("useBlanks:false");
+				if (!String.IsNullOrEmpty(tbUfo.Text))
+					sw.WriteLine(@"cursor:${ufo}\UFOGRAPH");
+				else if (!String.IsNullOrEmpty(tbTftd.Text))
+					sw.WriteLine(@"cursor:${tftd}\UFOGRAPH");
 
-			sw.WriteLine("useBlanks:false");
-			if (!String.IsNullOrEmpty(txtUFO.Text))
-				sw.WriteLine(@"cursor:${ufo}\UFOGRAPH");
-			else if (!String.IsNullOrEmpty(txtTFTD.Text))
-				sw.WriteLine(@"cursor:${tftd}\UFOGRAPH");
-
-			sw.Flush();
-			sw.Close();
+//				sw.Flush();
+//				sw.Close();
+			}
 
 			#region write misc.dat
 /*			StreamWriter sw2 = new StreamWriter(new FileStream(miscFile, FileMode.Create));
@@ -158,66 +161,78 @@ namespace MapView
 //			_vars["##imgUFO##"]  = txtUFO.Text  + @"\TERRAIN\";
 //			_vars["##imgTFTD##"] = txtTFTD.Text + @"\TERRAIN\";
 
-			_vars["##RunPath##"] = runPath;
+			_vars["##RunPath##"] = SharedSpace.Instance.GetString(SharedSpace.AppDir);
 
 			// create files
-			var fs = new FileStream(@imageFile, FileMode.Create);
-			fs.Close();
+			using (var fs = new FileStream(pfeImages, FileMode.Create))
+			{
+//				fs.Close();
+			}
 
-			fs = new FileStream(@mapFile, FileMode.Create);
-			fs.Close();
+			using (var fs = new FileStream(pfeMapEdit, FileMode.Create))
+			{
+//				fs.Close();
+			}
 
 			// write UFO
-			if (!String.IsNullOrEmpty(txtUFO.Text))
+			if (!String.IsNullOrEmpty(tbUfo.Text))
 			{
-				var sr = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("MapView._Embedded.ImagesUFO.dat"));
-				fs = new FileStream(@imageFile, FileMode.Append);
-				sw = new StreamWriter(fs);
-
-				writeFile(sr, sw);
-				sw.Flush();
-				sw.Close();
-				sr.Close();
-
-				sr = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("MapView._Embedded.MapEditUFO.dat"));
-				fs = new FileStream(@mapFile, FileMode.Append);
-				sw = new StreamWriter(fs);
-
-				writeFile(sr, sw);
-				sw.Flush();
-				sw.Close();
-				sr.Close();
+				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
+												.GetManifestResourceStream("MapView._Embedded.ImagesUFO.dat")))
+					using (var fs = new FileStream(pfeImages, FileMode.Append))
+						using (var sw = new StreamWriter(fs))
+						{
+							writeFile(sr, sw);
+							sw.Flush();
+							sw.Close();
+							sr.Close();
+						}
+	
+				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
+												.GetManifestResourceStream("MapView._Embedded.MapEditUFO.dat")))
+					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
+						using (var sw = new StreamWriter(fs))
+						{
+							writeFile(sr, sw);
+//							sw.Flush();
+//							sw.Close();
+//							sr.Close();
+						}
 			}
 
 			// write TFTD
-			if (!String.IsNullOrEmpty(txtTFTD.Text))
+			if (!String.IsNullOrEmpty(tbTftd.Text))
 			{
-				var sr = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("MapView._Embedded.ImagesTFTD.dat"));
-				fs = new FileStream(@imageFile, FileMode.Append);
-				sw = new StreamWriter(fs);
+				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
+												.GetManifestResourceStream("MapView._Embedded.ImagesTFTD.dat")))
+					using (var fs = new FileStream(pfeImages, FileMode.Append))
+						using (var sw = new StreamWriter(fs))
+						{
+							writeFile(sr, sw);
+							sw.WriteLine();
+//							sw.Flush();
+//							sw.Close();
+//							sr.Close();
+						}
 
-				writeFile(sr, sw);
-				sw.WriteLine();
-				sw.Flush();
-				sw.Close();
-				sr.Close();
-
-				sr = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("MapView._Embedded.MapEditTFTD.dat"));
-				fs = new FileStream(@mapFile, FileMode.Append);
-				sw = new StreamWriter(fs);
-
-				writeFile(sr, sw);
-				sw.WriteLine();
-				sw.Flush();
-				sw.Close();
-				sr.Close();
+				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
+												.GetManifestResourceStream("MapView._Embedded.MapEditTFTD.dat")))
+					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
+						using (var sw = new StreamWriter(fs))
+						{
+							writeFile(sr, sw);
+							sw.WriteLine();
+//							sw.Flush();
+//							sw.Close();
+//							sr.Close();
+						}
 			}
 
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
-		private void cancelButton_Click(object sender, EventArgs e)
+		private void btnCancel_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.Cancel;
 			Close();

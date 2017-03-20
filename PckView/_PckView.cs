@@ -28,20 +28,26 @@ namespace PckView
 		Form
 	{
 		private TotalViewPck _totalViewPck;
-		private Palette currPal;
-		private Editor editor;
-		private MenuItem editImage, replaceImage, saveImage, deleteImage, addMany;
-		private Dictionary<Palette, MenuItem> palMI;
-		private SharedSpace sharedSpace;
-		private LoadOfType<IXCImageFile> loadedTypes;
+		private Palette _palette;
+		private Editor _editor;
+		private SharedSpace _share;
+		private LoadOfType<IXCImageFile> _loadedTypes;
+
 		private ConsoleForm console;
+		private TabControl tabs;
+		private MenuItem editImage, replaceImage, saveImage, deleteImage, addMany;
+
 		private OpenSaveFilter osFilter;
 		private xcCustom xcCustom;
-		private TabControl tabs;
+
+		private Dictionary<Palette, MenuItem> _dictPalettes;
+
 		private Dictionary<int, IXCImageFile> openDictionary;
 		private Dictionary<int, IXCImageFile> saveDictionary;
+
 		private string _currentFilePath;
-		private int _currentFileBpp;
+		private int _currentFileBpp; // kL_note: what's with all the 'current' -> what else would it be.
+
 		private readonly IFileBackupManager _fileBackupManager = new FileBackupManager();
 
 		public bool SavedFile { get; private set; }
@@ -53,8 +59,8 @@ namespace PckView
 
 			#region shared space information
 
-			var consoleSharedSpace = new ConsoleSharedSpace(new SharedSpace());
-			console = consoleSharedSpace.GetNewConsole();
+			var consoleShare = new ConsoleSharedSpace(new SharedSpace());
+			console = consoleShare.GetNewConsole();
 			console.FormClosing += delegate(object sender, FormClosingEventArgs e)
 			{
 				e.Cancel = true;
@@ -62,15 +68,15 @@ namespace PckView
 			};
 			FormClosed += (sender, e) => console.Close();
 
-			sharedSpace = SharedSpace.Instance;
-			sharedSpace.AllocateObject("PckView",		this);
-			sharedSpace.AllocateObject("AppDir",		Environment.CurrentDirectory);
-			sharedSpace.AllocateObject("SettingsDir",	Environment.CurrentDirectory + @"\settings");
-			sharedSpace.AllocateObject("CustomDir",		Environment.CurrentDirectory + @"\custom");
+			_share = SharedSpace.Instance;
+			_share.AllocateObject("PckView", this);
+			_share.AllocateObject(SharedSpace.AppDir,      Environment.CurrentDirectory);
+			_share.AllocateObject(SharedSpace.SettingsDir, Environment.CurrentDirectory + @"\settings");
+			_share.AllocateObject(SharedSpace.CustomDir,   Environment.CurrentDirectory + @"\custom");
 		
-			xConsole.AddLine("Current directory: "  + sharedSpace["AppDir"]);
-			xConsole.AddLine("Settings directory: " + sharedSpace["SettingsDir"].ToString());
-			xConsole.AddLine("Custom directory: "   + sharedSpace["CustomDir"].ToString());
+			xConsole.AddLine("Current directory: "  + _share[SharedSpace.AppDir]);
+			xConsole.AddLine("Settings directory: " + _share[SharedSpace.SettingsDir].ToString());
+			xConsole.AddLine("Custom directory: "   + _share[SharedSpace.CustomDir].ToString());
 			#endregion
 
 			_totalViewPck = new TotalViewPck();
@@ -84,8 +90,8 @@ namespace PckView
 
 			SaveMenuItem.Visible = false ;
 
-			sharedSpace["Palettes"] = new Dictionary<string, Palette>();
-			palMI = new Dictionary<Palette, MenuItem>();
+			_share[SharedSpace.Palettes] = new Dictionary<string, Palette>();
+			_dictPalettes = new Dictionary<Palette, MenuItem>();
 
 			AddPalette(Palette.UFOBattle,		miPalette);
 			AddPalette(Palette.UFOGeo,			miPalette);
@@ -96,17 +102,16 @@ namespace PckView
 			AddPalette(Palette.TFTDGraph,		miPalette);
 			AddPalette(Palette.TFTDResearch,	miPalette);
 
-			currPal = Palette.UFOBattle;
-//			currPal = Palette.TFTDBattle;
+			_palette = Palette.UFOBattle;
 
-			palMI[currPal].Checked = true;	// kL_ufoPalette
-			_totalViewPck.Pal = currPal;	// kL_ufoPalette
+			_dictPalettes[_palette].Checked = true;
+			_totalViewPck.Pal = _palette;
 
-			editor = new Editor(null);
-			editor.Closing += new CancelEventHandler(editorClosing);
+			_editor = new Editor(null);
+			_editor.Closing += new CancelEventHandler(editorClosing);
 
-			if (editor != null)				// kL_ufoPalette
-				editor.Palette = currPal;	// kL_ufoPalette
+			if (_editor != null)
+				_editor.Palette = _palette;
 
 
 			var ri = new RegistryInfo(this, "PckView");
@@ -115,30 +120,30 @@ namespace PckView
 
 			miHq2x.Visible &= File.Exists("hq2xa.dll");
 
-			loadedTypes = new LoadOfType<IXCImageFile>();
-			loadedTypes.OnLoad += loadedTypes_OnLoad;
-			sharedSpace["ImageMods"] = loadedTypes.AllLoaded;
+			_loadedTypes = new LoadOfType<IXCImageFile>();
+			_loadedTypes.OnLoad += loadedTypes_OnLoad;
+			_share[SharedSpace.ImageMods] = _loadedTypes.AllLoaded;
 
 //			loadedTypes.OnLoad += sortLoaded;
 
-			loadedTypes.LoadFrom(Assembly.GetExecutingAssembly());
-			loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(IXCImageFile)));
+			_loadedTypes.LoadFrom(Assembly.GetExecutingAssembly());
+			_loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(IXCImageFile)));
 
-			string dirCustom = sharedSpace["CustomDir"].ToString();
-			if (Directory.Exists(dirCustom))
+			string dir = _share[SharedSpace.CustomDir].ToString();
+			if (Directory.Exists(dir))
 			{
-				xConsole.AddLine("Custom directory exists: " + dirCustom);
-				foreach (string st in Directory.GetFiles(dirCustom))
+				xConsole.AddLine("Custom directory exists: " + dir);
+				foreach (string st in Directory.GetFiles(dir))
 				{
 					if (st.EndsWith(".dll", StringComparison.Ordinal))
 					{
 						xConsole.AddLine("Loading dll: " + st);
-						loadedTypes.LoadFrom(Assembly.LoadFrom(st));
+						_loadedTypes.LoadFrom(Assembly.LoadFrom(st));
 					}
 					else if (st.EndsWith(XCProfile.ProfileExt, StringComparison.Ordinal))
 					{
 						foreach (XCProfile ip in ImgProfile.LoadFile(st))
-							loadedTypes.Add(ip);
+							_loadedTypes.Add(ip);
 					}
 				}
 			}
@@ -150,7 +155,7 @@ namespace PckView
 			saveDictionary = new Dictionary<int, IXCImageFile>();
 
 			osFilter.SetFilter(IXCImageFile.Filter.Open);
-			string filter = loadedTypes.CreateFilter(osFilter, openDictionary);
+			string filter = _loadedTypes.CreateFilter(osFilter, openDictionary);
 			openFile.Filter = filter;
 		}
 
@@ -184,11 +189,11 @@ namespace PckView
 		public void LoadProfile(string s)
 		{
 			foreach (XCProfile ip in ImgProfile.LoadFile(s))
-				loadedTypes.Add(ip);
+				_loadedTypes.Add(ip);
 
 			osFilter.SetFilter(IXCImageFile.Filter.Open);
 			openDictionary.Clear();
-			openFile.Filter = loadedTypes.CreateFilter(osFilter, openDictionary);
+			openFile.Filter = _loadedTypes.CreateFilter(osFilter, openDictionary);
 		}
 
 		private ContextMenu makeContextMenu()
@@ -291,12 +296,12 @@ namespace PckView
 
 		public string SelectedPalette
 		{
-			get { return currPal.Name; }
+			get { return _palette.Name; }
 			set
 			{
-				foreach (Palette pal in palMI.Keys)
+				foreach (Palette pal in _dictPalettes.Keys)
 					if (pal.Name.Equals(value))
-						palClick(palMI[pal], null);
+						palClick(_dictPalettes[pal], null);
 			}
 		}
 
@@ -308,35 +313,35 @@ namespace PckView
 
 		private void doubleClick(object sender, EventArgs e)
 		{
-			if (editor.Visible)
+			if (_editor.Visible)
 				editClick(sender, e);
 		}
 
-		public MenuItem AddPalette(Palette pal, MenuItem mi)
+		public MenuItem AddPalette(Palette pal, MenuItem it)
 		{
-			var mi2 = new MenuItem(pal.Name);
-			mi2.Tag = pal;
-			mi.MenuItems.Add(mi2);
-			mi2.Click += palClick;
-//			palMI[mi2] = pal;
-			palMI[pal] = mi2;
+			var it0 = new MenuItem(pal.Name);
+			it0.Tag = pal;
+			it.MenuItems.Add(it0);
 
-			((Dictionary<string, Palette>)sharedSpace["Palettes"])[pal.Name] = pal;
-			return mi2;
+			it0.Click += palClick;
+			_dictPalettes[pal] = it0;
+
+			((Dictionary<string, Palette>)_share[SharedSpace.Palettes])[pal.Name] = pal;
+			return it0;
 		}
 
 		private void palClick(object sender, EventArgs e)
 		{
-			if (currPal != null)
-				palMI[currPal].Checked = false;
+			if (_palette != null)
+				_dictPalettes[_palette].Checked = false;
 
-			currPal = (Palette)((MenuItem)sender).Tag;
-			palMI[currPal].Checked = true;
+			_palette = (Palette)((MenuItem)sender).Tag;
+			_dictPalettes[_palette].Checked = true;
 
-			_totalViewPck.Pal = currPal;
+			_totalViewPck.Pal = _palette;
 
-			if (editor != null)
-				editor.Palette = currPal;
+			if (_editor != null)
+				_editor.Palette = _palette;
 
 			_totalViewPck.Refresh();
 		}
@@ -374,7 +379,7 @@ namespace PckView
 
 				string fName = openFile.FileName.Substring(openFile.FileName.LastIndexOf(@"\", StringComparison.Ordinal) + 1).ToLower();
 
-				string ext = fName.Substring(fName.LastIndexOf(".", StringComparison.Ordinal));
+				string ext  = fName.Substring(fName.LastIndexOf(".", StringComparison.Ordinal));
 				string file = fName.Substring(0, fName.LastIndexOf(".", StringComparison.Ordinal));
 				string path = openFile.FileName.Substring(0, openFile.FileName.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
 
@@ -400,7 +405,7 @@ namespace PckView
 					else if (filterIdx.GetType() == typeof (xcCustom)) // for *.* files, try singles and then extensions
 					{
 						// try singles
-						foreach (XCom.Interfaces.IXCImageFile ixf in loadedTypes.AllLoaded)
+						foreach (XCom.Interfaces.IXCImageFile ixf in _loadedTypes.AllLoaded)
 							if (ixf.SingleFileName != null && ixf.SingleFileName.ToLower() == fName.ToLower())
 							{
 								try
@@ -413,7 +418,7 @@ namespace PckView
 
 						if (toLoad == null) // singles not loaded, try non singles
 						{
-							foreach (XCom.Interfaces.IXCImageFile ixf in loadedTypes.AllLoaded)
+							foreach (XCom.Interfaces.IXCImageFile ixf in _loadedTypes.AllLoaded)
 								if (ixf.SingleFileName == null && ixf.FileExtension.ToLower() == ext.ToLower())
 								{
 									try
@@ -492,7 +497,7 @@ namespace PckView
 
 		public void SetImages(XCImageCollection toLoad)
 		{
-			palClick(((MenuItem)palMI[toLoad.IXCFile.DefaultPalette]), null);
+			palClick(((MenuItem)_dictPalettes[toLoad.IXCFile.DefaultPalette]), null);
 			_totalViewPck.Collection = toLoad;
 		}
 
@@ -507,7 +512,7 @@ namespace PckView
 
 			osFilter.SetFilter(IXCImageFile.Filter.Save);
 			saveDictionary.Clear();
-			saveFile.Filter = loadedTypes.CreateFilter(osFilter, saveDictionary);
+			saveFile.Filter = _loadedTypes.CreateFilter(osFilter, saveDictionary);
 
 			if (saveFile.ShowDialog() == DialogResult.OK)
 			{
@@ -608,8 +613,8 @@ namespace PckView
 		{
 			transOn.Checked = !transOn.Checked;
 
-			currPal.SetTransparent(transOn.Checked);
-			_totalViewPck.Collection.Pal = currPal;
+			_palette.SetTransparent(transOn.Checked);
+			_totalViewPck.Collection.Pal = _palette;
 			Refresh();
 		}
 
@@ -630,16 +635,16 @@ namespace PckView
 				var selected = _totalViewPck.SelectedItems[_totalViewPck.SelectedItems.Count - 1];
 				if (selected != null)
 				{
-					editor.CurrImage = (XCImage)selected.Image.Clone();
+					_editor.CurrImage = (XCImage)selected.Image.Clone();
 
-					if (editor.Visible)
-						editor.BringToFront();
+					if (_editor.Visible)
+						_editor.BringToFront();
 					else
 					{
-						editor.Left = Right;
-						editor.Top = Top;
-						editor.Palette = currPal;
-						editor.Show();
+						_editor.Left = Right;
+						_editor.Top = Top;
+						_editor.Palette = _palette;
+						_editor.Show();
 					}
 				}
 			}
@@ -648,7 +653,7 @@ namespace PckView
 		private void editorClosing(object sender, CancelEventArgs e)
 		{
 			e.Cancel = true;
-			editor.Hide();
+			_editor.Hide();
 		}
 
 		private void miHq2x_Click(object sender, System.EventArgs e)
@@ -670,9 +675,9 @@ namespace PckView
 
 		private void miModList_Click(object sender, EventArgs e)
 		{
-			var mf = new ModForm();
-			mf.SharedSpace = sharedSpace;
-			mf.ShowDialog();
+			var f = new ModForm();
+			f.SharedSpace = _share;
+			f.ShowDialog();
 		}
 
 		private void miSaveDir_Click(object sender, EventArgs e)
@@ -788,7 +793,7 @@ namespace PckView
 		{
 			osFilter.SetFilter(IXCImageFile.Filter.Save);
 			saveDictionary.Clear();
-			loadedTypes.CreateFilter(osFilter, saveDictionary);
+			_loadedTypes.CreateFilter(osFilter, saveDictionary);
 			var dir = Path.GetDirectoryName(_currentFilePath);
 			var fileWithoutExt = Path.GetFileNameWithoutExtension(_currentFilePath);
 

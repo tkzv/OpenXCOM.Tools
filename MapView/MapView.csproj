@@ -131,7 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Forms\MainWindow\SettingsManager.cs" />
-    <Compile Include="Forms\MainWindow\WindowMenuManager.cs" />
+    <Compile Include="Forms\MainWindow\MainMenusManager.cs" />
     <Compile Include="Forms\MapObservers\IMapObserverFormProvider.cs" />
     <Compile Include="Forms\MapObservers\RouteView\ConnectNodeType.cs" />
     <Compile Include="Forms\MapObservers\RouteView\DrawContentService.cs" />
@@ -188,9 +188,9 @@
     <Compile Include="Forms\Error\ErrorWindowAdapter.cs" />
     <Compile Include="Forms\Error\IErrorHandler.cs" />
     <Compile Include="Forms\Error\WarningConsole\ConsoleWarningHandler.cs" />
-    <Compile Include="Forms\MainWindow\MainToolStripButtonsFactory.cs" />
+    <Compile Include="Forms\MainWindow\EditButtonsFactory.cs" />
     <Compile Include="Forms\MainWindow\MainWindowsManager.cs" />
-    <Compile Include="Forms\MainWindow\MainWindowsMenuItemManager.cs" />
+    <Compile Include="Forms\MainWindow\MainViewsManager.cs" />
     <Compile Include="Forms\MainWindow\MainWindowsShowAllManager.cs" />
     <Compile Include="Forms\MapObservers\MapObserverControl1.cs">
       <SubType>Component</SubType>
@@ -321,11 +321,11 @@
     <Compile Include="Forms\MainWindow\MapViewPanel\MapView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\MainWindow\_MainWindow.cs">
+    <Compile Include="Forms\MainWindow\MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MainWindow\_MainWindow.Designer.cs">
-      <DependentUpon>_MainWindow.cs</DependentUpon>
+    <Compile Include="Forms\MainWindow\MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Content Include="_Embedded\11_Search-16.png" />
     <Content Include="_Embedded\12_Zoom_in-16.png" />
@@ -419,9 +419,9 @@
     <EmbeddedResource Include="_Embedded\Extra.TAB" />
     <EmbeddedResource Include="_Embedded\paste.gif" />
     <EmbeddedResource Include="_Embedded\up.gif" />
-    <EmbeddedResource Include="Forms\MainWindow\_MainWindow.resx">
+    <EmbeddedResource Include="Forms\MainWindow\MainWindow.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>_MainWindow.cs</DependentUpon>
+      <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
     <Content Include="MapEdit.ico" />
   </ItemGroup>

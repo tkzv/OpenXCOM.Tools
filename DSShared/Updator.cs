@@ -1,14 +1,15 @@
+/*
 using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 //about the documentation tags
 //http://msdn.microsoft.com/library/default.asp?url=/library/en-us/csref/html/vclrftagsfordocumentationcomments.asp
 
+
 namespace DSShared
 {
 	/// <summary>
-	/// Class that implements the IUpdater interface
+	/// Class that implements the IUpdater interface.
 	/// </summary>
 	public class Updator
 		:
@@ -19,7 +20,7 @@ namespace DSShared
 		/// </summary>
 		public string UpdatePath
 		{
-			get { return ""; }
+			get { return String.Empty; }
 		}
 
 		/// <summary>
@@ -31,3 +32,4 @@ namespace DSShared
 		}
 	}
 }
+*/

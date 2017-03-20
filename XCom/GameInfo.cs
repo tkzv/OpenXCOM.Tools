@@ -20,19 +20,19 @@ namespace XCom
 		public static event ParseLineDelegate ParseLine;
 
 
-		public static void Init(Palette pal, DSShared.PathInfo paths)
+		public static void Init(Palette pal, DSShared.PathInfo info)
 		{
-			Directory.SetCurrentDirectory(paths.Path);
+			Directory.SetCurrentDirectory(info.Path);
 			xConsole.Init(20);
 
 			_palette = pal;
 			_pckHash = new Dictionary<Palette, Dictionary<string, PckFile>>();
 
-			using (var sr = new StreamReader(File.OpenRead(paths.ToString())))
+			using (var sr = new StreamReader(File.OpenRead(info.FullPath())))
 			{
 				var vars = new VarCollection(sr);
 
-				KeyVal keyVal = null;
+				KeyVal keyVal;
 				while ((keyVal = vars.ReadLine()) != null)
 				{
 					switch (keyVal.Keyword)
@@ -49,7 +49,7 @@ namespace XCom
 							if (ParseLine != null)
 								ParseLine(keyVal, vars);
 							else
-								xConsole.AddLine("GameInfo: Error in Paths.pth file: " + keyVal);
+								xConsole.AddLine("GameInfo: Error in Paths.dat file: " + keyVal);
 							break;
 					}
 				}
@@ -57,7 +57,7 @@ namespace XCom
 //				vars.BaseStream.Close(); // NOTE: the 'using' block closes the stream.
 			}
 
-			Directory.SetCurrentDirectory(SharedSpace.Instance.GetString("AppDir"));
+			Directory.SetCurrentDirectory(SharedSpace.Instance.GetString(SharedSpace.AppDir));
 		}
 
 		public static ImageInfo ImageInfo

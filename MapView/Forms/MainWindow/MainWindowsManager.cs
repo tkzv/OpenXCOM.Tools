@@ -10,7 +10,7 @@ namespace MapView.Forms.MainWindow
 	public class MainWindowsManager
 	{
 		public static IMainWindowsShowAllManager MainWindowsShowAllManager;
-		public static MainToolStripButtonsFactory MainToolStripButtonsFactory;
+		public static EditButtonsFactory EditButtonsFactory;
 
 		private static TopViewForm		_topView;
 		private static TileViewForm		_tileView;
@@ -51,8 +51,8 @@ namespace MapView.Forms.MainWindow
 
 		public static void Initialize()
 		{
-			TopRouteView.TopViewControl.Initialize(MainToolStripButtonsFactory);
-			TopView.Control.Initialize(MainToolStripButtonsFactory);
+			TopRouteView.TopViewControl.Initialize(EditButtonsFactory);
+			TopView.Control.Initialize(EditButtonsFactory);
 			TileView.TileViewControl.Initialize(MainWindowsShowAllManager);
 			TileView.TileViewControl.SelectedTileTypeChanged_view += _tileView_SelectedTileTypeChanged;
 		}

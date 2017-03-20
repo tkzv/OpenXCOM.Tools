@@ -1,3 +1,4 @@
+/*
 using System;
 
 namespace XCom
@@ -15,3 +16,4 @@ namespace XCom
 		}
 	}
 }
+*/

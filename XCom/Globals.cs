@@ -1,3 +1,4 @@
+/*
 using System;
 
 namespace XCom
@@ -12,9 +13,6 @@ namespace XCom
 
 	public static class Globals
 	{
-		public static int HalfWidth  = 16;
-		public static int HalfHeight = 8;
-
 		public static string RegistryKey
 		{
 			get { return "ViewSuite"; }
@@ -25,9 +23,11 @@ namespace XCom
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
+		/// <param name="hWidth"></param>
+		/// <param name="hHeight"></param>
 		/// <param name="row"></param>
 		/// <param name="col"></param>
-/*		public static void ConvertCoordsDiamond(
+		public static void ConvertCoordsDiamond(
 											int x,
 											int y,
 											int hWidth,
@@ -44,7 +44,8 @@ namespace XCom
 			row = (int)Math.Floor(x2);
 			col = (int)Math.Floor(x1);
 //			return new Point((int)Math.Floor(x1), (int)Math.Floor(x2));
-		} */
+		}
 		// NOTE: how many ConvertCoordsDiamond() functions do you need.
 	}
 }
+*/

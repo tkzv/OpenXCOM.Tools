@@ -9,7 +9,8 @@ using Microsoft.Win32;
 namespace DSShared.Windows
 {
 	/// <summary>
-	/// Delegate for use in the saving and loading events raised in the RegistryInfo class.
+	/// Delegate for use in the saving and loading events raised in the
+	/// RegistryInfo class.
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
@@ -17,11 +18,12 @@ namespace DSShared.Windows
 
 
 	/// <summary>
-	/// A class to help facilitate the saving and loading of values into the registry in a central location.
+	/// A class to help facilitate the saving and loading of values into the
+	/// registry in a central location.
 	/// </summary>
 	public class RegistryInfo
 	{
-		private const string _regKey = "DSShared"; // was static not const. Cf, property 'RegKey'.
+		private const string Regkey = "DSShared"; // was static not const. Cf, property 'RegKey'.
 
 		private object _obj;
 		private string _label;
@@ -86,7 +88,7 @@ namespace DSShared.Windows
 		private void Load(object sender, EventArgs e)
 		{
 			RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey("Software");
-			RegistryKey keyDSShared = keySoftware.CreateSubKey(_regKey);
+			RegistryKey keyDSShared = keySoftware.CreateSubKey(Regkey);
 			RegistryKey keyLabel    = keyDSShared.CreateSubKey(_label);
 
 			foreach (string st in _properties.Keys)
@@ -133,7 +135,7 @@ namespace DSShared.Windows
 //			if (_saveOnClose)
 //			{
 			RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey("Software");
-			RegistryKey keyDSShared = keySoftware.CreateSubKey(_regKey);
+			RegistryKey keyDSShared = keySoftware.CreateSubKey(Regkey);
 			RegistryKey keyLabel    = keyDSShared.CreateSubKey(_label);
 
 			foreach (string st in _properties.Keys)
@@ -237,25 +239,26 @@ namespace DSShared.Windows
 		:
 		EventArgs
 	{
-		private readonly RegistryKey _key;
+		private readonly RegistryKey _regkey;
+
 		/// <summary>
 		/// The registry key that is now open for saving and loading to. Do not
 		/// close the key here.
 		/// </summary>
 		public RegistryKey OpenRegistryKey
 		{
-			get { return _key; }
+			get { return _regkey; }
 		}
 
 
 		/// <summary>
 		/// cTor
 		/// </summary>
-		/// <param name="key">registry key that has been opened for reading
+		/// <param name="regkey">registry key that has been opened for reading
 		/// and writing to</param>
-		public RegistrySaveLoadEventArgs(RegistryKey key)
+		public RegistrySaveLoadEventArgs(RegistryKey regkey)
 		{
-			_key = key;
+			_regkey = regkey;
 		}
 	}
 }

@@ -19,8 +19,12 @@ namespace XCom.Interfaces.Base
 	{
 		protected MapTileList MapData;
 
-		private byte _curHeight;
 		private MapLocation _selLoc;
+
+		private const int HalfWidth  = 16;
+		private const int HalfHeight =  8;
+
+		private byte _height;
 
 
 		/// <summary>
@@ -56,10 +60,10 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public void Up()
 		{
-			if (_curHeight > 0)
+			if (_height > 0)
 			{
-				var args = new HeightChangedEventArgs(_curHeight, _curHeight - 1);
-				--_curHeight;
+				var args = new HeightChangedEventArgs(_height, _height - 1);
+				--_height;
 
 				if (HeightChanged != null)
 					HeightChanged(this, args);
@@ -71,10 +75,10 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public void Down()
 		{
-			if (_curHeight < MapSize.Height - 1)
+			if (_height < MapSize.Height - 1)
 			{
-				++_curHeight;
-				var args = new HeightChangedEventArgs(_curHeight, _curHeight + 1);
+				++_height;
+				var args = new HeightChangedEventArgs(_height, _height + 1);
 
 				if (HeightChanged != null)
 					HeightChanged(this, args);
@@ -87,13 +91,13 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public byte CurrentHeight
 		{
-			get { return _curHeight; }
+			get { return _height; }
 			set
 			{
 				if (value < (byte)MapSize.Height)
 				{
-					var args = new HeightChangedEventArgs(_curHeight, value);
-					_curHeight = value;
+					var args = new HeightChangedEventArgs(_height, value);
+					_height = value;
 
 					if (HeightChanged != null)
 						HeightChanged(this, args);
@@ -142,7 +146,6 @@ namespace XCom.Interfaces.Base
 				return (MapData != null) ? MapData[row, col, height]
 										 : null;
 			}
-
 			set { MapData[row, col, height] = value; }
 		}
 
@@ -154,8 +157,8 @@ namespace XCom.Interfaces.Base
 		/// <returns></returns>
 		public MapTileBase this[int row, int col]
 		{
-			get { return this[row, col, _curHeight]; }
-			set { this[row, col, _curHeight] = value; }
+			get { return this[row, col, _height]; }
+			set { this[row, col, _height] = value; }
 		}
 
 		/// <summary>
@@ -184,13 +187,14 @@ namespace XCom.Interfaces.Base
 			{
 				MapData = newMap;
 				MapSize = new MapSize(newR, newC, newH);
-				_curHeight = (byte)(MapSize.Height - 1);
+				_height = (byte)(MapSize.Height - 1);
 				MapChanged = true;
 			}
 		}
 
 		/// <summary>
-		/// Not yet generic enough to call with custom derived classes other than XCMapFile.
+		/// Not yet generic enough to call with custom derived classes other
+		/// than XCMapFile.
 		/// </summary>
 		/// <param name="file"></param>
 		public void SaveGif(string file)
@@ -202,30 +206,28 @@ namespace XCom.Interfaces.Base
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
 			var b = Bmp.MakeBitmap(
 								rowPlusCols * (PckImage.Width / 2),
-								(MapSize.Height - _curHeight) * 24 + rowPlusCols * 8,
+								(MapSize.Height - _height) * 24 + rowPlusCols * 8,
 								palette.Colors);
 
 			var start = new Point(
 								(MapSize.Rows - 1) * (PckImage.Width / 2),
-								-(24 * _curHeight));
+								-(24 * _height));
 
-			int curr = 0;
+			int i = 0;
 
 			if (MapData != null)
 			{
-				var hWid = Globals.HalfWidth;
-				var hHeight = Globals.HalfHeight;
-				for (int h = MapSize.Height - 1; h >= _curHeight; h--)
+				for (int h = MapSize.Height - 1; h >= _height; h--)
 				{
 					for (int
 							row = 0, startX = start.X, startY = start.Y + h * 24;
 							row < MapSize.Rows;
-							++row, startX -= hWid, startY += hHeight)
+							++row, startX -= HalfWidth, startY += HalfHeight)
 					{
 						for (int
 								col = 0, x = startX, y = startY;
 								col < MapSize.Cols;
-								++col, x += hWid, y += hHeight, ++curr)
+								++col, x += HalfWidth, y += HalfHeight, ++i)
 						{
 							var tiles = this[row, col, h].UsedTiles;
 							foreach (var tileBase in tiles)
@@ -234,7 +236,7 @@ namespace XCom.Interfaces.Base
 								Bmp.Draw(tile[0].Image, b, x, y - tile.Info.TileOffset);
 							}
 
-							Bmp.FireLoadingEvent(curr, (MapSize.Height - _curHeight) * MapSize.Rows * MapSize.Cols);
+							Bmp.FireLoadingEvent(i, (MapSize.Height - _height) * MapSize.Rows * MapSize.Cols);
 						}
 					}
 				}
@@ -242,8 +244,8 @@ namespace XCom.Interfaces.Base
 			try
 			{
 				var rect = Bmp.GetBoundsRect(b, Bmp.DefaultTransparentIndex);
-				var b2 = Bmp.Crop(b, rect);
-				b2.Save(file, ImageFormat.Gif);
+				b = Bmp.Crop(b, rect);
+				b.Save(file, ImageFormat.Gif);
 			}
 			catch
 			{

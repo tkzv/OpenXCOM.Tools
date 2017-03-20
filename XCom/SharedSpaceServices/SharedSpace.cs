@@ -11,11 +11,19 @@ namespace XCom
 
 		private readonly Dictionary<string, object> _share;
 
+		public const string AppDir      = "AppDir";
+		public const string SettingsDir = "SettingsDir";
+
+		public const string CustomDir   = "CustomDir"; // for PckView ->
+		public const string Palettes    = "Palettes";
+		public const string ImageMods   = "ImageMods";
+
 
 		public SharedSpace()
 		{
 			_share = new Dictionary<string, object>();
 		}
+
 
 		public static SharedSpace Instance
 		{
@@ -27,7 +35,6 @@ namespace XCom
 				return _instance;
 			}
 		}
-
 
 		public object AllocateObject(string key)
 		{
@@ -80,12 +87,12 @@ namespace XCom
 
 		public List<IXCImageFile> GetImageModList()
 		{
-			return (List<IXCImageFile>)_share["ImageMods"];
+			return (List<IXCImageFile>)_share[ImageMods];
 		}
 
 		public Dictionary<string, Palette> GetPaletteTable()
 		{
-			return (Dictionary<string, Palette>)_share["Palettes"];
+			return (Dictionary<string, Palette>)_share[Palettes];
 		}
 	}
 }

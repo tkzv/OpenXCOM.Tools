@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
+
 using DSShared.Interfaces;
+
 
 namespace DSShared.Loadable
 {
 	/// <summary>
-	/// This class will scan an assembly for a specific type and manage a singleton list of those objects.
-	/// Originally designed for user-created save/load plugins.
+	/// This class will scan an assembly for a specific type and manage a
+	/// singleton list of those objects. Originally designed for user-created
+	/// save/load plugins.
 	/// </summary>
 	/// <typeparam name="T">Objects of this type are stored in this class</typeparam>
 	public class LoadOfType<T> where T
@@ -16,9 +18,9 @@ namespace DSShared.Loadable
 		IAssemblyLoadable, IOpenSave, new()
 	{
 		/// <summary>
-		/// Delegate for use with the OnLoad event
+		/// Delegate for use with the OnLoad event.
 		/// </summary>
-		/// <param name="sender">The LoadOfType object that fired the event</param>
+		/// <param name="sender">the LoadOfType object that fired the event</param>
 		/// <param name="e">Args for the event</param>
 		public delegate void TypeLoadDelegate(object sender, LoadOfType<T>.TypeLoadArgs e);
 
@@ -29,10 +31,12 @@ namespace DSShared.Loadable
 
 //		private Dictionary<int, T> filterDictionary;
 //		private string openFileFilter = "";
-		private List<T> allLoaded;
+
+		private readonly List<T> allLoaded;
+
 
 		/// <summary>
-		/// Default constructor
+		/// cTor.
 		/// </summary>
 		public LoadOfType()
 		{
@@ -40,8 +44,9 @@ namespace DSShared.Loadable
 			allLoaded = new List<T>();
 		}
 
+
 		// <summary>
-		// returns a list of objects that meet the filter requirements
+		// Returns a list of objects that meet the filter requirements.
 		// </summary>
 		// <param name="filterObj"></param>
 		// <returns></returns>
@@ -55,7 +60,7 @@ namespace DSShared.Loadable
 		//}
 
 		/// <summary>
-		/// A List of all the types that have been found so far
+		/// A List of all the types that have been found so far.
 		/// </summary>
 		public List<T> AllLoaded
 		{
@@ -63,8 +68,9 @@ namespace DSShared.Loadable
 		}
 
 		// <summary>
-		// A string to use for an OpenFileDialog. The string will only be created once and cached for later use
-		// If the file list changes, use CreateFilter() to build a new string
+		// A string to use for an OpenFileDialog. The string will only be
+		// created once and cached for later use. If the file list changes, use
+		// CreateFilter() to build a new string.
 		// </summary>
 		//public string OpenFileFilter
 		//{
@@ -77,7 +83,7 @@ namespace DSShared.Loadable
 		//}
 
 		// <summary>
-		// Returns the object at a specific filter index
+		// Returns the object at a specific filter index.
 		// </summary>
 		// <param name="index"></param>
 		// <returns></returns>
@@ -92,7 +98,7 @@ namespace DSShared.Loadable
 		//}
 
 		/// <summary>
-		/// Forces a recreation of the filter string
+		/// Forces a recreation of the filter string.
 		/// </summary>
 		/// <returns></returns>
 		//public string CreateFilter()
@@ -119,7 +125,7 @@ namespace DSShared.Loadable
 
 		public string CreateFilter(IFilter<T> filter, Dictionary<int, T> filterDictionary)
 		{
-			string fileFilter = "";
+			string fileFilter = String.Empty;
 			bool two = true;
 			int filterIdx = 1; // filter index starts at 1
 
@@ -143,9 +149,9 @@ namespace DSShared.Loadable
 
 		//public string CreateFilter(IFilter<T> filter)
 		//{
-		//	string fileFilter = "";
+		//	string fileFilter = String.Empty;
 		//	bool two = false;
-		//	int filterIdx = 1; //filter index starts at 1
+		//	int filterIdx = 1; // filter index starts at 1
 
 		//	List<T> filterList = allLoaded;
 
@@ -162,7 +168,7 @@ namespace DSShared.Loadable
 		//}
 
 		/// <summary>
-		/// Adds an object to this list and recreates the filter string
+		/// Adds an object to this list and recreates the filter string.
 		/// </summary>
 		/// <param name="fc"></param>
 		public void Add(T fc)
@@ -173,22 +179,25 @@ namespace DSShared.Loadable
 		}
 		
 		/// <summary>
-		/// Scans an assembly for matching types. When a type is found, it is created using the default constructor
-		/// and stored in a list. Objects are only added to the internal list if they return true for registration
+		/// Scans an assembly for matching types. When a type is found it is
+		/// created using the default constructor and stored in a list. Objects
+		/// are only added to the internal list if they return true for
+		/// registration.
 		/// </summary>
 		/// <param name="a"></param>
-		/// <returns>A list of objects of type T. The list contains all registered and unregistered objects</returns>
+		/// <returns>a list of objects of type T. The list contains all
+		/// registered and unregistered objects</returns>
 		public List<T> LoadFrom(Assembly a)
 		{
 			// Get creatable objects from the assembly
-			List<T> objList = new List<T>();
+			var objList = new List<T>();
 			foreach (Type t in a.GetTypes())
 			{
 				if (t.IsClass && !t.IsAbstract && typeof(T).IsAssignableFrom(t))
 				{
 					// if a class has no default constructor, it will fail this
-					// this is why the new() constraint is placed on the LoadOfType definition
-					ConstructorInfo ci = t.GetConstructor(new Type[]{});
+					// this is why the new() constraint is placed on the LoadOfType def'n
+					var ci = t.GetConstructor(new Type[]{});
 					if (ci == null)
 					{
 						Console.Error.WriteLine("Error loading type: {0} -> No default constructor specified", t);
@@ -225,22 +234,30 @@ namespace DSShared.Loadable
 		}
 
 		/// <summary>
-		/// Args class to pass on to a load event signifying that this object was successfully
-		/// created from an assembly and registered properly
+		/// Args class to pass on to a load event signifying that this object
+		/// was successfully created from an assembly and registered properly.
 		/// </summary>
 		public class TypeLoadArgs : EventArgs
 		{
-			private T justLoaded;
+			private readonly T justLoaded;
 			/// <summary>
-			/// Constructor
+			/// cTor.
 			/// </summary>
-			/// <param name="obj">Object that has just been created and registered</param>
-			public TypeLoadArgs(T obj) : base() { this.justLoaded = obj; }
+			/// <param name="obj">object that has just been created and registered</param>
+			public TypeLoadArgs(T obj)
+				:
+				base()
+			{
+				this.justLoaded = obj;
+			}
 
 			/// <summary>
-			/// Object that has just been created and registered
+			/// Object that has just been created and registered.
 			/// </summary>
-			public T LoadedObj { get { return justLoaded; } }
+			public T LoadedObj
+			{
+				get { return justLoaded; }
+			}
 		}
 	}
 }

@@ -22,7 +22,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		private Dictionary<string, SolidBrush> _topBrushes;
 
 		private readonly TopViewPanel _topViewPanel;
-		private MainToolStripButtonsFactory _mainToolStripButtonsFactory;
+		private EditButtonsFactory _editButtonsFactory;
 
 		public event EventHandler VisibleTileChanged;
 
@@ -80,10 +80,10 @@ namespace MapView.Forms.MapObservers.TopViews
 			ResumeLayout();
 		}
 
-		public void Initialize(MainToolStripButtonsFactory mainToolStripButtonsFactory)
+		public void Initialize(EditButtonsFactory editButtons)
 		{
-			_mainToolStripButtonsFactory = mainToolStripButtonsFactory;
-			_mainToolStripButtonsFactory.MakeToolstrip(toolStrip);
+			_editButtonsFactory = editButtons;
+			_editButtonsFactory.MakeToolstrip(toolStrip);
 		}
 
 		public QuadrantPanel BottomPanel

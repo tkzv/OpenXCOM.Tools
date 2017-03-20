@@ -26,7 +26,7 @@ namespace PckView
 
 			var ri = new DSShared.Windows.RegistryInfo(this);
 
-			string dirCustom = SharedSpace.Instance["CustomDir"].ToString();
+			string dirCustom = SharedSpace.Instance[SharedSpace.CustomDir].ToString();
 			if (!Directory.Exists(dirCustom))
 				Directory.CreateDirectory(dirCustom);
 
@@ -37,7 +37,7 @@ namespace PckView
 
 			saveFile.Filter = "Image Profiles|*" + XCProfile.ProfileExt;
 
-			foreach (string key in ((Dictionary<string, Palette>)SharedSpace.Instance["Palettes"]).Keys)
+			foreach (string key in ((Dictionary<string, Palette>)SharedSpace.Instance[SharedSpace.Palettes]).Keys)
 				cbPalette.Items.Add(key);
 
 			if (cbPalette.Items.Count > 0)

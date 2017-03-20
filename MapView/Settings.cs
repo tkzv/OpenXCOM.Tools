@@ -48,7 +48,7 @@ namespace MapView
 		public static void ReadSettings(
 				VarCollection vars,
 				KeyVal keyVal,
-				Settings curSettings)
+				Settings settings)
 		{
 			while ((keyVal = vars.ReadLine()) != null)
 			{
@@ -61,10 +61,10 @@ namespace MapView
 						return;
 
 					default:
-						if (curSettings[keyVal.Keyword] != null)
+						if (settings[keyVal.Keyword] != null)
 						{
-							curSettings[keyVal.Keyword].Value = keyVal.Rest;
-							curSettings[keyVal.Keyword].FireUpdate(keyVal.Keyword);
+							settings[keyVal.Keyword].Value = keyVal.Rest;
+							settings[keyVal.Keyword].FireUpdate(keyVal.Keyword);
 						}
 						break;
 				}
@@ -72,7 +72,7 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Gets the key collection for this Settings object. Every key is a string.
+		/// Gets the key collection for this Settings object.
 		/// </summary>
 		public Dictionary<string, Setting>.KeyCollection Keys
 		{

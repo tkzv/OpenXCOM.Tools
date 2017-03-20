@@ -28,92 +28,92 @@ namespace MapView
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.txtUFO = new System.Windows.Forms.TextBox();
-			this.txtTFTD = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.btnFindUFO = new System.Windows.Forms.Button();
-			this.btnFindTFTD = new System.Windows.Forms.Button();
-			this.okButton = new System.Windows.Forms.Button();
+			this.tbUfo = new System.Windows.Forms.TextBox();
+			this.tbTftd = new System.Windows.Forms.TextBox();
+			this.labelUfo = new System.Windows.Forms.Label();
+			this.labelTftd = new System.Windows.Forms.Label();
+			this.btnFindUfo = new System.Windows.Forms.Button();
+			this.btnFindTftd = new System.Windows.Forms.Button();
+			this.btnOk = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.panel2 = new System.Windows.Forms.Panel();
-			this.folderSelector = new System.Windows.Forms.FolderBrowserDialog();
-			this.cancelButton = new System.Windows.Forms.Button();
+			this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
+			this.btnCancel = new System.Windows.Forms.Button();
 			this.panel1.SuspendLayout();
 			this.panel2.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// txtUFO
+			// tbUfo
 			// 
-			this.txtUFO.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.txtUFO.Location = new System.Drawing.Point(85, 0);
-			this.txtUFO.Name = "txtUFO";
-			this.txtUFO.Size = new System.Drawing.Size(344, 19);
-			this.txtUFO.TabIndex = 0;
+			this.tbUfo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tbUfo.Location = new System.Drawing.Point(85, 0);
+			this.tbUfo.Name = "tbUfo";
+			this.tbUfo.Size = new System.Drawing.Size(344, 19);
+			this.tbUfo.TabIndex = 0;
 			// 
-			// txtTFTD
+			// tbTftd
 			// 
-			this.txtTFTD.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.txtTFTD.Location = new System.Drawing.Point(85, 0);
-			this.txtTFTD.Name = "txtTFTD";
-			this.txtTFTD.Size = new System.Drawing.Size(344, 19);
-			this.txtTFTD.TabIndex = 1;
+			this.tbTftd.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tbTftd.Location = new System.Drawing.Point(85, 0);
+			this.tbTftd.Name = "tbTftd";
+			this.tbTftd.Size = new System.Drawing.Size(344, 19);
+			this.tbTftd.TabIndex = 1;
 			// 
-			// label1
+			// labelUfo
 			// 
-			this.label1.Dock = System.Windows.Forms.DockStyle.Left;
-			this.label1.Location = new System.Drawing.Point(0, 0);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(85, 25);
-			this.label1.TabIndex = 2;
-			this.label1.Text = "UFO Folder";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.labelUfo.Dock = System.Windows.Forms.DockStyle.Left;
+			this.labelUfo.Location = new System.Drawing.Point(0, 0);
+			this.labelUfo.Name = "labelUfo";
+			this.labelUfo.Size = new System.Drawing.Size(85, 25);
+			this.labelUfo.TabIndex = 2;
+			this.labelUfo.Text = "UFO Folder";
+			this.labelUfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// label2
+			// labelTftd
 			// 
-			this.label2.Dock = System.Windows.Forms.DockStyle.Left;
-			this.label2.Location = new System.Drawing.Point(0, 0);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(85, 25);
-			this.label2.TabIndex = 3;
-			this.label2.Text = "TFTD Folder";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.labelTftd.Dock = System.Windows.Forms.DockStyle.Left;
+			this.labelTftd.Location = new System.Drawing.Point(0, 0);
+			this.labelTftd.Name = "labelTftd";
+			this.labelTftd.Size = new System.Drawing.Size(85, 25);
+			this.labelTftd.TabIndex = 3;
+			this.labelTftd.Text = "TFTD Folder";
+			this.labelTftd.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// btnFindUFO
+			// btnFindUfo
 			// 
-			this.btnFindUFO.Dock = System.Windows.Forms.DockStyle.Right;
-			this.btnFindUFO.Location = new System.Drawing.Point(429, 0);
-			this.btnFindUFO.Name = "btnFindUFO";
-			this.btnFindUFO.Size = new System.Drawing.Size(45, 25);
-			this.btnFindUFO.TabIndex = 4;
-			this.btnFindUFO.Text = "...";
-			this.btnFindUFO.Click += new System.EventHandler(this.btnFindUFO_Click);
+			this.btnFindUfo.Dock = System.Windows.Forms.DockStyle.Right;
+			this.btnFindUfo.Location = new System.Drawing.Point(429, 0);
+			this.btnFindUfo.Name = "btnFindUfo";
+			this.btnFindUfo.Size = new System.Drawing.Size(45, 25);
+			this.btnFindUfo.TabIndex = 4;
+			this.btnFindUfo.Text = "...";
+			this.btnFindUfo.Click += new System.EventHandler(this.btnFindUfo_Click);
 			// 
-			// btnFindTFTD
+			// btnFindTftd
 			// 
-			this.btnFindTFTD.Dock = System.Windows.Forms.DockStyle.Right;
-			this.btnFindTFTD.Location = new System.Drawing.Point(429, 0);
-			this.btnFindTFTD.Name = "btnFindTFTD";
-			this.btnFindTFTD.Size = new System.Drawing.Size(45, 25);
-			this.btnFindTFTD.TabIndex = 5;
-			this.btnFindTFTD.Text = "...";
-			this.btnFindTFTD.Click += new System.EventHandler(this.btnFindTFTD_Click);
+			this.btnFindTftd.Dock = System.Windows.Forms.DockStyle.Right;
+			this.btnFindTftd.Location = new System.Drawing.Point(429, 0);
+			this.btnFindTftd.Name = "btnFindTftd";
+			this.btnFindTftd.Size = new System.Drawing.Size(45, 25);
+			this.btnFindTftd.TabIndex = 5;
+			this.btnFindTftd.Text = "...";
+			this.btnFindTftd.Click += new System.EventHandler(this.btnFindTftd_Click);
 			// 
-			// okButton
+			// btnOk
 			// 
-			this.okButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.okButton.Location = new System.Drawing.Point(85, 50);
-			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(165, 25);
-			this.okButton.TabIndex = 6;
-			this.okButton.Text = "the Paths are correct";
-			this.okButton.Click += new System.EventHandler(this.okButton_Click);
+			this.btnOk.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.btnOk.Location = new System.Drawing.Point(85, 50);
+			this.btnOk.Name = "btnOk";
+			this.btnOk.Size = new System.Drawing.Size(165, 25);
+			this.btnOk.TabIndex = 6;
+			this.btnOk.Text = "the Paths are correct";
+			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
 			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.txtUFO);
-			this.panel1.Controls.Add(this.label1);
-			this.panel1.Controls.Add(this.btnFindUFO);
+			this.panel1.Controls.Add(this.tbUfo);
+			this.panel1.Controls.Add(this.labelUfo);
+			this.panel1.Controls.Add(this.btnFindUfo);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
@@ -122,33 +122,33 @@ namespace MapView
 			// 
 			// panel2
 			// 
-			this.panel2.Controls.Add(this.txtTFTD);
-			this.panel2.Controls.Add(this.label2);
-			this.panel2.Controls.Add(this.btnFindTFTD);
+			this.panel2.Controls.Add(this.tbTftd);
+			this.panel2.Controls.Add(this.labelTftd);
+			this.panel2.Controls.Add(this.btnFindTftd);
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel2.Location = new System.Drawing.Point(0, 25);
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(474, 25);
 			this.panel2.TabIndex = 8;
 			// 
-			// cancelButton
+			// btnCancel
 			// 
-			this.cancelButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.cancelButton.Location = new System.Drawing.Point(265, 50);
-			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(165, 25);
-			this.cancelButton.TabIndex = 9;
-			this.cancelButton.Text = "Cancel";
-			this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+			this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.btnCancel.Location = new System.Drawing.Point(265, 50);
+			this.btnCancel.Name = "btnCancel";
+			this.btnCancel.Size = new System.Drawing.Size(165, 25);
+			this.btnCancel.TabIndex = 9;
+			this.btnCancel.Text = "Cancel";
+			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 			// 
 			// InstallWindow
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(474, 81);
-			this.Controls.Add(this.cancelButton);
+			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.panel1);
-			this.Controls.Add(this.okButton);
+			this.Controls.Add(this.btnOk);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "InstallWindow";
@@ -163,16 +163,16 @@ namespace MapView
 		}
 		#endregion
 
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Button btnFindUFO;
-		private System.Windows.Forms.Button btnFindTFTD;
-		private System.Windows.Forms.TextBox txtUFO;
-		private System.Windows.Forms.TextBox txtTFTD;
-		private System.Windows.Forms.Button okButton;
+		private System.Windows.Forms.Label labelUfo;
+		private System.Windows.Forms.Label labelTftd;
+		private System.Windows.Forms.Button btnFindUfo;
+		private System.Windows.Forms.Button btnFindTftd;
+		private System.Windows.Forms.TextBox tbUfo;
+		private System.Windows.Forms.TextBox tbTftd;
+		private System.Windows.Forms.Button btnOk;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Panel panel2;
-		private System.Windows.Forms.FolderBrowserDialog folderSelector;
-		private System.Windows.Forms.Button cancelButton;
+		private System.Windows.Forms.FolderBrowserDialog folderBrowser;
+		private System.Windows.Forms.Button btnCancel;
 	}
 }

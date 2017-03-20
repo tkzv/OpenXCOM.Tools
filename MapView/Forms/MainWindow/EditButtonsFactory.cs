@@ -8,15 +8,17 @@ using MapView.Properties;
 
 namespace MapView.Forms.MainWindow
 {
-	public class MainToolStripButtonsFactory
+	public class EditButtonsFactory
 	{
-		private readonly MapViewPanel _mapViewPanel;
 		private readonly List<ToolStripButton> _pasteButtons = new List<ToolStripButton>();
+		private readonly MapViewPanel _mapViewPanel;
 
-		public MainToolStripButtonsFactory(MapViewPanel mapViewPanel)
+
+		public EditButtonsFactory(MapViewPanel panel)
 		{
-			_mapViewPanel = mapViewPanel;
+			_mapViewPanel = panel;
 		}
+
 
 		/// <summary>
 		/// Adds buttons for Up,Down,Cut,Copy and Paste to a toolstrip as well
@@ -25,15 +27,15 @@ namespace MapView.Forms.MainWindow
 		/// <param name="toolStrip"></param>
 		public void MakeToolstrip(ToolStrip toolStrip)
 		{
-			var btnUp		= new ToolStripButton();
-			var btnDown		= new ToolStripButton();
-			var btnCut		= new ToolStripButton();
-			var btnCopy		= new ToolStripButton();
-			var btnPaste	= new ToolStripButton();
-			var btnFill		= new ToolStripButton();
+			var btnUp    = new ToolStripButton();
+			var btnDown  = new ToolStripButton();
+			var btnCut   = new ToolStripButton();
+			var btnCopy  = new ToolStripButton();
+			var btnPaste = new ToolStripButton();
+			var btnFill  = new ToolStripButton();
 
 			//
-			// toolStrip1
+			// toolStrip
 			//
 			//toolStrip.Dock = DockStyle.None;
 			//toolStrip.GripMargin = new Padding(0);
@@ -102,7 +104,7 @@ namespace MapView.Forms.MainWindow
 			btnCut.ToolTipText = "Cut";
 			btnCut.Click += (o, args) =>
 			{
-				ActivatePasteButtons();
+				EnablePasteButtons();
 				_mapViewPanel.Cut_click(o, args);
 				Refresh();
 			};
@@ -120,7 +122,7 @@ namespace MapView.Forms.MainWindow
 			btnCopy.ToolTipText = "Copy";
 			btnCopy.Click += (o, args) =>
 			{
-				ActivatePasteButtons();
+				EnablePasteButtons();
 				_mapViewPanel.Copy_click(o, args);
 			};
 
@@ -143,11 +145,11 @@ namespace MapView.Forms.MainWindow
 			btnPaste.Enabled = false;
 			_pasteButtons.Add(btnPaste);
 
-			btnCut.Image	= Resources.cut;
-			btnPaste.Image	= Resources.paste;
-			btnCopy.Image	= Resources.copy;
-			btnUp.Image		= Resources.up;
-			btnDown.Image	= Resources.down;
+			btnCut.Image   = Resources.cut;
+			btnPaste.Image = Resources.paste;
+			btnCopy.Image  = Resources.copy;
+			btnUp.Image    = Resources.up;
+			btnDown.Image  = Resources.down;
 		}
 
 		private static void Refresh()
@@ -156,10 +158,10 @@ namespace MapView.Forms.MainWindow
 			MainWindowsManager.RouteView.Refresh();
 		}
 
-		private void ActivatePasteButtons()
+		private void EnablePasteButtons()
 		{
-			foreach (var pasteButton in _pasteButtons)
-				pasteButton.Enabled = true;
+			foreach (var btn in _pasteButtons)
+				btn.Enabled = true;
 		}
 
 		private void btnDown_Click(object sender, EventArgs e)

@@ -69,7 +69,7 @@ namespace MapView
 		private MenuItem delMap;
 		private MenuItem delGroup;
 		private MenuItem menuItem1;
-		private Button runInstaller;
+		private Button btnRunInstall;
 		private Button btnSavePaths;
 		private Button btnSaveImages;
 		private Label lblImage2;
@@ -464,10 +464,10 @@ namespace MapView
 			populateImageList();
 		}
 
-		private void runInstaller_Click(object sender, System.EventArgs e)
+		private void btnRunInstall_Click(object sender, System.EventArgs e)
 		{
-			var iw = new InstallWindow();
-			iw.ShowDialog(this);
+			var install = new InstallWindow();
+			install.ShowDialog(this);
 		}
 
 		private void btnSavePaths_Click(object sender, System.EventArgs e)
@@ -814,7 +814,7 @@ namespace MapView
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabPaths = new System.Windows.Forms.TabPage();
 			this.btnSavePaths = new System.Windows.Forms.Button();
-			this.runInstaller = new System.Windows.Forms.Button();
+			this.btnRunInstall = new System.Windows.Forms.Button();
 			this.btnFindImage = new System.Windows.Forms.Button();
 			this.btnFindMap = new System.Windows.Forms.Button();
 			this.txtPalettes = new System.Windows.Forms.TextBox();
@@ -918,7 +918,7 @@ namespace MapView
 			// tabPaths
 			// 
 			this.tabPaths.Controls.Add(this.btnSavePaths);
-			this.tabPaths.Controls.Add(this.runInstaller);
+			this.tabPaths.Controls.Add(this.btnRunInstall);
 			this.tabPaths.Controls.Add(this.btnFindImage);
 			this.tabPaths.Controls.Add(this.btnFindMap);
 			this.tabPaths.Controls.Add(this.txtPalettes);
@@ -946,14 +946,14 @@ namespace MapView
 			this.btnSavePaths.Text = "Save paths";
 			this.btnSavePaths.Click += new System.EventHandler(this.btnSavePaths_Click);
 			// 
-			// runInstaller
+			// btnRunInstall
 			// 
-			this.runInstaller.Location = new System.Drawing.Point(145, 185);
-			this.runInstaller.Name = "runInstaller";
-			this.runInstaller.Size = new System.Drawing.Size(125, 35);
-			this.runInstaller.TabIndex = 13;
-			this.runInstaller.Text = "Run installer";
-			this.runInstaller.Click += new System.EventHandler(this.runInstaller_Click);
+			this.btnRunInstall.Location = new System.Drawing.Point(145, 185);
+			this.btnRunInstall.Name = "btnRunInstall";
+			this.btnRunInstall.Size = new System.Drawing.Size(125, 35);
+			this.btnRunInstall.TabIndex = 13;
+			this.btnRunInstall.Text = "Run installer";
+			this.btnRunInstall.Click += new System.EventHandler(this.btnRunInstall_Click);
 			// 
 			// btnFindImage
 			// 

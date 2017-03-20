@@ -9,32 +9,33 @@ using XCom;
 
 namespace MapView.Forms.MainWindow
 {
-	public interface IMainWindowWindowsManager
+	public interface IMainViewsManager
 	{
-		void Register();
-		void CloseAll();
+		void ManageViews();
+		void CloseAllViews();
 	}
 
-	public class MainWindowWindowsManager
+
+	public class MainViewsManager
 		:
-		IMainWindowWindowsManager
+		IMainViewsManager
 	{
-		private readonly Dictionary<string, Form> _registeredForms;
 		private readonly SettingsManager _settingsManager;
 		private readonly ConsoleSharedSpace _consoleShare;
+		private readonly Dictionary<string, Form> _dictForms;
 
 
-		public MainWindowWindowsManager(
+		public MainViewsManager(
 				SettingsManager settingsManager,
 				ConsoleSharedSpace consoleShare)
 		{
 			_settingsManager = settingsManager;
 			_consoleShare = consoleShare;
-			_registeredForms = new Dictionary<string, Form>();
+			_dictForms = new Dictionary<string, Form>();
 		}
 
 
-		public void Register()
+		public void ManageViews()
 		{
 			MainWindowsManager.TopRouteView.TopViewControl.Settings =
 				MainWindowsManager.TopView.Control.Settings;
@@ -45,15 +46,15 @@ namespace MapView.Forms.MainWindow
 			MainWindowsManager.TopRouteView.TopViewControl.LoadDefaultSettings();
 			MainWindowsManager.TopRouteView.RouteViewControl.LoadDefaultSettings();
 
-			RegisterForm(MainWindowsManager.TopView,	"Top View",			"TopView");
-			RegisterForm(MainWindowsManager.RouteView,	"Route View",		"RmpView");
-			RegisterForm(MainWindowsManager.TopRouteView,	"Top-Route View");
-			RegisterForm(MainWindowsManager.TileView,	"Tile View",		"TileView");
+			SetViewToObserver(MainWindowsManager.TopView,		"Top View",			"TopView");
+			SetViewToObserver(MainWindowsManager.RouteView,		"Route View",		"RouteView");
+			SetViewToObserver(MainWindowsManager.TopRouteView,	"TopRoute View");
+			SetViewToObserver(MainWindowsManager.TileView,		"Tile View",		"TileView");
 
-			RegisterForm(_consoleShare.GetNewConsole(), "Console");
+			SetViewToObserver(_consoleShare.GetNewConsole(), "Console");
 
-			RegisterForm(MainWindowsManager.HelpScreen, "Quick Help");
-			RegisterForm(MainWindowsManager.AboutWindow, "About");
+			SetViewToObserver(MainWindowsManager.HelpScreen,  "Quick Help");
+			SetViewToObserver(MainWindowsManager.AboutWindow, "About");
 
 			MainWindowsManager.TopRouteView.TopViewControl.RegistryInfo = // TODO: check if this should really be registered.
 				MainWindowsManager.TopView.Control.RegistryInfo;
@@ -62,30 +63,32 @@ namespace MapView.Forms.MainWindow
 				MainWindowsManager.RouteView.RouteViewControl.RegistryInfo;
 		}
 
-		private void RegisterForm(Form f, string title, string regkey = null)
+		private void SetViewToObserver(Form f, string title, string regkey = null)
 		{
 			f.Text = title;
 
-			var observerForm = f as IMapObserverFormProvider;
-			if (observerForm != null)
+			var fObserver = f as IMapObserverFormProvider;
+			if (fObserver != null)
 			{
-				var observer = observerForm.MapObserver;
-				observer.LoadDefaultSettings();
-				observer.RegistryInfo = new DSShared.Windows.RegistryInfo(f, regkey);
-				_settingsManager.Add(regkey, observer.Settings);
+				var observerType0 = fObserver.MapObserver;
+				observerType0.LoadDefaultSettings();
+
+				observerType0.RegistryInfo = new DSShared.Windows.RegistryInfo(f, regkey);
+
+				_settingsManager.Add(regkey, observerType0.Settings);
 			}
 
-			f.ShowInTaskbar = false;
+//			f.ShowInTaskbar = false;
 			f.FormBorderStyle = FormBorderStyle.SizableToolWindow;
 
-			_registeredForms.Add(title, f);
+			_dictForms.Add(title, f);
 		}
 
-		public void CloseAll()
+		public void CloseAllViews()
 		{
-			foreach (string key in _registeredForms.Keys)
+			foreach (string key in _dictForms.Keys)
 			{
-				var f = _registeredForms[key];
+				var f = _dictForms[key];
 				f.WindowState = FormWindowState.Normal;
 
 				f.Close();

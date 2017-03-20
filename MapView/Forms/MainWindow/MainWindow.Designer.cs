@@ -37,7 +37,7 @@ namespace MapView
 			this.miResize = new System.Windows.Forms.MenuItem();
 			this.miHq = new System.Windows.Forms.MenuItem();
 			this.bar = new System.Windows.Forms.MenuItem();
-			this.quititem = new System.Windows.Forms.MenuItem();
+			this.miQuit = new System.Windows.Forms.MenuItem();
 			this.miEdit = new System.Windows.Forms.MenuItem();
 			this.miPaths = new System.Windows.Forms.MenuItem();
 			this.miOptions = new System.Windows.Forms.MenuItem();
@@ -87,7 +87,7 @@ namespace MapView
 			this.miResize,
 			this.miHq,
 			this.bar,
-			this.quititem});
+			this.miQuit});
 			this.fileMenu.Text = "&File";
 			// 
 			// miOpen
@@ -133,11 +133,11 @@ namespace MapView
 			this.bar.Index = 6;
 			this.bar.Text = "-";
 			// 
-			// quititem
+			// miQuit
 			// 
-			this.quititem.Index = 7;
-			this.quititem.Text = "&Quit";
-			this.quititem.Click += new System.EventHandler(this.quititem_Click);
+			this.miQuit.Index = 7;
+			this.miQuit.Text = "&Quit";
+			this.miQuit.Click += new System.EventHandler(this.miQuit_Click);
 			// 
 			// miEdit
 			// 
@@ -399,7 +399,7 @@ namespace MapView
 		}
 
 		private System.Windows.Forms.MenuItem fileMenu;
-		private System.Windows.Forms.MenuItem quititem;
+		private System.Windows.Forms.MenuItem miQuit;
 		private System.Windows.Forms.MenuItem showMenu;
 		private System.Windows.Forms.MenuItem saveItem;
 		private System.Windows.Forms.MainMenu mainMenu;
