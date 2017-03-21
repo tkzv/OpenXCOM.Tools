@@ -30,32 +30,38 @@ namespace MapView.Forms.MainWindow
 		}
 
 
-		public void PopulateMenus(Form fConsole, Settings settings) // NOTE: this is done w/ MV_SettingsFile options.
+		/// <summary>
+		/// Adds menuitems to MapView's dropdown list.
+		/// </summary>
+		/// <param name="console">pointer to the console-form</param>
+		/// <param name="settings">pointer to MV_SettingsFile options</param>
+		public void PopulateMenus(Form console, Settings settings)
 		{
 			_settings = settings;
 
-			LinkMenuItemToForm(MainWindowsManager.TileView,		"Tile View",		_show);//, "TileView");
+			LinkMenuItemToForm(MainWindowsManager.TileView,     "Tile View",     _show);
+
 			_show.MenuItems.Add(new MenuItem(Separator));
 
-			LinkMenuItemToForm(MainWindowsManager.TopView,		"Top View",			_show);//, "TopView");
-			LinkMenuItemToForm(MainWindowsManager.RouteView,	"Route View",		_show);//, "RmpView");
-			LinkMenuItemToForm(MainWindowsManager.TopRouteView,	"TopRoute View",	_show);
+			LinkMenuItemToForm(MainWindowsManager.TopView,      "Top View",      _show);
+			LinkMenuItemToForm(MainWindowsManager.RouteView,    "Route View",    _show);
+			LinkMenuItemToForm(MainWindowsManager.TopRouteView, "TopRoute View", _show);
+
 			_show.MenuItems.Add(new MenuItem(Separator));
 
-			LinkMenuItemToForm(fConsole,						"Console",			_show);
+			LinkMenuItemToForm(console,                         "Console",       _show);
 
 
-			LinkMenuItemToForm(MainWindowsManager.HelpScreen,	"Quick Help",		_help);
-			LinkMenuItemToForm(MainWindowsManager.AboutWindow,	"About",			_help);
+			LinkMenuItemToForm(MainWindowsManager.HelpScreen,   "Quick Help",    _help);
+			LinkMenuItemToForm(MainWindowsManager.AboutWindow,  "About",         _help);
 
 			AddMenuItemSettings();
 		}
 
-		private void LinkMenuItemToForm( // NOTE: has nothing to do with the Registry.
+		private void LinkMenuItemToForm(
 				Form f,
 				string caption,
 				Menu parent)
-//				string registryKey = null)
 		{
 			f.Text = caption;
 
@@ -79,20 +85,18 @@ namespace MapView.Forms.MainWindow
 
 		private static void FormItemClick(object sender, EventArgs e)
 		{
-			var item = (MenuItem)sender;
+			var it = (MenuItem)sender;
 
-			if (!item.Checked)
+			if (!it.Checked)
 			{
-				((Form)item.Tag).Show();
-				((Form)item.Tag).WindowState = FormWindowState.Normal;
-
-				item.Checked = true;
+				((Form)it.Tag).Show();
+				((Form)it.Tag).WindowState = FormWindowState.Normal;
+				it.Checked = true;
 			}
 			else
 			{
-				((Form)item.Tag).Close();
-
-				item.Checked = false;
+				((Form)it.Tag).Close();
+				it.Checked = false;
 			}
 		}
 
@@ -111,7 +115,7 @@ namespace MapView.Forms.MainWindow
 									null,
 									false,
 									null);
-	
+
 					var f = it.Tag as Form;
 					if (f != null)
 					{
@@ -119,11 +123,11 @@ namespace MapView.Forms.MainWindow
 						{
 							if (_disposed)
 								return;
-	
+
 							var senderForm = sender as Form;
 							if (senderForm == null)
 								return;
-	
+
 							_settings[label].Value = senderForm.Visible;
 						};
 					}
@@ -133,29 +137,29 @@ namespace MapView.Forms.MainWindow
 
 		public void LoadState()
 		{
-			foreach (MenuItem item in _show.MenuItems)
+			foreach (MenuItem it in _show.MenuItems)
 			{
-				var label = GetWindowSettingLabel(item);
+				var label = GetWindowSettingLabel(it);
 				if (label != null)
 				{
 					if (_settings[label].IsBoolean)
 					{
-						item.PerformClick();
+						it.PerformClick();
 					}
 					else
 					{
-						item.PerformClick();
-						item.PerformClick();
+						it.PerformClick();
+						it.PerformClick();
 					}
 				}
 			}
-/*			foreach (MenuItem item in _show.MenuItems)	// NOTE: Don't do this. Go figure.
+/*			foreach (MenuItem it in _show.MenuItems)	// NOTE: Don't do this. Go figure.
 			{											// All the View-Panels will load ...
-				item.PerformClick();					// regardless of their saved settings.
+				it.PerformClick();						// regardless of their saved settings.
 
-				var label = GetWindowSettingName(item);
+				var label = GetWindowSettingName(it);
 				if (!(_settings[label].ValueBool))
-					item.PerformClick();
+					it.PerformClick();
 			} */
 			_show.Enabled = true;
 		}
@@ -164,7 +168,7 @@ namespace MapView.Forms.MainWindow
 		{
 			string st = item.Text;
 			return (st != Separator) ? "Window-" + st
-							   : null;
+									 : null;
 		}
 
 		public IMainShowAllManager CreateShowAllManager()

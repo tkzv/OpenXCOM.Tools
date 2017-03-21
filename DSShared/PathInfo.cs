@@ -9,13 +9,13 @@ namespace DSShared
 	/// </summary>
 	public class PathInfo
 	{
-		private readonly string _path = String.Empty;
-		private readonly string _file = String.Empty;
-		private readonly string _ext  = String.Empty;
-
 		public const string PathsFile   = "MV_PathsFile";
 		public const string MapEditFile = "MV_MapEditFile";
 		public const string ImagesFile  = "MV_ImagesFile";
+
+		private readonly string _path = String.Empty;
+		private readonly string _file = String.Empty;
+		private readonly string _ext  = String.Empty;
 
 
 		/// <summary>
@@ -29,6 +29,46 @@ namespace DSShared
 			_path = path;
 			_file = file;
 			_ext  = ext;
+		}
+
+
+		/// <summary>
+		/// Directory path.
+		/// </summary>
+		public string Path
+		{
+			get { return _path; }
+		}
+
+		/// <summary>
+		/// Gets a <see cref="T:System.String"></see> that represents the
+		/// current <see cref="T:System.Object"></see>.
+		/// </summary>
+		public string FullPath
+		{
+			get
+			{
+				return (_ext.Length != 0) ? _path + @"\" + _file + "." + _ext
+										  : _path + @"\" + _file;
+				// kL_question: Can a file or directory end with ".".
+			}
+		}
+
+		/// <summary>
+		/// Checks if the file exists.
+		/// </summary>
+		/// <returns>System.IO.File.Exists(ToString())</returns>
+		public bool FileExists()
+		{
+			return File.Exists(FullPath);
+		}
+
+		/// <summary>
+		/// Calling this will create the directory if it does not exist.
+		/// </summary>
+		public void CreateDirectory()
+		{
+			Directory.CreateDirectory(_path);
 		}
 
 /*		/// <summary>
@@ -64,7 +104,6 @@ namespace DSShared
 			}
 		} */
 
-
 /*		/// <summary>
 		/// Extension part of the path.
 		/// </summary>
@@ -83,32 +122,6 @@ namespace DSShared
 			set { _file = value; }
 		} */
 
-		/// <summary>
-		/// Directory path.
-		/// </summary>
-		public string Path
-		{
-			get { return _path; }
-//			set { _path = value; }
-		}
-
-		/// <summary>
-		/// Checks if the file exists.
-		/// </summary>
-		/// <returns>System.IO.File.Exists(ToString())</returns>
-		public bool FileExists()
-		{
-			return File.Exists(FullPath);
-		}
-
-		/// <summary>
-		/// Calling this will create the directory if it does not exist.
-		/// </summary>
-		public void CreateDirectory()
-		{
-			Directory.CreateDirectory(_path);
-		}
-
 /*		/// <summary>
 		/// String representation of this path with the supplied extension added
 		/// on instead of the one the object was constructed with.
@@ -119,28 +132,5 @@ namespace DSShared
 		{
 			return _path + @"\" + _file + "." + ext;
 		} */
-
-		/// <summary>
-		/// Returns a <see cref="T:System.String"></see> that represents the
-		/// current <see cref="T:System.Object"></see>.
-		/// </summary>
-		/// <returns>a <see cref="T:System.String"></see> that represents the
-		/// current <see cref="T:System.Object"></see>
-		/// </returns>
-//		public string FullPath()
-//		{
-//			return (_ext.Length != 0) ? _path + @"\" + _file + "." + _ext
-//									  : _path + @"\" + _file;
-//			// kL_question: Can a file or directory end with ".".
-//		}
-		public string FullPath
-		{
-			get
-			{
-				return (_ext.Length != 0) ? _path + @"\" + _file + "." + _ext
-										  : _path + @"\" + _file;
-				// kL_question: Can a file or directory end with ".".
-			}
-		}
 	}
 }

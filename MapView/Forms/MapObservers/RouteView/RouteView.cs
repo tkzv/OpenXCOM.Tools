@@ -877,10 +877,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				DeselectNode();
 
-				gbSpawnData.Enabled   =
-				gbPatrolData.Enabled  =
-				gbNodeData.Enabled    =
-				gbLinkData.Enabled    = false;
+				gbSpawnData.Enabled  =
+				gbPatrolData.Enabled =
+				gbNodeData.Enabled   =
+				gbLinkData.Enabled   = false;
 
 				Refresh();
 			}

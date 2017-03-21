@@ -169,7 +169,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			var map = MapFile;
 
-			for (int i = 0; i <= map.MapSize.Rows; i++)
+			for (int i = 0; i <= map.MapSize.Rows; ++i)
 				g.DrawLine(
 						MapPens["GridLineColor"],
 						Origin.X - i * DrawAreaWidth,
@@ -177,7 +177,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 						Origin.X + ((map.MapSize.Cols - i) * DrawAreaWidth),
 						Origin.Y + ((map.MapSize.Cols + i) * DrawAreaHeight));
 
-			for (int i = 0; i <= map.MapSize.Cols; i++)
+			for (int i = 0; i <= map.MapSize.Cols; ++i)
 				g.DrawLine(
 						MapPens["GridLineColor"],
 						Origin.X + i * DrawAreaWidth,
@@ -201,11 +201,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var startX = Origin.X;
 			var startY = Origin.Y;
 
-			for (int r = 0; r < MapFile.MapSize.Rows; ++r)
+			for (int r = 0; r != MapFile.MapSize.Rows; ++r)
 			{
 				for (int
 						c = 0, x = startX, y = startY;
-						c < MapFile.MapSize.Cols;
+						c != MapFile.MapSize.Cols;
 						++c, x += DrawAreaWidth, y += DrawAreaHeight)
 				{
 					var tile = MapFile[r, c] as XCMapTile;
@@ -239,7 +239,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 								g.FillPath(brushUnselected, upper);
 
 
-							for (int i = 0; i < RouteNode.LinkSlots; i++)
+							for (int i = 0; i != RouteNode.LinkSlots; ++i)
 							{
 								var link = node[i] as Link;
 								switch (link.Destination)
@@ -345,12 +345,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var map = MapFile;
 			for (int
 					r = 0, startX = Origin.X, startY = Origin.Y;
-					r < map.MapSize.Rows;
+					r != map.MapSize.Rows;
 					++r, startX -= DrawAreaWidth, startY += DrawAreaHeight)
 			{
 				for (int
 						c = 0, x = startX, y = startY;
-						c < map.MapSize.Cols;
+						c != map.MapSize.Cols;
 						++c, x += DrawAreaWidth, y += DrawAreaHeight)
 				{
 					if (map[r, c] != null)
@@ -376,12 +376,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			for (int
 					r = 0, startX = Origin.X, startY = Origin.Y;
-					r < MapFile.MapSize.Rows;
+					r != MapFile.MapSize.Rows;
 					++r, startX -= DrawAreaWidth, startY += DrawAreaHeight)
 			{
 				for (int
 						c = 0, x = startX, y = startY;
-						c < MapFile.MapSize.Cols;
+						c != MapFile.MapSize.Cols;
 						++c, x += DrawAreaWidth, y += DrawAreaHeight)
 				{
 					if (MapFile[r, c] != null)
@@ -449,12 +449,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 								}
 
 								if (xEnd != -1)
-								{
 									g.DrawLine(
 											pen,
 											x, y + DrawAreaHeight,
 											xEnd, yEnd);
-								}
 							}
 						}
 					}
@@ -522,12 +520,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 						}
 
 						if (xEnd != -1)
-						{
 							g.DrawLine(
 									pen,
 									xLoc, yLoc,
 									xEnd, yEnd);
-						}
 					}
 				}
 			}

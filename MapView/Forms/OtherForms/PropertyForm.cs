@@ -23,7 +23,7 @@ namespace MapView
 		public PropertyForm(string typeLabel, Settings settings)
 		{
 			InitializeComponent();
-//			var ri = new RegistryInfo(this, "OptionsForm");
+//			var ri = new RegistryInfo(this, "OptionsForm"); // TODO: that might need to get created anyway
 
 			propertyGrid.TypeLabel = typeLabel;
 			propertyGrid.SetSettings(settings);
@@ -43,17 +43,18 @@ namespace MapView
 			this.propertyGrid.LineColor = System.Drawing.SystemColors.ScrollBar;
 			this.propertyGrid.Location = new System.Drawing.Point(0, 0);
 			this.propertyGrid.Name = "propertyGrid";
-			this.propertyGrid.Size = new System.Drawing.Size(242, 325);
+			this.propertyGrid.Size = new System.Drawing.Size(592, 374);
 			this.propertyGrid.TabIndex = 0;
 			this.propertyGrid.TypeLabel = "DefaultType";
 			// 
 			// PropertyForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-			this.ClientSize = new System.Drawing.Size(242, 325);
+			this.ClientSize = new System.Drawing.Size(592, 374);
 			this.Controls.Add(this.propertyGrid);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "PropertyForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Custom PropertyGrid";
 			this.ResumeLayout(false);
 
@@ -111,7 +112,7 @@ namespace MapView
 		}
 
 		[DefaultValue(true)] // NOTE: This doesn't affect the default value; it is used only by the designer.
-		[Description("If true, the Setting.Update() event will be called when a property changes")]
+		[Description("If true the Setting.Update() event will be called when a property changes")]
 		public bool InstantUpdate
 		{
 			get { return _instantUpdate; }
@@ -143,50 +144,50 @@ namespace MapView
 
 			if (_hashTypes[_typeLabel] == null)
 			{
-				var myDomain = Thread.GetDomain();
-				var myAsmName = new AssemblyName();
-				myAsmName.Name = "TempAssembly";
+				var ad = Thread.GetDomain();
+				var an = new AssemblyName();
+				an.Name = "TempAssembly";
 
 				// Only save the custom-type dll while debugging
 #if SaveDLL && DEBUG
-				AssemblyBuilder assemblyBuilder = myDomain.DefineDynamicAssembly(
-																			myAsmName,
-																			AssemblyBuilderAccess.RunAndSave);
+				AssemblyBuilder assemblyBuilder = ad.DefineDynamicAssembly(
+																		an,
+																		AssemblyBuilderAccess.RunAndSave);
 				ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(
-																			"TempModule",
-																			"Test.dll");
+																		"TempModule",
+																		"Test.dll");
 #else
-				AssemblyBuilder assemblyBuilder = myDomain.DefineDynamicAssembly(
-																			myAsmName,
-																			AssemblyBuilderAccess.Run);
+				AssemblyBuilder assemblyBuilder = ad.DefineDynamicAssembly(
+																		an,
+																		AssemblyBuilderAccess.Run);
 				ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule("TempModule");
 #endif
 
 				// create type
-				TypeBuilder newType = moduleBuilder.DefineType(_typeLabel, TypeAttributes.Public);
+				TypeBuilder typeBuilder = moduleBuilder.DefineType(_typeLabel, TypeAttributes.Public);
 
 				// create the hashtable used to store property values
-				FieldBuilder hashField = newType.DefineField(
-														"table",
-														typeof(Hashtable),
-														FieldAttributes.Private);
+				FieldBuilder fieldBuilder = typeBuilder.DefineField(
+																"table",
+																typeof(Hashtable),
+																FieldAttributes.Private);
 				createHashMethod(
-							newType.DefineProperty(
-												"Hash",
-												PropertyAttributes.None,
-												typeof(Hashtable),
-												new Type[]{}),
-							newType,
-							hashField);
+							typeBuilder.DefineProperty(
+													"Hash",
+													PropertyAttributes.None,
+													typeof(Hashtable),
+													new Type[]{}),
+							typeBuilder,
+							fieldBuilder);
 
 				foreach (string key in _settings.Keys)
 					emitProperty(
-								newType,
-								hashField,
-								_settings[key],
-								key);
+							typeBuilder,
+							fieldBuilder,
+							_settings[key],
+							key);
 
-				_hashTypes[_typeLabel] = newType.CreateType();
+				_hashTypes[_typeLabel] = typeBuilder.CreateType();
 			}
 
 			var table = new Hashtable();
@@ -196,67 +197,64 @@ namespace MapView
 #if SaveDLL && DEBUG
 			assemblyBuilder.Save("Test.dll");
 #endif
-			var custType = (Type)_hashTypes[_typeLabel];
-			var ctorInfo = custType.GetConstructor(new Type[]{});
+			var type = (Type)_hashTypes[_typeLabel];
+			var ctorInfo = type.GetConstructor(new Type[]{});
 			object obj = ctorInfo.Invoke(new Object[]{});
 
-			// set the object's hashtable - in the future i would like to do this in the emitted object's constructor
-			var propInfo = custType.GetProperty("Hash");
-			propInfo.SetValue(obj, table, null);
+			var propInfo = type.GetProperty("Hash");	// set the object's hashtable
+			propInfo.SetValue(obj, table, null);		// in the future i would like to do this in the emitted object's constructor
 
 			SelectedObject = obj;
 		}
 
 		private static void createHashMethod(
-				PropertyBuilder propBuild,
-				TypeBuilder typeBuild,
-				FieldInfo hash)
+				PropertyBuilder propBuilder,
+				TypeBuilder typeBuilder,
+				FieldInfo fieldInfo)
 		{
-			// First, define the behavior of the "get" property for Hash as a method.
-			var typeHashGet = typeBuild.DefineMethod(
-												"GetHash",
-												MethodAttributes.Public,
-												typeof(Hashtable),
-												new Type[]{});
-			ILGenerator ilg = typeHashGet.GetILGenerator();
-			ilg.Emit(OpCodes.Ldarg_0);
-			ilg.Emit(OpCodes.Ldfld, hash);
-			ilg.Emit(OpCodes.Ret);
+			var methodGetter = typeBuilder.DefineMethod( // first define the behavior of the "get" property for Hash as a method
+													"GetHash",
+													MethodAttributes.Public,
+													typeof(Hashtable),
+													new Type[]{});
+			ILGenerator generator = methodGetter.GetILGenerator();
+			generator.Emit(OpCodes.Ldarg_0);
+			generator.Emit(OpCodes.Ldfld, fieldInfo);
+			generator.Emit(OpCodes.Ret);
 
-			// Now, define the behavior of the "set" property for Hash.
-			var typeHashSet = typeBuild.DefineMethod(
-												"SetHash",
-												MethodAttributes.Public,
-												null,
-												new Type[]{ typeof(Hashtable) });
+			var methodSetter = typeBuilder.DefineMethod( // now define the behavior of the "set" property for Hash
+													"SetHash",
+													MethodAttributes.Public,
+													null,
+													new Type[]{ typeof(Hashtable) });
 
-			ilg = typeHashSet.GetILGenerator();
-			ilg.Emit(OpCodes.Ldarg_0);
-			ilg.Emit(OpCodes.Ldarg_1);
-			ilg.Emit(OpCodes.Stfld, hash);
-			ilg.Emit(OpCodes.Ret);
+			generator = methodSetter.GetILGenerator();
+			generator.Emit(OpCodes.Ldarg_0);
+			generator.Emit(OpCodes.Ldarg_1);
+			generator.Emit(OpCodes.Stfld, fieldInfo);
+			generator.Emit(OpCodes.Ret);
 
 			// map the two methods created above to their property
-			propBuild.SetGetMethod(typeHashGet);
-			propBuild.SetSetMethod(typeHashSet);
+			propBuilder.SetGetMethod(methodGetter);
+			propBuilder.SetSetMethod(methodSetter);
 
 			// add the [Browsable(false)] property to the Hash property so it doesn't show up on the property list
-			var ci = typeof(BrowsableAttribute).GetConstructor(new Type[]{ typeof(bool) });
-			var cab = new CustomAttributeBuilder(ci,new object[]{ false });
-			propBuild.SetCustomAttribute(cab);
+			var ctorInfo = typeof(BrowsableAttribute).GetConstructor(new Type[]{ typeof(bool) });
+			var attributeBuilder = new CustomAttributeBuilder(ctorInfo, new object[]{ false });
+			propBuilder.SetCustomAttribute(attributeBuilder);
 		}
 
 		/// <summary>
 		/// Emits a generic get/set property in which the result returned resides
 		/// in a hashtable whose key is the name of the property
 		/// </summary>
-		/// <param name="builder"></param>
-		/// <param name="hash"></param>
+		/// <param name="typeBuilder"></param>
+		/// <param name="fieldInfo"></param>
 		/// <param name="setting"></param>
 		/// <param name="name"></param>
 		private void emitProperty(
-				TypeBuilder builder,
-				FieldInfo hash,
+				TypeBuilder typeBuilder,
+				FieldInfo fieldInfo,
 				Setting setting,
 				string name)
 		{
@@ -264,78 +262,78 @@ namespace MapView
 			// having the functionality i wanted, and view it with ildasm.
 			// peverify is also kinda nice to use to see what errors there are.
 
-			var pb = builder.DefineProperty(
-										name,
-										PropertyAttributes.None,
-										setting.Value.GetType(),
-										new Type[]{});
+			var propertyBuilder = typeBuilder.DefineProperty(
+														name,
+														PropertyAttributes.None,
+														setting.Value.GetType(),
+														new Type[]{});
 			var objType = setting.Value.GetType();
-			var getMethod = builder.DefineMethod(
-											"get_" + name,
-											MethodAttributes.Public,
-											objType,
-											new Type[]{});
-			var ilg = getMethod.GetILGenerator();
-			ilg.DeclareLocal(objType);
-			ilg.Emit(OpCodes.Ldarg_0);
-			ilg.Emit(OpCodes.Ldfld,hash);
-			ilg.Emit(OpCodes.Ldstr,name);
-			ilg.EmitCall(
-					OpCodes.Callvirt,
-					typeof(Hashtable).GetMethod("get_Item"),
-					null);
+			var methodGetter = typeBuilder.DefineMethod(
+													"get_" + name,
+													MethodAttributes.Public,
+													objType,
+													new Type[]{});
+			var generator = methodGetter.GetILGenerator();
+			generator.DeclareLocal(objType);
+			generator.Emit(OpCodes.Ldarg_0);
+			generator.Emit(OpCodes.Ldfld, fieldInfo);
+			generator.Emit(OpCodes.Ldstr, name);
+			generator.EmitCall(
+							OpCodes.Callvirt,
+							typeof(Hashtable).GetMethod("get_Item"),
+							null);
 
 			if (objType.IsValueType)
 			{
-				ilg.Emit(OpCodes.Unbox,objType);
+				generator.Emit(OpCodes.Unbox, objType);
 				if (_typeHash[objType] != null)
-					ilg.Emit((OpCode)_typeHash[objType]);
+					generator.Emit((OpCode)_typeHash[objType]);
 				else
-					ilg.Emit(OpCodes.Ldobj, objType);
+					generator.Emit(OpCodes.Ldobj, objType);
 			}
 			else
-				ilg.Emit(OpCodes.Castclass, objType);
+				generator.Emit(OpCodes.Castclass, objType);
 
-			ilg.Emit(OpCodes.Stloc_0);
-			ilg.Emit(OpCodes.Br_S, (byte)0);
-			ilg.Emit(OpCodes.Ldloc_0);
-			ilg.Emit(OpCodes.Ret);
+			generator.Emit(OpCodes.Stloc_0);
+			generator.Emit(OpCodes.Br_S, (byte)0);
+			generator.Emit(OpCodes.Ldloc_0);
+			generator.Emit(OpCodes.Ret);
 
-			var setMethod = builder.DefineMethod(
-											"set_" + name,
-											MethodAttributes.Public,
-											null,
-											new Type[]{ objType });
-			ilg = setMethod.GetILGenerator();
-			ilg.Emit(OpCodes.Ldarg_0);
-			ilg.Emit(OpCodes.Ldfld,hash);
-			ilg.Emit(OpCodes.Ldstr,name);
-			ilg.Emit(OpCodes.Ldarg_1);
+			var methodSetter = typeBuilder.DefineMethod(
+													"set_" + name,
+													MethodAttributes.Public,
+													null,
+													new Type[]{ objType });
+			generator = methodSetter.GetILGenerator();
+			generator.Emit(OpCodes.Ldarg_0);
+			generator.Emit(OpCodes.Ldfld, fieldInfo);
+			generator.Emit(OpCodes.Ldstr, name);
+			generator.Emit(OpCodes.Ldarg_1);
 
 			if (objType.IsValueType)
-				ilg.Emit(OpCodes.Box, objType);
+				generator.Emit(OpCodes.Box, objType);
 
-			ilg.EmitCall(
-					OpCodes.Callvirt,
-					typeof(Hashtable).GetMethod("set_Item"),
-					null);
-			ilg.Emit(OpCodes.Ret);
+			generator.EmitCall(
+							OpCodes.Callvirt,
+							typeof(Hashtable).GetMethod("set_Item"),
+							null);
+			generator.Emit(OpCodes.Ret);
 
-			pb.SetGetMethod(getMethod);
-			pb.SetSetMethod(setMethod);
+			propertyBuilder.SetGetMethod(methodGetter);
+			propertyBuilder.SetSetMethod(methodSetter);
 
 			if (setting.Description != null)
 			{
-				var ci = typeof(DescriptionAttribute).GetConstructor(new Type[]{ typeof(string) });
-				var cab = new CustomAttributeBuilder(ci, new object[]{ setting.Description });
-				pb.SetCustomAttribute(cab);
+				var ctorInfo = typeof(DescriptionAttribute).GetConstructor(new Type[]{ typeof(string) });
+				var attributeBuilder = new CustomAttributeBuilder(ctorInfo, new object[]{ setting.Description });
+				propertyBuilder.SetCustomAttribute(attributeBuilder);
 			}
 
 			if (setting.Category != null)
 			{
-				var ci = typeof(CategoryAttribute).GetConstructor(new Type[]{ typeof(string) });
-				var cab = new CustomAttributeBuilder(ci, new object[]{ setting.Category });
-				pb.SetCustomAttribute(cab);
+				var ctorInfo = typeof(CategoryAttribute).GetConstructor(new Type[]{ typeof(string) });
+				var attributeBuilder = new CustomAttributeBuilder(ctorInfo, new object[]{ setting.Category });
+				propertyBuilder.SetCustomAttribute(attributeBuilder);
 			}
 		}
 	}

@@ -728,9 +728,9 @@ namespace MapView
 			{
 				_windowFlag = true;
 
-				foreach (MenuItem mi in showMenu.MenuItems)
-					if (mi.Checked)
-						((Form)mi.Tag).BringToFront();
+				foreach (MenuItem it in showMenu.MenuItems)
+					if (it.Checked)
+						((Form)it.Tag).BringToFront();
 
 				Focus();
 				BringToFront();
@@ -777,14 +777,6 @@ namespace MapView
 			get { return _settingsManager["MainWindow"]; }
 			set { _settingsManager["MainWindow"] = value; }
 		}
-//		private void SetSettings(Settings settings)
-//		{
-//			_settingsManager["MainWindow"] = settings;
-//		}
-//		private Settings GetSettings()
-//		{
-//			return _settingsManager["MainWindow"];
-//		}
 
 		private void drawSelectionBoxButton_Click(object sender, EventArgs e)
 		{
@@ -842,7 +834,7 @@ namespace MapView
 
 		public void StatusBarPrintPosition(int col, int row)
 		{
-			statusPosition.Text = "c:" + col + " r:" + row;
+			statusPosition.Text = string.Format("c:{0} r:{1}", col, row);
 		}
 	}
 }
