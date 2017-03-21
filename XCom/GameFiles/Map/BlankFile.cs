@@ -9,7 +9,7 @@ namespace XCom
 		public static readonly string BlankExt = ".BLK";
 
 
-		public static void LoadBlanks(
+		public static void LoadBlank(
 				string baseName,
 				string blankPath,
 				XCom.Interfaces.Base.IMap_Base file)
@@ -44,14 +44,13 @@ namespace XCom
 			}
 		}
 
-		public static void SaveBlanks(
+		public static void SaveBlank(
 				string baseName,
 				string blankPath,
 				XCom.Interfaces.Base.IMap_Base file)
 //				XCMapFile file)
 		{
-			if (!Directory.Exists(blankPath))
-				Directory.CreateDirectory(blankPath);
+			Directory.CreateDirectory(blankPath);
 
 			using (var bw = new BinaryWriter(new FileStream(blankPath + baseName + BlankExt, FileMode.Create)))
 			{

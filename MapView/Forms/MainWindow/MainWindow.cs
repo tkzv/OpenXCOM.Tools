@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 
 using DSShared;
@@ -25,7 +27,7 @@ namespace MapView
 //	public delegate void StringDelegate(object sender, string args);
 
 
-	public sealed partial class MainWindow
+	public sealed partial class XCMainWindow
 		:
 		Form
 	{
@@ -39,7 +41,7 @@ namespace MapView
 		private readonly MainMenusManager _mainMenusManager;
 
 
-		public MainWindow()
+		public XCMainWindow()
 		{
 			LogFile.CreateLogFile();
 			LogFile.WriteLine("Starting MAIN MapView window ...");
@@ -98,9 +100,9 @@ namespace MapView
 			_mainWindowsManager = new MainWindowsManager();
 			_mainViewsManager = new MainViewsManager(_settingsManager, consoleShare);
 
-			_mainMenusManager.PopulateMenus(consoleShare.GetNewConsole(), GetSettings());
+			_mainMenusManager.PopulateMenus(consoleShare.GetNewConsole(), Settings);
 
-			MainWindowsManager.MainWindowsShowAllManager = _mainMenusManager.CreateShowAll();
+			MainWindowsManager.MainShowAllManager = _mainMenusManager.CreateShowAllManager();
 			MainWindowsManager.Initialize();
 			LogFile.WriteLine("MainWindowsManager initialized");
 
@@ -151,17 +153,17 @@ namespace MapView
 
 			_instance = this;
 
-			mapList.TreeViewNodeSorter = new System.Collections.CaseInsensitiveComparer();
+			mapList.TreeViewNodeSorter = StringComparer.OrdinalIgnoreCase;
 
 			toolStripContainer1.ContentPanel.Controls.Add(_mapViewPanel);
-			MainWindowsManager.EditButtonsFactory.MakeToolstrip(toolStrip);
+			MainWindowsManager.EditButtonsFactory.MakeToolStrip(toolStrip);
 			toolStrip.Enabled = false;
 			toolStrip.Items.Add(new ToolStripSeparator());
 
 			try
 			{
 				_mapViewPanel.MapView.CursorSprite = new CursorSprite(GameInfo.CachePckFile(
-															SharedSpace.Instance.GetString("cursorFile"),
+															SharedSpace.Instance.GetString(SharedSpace.CursorFile),
 															String.Empty,
 															2,
 															Palette.UFOBattle));
@@ -171,7 +173,7 @@ namespace MapView
 				try
 				{
 					_mapViewPanel.MapView.CursorSprite = new CursorSprite(GameInfo.CachePckFile(
-															SharedSpace.Instance.GetString("cursorFile"),
+															SharedSpace.Instance.GetString(SharedSpace.CursorFile),
 															String.Empty,
 															4,
 															Palette.TFTDBattle));
@@ -179,7 +181,9 @@ namespace MapView
 				catch
 				{
 					_mapViewPanel.Cursor = null;
+					throw; // TODO: there's got to be a better way to do that ....
 				}
+				throw;
 			}
 			LogFile.WriteLine("Cursor loaded");
 
@@ -188,7 +192,7 @@ namespace MapView
 
 			if (infoSettings.FileExists())
 			{
-				_settingsManager.Load(infoSettings.FullPath());
+				_settingsManager.Load(infoSettings.FullPath);
 				LogFile.WriteLine("User settings loaded");
 			}
 			else
@@ -237,25 +241,29 @@ namespace MapView
 			GameInfo.Init(Palette.UFOBattle, filePaths);
 		}
 
-		private static MainWindow _instance;
+		private static XCMainWindow _instance;
 
-		public static MainWindow Instance
+		public static XCMainWindow Instance
 		{
 			get { return _instance; }
 		}
 
 		private void parseLine(XCom.KeyVal line, XCom.VarCollection vars)
 		{
-			switch (line.Keyword.ToLower(System.Globalization.CultureInfo.InvariantCulture))
+			switch (line.Keyword.ToUpperInvariant())
 			{
-				case "cursor":
+				case "CURSOR":
 					if (line.Rest.EndsWith(@"\", StringComparison.Ordinal))
-						SharedSpace.Instance.AllocateObject("cursorFile", line.Rest + "CURSOR");
+						SharedSpace.Instance.AllocateObject(
+														SharedSpace.CursorFile,
+														line.Rest + SharedSpace.Cursor);
 					else
-						SharedSpace.Instance.AllocateObject("cursorFile", line.Rest + @"\CURSOR");
+						SharedSpace.Instance.AllocateObject(
+														SharedSpace.CursorFile,
+														line.Rest + @"\" + SharedSpace.Cursor);
 					break;
 
-//				case "logfile":
+//				case "LOGFILE":
 //					try
 //					{
 //						LogFile.DebugOn = bool.Parse(line.Rest);
@@ -270,7 +278,7 @@ namespace MapView
 
 		private void ChangeSetting(object sender, string key, object val)
 		{
-			GetSettings()[key].Value = val;
+			Settings[key].Value = val;
 			switch (key)
 			{
 				case "Animation":
@@ -341,7 +349,7 @@ namespace MapView
 			}
 		}
 
-		private void addMaps(TreeNode tn, IDictionary<string, IMapDesc> maps)
+		private static void addMaps(TreeNode tn, IDictionary<string, IMapDesc> maps)
 		{
 			foreach (string key in maps.Keys)
 			{
@@ -395,10 +403,10 @@ namespace MapView
 
 					WindowState = FormWindowState.Normal;
 
-					keyMainView.SetValue("Left",	Left);
-					keyMainView.SetValue("Top",		Top);
-					keyMainView.SetValue("Width",	Width);
-					keyMainView.SetValue("Height",	Height - SystemInformation.CaptionButtonSize.Height);
+					keyMainView.SetValue("Left",   Left);
+					keyMainView.SetValue("Top",    Top);
+					keyMainView.SetValue("Width",  Width);
+					keyMainView.SetValue("Height", Height - SystemInformation.CaptionButtonSize.Height);
 
 //					keyMainView.SetValue("Animation", onItem.Checked.ToString());
 //					keyMainView.SetValue("Doors", miDoors.Checked.ToString());
@@ -408,7 +416,7 @@ namespace MapView
 					keySoftware.Close();
 				}
 
-				_settingsManager.Save();
+				_settingsManager.Save(); // save MV_SettingsFile // TODO: Save settings when closing the Options form(s).
 			}
 		}
 
@@ -418,10 +426,10 @@ namespace MapView
 			var keyMapView  = keySoftware.CreateSubKey("MapView");
 			var keyMainView = keyMapView.CreateSubKey("MainView");
 
-			Left	= (int)keyMainView.GetValue("Left",		Left);
-			Top		= (int)keyMainView.GetValue("Top",		Top);
-			Width	= (int)keyMainView.GetValue("Width",	Width);
-			Height	= (int)keyMainView.GetValue("Height",	Height);
+			Left   = (int)keyMainView.GetValue("Left",   Left);
+			Top    = (int)keyMainView.GetValue("Top",    Top);
+			Width  = (int)keyMainView.GetValue("Width",  Width);
+			Height = (int)keyMainView.GetValue("Height", Height);
 
 			keyMainView.Close();
 			keyMapView.Close();
@@ -488,7 +496,7 @@ namespace MapView
 //							"Main",
 //							null, false, null);
 
-			SetSettings(settings);
+			Settings = settings;
 		}
 
 		private void update(object sender, EventArgs e)
@@ -642,9 +650,9 @@ namespace MapView
 
 		private void miOptions_Click(object sender, System.EventArgs e)
 		{
-			var pf = new PropertyForm("MainViewSettings", GetSettings());
-			pf.Text = "MainWindow Options";
-			pf.Show();
+			var f = new PropertyForm("MainViewOptions", Settings);
+			f.Text = "Main View Options";
+			f.Show();
 		}
 
 		private void miSaveImage_Click(object sender, System.EventArgs e)
@@ -764,15 +772,19 @@ namespace MapView
 		private void miOpen_Click(object sender, EventArgs e)
 		{}
 
-		private void SetSettings(Settings settings)
+		private Settings Settings
 		{
-			_settingsManager["MainWindow"] = settings;
+			get { return _settingsManager["MainWindow"]; }
+			set { _settingsManager["MainWindow"] = value; }
 		}
-
-		private Settings GetSettings()
-		{
-			return _settingsManager["MainWindow"];
-		}
+//		private void SetSettings(Settings settings)
+//		{
+//			_settingsManager["MainWindow"] = settings;
+//		}
+//		private Settings GetSettings()
+//		{
+//			return _settingsManager["MainWindow"];
+//		}
 
 		private void drawSelectionBoxButton_Click(object sender, EventArgs e)
 		{

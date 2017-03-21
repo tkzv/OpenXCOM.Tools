@@ -1,9 +1,10 @@
 using System;
 
+
 namespace DSShared.DB
 {
 	/// <summary>
-	/// Class to specify columns in a WHERE clause of a sql query
+	/// Class to specify columns in a WHERE clause of a sql query.
 	/// </summary>
 	public class WhereCol
 	{

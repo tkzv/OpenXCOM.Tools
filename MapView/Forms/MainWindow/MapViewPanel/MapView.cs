@@ -92,10 +92,10 @@ namespace MapView
 							var copyTile = _copied[r - dragStart.Y, c - dragStart.X] as XCMapTile;
 							if (copyTile != null)
 							{
-								tile.Ground		= copyTile.Ground;
-								tile.Content	= copyTile.Content;
-								tile.West		= copyTile.West;
-								tile.North		= copyTile.North;
+								tile.Ground  = copyTile.Ground;
+								tile.Content = copyTile.Content;
+								tile.West    = copyTile.West;
+								tile.North   = copyTile.North;
 							}
 						}
 					}
@@ -358,7 +358,7 @@ namespace MapView
 									newCoords.Row);
 			SetDrag(dragStart, DragEnd);
 
-			MainWindow.Instance.StatusBarPrintPosition(newCoords.Col, newCoords.Row);
+			XCMainWindow.Instance.StatusBarPrintPosition(newCoords.Col, newCoords.Row);
 		}
 
 		private void MapHeight(IMap_Base mapFile, HeightChangedEventArgs e)

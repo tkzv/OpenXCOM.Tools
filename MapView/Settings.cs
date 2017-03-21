@@ -8,9 +8,9 @@ using XCom;
 
 namespace MapView
 {
-	public delegate string ConvertObject(object valu);										// fu.FxCop - your dictionary doesn't work
-	public delegate void ValueChangedDelegate(object sender, string keyword, object valu);	// for "val" but does for "valu". Note that
-																							// "cur" is considered 'proper spelling'. lulz!
+	public delegate string ConvertObject(object obj);
+	public delegate void ValueChangedDelegate(object sender, string key, object obj);
+
 
 	/// <summary>
 	/// A wrapper around a Hashtable for Setting objects. Setting objects are
@@ -23,12 +23,12 @@ namespace MapView
 
 		private static Dictionary<Type,ConvertObject> _converters;
 
-		public static void AddConverter(Type type, ConvertObject val)
+		public static void AddConverter(Type type, ConvertObject obj)
 		{
 			if (_converters == null)
 				_converters = new Dictionary<Type, ConvertObject>();
 
-			_converters[type] = val;
+			_converters[type] = obj;
 		}
 
 
@@ -108,16 +108,16 @@ namespace MapView
 		/// Adds a setting to a specified object.
 		/// </summary>
 		/// <param name="name">property name</param>
-		/// <param name="val">start value of the property</param>
+		/// <param name="obj">start value of the property</param>
 		/// <param name="desc">property description</param>
 		/// <param name="category">property category</param>
 		/// <param name="update">event handler to recieve the PropertyValueChanged event</param>
 		/// <param name="reflect">if true, an internal event handler will be created - the refObj
 		/// must not be null and the name must be the name of a property of the type that refObj is</param>
-		/// <param name="refObj">the object that will recieve the changed property values</param>
+		/// <param name="refObj">the object that will receive the changed property values</param>
 		public void AddSetting(
 				string name,
-				object val,
+				object obj,
 				string desc,
 				string category,
 				ValueChangedDelegate update,
@@ -129,13 +129,13 @@ namespace MapView
 			Setting setting;
 			if (!_settings.ContainsKey(name))
 			{
-				setting = new Setting(val, desc, category);
+				setting = new Setting(obj, desc, category);
 				_settings[name] = setting;
 			}
 			else
 			{
 				setting = _settings[name];
-				setting.Value = val;
+				setting.Value = obj;
 				setting.Description = desc;
 			}
 
@@ -212,26 +212,26 @@ namespace MapView
 
 		public event ValueChangedDelegate ValueChanged;
 
-		private delegate object parseString(string s);
+		private delegate object parseString(string st);
 
-		private static object parseBoolString(string s)
+		private static object parseBoolString(string st)
 		{
-			return bool.Parse(s);
+			return bool.Parse(st);
 		}
 
-		private static object parseIntString(string s)
+		private static object parseIntString(string st)
 		{
-			return int.Parse(s, System.Globalization.CultureInfo.InvariantCulture);
+			return int.Parse(st, System.Globalization.CultureInfo.InvariantCulture);
 		}
 
-		private static object parseColorString(string s)
+		private static object parseColorString(string st)
 		{
-			string[] vals = s.Split(',');
+			string[] vals = st.Split(',');
 
 			switch (vals.Length)
 			{
 				case 1:
-					return Color.FromName(s);
+					return Color.FromName(st);
 
 				case 3:
 					return Color.FromArgb(
@@ -248,9 +248,9 @@ namespace MapView
 		}
 
 
-		public Setting(object val, string desc, string category)
+		public Setting(object value, string desc, string category)
 		{
-			_val = val;
+			_val = value;
 			Description = desc;
 			Category = category;
 
@@ -265,7 +265,7 @@ namespace MapView
 		}
 
 
-		public bool ValueBool
+		public bool IsBoolean
 		{
 			get
 			{

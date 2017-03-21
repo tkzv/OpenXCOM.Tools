@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
-
 using System.Windows.Forms;
 
 
 namespace MapView.Forms.MainWindow
 {
-	public interface IMainWindowsShowAllManager
+	public interface IMainShowAllManager
 	{
 		void HideAll();
 		void RestoreAll();
 	}
 
-	public class MainWindowsShowAllManager
+	public class MainShowAllManager
 		:
-		IMainWindowsShowAllManager
+		IMainShowAllManager
 	{
 		private readonly IEnumerable<Form> _allForms;
 		private readonly IEnumerable<MenuItem> _allItems;
@@ -22,7 +21,7 @@ namespace MapView.Forms.MainWindow
 		private List<MenuItem> _items;
 
 
-		public MainWindowsShowAllManager(
+		public MainShowAllManager(
 				IEnumerable<Form> allForms,
 				IEnumerable<MenuItem> allItems)
 		{

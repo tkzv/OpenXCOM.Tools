@@ -28,7 +28,7 @@ namespace XCom
 			_palette = pal;
 			_pckHash = new Dictionary<Palette, Dictionary<string, PckFile>>();
 
-			using (var sr = new StreamReader(File.OpenRead(info.FullPath())))
+			using (var sr = new StreamReader(File.OpenRead(info.FullPath)))
 			{
 				var vars = new VarCollection(sr);
 

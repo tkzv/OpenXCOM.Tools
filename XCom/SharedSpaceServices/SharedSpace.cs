@@ -18,6 +18,9 @@ namespace XCom
 		public const string Palettes    = "Palettes";
 		public const string ImageMods   = "ImageMods";
 
+		public const string CursorFile  = "cursorFile";
+		public const string Cursor      = "CURSOR";
+
 
 		public SharedSpace()
 		{

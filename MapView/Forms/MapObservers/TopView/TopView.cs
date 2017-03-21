@@ -83,7 +83,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		public void Initialize(EditButtonsFactory editButtons)
 		{
 			_editButtonsFactory = editButtons;
-			_editButtonsFactory.MakeToolstrip(toolStrip);
+			_editButtonsFactory.MakeToolStrip(toolStrip);
 		}
 
 		public QuadrantPanel BottomPanel
@@ -153,10 +153,10 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private void options_click(object sender, EventArgs e)
 		{
-			var pf = new PropertyForm("TopViewType", Settings);
+			var f = new PropertyForm("TopViewOptions", Settings);
 
-			pf.Text = "TopView Options";
-			pf.Show();
+			f.Text = "Top View Options";
+			f.Show();
 		}
 
 		private void BrushChanged(object sender, string key, object val)

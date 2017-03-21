@@ -30,7 +30,7 @@ namespace MapView.Forms.MainWindow
 		}
 
 
-		public void PopulateMenus(Form fConsole, Settings settings) // NOTE: this is done w/ MV_Settings options.
+		public void PopulateMenus(Form fConsole, Settings settings) // NOTE: this is done w/ MV_SettingsFile options.
 		{
 			_settings = settings;
 
@@ -138,7 +138,7 @@ namespace MapView.Forms.MainWindow
 				var label = GetWindowSettingLabel(item);
 				if (label != null)
 				{
-					if (_settings[label].ValueBool)
+					if (_settings[label].IsBoolean)
 					{
 						item.PerformClick();
 					}
@@ -167,9 +167,9 @@ namespace MapView.Forms.MainWindow
 							   : null;
 		}
 
-		public IMainWindowsShowAllManager CreateShowAll()
+		public IMainShowAllManager CreateShowAllManager()
 		{
-			return new MainWindowsShowAllManager(_allForms, _allItems);
+			return new MainShowAllManager(_allForms, _allItems);
 		}
 
 		public void Dispose()

@@ -9,15 +9,18 @@ namespace MapView.Forms.MainWindow
 {
 	public class MainWindowsManager
 	{
-		public static IMainWindowsShowAllManager MainWindowsShowAllManager;
+		public static IMainShowAllManager MainShowAllManager;
 		public static EditButtonsFactory EditButtonsFactory;
 
-		private static TopViewForm		_topView;
-		private static TileViewForm		_tileView;
-		private static RouteViewForm	_routeView;
-		private static TopRouteViewForm	_topRouteView;
-		private static HelpScreen		_helpScreen;
-		private static AboutWindow		_aboutWindow;
+
+		private static TopViewForm      _topView;
+		private static TileViewForm     _tileView;
+		private static RouteViewForm    _routeView;
+		private static TopRouteViewForm _topRouteView;
+
+		private static HelpScreen       _helpScreen;
+		private static AboutWindow      _aboutWindow;
+
 
 		public static TopRouteViewForm TopRouteView
 		{
@@ -53,13 +56,13 @@ namespace MapView.Forms.MainWindow
 		{
 			TopRouteView.TopViewControl.Initialize(EditButtonsFactory);
 			TopView.Control.Initialize(EditButtonsFactory);
-			TileView.TileViewControl.Initialize(MainWindowsShowAllManager);
+			TileView.TileViewControl.Initialize(MainShowAllManager);
 			TileView.TileViewControl.SelectedTileTypeChanged_view += _tileView_SelectedTileTypeChanged;
 		}
 
-		public void SetMap(IMap_Base map)
+		public void SetMap(IMap_Base baseMap)
 		{
-			var maps = new IMap_Observer[]
+			var observers = new IMap_Observer[]
 			{
 				TopRouteView.TopViewControl,
 				TopRouteView.RouteViewControl,
@@ -68,9 +71,9 @@ namespace MapView.Forms.MainWindow
 				TopView.Control
 			};
 
-			foreach (var f in maps) // iterate all Forms/Views/Controls (take your pick.).
+			foreach (var f in observers) // iterate all Forms/Views/Controls (take your pick.).
 				if (f != null)
-					SetMap(map, f);
+					SetMap(baseMap, f);
 
 			MapViewPanel.Instance.MapView.Refresh();
 
@@ -79,13 +82,13 @@ namespace MapView.Forms.MainWindow
 //			RmpView.Refresh();
 		}
 
-		private static void _tileView_SelectedTileTypeChanged(TileBase newTile)
+		private static void _tileView_SelectedTileTypeChanged(TileBase tile)
 		{
-			if (newTile != null && newTile.Info != null)
-				TopView.Control.SelectQuadrant(newTile.Info.TileType);
+			if (tile != null && tile.Info != null)
+				TopView.Control.SelectQuadrant(tile.Info.TileType);
 		}
 
-		private void SetMap(IMap_Base newMap, IMap_Observer observer)
+		private void SetMap(IMap_Base baseMap, IMap_Observer observer)
 		{
 			if (observer.Map != null)
 			{
@@ -93,14 +96,14 @@ namespace MapView.Forms.MainWindow
 				observer.Map.SelectedTileChanged -= observer.SelectedTileChanged;
 			}
 
-			if ((observer.Map = newMap) != null)
+			if ((observer.Map = baseMap) != null)
 			{
-				newMap.HeightChanged += observer.HeightChanged;
-				newMap.SelectedTileChanged += observer.SelectedTileChanged;
+				baseMap.HeightChanged += observer.HeightChanged;
+				baseMap.SelectedTileChanged += observer.SelectedTileChanged;
 			}
 
 			foreach (string key in observer.MoreObservers.Keys)
-				SetMap(newMap, observer.MoreObservers[key]);
+				SetMap(baseMap, observer.MoreObservers[key]);
 		}
 	}
 }

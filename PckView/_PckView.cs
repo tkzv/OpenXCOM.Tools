@@ -129,7 +129,7 @@ namespace PckView
 			_loadedTypes.LoadFrom(Assembly.GetExecutingAssembly());
 			_loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(IXCImageFile)));
 
-			string dir = _share[SharedSpace.CustomDir].ToString();
+			string dir = _share[SharedSpace.CustomDir].ToString(); // TODO: I don't trust that since changing SharedSpace.
 			if (Directory.Exists(dir))
 			{
 				xConsole.AddLine("Custom directory exists: " + dir);

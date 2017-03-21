@@ -99,8 +99,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void options_click(object sender, EventArgs e)
 		{
-			var f = new PropertyForm("rmpViewOptions", Settings);
-			f.Text = "Route Settings";
+			var f = new PropertyForm("RouteViewOptions", Settings);
+			f.Text = "Route View Options";
 			f.Show();
 		}
 
@@ -855,11 +855,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var nodeData = Clipboard.GetText().Split('|');
 			if (nodeData[0] == "MVNode")
 			{
-				cbUnitType.SelectedIndex			= Int32.Parse(nodeData[1], System.Globalization.CultureInfo.InvariantCulture);
-				cbSpawnRank.SelectedIndex			= Int32.Parse(nodeData[2], System.Globalization.CultureInfo.InvariantCulture);
-				cbPriority.SelectedIndex			= Int32.Parse(nodeData[3], System.Globalization.CultureInfo.InvariantCulture);
-				cbAttack.SelectedIndex	= Int32.Parse(nodeData[4], System.Globalization.CultureInfo.InvariantCulture);
-				cbSpawnWeight.SelectedIndex			= Int32.Parse(nodeData[5], System.Globalization.CultureInfo.InvariantCulture);
+				cbUnitType.SelectedIndex    = Int32.Parse(nodeData[1], System.Globalization.CultureInfo.InvariantCulture);
+				cbSpawnRank.SelectedIndex   = Int32.Parse(nodeData[2], System.Globalization.CultureInfo.InvariantCulture);
+				cbPriority.SelectedIndex    = Int32.Parse(nodeData[3], System.Globalization.CultureInfo.InvariantCulture);
+				cbAttack.SelectedIndex      = Int32.Parse(nodeData[4], System.Globalization.CultureInfo.InvariantCulture);
+				cbSpawnWeight.SelectedIndex = Int32.Parse(nodeData[5], System.Globalization.CultureInfo.InvariantCulture);
 			}
 		}
 
@@ -878,9 +878,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				DeselectNode();
 
 				gbSpawnData.Enabled   =
-				gbPatrolData.Enabled    =
+				gbPatrolData.Enabled  =
 				gbNodeData.Enabled    =
-				gbLinkData.Enabled = false;
+				gbLinkData.Enabled    = false;
 
 				Refresh();
 			}

@@ -106,27 +106,26 @@ namespace MapView
 		{
 			var info = (PathInfo)SharedSpace.Instance[PathInfo.PathsFile];
 			info.CreateDirectory();
+
 			((PathInfo)SharedSpace.Instance[PathInfo.MapEditFile]).CreateDirectory();
 			((PathInfo)SharedSpace.Instance[PathInfo.ImagesFile]).CreateDirectory();
 
 			// 'pfe' = path+file+extension
-			string pfeMapEdit = SharedSpace.Instance[PathInfo.MapEditFile].ToString();
-			string pfeImages  = SharedSpace.Instance[PathInfo.ImagesFile].ToString();
+			string pfeMapEdit = ((PathInfo)SharedSpace.Instance[PathInfo.MapEditFile]).FullPath;
+			string pfeImages  = ((PathInfo)SharedSpace.Instance[PathInfo.ImagesFile]).FullPath;
 
-			// TODO: Check for and delete the old paths-config file, since the
-			// installer can be rerun from the PathsEditor.
-			using (var sw = new StreamWriter(new FileStream(info.FullPath(), FileMode.Create)))
+			using (var sw = new StreamWriter(new FileStream(info.FullPath, FileMode.Create))) // NOTE: will overwrite file if it exists.
 			{
-				if (!String.IsNullOrEmpty(tbUfo.Text))
-					sw.WriteLine("${ufo}:" + tbUfo.Text);
-
-				if (!String.IsNullOrEmpty(tbTftd.Text))
-					sw.WriteLine("${tftd}:" + tbTftd.Text);
+				sw.WriteLine("${ufo}:"  + ((!String.IsNullOrEmpty(tbUfo.Text))  ? tbUfo.Text
+																				: String.Empty));
+				sw.WriteLine("${tftd}:" + ((!String.IsNullOrEmpty(tbTftd.Text)) ? tbTftd.Text
+																				: String.Empty));
 
 				sw.WriteLine("mapdata:" + pfeMapEdit);
 				sw.WriteLine("images:"  + pfeImages);
 
 				sw.WriteLine("useBlanks:false");
+
 				if (!String.IsNullOrEmpty(tbUfo.Text))
 					sw.WriteLine(@"cursor:${ufo}\UFOGRAPH");
 				else if (!String.IsNullOrEmpty(tbTftd.Text))
@@ -164,30 +163,18 @@ namespace MapView
 			_vars["##RunPath##"] = SharedSpace.Instance.GetString(SharedSpace.AppDir);
 
 			// create files
-			using (var fs = new FileStream(pfeImages, FileMode.Create))
-			{
-//				fs.Close();
-			}
-
 			using (var fs = new FileStream(pfeMapEdit, FileMode.Create))
 			{
 //				fs.Close();
 			}
 
-			// write UFO
-			if (!String.IsNullOrEmpty(tbUfo.Text))
+			using (var fs = new FileStream(pfeImages, FileMode.Create))
 			{
-				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
-												.GetManifestResourceStream("MapView._Embedded.ImagesUFO.dat")))
-					using (var fs = new FileStream(pfeImages, FileMode.Append))
-						using (var sw = new StreamWriter(fs))
-						{
-							writeFile(sr, sw);
-//							sw.Flush();
-//							sw.Close();
-//							sr.Close();
-						}
-	
+//				fs.Close();
+			}
+
+			if (!String.IsNullOrEmpty(tbUfo.Text)) // write UFO data
+			{
 				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
 												.GetManifestResourceStream("MapView._Embedded.MapEditUFO.dat")))
 					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
@@ -198,14 +185,24 @@ namespace MapView
 //							sw.Close();
 //							sr.Close();
 						}
+
+				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
+												.GetManifestResourceStream("MapView._Embedded.ImagesUFO.dat")))
+					using (var fs = new FileStream(pfeImages, FileMode.Append))
+						using (var sw = new StreamWriter(fs))
+						{
+							writeFile(sr, sw);
+//							sw.Flush();
+//							sw.Close();
+//							sr.Close();
+						}
 			}
 
-			// write TFTD
-			if (!String.IsNullOrEmpty(tbTftd.Text))
+			if (!String.IsNullOrEmpty(tbTftd.Text)) // write TFTD data
 			{
 				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
-												.GetManifestResourceStream("MapView._Embedded.ImagesTFTD.dat")))
-					using (var fs = new FileStream(pfeImages, FileMode.Append))
+												.GetManifestResourceStream("MapView._Embedded.MapEditTFTD.dat")))
+					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
 						using (var sw = new StreamWriter(fs))
 						{
 							writeFile(sr, sw);
@@ -216,8 +213,8 @@ namespace MapView
 						}
 
 				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
-												.GetManifestResourceStream("MapView._Embedded.MapEditTFTD.dat")))
-					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
+												.GetManifestResourceStream("MapView._Embedded.ImagesTFTD.dat")))
+					using (var fs = new FileStream(pfeImages, FileMode.Append))
 						using (var sw = new StreamWriter(fs))
 						{
 							writeFile(sr, sw);

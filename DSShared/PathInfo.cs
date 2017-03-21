@@ -98,7 +98,7 @@ namespace DSShared
 		/// <returns>System.IO.File.Exists(ToString())</returns>
 		public bool FileExists()
 		{
-			return File.Exists(FullPath());
+			return File.Exists(FullPath);
 		}
 
 		/// <summary>
@@ -127,11 +127,20 @@ namespace DSShared
 		/// <returns>a <see cref="T:System.String"></see> that represents the
 		/// current <see cref="T:System.Object"></see>
 		/// </returns>
-		public string FullPath()
+//		public string FullPath()
+//		{
+//			return (_ext.Length != 0) ? _path + @"\" + _file + "." + _ext
+//									  : _path + @"\" + _file;
+//			// kL_question: Can a file or directory end with ".".
+//		}
+		public string FullPath
 		{
-			return (_ext.Length != 0) ? _path + @"\" + _file + "." + _ext
-									  : _path + @"\" + _file;
-			// kL_question: Can a file or directory end with ".".
+			get
+			{
+				return (_ext.Length != 0) ? _path + @"\" + _file + "." + _ext
+										  : _path + @"\" + _file;
+				// kL_question: Can a file or directory end with ".".
+			}
 		}
 	}
 }

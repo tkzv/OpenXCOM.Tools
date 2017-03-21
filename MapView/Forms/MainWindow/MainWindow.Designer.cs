@@ -1,6 +1,6 @@
 namespace MapView
 {
-	partial class MainWindow
+	partial class XCMainWindow
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -27,7 +27,7 @@ namespace MapView
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(XCMainWindow));
 			this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
 			this.fileMenu = new System.Windows.Forms.MenuItem();
 			this.miOpen = new System.Windows.Forms.MenuItem();

@@ -6,7 +6,7 @@ using System.Windows.Forms;
 namespace DSShared.Lists
 {
 	/// <summary>
-	/// Class that represents a row in a CustomList
+	/// Class that represents a row in a CustomList.
 	/// </summary>
 	public class ObjRow
 		:
@@ -46,34 +46,34 @@ namespace DSShared.Lists
 		/// <summary>
 		/// String for the blinking cursor.
 		/// </summary>
-		protected string addStr = "";
+		protected string addStr = String.Empty;
 
 		/// <summary>
 		/// Timer information.
 		/// </summary>
-		protected bool flip = true, timerStarted, putDecimal = false;
+		protected bool flip = true, timerStarted, putDecimal;
 
 		/// <summary>
 		/// Row index.
 		/// </summary>
-		protected int rowIdx = 0;
+		protected int rowIdx;
 
 		#endregion
 
 		/// <summary>
 		/// True if in edit mode.
 		/// </summary>
-		private bool editing = false;
+		private bool _editing;
 
 		/// <summary>
 		/// Raised when the control needs to refresh itself.
 		/// </summary>
 		public event RefreshDelegate RefreshEvent;
 
-		private static int _createdTotal = 0;
+		private static int _createdTotal;
 		private readonly int _createdId;
 
-		private string editBuffer = "";
+		private string _editBuffer = String.Empty;
 
 
 		/// <summary>
@@ -158,10 +158,7 @@ namespace DSShared.Lists
 				return (this == obj);
 
 			var obj2 = obj as ObjRow;
-			if (obj2 != null)
-				return _obj.Equals(obj2._obj);
-
-			return false;
+			return (obj2 != null && _obj.Equals(obj2._obj));
 		}
 
 		/// <summary>
@@ -182,8 +179,8 @@ namespace DSShared.Lists
 
 		private void timerTick(object sender, EventArgs e)
 		{
-			addStr = flip ? "" : "|";
-			flip =! flip;
+			addStr = flip ? String.Empty : "|";
+			flip = !flip;
 
 			if (RefreshEvent != null)
 				RefreshEvent();
@@ -272,8 +269,8 @@ namespace DSShared.Lists
 
 			if (col.Property != null)
 			{
-				editBuffer = clickCol.Property.Value(_obj).ToString();
-				editing = true;
+				_editBuffer = clickCol.Property.Value(_obj).ToString();
+				_editing = true;
 			}
 			col.FireClick(this);
 		}
@@ -293,15 +290,15 @@ namespace DSShared.Lists
 				switch (clickCol.Property.EditType)
 				{
 					case EditStrType.String:
-						clickCol.Property.SetValue(_obj, editBuffer);
+						clickCol.Property.SetValue(_obj, _editBuffer);
 						break;
 
 					case EditStrType.Int:
-						clickCol.Property.SetValue(_obj, int.Parse(editBuffer));
+						clickCol.Property.SetValue(_obj, int.Parse(_editBuffer));
 						break;
 
 					case EditStrType.Float:
-						clickCol.Property.SetValue(_obj, double.Parse(editBuffer));
+						clickCol.Property.SetValue(_obj, double.Parse(_editBuffer));
 						break;
 				}
 //				}
@@ -310,11 +307,11 @@ namespace DSShared.Lists
 					// FIX: "Empty general catch clause suppresses any error."
 //				}
 
-				editing = false;
+				_editing = false;
 			}
 
 			clickCol = null;
-			addStr = "";
+			addStr = String.Empty;
 
 			FireRefresh();
 		}
@@ -351,11 +348,11 @@ namespace DSShared.Lists
 					default:
 						if (e.KeyChar == '\b')
 						{
-							if (editBuffer.Length > 0)
-								editBuffer = editBuffer.Substring(0, editBuffer.Length - 1);
+							if (_editBuffer.Length > 0)
+								_editBuffer = _editBuffer.Substring(0, _editBuffer.Length - 1);
 						}
 						else if (e.KeyChar >= 32) // printable characters only
-							editBuffer += e.KeyChar;
+							_editBuffer += e.KeyChar;
 
 						if (RefreshEvent != null)
 							RefreshEvent();
@@ -409,7 +406,7 @@ namespace DSShared.Lists
 					e.Graphics.FillRectangle(Brushes.LightSteelBlue, rect);
 				}
 
-				for (int i = 0; i < _columns.Count; i++)
+				for (int i = 0; i != _columns.Count; ++i)
 				{
 					var col = _columns[i] as CustomListColumn;
 
@@ -434,7 +431,7 @@ namespace DSShared.Lists
 						&& clickCol.Property.EditType != EditStrType.None)
 					{
 						e.Graphics.DrawString(
-										(editing ? editBuffer : col.Property.Value(_obj).ToString()) + addStr,
+										(_editing ? _editBuffer : col.Property.Value(_obj).ToString()) + addStr,
 										_columns.Font,
 										System.Drawing.Brushes.Black,
 										rect);
@@ -442,7 +439,7 @@ namespace DSShared.Lists
 					else if (col.Property != null)
 					{
 						e.Graphics.DrawString(
-										col.Property.Value(_obj).ToString() + (putDecimal ? "." : ""),
+										col.Property.Value(_obj).ToString() + (putDecimal ? "." : String.Empty),
 										_columns.Font,
 										System.Drawing.Brushes.Black,
 										rect);

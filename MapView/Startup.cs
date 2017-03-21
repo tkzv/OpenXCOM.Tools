@@ -29,7 +29,7 @@ namespace MapView
 			Application.ThreadException += Application_ThreadException; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 			try
 			{
-				var mainWindow = new MainWindow();
+				var mainWindow = new XCMainWindow();
 
 //				mainWindow.SendMessage += new StringDelegate(mw_SendMessage);
 

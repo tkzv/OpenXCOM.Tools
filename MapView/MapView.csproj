@@ -191,7 +191,7 @@
     <Compile Include="Forms\MainWindow\EditButtonsFactory.cs" />
     <Compile Include="Forms\MainWindow\MainWindowsManager.cs" />
     <Compile Include="Forms\MainWindow\MainViewsManager.cs" />
-    <Compile Include="Forms\MainWindow\MainWindowsShowAllManager.cs" />
+    <Compile Include="Forms\MainWindow\MainShowAllManager.cs" />
     <Compile Include="Forms\MapObservers\MapObserverControl1.cs">
       <SubType>Component</SubType>
     </Compile>

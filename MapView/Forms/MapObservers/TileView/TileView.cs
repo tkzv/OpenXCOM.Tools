@@ -40,7 +40,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private Hashtable _brushes;
 
-		private IMainWindowsShowAllManager _mainWindowsShowAllManager;
+		private IMainShowAllManager _mainWindowsShowAllManager;
 
 		public event SelectedTileTypeChangedEventHandler SelectedTileTypeChanged_view;
 
@@ -90,7 +90,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 
-		public void Initialize(IMainWindowsShowAllManager mainWindowsShowAllManager)
+		public void Initialize(IMainShowAllManager mainWindowsShowAllManager)
 		{
 			_mainWindowsShowAllManager = mainWindowsShowAllManager;
 		}
@@ -118,9 +118,9 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private void options_click(object sender, EventArgs e)
 		{
-			var pf = new PropertyForm("tileViewOptions", Settings);
-			pf.Text = "Tile View Settings";
-			pf.Show();
+			var f = new PropertyForm("TileViewOptions", Settings);
+			f.Text = "Tile View Options";
+			f.Show();
 		}
 
 		private void BrushChanged(object sender,string key, object val)

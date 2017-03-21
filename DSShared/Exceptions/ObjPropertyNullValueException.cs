@@ -1,4 +1,5 @@
-/* using System;
+/*
+using System;
 
 namespace DSShared.Exceptions
 {
@@ -7,4 +8,5 @@ namespace DSShared.Exceptions
 		public ObjPropertyNullValueException()
 		{}
 	}
-} */
+}
+*/

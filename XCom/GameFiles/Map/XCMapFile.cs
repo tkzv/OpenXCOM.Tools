@@ -58,7 +58,7 @@ namespace XCom
 				{
 					try
 					{
-						BlankFile.LoadBlanks(baseName, blankPath, this);
+						BlankFile.LoadBlank(baseName, blankPath, this);
 					}
 					catch
 					{
@@ -72,7 +72,7 @@ namespace XCom
 				else
 				{
 					CalculateDrawAbove();
-					BlankFile.SaveBlanks(BaseName, blankPath, this);
+					BlankFile.SaveBlank(BaseName, blankPath, this);
 				}
 			}
 			// TODO: throw something here or at least inform the user.
@@ -111,7 +111,7 @@ namespace XCom
 
 		private void SetupRoutes(RouteFile file)
 		{
-			if (file.ExtraHeight != 0) // remove ExtraHeight for editing - see Save() above^
+			if (file.ExtraHeight != 0) // remove ExtraHeight for editing - see Save() below_
 				foreach (RouteNode node in file)
 					node.Height -= file.ExtraHeight;
 
@@ -229,7 +229,7 @@ namespace XCom
 		{
 			using (var fs = File.Create(BasePath + BaseName + MapExt))
 			{
-				if (RouteFile.ExtraHeight != 0) // add ExtraHeight to save - see SetupRoutes() below_
+				if (RouteFile.ExtraHeight != 0) // add ExtraHeight to save - see SetupRoutes() above^
 					foreach (RouteNode node in RouteFile)
 						node.Height += RouteFile.ExtraHeight;
 
