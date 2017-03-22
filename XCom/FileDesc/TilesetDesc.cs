@@ -28,59 +28,59 @@ namespace XCom
 			:
 			base(inFile)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("[4]TilesetDesc cTor file= " + inFile);
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("[4]TilesetDesc cTor file= " + inFile);
 			_tilesets = new Dictionary<string, ITileset>();
-			LogFile.WriteLine(". [4]instantiate _tilesets Dictionary");
+			//LogFile.WriteLine(". [4]instantiate _tilesets Dictionary");
 
 			using (var sr = new StreamReader(File.OpenRead(inFile)))
 			{
-				var varsReader = new VarCollection(sr, vars);
+				var vars1 = new VarCollection(sr, vars);
 
 				int pos;
 				string key, val, line;
 
-				LogFile.WriteLine(". [4]start stream iteration");
-				while ((line = varsReader.ReadLine(sr)) != null) // will not return lines that start '$' (or whitespace lines)
+				//LogFile.WriteLine(". [4]start stream iteration");
+				while ((line = vars1.ReadLine(sr)) != null) // will not return lines that start '$' (or whitespace lines)
 				{
-					LogFile.WriteLine("");
-					LogFile.WriteLine(". . [4]TilesetDesc cTor line= " + line);
+					//LogFile.WriteLine("");
+					//LogFile.WriteLine(". . [4]TilesetDesc cTor line= " + line);
 					pos = line.IndexOf(':');
-					LogFile.WriteLine(". . [4]pos= " + pos);
+					//LogFile.WriteLine(". . [4]pos= " + pos);
 					key = line.Substring(0, pos);
-					LogFile.WriteLine(". . [4]key= " + key);
+					//LogFile.WriteLine(". . [4]key= " + key);
 					val = line.Substring(pos + 1);
-					LogFile.WriteLine(". . [4]val= " + val);
+					//LogFile.WriteLine(". . [4]val= " + val);
 
 					switch (key.ToUpperInvariant())
 					{
 						case "TILESET":
-							LogFile.WriteLine(". . . [4]case TILESET");
-							line = VarCollection.ReadLine(sr, varsReader);
-							LogFile.WriteLine(". . . [4]line= " + line);
+							//LogFile.WriteLine(". . . [4]case TILESET");
+							line = VarCollection.ReadLine(sr, vars1);
+							//LogFile.WriteLine(". . . [4]line= " + line);
 							pos = line.IndexOf(':');
-							LogFile.WriteLine(". . . [4]pos= " + pos);
+							//LogFile.WriteLine(". . . [4]pos= " + pos);
 							key = line.Substring(0, pos).ToUpperInvariant();
-							LogFile.WriteLine(". . . [4]key= " + key);
+							//LogFile.WriteLine(". . . [4]key= " + key);
 
 							switch (key)
 							{
 								case "TYPE":
-									LogFile.WriteLine(". . . . [4]subcase TYPE val= " + int.Parse(line.Substring(pos + 1), System.Globalization.CultureInfo.InvariantCulture));
+									//LogFile.WriteLine(". . . . [4]subcase TYPE val= " + int.Parse(line.Substring(pos + 1), System.Globalization.CultureInfo.InvariantCulture));
 									switch (int.Parse(line.Substring(pos + 1), System.Globalization.CultureInfo.InvariantCulture))
 									{
 //										case 0:
 //											_tilesets[name] = new Type0Tileset(name, sr, new VarCollection(vars1));
 //											break;
 										case 1:
-											LogFile.WriteLine(". . . . . [4]instantiate XCTileset _tilesets[" + val + "]");
-											_tilesets[val] = new XCTileset(val, sr, new VarCollection(varsReader));
+											//LogFile.WriteLine(". . . . . [4]instantiate XCTileset _tilesets[" + val + "]");
+											_tilesets[val] = new XCTileset(val, sr, new VarCollection(vars1));
 											break;
 									}
 									break;
 
 								default:
-									LogFile.WriteLine(". . . . [4]subcase default Type Not Found");
+									//LogFile.WriteLine(". . . . [4]subcase default Type Not Found");
 									Console.WriteLine(string.Format(
 																System.Globalization.CultureInfo.CurrentCulture,
 																"Type line not found: {0}",
@@ -94,7 +94,7 @@ namespace XCom
 //							break;
 	
 						default:
-							LogFile.WriteLine(". . . [4]case default UNKNOWN line= " + line);
+							//LogFile.WriteLine(". . . [4]case default UNKNOWN line= " + line);
 							Console.WriteLine(string.Format(
 														System.Globalization.CultureInfo.CurrentCulture,
 														"Unknown line: {0}",

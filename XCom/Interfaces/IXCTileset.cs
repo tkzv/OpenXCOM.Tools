@@ -10,7 +10,7 @@ namespace XCom.Interfaces
 		:
 		ITileset
 	{
-		protected Palette myPal;
+		protected Palette myPal; // TODO: change these to properties ->
 		protected string rootPath, rmpPath, blankPath;
 		protected string[] groundMaps;
 		protected bool underwater, baseStyle;
@@ -34,29 +34,28 @@ namespace XCom.Interfaces
 			:
 			this(name)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("[7]IXCTileset cTor");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("[7]IXCTileset cTor");
 			while (sr.Peek() != -1)
 			{
 				string line = VarCollection.ReadLine(sr, vars);
-				LogFile.WriteLine(". [7]line= " + line);
+				//LogFile.WriteLine(". [7]line= " + line);
 
 				if (line.ToUpperInvariant() == "END")
 				{
-					LogFile.WriteLine(". . [7]Exit.");
+					//LogFile.WriteLine(". . [7]Exit.");
 					return;
 				}
 
-				int pos         = line.IndexOf(':');
-				LogFile.WriteLine(". [7]pos= " + pos);
-				string key      = line.Substring(0, pos);
-				LogFile.WriteLine(". [7]key= " + key);
-				string keyUpper = key.ToUpperInvariant();
-				LogFile.WriteLine(". [7]keyUpper= " + keyUpper);
-				string val      = line.Substring(pos + 1);
-				LogFile.WriteLine(". [7]val= " + val);
+				int pos    = line.IndexOf(':');
+				string key = line.Substring(0, pos);
+				string val = line.Substring(pos + 1);
 
-				switch (keyUpper)
+				//LogFile.WriteLine(". [7]pos= " + pos);
+				//LogFile.WriteLine(". [7]key= " + key);
+				//LogFile.WriteLine(". [7]val= " + val);
+
+				switch (key.ToUpperInvariant())
 				{
 					case "PALETTE":
 						switch (val.ToUpperInvariant())
@@ -168,7 +167,7 @@ namespace XCom.Interfaces
 			get { return mapDepth; }
 		}
 
-		public string[] Ground
+		public string[] Ground // TODO: return a collection or make it a method.
 		{
 			get { return groundMaps; }
 		}
@@ -179,7 +178,7 @@ namespace XCom.Interfaces
 		}
 
 		public virtual void ParseLine(
-				string keyword,
+				string key,
 				string line,
 				StreamReader sr,
 				VarCollection vars)
@@ -188,7 +187,7 @@ namespace XCom.Interfaces
 		public virtual void AddMap(string name, string subset)
 		{}
 
-		public virtual void AddMap(XCMapDesc imd, string subset)
+		public virtual void AddMap(XCMapDesc desc, string subset)
 		{}
 
 		public virtual XCMapDesc RemoveMap(string name, string subset)

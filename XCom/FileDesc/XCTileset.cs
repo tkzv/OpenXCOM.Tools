@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 
 using XCom.Interfaces;
 using XCom.Interfaces.Base;
@@ -14,11 +13,11 @@ namespace XCom
 		IXCTileset
 	{
 //		private string[] _mapOrder;
-
 //		private MapLocation[] _startLoc;
-
 //		private int _tileStart = -1;
 //		private int _tileEnd   = -1;
+
+		private const string Tab = "\t";
 
 
 		public XCTileset(string name)
@@ -33,27 +32,23 @@ namespace XCom
 
 
 /*
-		public MapLocation[] StartLocations
+		public MapLocation[] StartLocations // fix: return a collection or make it a method
 		{
 			get { return _startLoc; }
 		}
-
 		public int StartTile
 		{
 			get { return _tileStart; }
 		}
-
 		public int EndTile
 		{
 			get { return _tileEnd; }
 		}
-
-		public string[] MapOrder
+		public string[] MapOrder // fix: return a collection or make it a method
 		{
 			get { return _mapOrder; }
 		}
-
-		public string[] Order
+		public string[] Order // fix: return a collection or make it a method
 		{
 			get { return _mapOrder; }
 		}
@@ -62,158 +57,160 @@ namespace XCom
 //		public override IMap GetMap(ShipDescriptor xCom, ShipDescriptor alien)
 //		{ return new Type1Map(this, xCom, alien); }
 
-/*		public override void Save(StreamWriter sw, VarCollection vars)
+		public override void Save(StreamWriter sw, VarCollection vars)
 		{
 			sw.WriteLine("Tileset:" + name);
-			sw.WriteLine("\ttype:1");
+			sw.WriteLine(Tab + "type:1");
 
 			if (vars.Vars[rootPath] == null)
-				sw.WriteLine("\trootpath:" + rootPath);
+				sw.WriteLine(Tab + "rootpath:" + rootPath);
 			else
-				sw.WriteLine("\trootpath:" + ((Variable)vars.Vars[rootPath]).Name);
+				sw.WriteLine(Tab + "rootpath:" + ((Variable)vars.Vars[rootPath]).Name);
 
 			if (vars.Vars[rmpPath] == null)
-				sw.WriteLine("\trmpPath:" + rootPath);
+				sw.WriteLine(Tab + "rmpPath:" + rootPath);
 			else
-				sw.WriteLine("\trmpPath:" + ((Variable)vars.Vars[rmpPath]).Name);
+				sw.WriteLine(Tab + "rmpPath:" + ((Variable)vars.Vars[rmpPath]).Name);
 
 			if (vars.Vars[blankPath] == null)
-				sw.WriteLine("\tblankPath:" + blankPath);
+				sw.WriteLine(Tab + "blankPath:" + blankPath);
 			else
-				sw.WriteLine("\tblankPath:" + ((Variable)vars.Vars[blankPath]).Name);
+				sw.WriteLine(Tab + "blankPath:" + ((Variable)vars.Vars[blankPath]).Name);
 
-			sw.WriteLine("\tpalette:" + myPal.Name);
+			sw.WriteLine(Tab + "palette:" + myPal.Name);
 
-			foreach (string str in subsets.Keys)
+			foreach (string keySubsets in subsets.Keys)
 			{
-				Dictionary<string, IMapDesc> h = subsets[str];
-				if (h != null)
+				Dictionary<string, IMapDesc> valDesc = subsets[keySubsets];
+				if (valDesc != null)
 				{
-					var vc = new VarCollection("Deps");
-					foreach (string s in h.Keys)
+					var deps = new VarCollection("Deps");
+					foreach (string keyDesc in valDesc.Keys)
 					{
-						var id = (XCMapDesc)maps[s];
-						if (id != null)
+						var desc = maps[keyDesc] as XCMapDesc;
+						if (desc != null)
 						{
-							string depList = "";
-							if (id.Dependencies.Length > 0)
+							string depList = String.Empty;
+							if (desc.Dependencies.Length != 0)
 							{
 								int i = 0;
-								for (; i < id.Dependencies.Length - 1; i++)
-									depList += id.Dependencies[i] + " ";
+								for (; i != desc.Dependencies.Length - 1; ++i)
+									depList += desc.Dependencies[i] + " ";
 	
-								depList += id.Dependencies[i];
+								depList += desc.Dependencies[i];
 							}
-							vc.AddVar(id.Name, depList);
+							deps.AddKeyVal(desc.Name, depList);
 						}
 					}
 
-					sw.WriteLine("\tfiles:" + str);
+					sw.WriteLine(Tab + "files:" + keySubsets);
 	
-					foreach (string vKey in vc.Variables)
-						((Variable)vc.Vars[vKey]).Write(sw, "\t\t");
+					foreach (string dep in deps.Variables)
+						((Variable)deps.Vars[dep]).Write(sw, Tab + Tab);
 
-					sw.WriteLine("\tend");
+					sw.WriteLine(Tab + "end");
 				}
 			}
 
-			sw.WriteLine("end\n");
+			sw.WriteLine("end" + Environment.NewLine);
 			sw.Flush();
-		} */
+		}
 
-/*		public override void AddMap(string name, string subset)
+		public override void AddMap(string name, string subset)
 		{
-			var imd = new XCMapDesc(
+			var desc = new XCMapDesc(
 								name,
 								rootPath,
 								blankPath,
 								rmpPath,
 								new string[0],
 								myPal);
-			maps[imd.Name] = imd;
-			subsets[subset][imd.Name] = imd;
-		} */
+			maps[desc.Name] = desc;
+			subsets[subset][desc.Name] = desc;
+		}
 
-/*		public override void AddMap(XCMapDesc imd, string subset)
+		public override void AddMap(XCMapDesc desc, string subset)
 		{
-			maps[imd.Name] = imd;
-			subsets[subset][imd.Name] = imd;
-		} */
+			maps[desc.Name] = desc;
+			subsets[subset][desc.Name] = desc;
+		}
 
-/*		public override XCMapDesc RemoveMap(string name, string subset)
+		public override XCMapDesc RemoveMap(string name, string subset)
 		{
-			var imd = (XCMapDesc)subsets[subset][name];
+			var desc = subsets[subset][name] as XCMapDesc;
 			subsets[subset].Remove(name);
-			return imd;
-		} */
+			return desc;
+		}
 
-/*		public override void ParseLine(
-									string keyword,
-									string line,
-									StreamReader sr,
-									VarCollection vars)
+		public override void ParseLine(
+				string key,
+				string line,
+				StreamReader sr,
+				VarCollection vars)
 		{
-			switch (keyword)
+			switch (key.ToUpperInvariant())
 			{
-				case "files":
+				case "FILES":
 				{
-					var subset = new Dictionary<string, IMapDesc>();
-					subsets[line] = subset;
-					string varsLine = VarCollection.ReadLine(sr, vars);
-					while (varsLine != "end" && varsLine != "END")
+					var dictDescs = new Dictionary<string, IMapDesc>();
+					subsets[line] = dictDescs;
+					string lineVars = VarCollection.ReadLine(sr, vars);
+					while (lineVars.ToUpperInvariant() != "END")
 					{
-						int idx = varsLine.IndexOf(':');
-						string file = varsLine.Substring(0, idx);
-						string[] deps = varsLine.Substring(idx + 1).Split(' ');
-						var imd = new XCMapDesc(
+						int pos       = lineVars.IndexOf(':');
+						string file   = lineVars.Substring(0, pos);
+						string[] deps = lineVars.Substring(pos + 1).Split(' ');
+
+						var desc = new XCMapDesc(
 											file,
 											rootPath,
 											blankPath,
 											rmpPath,
 											deps,
 											myPal);
-						maps[file] = imd;
-						subset[file] = imd;
-						varsLine = VarCollection.ReadLine(sr, vars);
+
+						maps[file]      = desc;
+						dictDescs[file] = desc;
+
+						lineVars = VarCollection.ReadLine(sr, vars);
 					}
 					break;
 				}
 
-				case "order":
-					_mapOrder = line.Split(' ');
-					break;
+//				case "ORDER":
+//					_mapOrder = line.Split(' ');
+//					break;
 
-				case "starttile":
-					_tileStart = int.Parse(line);
-					break;
+//				case "STARTTILE":
+//					_tileStart = int.Parse(line, System.Globalization.CultureInfo.InvariantCulture);
+//					break;
 
-				case "startloc":
-				{
-					string[] locs = line.Split(' ');
-					_startLoc = new MapLocation[locs.Length];
-					for (int i = 0; i < locs.Length; i++)
-					{
-						string[] loc = locs[i].Split(',');
-						int r = int.Parse(loc[0]);
-						int c = int.Parse(loc[1]);
-						int h = int.Parse(loc[2]);
-						_startLoc[i] = new MapLocation(r, c, h);
-					}
-					break;
-				}
+//				case "STARTLOC":
+//				{
+//					string[] locs = line.Split(' ');
+//					_startLoc = new MapLocation[locs.Length];
+//					for (int i = 0; i < locs.Length; i++)
+//					{
+//						string[] loc = locs[i].Split(',');
+//						int r = int.Parse(loc[0], System.Globalization.CultureInfo.InvariantCulture);
+//						int c = int.Parse(loc[1], System.Globalization.CultureInfo.InvariantCulture);
+//						int h = int.Parse(loc[2], System.Globalization.CultureInfo.InvariantCulture);
+//						_startLoc[i] = new MapLocation(r, c, h);
+//					}
+//					break;
+//				}
 
-				case "endtile":
-					_tileEnd = int.Parse(line);
-					break;
+//				case "ENDTILE":
+//					_tileEnd = int.Parse(line, System.Globalization.CultureInfo.InvariantCulture);
+//					break;
 
 				default:
 					xConsole.AddLine(string.Format(
+												System.Globalization.CultureInfo.CurrentCulture,
 												"Unknown line in tileset {0}-> {1}:{2}",
-												name,
-												keyword,
-												line));
+												name, key, line));
 					break;
 			}
-		} */
+		}
 	}
 }

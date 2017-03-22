@@ -33,19 +33,19 @@ namespace XCom
 				var vars = new VarCollection(sr);	// this object is going to hold all sorts of keyval pairs
 													// be careful you don't duplicate/overwrite a var since the following loop
 				KeyVal keyVal;						// is going to rifle through all the config files and throw it together ...
-				LogFile.WriteLine("[1]GameInfo.Init parse Paths.cfg");
+				//LogFile.WriteLine("[1]GameInfo.Init parse Paths.cfg");
 				while ((keyVal = vars.ReadLine()) != null) // parse Paths.Cfg; will not return lines that start '$' (or whitespace lines)
 				{
-					LogFile.WriteLine(". [1]iter Paths.cfg keyVal= " + keyVal.Keyword);
+					//LogFile.WriteLine(". [1]iter Paths.cfg keyVal= " + keyVal.Keyword);
 					switch (keyVal.Keyword.ToUpperInvariant())
 					{
 						case "MAPDATA": // ref to MapEdit.Cfg
-							LogFile.WriteLine(". [1]Paths.cfg MAPDATA keyVal.Value= " + keyVal.Value);
+							//LogFile.WriteLine(". [1]Paths.cfg MAPDATA keyVal.Value= " + keyVal.Value);
 							_tilesetDesc = new TilesetDesc(keyVal.Value, vars); // this is spooky, not a delightful way.
 							break;
 
 						case "IMAGES": // ref to Images.Cfg
-							LogFile.WriteLine(". [1]Paths.cfg IMAGES keyVal.Value= " + keyVal.Value);
+							//LogFile.WriteLine(". [1]Paths.cfg IMAGES keyVal.Value= " + keyVal.Value);
 							_imageInfo = new ImageInfo(keyVal.Value, vars);
 							break;
 
@@ -53,7 +53,7 @@ namespace XCom
 						case "CURSOR":
 							goto default; // ... doh.
 						default:
-							LogFile.WriteLine(". [1]Paths.cfg default");
+							//LogFile.WriteLine(". [1]Paths.cfg default");
 							if (ParseLine != null)			// this is just stupid. 'clever' but stupid.
 								ParseLine(keyVal, vars);	// TODO: handle any potential errors in ParseLine() instead of aliasing aliases to delegates.
 							else
