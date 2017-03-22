@@ -10,11 +10,11 @@ namespace XCom
 	/// </summary>
 	public class VarCollection
 	{
-		private Hashtable _vars;
+		private readonly Hashtable _vars;
 
 		private string _baseVar;
 
-		private VarCollection _other;
+		private readonly VarCollection _other;
 
 		private StreamReader _sr;
 
@@ -108,30 +108,16 @@ namespace XCom
 
 
 		/// <summary>
-		/// AddVar
+		/// Adds a key-val pair to this collection.
 		/// </summary>
-		/// <param name="flag"></param>
+		/// <param name="key"></param>
 		/// <param name="val"></param>
-		public void AddVar(string flag, string val)
+		public void AddKeyVal(string key, string val)
 		{
 			if (_vars[val] == null)
-				_vars[val] = new Variable(_baseVar, flag + ":", val);
+				_vars[val] = new Variable(_baseVar, key + ":", val);
 			else
-				((Variable)_vars[val]).Inc(flag + ":");
-		}
-
-		/// <summary>
-		/// ParseVar
-		/// </summary>
-		/// <param name="line"></param>
-		/// <returns>string</returns>
-		public string ParseVar(string line)
-		{
-			foreach (string st in _vars.Keys)
-				line = line.Replace(st, (string)_vars[st]);
-
-			return (_other != null) ? _other.ParseVar(line)
-									: line;
+				((Variable)_vars[val]).Add(key + ":");
 		}
 
 		/// <summary>
@@ -155,13 +141,19 @@ namespace XCom
 		/// <returns>KeyVal</returns>
 		public KeyVal ReadLine()
 		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("[2]VarCollection.ReadLine()");
 			string line = ReadLine(_sr, this);
+			LogFile.WriteLine(". [2]line= " + (line ?? "null"));
 			if (line != null)
 			{
-				int idx = line.IndexOf(':');
-				return (idx > 0) ? new KeyVal(line.Substring(0, idx), line.Substring(idx + 1))
+				int pos = line.IndexOf(':');
+				LogFile.WriteLine((pos > 0) ? ". . [2]pos':'>0 RET key= " + line.Substring(0, pos) + " val= " + line.Substring(pos + 1)
+				                            : ". . [2]pos':'<1 RET key= " + line + " val=");
+				return (pos > 0) ? new KeyVal(line.Substring(0, pos), line.Substring(pos + 1))
 								 : new KeyVal(line, String.Empty);
 			}
+			LogFile.WriteLine("[2]. . Ret NULL");
 			return null;
 		}
 
@@ -172,6 +164,8 @@ namespace XCom
 		/// <returns>string</returns>
 		public string ReadLine(StreamReader sr)
 		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("[5]VarCollection.ReadLine(sr)");
 			return ReadLine(sr, this);
 		}
 
@@ -183,34 +177,123 @@ namespace XCom
 		/// <returns>string</returns>
 		public static string ReadLine(StreamReader sr, VarCollection vars)
 		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("[3,6]VarCollection.ReadLine(sr, vars)");
 			string line = String.Empty;
 
 			while (true)
 			{
+				LogFile.WriteLine(". [3,6]iterate TRUE");
 				do // get a good line - not a comment or empty string
 				{
 					if (sr.Peek() == -1) // zilch, exit.
+					{
+						LogFile.WriteLine(". . . [3,6]end of file. Ret NULL");
 						return null;
+					}
 
 					line = sr.ReadLine().Trim();
+					LogFile.WriteLine(". . [3,6](seeking) line= " + line);
 				}
 				while (line.Length == 0 || line[0] == '#');
 
-				if (line[0] == '$') // cache variable, get another line
+				if (line[0] == '$') // cache the variable and get another line
 				{
-					int idx = line.IndexOf(':');
-					string var = line.Substring(0, idx);
-					string val = vars.ParseVar(line.Substring(idx + 1));
-					vars[var] = val;
+					LogFile.WriteLine(". . [3,6]found $");
+					int pos    = line.IndexOf(':');
+					LogFile.WriteLine(". . [3,6]pos= " + pos);
+					string key = line.Substring(0, pos);
+					LogFile.WriteLine(". . [3,6]key= " + key);
+					string val = vars.AliasSubstitution(line.Substring(pos + 1));
+					LogFile.WriteLine(". . [3,6]val= " + val);
+					LogFile.WriteLine(". . [3,6]cache it and look for another ...");
+
+					vars[key] = val;
 				}
 				else // got a line
+				{
+					LogFile.WriteLine(". . [3,6]found a line!");
 					break;
+				}
+				LogFile.WriteLine("");
 			}
 
 			if (line.IndexOf("$", StringComparison.Ordinal) > 0) // replace any variables the line might have
-				line = vars.ParseVar(line);
-			
+			{
+				LogFile.WriteLine(". . [3,6]$var found - do ParseVar()");
+				line = vars.AliasSubstitution(line);
+			}
+
+			LogFile.WriteLine(". . . [3,6]RET line= " + line);
+			LogFile.WriteLine("");
 			return line;
+		}
+/*		public static string ReadLine(StreamReader sr, VarCollection vars)
+		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("[3,6]VarCollection.ReadLine(sr, vars)");
+			string line = String.Empty;
+
+			while (true)
+			{
+				LogFile.WriteLine(". [3,6]iterate TRUE");
+				do // get a good line - not a comment or empty string
+				{
+					if (sr.Peek() == -1) // zilch, exit.
+					{
+						LogFile.WriteLine(". . . [3,6]end of file. Ret NULL");
+						return null;
+					}
+
+					line = sr.ReadLine().Trim();
+					LogFile.WriteLine(". . [3,6](seeking) line= " + line);
+				}
+				while (line.Length == 0 || line[0] == '#');
+
+				if (line[0] == '$') // cache the variable and get another line
+				{
+					LogFile.WriteLine(". . [3,6]found $");
+					int pos    = line.IndexOf(':');
+					LogFile.WriteLine(". . [3,6]pos= " + pos);
+					string key = line.Substring(0, pos);
+					LogFile.WriteLine(". . [3,6]key= " + key);
+					string val = vars.ParseVar(line.Substring(pos + 1));
+					LogFile.WriteLine(". . [3,6]val= " + val);
+					LogFile.WriteLine(". . [3,6]cache it and look for another ...");
+
+					vars[key] = val;
+				}
+				else // got a line
+				{
+					LogFile.WriteLine(". . [3,6]found a line!");
+					break;
+				}
+				LogFile.WriteLine("");
+			}
+
+			if (line.IndexOf("$", StringComparison.Ordinal) > 0) // replace any variables the line might have
+			{
+				LogFile.WriteLine(". . [3,6]$var found - do ParseVar()");
+				line = vars.ParseVar(line);
+			}
+
+			LogFile.WriteLine(". . . [3,6]RET line= " + line);
+			LogFile.WriteLine("");
+			return line;
+		} */
+
+		/// <summary>
+		/// ParseVar
+		/// </summary>
+		/// <param name="line"></param>
+		/// <returns>string</returns>
+		private string AliasSubstitution(string line)
+		{
+			foreach (string st in _vars.Keys)
+				line = line.Replace(st, (string)_vars[st]);
+
+			return (_other != null) ? _other.AliasSubstitution(line)
+									: line;
 		}
 	}
 
@@ -221,13 +304,13 @@ namespace XCom
 	public class KeyVal
 	{
 		private readonly string _keyword;
-		private readonly string _rest;
+		private readonly string _value;
 
 
-		public KeyVal(string keyword, string rest)
+		public KeyVal(string keyword, string value)
 		{
 			_keyword = keyword;
-			_rest = rest;
+			_value = value;
 		}
 
 
@@ -236,14 +319,14 @@ namespace XCom
 			get { return _keyword; }
 		}
 
-		public string Rest
+		public string Value
 		{
-			get { return _rest; }
+			get { return _value; }
 		}
 
 		public override string ToString()
 		{
-			return _keyword + ":" + _rest;
+			return _keyword + ":" + _value;
 		}
 	}
 }

@@ -1,83 +1,98 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
+
 using XCom;
+
 
 namespace PckView
 {
 	public delegate void PaletteClickDelegate(int selectedIndex);
 
-	public enum SelectMode{Bar,Single};
-
-	public class PalPanel : Panel
+	public enum SelectMode
 	{
-		private Palette myPal;
-		private SolidBrush goodBrush = new SolidBrush(Color.FromArgb(204,204,255));
-		private const int space=0;
-		private int height=10;
-		private int width=15;
+		Bar,
+		Single
+	};
 
-		private int selIdx;
-		private int clickX,clickY;
+
+	public class PalPanel
+		:
+		Panel
+	{
+		private Palette _palette;
+//		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
+
+		private const int _pad = 0;
+
+		private int _width  = 15;
+		private int _height = 10;
+
+		private int _id;
+		private int _clickX, _clickY;
+
 		private SelectMode mode;
 
-		public const int NumAcross=16;
+		public const int _across = 16;
 
 		public event PaletteClickDelegate PaletteIndexChanged;
 
+
 		public PalPanel()
 		{
-			this.SetStyle(ControlStyles.DoubleBuffer|ControlStyles.UserPaint|ControlStyles.AllPaintingInWmPaint,true);
-			myPal = null;
-			this.MouseDown+=new MouseEventHandler(mouseDown);
-			//Width=(width+2*space)*NumAcross;
-			//Height=(height+2*space)*NumAcross;
-			clickX=-100;
-			clickY=-100;
-			selIdx=-1;
+			this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+			_palette = null;
+			this.MouseDown += new MouseEventHandler(mouseDown);
+//			Width  = (width  + 2 * space) * NumAcross;
+//			Height = (height + 2 * space) * NumAcross;
+			_clickX = -100;
+			_clickY = -100;
+			_id = -1;
 			mode = SelectMode.Single;
 		}
 
-		protected override void OnResize(EventArgs e)
-		{
-			width = (Width/NumAcross)-2*space;
-			height = (Height/NumAcross)-2*space;
 
-			switch(mode)
+		protected override void OnResize(EventArgs eventargs)
+		{
+			_width  = (Width  / _across) - 2 * _pad;
+			_height = (Height / _across) - 2 * _pad;
+
+			switch (mode)
 			{
 				case SelectMode.Single:
-					clickX = (selIdx%NumAcross)*(width+2*space);
+					_clickX = (_id % _across) * (_width + 2 * _pad);
 					break;
+
 				case SelectMode.Bar:
-					clickX = 0;					
+					_clickX = 0;
 					break;
 			}
-			clickY = (selIdx/NumAcross)*(height+2*space);
+			_clickY = (_id / _across) * (_height + 2 * _pad);
 
 			Refresh();
 		}
 
 		private void mouseDown(object sender, MouseEventArgs e)
 		{
-			switch(mode)
+			switch (mode)
 			{
 				case SelectMode.Single:
-					clickX = (e.X/(width+2*space))*(width+2*space);
-					selIdx =  (e.X/(width+2*space))+(e.Y/(height+2*space))*NumAcross;
+					_clickX = (e.X / (_width + 2 * _pad)) * (_width + 2 * _pad);
+					_id = (e.X / (_width + 2 * _pad)) + (e.Y / (_height + 2 * _pad)) * _across;
 					break;
+
 				case SelectMode.Bar:
-					clickX = 0;					
-					selIdx = (e.Y/(height+2*space))*NumAcross;
+					_clickX = 0;
+					_id = (e.Y / (_height + 2 * _pad)) * _across;
 					break;
 			}
 
-			clickY = (e.Y/(height+2*space))*(height+2*space);
+			_clickY = (e.Y / (_height + 2 * _pad)) * (_height + 2 * _pad);
 
-			if(PaletteIndexChanged!=null && selIdx<=255)
+			if (PaletteIndexChanged != null && _id < 256)
 			{
-				PaletteIndexChanged(selIdx);
+				PaletteIndexChanged(_id);
 				Refresh();
 			}
 		}
@@ -86,38 +101,58 @@ namespace PckView
 		[Category("Behavior")]
 		public SelectMode Mode
 		{
-			get{return mode;}
-			set{mode=value;}
+			get { return mode; }
+			set { mode = value; }
 		}
 
 		[DefaultValue(null)]
 		[Browsable(false)]
 		public Palette Palette
 		{
-			get{return myPal;}
-			set{myPal=value;Refresh();}
-		}	
+			get { return _palette; }
+			set
+			{
+				_palette = value;
+				Refresh();
+			}
+		}
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			if(myPal != null)
+			if (_palette != null)
 			{
 				Graphics g = e.Graphics;
 
-				for(int i=0,y=space;i<NumAcross;i++,y+=(height+2*space))
-					for(int j=0,x=space;j<NumAcross;j++,x+=(width+2*space))
-						g.FillRectangle(new SolidBrush(myPal[i*NumAcross+j]),x,y,width,height);
+				for (int
+						i = 0, y = _pad;
+						i < _across;
+						i++, y += _height + 2 * _pad)
+					for (int
+							j = 0, x = _pad;
+							j < _across;
+							j++, x += _width + 2 * _pad)
+					{
+						g.FillRectangle(new SolidBrush(
+													_palette[i * _across + j]),
+													x, y,
+													_width, _height);
+					}
 
 				switch(mode)
 				{
 					case SelectMode.Single:
-						//g.FillRectangle(goodBrush,clickX,clickY,width+2*space-1,height+2*space-1);
-						g.DrawRectangle(Pens.Red,clickX,clickY,width+2*space-1,height+2*space-1);
+						g.DrawRectangle(
+									Pens.Red, // _brush
+									_clickX, _clickY,
+									_width + 2 * _pad - 1, _height + 2 * _pad - 1);
 						break;
+
 					case SelectMode.Bar:
-						//g.FillRectangle(goodBrush,clickX,clickY,(width+2*space)*NumAcross-1,height+2*space-1);
-						g.DrawRectangle(Pens.Red,clickX,clickY,(width+2*space)*NumAcross-1,height+2*space-1);
+						g.DrawRectangle(
+									Pens.Red, // _brush
+									_clickX, _clickY,
+									(_width + 2 * _pad) * _across - 1, _height + 2 * _pad - 1);
 						break;
 				}
 			}

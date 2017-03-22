@@ -13,10 +13,13 @@ namespace XCom
 		:
 		IXCTileset
 	{
-		private string[] mapOrder;
-		private MapLocation[] startLoc;
-		private int startTile = -1;
-		private int endTile = -1;
+//		private string[] _mapOrder;
+
+//		private MapLocation[] _startLoc;
+
+//		private int _tileStart = -1;
+//		private int _tileEnd   = -1;
+
 
 		public XCTileset(string name)
 			:
@@ -28,35 +31,38 @@ namespace XCom
 			base(name, sr, vars)
 		{}
 
+
+/*
 		public MapLocation[] StartLocations
 		{
-			get { return startLoc; }
-		}
-
-		public int EndTile
-		{
-			get { return endTile; }
+			get { return _startLoc; }
 		}
 
 		public int StartTile
 		{
-			get { return startTile; }
+			get { return _tileStart; }
+		}
+
+		public int EndTile
+		{
+			get { return _tileEnd; }
 		}
 
 		public string[] MapOrder
 		{
-			get { return mapOrder; }
+			get { return _mapOrder; }
 		}
 
 		public string[] Order
 		{
-			get { return mapOrder; }
+			get { return _mapOrder; }
 		}
+*/
 
 //		public override IMap GetMap(ShipDescriptor xCom, ShipDescriptor alien)
 //		{ return new Type1Map(this, xCom, alien); }
 
-		public override void Save(StreamWriter sw, VarCollection vars)
+/*		public override void Save(StreamWriter sw, VarCollection vars)
 		{
 			sw.WriteLine("Tileset:" + name);
 			sw.WriteLine("\ttype:1");
@@ -113,9 +119,9 @@ namespace XCom
 
 			sw.WriteLine("end\n");
 			sw.Flush();
-		}
+		} */
 
-		public override void AddMap(string name, string subset)
+/*		public override void AddMap(string name, string subset)
 		{
 			var imd = new XCMapDesc(
 								name,
@@ -126,22 +132,22 @@ namespace XCom
 								myPal);
 			maps[imd.Name] = imd;
 			subsets[subset][imd.Name] = imd;
-		}
+		} */
 
-		public override void AddMap(XCMapDesc imd, string subset)
+/*		public override void AddMap(XCMapDesc imd, string subset)
 		{
 			maps[imd.Name] = imd;
 			subsets[subset][imd.Name] = imd;
-		}
+		} */
 
-		public override XCMapDesc RemoveMap(string name, string subset)
+/*		public override XCMapDesc RemoveMap(string name, string subset)
 		{
 			var imd = (XCMapDesc)subsets[subset][name];
 			subsets[subset].Remove(name);
 			return imd;
-		}
+		} */
 
-		public override void ParseLine(
+/*		public override void ParseLine(
 									string keyword,
 									string line,
 									StreamReader sr,
@@ -174,30 +180,30 @@ namespace XCom
 				}
 
 				case "order":
-					mapOrder = line.Split(' ');
+					_mapOrder = line.Split(' ');
 					break;
 
 				case "starttile":
-					startTile = int.Parse(line);
+					_tileStart = int.Parse(line);
 					break;
 
 				case "startloc":
 				{
 					string[] locs = line.Split(' ');
-					startLoc = new MapLocation[locs.Length];
+					_startLoc = new MapLocation[locs.Length];
 					for (int i = 0; i < locs.Length; i++)
 					{
 						string[] loc = locs[i].Split(',');
 						int r = int.Parse(loc[0]);
 						int c = int.Parse(loc[1]);
 						int h = int.Parse(loc[2]);
-						startLoc[i] = new MapLocation(r, c, h);
+						_startLoc[i] = new MapLocation(r, c, h);
 					}
 					break;
 				}
 
 				case "endtile":
-					endTile = int.Parse(line);
+					_tileEnd = int.Parse(line);
 					break;
 
 				default:
@@ -208,6 +214,6 @@ namespace XCom
 												line));
 					break;
 			}
-		}
+		} */
 	}
 }

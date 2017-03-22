@@ -1,19 +1,20 @@
 using System;
 using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
+
 using XCom;
+
 
 namespace PckView
 {
 	/// <summary>
 	/// Summary description for PalView.
 	/// </summary>
-	public class PalView : System.Windows.Forms.Form
+	public class PalView
+		:
+		System.Windows.Forms.Form
 	{
-		private PalPanel palPanel;
-		private System.Windows.Forms.Label status;
+		private PalPanel _palPanel;
+		private System.Windows.Forms.Label _status;
 
 		public event PaletteClickDelegate PaletteIndexChanged;
 		/// <summary>
@@ -21,74 +22,71 @@ namespace PckView
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 
+
 		public PalView()
 		{
 			InitializeComponent();
-			OnResize(null);
+			OnResize(null); // TODO: Fix "Virtual member call in a constructor."
 		}
+
 
 		private void palClick(int idx)
 		{
-			switch (palPanel.Mode)
+			switch (_palPanel.Mode)
 			{
 				case SelectMode.Single:
-					status.Text = string.Format(
+					_status.Text = string.Format(
 											"Clicked index: {0} ({1:X})",
-											idx,
-											idx);
+											idx, idx);
 					break;
 
 				case SelectMode.Bar:
-					status.Text = "Clicked range: " + idx + " - " + (idx + PalPanel.NumAcross - 1);
+					_status.Text = "Clicked range: " + idx + " - " + (idx + PalPanel._across - 1);
 					break;
 			}
 
-			Color c = palPanel.Palette[idx];
-			status.Text += string.Format(
+			Color color = _palPanel.Palette[idx];
+			_status.Text += string.Format(
 									" r:{0} g:{1} b:{2} a:{3}",
-									c.R,
-									c.G,
-									c.B,
-									c.A);
+									color.R,
+									color.G,
+									color.B,
+									color.A);
 
-			if (PaletteIndexChanged!=null)
+			if (PaletteIndexChanged != null)
 				PaletteIndexChanged(idx);
 		}
 
 		public Palette Palette
 		{
-			get { return palPanel.Palette; }
-			set { palPanel.Palette=value; }
+			get { return _palPanel.Palette; }
+			set { _palPanel.Palette = value; }
 		}
 
 /*		protected override void OnResize(EventArgs e)
 		{
-			if(palPanel!=null)
+			if (palPanel != null)
 			{
 				palPanel.Width = ClientSize.Width;
-				palPanel.Height = ClientSize.Height-status.Height;
+				palPanel.Height = ClientSize.Height - status.Height;
 
-				status.Location = new Point(palPanel.Left,palPanel.Bottom);
+				status.Location = new Point(palPanel.Left, palPanel.Bottom);
 				status.Width = ClientSize.Width;
 			}
-		}
-		*/
+		} */
+
 
 		#region Windows Form Designer generated code
 
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		protected override void Dispose( bool disposing )
+		protected override void Dispose(bool disposing)
 		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
+			if (disposing && components != null)
+				components.Dispose();
+
+			base.Dispose(disposing);
 		}
 
 		/// <summary>
@@ -97,34 +95,34 @@ namespace PckView
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.status = new System.Windows.Forms.Label();
-			this.palPanel = new PckView.PalPanel();
+			this._status = new System.Windows.Forms.Label();
+			this._palPanel = new PckView.PalPanel();
 			this.SuspendLayout();
 			//
 			// status
 			//
-			this.status.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.status.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.status.Location = new System.Drawing.Point(0, 237);
-			this.status.Name = "status";
-			this.status.Size = new System.Drawing.Size(292, 16);
-			this.status.TabIndex = 0;
+			this._status.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this._status.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this._status.Location = new System.Drawing.Point(0, 237);
+			this._status.Name = "status";
+			this._status.Size = new System.Drawing.Size(292, 16);
+			this._status.TabIndex = 0;
 			//
 			// palPanel
 			//
-			this.palPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.palPanel.Name = "palPanel";
-			this.palPanel.Size = new System.Drawing.Size(292, 237);
-			this.palPanel.TabIndex = 0;
-			this.palPanel.PaletteIndexChanged += new PckView.PaletteClickDelegate(this.palClick);
+			this._palPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this._palPanel.Name = "palPanel";
+			this._palPanel.Size = new System.Drawing.Size(292, 237);
+			this._palPanel.TabIndex = 0;
+			this._palPanel.PaletteIndexChanged += new PckView.PaletteClickDelegate(this.palClick);
 			//
 			// PalView
 			//
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.ClientSize = new System.Drawing.Size(292, 253);
 			this.Controls.AddRange(new System.Windows.Forms.Control[] {
-																this.palPanel,
-																this.status });
+																this._palPanel,
+																this._status });
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "PalView";

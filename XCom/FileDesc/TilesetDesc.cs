@@ -28,57 +28,81 @@ namespace XCom
 			:
 			base(inFile)
 		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("[4]TilesetDesc cTor file= " + inFile);
 			_tilesets = new Dictionary<string, ITileset>();
+			LogFile.WriteLine(". [4]instantiate _tilesets Dictionary");
 
-			var sr = new StreamReader(File.OpenRead(inFile));
-			var vars1 = new VarCollection(sr, vars);
-
-			string line, name, keyword;
-			int idx;
-
-			while ((line = vars1.ReadLine(sr)) != null)
+			using (var sr = new StreamReader(File.OpenRead(inFile)))
 			{
-				idx = line.IndexOf(':');
-				name = line.Substring(idx + 1);
-				keyword = line.Substring(0, idx);
+				var varsReader = new VarCollection(sr, vars);
 
-				switch (keyword.ToLower())
+				int pos;
+				string key, val, line;
+
+				LogFile.WriteLine(". [4]start stream iteration");
+				while ((line = varsReader.ReadLine(sr)) != null) // will not return lines that start '$' (or whitespace lines)
 				{
-					case "tileset":
-						line = VarCollection.ReadLine(sr, vars1);
-						idx = line.IndexOf(':');
-						keyword = line.Substring(0, idx).ToLower();
+					LogFile.WriteLine("");
+					LogFile.WriteLine(". . [4]TilesetDesc cTor line= " + line);
+					pos = line.IndexOf(':');
+					LogFile.WriteLine(". . [4]pos= " + pos);
+					key = line.Substring(0, pos);
+					LogFile.WriteLine(". . [4]key= " + key);
+					val = line.Substring(pos + 1);
+					LogFile.WriteLine(". . [4]val= " + val);
 
-						switch (keyword)
-						{
-							case "type":
-								switch (int.Parse(line.Substring(idx + 1)))
-								{
-//									case 0:
-//										_tilesets[name] = new Type0Tileset(name, sr, new VarCollection(vars1));
-//										break;
-									case 1:
-										_tilesets[name] = new XCTileset(name, sr, new VarCollection(vars1));
-										break;
-								}
-								break;
+					switch (key.ToUpperInvariant())
+					{
+						case "TILESET":
+							LogFile.WriteLine(". . . [4]case TILESET");
+							line = VarCollection.ReadLine(sr, varsReader);
+							LogFile.WriteLine(". . . [4]line= " + line);
+							pos = line.IndexOf(':');
+							LogFile.WriteLine(". . . [4]pos= " + pos);
+							key = line.Substring(0, pos).ToUpperInvariant();
+							LogFile.WriteLine(". . . [4]key= " + key);
 
-							default:
-								Console.WriteLine(string.Format("Type line not found: {0}", line));
-								break;
-						}
-						break;
+							switch (key)
+							{
+								case "TYPE":
+									LogFile.WriteLine(". . . . [4]subcase TYPE val= " + int.Parse(line.Substring(pos + 1), System.Globalization.CultureInfo.InvariantCulture));
+									switch (int.Parse(line.Substring(pos + 1), System.Globalization.CultureInfo.InvariantCulture))
+									{
+//										case 0:
+//											_tilesets[name] = new Type0Tileset(name, sr, new VarCollection(vars1));
+//											break;
+										case 1:
+											LogFile.WriteLine(". . . . . [4]instantiate XCTileset _tilesets[" + val + "]");
+											_tilesets[val] = new XCTileset(val, sr, new VarCollection(varsReader));
+											break;
+									}
+									break;
 
-//					case "version":
-//						version = double.Parse(name);
-//						break;
+								default:
+									LogFile.WriteLine(". . . . [4]subcase default Type Not Found");
+									Console.WriteLine(string.Format(
+																System.Globalization.CultureInfo.CurrentCulture,
+																"Type line not found: {0}",
+																line));
+									break;
+							}
+							break;
 
-					default:
-						Console.WriteLine(string.Format("Unknown line: {0}", line));
-						break;
+//						case "VERSION":
+//							version = double.Parse(name);
+//							break;
+	
+						default:
+							LogFile.WriteLine(". . . [4]case default UNKNOWN line= " + line);
+							Console.WriteLine(string.Format(
+														System.Globalization.CultureInfo.CurrentCulture,
+														"Unknown line: {0}",
+														line));
+							break;
+					}
 				}
 			}
-			sr.Close();
 		}
 
 		public ITileset AddTileset(
@@ -101,6 +125,11 @@ namespace XCom
 			get { return _tilesets; }
 		}
 
+		/// <summary>
+		/// WARNING: This isn't used but has to be here to satisfy inheritance
+		/// from FileDesc.Save() which is abstract.
+		/// </summary>
+		/// <param name="outFile"></param>
 		public override void Save(string outFile)
 		{
 			var vars = new VarCollection("Path"); // iterate thru each tileset, call save on them
@@ -110,9 +139,9 @@ namespace XCom
 				var tileset = (IXCTileset)_tilesets[st];
 				if (tileset != null)
 				{
-					vars.AddVar("rootPath",  tileset.MapPath);
-					vars.AddVar("rmpPath",   tileset.RmpPath);
-					vars.AddVar("blankPath", tileset.BlankPath);
+					vars.AddKeyVal("rootPath",  tileset.MapPath);
+					vars.AddKeyVal("rmpPath",   tileset.RmpPath);
+					vars.AddKeyVal("blankPath", tileset.BlankPath);
 				}
 			}
 

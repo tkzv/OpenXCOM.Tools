@@ -7,16 +7,20 @@ namespace XCom
 {
 	public abstract class FileDesc
 	{
-		private readonly string path;
+		private readonly string _path;
 
-		protected FileDesc(string path1)
-		{ path = path1; }
+
+		protected FileDesc(string path)
+		{
+			_path = path;
+		}
+
 
 		public abstract void Save(string outFile);
 
 		public string Path
 		{
-			get { return path; }
+			get { return _path; }
 		}
 	}
 }

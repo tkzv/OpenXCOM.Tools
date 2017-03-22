@@ -42,7 +42,7 @@ namespace XCom
 			get { return _value; }
 		}
 
-		public void Inc(string prefix)
+		public void Add(string prefix)
 		{
 			_list.Add(prefix);
 		}

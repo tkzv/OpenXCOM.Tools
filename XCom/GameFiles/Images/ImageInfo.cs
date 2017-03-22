@@ -25,12 +25,11 @@ namespace XCom
 		{
 			get
 			{
-				var key = name.ToUpper();
+				var key = name.ToUpperInvariant();
 				return (_images.ContainsKey(key)) ? _images[key]
 												  : null;
-
 			}
-			set { _images[name.ToUpper()] = value; }
+			set { _images[name.ToUpperInvariant()] = value; }
 		}
 
 		public void Load(string inFile, VarCollection vars)
@@ -42,11 +41,9 @@ namespace XCom
 				KeyVal keyVal;
 				while ((keyVal = vars.ReadLine()) != null)
 				{
-					var img = new ImageDescriptor(keyVal.Keyword.ToUpper(), keyVal.Rest);
-					_images[keyVal.Keyword.ToUpper()] = img;
+					var img = new ImageDescriptor(keyVal.Keyword.ToUpperInvariant(), keyVal.Value);
+					_images[keyVal.Keyword.ToUpperInvariant()] = img;
 				}
-
-//				sr.Close(); // NOTE: the 'using' block closes the stream.
 			}
 		}
 
@@ -54,27 +51,24 @@ namespace XCom
 		{
 			using (var sw = new StreamWriter(outFile))
 			{
-				var a = new List<string>(_images.Keys);
-				a.Sort();
+				var keys = new List<string>(_images.Keys);
+				keys.Sort();
 				var vars = new Dictionary<string, Variable>();
 
-				foreach (string st in a)
+				foreach (string st in keys)
 				{
 					if (_images[st] != null)
 					{
-						var id = _images[st];
-						if (!vars.ContainsKey(id.BasePath))
-							vars[id.BasePath] = new Variable(id.BaseName + ":", id.BasePath);
+						var image = _images[st];
+						if (!vars.ContainsKey(image.BasePath))
+							vars[image.BasePath] = new Variable(image.BaseName + ":", image.BasePath);
 						else
-							vars[id.BasePath].Inc(id.BaseName + ":");
+							vars[image.BasePath].Add(image.BaseName + ":");
 					}
 				}
 
 				foreach (string basePath in vars.Keys)
 					vars[basePath].Write(sw);
-
-//				sw.Flush();
-//				sw.Close(); // NOTE: the 'using' block flushes & closes the stream.
 			}
 		}
 
@@ -90,28 +84,31 @@ namespace XCom
 		{
 			private readonly Dictionary<string, ImageDescriptor> _images;
 
+
 			public ImagesAccessor(Dictionary<string, ImageDescriptor> images)
 			{
 				_images = images;
 			}
 
+
 			public IEnumerable<string> Keys
 			{
 				get { return _images.Keys; }
 			}
+
 			public IEnumerable<ImageDescriptor> ImageDescriptors
 			{
 				get { return _images.Values; }
 			}
 
-			public void Remove(string toString)
+			public void Remove(string st)
 			{
-				_images.Remove(toString.ToUpper());
+				_images.Remove(st.ToUpperInvariant());
 			}
 
 			public ImageDescriptor this[string imageSet]
 			{
-				get { return _images[imageSet.ToUpper()]; }
+				get { return _images[imageSet.ToUpperInvariant()]; }
 			}
 		}
 	}

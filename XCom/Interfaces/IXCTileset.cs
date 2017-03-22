@@ -6,7 +6,7 @@ using XCom.Interfaces.Base;
 
 namespace XCom.Interfaces
 {
-	public class IXCTileset
+	public class IXCTileset // TODO: cTor has inheritors and calls a virtual function.
 		:
 		ITileset
 	{
@@ -34,92 +34,97 @@ namespace XCom.Interfaces
 			:
 			this(name)
 		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("[7]IXCTileset cTor");
 			while (sr.Peek() != -1)
 			{
 				string line = VarCollection.ReadLine(sr, vars);
+				LogFile.WriteLine(". [7]line= " + line);
 
-				if (line == "end" || line == "END")
-					return;
-
-				int idx = line.IndexOf(':');
-
-				string keyword = line.Substring(0, idx);
-				string keywordLow = keyword.ToLower();
-
-				string rest = line.Substring(idx + 1);
-
-				switch (keywordLow)
+				if (line.ToUpperInvariant() == "END")
 				{
-					case "palette":
-						if (rest.ToLower() == "ufo")
+					LogFile.WriteLine(". . [7]Exit.");
+					return;
+				}
+
+				int pos         = line.IndexOf(':');
+				LogFile.WriteLine(". [7]pos= " + pos);
+				string key      = line.Substring(0, pos);
+				LogFile.WriteLine(". [7]key= " + key);
+				string keyUpper = key.ToUpperInvariant();
+				LogFile.WriteLine(". [7]keyUpper= " + keyUpper);
+				string val      = line.Substring(pos + 1);
+				LogFile.WriteLine(". [7]val= " + val);
+
+				switch (keyUpper)
+				{
+					case "PALETTE":
+						switch (val.ToUpperInvariant())
 						{
-							myPal = Palette.UFOBattle;
+							case "UFO":  myPal = Palette.UFOBattle;       break;
+							case "TFTD": myPal = Palette.TFTDBattle;      break;
+							default:     myPal = Palette.GetPalette(val); break;
 						}
-						else if (rest.ToLower() == "tftd")
-						{
-							myPal = Palette.TFTDBattle;
-						}
-						else
-							myPal = Palette.GetPalette(rest);
 						break;
 
-					case "dll":
-						string dll = rest.Substring(rest.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+					case "DLL":
+						string dll = val.Substring(val.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
 						Console.WriteLine(name + " is in dll " + dll);
 						break;
 
-					case "rootpath":
-						rootPath = @rest;
+					case "ROOTPATH":
+						rootPath = val;
 						break;
 
-					case "rmppath":
-						rmpPath = @rest;
+					case "RMPPATH":
+						rmpPath = val;
 						break;
 
-					case "basestyle":
+					case "BASESTYLE":
 						baseStyle = true;
 						break;
 
-					case "ground":
-						groundMaps = rest.Split(' ');
+					case "GROUND":
+						groundMaps = val.Split(' ');
 						break;
 
-					case "size":
-						string[] dim = rest.Split(',');
-						int rows = int.Parse(dim[0]);
-						int cols = int.Parse(dim[1]);
-						int height = int.Parse(dim[2]);
+					case "SIZE":
+						string[] dim = val.Split(',');
+						int rows   = int.Parse(dim[0], System.Globalization.CultureInfo.InvariantCulture);
+						int cols   = int.Parse(dim[1], System.Globalization.CultureInfo.InvariantCulture);
+						int height = int.Parse(dim[2], System.Globalization.CultureInfo.InvariantCulture);
 
 						mapSize = new MapSize(rows, cols, height);
 						break;
 
-					case "landmap":
+					case "LANDMAP":
 						underwater = false;
 						break;
 
-					case "depth":
-						mapDepth = int.Parse(rest);
+					case "DEPTH":
+						mapDepth = int.Parse(val, System.Globalization.CultureInfo.InvariantCulture);
 						break;
 
-					case "blankpath":
-						blankPath = @rest;
+					case "BLANKPATH":
+						blankPath = val;
 						break;
 
-					case "scang":
-						scanFile = @rest;
+					case "SCANG":
+						scanFile = val;
 						break;
 
-					case "loftemp":
-						loftFile = @rest;
+					case "LOFTEMP":
+						loftFile = val;
 						break;
 
 					default:
 						// user-defined keyword
-						ParseLine(keywordLow, rest, sr, vars); // FIX: "Virtual member call in a constructor."
+						ParseLine(key, val, sr, vars); // FIX: "Virtual member call in a constructor."
 						break;
 				}
 			}
 		}
+
 
 		public MapSize Size
 		{

@@ -324,7 +324,7 @@ namespace DSShared.Lists
 					default:
 						offX =
 						offY = 2;
-						break;	
+						break;
 				}
 			}
 		}

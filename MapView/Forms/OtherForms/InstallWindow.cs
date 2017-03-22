@@ -130,9 +130,6 @@ namespace MapView
 					sw.WriteLine(@"cursor:${ufo}\UFOGRAPH");
 				else if (!String.IsNullOrEmpty(tbTftd.Text))
 					sw.WriteLine(@"cursor:${tftd}\UFOGRAPH");
-
-//				sw.Flush();
-//				sw.Close();
 			}
 
 			#region write misc.dat
@@ -162,28 +159,20 @@ namespace MapView
 
 			_vars["##RunPath##"] = SharedSpace.Instance.GetString(SharedSpace.AppDir);
 
-			// create files
-			using (var fs = new FileStream(pfeMapEdit, FileMode.Create))
-			{
-//				fs.Close();
-			}
+			using (var fs = new FileStream(pfeMapEdit, FileMode.Create)) // create MapEdit.Cfg
+			{}
 
-			using (var fs = new FileStream(pfeImages, FileMode.Create))
-			{
-//				fs.Close();
-			}
+			using (var fs = new FileStream(pfeImages, FileMode.Create)) // create Images.Cfg
+			{}
 
-			if (!String.IsNullOrEmpty(tbUfo.Text)) // write UFO data
+			if (!String.IsNullOrEmpty(tbUfo.Text))
 			{
 				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
 												.GetManifestResourceStream("MapView._Embedded.MapEditUFO.dat")))
 					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
 						using (var sw = new StreamWriter(fs))
 						{
-							writeFile(sr, sw);
-//							sw.Flush();
-//							sw.Close();
-//							sr.Close();
+							writeFile(sr, sw); // write UFO data to MapEdit.Cfg
 						}
 
 				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
@@ -191,10 +180,7 @@ namespace MapView
 					using (var fs = new FileStream(pfeImages, FileMode.Append))
 						using (var sw = new StreamWriter(fs))
 						{
-							writeFile(sr, sw);
-//							sw.Flush();
-//							sw.Close();
-//							sr.Close();
+							writeFile(sr, sw); // write UFO data to Images.Cfg
 						}
 			}
 
@@ -205,11 +191,8 @@ namespace MapView
 					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
 						using (var sw = new StreamWriter(fs))
 						{
-							writeFile(sr, sw);
+							writeFile(sr, sw); // write TFTD data to MapEdit.Cfg
 							sw.WriteLine();
-//							sw.Flush();
-//							sw.Close();
-//							sr.Close();
 						}
 
 				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
@@ -217,11 +200,8 @@ namespace MapView
 					using (var fs = new FileStream(pfeImages, FileMode.Append))
 						using (var sw = new StreamWriter(fs))
 						{
-							writeFile(sr, sw);
+							writeFile(sr, sw); // write TFTD data to Images.Cfg
 							sw.WriteLine();
-//							sw.Flush();
-//							sw.Close();
-//							sr.Close();
 						}
 			}
 
@@ -229,25 +209,25 @@ namespace MapView
 			Close();
 		}
 
-		private void btnCancel_Click(object sender, EventArgs e)
+		private void writeFile(TextReader sr, TextWriter sw)
 		{
-			DialogResult = DialogResult.Cancel;
-			Close();
+			while (sr.Peek() != -1)
+				writeLine(sr.ReadLine(), sw);
 		}
 
 		private void writeLine(string line, TextWriter sw)
 		{
 			if (line.IndexOf('#') > 0)
-				foreach (string st in _vars.Variables)
-					line = line.Replace(st, _vars[st]);
+				foreach (string val in _vars.Variables)
+					line = line.Replace(val, _vars[val]);
 
 			sw.WriteLine(@line);
 		}
 
-		private void writeFile(TextReader sr, TextWriter sw)
+		private void btnCancel_Click(object sender, EventArgs e)
 		{
-			while (sr.Peek() != -1)
-				writeLine(sr.ReadLine(), sw);
+			DialogResult = DialogResult.Cancel;
+			Close();
 		}
 	}
 }

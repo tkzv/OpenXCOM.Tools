@@ -65,10 +65,10 @@ namespace XCom
 			{
 				switch (quad)
 				{
-					case QuadrantType.Ground:	return Ground;
-					case QuadrantType.West:		return West;
-					case QuadrantType.North:	return North;
-					case QuadrantType.Content:	return Content;
+					case QuadrantType.Ground:  return Ground;
+					case QuadrantType.West:    return West;
+					case QuadrantType.North:   return North;
+					case QuadrantType.Content: return Content;
 				}
 				return null;
 			}
@@ -125,10 +125,10 @@ namespace XCom
 		{
 			switch (quad)
 			{
-				case QuadrantType.Ground:	_ground = value;	break;
-				case QuadrantType.West:		_west = value;		break;
-				case QuadrantType.North:	_north = value;		break;
-				case QuadrantType.Content:	_content = value;	break;
+				case QuadrantType.Ground:  _ground = value;  break;
+				case QuadrantType.West:    _west = value;    break;
+				case QuadrantType.North:   _north = value;   break;
+				case QuadrantType.Content: _content = value; break;
 			}
 		}
 	}

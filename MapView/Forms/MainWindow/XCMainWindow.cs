@@ -253,14 +253,14 @@ namespace MapView
 			switch (line.Keyword.ToUpperInvariant())
 			{
 				case "CURSOR":
-					if (line.Rest.EndsWith(@"\", StringComparison.Ordinal))
+					if (line.Value.EndsWith(@"\", StringComparison.Ordinal))
 						SharedSpace.Instance.AllocateObject(
 														SharedSpace.CursorFile,
-														line.Rest + SharedSpace.Cursor);
+														line.Value + SharedSpace.Cursor);
 					else
 						SharedSpace.Instance.AllocateObject(
 														SharedSpace.CursorFile,
-														line.Rest + @"\" + SharedSpace.Cursor);
+														line.Value + @"\" + SharedSpace.Cursor);
 					break;
 
 //				case "LOGFILE":

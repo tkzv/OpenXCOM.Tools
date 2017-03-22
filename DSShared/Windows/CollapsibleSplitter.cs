@@ -486,7 +486,7 @@ namespace DSShared.Windows
 			if (currentState == SplitterState.Collapsing || currentState == SplitterState.Expanding)
 				return; // if an animation is currently in progress for this control, drop out
 
-			controlWidth = controlToHide.Width;
+			controlWidth  = controlToHide.Width;
 			controlHeight = controlToHide.Height;
 
 			if (controlToHide.Visible)
@@ -502,9 +502,7 @@ namespace DSShared.Windows
 							parentFormWidth = parentForm.Width - controlWidth;
 						}
 						else
-						{
 							parentFormHeight = parentForm.Height - controlHeight;
-						}
 					}
 
 					animationTimer.Enabled = true;
@@ -520,9 +518,7 @@ namespace DSShared.Windows
 							parentForm.Width -= controlToHide.Width;
 						}
 						else
-						{
 							parentForm.Height -= controlToHide.Height;
-						}
 					}
 				}
 			}
@@ -560,9 +556,7 @@ namespace DSShared.Windows
 							parentForm.Width += controlToHide.Width;
 						}
 						else
-						{
 							parentForm.Height += controlToHide.Height;
-						}
 					}
 				}
 			}

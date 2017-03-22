@@ -10,9 +10,9 @@
 # Example
 #
 # ${txt}:Stuff
-# thisText:${txt} 
+# thisText:${txt}
 #
-# translates into 
+# translates into
 #
 # thisText:Stuff
 
@@ -34,36 +34,36 @@ ${blankPath}:##RunPath##\BLANKS\TFTD\
 # The value is the name of the top-level node
 Tileset:TFTD - Terrain
 
-	# in order for the map editor to work and parse this file correctly, every 
+	# in order for the map editor to work and parse this file correctly, every
 	# tileset must be of type 1, and the type MUST BE THE FIRST LINE AFTER Tileset
 	type:1
-	
-	# this defines the palette to be used to color all the images that are used for the 
+
+	# this defines the palette to be used to color all the images that are used for the
 	# files in this tileset. You have two options, ufo or tftd
 	palette:tftd
-	
+
 	# the rootpath keyword defines the directory where ALL the .map files can be found
 	rootpath:${rootPath}
-	
+
 	# the rmpPath keyword defines the directory where ALL the .rmp files can be found
 	rmppath:${rmpPath}
-	
+
 	blankPath:${blankPath}
-	
+
 	# spaces can be used in variable values
 	${deps}:SAND ROCKS WEEDS PYRAMID UFOBITS
-	
+
 	# the files keyword defines a subset of a tileset. the value of the keyword
 	# is the name given to the subset
 	files:Alien Artifact Site 1
-	
+
 	# Each entry under the files keyword corresponds to a file that exists
 	# in the directory defined by rootpath and rmppath above
 	# the value is a list of images (defined in images.dat) that are used
 	# to draw the tiles that make up the specified map
 	# ORDER MATTERS. Since all the files in a subset use the same image
-	# order, they are usually defined in a variable and used that way. 
-	# image entries are case sensitive. If you have images defined here in 
+	# order, they are usually defined in a variable and used that way.
+	# image entries are case sensitive. If you have images defined here in
 	# lowercase and your images.dat file is all uppercase, you will have problems
 		ALART09:${deps}
 		ALART04:${deps}
@@ -78,9 +78,9 @@ Tileset:TFTD - Terrain
 		ALART07:${deps}
 		ALART08:${deps}
 	end
-	
+
 	#variables with the same name will overwrite any previously declared variable
-	${deps}:GRUNGE1 GRUNGE2 GRUNGE3 GRUNGE4 UFOBITS 
+	${deps}:GRUNGE1 GRUNGE2 GRUNGE3 GRUNGE4 UFOBITS
 	files:alship
 		ALSHIP00:${deps}
 		ALSHIP01:${deps}
@@ -102,7 +102,7 @@ Tileset:TFTD - Terrain
 		ALSHIP17:${deps}
 	end
 
-	${deps}:SAND ATLANTIS UFOBITS	
+	${deps}:SAND ATLANTIS UFOBITS
 	files:Atlantis
 		ATLAN01:${deps}
 		ATLAN02:${deps}
@@ -119,7 +119,7 @@ Tileset:TFTD - Terrain
 		ATLAN00:${deps}
 	end
 
-	${deps}:SAND WEEDS CORAL ROCKS UFOBITS 
+	${deps}:SAND WEEDS CORAL ROCKS UFOBITS
 	files:Coral
 		CORAL12:${deps}
 		CORAL09:${deps}
@@ -136,7 +136,7 @@ Tileset:TFTD - Terrain
 		CORAL11:${deps}
 	end
 
-	${deps}:SAND ROCKS ASUNK UFOBITS 
+	${deps}:SAND ROCKS ASUNK UFOBITS
 	files:Sunken Galleon
 		GAL01:${deps}
 		GAL02:${deps}
@@ -156,7 +156,7 @@ Tileset:TFTD - Terrain
 		GAL16:${deps}
 	end
 
-	${deps}:SAND MU UFOBITS 
+	${deps}:SAND MU UFOBITS
 	files:Mayan Temple
 		MU02:${deps}
 		MU03:${deps}
@@ -175,7 +175,7 @@ Tileset:TFTD - Terrain
 		MU05:${deps}
 	end
 
-	${deps}:SAND PIPES UFOBITS 
+	${deps}:SAND PIPES UFOBITS
 	files:Underwater Research Facility
 		PIPES10:${deps}
 		PIPES11:${deps}
@@ -189,9 +189,9 @@ Tileset:TFTD - Terrain
 		PIPES02:${deps}
 		PIPES08:${deps}
 		PIPES09:${deps}
-	end			
+	end
 
-	${deps}:SAND ROCKS WEEDS DEBRIS UFOBITS 
+	${deps}:SAND ROCKS WEEDS DEBRIS UFOBITS
 	files:Seabed
 		SEABED00:${deps}
 		SEABED01:${deps}
@@ -208,7 +208,7 @@ Tileset:TFTD - Terrain
 		SEABED03:${deps}
 	end
 
-	${deps}:SAND VOLC 
+	${deps}:SAND VOLC
 	files:Volcano
 		VOLC04:${deps}
 		VOLC05:${deps}
@@ -222,9 +222,9 @@ Tileset:TFTD - Terrain
 		VOLC11:${deps}
 		VOLC08:${deps}
 		VOLC09:${deps}
-	end		   
+	end
 
-	${deps}:CRYPT1 CRYPT2 CRYPT3 CRYPT4 
+	${deps}:CRYPT1 CRYPT2 CRYPT3 CRYPT4
 	files:T'leth Level 3
 		CRYPT06:${deps}
 		CRYPT07:${deps}
@@ -235,9 +235,9 @@ Tileset:TFTD - Terrain
 		CRYPT01:${deps}
 		CRYPT08:${deps}
 		CRYPT09:${deps}
-	end			
+	end
 
-	${deps}:SAND UEXT2 UEXT3 ORGANIC1 ENTRY 
+	${deps}:SAND UEXT2 UEXT3 ORGANIC1 ENTRY
 	files:Alien Base Level 1
 		ENTRY02:${deps}
 		ENTRY03:${deps}
@@ -248,9 +248,9 @@ Tileset:TFTD - Terrain
 		ENTRY07:${deps}
 		ENTRY04:${deps}
 		ENTRY05:${deps}
-	end			
+	end
 
-	${deps}:ORGANIC1 ORGANIC2 ORGANIC3 PSYNOM 
+	${deps}:ORGANIC1 ORGANIC2 ORGANIC3 PSYNOM
 	files:T'leth Level 2
 		LEVEL08:${deps}
 		LEVEL09:${deps}
@@ -261,9 +261,9 @@ Tileset:TFTD - Terrain
 		LEVEL01:${deps}
 		LEVEL02:${deps}
 		LEVEL03:${deps}
-	end			
+	end
 
-	${deps}:SAND MSUNK1 MSUNK2 UFOBITS 
+	${deps}:SAND MSUNK1 MSUNK2 UFOBITS
 	files:Sunken Cargo Ship
 		MSUNK10:${deps}
 		MSUNK13:${deps}
@@ -281,7 +281,7 @@ Tileset:TFTD - Terrain
 		MSUNK11:${deps}
 	end
 
-	${deps}:ORGANIC1 ORGANIC2 ORGANIC3 PSYNOM 
+	${deps}:ORGANIC1 ORGANIC2 ORGANIC3 PSYNOM
 	files:Alien Base Level 2
 		A_BASE01:${deps}
 		A_BASE14:${deps}
@@ -301,14 +301,14 @@ Tileset:TFTD - Terrain
 		A_BASE08:${deps}
 	end
 
-	${deps}:SEA CARGO1 CARGO2 XBITS CARGO3 
+	${deps}:SEA CARGO1 CARGO2 XBITS CARGO3
 	files:Cargo Ship Terror Site
 		CARGO02:${deps}
 		CARGO00:${deps}
 		CARGO01:${deps}
 	end
 
-	${deps}:GRUNGE1 GRUNGE2 GRUNGE3 GRUNGE4 GRUNGE5 UFOBITS 
+	${deps}:GRUNGE1 GRUNGE2 GRUNGE3 GRUNGE4 GRUNGE5 UFOBITS
 	files:Alien Artifact Site 2
 		GRUNGE16:${deps}
 		GRUNGE02:${deps}
@@ -327,9 +327,9 @@ Tileset:TFTD - Terrain
 		GRUNGE10:${deps}
 		GRUNGE08:${deps}
 		GRUNGE09:${deps}
-	end			
+	end
 
-	${deps}:SEA ISLAND1 ISLAND2 ISLAND3 
+	${deps}:SEA ISLAND1 ISLAND2 ISLAND3
 	files:Island Terror Site
 		ISLAND12:${deps}
 		ISLAND13:${deps}
@@ -346,22 +346,22 @@ Tileset:TFTD - Terrain
 		ISLAND00:${deps}
 		ISLAND09:${deps}
 		ISLAND08:${deps}
-	end										
+	end
 
-	${deps}:SEA LINERA LINERB LINERC LINERD DECKC 
+	${deps}:SEA LINERA LINERB LINERC LINERD DECKC
 	files:Cruise Ship 2 Terror Site
 		LINERB02:${deps}
 		LINERB03:${deps}
 	end
 
-	${deps}:DECKC LINERA LINERB LINERC LINERD DECKC 
+	${deps}:DECKC LINERA LINERB LINERC LINERD DECKC
 	files:Cruise Ship 1 Terror Site
 		LINERT02:${deps}
 		LINERT00:${deps}
 		LINERT01:${deps}
-	end			 
+	end
 
-	${deps}:SAND PLANE UFOBITS 
+	${deps}:SAND PLANE UFOBITS
 	files:Sunken Plane
 		PLANE13:${deps}
 		PLANE20:${deps}
@@ -384,9 +384,9 @@ Tileset:TFTD - Terrain
 		PLANE18:${deps}
 		PLANE12:${deps}
 		PLANE15:${deps}
-	end			
+	end
 
-	${deps}:SEA PORT01 PORT02 
+	${deps}:SEA PORT01 PORT02
 	files:Port Terror Site
 		PORT12:${deps}
 		PORT13:${deps}
@@ -409,9 +409,9 @@ Tileset:TFTD - Terrain
 		PORT14:${deps}
 		PORT15:${deps}
 		PORT00:${deps}
-	end		   								   
+	end
 
-	${deps}:XBASES01 XBASES02 XBASES03 XBASES04 XBASES05 XBITS 
+	${deps}:XBASES01 XBASES02 XBASES03 XBASES04 XBASES05 XBITS
 	files:XCom Base
 		XBASES04:${deps}
 		XBASES05:${deps}
@@ -434,9 +434,9 @@ Tileset:TFTD - Terrain
 		XBASES19:${deps}
 		XBASES18:${deps}
 		XBASES12:${deps}
-	end														   
-	palette:tftd 
-end		
+	end
+	palette:tftd
+end
 
 Tileset:TFTD - Ships
 	type:1
@@ -445,7 +445,7 @@ Tileset:TFTD - Ships
 	blankPath:${blankPath}
 	palette:tftd
 	
-	${deps}:UEXT2 UEXT3 UINT1 UINT2 UINT3 
+	${deps}:UEXT2 UEXT3 UINT1 UINT2 UINT3
 	files:Alien
 		UFO06:${deps}
 		UFO07:${deps}
@@ -455,11 +455,11 @@ Tileset:TFTD - Ships
 		UFO03:${deps}
 		UFO01:${deps}
 		UFO08:${deps}
-	end									   
+	end
 
 	files:XCom
-		LEVIATH:LEVIATH 
-		HAMMER:HAMMER 
-		TRITON:TRITON 
-	end	
+		LEVIATH:LEVIATH
+		HAMMER:HAMMER
+		TRITON:TRITON
+	end
 end

@@ -22,42 +22,48 @@ namespace XCom
 
 		public static void Init(Palette pal, DSShared.PathInfo info)
 		{
-			Directory.SetCurrentDirectory(info.Path);
+			Directory.SetCurrentDirectory(info.Path); // change to /settings dir
 			xConsole.Init(20);
 
 			_palette = pal;
 			_pckHash = new Dictionary<Palette, Dictionary<string, PckFile>>();
 
-			using (var sr = new StreamReader(File.OpenRead(info.FullPath)))
+			using (var sr = new StreamReader(File.OpenRead(info.FullPath))) // open Paths.Cfg
 			{
-				var vars = new VarCollection(sr);
-
-				KeyVal keyVal;
-				while ((keyVal = vars.ReadLine()) != null)
+				var vars = new VarCollection(sr);	// this object is going to hold all sorts of keyval pairs
+													// be careful you don't duplicate/overwrite a var since the following loop
+				KeyVal keyVal;						// is going to rifle through all the config files and throw it together ...
+				LogFile.WriteLine("[1]GameInfo.Init parse Paths.cfg");
+				while ((keyVal = vars.ReadLine()) != null) // parse Paths.Cfg; will not return lines that start '$' (or whitespace lines)
 				{
-					switch (keyVal.Keyword)
+					LogFile.WriteLine(". [1]iter Paths.cfg keyVal= " + keyVal.Keyword);
+					switch (keyVal.Keyword.ToUpperInvariant())
 					{
-						case "mapdata": // MapEdit.dat ref in Paths.pth
-							_tilesetDesc = new TilesetDesc(keyVal.Rest, vars);
+						case "MAPDATA": // ref to MapEdit.Cfg
+							LogFile.WriteLine(". [1]Paths.cfg MAPDATA keyVal.Value= " + keyVal.Value);
+							_tilesetDesc = new TilesetDesc(keyVal.Value, vars); // this is spooky, not a delightful way.
 							break;
 
-						case "images": // Images.dat ref in Paths.pth
-							_imageInfo = new ImageInfo(keyVal.Rest, vars);
+						case "IMAGES": // ref to Images.Cfg
+							LogFile.WriteLine(". [1]Paths.cfg IMAGES keyVal.Value= " + keyVal.Value);
+							_imageInfo = new ImageInfo(keyVal.Value, vars);
 							break;
 
+						case "USEBLANKS":
+						case "CURSOR":
+							goto default; // ... doh.
 						default:
-							if (ParseLine != null)
-								ParseLine(keyVal, vars);
+							LogFile.WriteLine(". [1]Paths.cfg default");
+							if (ParseLine != null)			// this is just stupid. 'clever' but stupid.
+								ParseLine(keyVal, vars);	// TODO: handle any potential errors in ParseLine() instead of aliasing aliases to delegates.
 							else
-								xConsole.AddLine("GameInfo: Error in Paths.dat file: " + keyVal);
+								xConsole.AddLine("GameInfo: Error in Paths.cfg file: " + keyVal); // this is just wrong. It doesn't catch an error in paths.cfg at all ....
 							break;
 					}
 				}
-
-//				vars.BaseStream.Close(); // NOTE: the 'using' block closes the stream.
 			}
 
-			Directory.SetCurrentDirectory(SharedSpace.Instance.GetString(SharedSpace.AppDir));
+			Directory.SetCurrentDirectory(SharedSpace.Instance.GetString(SharedSpace.AppDir)); // change back to app dir
 		}
 
 		public static ImageInfo ImageInfo

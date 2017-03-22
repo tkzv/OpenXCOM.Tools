@@ -63,7 +63,7 @@ namespace MapView
 					default:
 						if (settings[keyVal.Keyword] != null)
 						{
-							settings[keyVal.Keyword].Value = keyVal.Rest;
+							settings[keyVal.Keyword].Value = keyVal.Value;
 							settings[keyVal.Keyword].FireUpdate(keyVal.Keyword);
 						}
 						break;
@@ -206,9 +206,9 @@ namespace MapView
 	/// </summary>
 	public class Setting
 	{
-		private object _val;
+		private object _value;
 
-		private static Dictionary<Type,parseString> _converters;
+		private static Dictionary<Type, parseString> _converters;
 
 		public event ValueChangedDelegate ValueChanged;
 
@@ -250,7 +250,7 @@ namespace MapView
 
 		public Setting(object value, string desc, string category)
 		{
-			_val = value;
+			_value = value;
 			Description = desc;
 			Category = category;
 
@@ -278,23 +278,23 @@ namespace MapView
 
 		public object Value
 		{
-			get { return _val; }
+			get { return _value; }
 			set
 			{
-				if (_val != null)
+				if (_value != null)
 				{
-					var type = _val.GetType();
+					var type = _value.GetType();
 					if (_converters.ContainsKey(type))
 					{
 						var val = value as string;
 						if (val != null)
 						{
-							_val = _converters[type](val);
+							_value = _converters[type](val);
 							return;
 						}
 					}
 				}
-				_val = value;
+				_value = value;
 			}
 		}
 
@@ -316,7 +316,7 @@ namespace MapView
 		public void FireUpdate(string key)
 		{
 			if (ValueChanged != null)
-				ValueChanged(this, key, _val);
+				ValueChanged(this, key, _value);
 		}
 	}
 
