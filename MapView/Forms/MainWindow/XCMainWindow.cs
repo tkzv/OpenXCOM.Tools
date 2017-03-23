@@ -745,7 +745,7 @@ namespace MapView
 			{
 				var f = new MapInfoForm();
 				f.Show();
-				f.BaseMap = _mapViewPanel.BaseMap;
+				f.Analyze(_mapViewPanel.BaseMap);
 			}
 		}
 

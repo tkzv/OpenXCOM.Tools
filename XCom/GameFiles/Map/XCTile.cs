@@ -15,17 +15,17 @@ namespace XCom
 
 
 		public XCTile(
-			int id,
-			PckFile file,
-			McdEntry info,
-			XCTile[] tiles)
+				int id,
+				PckFile file,
+				McdEntry info,
+				XCTile[] tiles)
 			:
 			base(id)
 		{
-			_file  = file;
-			_info  = info;
-			Info   = info;
-			Tiles  = tiles;
+			_file = file;
+			_info = info;
+			Info  = info;
+			Tiles = tiles;
 
 			_images = new XCImage[8]; // every tile-part contains refs to 8 sprites.
 

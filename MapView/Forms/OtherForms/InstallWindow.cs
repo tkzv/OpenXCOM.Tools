@@ -127,9 +127,13 @@ namespace MapView
 				sw.WriteLine("useBlanks:false");
 
 				if (!String.IsNullOrEmpty(tbUfo.Text))
+				{
 					sw.WriteLine(@"cursor:${ufo}\UFOGRAPH");
+				}
 				else if (!String.IsNullOrEmpty(tbTftd.Text))
+				{
 					sw.WriteLine(@"cursor:${tftd}\UFOGRAPH");
+				}
 			}
 
 			#region write misc.dat

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Windows.Forms;
 
 using XCom;
 using XCom.Interfaces.Base;
@@ -9,154 +10,173 @@ namespace MapView
 {
 	public class MapInfoForm
 		:
-		System.Windows.Forms.Form
+		Form
 	{
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label lblDimensions;
-		private System.Windows.Forms.Label lblPckFiles;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label lblPckImages;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label lblMcd;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.Label lblFilled;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.ProgressBar pBar;
-		private System.ComponentModel.Container components = null;
-		private System.Windows.Forms.GroupBox groupAnalyze;
-		private System.Windows.Forms.GroupBox groupInfo;
-
-		private IMap_Base _baseMap;
-
 		public MapInfoForm()
 		{
 			InitializeComponent();
 		}
 
-		public IMap_Base BaseMap
+
+		public void Analyze(IMap_Base baseMap)
 		{
-			set
-			{
-				_baseMap = value;
-				Analyze();
-			}
-		}
+			groupInfo.Text = "Map: " + baseMap.Name;
 
-		private void Analyze()
-		{
-			groupAnalyze.Visible = true;
+			lbl2Dimensions.Text = baseMap.MapSize.Cols + ","
+								+ baseMap.MapSize.Rows + ","
+								+ baseMap.MapSize.Height;
 
-			var imgHash = new Hashtable();
-			var mcdHash = new Hashtable();
+			lbl2PckFiles.Text = String.Empty;
 
-			groupInfo.Text = "Map: " + _baseMap.Name;
-
-			lblDimensions.Text = _baseMap.MapSize.Cols + "," + _baseMap.MapSize.Rows + "," + _baseMap.MapSize.Height;
-
+			int recordsTotal = 0;
+			int spritesTotal = 0;
 
 			bool first = true;
-
-			lblPckFiles.Text = String.Empty;
-
-			int totalMcdRecords = 0;
-			int totalPckImages  = 0;
-
-			var mapFile = _baseMap as XCMapFile;
+			var mapFile = baseMap as XCMapFile;
 			if (mapFile != null)
 			{
-				foreach (string st in mapFile.Dependencies)
+				foreach (string dep in mapFile.Dependencies)
 				{
 					if (first)
 						first = false;
 					else
-						lblPckFiles.Text += ",";
+						lbl2PckFiles.Text += ";";
 
-					lblPckFiles.Text += st;
+					lbl2PckFiles.Text += dep;
 
-					totalMcdRecords += GameInfo.ImageInfo[st].GetMcdFile().Count;
-					totalPckImages  += GameInfo.ImageInfo[st].GetPckFile().Count;
+					recordsTotal += GameInfo.ImageInfo[dep].GetMcdFile().Count;
+					spritesTotal += GameInfo.ImageInfo[dep].GetPckFile().Count;
 				}
 			}
 
-			pBar.Maximum = _baseMap.MapSize.Rows * _baseMap.MapSize.Cols * _baseMap.MapSize.Height;
+			Refresh();
+			groupAnalyze.Visible = true;
+
+			int parts = 0;
+
+			var recordsTable = new Hashtable();
+			var spritesTable = new Hashtable();
+
+			pBar.Maximum = baseMap.MapSize.Cols * baseMap.MapSize.Rows * baseMap.MapSize.Height;
 			pBar.Value = 0;
 
-			int partsTotal = 0;
-
-			for (int h = 0; h < _baseMap.MapSize.Height; h++)
-				for (int r = 0; r < _baseMap.MapSize.Rows; r++)
-					for (int c = 0; c < _baseMap.MapSize.Cols; c++)
+			for (int c = 0; c != baseMap.MapSize.Cols; ++c)
+			{
+				for (int r = 0; r != baseMap.MapSize.Rows; ++r)
+				{
+					for (int h = 0; h != baseMap.MapSize.Height; ++h)
 					{
-						var tile = (XCMapTile)_baseMap[r, c, h];
+						var tile = baseMap[r, c, h] as XCMapTile;
 						if (!tile.Blank)
 						{
 							if (tile.Ground != null)
 							{
-								count(imgHash, mcdHash, tile.Ground);
+								++parts;
+								Count(tile.Ground, recordsTable, spritesTable);
+
 								var tilePart = tile.Ground as XCTile;
 								if (tilePart != null)
-									count(imgHash, mcdHash, tilePart.Dead);
-								++partsTotal;
+									Count(tilePart.Dead, recordsTable, spritesTable);
 							}
 
 							if (tile.West != null)
 							{
-								count(imgHash, mcdHash, tile.West);
+								++parts;
+								Count(tile.West, recordsTable, spritesTable);
+
 								var tilePart = tile.West as XCTile;
 								if (tilePart != null)
-									count(imgHash, mcdHash, tilePart.Dead);
-								++partsTotal;
+									Count(tilePart.Dead, recordsTable, spritesTable);
 							}
 
 							if (tile.North != null)
 							{
-								count(imgHash, mcdHash, tile.North);
+								++parts;
+								Count(tile.North, recordsTable, spritesTable);
+
 								var tilePart = tile.North as XCTile;
 								if (tilePart != null)
-									count(imgHash, mcdHash, tilePart.Dead);
-								++partsTotal;
+									Count(tilePart.Dead, recordsTable, spritesTable);
 							}
 
 							if (tile.Content != null)
 							{
-								count(imgHash, mcdHash, tile.Content);
+								++parts;
+								Count(tile.Content, recordsTable, spritesTable);
+
 								var tilePart = tile.Content as XCTile;
 								if (tilePart != null)
-									count(imgHash, mcdHash, tilePart.Dead);
-								++partsTotal;
+									Count(tilePart.Dead, recordsTable, spritesTable);
 							}
 
-							pBar.Value = (r + 1) * (c + 1) * (h + 1);
+							++pBar.Value;
 							pBar.Refresh();
+//							System.Threading.Thread.Sleep(1); // for testing.
 						}
 					}
+				}
+			}
 
-			var pct = Math.Round(100 * ((mcdHash.Keys.Count * 1.0) / totalMcdRecords), 2);
-			lblMcd.Text = mcdHash.Keys.Count + "/" + totalMcdRecords + " - " + pct + "%";
+			var pct = Math.Round(100.0 * (double)recordsTable.Keys.Count / (double)recordsTotal, 2);
+			lbl2McdRecords.Text = recordsTable.Keys.Count + "/" + recordsTotal + " - " + pct + "%";
 
-			pct = Math.Round(100 * ((imgHash.Keys.Count * 1.0) / totalPckImages), 2);
-			lblPckImages.Text = imgHash.Keys.Count + "/" + totalPckImages + " - " + pct + "%";
+			pct = Math.Round(100.0 * (double)parts / (pBar.Maximum * 4), 2);
+			lbl2PartsFilled.Text = parts + "/" + (pBar.Maximum * 4) + " - " + pct + "%";
 
-			pct = Math.Round(100 * ((partsTotal * 1.0) / (pBar.Maximum * 4)), 2);
-			lblFilled.Text = partsTotal + "/" + (pBar.Maximum * 4) + " - " + pct + "%";
+			pct = Math.Round(100.0 * (double)spritesTable.Keys.Count / (double)spritesTotal, 2);
+			lbl2PckImages.Text = spritesTable.Keys.Count + "/" + spritesTotal + " - " + pct + "%";
 
-			groupAnalyze.Visible = false;
+
+			groupAnalyze.Text = String.Empty; // hide the progress bar and show the Cancel btn.
+			pBar.Visible = false;
+			btnCancel.Visible = true;
+
+			Refresh();
 		}
 
-		private void count(
-				IDictionary sprites,
-				IDictionary records,
-				TileBase tile)
+		private void Count(
+				TileBase tile,
+				IDictionary recordsTable,
+				IDictionary spritesTable)
 		{
 			if (tile != null)
 			{
-				var frames = tile.Images;
-				foreach (PckImage frame in frames)
-					sprites[frame.StaticId] = true;
+				recordsTable[tile.Info.Id] = true;
 
-				records[tile.Info.Id] = true;
+				var images = tile.Images;
+				foreach (PckImage image in images)
+					spritesTable[image.StaticId] = true;
 			}
 		}
+
+		private void btnClose(object sender, MouseEventArgs e)
+		{
+			Close();
+		}
+
+		private void keyClose(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+				Close();
+		}
+
+
+		private GroupBox groupInfo;
+		private Label lbl1Dimensions;
+		private Label lbl2Dimensions;
+		private Label lbl1PckFiles;
+		private Label lbl2PckFiles;
+		private Label lbl1PckImages;
+		private Label lbl2PckImages;
+		private Label lbl1McdRecords;
+		private Label lbl2McdRecords;
+		private Label lbl1PartsFilled;
+		private Label lbl2PartsFilled;
+		private GroupBox groupAnalyze;
+		private ProgressBar pBar;
+		private Button btnCancel;
+
+		private System.ComponentModel.Container components = null;
 
 
 		#region Windows Form Designer generated code
@@ -178,107 +198,108 @@ namespace MapView
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new System.Windows.Forms.Label();
-			this.lblDimensions = new System.Windows.Forms.Label();
-			this.lblPckFiles = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.lblPckImages = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.lblMcd = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.lblFilled = new System.Windows.Forms.Label();
-			this.label8 = new System.Windows.Forms.Label();
+			this.lbl1Dimensions = new System.Windows.Forms.Label();
+			this.lbl2Dimensions = new System.Windows.Forms.Label();
+			this.lbl2PckFiles = new System.Windows.Forms.Label();
+			this.lbl1PckFiles = new System.Windows.Forms.Label();
+			this.lbl2PckImages = new System.Windows.Forms.Label();
+			this.lbl1PckImages = new System.Windows.Forms.Label();
+			this.lbl2McdRecords = new System.Windows.Forms.Label();
+			this.lbl1McdRecords = new System.Windows.Forms.Label();
+			this.lbl2PartsFilled = new System.Windows.Forms.Label();
+			this.lbl1PartsFilled = new System.Windows.Forms.Label();
 			this.pBar = new System.Windows.Forms.ProgressBar();
 			this.groupAnalyze = new System.Windows.Forms.GroupBox();
+			this.btnCancel = new System.Windows.Forms.Button();
 			this.groupInfo = new System.Windows.Forms.GroupBox();
 			this.groupAnalyze.SuspendLayout();
 			this.groupInfo.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// label1
+			// lbl1Dimensions
 			// 
-			this.label1.Location = new System.Drawing.Point(10, 20);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(115, 15);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Dimensions (c,r,h):";
+			this.lbl1Dimensions.Location = new System.Drawing.Point(10, 20);
+			this.lbl1Dimensions.Name = "lbl1Dimensions";
+			this.lbl1Dimensions.Size = new System.Drawing.Size(115, 15);
+			this.lbl1Dimensions.TabIndex = 0;
+			this.lbl1Dimensions.Text = "dimensions (c,r,h)";
 			// 
-			// lblDimensions
+			// lbl2Dimensions
 			// 
-			this.lblDimensions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.lbl2Dimensions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lblDimensions.Location = new System.Drawing.Point(125, 20);
-			this.lblDimensions.Name = "lblDimensions";
-			this.lblDimensions.Size = new System.Drawing.Size(361, 15);
-			this.lblDimensions.TabIndex = 1;
+			this.lbl2Dimensions.Location = new System.Drawing.Point(130, 20);
+			this.lbl2Dimensions.Name = "lbl2Dimensions";
+			this.lbl2Dimensions.Size = new System.Drawing.Size(356, 15);
+			this.lbl2Dimensions.TabIndex = 1;
 			// 
-			// lblPckFiles
+			// lbl2PckFiles
 			// 
-			this.lblPckFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.lbl2PckFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lblPckFiles.Location = new System.Drawing.Point(125, 35);
-			this.lblPckFiles.Name = "lblPckFiles";
-			this.lblPckFiles.Size = new System.Drawing.Size(361, 15);
-			this.lblPckFiles.TabIndex = 3;
+			this.lbl2PckFiles.Location = new System.Drawing.Point(130, 35);
+			this.lbl2PckFiles.Name = "lbl2PckFiles";
+			this.lbl2PckFiles.Size = new System.Drawing.Size(356, 15);
+			this.lbl2PckFiles.TabIndex = 3;
 			// 
-			// label3
+			// lbl1PckFiles
 			// 
-			this.label3.Location = new System.Drawing.Point(10, 35);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(115, 15);
-			this.label3.TabIndex = 2;
-			this.label3.Text = "Pck files used:";
+			this.lbl1PckFiles.Location = new System.Drawing.Point(10, 35);
+			this.lbl1PckFiles.Name = "lbl1PckFiles";
+			this.lbl1PckFiles.Size = new System.Drawing.Size(115, 15);
+			this.lbl1PckFiles.TabIndex = 2;
+			this.lbl1PckFiles.Text = "PCK Sets";
 			// 
-			// lblPckImages
+			// lbl2PckImages
 			// 
-			this.lblPckImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.lbl2PckImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lblPckImages.Location = new System.Drawing.Point(125, 50);
-			this.lblPckImages.Name = "lblPckImages";
-			this.lblPckImages.Size = new System.Drawing.Size(361, 15);
-			this.lblPckImages.TabIndex = 5;
+			this.lbl2PckImages.Location = new System.Drawing.Point(130, 50);
+			this.lbl2PckImages.Name = "lbl2PckImages";
+			this.lbl2PckImages.Size = new System.Drawing.Size(356, 15);
+			this.lbl2PckImages.TabIndex = 5;
 			// 
-			// label4
+			// lbl1PckImages
 			// 
-			this.label4.Location = new System.Drawing.Point(10, 50);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(115, 15);
-			this.label4.TabIndex = 4;
-			this.label4.Text = "Pck images used:";
+			this.lbl1PckImages.Location = new System.Drawing.Point(10, 50);
+			this.lbl1PckImages.Name = "lbl1PckImages";
+			this.lbl1PckImages.Size = new System.Drawing.Size(115, 15);
+			this.lbl1PckImages.TabIndex = 4;
+			this.lbl1PckImages.Text = "sprites";
 			// 
-			// lblMcd
+			// lbl2McdRecords
 			// 
-			this.lblMcd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.lbl2McdRecords.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lblMcd.Location = new System.Drawing.Point(125, 65);
-			this.lblMcd.Name = "lblMcd";
-			this.lblMcd.Size = new System.Drawing.Size(361, 15);
-			this.lblMcd.TabIndex = 7;
+			this.lbl2McdRecords.Location = new System.Drawing.Point(130, 65);
+			this.lbl2McdRecords.Name = "lbl2McdRecords";
+			this.lbl2McdRecords.Size = new System.Drawing.Size(356, 15);
+			this.lbl2McdRecords.TabIndex = 7;
 			// 
-			// label6
+			// lbl1McdRecords
 			// 
-			this.label6.Location = new System.Drawing.Point(10, 65);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(115, 15);
-			this.label6.TabIndex = 6;
-			this.label6.Text = "Mcd entries used:";
+			this.lbl1McdRecords.Location = new System.Drawing.Point(10, 65);
+			this.lbl1McdRecords.Name = "lbl1McdRecords";
+			this.lbl1McdRecords.Size = new System.Drawing.Size(115, 15);
+			this.lbl1McdRecords.TabIndex = 6;
+			this.lbl1McdRecords.Text = "MCD Records";
 			// 
-			// lblFilled
+			// lbl2PartsFilled
 			// 
-			this.lblFilled.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.lbl2PartsFilled.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lblFilled.Location = new System.Drawing.Point(125, 80);
-			this.lblFilled.Name = "lblFilled";
-			this.lblFilled.Size = new System.Drawing.Size(361, 15);
-			this.lblFilled.TabIndex = 9;
+			this.lbl2PartsFilled.Location = new System.Drawing.Point(130, 80);
+			this.lbl2PartsFilled.Name = "lbl2PartsFilled";
+			this.lbl2PartsFilled.Size = new System.Drawing.Size(356, 15);
+			this.lbl2PartsFilled.TabIndex = 9;
 			// 
-			// label8
+			// lbl1PartsFilled
 			// 
-			this.label8.Location = new System.Drawing.Point(10, 80);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(115, 15);
-			this.label8.TabIndex = 8;
-			this.label8.Text = "% of map filled:";
+			this.lbl1PartsFilled.Location = new System.Drawing.Point(10, 80);
+			this.lbl1PartsFilled.Name = "lbl1PartsFilled";
+			this.lbl1PartsFilled.Size = new System.Drawing.Size(115, 15);
+			this.lbl1PartsFilled.TabIndex = 8;
+			this.lbl1PartsFilled.Text = "tile parts";
 			// 
 			// pBar
 			// 
@@ -290,6 +311,7 @@ namespace MapView
 			// 
 			// groupAnalyze
 			// 
+			this.groupAnalyze.Controls.Add(this.btnCancel);
 			this.groupAnalyze.Controls.Add(this.pBar);
 			this.groupAnalyze.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.groupAnalyze.Location = new System.Drawing.Point(0, 102);
@@ -299,18 +321,29 @@ namespace MapView
 			this.groupAnalyze.TabStop = false;
 			this.groupAnalyze.Text = "Analyzing";
 			// 
+			// btnCancel
+			// 
+			this.btnCancel.Location = new System.Drawing.Point(205, 10);
+			this.btnCancel.Name = "btnCancel";
+			this.btnCancel.Size = new System.Drawing.Size(85, 30);
+			this.btnCancel.TabIndex = 2;
+			this.btnCancel.Text = "Cancel";
+			this.btnCancel.UseVisualStyleBackColor = true;
+			this.btnCancel.Visible = false;
+			this.btnCancel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnClose);
+			// 
 			// groupInfo
 			// 
-			this.groupInfo.Controls.Add(this.lblPckImages);
-			this.groupInfo.Controls.Add(this.label3);
-			this.groupInfo.Controls.Add(this.lblPckFiles);
-			this.groupInfo.Controls.Add(this.label1);
-			this.groupInfo.Controls.Add(this.lblMcd);
-			this.groupInfo.Controls.Add(this.label4);
-			this.groupInfo.Controls.Add(this.label6);
-			this.groupInfo.Controls.Add(this.lblFilled);
-			this.groupInfo.Controls.Add(this.label8);
-			this.groupInfo.Controls.Add(this.lblDimensions);
+			this.groupInfo.Controls.Add(this.lbl2PckImages);
+			this.groupInfo.Controls.Add(this.lbl1PckFiles);
+			this.groupInfo.Controls.Add(this.lbl2PckFiles);
+			this.groupInfo.Controls.Add(this.lbl1Dimensions);
+			this.groupInfo.Controls.Add(this.lbl2McdRecords);
+			this.groupInfo.Controls.Add(this.lbl1PckImages);
+			this.groupInfo.Controls.Add(this.lbl1McdRecords);
+			this.groupInfo.Controls.Add(this.lbl2PartsFilled);
+			this.groupInfo.Controls.Add(this.lbl1PartsFilled);
+			this.groupInfo.Controls.Add(this.lbl2Dimensions);
 			this.groupInfo.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupInfo.Location = new System.Drawing.Point(0, 0);
 			this.groupInfo.Name = "groupInfo";
@@ -333,7 +366,8 @@ namespace MapView
 			this.ShowIcon = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Map Info";
+			this.Text = "- Map Info";
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyClose);
 			this.groupAnalyze.ResumeLayout(false);
 			this.groupInfo.ResumeLayout(false);
 			this.ResumeLayout(false);

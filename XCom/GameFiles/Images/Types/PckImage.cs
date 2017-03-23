@@ -191,12 +191,12 @@ namespace XCom
 			get { return _staticId; }
 		}
 
-		public static Type GetCollectionType()
+/*		public static Type GetCollectionType()
 		{
 			return typeof(PckFile);
-		}
+		} */
 
-		public void ReImage()
+/*		public void ReImage()
 		{
 			_image = Bmp.MakeBitmap8(
 								Width,
@@ -208,20 +208,20 @@ namespace XCom
 								Height,
 								_expanded,
 								Palette.Grayscale.Colors);
-		}
+		} */
 
-		public void MoveImage(byte offset)
+/*		public void MoveImage(byte offset)
 		{
 			_id[_moveId] = (byte)(_moveVal - offset);
 			int ex = 0;
 			int startIdx = 0;
-			for (int i = 0; i < _expanded.Length; i++)
+			for (int i = 0; i != _expanded.Length; ++i)
 				_expanded[i] = TransparentIndex;
 
 			if (_id[0] != 254)
 				ex = _id[startIdx++] * Width;
 
-			for (int i = startIdx; i < _id.Length; i++)
+			for (int i = startIdx; i < _id.Length; ++i)
 			{
 				switch (_id[i])
 				{
@@ -249,7 +249,7 @@ namespace XCom
 								Height,
 								_expanded,
 								Palette.Grayscale.Colors);
-		}
+		} */
 
 /*		public int MapId
 		{
@@ -279,7 +279,7 @@ namespace XCom
 
 			ret += _fileId + Environment.NewLine;
 
-			for (int i = 0; i < _expanded.Length; i++)
+			for (int i = 0; i != _expanded.Length; ++i)
 			{
 				ret += _expanded[i];
 

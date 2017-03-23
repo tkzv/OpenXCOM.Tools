@@ -43,24 +43,26 @@ namespace XCom
 				//LogFile.WriteLine(". [4]start stream iteration");
 				while ((line = vars1.ReadLine(sr)) != null) // will not return lines that start '$' (or whitespace lines)
 				{
+					pos = line.IndexOf(':');
+					key = line.Substring(0, pos);
+					val = line.Substring(pos + 1);
+
 					//LogFile.WriteLine("");
 					//LogFile.WriteLine(". . [4]TilesetDesc cTor line= " + line);
-					pos = line.IndexOf(':');
 					//LogFile.WriteLine(". . [4]pos= " + pos);
-					key = line.Substring(0, pos);
 					//LogFile.WriteLine(". . [4]key= " + key);
-					val = line.Substring(pos + 1);
 					//LogFile.WriteLine(". . [4]val= " + val);
 
 					switch (key.ToUpperInvariant())
 					{
 						case "TILESET":
-							//LogFile.WriteLine(". . . [4]case TILESET");
 							line = VarCollection.ReadLine(sr, vars1);
+							pos  = line.IndexOf(':');
+							key  = line.Substring(0, pos).ToUpperInvariant();
+
+							//LogFile.WriteLine(". . . [4]case TILESET");
 							//LogFile.WriteLine(". . . [4]line= " + line);
-							pos = line.IndexOf(':');
 							//LogFile.WriteLine(". . . [4]pos= " + pos);
-							key = line.Substring(0, pos).ToUpperInvariant();
 							//LogFile.WriteLine(". . . [4]key= " + key);
 
 							switch (key)

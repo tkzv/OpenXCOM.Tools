@@ -96,9 +96,7 @@ namespace MapView
 		private void keyClose(object sender, KeyEventArgs e) // TODO: doesn't work. cf, AboutWindow.keyClose()
 		{
 			if (e.KeyCode == Keys.Escape)
-			{
 				Close();
-			}
 		}
 
 		/// <summary>
