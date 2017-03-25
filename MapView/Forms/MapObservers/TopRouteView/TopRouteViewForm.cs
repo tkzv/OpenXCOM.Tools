@@ -12,7 +12,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		:
 		Form
 	{
-		public RegistryInfo RegistryInfo;
+		public RegistryInfo RegistryInfo; // FxCop CA1823.
 
 
 		public TopRouteViewForm()
@@ -26,13 +26,11 @@ namespace MapView.Forms.MapObservers.TileViews
 		public TopView TopViewControl
 		{
 			get { return controlTopView; }
-			set { controlTopView = value; }
 		}
 
 		public RouteView RouteViewControl
 		{
 			get { return controlRouteView; }
-			set { controlRouteView = value; }
 		}
 	}
 }

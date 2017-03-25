@@ -11,7 +11,7 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	public class MapView
+	public class MapView // NOTE: namespace conflict w/ .NET itself
 		:
 		Panel
 	{
@@ -21,10 +21,10 @@ namespace MapView
 
 		private CursorSprite _cursor;
 
-		private Size _viewsize;
+//		private Size _viewsize;
 
-		private const int H_WIDTH  = 16;
-		private const int H_HEIGHT =  8;
+		private const int HalfWidth  = 16;
+		private const int HalfHeight =  8;
 
 		private Point _dragStart;
 		private Point _dragEnd;
@@ -108,11 +108,11 @@ namespace MapView
 		public bool SelectGrayscale
 		{
 			get { return _selectGrayscale; }
-			set
-			{
-				_selectGrayscale = value;
-				Refresh();
-			}
+//			set
+//			{
+//				_selectGrayscale = value;
+//				Refresh();
+//			}
 		}
 
 		public void ClearSelection()
@@ -331,8 +331,8 @@ namespace MapView
 		{
 			if (_baseMap != null)
 			{
-				var halfWidth  = (int)(H_WIDTH  * pckImageScale);
-				var halfHeight = (int)(H_HEIGHT * pckImageScale);
+				var halfWidth  = (int)(HalfWidth  * pckImageScale);
+				var halfHeight = (int)(HalfHeight * pckImageScale);
 
 				_origin = new Point((_baseMap.MapSize.Rows - 1) * halfWidth, 0);
 
@@ -345,11 +345,11 @@ namespace MapView
 			return Size.Empty;
 		}
 
-		public Size Viewable
+/*		public Size Viewable
 		{
-			get { return _viewsize; }
+//			get { return _viewsize; }
 			set { _viewsize = value; }
-		}
+		} */
 
 		private void TileChange(IMap_Base baseMap, SelectedTileChangedEventArgs e) // MapLocation newCoords)
 		{
@@ -392,8 +392,8 @@ namespace MapView
 				insideDragRect.Width  -= 2;
 				insideDragRect.Height -= 2;
 
-				var halfWidth  = (int)(H_WIDTH  * Globals.PckImageScale);
-				var halfHeight = (int)(H_HEIGHT * Globals.PckImageScale);
+				var halfWidth  = (int)(HalfWidth  * Globals.PckImageScale);
+				var halfHeight = (int)(HalfHeight * Globals.PckImageScale);
 
 				for (var h = _baseMap.MapSize.Height - 1; h > -1; --h)
 				{
@@ -419,22 +419,13 @@ namespace MapView
 								if (_baseMap.CurrentHeight == h || _baseMap[row, col, h].DrawAbove)
 								{
 									var tile = (XCMapTile) _baseMap[row, col, h];
-									if (!_selectGrayscale)
-									{
-										DrawTile(g, tile, x, y);
-									}
-									else if (isClickedLocation)
-									{
-										DrawTileGray(g, tile, x, y);
-									}
-									else if (dragRect.IntersectsWith(tileRect))
+									if (_selectGrayscale
+										&& (isClickedLocation || dragRect.IntersectsWith(tileRect)))
 									{
 										DrawTileGray(g, tile, x, y);
 									}
 									else
-									{
 										DrawTile(g, tile, x, y);
-									}
 								}
 
 								if (isClickedLocation && _cursor != null)
@@ -455,7 +446,7 @@ namespace MapView
 					}
 				}
 
-				if (DrawSelectionBox)
+				if (_drawSelectionBox)
 					DrawSelection(g, _baseMap.CurrentHeight, dragRect);
 			}
 		}
@@ -480,8 +471,8 @@ namespace MapView
 		{
 			if (_useGrid && _baseMap.CurrentHeight == h)
 			{
-				var hWidth  = (int)(H_WIDTH  * Globals.PckImageScale);
-				var hHeight = (int)(H_HEIGHT * Globals.PckImageScale);
+				var hWidth  = (int)(HalfWidth  * Globals.PckImageScale);
+				var hHeight = (int)(HalfHeight * Globals.PckImageScale);
 
 				var x = hWidth + _origin.X;
 				var y = ((_baseMap.CurrentHeight + 1) * (hHeight * 3)) + _origin.Y;
@@ -541,7 +532,7 @@ namespace MapView
 				DrawTile(g, x, y, tile.Content);
 		}
 
-		private void DrawTileGray(Graphics g, XCMapTile tile, int x, int y)
+		private static void DrawTileGray(Graphics g, XCMapTile tile, int x, int y)
 		{
 			var topView = MainWindowsManager.TopView.Control;
 			if (tile.Ground != null && topView.GroundVisible)
@@ -581,7 +572,7 @@ namespace MapView
 
 		private void DrawSelection(Graphics g, int h, Rectangle dragRect)
 		{
-			var hWidth = (int)(H_WIDTH * Globals.PckImageScale);
+			var hWidth = (int)(HalfWidth * Globals.PckImageScale);
 
 			var top    = ConvertCoordsRect(new Point(dragRect.X,     dragRect.Y), h + 1);
 			var right  = ConvertCoordsRect(new Point(dragRect.Right, dragRect.Y), h + 1);
@@ -614,8 +605,8 @@ namespace MapView
 			// 16 is half the width of the diamond
 			// 24 is the distance from the top of the diamond to the very top of the image
 
-			var halfWidth  = H_WIDTH  * Globals.PckImageScale;
-			var halfHeight = H_HEIGHT * Globals.PckImageScale;
+			var halfWidth  = HalfWidth  * Globals.PckImageScale;
+			var halfHeight = HalfHeight * Globals.PckImageScale;
 
 			var x = (ptX - _origin.X - halfWidth);
 			var y = (ptY - _origin.Y - halfHeight * 3 * (level + 1));
@@ -656,8 +647,8 @@ namespace MapView
 
 		private Point ConvertCoordsRect(Point pt, int h)
 		{
-			var hWidth  = (int)(H_WIDTH  * Globals.PckImageScale);
-			var hHeight = (int)(H_HEIGHT * Globals.PckImageScale);
+			var hWidth  = (int)(HalfWidth  * Globals.PckImageScale);
+			var hHeight = (int)(HalfHeight * Globals.PckImageScale);
 			int x = pt.X;
 			int y = pt.Y;
 			var heightAdjust = (hHeight * 3 * h);

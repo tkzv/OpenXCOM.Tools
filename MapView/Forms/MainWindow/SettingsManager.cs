@@ -33,14 +33,11 @@ namespace MapView.Forms.MainWindow
 		{
 			using (var sr = new StreamReader(file))
 			{
-				var vars = new XCom.VarCollection(sr);
+				var vars = new VarCollection(sr);
 
 				KeyVal line;
 				while ((line = vars.ReadLine()) != null)
-				{
 					Settings.ReadSettings(vars, line, _dictSettings[line.Keyword]);
-				}
-//				sr.Close(); // NOTE: the 'using' block closes the stream.
 			}
 		}
 

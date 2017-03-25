@@ -42,11 +42,11 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private IMainShowAllManager _mainWindowsShowAllManager;
 
-		public event SelectedTileTypeChangedEventHandler SelectedTileTypeChanged_view;
+		public event SelectedTileTypeChangedEventHandler SelectedTileTypeChangedObserver;
 
 		private void OnSelectedTileTypeChanged(TileBase tile)
 		{
-			var handler = SelectedTileTypeChanged_view;
+			var handler = SelectedTileTypeChangedObserver;
 			if (handler != null)
 				handler(tile);
 		}
@@ -155,7 +155,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			panel.Dock = DockStyle.Fill;
 			page.Controls.Add(panel);
-			panel.SelectedTileTypeChanged_panel += TileChanged;
+			panel.SelectedTileTypeChangedPanel += TileChanged;
 		}
 
 		private void TileChanged(TileBase tile)

@@ -11,6 +11,7 @@ namespace MapView.Forms.MainWindow
 	public class EditButtonsFactory
 	{
 		private readonly List<ToolStripButton> _pasteButtons = new List<ToolStripButton>();
+
 		private readonly MapViewPanel _mapViewPanel;
 
 

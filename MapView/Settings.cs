@@ -310,13 +310,13 @@ namespace MapView
 		public string Name
 		{ get; set; }
 
-		public void FireUpdate(string key, object value) // FxCop CA1030.
+		public void FireUpdate(string key, object value) // FxCop CA1030:UseEventsWhereAppropriate
 		{
 			if (ValueChanged != null)
 				ValueChanged(this, key, value);
 		}
 
-		public void FireUpdate(string key) // FxCop CA1030.
+		public void FireUpdate(string key) // FxCop CA1030:UseEventsWhereAppropriate
 		{
 			if (ValueChanged != null)
 				ValueChanged(this, key, _value);

@@ -18,7 +18,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private const int _width  = 32;
 		private const int _height = 40;
-		private const int _space  =  4; // NOTE: includes the margin for both sides of '_width'.
+		private const int Pad     =  4; // NOTE: includes the margin for both sides of '_width'.
 
 //		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
 
@@ -53,7 +53,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			Color.Blue
 		};
 
-		public event SelectedTileTypeChangedEventHandler SelectedTileTypeChanged_panel;
+		public event SelectedTileTypeChangedEventHandler SelectedTileTypeChangedPanel;
 
 //		private static PckFile extraFile;
 //		public static PckFile ExtraFile
@@ -93,7 +93,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		protected override void OnResize(EventArgs eventargs)
 		{
-			_across = (Width - (_scrollBar.Visible ? _scrollBar.Width : 0)) / (_width + _space);
+			_across = (Width - (_scrollBar.Visible ? _scrollBar.Width : 0)) / (_width + Pad);
 			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
 			_scrollBar.Height = Height;
 			_scrollBar.Maximum = Math.Max((PreferredHeight - Height) + 10, _scrollBar.Minimum);
@@ -119,9 +119,9 @@ namespace MapView.Forms.MapObservers.TileViews
 				if (_tiles != null && _across > 0)
 				{
 					if (_tiles.Length % _across == 0)
-						return (_tiles.Length / _across) * (_height + _space);
+						return (_tiles.Length / _across) * (_height + Pad);
 
-					return (1 + _tiles.Length / _across) * (_height + _space);
+					return (1 + _tiles.Length / _across) * (_height + Pad);
 				}
 				return 0;
 			}
@@ -203,8 +203,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (_tiles != null)
 			{
-				int x =  e.X / (_width + _space);
-				int y = (e.Y - _startY) / (_height + _space);
+				int x =  e.X / (_width + Pad);
+				int y = (e.Y - _startY) / (_height + Pad);
 
 				if (x >= _across)
 					x = _across - 1;
@@ -214,8 +214,8 @@ namespace MapView.Forms.MapObservers.TileViews
 				{
 					_sel = tileTest;
 
-					if (SelectedTileTypeChanged_panel != null)
-						SelectedTileTypeChanged_panel(SelectedTile);
+					if (SelectedTileTypeChangedPanel != null)
+						SelectedTileTypeChangedPanel(SelectedTile);
 
 					Refresh();
 				}
@@ -235,8 +235,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 				int x = 0;
 				int y = 0;
-				const int width  = _width  + _space;
-				const int height = _height + _space;
+				const int width  = _width  + Pad;
+				const int height = _height + Pad;
 				int top, left;
 
 				foreach (var tile in _tiles)
@@ -331,10 +331,10 @@ namespace MapView.Forms.MapObservers.TileViews
 				{
 					_sel = value.TileListId + 1;
 
-					if (SelectedTileTypeChanged_panel != null)
-						SelectedTileTypeChanged_panel(SelectedTile);
+					if (SelectedTileTypeChangedPanel != null)
+						SelectedTileTypeChangedPanel(SelectedTile);
 
-					int y = _startY + (_sel / _across) * (_height + _space);
+					int y = _startY + (_sel / _across) * (_height + Pad);
 					int val = y - _startY;
 
 					if (val > _scrollBar.Minimum)

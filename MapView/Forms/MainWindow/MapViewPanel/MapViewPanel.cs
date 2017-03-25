@@ -2,7 +2,6 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-using XCom;
 using XCom.Interfaces.Base;
 
 
@@ -14,8 +13,8 @@ namespace MapView
 	{
 		private MapView _mapView;
 
-		private readonly HScrollBar _horiz;
-		private readonly VScrollBar _vert;
+		private readonly HScrollBar _scrollBarHori;
+		private readonly VScrollBar _scrollBarVert;
 
 		private static MapViewPanel _instance;
 
@@ -24,38 +23,38 @@ namespace MapView
 		{
 			ImageUpdate += update; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
-			_horiz = new HScrollBar();
-			_vert  = new VScrollBar();
+			_scrollBarHori = new HScrollBar();
+			_scrollBarVert = new VScrollBar();
 
-			_horiz.Scroll += horiz_Scroll;
-			_horiz.Dock = DockStyle.Bottom;
+			_scrollBarHori.Scroll += horiz_Scroll;
+			_scrollBarHori.Dock = DockStyle.Bottom;
 
-			_vert.Scroll += vert_Scroll;
-			_vert.Dock = DockStyle.Right;
+			_scrollBarVert.Scroll += vert_Scroll;
+			_scrollBarVert.Dock = DockStyle.Right;
 
-			Controls.AddRange(new Control[]{ _vert, _horiz });
+			Controls.AddRange(new Control[]{ _scrollBarVert, _scrollBarHori });
 
 			SetView(new MapView());
 		}
 
 
-		public void SetView(MapView view)
+		private void SetView(MapView mapView)
 		{
 			if (_mapView != null)
 			{
-				view.Map = _mapView.Map;
+				mapView.Map = _mapView.Map;
 				Controls.Remove(_mapView);
 			}
 
-			_mapView = view;
+			_mapView = mapView;
 
 			_mapView.Location = new Point(0, 0);
 			_mapView.BorderStyle = BorderStyle.Fixed3D;
 
-			_vert.Minimum = 0;
-			_vert.Value = _vert.Minimum;
+			_scrollBarVert.Minimum = 0;
+			_scrollBarVert.Value = _scrollBarVert.Minimum;
 
-			_mapView.Width = ClientSize.Width - _vert.Width - 1;
+			_mapView.Width = ClientSize.Width - _scrollBarVert.Width - 1;
 
 			Controls.Add(_mapView);
 		}
@@ -109,8 +108,8 @@ namespace MapView
 			if (Globals.AutoPckImageScale)
 				SetupMapSize();
 
-			_vert.Value  = _vert.Minimum;
-			_horiz.Value = _horiz.Minimum;
+			_scrollBarVert.Value  = _scrollBarVert.Minimum;
+			_scrollBarHori.Value = _scrollBarHori.Minimum;
 
 			vert_Scroll(null, null);
 			horiz_Scroll(null, null);
@@ -118,27 +117,27 @@ namespace MapView
 			int h = 0;
 			int w = 0;
 
-			_vert.Visible = (_mapView.Height > ClientSize.Height);
-			if (_vert.Visible)
+			_scrollBarVert.Visible = (_mapView.Height > ClientSize.Height);
+			if (_scrollBarVert.Visible)
 			{
-				_vert.Maximum = _mapView.Height - ClientSize.Height + _horiz.Height;
-				w = _vert.Width;
+				_scrollBarVert.Maximum = _mapView.Height - ClientSize.Height + _scrollBarHori.Height;
+				w = _scrollBarVert.Width;
 			}
 			else
-				_horiz.Width = ClientSize.Width;
+				_scrollBarHori.Width = ClientSize.Width;
 
-			_horiz.Visible = (_mapView.Width > ClientSize.Width);
-			if (_horiz.Visible)
+			_scrollBarHori.Visible = (_mapView.Width > ClientSize.Width);
+			if (_scrollBarHori.Visible)
 			{
-				_horiz.Maximum = Math.Max(
-									_mapView.Width - ClientSize.Width + _vert.Width,
-									_horiz.Minimum);
-				h = _horiz.Height;
+				_scrollBarHori.Maximum = Math.Max(
+									_mapView.Width - ClientSize.Width + _scrollBarVert.Width,
+									_scrollBarHori.Minimum);
+				h = _scrollBarHori.Height;
 			}
 			else
-				_vert.Height = ClientSize.Height;
+				_scrollBarVert.Height = ClientSize.Height;
 
-			_mapView.Viewable = new Size(Width - w, Height - h);
+//			_mapView.Viewable = new Size(Width - w, Height - h);
 			_mapView.Refresh();
 		}
 
@@ -146,14 +145,14 @@ namespace MapView
 		{
 			_mapView.Location = new Point(
 										_mapView.Left,
-										-(_vert.Value) + 1);
+										-(_scrollBarVert.Value) + 1);
 			_mapView.Refresh();
 		}
 
 		private void horiz_Scroll(object sender, ScrollEventArgs e)
 		{
 			_mapView.Location = new Point(
-										-(_horiz.Value),
+										-(_scrollBarHori.Value),
 										_mapView.Top);
 			_mapView.Refresh();
 		}
@@ -205,6 +204,10 @@ namespace MapView
 		private static bool _started;
 		private static int _current;
 
+		// NOTE: Remove suppression for Release cfg.
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Mobility",
+		"CA1601:DoNotUseTimersThatPreventPowerStateChanges",
+		Justification = "Because animations at or greater than 1 second ain't gonna cut it.")]
 		public static void Start()
 		{
 			if (_timer == null)
@@ -223,6 +226,10 @@ namespace MapView
 			}
 		}
 
+		// NOTE: Remove suppression for Release cfg.
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Mobility",
+		"CA1601:DoNotUseTimersThatPreventPowerStateChanges",
+		Justification = "Because animations at or greater than 1 second ain't gonna cut it.")]
 		public static void Stop()
 		{
 			if (_timer == null)
@@ -245,11 +252,11 @@ namespace MapView
 			get { return _started; }
 		}
 
-		public static int Interval
+/*		public static int Interval
 		{
 			get { return _timer.Interval; }
 			set { _timer.Interval = value; }
-		}
+		} */
 
 		private static void tick(object sender, EventArgs e)
 		{
@@ -262,7 +269,6 @@ namespace MapView
 		public static int Current
 		{
 			get { return _current; }
-			set { _current = value; }
 		}
 	}
 }

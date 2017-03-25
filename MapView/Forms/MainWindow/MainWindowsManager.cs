@@ -57,7 +57,7 @@ namespace MapView.Forms.MainWindow
 			TopRouteView.TopViewControl.Initialize(EditButtonsFactory);
 			TopView.Control.Initialize(EditButtonsFactory);
 			TileView.TileViewControl.Initialize(MainShowAllManager);
-			TileView.TileViewControl.SelectedTileTypeChanged_view += SelectedTileTypeChanged;
+			TileView.TileViewControl.SelectedTileTypeChangedObserver += SelectedTileTypeChanged;
 		}
 
 		public void SetMap(IMap_Base baseMap)
