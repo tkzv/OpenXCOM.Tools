@@ -15,7 +15,9 @@ namespace DSShared.Loadable
 	/// <typeparam name="T">Objects of this type are stored in this class</typeparam>
 	public class LoadOfType<T> where T
 		:
-		IAssemblyLoadable, IOpenSave, new()
+		IAssemblyLoadable,
+		IOpenSave,
+		new()
 	{
 		/// <summary>
 		/// Delegate for use with the OnLoad event.
@@ -23,16 +25,17 @@ namespace DSShared.Loadable
 		/// <param name="sender">the LoadOfType object that fired the event</param>
 		/// <param name="e">Args for the event</param>
 		public delegate void TypeLoadDelegate(object sender, LoadOfType<T>.TypeLoadArgs e);
-
 		/// <summary>
-		/// Event that gets called when a type has been loaded from an assembly and has returned true for registration
+		/// Event that gets called when a type has been loaded from an assembly
+		/// and has returned true for registration
 		/// </summary>
 		public event TypeLoadDelegate OnLoad;
+
 
 //		private Dictionary<int, T> filterDictionary;
 //		private string openFileFilter = "";
 
-		private readonly List<T> allLoaded;
+		private readonly List<T> _allLoaded;
 
 
 		/// <summary>
@@ -41,7 +44,7 @@ namespace DSShared.Loadable
 		public LoadOfType()
 		{
 //			filterDictionary = new Dictionary<int, T>();
-			allLoaded = new List<T>();
+			_allLoaded = new List<T>();
 		}
 
 
@@ -64,7 +67,7 @@ namespace DSShared.Loadable
 		/// </summary>
 		public List<T> AllLoaded
 		{
-			get { return allLoaded; }
+			get { return _allLoaded; }
 		}
 
 		// <summary>
@@ -125,23 +128,23 @@ namespace DSShared.Loadable
 
 		public string CreateFilter(IFilter<T> filter, Dictionary<int, T> filterDictionary)
 		{
-			string fileFilter = String.Empty;
-			bool two = true;
-			int filterIdx = 1; // filter index starts at 1
-
 			filterDictionary.Clear();
 
-			foreach (T fc in allLoaded)
+			string fileFilter = String.Empty;
+			int filterId = 0;
+
+			bool first = true;
+			foreach (var fc in _allLoaded)
 			{
 				if (filter.FilterObj(fc))
 				{
-					if (!two)
-						fileFilter += "|";
+					if (first)
+						first = false;
 					else
-						two = false;
+						fileFilter += "|";
 
 					fileFilter += fc.FileFilter;
-					filterDictionary.Add(filterIdx++, fc);
+					filterDictionary.Add(++filterId, fc); // id starts at 1
 				}
 			}
 			return fileFilter;
@@ -174,7 +177,7 @@ namespace DSShared.Loadable
 		public void Add(T fc)
 		{
 			//Console.WriteLine("Adding file: " + fc.ExplorerDescription);
-			allLoaded.Add(fc);
+			_allLoaded.Add(fc);
 			//CreateFilter();
 		}
 		
@@ -184,35 +187,36 @@ namespace DSShared.Loadable
 		/// are only added to the internal list if they return true for
 		/// registration.
 		/// </summary>
-		/// <param name="a"></param>
+		/// <param name="ass"></param>
 		/// <returns>a list of objects of type T. The list contains all
 		/// registered and unregistered objects</returns>
-		public List<T> LoadFrom(Assembly a)
+		public List<T> LoadFrom(Assembly ass)
 		{
 			// Get creatable objects from the assembly
 			var objList = new List<T>();
-			foreach (Type t in a.GetTypes())
+			foreach (Type type in ass.GetTypes())
 			{
-				if (t.IsClass && !t.IsAbstract && typeof(T).IsAssignableFrom(t))
+				if (type.IsClass && !type.IsAbstract && typeof(T).IsAssignableFrom(type))
 				{
 					// if a class has no default constructor, it will fail this
 					// this is why the new() constraint is placed on the LoadOfType def'n
-					var ci = t.GetConstructor(new Type[]{});
-					if (ci == null)
+					var ctorInfo = type.GetConstructor(new Type[]{});
+					if (ctorInfo == null)
 					{
-						Console.Error.WriteLine("Error loading type: {0} -> No default constructor specified", t);
+						Console.Error.WriteLine("Error loading type: {0} -> No default constructor specified", type);
 					}
 					else
 					{
 						try
 						{
-							T fc = (T)ci.Invoke(new object[] { });
+							var fc = (T)ctorInfo.Invoke(new object[]{});
 							objList.Add(fc);
 	
 							bool register = fc.RegisterFile();
 							if (register)
 							{
-								allLoaded.Add(fc);
+								_allLoaded.Add(fc);
+
 								if (OnLoad != null)
 									OnLoad(this, new TypeLoadArgs(fc));
 							}
@@ -221,7 +225,7 @@ namespace DSShared.Loadable
 						{
 							Console.Error.WriteLine(
 												"Error loading type: {0} -> {1}:{2}",
-												t,
+												type,
 												ex.Message,
 												ex.InnerException.Message);
 						}
@@ -229,7 +233,7 @@ namespace DSShared.Loadable
 				}
 			}
 
-			//CreateFilter();
+//			CreateFilter();
 			return objList;
 		}
 
@@ -237,9 +241,13 @@ namespace DSShared.Loadable
 		/// Args class to pass on to a load event signifying that this object
 		/// was successfully created from an assembly and registered properly.
 		/// </summary>
-		public class TypeLoadArgs : EventArgs
+		public class TypeLoadArgs
+			:
+			EventArgs
 		{
-			private readonly T justLoaded;
+			private readonly T _obj;
+
+
 			/// <summary>
 			/// cTor.
 			/// </summary>
@@ -248,15 +256,16 @@ namespace DSShared.Loadable
 				:
 				base()
 			{
-				this.justLoaded = obj;
+				_obj = obj;
 			}
+
 
 			/// <summary>
 			/// Object that has just been created and registered.
 			/// </summary>
 			public T LoadedObj
 			{
-				get { return justLoaded; }
+				get { return _obj; }
 			}
 		}
 	}

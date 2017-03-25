@@ -159,7 +159,7 @@ namespace XCom
 		{ get; set; }
 
 		/// <summary>
-		/// Gets the link-field at 'id'.
+		/// Gets the link-field at slot.
 		/// </summary>
 		public Link this[int id]
 		{

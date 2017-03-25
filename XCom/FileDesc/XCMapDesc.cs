@@ -19,13 +19,13 @@ namespace XCom
 			:
 				base(baseName)
 		{
-			Palette			= palette;
-			BaseName		= baseName;
-			BasePath		= basePath;
-			RmpPath			= rmpPath;
-			BlankPath		= blankPath;
-			Dependencies	= dependencies;
-			IsStatic		= false;
+			Palette      = palette;
+			BaseName     = baseName;
+			BasePath     = basePath;
+			RmpPath      = rmpPath;
+			BlankPath    = blankPath;
+			Dependencies = dependencies;
+			IsStatic     = false;
 		}
 
 		public string[] Dependencies
@@ -51,14 +51,16 @@ namespace XCom
 
 		public string FilePath
 		{
-			get { return BasePath + BaseName + XCMapFile.MapExt; }
+			get { return BasePath
+					   + BaseName
+					   + XCMapFile.MapExt; }
 		}
 
 		public int CompareTo(object other)
 		{
-			var desc = other as XCMapDesc;
-			return (desc != null) ? String.CompareOrdinal(BaseName, desc.BaseName)
-								  : 1;
+			var descOther = other as XCMapDesc;
+			return (descOther != null) ? String.CompareOrdinal(BaseName, descOther.BaseName)
+									   : 1;
 		}
 	}
 }

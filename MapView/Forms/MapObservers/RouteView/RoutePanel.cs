@@ -15,18 +15,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 		MapPanel
 	{
 		private Point _pos = new Point(-1, -1);
-
 		public Point Pos
 		{
 			get { return _pos; }
 			set { _pos = value; }
 		}
 
-		private readonly Font _font = new Font("Courier New", 22, FontStyle.Bold);
-
 		private readonly DrawContentService _drawContentService = new DrawContentService();
 
+		private readonly Font _fontOverlay = new Font("Verdana", 7F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+		private readonly Font _fontRose    = new Font("Courier New", 22, FontStyle.Bold);
+
 		private SolidPenBrush _wallColor;
+
 
 /*		public void Calculate()
 		{
@@ -68,67 +69,162 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void DrawInformation(Graphics g)
 		{
-			var tile = GetTile(Pos.X, Pos.Y);
+			var tile = GetTile(_pos.X, _pos.Y);
 			if (tile != null)
 			{
-				var textHeight = (int)g.MeasureString("X", Font).Height;
-				var overlayPos = new Rectangle(
-											Pos.X + 18, Pos.Y,
-											200, textHeight + 10);
+				var pt = GetTileCoordinates(_pos.X, _pos.Y);
+				const string textTile1 = "position";
+				string textTile2 = "c " + pt.X + " r " + pt.Y;
+
+//				int textWidth1 = TextRenderer.MeasureText(textTile1, font).Width;
+				int textWidth1 = (int)g.MeasureString(textTile1, _fontOverlay).Width;
+//				int textWidth2 = TextRenderer.MeasureText(textTile2, font).Width;
+				int textWidth2 = (int)g.MeasureString(textTile2, _fontOverlay).Width;
+
+				string textOver1     = String.Empty;
+				string textPriority1 = String.Empty;
+				string textSpawn1    = String.Empty;
+				string textWeight1   = String.Empty;
+
+				string textOver2     = String.Empty;
+				string textPriority2 = String.Empty;
+				string textSpawn2    = String.Empty;
+				string textWeight2   = String.Empty;
 
 				if (tile.Node != null)
-					overlayPos.Height += textHeight * 4;
+				{
+					textOver1     = "over";
+					textPriority1 = "priority";
+					textSpawn1    = "spawn";
+					textWeight1   = "weight";
 
-				if (overlayPos.X + overlayPos.Width > ClientRectangle.Width)
-					overlayPos.X = Pos.X - overlayPos.Width - 8;
+					textOver2     = (tile.Node.Index).ToString();
+					textPriority2 = (tile.Node.Priority).ToString();
+					textSpawn2    = (RouteFile.UnitRankUFO[tile.Node.UsableRank]).ToString();
+					textWeight2   = (tile.Node.Spawn).ToString();
 
-				if (overlayPos.Y + overlayPos.Height > ClientRectangle.Height)
-					overlayPos.Y = Pos.X - overlayPos.Height;
+					int width;
+//					width = TextRenderer.MeasureText(textOver1, font).Width;
+					width = (int)g.MeasureString(textOver1, _fontOverlay).Width;
+					if (width > textWidth1) textWidth1 = width;
+//					width = TextRenderer.MeasureText(textPriority1, font).Width;
+					width = (int)g.MeasureString(textPriority1, _fontOverlay).Width;
+					if (width > textWidth1) textWidth1 = width;
+//					width = TextRenderer.MeasureText(textSpawn1, font).Width;
+					width = (int)g.MeasureString(textSpawn1, _fontOverlay).Width;
+					if (width > textWidth1) textWidth1 = width;
+//					width = TextRenderer.MeasureText(textWeight1, font).Width;
+					width = (int)g.MeasureString(textWeight1, _fontOverlay).Width;
+					if (width > textWidth1) textWidth1 = width;
 
-				g.FillRectangle(new SolidBrush(Color.FromArgb(192, 0, 0, 0)), overlayPos);
+//					width = TextRenderer.MeasureText(textOver2, font).Width;
+					width = (int)g.MeasureString(textOver2, _fontOverlay).Width;
+					if (width > textWidth2) textWidth2 = width;
+//					width = TextRenderer.MeasureText(textPriority2, font).Width;
+					width = (int)g.MeasureString(textPriority2, _fontOverlay).Width;
+					if (width > textWidth2) textWidth2 = width;
+//					width = TextRenderer.MeasureText(textSpawn2, font).Width;
+					width = (int)g.MeasureString(textSpawn2, _fontOverlay).Width;
+					if (width > textWidth2) textWidth2 = width;
+//					width = TextRenderer.MeasureText(textWeight2, font).Width;
+					width = (int)g.MeasureString(textWeight2, _fontOverlay).Width;
+					if (width > textWidth2) textWidth2 = width;
+					// time to move to a higher .NET framework.
+				}
+
+				const int Sep = 0;
+
+//				int textHeight = TextRenderer.MeasureText("X", font).Height;
+				int textHeight = (int)g.MeasureString("X", _fontOverlay).Height;
+				var overlay = new Rectangle(
+										_pos.X + 18, _pos.Y,
+										textWidth1 + Sep + textWidth2 + 8, textHeight + 8);
+
+				if (tile.Node != null)
+					overlay.Height += textHeight * 4;
+
+				if (overlay.X + overlay.Width > ClientRectangle.Width)
+					overlay.X = _pos.X - overlay.Width - 8;
+
+				if (overlay.Y + overlay.Height > ClientRectangle.Height)
+					overlay.Y = _pos.Y - overlay.Height;
+
+				g.FillRectangle(new SolidBrush(Color.FromArgb(160, 0, 0, 0)), overlay);
 				g.FillRectangle(
-							new SolidBrush(Color.FromArgb(192, 255, 255, 255)),
-							overlayPos.X + 3,
-							overlayPos.Y + 3,
-							overlayPos.Width - 6,
-							overlayPos.Height - 6);
+							new SolidBrush(Color.FromArgb(160, 255, 255, 255)),
+							overlay.X + 2,
+							overlay.Y + 2,
+							overlay.Width  - 4,
+							overlay.Height - 4);
 
-				var textLeft = overlayPos.X + 5;
-				var textTop  = overlayPos.Y + 5;
+				int textLeft = overlay.X + 4;
+				int textTop  = overlay.Y + 3;
 
-				var pt = GetTileCoordinates(Pos.X, Pos.Y);
 				g.DrawString(
-							"Tile (c:" + pt.X + " r:" + pt.Y + ")",
-							Font,
-							Brushes.Black,
+							textTile1,
+							_fontOverlay,
+							Brushes.Yellow,
 							textLeft,
+							textTop);
+				g.DrawString(
+							textTile2,
+							_fontOverlay,
+							Brushes.Yellow,
+							textLeft + textWidth1 + Sep,
 							textTop);
 
 				if (tile.Node != null)
 				{
 					g.DrawString(
-								"Over: " + tile.Node.Index,
-								Font,
-								Brushes.Black,
+								textOver1,
+								_fontOverlay,
+								Brushes.Yellow,
 								textLeft,
 								textTop + textHeight);
 					g.DrawString(
-								"Priority: " + tile.Node.Priority,
-								Font,
-								Brushes.Black,
+								textOver2,
+								_fontOverlay,
+								Brushes.Yellow,
+								textLeft + textWidth1 + Sep,
+								textTop + textHeight);
+
+					g.DrawString(
+								textPriority1,
+								_fontOverlay,
+								Brushes.Yellow,
 								textLeft,
 								textTop + textHeight * 2);
 					g.DrawString(
-								"Spawns: " + RouteFile.UnitRankUFO[tile.Node.UsableRank],
-								Font,
-								Brushes.Black,
+								textPriority2,
+								_fontOverlay,
+								Brushes.Yellow,
+								textLeft + textWidth1 + Sep,
+								textTop + textHeight * 2);
+
+					g.DrawString(
+								textSpawn1,
+								_fontOverlay,
+								Brushes.Yellow,
 								textLeft,
 								textTop + textHeight * 3);
 					g.DrawString(
-								"Weight: " + tile.Node.Spawn,
-								Font,
-								Brushes.Black,
+								textSpawn2,
+								_fontOverlay,
+								Brushes.Yellow,
+								textLeft + textWidth1 + Sep,
+								textTop + textHeight * 3);
+
+					g.DrawString(
+								textWeight1,
+								_fontOverlay,
+								Brushes.Yellow,
 								textLeft,
+								textTop + textHeight * 4);
+					g.DrawString(
+								textWeight2,
+								_fontOverlay,
+								Brushes.Yellow,
+								textLeft + textWidth1 + Sep,
 								textTop + textHeight * 4);
 				}
 			}
@@ -141,28 +237,30 @@ namespace MapView.Forms.MapObservers.RouteViews
 			
 			g.DrawString(
 						"W",
-						_font,
+						_fontRose,
 						Brushes.Black,
 						PAD_HORI,
 						PAD_VERT);
 			g.DrawString(
 						"N",
-						_font,
+						_fontRose,
 						Brushes.Black,
-						Width - (int)g.MeasureString("N", _font).Width - PAD_HORI,
+//						Width - TextRenderer.MeasureText("N", _fontRose).Width - PAD_HORI,
+						Width - (int)g.MeasureString("N", _fontRose).Width - PAD_HORI,
 						PAD_VERT);
 			g.DrawString(
 						"S",
-						_font,
+						_fontRose,
 						Brushes.Black,
 						PAD_HORI,
-						Height - _font.Height - PAD_VERT);
+						Height - _fontRose.Height - PAD_VERT);
 			g.DrawString(
 						"E",
-						_font,
+						_fontRose,
 						Brushes.Black,
-						Width - (int)g.MeasureString("E", _font).Width - PAD_HORI,
-						Height - _font.Height - PAD_VERT);
+//						Width - TextRenderer.MeasureText("E", _fontRose).Width - PAD_HORI,
+						Width - (int)g.MeasureString("E", _fontRose).Width - PAD_HORI,
+						Height - _fontRose.Height - PAD_VERT);
 		}
 
 		private void DrawGridLines(Graphics g)

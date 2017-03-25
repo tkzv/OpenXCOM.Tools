@@ -19,7 +19,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 //		public event MapPanelClickDelegate MapPanelClicked;
 
 
-
 		private XCMapFile _mapFile;
 
 		private Point _clickPoint;

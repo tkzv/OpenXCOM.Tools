@@ -83,9 +83,9 @@ namespace DSShared.Lists
 			_columns.OffY = 1;
 			_columns.Font=Font;
 
-			_columns.RefreshEvent += new RefreshDelegate(Refresh);
-			_columns.RowMoveOver += new RowMoveDelegate(mouseOverRows);
-			_columns.RowClicked += new MouseEventHandler(rowClicked);
+			_columns.RefreshEvent += Refresh;
+			_columns.RowMoveOver += mouseOverRows;
+			_columns.RowClicked += rowClicked;
 			_columns.Parent = this;
 
 			_items = new List<ObjRow>();
@@ -136,30 +136,31 @@ namespace DSShared.Lists
 		/// <value>the registry info</value>
 		[Browsable(false)]
 		[DefaultValue(null)]
-		public DSShared.Windows.RegistryInfo RegistryInfo
+		public RegistryInfo RegistryInfo
 		{
 			get { return _regInfo; }
 			set
 			{
 				_regInfo = value;
-				_regInfo.Loading += new RegistrySaveLoadHandler(loading);
-				_regInfo.Saving += new RegistrySaveLoadHandler(saving);
+				_regInfo.Loading += loading;
+				_regInfo.Saving += saving;
 			}
 		}
 
 		private void loading(object sender, RegistrySaveLoadEventArgs e)
 		{
 			RegistryKey key = e.OpenRegistryKey;
-			Graphics g = Graphics.FromHwnd(this.Handle);
-			foreach (CustomListColumn cc in _columns)
+//			Graphics g = Graphics.FromHwnd(Handle);
+			foreach (CustomListColumn col in _columns)
 			{
 				try
 				{
-					cc.Width = (int)key.GetValue("strLen" + _name + cc.Index, cc.Width);
+					col.Width = (int)key.GetValue("strLen" + _name + col.Index, col.Width);
 				}
 				catch
 				{
-					cc.Width = (int)g.MeasureString(cc.Title,Font).Width + 2;
+					// NOTE: was using g.MeasureString()
+					col.Width = TextRenderer.MeasureText(col.Title, Font).Width + 2;
 				}
 			}
 		}

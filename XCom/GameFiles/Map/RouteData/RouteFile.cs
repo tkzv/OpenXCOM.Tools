@@ -137,17 +137,17 @@ namespace XCom
 		:
 		byte
 	{
-		NoSpawn	= 0,
-		Spawn1	= 1,
-		Spawn2	= 2,
-		Spawn3	= 3,
-		Spawn4	= 4,
-		Spawn5	= 5,
-		Spawn6	= 6,
-		Spawn7	= 7,
-		Spawn8	= 8,
-		Spawn9	= 9,
-		Spawn10	= 10
+		NoSpawn = 0,
+		Spawn1  = 1,
+		Spawn2  = 2,
+		Spawn3  = 3,
+		Spawn4  = 4,
+		Spawn5  = 5,
+		Spawn6  = 6,
+		Spawn7  = 7,
+		Spawn8  = 8,
+		Spawn9  = 9,
+		Spawn10 = 10
 	};
 
 	public enum NodeImportance
@@ -188,11 +188,11 @@ namespace XCom
 		:
 		byte
 	{
-		NotUsed		= 0xFF,
-		ExitNorth	= 0xFE,
-		ExitEast	= 0xFD,
-		ExitSouth	= 0xFC,
-		ExitWest	= 0xFB
+		NotUsed   = 0xFF,
+		ExitNorth = 0xFE,
+		ExitEast  = 0xFD,
+		ExitSouth = 0xFC,
+		ExitWest  = 0xFB
 	};
 
 
@@ -210,43 +210,43 @@ namespace XCom
 
 		public static readonly object[] UnitRankUFO =
 		{
-			new StrEnum("0:Civ-Scout",			XCom.UnitRankUFO.Civilian),
-			new StrEnum("1:XCom",				XCom.UnitRankUFO.XCom),
-			new StrEnum("2:Soldier",			XCom.UnitRankUFO.Soldier),
-			new StrEnum("3:Navigator",			XCom.UnitRankUFO.Navigator),
-			new StrEnum("4:Leader/Commander",	XCom.UnitRankUFO.LeaderCommander),
-			new StrEnum("5:Engineer",			XCom.UnitRankUFO.Engineer),
-			new StrEnum("6:Misc1",				XCom.UnitRankUFO.Misc1),
-			new StrEnum("7:Medic",				XCom.UnitRankUFO.Medic),
-			new StrEnum("8:Misc2",				XCom.UnitRankUFO.Misc2)
+			new StrEnum("0:Civ-Scout",        XCom.UnitRankUFO.Civilian),
+			new StrEnum("1:XCom",             XCom.UnitRankUFO.XCom),
+			new StrEnum("2:Soldier",          XCom.UnitRankUFO.Soldier),
+			new StrEnum("3:Navigator",        XCom.UnitRankUFO.Navigator),
+			new StrEnum("4:Leader/Commander", XCom.UnitRankUFO.LeaderCommander),
+			new StrEnum("5:Engineer",         XCom.UnitRankUFO.Engineer),
+			new StrEnum("6:Misc1",            XCom.UnitRankUFO.Misc1),
+			new StrEnum("7:Medic",            XCom.UnitRankUFO.Medic),
+			new StrEnum("8:Misc2",            XCom.UnitRankUFO.Misc2)
 		};
 
 		public static readonly object[] UnitRankTFTD =
 		{
-			new StrEnum("0:Civ-Scout",			XCom.UnitRankTFTD.Civilian),
-			new StrEnum("1:XCom",				XCom.UnitRankTFTD.XCom),
-			new StrEnum("2:Soldier",			XCom.UnitRankTFTD.Soldier),
-			new StrEnum("3:Squad Leader",		XCom.UnitRankTFTD.SquadLeader),
-			new StrEnum("4:Leader/Commander",	XCom.UnitRankTFTD.LeaderCommander),
-			new StrEnum("5:Medic",				XCom.UnitRankTFTD.Medic),
-			new StrEnum("6:Misc1",				XCom.UnitRankTFTD.Misc1),
-			new StrEnum("7:Technician",			XCom.UnitRankTFTD.Technician),
-			new StrEnum("8:Misc2",				XCom.UnitRankTFTD.Misc2)
+			new StrEnum("0:Civ-Scout",        XCom.UnitRankTFTD.Civilian),
+			new StrEnum("1:XCom",             XCom.UnitRankTFTD.XCom),
+			new StrEnum("2:Soldier",          XCom.UnitRankTFTD.Soldier),
+			new StrEnum("3:Squad Leader",     XCom.UnitRankTFTD.SquadLeader),
+			new StrEnum("4:Leader/Commander", XCom.UnitRankTFTD.LeaderCommander),
+			new StrEnum("5:Medic",            XCom.UnitRankTFTD.Medic),
+			new StrEnum("6:Misc1",            XCom.UnitRankTFTD.Misc1),
+			new StrEnum("7:Technician",       XCom.UnitRankTFTD.Technician),
+			new StrEnum("8:Misc2",            XCom.UnitRankTFTD.Misc2)
 		};
 
 		public static readonly object[] SpawnUsage =
 		{
-			new StrEnum("0:No Spawn",	XCom.SpawnUsage.NoSpawn),
-			new StrEnum("1:Spawn",		XCom.SpawnUsage.Spawn1),
-			new StrEnum("2:Spawn",		XCom.SpawnUsage.Spawn2),
-			new StrEnum("3:Spawn",		XCom.SpawnUsage.Spawn3),
-			new StrEnum("4:Spawn",		XCom.SpawnUsage.Spawn4),
-			new StrEnum("5:Spawn",		XCom.SpawnUsage.Spawn5),
-			new StrEnum("6:Spawn",		XCom.SpawnUsage.Spawn6),
-			new StrEnum("7:Spawn",		XCom.SpawnUsage.Spawn7),
-			new StrEnum("8:Spawn",		XCom.SpawnUsage.Spawn8),
-			new StrEnum("9:Spawn",		XCom.SpawnUsage.Spawn9),
-			new StrEnum("10:Spawn",		XCom.SpawnUsage.Spawn10)
+			new StrEnum("0:No Spawn", XCom.SpawnUsage.NoSpawn),
+			new StrEnum("1:Spawn",    XCom.SpawnUsage.Spawn1),
+			new StrEnum("2:Spawn",    XCom.SpawnUsage.Spawn2),
+			new StrEnum("3:Spawn",    XCom.SpawnUsage.Spawn3),
+			new StrEnum("4:Spawn",    XCom.SpawnUsage.Spawn4),
+			new StrEnum("5:Spawn",    XCom.SpawnUsage.Spawn5),
+			new StrEnum("6:Spawn",    XCom.SpawnUsage.Spawn6),
+			new StrEnum("7:Spawn",    XCom.SpawnUsage.Spawn7),
+			new StrEnum("8:Spawn",    XCom.SpawnUsage.Spawn8),
+			new StrEnum("9:Spawn",    XCom.SpawnUsage.Spawn9),
+			new StrEnum("10:Spawn",   XCom.SpawnUsage.Spawn10)
 		};
 
 

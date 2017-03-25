@@ -44,11 +44,11 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		public event SelectedTileTypeChangedEventHandler SelectedTileTypeChanged_view;
 
-		private void OnSelectedTileTypeChanged(TileBase newtile)
+		private void OnSelectedTileTypeChanged(TileBase tile)
 		{
 			var handler = SelectedTileTypeChanged_view;
 			if (handler != null)
-				handler(newtile);
+				handler(tile);
 		}
 
 		public event MethodInvoker MapChanged;
@@ -67,11 +67,11 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			tabs.Selected += tabs_Selected;
 
-			allTiles	= new TilePanel(TileType.All);
-			var ground	= new TilePanel(TileType.Ground);
-			var wWalls	= new TilePanel(TileType.WestWall);
-			var nWalls	= new TilePanel(TileType.NorthWall);
-			var objects	= new TilePanel(TileType.Object);
+			allTiles    = new TilePanel(TileType.All);
+			var ground  = new TilePanel(TileType.Ground);
+			var wWalls  = new TilePanel(TileType.WestWall);
+			var nWalls  = new TilePanel(TileType.NorthWall);
+			var objects = new TilePanel(TileType.Object);
 
 			panels = new[]
 			{
@@ -82,11 +82,12 @@ namespace MapView.Forms.MapObservers.TileViews
 				objects
 			};
 
-			AddPanel(allTiles,	allTab);
-			AddPanel(ground,	groundTab);
-			AddPanel(wWalls,	wWallsTab);
-			AddPanel(nWalls,	nWallsTab);
-			AddPanel(objects,	objectsTab);
+			AddPanel(allTiles, allTab);
+
+			AddPanel(ground,  groundTab);
+			AddPanel(wWalls,  wWallsTab);
+			AddPanel(nWalls,  nWallsTab);
+			AddPanel(objects, objectsTab);
 		}
 
 
@@ -192,7 +193,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			set
 			{
-				for (int i = 0; i < panels.Length; i++)
+				for (int i = 0; i != panels.Length; ++i)
 					panels[i].SetTiles(value);
 
 				OnResize(null);

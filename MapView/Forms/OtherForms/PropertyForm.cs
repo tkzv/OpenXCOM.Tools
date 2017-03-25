@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 using System.Threading;
 using System.Windows.Forms;
 
-//using DSShared.Windows;
+using DSShared.Windows;
 
 
 //#define SaveDLL
@@ -23,7 +23,7 @@ namespace MapView
 		public PropertyForm(string typeLabel, Settings settings)
 		{
 			InitializeComponent();
-//			var ri = new RegistryInfo(this, "OptionsForm"); // TODO: that might need to get created anyway
+			var ri = new RegistryInfo(this, "OptionsForm"); // TODO: that might need to get created anyway
 
 			propertyGrid.TypeLabel = typeLabel;
 			propertyGrid.SetSettings(settings);

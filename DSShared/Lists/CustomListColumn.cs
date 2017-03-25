@@ -1,35 +1,34 @@
 using System;
-using System.Collections;
 using System.Windows.Forms;
-using System.Drawing;
-using System.ComponentModel;
+
 
 namespace DSShared.Lists
 {
 	/// <summary>
-	/// Delegate for use in the CustomListColumn.WidthChanged and LeftChanged events
+	/// Delegate for use in the CustomListColumn.WidthChanged and LeftChanged events.
 	/// </summary>
 	/// <param name="columnChanged">Column that is changed</param>
 	/// <param name="changeAmount">How much it has changed</param>
 	public delegate void CustomListColumChangedDelegate(CustomListColumn columnChanged, int changeAmount);
 
 	/// <summary>
-	/// Delegate for use when a column is clicked on
+	/// Delegate for use when a column is clicked on.
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
 	public delegate void ColClickDelegate(object sender, RowClickEventArgs e);
 
 	/// <summary>
-	/// Delegate for use when a key is pressed on a row in this column
+	/// Delegate for use when a key is pressed on a row in this column.
 	/// </summary>
 	/// <param name="row"></param>
 	/// <param name="col"></param>
 	/// <param name="e"></param>
 	public delegate void KeyPressDelegate(ObjRow row, CustomListColumn col, KeyPressEventArgs e);
 
+
 	/// <summary>
-	/// Class representing a column in a CustomList control
+	/// Class representing a column in a CustomList control.
 	/// </summary>
 	public class CustomListColumn
 	{
@@ -62,8 +61,9 @@ namespace DSShared.Lists
 		/// </summary>
 		public event KeyPressDelegate KeyPress;
 
+
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:CustomListColumn"/> class.
+		/// Initializes a new instance of the <see cref="T:DSShared.Lists.CustomListColumn"/> class.
 		/// </summary>
 		/// <param name="title">Column title</param>
 		/// <param name="property">ObjProperty that will reflect on the objects contained in the list</param>
@@ -74,7 +74,7 @@ namespace DSShared.Lists
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:CustomListColumn"/> class.
+		/// Initializes a new instance of the <see cref="T:DSShared.Lists.CustomListColumn"/> class.
 		/// </summary>
 		/// <param name="title">Column title</param>
 		/// <param name="property">PropertyInfo that will reflect on the objects contained in the list</param>
@@ -85,7 +85,7 @@ namespace DSShared.Lists
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:CustomListColumn"/> class.
+		/// Initializes a new instance of the <see cref="T:DSShared.Lists.CustomListColumn"/> class.
 		/// </summary>
 		/// <param name="title">Column title</param>
 		public CustomListColumn(string title)
@@ -94,22 +94,23 @@ namespace DSShared.Lists
 		{}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:CustomListColumn"/> class.
+		/// Initializes a new instance of the <see cref="T:DSShared.Lists.CustomListColumn"/> class.
 		/// </summary>
 		public CustomListColumn()
 			:
-			this("", (ObjProperty)null)
+			this(String.Empty, (ObjProperty)null)
 		{}
 
+
 		/// <summary>
-		/// Equality test. Based on GetHashCode() between objects of this type
+		/// Equality test. Based on GetHashCode() between objects of this type.
 		/// </summary>
-		/// <param name="other"></param>
+		/// <param name="obj"></param>
 		/// <returns></returns>
-		public override bool Equals(object other)
+		public override bool Equals(object obj)
 		{
-			if (other is CustomListColumn)
-				return GetHashCode() == other.GetHashCode();
+			if (obj is CustomListColumn)
+				return GetHashCode() == obj.GetHashCode();
 
 			return false;
 		}
@@ -131,7 +132,7 @@ namespace DSShared.Lists
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return title.GetHashCode();
+			return title.GetHashCode(); // TODO: fix: Non-readonly field referenced ....
 		}
 
 		/// <summary>
@@ -152,7 +153,7 @@ namespace DSShared.Lists
 		{
 			Width = Math.Max(
 						MinWidth,
-						2 + (int)System.Drawing.Graphics.FromImage(new System.Drawing.Bitmap(1, 1)).MeasureString(title, font).Width);
+						TextRenderer.MeasureText(title, font).Width) + 2;
 		}
 
 
@@ -231,7 +232,7 @@ namespace DSShared.Lists
 		private CustomListColumn col;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:RowClickEventArgs"/> class.
+		/// Initializes a new instance of the <see cref="T:DSShared.Lists.RowClickEventArgs"/> class.
 		/// </summary>
 		/// <param name="row">The row that was clicked on</param>
 		/// <param name="col">The column that was clicked under</param>

@@ -18,10 +18,10 @@ namespace PckView
 //			fileOptions[Filter.Open] = true;
 //			fileOptions[Filter.Custom] = false;
 
-			author	= "Ben Ratzlaff";
-			ext		= ".*";
-			desc	= "Forces the Custom File Dialog box to be shown";
-			expDesc	= "Custom File";
+			_ext        = ".*";
+			_fileFilter = "Custom File";
+			_desc       = "Forces the Custom File Dialog box to be shown";
+			_author     = "Ben Ratzlaff";
 		}
 
 		public override string SingleFileName

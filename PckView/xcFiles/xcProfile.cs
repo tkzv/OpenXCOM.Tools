@@ -21,9 +21,9 @@ namespace PckView
 		{
 			_fileOptions.Init(false, false, false, false);
 
-			author	= "Ben Ratzlaff";
-			ext		= ProfileExt;
-			desc	= "Provides profile support";
+			ext    = ProfileExt;
+			desc   = "Provides profile support";
+			author = "Ben Ratzlaff";
 		} */
 
 		public XCProfile(ImgProfile profile)
@@ -34,25 +34,25 @@ namespace PckView
 
 			_codec = profile.ImgType;
 
-			author	= "Profile";
-			ext		= profile.Extension;
-			desc	= profile.Description;
-			expDesc	= profile.Description;
+			_ext        = profile.Extension;
+			_fileFilter = profile.Description;
+			_desc       = profile.Description;
+			_author     = "Profile";
 
 			if (profile.OpenSingle != Environment.NewLine)
 				_singleFile = profile.OpenSingle;
 
 			_fileOptions.Init(false, true, true, false);
 
-			xConsole.AddLine("Profile created: " + desc);
+			xConsole.AddLine("Profile created: " + _desc);
 
 			try
 			{
-				_palDefault = XCom.SharedSpace.Instance.GetPaletteTable()[profile.Palette];
+				_palDefault = SharedSpace.Instance.GetPaletteTable()[profile.Palette];
 			}
 			catch
 			{
-				_palDefault = XCom.Palette.UFOBattle;
+				_palDefault = Palette.UFOBattle;
 			}
 		}
 

@@ -1,15 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
 using System.Windows.Forms;
 
 using DSShared;
 
-using MapView.Forms.XCError.WarningConsole;
 using MapView.Forms.MainWindow;
+using MapView.Forms.XCError.WarningConsole;
 using MapView.SettingServices;
 
 using Microsoft.Win32;
@@ -31,14 +29,13 @@ namespace MapView
 		:
 		Form
 	{
-		private readonly SettingsManager _settingsManager;
-
-		private readonly MapViewPanel _mapViewPanel;
-		private readonly LoadingForm _loadingProgress;
-		private readonly IWarningHandler _warningHandler;
-		private readonly IMainViewsManager _mainViewsManager;
+		private readonly SettingsManager    _settingsManager;
+		private readonly MapViewPanel       _mapViewPanel;
+		private readonly LoadingForm        _loadingProgress;
+		private readonly IWarningHandler    _warningHandler;
+		private readonly IMainViewsManager  _mainViewsManager;
 		private readonly MainWindowsManager _mainWindowsManager;
-		private readonly MainMenusManager _mainMenusManager;
+		private readonly MainMenusManager   _mainMenusManager;
 
 
 		public XCMainWindow()
@@ -67,7 +64,7 @@ namespace MapView
 			// running the application:
 
 			var size = new Size();
-			size.Width  = 0;
+			size.Width  =
 			size.Height = 0;
 			MaximumSize = size; // fu.net
 //			MinimumSize = size;

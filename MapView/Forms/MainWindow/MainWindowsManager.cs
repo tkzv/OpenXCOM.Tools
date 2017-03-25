@@ -7,7 +7,7 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MainWindow
 {
-	public class MainWindowsManager
+	internal sealed class MainWindowsManager
 	{
 		public static IMainShowAllManager MainShowAllManager;
 		public static EditButtonsFactory EditButtonsFactory;
@@ -57,7 +57,7 @@ namespace MapView.Forms.MainWindow
 			TopRouteView.TopViewControl.Initialize(EditButtonsFactory);
 			TopView.Control.Initialize(EditButtonsFactory);
 			TileView.TileViewControl.Initialize(MainShowAllManager);
-			TileView.TileViewControl.SelectedTileTypeChanged_view += _tileView_SelectedTileTypeChanged;
+			TileView.TileViewControl.SelectedTileTypeChanged_view += SelectedTileTypeChanged;
 		}
 
 		public void SetMap(IMap_Base baseMap)
@@ -82,12 +82,6 @@ namespace MapView.Forms.MainWindow
 //			RmpView.Refresh();
 		}
 
-		private static void _tileView_SelectedTileTypeChanged(TileBase tile)
-		{
-			if (tile != null && tile.Info != null)
-				TopView.Control.SelectQuadrant(tile.Info.TileType);
-		}
-
 		private void SetMap(IMap_Base baseMap, IMap_Observer observer)
 		{
 			if (observer.Map != null)
@@ -104,6 +98,17 @@ namespace MapView.Forms.MainWindow
 
 			foreach (string key in observer.MoreObservers.Keys)
 				SetMap(baseMap, observer.MoreObservers[key]);
+		}
+
+		/// <summary>
+		/// Changes the selected quadrant in TopView when a tilepart is selected
+		/// in TileView.
+		/// </summary>
+		/// <param name="tile"></param>
+		private static void SelectedTileTypeChanged(TileBase tile)
+		{
+			if (tile != null && tile.Info != null)
+				TopView.Control.SelectQuadrant(tile.Info.TileType);
 		}
 	}
 }

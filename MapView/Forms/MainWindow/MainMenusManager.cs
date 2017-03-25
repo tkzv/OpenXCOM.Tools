@@ -13,8 +13,8 @@ namespace MapView.Forms.MainWindow
 		private readonly MenuItem _show;
 		private readonly MenuItem _help;
 
-		private readonly List<MenuItem>	_allItems = new List<MenuItem>();
-		private readonly List<Form>		_allForms = new List<Form>();
+		private readonly List<MenuItem> _allItems = new List<MenuItem>();
+		private readonly List<Form>     _allForms = new List<Form>();
 
 		private Settings _settings;
 

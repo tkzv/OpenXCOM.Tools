@@ -23,10 +23,10 @@ namespace XCom.Interfaces
 
 		protected xcFileOptions _fileOptions = new xcFileOptions();
 
-		protected string author		= "Author";
-		protected string desc		= "Description";
-		protected string expDesc	= "Bad Description";
-		protected string ext		= ".bad";
+		protected string _ext        = ".bad";
+		protected string _fileFilter = "Bad Description";
+		protected string _desc       = "Description";
+		protected string _author     = "Author";
 
 		protected string _singleFile = null;
 
@@ -45,8 +45,8 @@ namespace XCom.Interfaces
 		{
 			get
 			{
-				return (_singleFile != null) ? _singleFile + " - " + expDesc + "|" + _singleFile
-											 : "*" + ext + " - " + expDesc + "|*" + ext;
+				return (_singleFile != null) ? _singleFile + " - " + _fileFilter + "|" + _singleFile
+											 : "*" + _ext + " - " + _fileFilter + "|*" + _ext;
 			}
 		}
 
@@ -71,7 +71,7 @@ namespace XCom.Interfaces
 		/// </summary>
 		public virtual string ExplorerDescription
 		{
-			get { return expDesc; }
+			get { return _fileFilter; }
 		}
 		#endregion
 
@@ -81,7 +81,7 @@ namespace XCom.Interfaces
 		/// </summary>
 		public virtual string FileExtension
 		{
-			get { return ext; }
+			get { return _ext; }
 		}
 
 		public void Unload()
@@ -98,7 +98,7 @@ namespace XCom.Interfaces
 		public IXCImageFile(int width, int height)
 		{
 			_imageSize = new System.Drawing.Size(width, height);
-			expDesc = this.GetType().ToString();
+			_fileFilter = this.GetType().ToString();
 		}
 
 		/// <summary>
@@ -115,7 +115,7 @@ namespace XCom.Interfaces
 		/// </summary>
 		public string Author
 		{
-			get { return author; }
+			get { return _author; }
 		}
 
 		/// <summary>
@@ -123,7 +123,7 @@ namespace XCom.Interfaces
 		/// </summary>
 		public string Description
 		{
-			get { return desc; }
+			get { return _desc; }
 		}
 
 		/// <summary>

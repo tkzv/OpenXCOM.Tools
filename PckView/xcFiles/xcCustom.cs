@@ -18,10 +18,10 @@ namespace PckView
 			:
 			base(width, height)
 		{
-			author	= "Ben Ratzlaff";
-			ext		= ".*";
-			desc	= "Options for opening unknown files";
-			expDesc	= "Any File";
+			_ext        = ".*";
+			_fileFilter = "Any File";
+			_desc       = "Options for opening unknown files";
+			_author     = "Ben Ratzlaff";
 
 			_fileOptions.Init(false, false, true, false);
 

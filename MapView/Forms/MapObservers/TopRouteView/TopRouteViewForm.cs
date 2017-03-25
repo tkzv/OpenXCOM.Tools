@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-//using DSShared.Windows;
+using DSShared.Windows;
 
 using MapView.Forms.MapObservers.RouteViews;
 using MapView.Forms.MapObservers.TopViews;
@@ -12,14 +12,14 @@ namespace MapView.Forms.MapObservers.TileViews
 		:
 		Form
 	{
-//		public RegistryInfo RegistryInfo;
+		public RegistryInfo RegistryInfo;
 
 
 		public TopRouteViewForm()
 		{
 			InitializeComponent();
 
-//			RegistryInfo = new RegistryInfo(this, "TopRouteViewForm");
+			RegistryInfo = new RegistryInfo(this, "TopRouteViewForm"); // TODO: what's this doing if anything.
 		}
 
 

@@ -11,9 +11,22 @@ namespace XCom.Interfaces.Base
 		IAssemblyLoadable,
 		IOpenSave
 	{
-		protected string _name;
-		protected string _explorerDesc = "no Description";
-		protected string _ext = ".unused";
+		private const string _ext = ".notused";
+
+		private const string _fileFilter = "no description";
+		/// <summary>
+		/// See: AssemblyLoadable.ExplorerDescription
+		/// </summary>
+		public virtual string ExplorerDescription
+		{
+			get { return _fileFilter; }
+		}
+
+		private string _name;
+		public string Name
+		{
+			get { return _name; }
+		}
 
 
 		public IMapDesc(string name)
@@ -27,17 +40,18 @@ namespace XCom.Interfaces.Base
 			return _name;
 		}
 
-		public string Name
-		{
-			get { return _name; }
-		}
-
 		public virtual void Unload()
 		{}
 
 		public virtual string FileFilter
 		{
-			get { return string.Format("*{0} - {1}|*{0}", _ext, _explorerDesc); }
+			get
+			{
+				return string.Format(
+								System.Globalization.CultureInfo.CurrentCulture,
+								"*{0} - {1}|*{0}",
+								_ext, _fileFilter);
+			}
 		}
 
 		/// <summary>
@@ -46,15 +60,7 @@ namespace XCom.Interfaces.Base
 		/// <returns></returns>
 		public virtual bool RegisterFile()
 		{
-			return GetType() != typeof(IMapDesc);
-		}
-
-		/// <summary>
-		/// See: AssemblyLoadable.ExplorerDescription
-		/// </summary>
-		public virtual string ExplorerDescription
-		{
-			get { return _explorerDesc; }
+			return (GetType() != typeof(IMapDesc));
 		}
 	}
 }

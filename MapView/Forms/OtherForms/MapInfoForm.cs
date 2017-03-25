@@ -15,6 +15,8 @@ namespace MapView
 		public MapInfoForm()
 		{
 			InitializeComponent();
+
+			btnCancel.Left = (groupAnalyze.Width - btnCancel.Width) / 2;
 		}
 
 
@@ -26,7 +28,7 @@ namespace MapView
 								+ baseMap.MapSize.Rows + ","
 								+ baseMap.MapSize.Height;
 
-			lbl2PckFiles.Text = String.Empty;
+			lbl2Tilesets.Text = String.Empty;
 
 			int recordsTotal = 0;
 			int spritesTotal = 0;
@@ -40,14 +42,18 @@ namespace MapView
 					if (first)
 						first = false;
 					else
-						lbl2PckFiles.Text += ";";
+						lbl2Tilesets.Text += ";";
 
-					lbl2PckFiles.Text += dep;
+					lbl2Tilesets.Text += dep;
 
 					recordsTotal += GameInfo.ImageInfo[dep].GetMcdFile().Count;
 					spritesTotal += GameInfo.ImageInfo[dep].GetPckFile().Count;
 				}
 			}
+
+			var width = TextRenderer.MeasureText(lbl2Tilesets.Text, lbl2Tilesets.Font).Width;
+			if (width > lbl2Tilesets.Width)
+				Width += width - lbl2Tilesets.Width;
 
 			Refresh();
 			groupAnalyze.Visible = true;
@@ -160,12 +166,17 @@ namespace MapView
 				Close();
 		}
 
+		private void onResize()
+		{
+			btnCancel.Left = (groupAnalyze.Width - btnCancel.Width) / 2;
+		}
+
 
 		private GroupBox groupInfo;
 		private Label lbl1Dimensions;
 		private Label lbl2Dimensions;
-		private Label lbl1PckFiles;
-		private Label lbl2PckFiles;
+		private Label lbl1Tilesets;
+		private Label lbl2Tilesets;
 		private Label lbl1PckImages;
 		private Label lbl2PckImages;
 		private Label lbl1McdRecords;
@@ -200,8 +211,8 @@ namespace MapView
 		{
 			this.lbl1Dimensions = new System.Windows.Forms.Label();
 			this.lbl2Dimensions = new System.Windows.Forms.Label();
-			this.lbl2PckFiles = new System.Windows.Forms.Label();
-			this.lbl1PckFiles = new System.Windows.Forms.Label();
+			this.lbl2Tilesets = new System.Windows.Forms.Label();
+			this.lbl1Tilesets = new System.Windows.Forms.Label();
 			this.lbl2PckImages = new System.Windows.Forms.Label();
 			this.lbl1PckImages = new System.Windows.Forms.Label();
 			this.lbl2McdRecords = new System.Windows.Forms.Label();
@@ -218,67 +229,67 @@ namespace MapView
 			// 
 			// lbl1Dimensions
 			// 
-			this.lbl1Dimensions.Location = new System.Drawing.Point(10, 20);
+			this.lbl1Dimensions.Location = new System.Drawing.Point(10, 15);
 			this.lbl1Dimensions.Name = "lbl1Dimensions";
 			this.lbl1Dimensions.Size = new System.Drawing.Size(115, 15);
 			this.lbl1Dimensions.TabIndex = 0;
-			this.lbl1Dimensions.Text = "dimensions (c,r,h)";
+			this.lbl1Dimensions.Text = "Dimensions (c,r,h)";
 			// 
 			// lbl2Dimensions
 			// 
 			this.lbl2Dimensions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lbl2Dimensions.Location = new System.Drawing.Point(130, 20);
+			this.lbl2Dimensions.Location = new System.Drawing.Point(130, 15);
 			this.lbl2Dimensions.Name = "lbl2Dimensions";
-			this.lbl2Dimensions.Size = new System.Drawing.Size(356, 15);
+			this.lbl2Dimensions.Size = new System.Drawing.Size(255, 15);
 			this.lbl2Dimensions.TabIndex = 1;
 			// 
-			// lbl2PckFiles
+			// lbl2Tilesets
 			// 
-			this.lbl2PckFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.lbl2Tilesets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lbl2PckFiles.Location = new System.Drawing.Point(130, 35);
-			this.lbl2PckFiles.Name = "lbl2PckFiles";
-			this.lbl2PckFiles.Size = new System.Drawing.Size(356, 15);
-			this.lbl2PckFiles.TabIndex = 3;
+			this.lbl2Tilesets.Location = new System.Drawing.Point(130, 30);
+			this.lbl2Tilesets.Name = "lbl2Tilesets";
+			this.lbl2Tilesets.Size = new System.Drawing.Size(255, 15);
+			this.lbl2Tilesets.TabIndex = 3;
 			// 
-			// lbl1PckFiles
+			// lbl1Tilesets
 			// 
-			this.lbl1PckFiles.Location = new System.Drawing.Point(10, 35);
-			this.lbl1PckFiles.Name = "lbl1PckFiles";
-			this.lbl1PckFiles.Size = new System.Drawing.Size(115, 15);
-			this.lbl1PckFiles.TabIndex = 2;
-			this.lbl1PckFiles.Text = "PCK Sets";
+			this.lbl1Tilesets.Location = new System.Drawing.Point(10, 30);
+			this.lbl1Tilesets.Name = "lbl1Tilesets";
+			this.lbl1Tilesets.Size = new System.Drawing.Size(115, 15);
+			this.lbl1Tilesets.TabIndex = 2;
+			this.lbl1Tilesets.Text = "Tilesets";
 			// 
 			// lbl2PckImages
 			// 
 			this.lbl2PckImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lbl2PckImages.Location = new System.Drawing.Point(130, 50);
+			this.lbl2PckImages.Location = new System.Drawing.Point(130, 45);
 			this.lbl2PckImages.Name = "lbl2PckImages";
-			this.lbl2PckImages.Size = new System.Drawing.Size(356, 15);
+			this.lbl2PckImages.Size = new System.Drawing.Size(255, 15);
 			this.lbl2PckImages.TabIndex = 5;
 			// 
 			// lbl1PckImages
 			// 
-			this.lbl1PckImages.Location = new System.Drawing.Point(10, 50);
+			this.lbl1PckImages.Location = new System.Drawing.Point(10, 45);
 			this.lbl1PckImages.Name = "lbl1PckImages";
 			this.lbl1PckImages.Size = new System.Drawing.Size(115, 15);
 			this.lbl1PckImages.TabIndex = 4;
-			this.lbl1PckImages.Text = "sprites";
+			this.lbl1PckImages.Text = "Sprites";
 			// 
 			// lbl2McdRecords
 			// 
 			this.lbl2McdRecords.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lbl2McdRecords.Location = new System.Drawing.Point(130, 65);
+			this.lbl2McdRecords.Location = new System.Drawing.Point(130, 60);
 			this.lbl2McdRecords.Name = "lbl2McdRecords";
-			this.lbl2McdRecords.Size = new System.Drawing.Size(356, 15);
+			this.lbl2McdRecords.Size = new System.Drawing.Size(255, 15);
 			this.lbl2McdRecords.TabIndex = 7;
 			// 
 			// lbl1McdRecords
 			// 
-			this.lbl1McdRecords.Location = new System.Drawing.Point(10, 65);
+			this.lbl1McdRecords.Location = new System.Drawing.Point(10, 60);
 			this.lbl1McdRecords.Name = "lbl1McdRecords";
 			this.lbl1McdRecords.Size = new System.Drawing.Size(115, 15);
 			this.lbl1McdRecords.TabIndex = 6;
@@ -288,25 +299,25 @@ namespace MapView
 			// 
 			this.lbl2PartsFilled.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lbl2PartsFilled.Location = new System.Drawing.Point(130, 80);
+			this.lbl2PartsFilled.Location = new System.Drawing.Point(130, 75);
 			this.lbl2PartsFilled.Name = "lbl2PartsFilled";
-			this.lbl2PartsFilled.Size = new System.Drawing.Size(356, 15);
+			this.lbl2PartsFilled.Size = new System.Drawing.Size(255, 15);
 			this.lbl2PartsFilled.TabIndex = 9;
 			// 
 			// lbl1PartsFilled
 			// 
-			this.lbl1PartsFilled.Location = new System.Drawing.Point(10, 80);
+			this.lbl1PartsFilled.Location = new System.Drawing.Point(10, 75);
 			this.lbl1PartsFilled.Name = "lbl1PartsFilled";
 			this.lbl1PartsFilled.Size = new System.Drawing.Size(115, 15);
 			this.lbl1PartsFilled.TabIndex = 8;
-			this.lbl1PartsFilled.Text = "tile parts";
+			this.lbl1PartsFilled.Text = "Tileparts";
 			// 
 			// pBar
 			// 
 			this.pBar.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pBar.Location = new System.Drawing.Point(3, 15);
+			this.pBar.Location = new System.Drawing.Point(5, 15);
 			this.pBar.Name = "pBar";
-			this.pBar.Size = new System.Drawing.Size(488, 26);
+			this.pBar.Size = new System.Drawing.Size(382, 25);
 			this.pBar.TabIndex = 1;
 			// 
 			// groupAnalyze
@@ -314,16 +325,19 @@ namespace MapView
 			this.groupAnalyze.Controls.Add(this.btnCancel);
 			this.groupAnalyze.Controls.Add(this.pBar);
 			this.groupAnalyze.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.groupAnalyze.Location = new System.Drawing.Point(0, 102);
+			this.groupAnalyze.Location = new System.Drawing.Point(0, 100);
+			this.groupAnalyze.Margin = new System.Windows.Forms.Padding(0);
 			this.groupAnalyze.Name = "groupAnalyze";
-			this.groupAnalyze.Size = new System.Drawing.Size(494, 44);
+			this.groupAnalyze.Padding = new System.Windows.Forms.Padding(5, 3, 5, 4);
+			this.groupAnalyze.Size = new System.Drawing.Size(392, 44);
 			this.groupAnalyze.TabIndex = 11;
 			this.groupAnalyze.TabStop = false;
 			this.groupAnalyze.Text = "Analyzing";
 			// 
 			// btnCancel
 			// 
-			this.btnCancel.Location = new System.Drawing.Point(205, 10);
+			this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.btnCancel.Location = new System.Drawing.Point(0, 10);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(85, 30);
 			this.btnCancel.TabIndex = 2;
@@ -335,8 +349,8 @@ namespace MapView
 			// groupInfo
 			// 
 			this.groupInfo.Controls.Add(this.lbl2PckImages);
-			this.groupInfo.Controls.Add(this.lbl1PckFiles);
-			this.groupInfo.Controls.Add(this.lbl2PckFiles);
+			this.groupInfo.Controls.Add(this.lbl1Tilesets);
+			this.groupInfo.Controls.Add(this.lbl2Tilesets);
 			this.groupInfo.Controls.Add(this.lbl1Dimensions);
 			this.groupInfo.Controls.Add(this.lbl2McdRecords);
 			this.groupInfo.Controls.Add(this.lbl1PckImages);
@@ -345,9 +359,10 @@ namespace MapView
 			this.groupInfo.Controls.Add(this.lbl1PartsFilled);
 			this.groupInfo.Controls.Add(this.lbl2Dimensions);
 			this.groupInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.groupInfo.Location = new System.Drawing.Point(0, 0);
+			this.groupInfo.Location = new System.Drawing.Point(0, 3);
+			this.groupInfo.Margin = new System.Windows.Forms.Padding(0);
 			this.groupInfo.Name = "groupInfo";
-			this.groupInfo.Size = new System.Drawing.Size(494, 102);
+			this.groupInfo.Size = new System.Drawing.Size(392, 97);
 			this.groupInfo.TabIndex = 12;
 			this.groupInfo.TabStop = false;
 			this.groupInfo.Text = "Map";
@@ -355,14 +370,16 @@ namespace MapView
 			// MapInfoForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-			this.ClientSize = new System.Drawing.Size(494, 146);
+			this.ClientSize = new System.Drawing.Size(392, 144);
 			this.Controls.Add(this.groupInfo);
 			this.Controls.Add(this.groupAnalyze);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(400, 170);
 			this.Name = "MapInfoForm";
+			this.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
 			this.ShowIcon = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
