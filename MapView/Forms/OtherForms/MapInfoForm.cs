@@ -8,7 +8,7 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	public class MapInfoForm
+	internal sealed class MapInfoForm
 		:
 		Form
 	{
@@ -140,7 +140,7 @@ namespace MapView
 			Refresh();
 		}
 
-		private void Count(
+		private static void Count(
 				TileBase tile,
 				IDictionary recordsTable,
 				IDictionary spritesTable)
@@ -164,11 +164,6 @@ namespace MapView
 		{
 			if (e.KeyCode == Keys.Escape)
 				Close();
-		}
-
-		private void onResize()
-		{
-			btnCancel.Left = (groupAnalyze.Width - btnCancel.Width) / 2;
 		}
 
 

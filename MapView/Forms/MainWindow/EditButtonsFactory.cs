@@ -8,7 +8,7 @@ using MapView.Properties;
 
 namespace MapView.Forms.MainWindow
 {
-	public class EditButtonsFactory
+	internal sealed class EditButtonsFactory
 	{
 		private readonly List<ToolStripButton> _pasteButtons = new List<ToolStripButton>();
 

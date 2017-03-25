@@ -25,7 +25,7 @@ namespace MapView
 //	public delegate void StringDelegate(object sender, string args);
 
 
-	public sealed partial class XCMainWindow
+	internal sealed partial class XCMainWindow
 		:
 		Form
 	{
@@ -157,23 +157,26 @@ namespace MapView
 			toolStrip.Enabled = false;
 			toolStrip.Items.Add(new ToolStripSeparator());
 
+
 			try
 			{
-				_mapViewPanel.MapView.CursorSprite = new CursorSprite(GameInfo.CachePckFile(
-															SharedSpace.Instance.GetString(SharedSpace.CursorFile),
-															String.Empty,
-															2,
-															Palette.UFOBattle));
+				PckFile cursor = GameInfo.CachePckFile(
+													SharedSpace.Instance.GetString(SharedSpace.CursorFile),
+													String.Empty,
+													2,
+													Palette.UFOBattle);
+				_mapViewPanel.MapView.SetCursor(new CursorSprite(cursor));
 			}
 			catch
 			{
 				try
 				{
-					_mapViewPanel.MapView.CursorSprite = new CursorSprite(GameInfo.CachePckFile(
-															SharedSpace.Instance.GetString(SharedSpace.CursorFile),
-															String.Empty,
-															4,
-															Palette.TFTDBattle));
+					PckFile cursor = GameInfo.CachePckFile(
+													SharedSpace.Instance.GetString(SharedSpace.CursorFile),
+													String.Empty,
+													4,
+													Palette.TFTDBattle);
+					_mapViewPanel.MapView.SetCursor(new CursorSprite(cursor));
 				}
 				catch
 				{

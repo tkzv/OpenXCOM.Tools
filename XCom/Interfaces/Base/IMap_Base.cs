@@ -217,7 +217,7 @@ namespace XCom.Interfaces.Base
 
 			if (MapData != null)
 			{
-				for (int h = MapSize.Height - 1; h >= _height; h--)
+				for (int h = MapSize.Height - 1; h >= _height; --h)
 				{
 					for (int
 							row = 0, startX = start.X, startY = start.Y + h * 24;

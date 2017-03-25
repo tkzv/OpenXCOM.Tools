@@ -3,7 +3,7 @@ using System;
 
 namespace MapView
 {
-	public class NewMapForm
+	internal sealed class NewMapForm
 		:
 		System.Windows.Forms.Form
 	{

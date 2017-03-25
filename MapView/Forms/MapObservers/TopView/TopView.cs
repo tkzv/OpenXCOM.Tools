@@ -12,7 +12,7 @@ using XCom;
 
 namespace MapView.Forms.MapObservers.TopViews
 {
-	public partial class TopView
+	internal sealed partial class TopView
 		:
 		MapObserverControl0
 	{

@@ -8,7 +8,7 @@ using MapView.Forms.MapObservers.TopViews;
 
 namespace MapView.Forms.MapObservers.TileViews
 {
-	public partial class TopRouteViewForm
+	internal sealed partial class TopRouteViewForm
 		:
 		Form
 	{

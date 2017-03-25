@@ -47,7 +47,7 @@ namespace MapView
 			catch (Exception ex)
 			{
 				_errorHandler.HandleException(ex);
-//				throw;
+				throw;
 			}
 		}
 

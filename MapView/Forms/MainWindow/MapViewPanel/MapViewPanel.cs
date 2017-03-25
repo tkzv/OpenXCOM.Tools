@@ -7,7 +7,7 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	public class MapViewPanel
+	internal sealed class MapViewPanel
 		:
 		Panel
 	{

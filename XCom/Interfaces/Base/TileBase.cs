@@ -8,9 +8,9 @@ namespace XCom.Interfaces.Base
 	/// </summary>
 	public class TileBase
 	{
-		protected XCImage[] _images;
-
 		private IInfo _info;
+
+		private XCImage[] _images;
 
 
 		/// <summary>

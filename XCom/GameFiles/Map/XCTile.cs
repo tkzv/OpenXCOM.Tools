@@ -27,7 +27,7 @@ namespace XCom
 			Info  = info;
 			Tiles = tiles;
 
-			_images = new XCImage[8]; // every tile-part contains refs to 8 sprites.
+			Images = new XCImage[8]; // every tile-part contains refs to 8 sprites.
 
 			if (!info.UfoDoor && !info.HumanDoor)
 				MakeAnimate();
@@ -50,26 +50,26 @@ namespace XCom
 
 		public void MakeAnimate()
 		{
-			_images[0] = _file[_info.Image1];
-			_images[1] = _file[_info.Image2];
-			_images[2] = _file[_info.Image3];
-			_images[3] = _file[_info.Image4];
-			_images[4] = _file[_info.Image5];
-			_images[5] = _file[_info.Image6];
-			_images[6] = _file[_info.Image7];
-			_images[7] = _file[_info.Image8];
+			Images[0] = _file[_info.Image1];
+			Images[1] = _file[_info.Image2];
+			Images[2] = _file[_info.Image3];
+			Images[3] = _file[_info.Image4];
+			Images[4] = _file[_info.Image5];
+			Images[5] = _file[_info.Image6];
+			Images[6] = _file[_info.Image7];
+			Images[7] = _file[_info.Image8];
 		}
 
 		public void StopAnimate()
 		{
-			_images[0] = _file[_info.Image1];
-			_images[1] = _file[_info.Image1];
-			_images[2] = _file[_info.Image1];
-			_images[3] = _file[_info.Image1];
-			_images[4] = _file[_info.Image1];
-			_images[5] = _file[_info.Image1];
-			_images[6] = _file[_info.Image1];
-			_images[7] = _file[_info.Image1];
+			Images[0] = _file[_info.Image1];
+			Images[1] = _file[_info.Image1];
+			Images[2] = _file[_info.Image1];
+			Images[3] = _file[_info.Image1];
+			Images[4] = _file[_info.Image1];
+			Images[5] = _file[_info.Image1];
+			Images[6] = _file[_info.Image1];
+			Images[7] = _file[_info.Image1];
 		}
 	}
 }

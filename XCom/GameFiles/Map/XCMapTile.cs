@@ -18,14 +18,10 @@ namespace XCom
 			Content
 		};
 
-		private RouteNode _routeInfo;
-
 		private TileBase _ground;
 		private TileBase _north;
 		private TileBase _west;
 		private TileBase _content;
-
-		private bool _blank;
 
 
 		internal XCMapTile(
@@ -39,7 +35,7 @@ namespace XCom
 			_west    = west;
 			_content = content;
 
-			_blank = false;
+			Blank = false;
 			DrawAbove = true;
 		}
 
@@ -48,16 +44,13 @@ namespace XCom
 			get
 			{
 				var tile = new XCMapTile(null, null, null, null);
-				tile._blank = true;
+				tile.Blank = true;
 				return tile;
 			}
 		}
 
 		public bool Blank
-		{
-			get { return _blank; }
-			set { _blank = value; }
-		}
+		{ get; set; }
 
 		public TileBase this[QuadrantType quad]
 		{
@@ -101,10 +94,7 @@ namespace XCom
 		}
 
 		public RouteNode Node
-		{
-			get { return _routeInfo; }
-			set { _routeInfo = value; }
-		}
+		{ get; set; }
 
 		public override TileBase[] UsedTiles
 		{
@@ -125,9 +115,9 @@ namespace XCom
 		{
 			switch (quad)
 			{
-				case QuadrantType.Ground:  _ground = value;  break;
-				case QuadrantType.West:    _west = value;    break;
-				case QuadrantType.North:   _north = value;   break;
+				case QuadrantType.Ground:  _ground  = value; break;
+				case QuadrantType.West:    _west    = value; break;
+				case QuadrantType.North:   _north   = value; break;
 				case QuadrantType.Content: _content = value; break;
 			}
 		}
