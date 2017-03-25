@@ -265,10 +265,10 @@ namespace MapView.Forms.MapObservers.TopViews
 			_topPens.Add("MouseColor", mousePen);
 			_topPens.Add("MouseWidth", mousePen);
 
-			ValueChangedDelegate bc = BrushChanged;
-			ValueChangedDelegate pc = PenColorChanged;
-			ValueChangedDelegate pw = PenWidthChanged;
-			ValueChangedDelegate dh = DiamondHeight;
+			ValueChangedEventHandler bc = BrushChanged;
+			ValueChangedEventHandler pc = PenColorChanged;
+			ValueChangedEventHandler pw = PenWidthChanged;
+			ValueChangedEventHandler dh = DiamondHeight;
 
 			Settings.AddSetting("GroundColor",		Color.Orange,				"Color of the ground tile indicator",			"Tile",		bc, false, null);
 			Settings.AddSetting("NorthColor",		Color.Red,					"Color of the north tile indicator",			"Tile",		pc, false, null);

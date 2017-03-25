@@ -66,7 +66,7 @@ namespace MapView
 					ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint,
 					true);
 
-			_colorGrid = Color.FromArgb(175, 69, 100, 129);
+			_colorGrid  = Color.FromArgb(175, 69, 100, 129);
 			_brushTrans = new SolidBrush(_colorGrid);
 			_penDash    = new Pen(Brushes.Black, 1);
 		}
@@ -79,12 +79,12 @@ namespace MapView
 				var dragStart = DragStart;
 				for (int
 						r = dragStart.Y;
-						r < _baseMap.MapSize.Rows && (r - dragStart.Y) < _copied.GetLength(0);
-						r++)
+						r != _baseMap.MapSize.Rows && (r - dragStart.Y) < _copied.GetLength(0);
+						++r)
 					for (int
 							c = dragStart.X;
-							c < _baseMap.MapSize.Cols && (c - dragStart.X) < _copied.GetLength(1);
-							c++)
+							c != _baseMap.MapSize.Cols && (c - dragStart.X) < _copied.GetLength(1);
+							++c)
 					{
 						var tile = _baseMap[r, c] as XCMapTile;
 						if (tile != null)
@@ -140,8 +140,8 @@ namespace MapView
 
 				_copied = new MapTileBase[end.Y - start.Y + 1, end.X - start.X + 1];
 
-				for (int c = start.X; c <= end.X; c++)
-					for (int r = start.Y; r <= end.Y; r++)
+				for (int c = start.X; c <= end.X; ++c)
+					for (int r = start.Y; r <= end.Y; ++r)
 						_copied[r - start.Y, c - start.X] = _baseMap[r, c];
 			}
 		}
@@ -238,7 +238,7 @@ namespace MapView
 		{
 			if (_baseMap != null)
 			{
-				Point pt = ConvertCoordsDiamond(
+				var pt = ConvertCoordsDiamond(
 											e.X, e.Y,
 											_baseMap.CurrentHeight);
 
@@ -339,6 +339,7 @@ namespace MapView
 				var width = (_baseMap.MapSize.Rows + _baseMap.MapSize.Cols) * halfWidth;
 				var height = _baseMap.MapSize.Height * (halfHeight * 3) +
 							(_baseMap.MapSize.Rows + _baseMap.MapSize.Cols) * halfHeight;
+
 				return new Size(width, height);
 			}
 			return Size.Empty;
@@ -350,7 +351,7 @@ namespace MapView
 			set { _viewsize = value; }
 		}
 
-		private void TileChange(IMap_Base mapFile, SelectedTileChangedEventArgs e) // MapLocation newCoords)
+		private void TileChange(IMap_Base baseMap, SelectedTileChangedEventArgs e) // MapLocation newCoords)
 		{
 			MapLocation newCoords = e.MapPosition;
 			var dragStart = new Point(
@@ -361,7 +362,7 @@ namespace MapView
 			XCMainWindow.Instance.StatusBarPrintPosition(newCoords.Col, newCoords.Row);
 		}
 
-		private void MapHeight(IMap_Base mapFile, HeightChangedEventArgs e)
+		private void MapHeight(IMap_Base baseMap, HeightChangedEventArgs e)
 		{
 			Refresh();
 		}
@@ -393,19 +394,21 @@ namespace MapView
 
 				var halfWidth  = (int)(H_WIDTH  * Globals.PckImageScale);
 				var halfHeight = (int)(H_HEIGHT * Globals.PckImageScale);
-				for (var h = _baseMap.MapSize.Height - 1; h > -1; h--)
+
+				for (var h = _baseMap.MapSize.Height - 1; h > -1; --h)
 				{
-					if (h >= _baseMap.CurrentHeight)
+					if (_baseMap.CurrentHeight <= h)
 					{
 						DrawGrid(h, g);
 
 						var startY = _origin.Y + (halfHeight * 3 * h);
 						var startX = _origin.X;
-						for (var row = 0; row < _baseMap.MapSize.Rows; row++)
+
+						for (var row = 0; row != _baseMap.MapSize.Rows; ++row)
 						{
 							var x = startX;
 							var y = startY;
-							for (var col = 0; col < _baseMap.MapSize.Cols; col++)
+							for (var col = 0; col != _baseMap.MapSize.Cols; ++col)
 							{
 								var isClickedLocation = IsDragEndOrStart(row, col);
 								var tileRect = new Rectangle(col, row, 1, 1);
@@ -413,7 +416,7 @@ namespace MapView
 								if (isClickedLocation)
 									DrawCursor(g, x, y, h);
 
-								if (h == _baseMap.CurrentHeight || _baseMap[row, col, h].DrawAbove)
+								if (_baseMap.CurrentHeight == h || _baseMap[row, col, h].DrawAbove)
 								{
 									var tile = (XCMapTile) _baseMap[row, col, h];
 									if (!_selectGrayscale)
@@ -475,7 +478,7 @@ namespace MapView
 
 		private void DrawGrid(int h, Graphics g)
 		{
-			if (h == _baseMap.CurrentHeight && _useGrid)
+			if (_useGrid && _baseMap.CurrentHeight == h)
 			{
 				var hWidth  = (int)(H_WIDTH  * Globals.PckImageScale);
 				var hHeight = (int)(H_HEIGHT * Globals.PckImageScale);
@@ -504,54 +507,54 @@ namespace MapView
 
 				g.FillPath(_brushTrans, _gridUnder);
 
-				for (var i = 0; i <= _baseMap.MapSize.Rows; i++)
+				for (var i = 0; i <= _baseMap.MapSize.Rows; ++i)
 					g.DrawLine(
 							_penDash,
-							x - (i * hWidth),
-							y + (i * hHeight),
-							x + ((_baseMap.MapSize.Cols - i) * hWidth),
-							y + ((_baseMap.MapSize.Cols + i) * hHeight));
+							x - hWidth  * i,
+							y + hHeight * i,
+							x + (_baseMap.MapSize.Cols - i) * hWidth,
+							y + (_baseMap.MapSize.Cols + i) * hHeight);
 
-				for (int i = 0; i <= _baseMap.MapSize.Cols; i++)
+				for (int i = 0; i <= _baseMap.MapSize.Cols; ++i)
 					g.DrawLine(
 							_penDash,
-							x + i * hWidth,
-							y + i * hHeight,
-							(i * hWidth)  - xMax + x,
-							(i * hHeight) + yMax + y);
+							x + hWidth  * i,
+							y + hHeight * i,
+							hWidth  * i - xMax + x,
+							hHeight * i + yMax + y);
 			}
 		}
 
-		private static void DrawTile(Graphics g, XCMapTile mt, int x, int y)
+		private static void DrawTile(Graphics g, XCMapTile tile, int x, int y)
 		{
 			var topView = MainWindowsManager.TopView.Control;
-			if (mt.Ground != null && topView.GroundVisible)
-				DrawTile(g, x, y, mt.Ground);
+			if (tile.Ground != null && topView.GroundVisible)
+				DrawTile(g, x, y, tile.Ground);
 
-			if (mt.North != null && topView.NorthVisible)
-				DrawTile(g, x, y, mt.North);
+			if (tile.North != null && topView.NorthVisible)
+				DrawTile(g, x, y, tile.North);
 
-			if (mt.West != null && topView.WestVisible)
-				DrawTile(g, x, y, mt.West);
+			if (tile.West != null && topView.WestVisible)
+				DrawTile(g, x, y, tile.West);
 
-			if (mt.Content != null && topView.ContentVisible)
-				DrawTile(g, x, y, mt.Content);
+			if (tile.Content != null && topView.ContentVisible)
+				DrawTile(g, x, y, tile.Content);
 		}
 
-		private void DrawTileGray(Graphics g, XCMapTile mt, int x, int y)
+		private void DrawTileGray(Graphics g, XCMapTile tile, int x, int y)
 		{
 			var topView = MainWindowsManager.TopView.Control;
-			if (mt.Ground != null && topView.GroundVisible)
-				DrawTileGray(g, x, y, mt.Ground);
+			if (tile.Ground != null && topView.GroundVisible)
+				DrawTileGray(g, x, y, tile.Ground);
 
-			if (mt.North != null && topView.NorthVisible)
-				DrawTileGray(g, x, y, mt.North);
+			if (tile.North != null && topView.NorthVisible)
+				DrawTileGray(g, x, y, tile.North);
 
-			if (mt.West != null && topView.WestVisible)
-				DrawTileGray(g, x, y, mt.West);
+			if (tile.West != null && topView.WestVisible)
+				DrawTileGray(g, x, y, tile.West);
 
-			if (mt.Content != null && topView.ContentVisible)
-				DrawTileGray(g, x, y, mt.Content);
+			if (tile.Content != null && topView.ContentVisible)
+				DrawTileGray(g, x, y, tile.Content);
 		}
 
 		private static void DrawTile(Graphics g, int x, int y, TileBase tile)
@@ -571,7 +574,7 @@ namespace MapView
 			g.DrawImage(
 					image,
 					x,
-					(int)(y - (tile.Info.TileOffset * Globals.PckImageScale)),
+					(int)(y - tile.Info.TileOffset * Globals.PckImageScale),
 					(int)(image.Width  * Globals.PckImageScale),
 					(int)(image.Height * Globals.PckImageScale));
 		}
@@ -580,10 +583,10 @@ namespace MapView
 		{
 			var hWidth = (int)(H_WIDTH * Globals.PckImageScale);
 
-			var top		= ConvertCoordsRect(new Point(dragRect.X,     dragRect.Y), h + 1);
-			var right	= ConvertCoordsRect(new Point(dragRect.Right, dragRect.Y), h + 1);
-			var bottom	= ConvertCoordsRect(new Point(dragRect.Right, dragRect.Bottom), h + 1);
-			var left	= ConvertCoordsRect(new Point(dragRect.Left,  dragRect.Bottom), h + 1);
+			var top    = ConvertCoordsRect(new Point(dragRect.X,     dragRect.Y), h + 1);
+			var right  = ConvertCoordsRect(new Point(dragRect.Right, dragRect.Y), h + 1);
+			var bottom = ConvertCoordsRect(new Point(dragRect.Right, dragRect.Bottom), h + 1);
+			var left   = ConvertCoordsRect(new Point(dragRect.Left,  dragRect.Bottom), h + 1);
 
 			top.X    += hWidth;
 			right.X  += hWidth;

@@ -964,9 +964,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var brushes = _routePanel.MapBrushes;
 			var pens = _routePanel.MapPens;
 
-			var bc = new ValueChangedDelegate(BrushColorChanged);
-			var pc = new ValueChangedDelegate(PenColorChanged);
-			var pw = new ValueChangedDelegate(PenWidthChanged);
+			var bc = new ValueChangedEventHandler(BrushColorChanged);
+			var pc = new ValueChangedEventHandler(PenColorChanged);
+			var pw = new ValueChangedEventHandler(PenWidthChanged);
 
 			var settings = Settings;
 			var redPen = new Pen(new SolidBrush(Color.Red), 2);

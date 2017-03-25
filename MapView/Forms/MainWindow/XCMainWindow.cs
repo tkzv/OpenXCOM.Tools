@@ -392,7 +392,7 @@ namespace MapView
 
 				if (PathsEditor.SaveRegistry)
 				{
-					var keySoftware = Registry.CurrentUser.CreateSubKey("Software");
+					var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.Software);
 					var keyMapView  = keySoftware.CreateSubKey("MapView");
 					var keyMainView = keyMapView.CreateSubKey("MainView");
 
@@ -419,7 +419,7 @@ namespace MapView
 
 		private void LoadDefaults()
 		{
-			var keySoftware = Registry.CurrentUser.CreateSubKey("Software");
+			var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.Software);
 			var keyMapView  = keySoftware.CreateSubKey("MapView");
 			var keyMainView = keyMapView.CreateSubKey("MainView");
 
@@ -436,60 +436,60 @@ namespace MapView
 
 //			Color.FromArgb(175, 69, 100, 129)
 
-			var change = new ValueChangedDelegate(ChangeSetting);
+			var change = new ValueChangedEventHandler(ChangeSetting);
 
 			settings.AddSetting(
 							"Animation",
 							MapViewPanel.Updating,
-							"If true the map will animate itself",
+							"If true the map will animate itself.",
 							"Main",
 							change, false, null);
 			settings.AddSetting(
 							"Doors",
 							false,
-							"If true the door tiles will animate themselves",
+							"If true the door tiles will animate themselves.",
 							"Main",
 							change, false, null);
 			settings.AddSetting(
 							"SaveWindowPositions",
 							PathsEditor.SaveRegistry,
-							"If true the window positions and sizes will be saved in the windows registry",
+							"If true the window positions and sizes will be saved in the windows registry.",
 							"Main",
 							change, false, null);
 			settings.AddSetting(
 							"UseGrid",
 							MapViewPanel.Instance.MapView.UseGrid,
-							"If true a grid will show up at the current level of editing",
+							"If true a grid will show up at the current level of editing.",
 							"MapView",
 							null, true, MapViewPanel.Instance.MapView);
 			settings.AddSetting(
 							"GridColor",
 							MapViewPanel.Instance.MapView.GridColor,
-							"Color of the grid in (a,r,g,b) format",
+							"Color of the grid in (a,r,g,b) format.",
 							"MapView",
 							null, true, MapViewPanel.Instance.MapView);
 			settings.AddSetting(
 							"GridLineColor",
 							MapViewPanel.Instance.MapView.GridLineColor,
-							"Color of the lines that make up the grid",
+							"Color of the lines that make up the grid.",
 							"MapView",
 							null, true, MapViewPanel.Instance.MapView);
 			settings.AddSetting(
 							"GridLineWidth",
 							MapViewPanel.Instance.MapView.GridLineWidth,
-							"Width of the grid lines in pixels",
+							"Width of the grid lines in pixels.",
 							"MapView",
 							null, true, MapViewPanel.Instance.MapView);
 			settings.AddSetting(
 							"SelectGrayscale",
 							MapViewPanel.Instance.MapView.SelectGrayscale,
-							"If true the selection area will show up in gray",
+							"If true the selection area will show up in gray.",
 							"MapView",
 							null, true, MapViewPanel.Instance.MapView);
 //			settings.AddSetting(
 //							"SaveOnExit",
 //							true,
-//							"If true these settings will be saved on program exit",
+//							"If true these settings will be saved on program exit.",
 //							"Main",
 //							null, false, null);
 
@@ -831,7 +831,10 @@ namespace MapView
 
 		public void StatusBarPrintPosition(int col, int row)
 		{
-			statusPosition.Text = string.Format("c:{0} r:{1}", col, row);
+			statusPosition.Text = string.Format(
+											System.Globalization.CultureInfo.CurrentCulture,
+											"c:{0} r:{1}",
+											col, row);
 		}
 	}
 }

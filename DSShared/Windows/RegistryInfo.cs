@@ -23,7 +23,8 @@ namespace DSShared.Windows
 	/// </summary>
 	public class RegistryInfo
 	{
-		private const string Regkey = "DSShared"; // was static not const. Cf, property 'RegKey'.
+		public const string Software  = "Software";
+		private const string DSShared = "DSShared";
 
 		private object _obj;
 		private string _label;
@@ -58,7 +59,7 @@ namespace DSShared.Windows
 
 			_properties = new Dictionary<string, PropertyInfo>();
 
-			var f = (obj as Form);
+			var f = obj as Form;
 			if (f != null)
 			{
 				f.StartPosition = FormStartPosition.Manual;
@@ -87,8 +88,8 @@ namespace DSShared.Windows
 		/// <param name="e"></param>
 		private void Load(object sender, EventArgs e)
 		{
-			RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey("Software");
-			RegistryKey keyDSShared = keySoftware.CreateSubKey(Regkey);
+			RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey(Software);
+			RegistryKey keyDSShared = keySoftware.CreateSubKey(DSShared);
 			RegistryKey keyLabel    = keyDSShared.CreateSubKey(_label);
 
 			foreach (string st in _properties.Keys)
@@ -114,9 +115,9 @@ namespace DSShared.Windows
 			var type = _obj.GetType();
 
 			PropertyInfo info;
-			foreach (string st in labels)
+			foreach (string label in labels)
 			{
-				info = type.GetProperty(st);
+				info = type.GetProperty(label);
 				_properties[info.Name] = info;
 			}
 		}
@@ -134,8 +135,8 @@ namespace DSShared.Windows
 
 //			if (_saveOnClose)
 //			{
-			RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey("Software");
-			RegistryKey keyDSShared = keySoftware.CreateSubKey(Regkey);
+			RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey(Software);
+			RegistryKey keyDSShared = keySoftware.CreateSubKey(DSShared);
 			RegistryKey keyLabel    = keyDSShared.CreateSubKey(_label);
 
 			foreach (string st in _properties.Keys)

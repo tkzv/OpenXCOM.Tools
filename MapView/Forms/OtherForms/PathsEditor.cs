@@ -381,9 +381,11 @@ namespace MapView
 
 		private void btnClearRegistry_Click(object sender, System.EventArgs e)
 		{
-			RegistryKey swKey = Registry.CurrentUser.OpenSubKey("Software", true);
-			swKey.DeleteSubKeyTree("MapView");
 			_saveRegistry = false;
+
+			var keySoftware = Registry.CurrentUser.OpenSubKey(DSShared.Windows.RegistryInfo.Software, true);
+			keySoftware.DeleteSubKeyTree("MapView");
+			keySoftware.Close();
 		}
 
 		private void btnFindMap_Click(object sender, System.EventArgs e)
@@ -641,7 +643,15 @@ namespace MapView
 						}
 						catch (Exception ex)
 						{
-							MessageBox.Show("Could not add map: " + name + ", Error: " + ex.Message);
+							MessageBox.Show(
+										this,
+										"Could not add map: " + name + Environment.NewLine + "ERROR: " + ex.Message,
+										"Error",
+										MessageBoxButtons.OK,
+										MessageBoxIcon.Exclamation,
+										MessageBoxDefaultButton.Button1,
+										0);
+							throw;
 						}
 					}
 //					saveMapedit();

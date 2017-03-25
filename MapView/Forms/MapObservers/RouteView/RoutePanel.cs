@@ -98,7 +98,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					textSpawn1    = "spawn";
 					textWeight1   = "weight";
 
-					textOver2     = (tile.Node.Index).ToString();
+					textOver2     = (tile.Node.Index).ToString(System.Globalization.CultureInfo.CurrentCulture);
 					textPriority2 = (tile.Node.Priority).ToString();
 					textSpawn2    = (RouteFile.UnitRankUFO[tile.Node.UsableRank]).ToString();
 					textWeight2   = (tile.Node.Spawn).ToString();

@@ -9,7 +9,7 @@ using XCom;
 namespace MapView
 {
 	public delegate string ConvertObject(object obj);
-	public delegate void ValueChangedDelegate(object sender, string key, object obj);
+	public delegate void ValueChangedEventHandler(object sender, string key, object value); // TODO: FxCop CA1009.
 
 
 	/// <summary>
@@ -47,12 +47,12 @@ namespace MapView
 
 		public static void ReadSettings(
 				VarCollection vars,
-				KeyVal keyVal,
+				KeyVal keyval,
 				Settings settings)
 		{
-			while ((keyVal = vars.ReadLine()) != null)
+			while ((keyval = vars.ReadLine()) != null)
 			{
-				switch (keyVal.Keyword)
+				switch (keyval.Keyword)
 				{
 					case "{": // starting out
 						break;
@@ -61,10 +61,10 @@ namespace MapView
 						return;
 
 					default:
-						if (settings[keyVal.Keyword] != null)
+						if (settings[keyval.Keyword] != null)
 						{
-							settings[keyVal.Keyword].Value = keyVal.Value;
-							settings[keyVal.Keyword].FireUpdate(keyVal.Keyword);
+							settings[keyval.Keyword].Value = keyval.Value;
+							settings[keyval.Keyword].FireUpdate(keyval.Keyword);
 						}
 						break;
 				}
@@ -108,43 +108,43 @@ namespace MapView
 		/// Adds a setting to a specified object.
 		/// </summary>
 		/// <param name="name">property name</param>
-		/// <param name="obj">start value of the property</param>
+		/// <param name="value">start value of the property</param>
 		/// <param name="desc">property description</param>
 		/// <param name="category">property category</param>
-		/// <param name="update">event handler to recieve the PropertyValueChanged event</param>
+		/// <param name="update">event handler to receive the PropertyValueChanged event</param>
 		/// <param name="reflect">if true, an internal event handler will be created - the refObj
 		/// must not be null and the name must be the name of a property of the type that refObj is</param>
-		/// <param name="refObj">the object that will receive the changed property values</param>
+		/// <param name="refValue">the object that will receive the changed property values</param>
 		public void AddSetting(
 				string name,
-				object obj,
+				object value,
 				string desc,
 				string category,
-				ValueChangedDelegate update,
+				ValueChangedEventHandler update,
 				bool reflect,
-				object refObj)
+				object refValue)
 		{
 			name = name.Replace(" ", String.Empty);
 
 			Setting setting;
 			if (!_settings.ContainsKey(name))
 			{
-				setting = new Setting(obj, desc, category);
+				setting = new Setting(value, desc, category);
 				_settings[name] = setting;
 			}
 			else
 			{
 				setting = _settings[name];
-				setting.Value = obj;
+				setting.Value = value;
 				setting.Description = desc;
 			}
 
 			if (update != null)
 				setting.ValueChanged += update;
 
-			if (reflect && refObj != null)
+			if (reflect && refValue != null)
 			{
-				_propertyObject[name] = new PropertyObject(refObj, name);
+				_propertyObject[name] = new PropertyObject(refValue, name);
 				this[name].ValueChanged += ReflectEvent;
 			}
 		}
@@ -154,14 +154,14 @@ namespace MapView
 		/// object, one will be created with the defaultValue.
 		/// </summary>
 		/// <param name="key">the name of the setting object</param>
-		/// <param name="val">if there is no Setting object tied to the
+		/// <param name="value">if there is no Setting object tied to the
 		/// string, a Setting will be created with this as its Value</param>
 		/// <returns>the Setting object tied to the string</returns>
-		public Setting GetSetting(string key, object val)
+		public Setting GetSetting(string key, object value)
 		{
 			if (!_settings.ContainsKey(key))
 			{
-				var item = new Setting(val, null, null);
+				var item = new Setting(value, null, null);
 				_settings.Add(key, item);
 				item.Name = key;
 			}
@@ -174,7 +174,7 @@ namespace MapView
 			_propertyObject[key].SetValue(val);
 		}
 
-		public void Save(string line, System.IO.StreamWriter sw)
+		public void Save(string line, System.IO.TextWriter sw)
 		{
 			sw.WriteLine(line);
 			sw.WriteLine("{");
@@ -185,7 +185,7 @@ namespace MapView
 			sw.WriteLine("}");
 		}
 
-		private string Convert(object obj)
+		private static string Convert(object obj)
 		{
 			return (_converters.ContainsKey(obj.GetType())) ? _converters[obj.GetType()](obj)
 															: obj.ToString();
@@ -197,7 +197,10 @@ namespace MapView
 			if (color.IsKnownColor || color.IsNamedColor || color.IsSystemColor)
 				return color.Name;
 
-			return string.Format("{0},{1},{2},{3}", color.A, color.R, color.G, color.B);
+			return string.Format(
+							System.Globalization.CultureInfo.InvariantCulture,
+							"{0},{1},{2},{3}",
+							color.A, color.R, color.G, color.B);
 		}
 	}
 
@@ -210,7 +213,7 @@ namespace MapView
 
 		private static Dictionary<Type, parseString> _converters;
 
-		public event ValueChangedDelegate ValueChanged;
+		public event ValueChangedEventHandler ValueChanged;
 
 		private delegate object parseString(string st);
 
@@ -307,13 +310,13 @@ namespace MapView
 		public string Name
 		{ get; set; }
 
-		public void FireUpdate(string key, object val)
+		public void FireUpdate(string key, object value) // FxCop CA1030.
 		{
 			if (ValueChanged != null)
-				ValueChanged(this, key, val);
+				ValueChanged(this, key, value);
 		}
 
-		public void FireUpdate(string key)
+		public void FireUpdate(string key) // FxCop CA1030.
 		{
 			if (ValueChanged != null)
 				ValueChanged(this, key, _value);

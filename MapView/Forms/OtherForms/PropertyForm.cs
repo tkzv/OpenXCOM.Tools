@@ -23,8 +23,15 @@ namespace MapView
 		public PropertyForm(string typeLabel, Settings settings)
 		{
 			InitializeComponent();
-			var ri = new RegistryInfo(this, "OptionsForm"); // TODO: that might need to get created anyway
 
+			var ri = new RegistryInfo(this, "OptionsForm");	// TODO: that might need to get created anyway
+															// uh, 'ri' is never used or passed to another funct
+															// so it gets deconstructed at the end of scope.
+															// it's not accessing anything that's static, either
+															// But it seems to link in some delegates for loading/closing, etc;
+															// in short it should be handled differently.
+															//
+															// psst. It still might not *do* anything beneficial.
 			propertyGrid.TypeLabel = typeLabel;
 			propertyGrid.SetSettings(settings);
 		}

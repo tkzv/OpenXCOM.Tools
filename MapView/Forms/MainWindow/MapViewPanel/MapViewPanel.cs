@@ -60,18 +60,18 @@ namespace MapView
 			Controls.Add(_mapView);
 		}
 
-		public void Cut_click(object sender, EventArgs e)
+		public void Cut(object sender, EventArgs e)
 		{
 			_mapView.Copy();
 			_mapView.ClearSelection();
 		}
 
-		public void Copy_click(object sender, EventArgs e)
+		public void Copy(object sender, EventArgs e)
 		{
 			_mapView.Copy();
 		}
 
-		public void Paste_click(object sender, EventArgs e)
+		public void Paste(object sender, EventArgs e)
 		{
 			_mapView.Paste();
 		}

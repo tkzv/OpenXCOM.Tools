@@ -218,7 +218,10 @@ namespace MapView
 							this,
 							"You must specify a MAP name",
 							"Err..",
-							MessageBoxButtons.OK);
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Exclamation,
+							MessageBoxDefaultButton.Button1,
+							0);
 				return;
 			}
 
@@ -229,7 +232,10 @@ namespace MapView
 							this,
 							"You must have a MAP path",
 							"Err..",
-							MessageBoxButtons.OK);
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Exclamation,
+							MessageBoxDefaultButton.Button1,
+							0);
 				return;
 			}
 
@@ -239,7 +245,10 @@ namespace MapView
 							this,
 							"You must have a RMP path",
 							"Err..",
-							MessageBoxButtons.OK);
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Exclamation,
+							MessageBoxDefaultButton.Button1,
+							0);
 				return;
 			}
 
@@ -249,7 +258,10 @@ namespace MapView
 							this,
 							"You must have a BLANKS path",
 							"Err..",
-							MessageBoxButtons.OK);
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Exclamation,
+							MessageBoxDefaultButton.Button1,
+							0);
 				return;
 			}
 
@@ -259,7 +271,10 @@ namespace MapView
 							this,
 							"MAP directory " + txtMap.Text + " does not exist",
 							"Err..",
-							MessageBoxButtons.OK);
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Exclamation,
+							MessageBoxDefaultButton.Button1,
+							0);
 				return;
 			}
 
@@ -268,7 +283,10 @@ namespace MapView
 				MessageBox.Show(
 							this,
 							"RMP directory " + txtRmp.Text + " does not exist", "Err..",
-							MessageBoxButtons.OK);
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Exclamation,
+							MessageBoxDefaultButton.Button1,
+							0);
 				return;
 			}
 
@@ -278,7 +296,10 @@ namespace MapView
 							this,
 							"BLANKS directory " + txtBlank.Text + " does not exist",
 							"Err..",
-							MessageBoxButtons.OK);
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Exclamation,
+							MessageBoxDefaultButton.Button1,
+							0);
 				return;
 			}
 
