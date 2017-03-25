@@ -108,11 +108,11 @@ namespace MapView
 		public bool SelectGrayscale
 		{
 			get { return _selectGrayscale; }
-//			set
-//			{
-//				_selectGrayscale = value;
-//				Refresh();
-//			}
+			set
+			{
+				_selectGrayscale = value;
+				Refresh();
+			}
 		}
 
 		public void ClearSelection()
