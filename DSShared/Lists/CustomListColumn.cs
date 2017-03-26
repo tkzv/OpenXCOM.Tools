@@ -32,9 +32,11 @@ namespace DSShared.Lists
 	/// </summary>
 	public class CustomListColumn
 	{
-		private ObjProperty colProperty;
-		private string title;
-		private int width=50, left, index;
+		private ObjProperty _colProperty;
+		private string _title;
+		private int _width = 50;
+		private int _left;
+		private int _index;
 
 		/// <summary>
 		/// Minimum width of a column
@@ -69,8 +71,8 @@ namespace DSShared.Lists
 		/// <param name="property">ObjProperty that will reflect on the objects contained in the list</param>
 		public CustomListColumn(string title, ObjProperty property)
 		{
-			this.title = title;
-			this.colProperty = property;
+			_title = title;
+			_colProperty = property;
 		}
 
 		/// <summary>
@@ -80,8 +82,8 @@ namespace DSShared.Lists
 		/// <param name="property">PropertyInfo that will reflect on the objects contained in the list</param>
 		public CustomListColumn(string title, System.Reflection.PropertyInfo property)
 		{
-			this.title = title;
-			this.colProperty = new ObjProperty(property);
+			_title = title;
+			_colProperty = new ObjProperty(property);
 		}
 
 		/// <summary>
@@ -90,7 +92,7 @@ namespace DSShared.Lists
 		/// <param name="title">Column title</param>
 		public CustomListColumn(string title)
 			:
-			this(title,(ObjProperty)null)
+			this(title, (ObjProperty)null)
 		{}
 
 		/// <summary>
@@ -116,7 +118,7 @@ namespace DSShared.Lists
 		}
 
 		/// <summary>
-		/// Raises the KeyPress event for the specified row
+		/// Raises the KeyPress event for the specified row.
 		/// </summary>
 		/// <param name="row">Row to raise event with</param>
 		/// <param name="e">Args</param>
@@ -127,16 +129,16 @@ namespace DSShared.Lists
 		}
 
 		/// <summary>
-		/// Gets the hash code of the title of this column
+		/// Gets the hash code of the title of this column.
 		/// </summary>
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return title.GetHashCode(); // TODO: fix: Non-readonly field referenced ....
+			return _title.GetHashCode(); // TODO: fix: Non-readonly field referenced ....
 		}
 
 		/// <summary>
-		/// Raises the OnClick event for the specified row
+		/// Raises the OnClick event for the specified row.
 		/// </summary>
 		/// <param name="row">Row to raise event with</param>
 		public void FireClick(ObjRow row)
@@ -146,14 +148,14 @@ namespace DSShared.Lists
 		}
 
 		/// <summary>
-		/// Resizes the title width based on the size of the input font
+		/// Resizes the title width based on the size of the input font.
 		/// </summary>
 		/// <param name="font"></param>
 		public void ResizeTitle(System.Drawing.Font font)
 		{
 			Width = Math.Max(
 						MinWidth,
-						TextRenderer.MeasureText(title, font).Width) + 2;
+						TextRenderer.MeasureText(_title, font).Width) + 2;
 		}
 
 
@@ -163,59 +165,63 @@ namespace DSShared.Lists
 		/// <value>The title.</value>
 		public string Title
 		{
-			get { return title; }
-			set { title = value; }
+			get { return _title; }
+			set { _title = value; }
 		}
 
 		/// <summary>
-		/// Gets or sets the index. This value is the position in the column list
+		/// Gets or sets the index. This value is the position in the column list.
 		/// </summary>
 		/// <value>The index.</value>
 		public int Index
 		{
-			get { return index; }
-			set { index = value; }
+			get { return _index; }
+			set { _index = value; }
 		}
 
 		/// <summary>
-		/// Gets or sets the property this column holds
+		/// Gets or sets the property this column holds.
 		/// </summary>
 		/// <value>The property.</value>
 		public ObjProperty Property
 		{
-			get { return colProperty; }
-			set { colProperty = value; }
+			get { return _colProperty; }
+			set { _colProperty = value; }
 		}
 
 		/// <summary>
-		/// Gets or sets the left in screen coordinates
+		/// Gets or sets the left in screen coordinates.
 		/// </summary>
 		/// <value>The left.</value>
 		public int Left
 		{
-			get { return left; }
+			get { return _left; }
 			set
 			{
-				int diff = left - value;
-				left = value;
+				int diff = _left - value;
+
+				_left = value;
+
 				if (LeftChanged != null)
 					LeftChanged(this, diff);
 			}
 		}
 
 		/// <summary>
-		/// Gets or sets the width of the column in screen coordinates
+		/// Gets or sets the width of the column in screen coordinates.
 		/// </summary>
 		/// <value>The width.</value>
 		public int Width
 		{
-			get { return width; }
+			get { return _width; }
 			set
 			{
 				if (value >= MinWidth)
 				{
-					int diff = width - value;
-					width = value;
+					int diff = _width - value;
+
+					_width = value;
+
 					if (WidthChanged != null)
 						WidthChanged(this, diff);
 				}
@@ -226,20 +232,22 @@ namespace DSShared.Lists
 	/// <summary>
 	/// Args class that holds a row and a column. 
 	/// </summary>
-	public class RowClickEventArgs:EventArgs
+	public class RowClickEventArgs
+		:
+		EventArgs
 	{
-		private ObjRow row;
-		private CustomListColumn col;
+		private readonly ObjRow _row;
+		private readonly CustomListColumn _col;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:DSShared.Lists.RowClickEventArgs"/> class.
 		/// </summary>
-		/// <param name="row">The row that was clicked on</param>
-		/// <param name="col">The column that was clicked under</param>
+		/// <param name="row">the row that was clicked on</param>
+		/// <param name="col">the column that was clicked under</param>
 		public RowClickEventArgs(ObjRow row, CustomListColumn col)
 		{
-			this.row = row;
-			this.col = col;
+			_row = row;
+			_col = col;
 		}
 
 		/// <summary>
@@ -248,7 +256,7 @@ namespace DSShared.Lists
 		/// <value>The row.</value>
 		public ObjRow Row
 		{
-			get { return row; }
+			get { return _row; }
 		}
 
 		/// <summary>
@@ -257,7 +265,7 @@ namespace DSShared.Lists
 		/// <value>The column.</value>
 		public CustomListColumn Column
 		{
-			get { return col; }
+			get { return _col; }
 		}
 	}
 }

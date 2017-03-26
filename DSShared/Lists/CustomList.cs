@@ -382,19 +382,21 @@ namespace DSShared.Lists
 			AddItem((ObjRow)ci.Invoke(new object[]{ o })); // add row.
 		}
 
+		// GOOD GOD QUIT WASTING MY FUCKING TIME!!! oh sry.
+
 		/// <summary>
 		/// Adds an ObjRow to the collection.
 		/// </summary>
 		/// <param name="row">the row to add</param>
 		public virtual void AddItem(ObjRow row)
 		{
-			row.Top = _startY;
-			row.Width = Width;
+			row.SetTop(_startY);
+//			row.SetWidth(Width);
 //			row.Height = RowHeight;
 			row.Height += Font.Height + _columns.RowSpace * 2;
-			row.Columns = _columns;
+			row.SetColumns(_columns);
 			row.RefreshEvent += new RefreshDelegate(Refresh);
-			row.RowIndex = _items.Count;
+			row.SetRowIndex(_items.Count);
 			_items.Add(row);
 			_startY += Font.Height + _columns.RowSpace * 2;
 

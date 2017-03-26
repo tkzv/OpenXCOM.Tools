@@ -29,17 +29,15 @@ namespace MapView
 		private Point _dragStart;
 		private Point _dragEnd;
 
+		private GraphicsPath _gridUnder;
+		private Color _colorGrid;
+		private Brush _brushTrans;
 		private Pen _penDash;
 
 		private bool _selectGrayscale = true;
-
-		private GraphicsPath _gridUnder;
-		private Brush _brushTrans;
-		private Color _colorGrid;
-
 		private bool _useGrid = true;
-		private bool _drawSelectionBox;
 
+		private bool _drawSelectionBox;
 		public bool DrawSelectionBox
 		{
 			get { return _drawSelectionBox; }
@@ -217,6 +215,11 @@ namespace MapView
 			}
 		}
 
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			Refresh();
+		}
+
 		/// <summary>
 		/// Scrolls the z-axis for MapView.
 		/// </summary>
@@ -226,11 +229,6 @@ namespace MapView
 			base.OnMouseWheel(e);
 			if		(e.Delta < 0) _baseMap.Up();
 			else if	(e.Delta > 0) _baseMap.Down();
-		}
-
-		protected override void OnMouseUp(MouseEventArgs e)
-		{
-			Refresh();
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
@@ -402,12 +400,6 @@ namespace MapView
 				dragRect.Width  += 1;
 				dragRect.Height += 1;
 
-				var insideDragRect = dragRect;
-				insideDragRect.X += 1;
-				insideDragRect.Y += 1;
-				insideDragRect.Width  -= 2;
-				insideDragRect.Height -= 2;
-
 				int halfWidth  = (int)(HalfWidth  * Globals.PckImageScale);
 				int halfHeight = (int)(HalfHeight * Globals.PckImageScale);
 
@@ -418,26 +410,26 @@ namespace MapView
 						DrawGrid(h, g);
 
 						for (int
-								row = 0, startY = _origin.Y + (halfHeight * h * 3), startX = _origin.X;
-								row != _baseMap.MapSize.Rows;
-								++row, startY += halfHeight, startX -= halfWidth)
+								r = 0, startY = _origin.Y + (halfHeight * h * 3), startX = _origin.X;
+								r != _baseMap.MapSize.Rows;
+								++r, startY += halfHeight, startX -= halfWidth)
 						{
 							for (int
-									col = 0, x = startX, y = startY;
-									col != _baseMap.MapSize.Cols;
-									++col, x += halfWidth, y += halfHeight)
+									c = 0, x = startX, y = startY;
+									c != _baseMap.MapSize.Cols;
+									++c, x += halfWidth, y += halfHeight)
 							{
-								var tileRect = new Rectangle(col, row, 1, 1);
+								var tileRect = new Rectangle(c, r, 1, 1);
 
-								bool isClicked = (row == _dragStart.Y && col == _dragStart.X)
-											  || (row == _dragEnd.Y   && col == _dragEnd.X);
+								bool isClicked = (r == _dragStart.Y && c == _dragStart.X)
+											  || (r == _dragEnd.Y   && c == _dragEnd.X);
 
 								if (isClicked)
 									DrawCursor(g, x, y, h);
 
-								if (_baseMap.CurrentHeight == h || _baseMap[row, col, h].DrawAbove)
+								if (_baseMap.CurrentHeight == h || _baseMap[r, c, h].DrawAbove)
 								{
-									var tile = (XCMapTile)_baseMap[row, col, h];
+									var tile = (XCMapTile)_baseMap[r, c, h];
 									if (_selectGrayscale
 										&& (isClicked || dragRect.IntersectsWith(tileRect)))
 									{

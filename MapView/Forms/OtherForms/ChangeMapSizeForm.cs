@@ -57,25 +57,21 @@ namespace MapView
 		}
 
 		private int _rows;
-		private int _cols;
-		private int _height;
-
 		public int NewRows
 		{
 			get { return _rows; }
-			private set { _rows = value; }
 		}
 
+		private int _cols;
 		public int NewCols
 		{
 			get { return _cols; }
-			private set { _cols = value; }
 		}
 
+		private int _height;
 		public int NewHeight
 		{
 			get { return _height; }
-			private set { _height = value; }
 		}
 
 		public bool AddHeightToCeiling

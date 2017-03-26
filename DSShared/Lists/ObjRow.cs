@@ -12,53 +12,53 @@ namespace DSShared.Lists
 		:
 		IComparable
 	{
-		#region protected variables
 		/// <summary>
 		/// The object this row wraps around.
 		/// </summary>
-		protected Object _obj;
+		private Object _obj;
 
 		/// <summary>
 		/// The list of columns that specify what information of the obj is being displayed.
 		/// </summary>
-		protected CustomListColumnCollection _columns;
+		private CustomListColumnCollection _columns;
 
 		/// <summary>
 		/// Row screen information.
 		/// </summary>
-		protected int width, height, top;
+//		private int _width;
+		private int _top;
 
 		/// <summary>
 		/// Selected column.
 		/// </summary>
-		protected CustomListColumn selCol = null;
+		private CustomListColumn _colSelected;
 
 		/// <summary>
 		/// Clicked-on column.
 		/// </summary>
-		protected CustomListColumn clickCol = null;
+		private CustomListColumn _colClicked;
 
 		/// <summary>
 		/// Timer to make a blinking cursor when an editable cell is clicked on.
 		/// </summary>
-		protected Timer cursorTimer = null;
+		private Timer _cursorTimer;
 
 		/// <summary>
 		/// String for the blinking cursor.
 		/// </summary>
-		protected string addStr = String.Empty;
+		private string _addStr = String.Empty;
 
 		/// <summary>
 		/// Timer information.
 		/// </summary>
-		protected bool flip = true, timerStarted, putDecimal;
+		private bool _flip = true;
+		private bool _timerStarted;
+//		private bool putDecimal;
 
 		/// <summary>
 		/// Row index.
 		/// </summary>
-		protected int rowIdx;
-
-		#endregion
+		private int _rowIdx;
 
 		/// <summary>
 		/// True if in edit mode.
@@ -87,13 +87,13 @@ namespace DSShared.Lists
 			_obj = obj;
 			_columns = columns;
 
-			if (cursorTimer == null)
+			if (_cursorTimer == null)
 			{
-				cursorTimer = new Timer();
-				cursorTimer.Interval = 500;
-				cursorTimer.Tick += new EventHandler(timerTick);
+				_cursorTimer = new Timer();
+				_cursorTimer.Interval = 500;
+				_cursorTimer.Tick += new EventHandler(timerTick);
 
-				timerStarted = false;
+				_timerStarted = false;
 			}
 
 			_createdId = _createdTotal++;
@@ -138,13 +138,12 @@ namespace DSShared.Lists
 		}
 
 		/// <summary>
-		/// Gets/Sets the index of the row. This is its position in the list.
+		/// Sets the index of the row. This is its position in the list.
 		/// </summary>
-		/// <value>The index of the row.</value>
-		public int RowIndex
+		/// <param name="id">the index of the row</param>
+		public void SetRowIndex(int id)
 		{
-			get { return rowIdx; }
-			set { rowIdx = value; }
+			_rowIdx = id;
 		}
 
 		/// <summary>
@@ -179,8 +178,8 @@ namespace DSShared.Lists
 
 		private void timerTick(object sender, EventArgs e)
 		{
-			addStr = flip ? String.Empty : "|";
-			flip = !flip;
+			_addStr = _flip ? String.Empty : "|";
+			_flip = !_flip;
 
 			if (RefreshEvent != null)
 				RefreshEvent();
@@ -188,26 +187,25 @@ namespace DSShared.Lists
 
 		private void startTimer()
 		{
-			if (!timerStarted)
-				cursorTimer.Start();
+			if (!_timerStarted)
+				_cursorTimer.Start();
 		}
 
 		private void stopTimer()
 		{
-			if (timerStarted)
-				cursorTimer.Stop();
+			if (_timerStarted)
+				_cursorTimer.Stop();
 		}
 
-		/// <summary>
-		/// Gets/Sets the width of the row. This is used for the drawing
+/*		/// <summary>
+		/// Sets the width of the row. This is used for the drawing
 		/// function and should not be changed by the user.
 		/// </summary>
-		/// <value>the width</value>
-		public int Width
+		/// <param name="width">the width</param>
+		public void SetWidth(int width)
 		{
-			get { return width; }
-			set { width = value; }
-		}
+			_width = width; // never used.
+		} */
 
 		/// <summary>
 		/// Gets/Sets the height of the row. This is used for the drawing
@@ -215,29 +213,25 @@ namespace DSShared.Lists
 		/// </summary>
 		/// <value>the height</value>
 		public int Height
-		{
-			get { return height; }
-			set { height = value; }
-		}
+		{ get; set; }
 
 		/// <summary>
-		/// Gets/Sets the top. This is used for the drawing function and
+		/// Sets the top. This is used for the drawing function and
 		/// should not be changed by the user.
 		/// </summary>
-		/// <value>the top</value>
-		public int Top
+		/// <param name="top">the top</param>
+		public void SetTop(int top)
 		{
-			get { return top; }
-			set { top = value; }
+			_top = top;
 		}
 
 		/// <summary>
 		/// Sets the column collection used to pull information from the object.
 		/// </summary>
-		/// <value>the columns</value>
-		public CustomListColumnCollection Columns
+		/// <param name="collection">the columns</param>
+		public void SetColumns(CustomListColumnCollection collection)
 		{
-			set { _columns = value; }
+			_columns = collection;
 		}
 
 		/// <summary>
@@ -246,7 +240,7 @@ namespace DSShared.Lists
 		/// <param name="col"></param>
 		public void MouseOver(CustomListColumn col)
 		{
-			selCol = col;
+			_colSelected = col;
 		}
 
 		/// <summary>
@@ -254,7 +248,7 @@ namespace DSShared.Lists
 		/// </summary>
 		public void MouseLeave()
 		{
-			selCol = null;
+			_colSelected = null;
 		}
 
 		/// <summary>
@@ -263,13 +257,13 @@ namespace DSShared.Lists
 		/// <param name="col">the column the mouse was over when the button was clicked</param>
 		public void Click(CustomListColumn col)
 		{
-			clickCol = col;
-			addStr = "|";
-			cursorTimer.Start();
+			_colClicked = col;
+			_addStr = "|";
+			_cursorTimer.Start();
 
 			if (col.Property != null)
 			{
-				_editBuffer = clickCol.Property.Value(_obj).ToString();
+				_editBuffer = _colClicked.Property.Value(_obj).ToString();
 				_editing = true;
 			}
 			col.FireClick(this);
@@ -281,24 +275,24 @@ namespace DSShared.Lists
 		/// </summary>
 		public void UnClick()
 		{
-			cursorTimer.Stop();
+			_cursorTimer.Stop();
 
-			if (clickCol != null && clickCol.Property != null)
+			if (_colClicked != null && _colClicked.Property != null)
 			{
 //				try
 //				{
-				switch (clickCol.Property.EditType)
+				switch (_colClicked.Property.EditType)
 				{
 					case EditStrType.String:
-						clickCol.Property.SetValue(_obj, _editBuffer);
+						_colClicked.Property.SetValue(_obj, _editBuffer);
 						break;
 
 					case EditStrType.Int:
-						clickCol.Property.SetValue(_obj, int.Parse(_editBuffer));
+						_colClicked.Property.SetValue(_obj, int.Parse(_editBuffer));
 						break;
 
 					case EditStrType.Float:
-						clickCol.Property.SetValue(_obj, double.Parse(_editBuffer));
+						_colClicked.Property.SetValue(_obj, double.Parse(_editBuffer));
 						break;
 				}
 //				}
@@ -310,8 +304,8 @@ namespace DSShared.Lists
 				_editing = false;
 			}
 
-			clickCol = null;
-			addStr = String.Empty;
+			_colClicked = null;
+			_addStr = String.Empty;
 
 			FireRefresh();
 		}
@@ -332,17 +326,17 @@ namespace DSShared.Lists
 		/// instance containing the event data.</param>
 		public void KeyPress(KeyPressEventArgs e)
 		{
-			clickCol.FireKeyPress(this, e);
+			_colClicked.FireKeyPress(this, e);
 
-			if (clickCol != null && clickCol.Property.EditType != EditStrType.None)
+			if (_colClicked != null && _colClicked.Property.EditType != EditStrType.None)
 			{
-				switch (clickCol.Property.EditType)
+				switch (_colClicked.Property.EditType)
 				{
 					case EditStrType.Custom:
-						if (clickCol.Property.KeyFunction == null)
+						if (_colClicked.Property.KeyFunction == null)
 							throw new Exception("KeyFunction was not initialized");
 
-						clickCol.Property.KeyFunction(this, clickCol, e);
+						_colClicked.Property.KeyFunction(this, _colClicked, e);
 						break;
 
 					default:
@@ -389,18 +383,18 @@ namespace DSShared.Lists
 				int startX = 0;
 				var rowRect = new System.Drawing.RectangleF(
 														_columns.OffX,
-														top + yOffset + 1,
+														_top + yOffset + 1,
 														_columns.TableWidth - 1,
 														_columns.Font.Height + _columns.RowSpace * 2 - 1);
-				if (selCol != null)
+				if (_colSelected != null)
 					e.Graphics.FillRectangle(Brushes.LightGreen, rowRect);
 
-				if (clickCol != null)
+				if (_colClicked != null)
 				{
 					var rect = new System.Drawing.Rectangle(
-														clickCol.Left,
-														top + yOffset + 1,
-														clickCol.Width,
+														_colClicked.Left,
+														_top + yOffset + 1,
+														_colClicked.Width,
 														_columns.Font.Height + _columns.RowSpace + 1);
 					e.Graphics.FillRectangle(Brushes.LightSeaGreen, rowRect);
 					e.Graphics.FillRectangle(Brushes.LightSteelBlue, rect);
@@ -412,50 +406,51 @@ namespace DSShared.Lists
 
 					var rect = new System.Drawing.Rectangle(
 														startX + _columns.OffX,
-														top + yOffset + _columns.RowSpace,
+														_top + yOffset + _columns.RowSpace,
 														col.Width - 4,
 														_columns.Font.Height);
 
-					if (clickCol == col
+					if (_colClicked == col
 						&& col.Property != null
-						&& clickCol.Property.EditType == EditStrType.Custom)
+						&& _colClicked.Property.EditType == EditStrType.Custom)
 					{
 						e.Graphics.DrawString(
-										col.Property.Value(_obj).ToString() + addStr,
+										col.Property.Value(_obj).ToString() + _addStr,
 										_columns.Font,
-										System.Drawing.Brushes.Black,
+										Brushes.Black,
 										rect);
 					}
-					else if (clickCol == col
+					else if (_colClicked == col
 						&& col.Property != null
-						&& clickCol.Property.EditType != EditStrType.None)
+						&& _colClicked.Property.EditType != EditStrType.None)
 					{
 						e.Graphics.DrawString(
-										(_editing ? _editBuffer : col.Property.Value(_obj).ToString()) + addStr,
+										(_editing ? _editBuffer : col.Property.Value(_obj).ToString()) + _addStr,
 										_columns.Font,
-										System.Drawing.Brushes.Black,
+										Brushes.Black,
 										rect);
 					}
 					else if (col.Property != null)
 					{
 						e.Graphics.DrawString(
-										col.Property.Value(_obj).ToString() + (putDecimal ? "." : String.Empty),
+//										col.Property.Value(_obj).ToString() + (putDecimal ? "." : String.Empty),
+										col.Property.Value(_obj).ToString() + String.Empty,
 										_columns.Font,
-										System.Drawing.Brushes.Black,
+										Brushes.Black,
 										rect);
 					}
 
 					startX += col.Width;
-					if (selCol == col)
+					if (_colSelected == col)
 						e.Graphics.DrawRectangle(Pens.Red, rect);
 				}
 
 				e.Graphics.DrawLine(
 								Pens.Black,
 								_columns.OffX,
-								top + _columns.Font.Height + _columns.RowSpace * 2 + yOffset,
+								_top + _columns.Font.Height + _columns.RowSpace * 2 + yOffset,
 								_columns.TableWidth - 1,
-								top + _columns.Font.Height + _columns.RowSpace * 2 + yOffset);
+								_top + _columns.Font.Height + _columns.RowSpace * 2 + yOffset);
 			}
 		}
 
