@@ -13,7 +13,7 @@ using DSShared.Windows;
 
 namespace MapView
 {
-	public class PropertyForm
+	internal sealed class PropertyForm
 		:
 		Form
 	{
@@ -126,6 +126,8 @@ namespace MapView
 			set { _instantUpdate = value; }
 		}
 
+		// FxCop CA2123:OverrideLinkDemandsShouldBeIdenticalToBase
+		[System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.LinkDemand, Name = "FullTrust")]
 		protected override void OnPropertyValueChanged(PropertyValueChangedEventArgs e)
 		{
 			base.OnPropertyValueChanged(e);

@@ -5,17 +5,27 @@ namespace MapView
 {
 	public static class Globals
 	{
-		public static double MinPckImageScale	= 0.3;
-		public static double MaxPckImageScale	= 2.0;
-		public static double PckImageScale		= 1.0;
+		public const double MinPckImageScale = 0.3;
+		public const double MaxPckImageScale = 2.0;
 
-		public static bool AutoPckImageScale = true;
+		private static double _pckImageScale = 1.0;
+		public static double PckImageScale
+		{
+			get { return _pckImageScale; }
+			set { _pckImageScale = value; }
+		}
 
-		public static readonly string RegistryKey = "MapView";
+		private static bool _autoPckImageScale = true;
+		public static bool AutoPckImageScale
+		{
+			get { return _autoPckImageScale; }
+			set { _autoPckImageScale = value; }
+		}
+
+//		public static readonly string RegistryKey = "MapView";
 
 
-		private static XCom.PckFile _extraTiles = null;
-
+		private static XCom.PckFile _extraTiles;
 		public static XCom.PckFile ExtraTiles
 		{
 			get { return _extraTiles; }
@@ -25,15 +35,16 @@ namespace MapView
 		{
 			if (_extraTiles == null)
 			{
-				using (System.IO.Stream sPck = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("MapView._Embedded.Extra.PCK"))
-				using (System.IO.Stream sTab = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("MapView._Embedded.Extra.TAB"))
+				using (System.IO.Stream strPck = System.Reflection.Assembly.GetExecutingAssembly()
+												.GetManifestResourceStream("MapView._Embedded.Extra.PCK"))
+				using (System.IO.Stream strTab = System.Reflection.Assembly.GetExecutingAssembly()
+												.GetManifestResourceStream("MapView._Embedded.Extra.TAB"))
 				{
 					_extraTiles = new XCom.PckFile(
-												sPck,
-												sTab,
+												strPck,
+												strTab,
 												2,
 												XCom.Palette.UFOBattle);
-//												XCom.Palette.TFTDBattle);
 				}
 			}
 		}

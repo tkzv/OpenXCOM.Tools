@@ -58,7 +58,7 @@ namespace MapView
 			_baseMap = null;
 
 			_dragStart =
-			_dragEnd   = new Point(-1, -1);
+			_dragEnd   = new Point(-1, -1); // NOTE: after class instantiation this value is no longer allowed.
 
 			SetStyle(
 					ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint,
@@ -257,6 +257,7 @@ namespace MapView
 			private set
 			{
 				_dragStart = value;
+
 				if		(_dragStart.Y < 0) _dragStart.Y = 0;
 				else if	(_dragStart.Y >= _baseMap.MapSize.Rows) _dragStart.Y = _baseMap.MapSize.Rows - 1;
 
@@ -271,6 +272,7 @@ namespace MapView
 			private set
 			{
 				_dragEnd = value;
+
 				if		(_dragEnd.Y < 0) _dragEnd.Y = 0;
 				else if	(_dragEnd.Y >= _baseMap.MapSize.Rows) _dragEnd.Y = _baseMap.MapSize.Rows - 1;
 
@@ -283,8 +285,8 @@ namespace MapView
 		{
 			if (_dragStart != dragStart || _dragEnd != dragEnd)
 			{
-				_dragStart = dragStart;
-				_dragEnd   = dragEnd;
+				DragStart = dragStart;
+				DragEnd   = dragEnd;
 	
 				if (DragChanged != null)
 					DragChanged(this, EventArgs.Empty);
@@ -296,15 +298,15 @@ namespace MapView
 		private Point GetDragStart()
 		{
 			var start = new Point();
-			start.X = Math.Max(Math.Min(_dragStart.X, _dragEnd.X), 0);
-			start.Y = Math.Max(Math.Min(_dragStart.Y, _dragEnd.Y), 0);
+			start.X = Math.Max(Math.Min(_dragStart.X, _dragEnd.X), 0); // TODO: these bounds should have been taken care of
+			start.Y = Math.Max(Math.Min(_dragStart.Y, _dragEnd.Y), 0); // unless drag is being gotten right after instantiation ....
 			return start;
 		}
 
 		private Point GetDragEnd()
 		{
 			var end = new Point();
-			end.X = Math.Max(_dragStart.X, _dragEnd.X);
+			end.X = Math.Max(_dragStart.X, _dragEnd.X); // wft: is dragend not dragend ...
 			end.Y = Math.Max(_dragStart.Y, _dragEnd.Y);
 			return end;
 		}
@@ -324,10 +326,11 @@ namespace MapView
 				{
 					_baseMap.HeightChanged += MapHeight;
 					_baseMap.SelectedTileChanged += TileChange;
+
 					SetupMapSize();
 
-//					_dragStart = _dragStart; // Calculate drag
-//					_dragEnd   = _dragEnd;
+//					DragStart = _dragStart;	// this might be how to give drags their legitimate values
+//					DragEnd   = _dragEnd;	// after initialization to Point(-1/-1).
 				}
 			}
 		}
@@ -405,35 +408,38 @@ namespace MapView
 				insideDragRect.Width  -= 2;
 				insideDragRect.Height -= 2;
 
-				var halfWidth  = (int)(HalfWidth  * Globals.PckImageScale);
-				var halfHeight = (int)(HalfHeight * Globals.PckImageScale);
+				int halfWidth  = (int)(HalfWidth  * Globals.PckImageScale);
+				int halfHeight = (int)(HalfHeight * Globals.PckImageScale);
 
-				for (var h = _baseMap.MapSize.Height - 1; h > -1; --h)
+				for (int h = _baseMap.MapSize.Height - 1; h > -1; --h)
 				{
 					if (_baseMap.CurrentHeight <= h)
 					{
 						DrawGrid(h, g);
 
-						var startY = _origin.Y + (halfHeight * 3 * h);
-						var startX = _origin.X;
-
-						for (var row = 0; row != _baseMap.MapSize.Rows; ++row)
+						for (int
+								row = 0, startY = _origin.Y + (halfHeight * h * 3), startX = _origin.X;
+								row != _baseMap.MapSize.Rows;
+								++row, startY += halfHeight, startX -= halfWidth)
 						{
-							var x = startX;
-							var y = startY;
-							for (var col = 0; col != _baseMap.MapSize.Cols; ++col)
+							for (int
+									col = 0, x = startX, y = startY;
+									col != _baseMap.MapSize.Cols;
+									++col, x += halfWidth, y += halfHeight)
 							{
-								var isClickedLocation = IsDragEndOrStart(row, col);
 								var tileRect = new Rectangle(col, row, 1, 1);
 
-								if (isClickedLocation)
+								bool isClicked = (row == _dragStart.Y && col == _dragStart.X)
+											  || (row == _dragEnd.Y   && col == _dragEnd.X);
+
+								if (isClicked)
 									DrawCursor(g, x, y, h);
 
 								if (_baseMap.CurrentHeight == h || _baseMap[row, col, h].DrawAbove)
 								{
-									var tile = (XCMapTile) _baseMap[row, col, h];
+									var tile = (XCMapTile)_baseMap[row, col, h];
 									if (_selectGrayscale
-										&& (isClickedLocation || dragRect.IntersectsWith(tileRect)))
+										&& (isClicked || dragRect.IntersectsWith(tileRect)))
 									{
 										DrawTileGray(g, tile, x, y);
 									}
@@ -441,20 +447,14 @@ namespace MapView
 										DrawTile(g, tile, x, y);
 								}
 
-								if (isClickedLocation && _cursor != null)
+								if (isClicked && _cursor != null)
 									_cursor.DrawLow(
 												g,
 												x, y,
 												MapViewPanel.Current,
 												false,
 												_baseMap.CurrentHeight == h);
-
-								x += halfWidth;
-								y += halfHeight;
 							}
-
-							startY += halfHeight;
-							startX -= halfWidth;
 						}
 					}
 				}
@@ -472,12 +472,6 @@ namespace MapView
 							x, y,
 							false,
 							_baseMap.CurrentHeight == h);
-		}
-
-		private bool IsDragEndOrStart(int row, int col)
-		{
-			return (row == _dragEnd.Y   && col == _dragEnd.X)
-				|| (row == _dragStart.Y && col == _dragStart.X);
 		}
 
 		private void DrawGrid(int h, Graphics g)
