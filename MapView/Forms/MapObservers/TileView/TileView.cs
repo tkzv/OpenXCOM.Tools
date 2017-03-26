@@ -179,7 +179,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			OnSelectedTileTypeChanged(tile);
 		}
 
-		public override IMap_Base Map
+		public override IMapBase Map
 		{
 			set
 			{

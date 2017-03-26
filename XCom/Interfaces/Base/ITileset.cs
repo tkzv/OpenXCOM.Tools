@@ -7,48 +7,48 @@ namespace XCom.Interfaces.Base
 {
 	public class ITileset
 	{
-		protected string name;
-		protected Dictionary<string, IMapDesc> maps;
+		private readonly string _name;
+		public string Name
+		{
+			get { return _name; }
+		}
 
-		// <tilest name>
-		// | <map name> -> map data
-		// | <map name> -> map data
-		protected Dictionary<string, Dictionary<string, IMapDesc>> subsets;
+		private readonly Dictionary<string, IMapDesc> _mapDescs;
+		protected Dictionary<string, IMapDesc> MapDescs
+		{
+			get { return _mapDescs; }
+		}
+
+		private readonly Dictionary<string, Dictionary<string, IMapDesc>> _subsets;
+		public Dictionary<string, Dictionary<string, IMapDesc>> Subsets
+		{
+			get { return _subsets; }
+		}
 
 
 		protected ITileset(string name)
 		{
-			this.name = name;
-			maps = new Dictionary<string, IMapDesc>();
-			subsets = new Dictionary<string, Dictionary<string, IMapDesc>>();
+			_name = name;
+			_mapDescs = new Dictionary<string, IMapDesc>();
+			_subsets = new Dictionary<string, Dictionary<string, IMapDesc>>();
 		}
 
 
-		public ICollection MapList
+		public IMapDesc this[string name]
 		{
-			get { return maps.Keys; }
-		}
-
-		public IMapDesc this[string mapName]
-		{
-			get { return maps[mapName]; }
+			get { return _mapDescs[name]; }
 			set
 			{
-				if (!maps.ContainsKey(mapName))
-					maps.Add(mapName, value);
+				if (!_mapDescs.ContainsKey(name)) // isNecessary(?)
+					_mapDescs.Add(name, value);
 
-				maps[mapName] = value;
+				_mapDescs[name] = value;
 			}
 		}
 
-		public Dictionary<string, Dictionary<string, IMapDesc>> Subsets
+/*		public ICollection MapList
 		{
-			get { return subsets; }
-		}
-
-		public string Name
-		{
-			get { return name; }
-		}
+			get { return _mapDescs.Keys; }
+		} */
 	}
 }

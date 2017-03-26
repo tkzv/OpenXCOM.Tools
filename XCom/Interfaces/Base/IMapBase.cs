@@ -8,17 +8,15 @@ using XCom.Services;
 
 namespace XCom.Interfaces.Base
 {
-	public delegate void HeightChangedDelegate(IMap_Base sender, HeightChangedEventArgs e);
-	public delegate void SelectedTileChangedDelegate(IMap_Base sender, SelectedTileChangedEventArgs e);
+	public delegate void HeightChangedEventHandler(IMapBase sender, HeightChangedEventArgs e);
+	public delegate void SelectedTileChangedEventHandler(IMapBase sender, SelectedTileChangedEventArgs e);
 
 
 	/// <summary>
 	/// Abstract base class definining all common functionality of an editable Map.
 	/// </summary>
-	public class IMap_Base
+	public class IMapBase
 	{
-		protected MapTileList MapData;
-
 		private MapLocation _selLoc;
 
 		private const int HalfWidth  = 16;
@@ -34,12 +32,15 @@ namespace XCom.Interfaces.Base
 		{ get; set; }
 
 
-		protected IMap_Base(string name, List<TileBase> tiles)
+		protected IMapBase(string name, List<TileBase> tiles)
 		{
 			Name = name;
 			Tiles = tiles;
 		}
 
+
+		protected MapTileList MapTiles
+		{ get; set; }
 
 		public string Name
 		{ get; protected set; }
@@ -49,11 +50,11 @@ namespace XCom.Interfaces.Base
 
 		public virtual void Save()
 		{
-			throw new Exception("IMap_Base: Save() is not implemented."); // ... odd ....
+			throw new Exception("IMapBase: Save() is not implemented."); // ... odd ....
 		}
 
-		public event HeightChangedDelegate HeightChanged;
-		public event SelectedTileChangedDelegate SelectedTileChanged;
+		public event HeightChangedEventHandler HeightChanged;
+		public event SelectedTileChangedEventHandler SelectedTileChanged;
 
 		/// <summary>
 		/// Changes the '_curHeight' property and fires a HeightChanged event.
@@ -143,10 +144,10 @@ namespace XCom.Interfaces.Base
 		{
 			get
 			{
-				return (MapData != null) ? MapData[row, col, height]
-										 : null;
+				return (MapTiles != null) ? MapTiles[row, col, height]
+										   : null;
 			}
-			set { MapData[row, col, height] = value; }
+			set { MapTiles[row, col, height] = value; }
 		}
 
 		/// <summary>
@@ -181,11 +182,11 @@ namespace XCom.Interfaces.Base
 												newC,
 												newH,
 												MapSize,
-												MapData,
+												MapTiles,
 												wrtCeiling);
 			if (newMap != null)
 			{
-				MapData = newMap;
+				MapTiles = newMap;
 				MapSize = new MapSize(newR, newC, newH);
 				_height = (byte)(MapSize.Height - 1);
 				MapChanged = true;
@@ -201,7 +202,7 @@ namespace XCom.Interfaces.Base
 		{
 			var palette = GetFirstGroundPalette();
 			if (palette == null)
-				throw new ApplicationException("IMap_Base: At least 1 ground tile is required");
+				throw new ApplicationException("IMapBase: At least 1 ground tile is required");
 
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
 			var b = Bmp.MakeBitmap(
@@ -215,7 +216,7 @@ namespace XCom.Interfaces.Base
 
 			int i = 0;
 
-			if (MapData != null)
+			if (MapTiles != null)
 			{
 				for (int h = MapSize.Height - 1; h >= _height; --h)
 				{

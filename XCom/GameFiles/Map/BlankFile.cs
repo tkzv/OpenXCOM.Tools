@@ -12,7 +12,7 @@ namespace XCom
 		public static void LoadBlank(
 				string baseName,
 				string blankPath,
-				XCom.Interfaces.Base.IMap_Base file)
+				XCom.Interfaces.Base.IMapBase file)
 //				XCMapFile file)
 		{
 			using (var br = new BinaryReader(File.OpenRead(blankPath + baseName + BlankExt)))
@@ -39,15 +39,13 @@ namespace XCom
 					i += inconspicuousVariable;
 					flip = !flip;
 				}
-
-//				br.Close(); // NOTE: the 'using' block closes the stream.
 			}
 		}
 
 		public static void SaveBlank(
 				string baseName,
 				string blankPath,
-				XCom.Interfaces.Base.IMap_Base file)
+				XCom.Interfaces.Base.IMapBase file)
 //				XCMapFile file)
 		{
 			Directory.CreateDirectory(blankPath);

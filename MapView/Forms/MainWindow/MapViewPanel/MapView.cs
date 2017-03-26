@@ -15,7 +15,7 @@ namespace MapView
 		:
 		Panel
 	{
-		private IMap_Base _baseMap;
+		private IMapBase _baseMap;
 
 		private Point _origin = new Point(100, 0);
 
@@ -309,7 +309,7 @@ namespace MapView
 			return end;
 		}
 
-		public IMap_Base Map
+		public IMapBase Map
 		{
 			get { return _baseMap; }
 			set
@@ -367,7 +367,7 @@ namespace MapView
 			set { _viewsize = value; }
 		} */
 
-		private void TileChange(IMap_Base baseMap, SelectedTileChangedEventArgs e)
+		private void TileChange(IMapBase baseMap, SelectedTileChangedEventArgs e)
 		{
 			var loc = e.MapPosition;
 			var start = new Point(loc.Col, loc.Row);
@@ -376,7 +376,7 @@ namespace MapView
 			XCMainWindow.Instance.StatusBarPrintPosition(loc.Col, loc.Row);
 		}
 
-		private void MapHeight(IMap_Base baseMap, HeightChangedEventArgs e)
+		private void MapHeight(IMapBase baseMap, HeightChangedEventArgs e)
 		{
 			Refresh();
 		}

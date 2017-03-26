@@ -4,16 +4,16 @@ using System.Collections.Generic;
 
 namespace XCom.Interfaces.Base
 {
-	public interface IMap_Observer
+	public interface IMapObserver
 	{
-		void SelectedTileChanged(IMap_Base sender, SelectedTileChangedEventArgs e);
-		void HeightChanged(IMap_Base sender, HeightChangedEventArgs e);
+		void SelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e);
+		void HeightChanged(IMapBase sender, HeightChangedEventArgs e);
 
 
-		IMap_Base Map
+		IMapBase Map
 		{ set; get;}
 
-		Dictionary<string, IMap_Observer> MoreObservers
+		Dictionary<string, IMapObserver> MoreObservers
 		{ get; }
 
 		DSShared.Windows.RegistryInfo RegistryInfo
@@ -22,22 +22,22 @@ namespace XCom.Interfaces.Base
 
 
 	/// <summary>
-	/// EventArgs with an IMap_Base for when a SetMap event fires.
+	/// EventArgs with an IMapBase for when a SetMap event fires.
 	/// </summary>
 	public class SetMapEventArgs
 		:
 		EventArgs
 	{
-		private readonly IMap_Base _baseMap;
+		private readonly IMapBase _baseMap;
 
 
-		public SetMapEventArgs(IMap_Base baseMap)
+		public SetMapEventArgs(IMapBase baseMap)
 		{
 			_baseMap = baseMap;
 		}
 
 
-		public IMap_Base Map
+		public IMapBase Map
 		{
 			get { return _baseMap; }
 		}

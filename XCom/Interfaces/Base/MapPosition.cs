@@ -9,10 +9,6 @@ namespace XCom.Interfaces.Base
 		private readonly int _cMax;
 		private readonly int _hMax;
 
-		private int _r;
-		private int _c;
-		private int _h;
-
 
 		public MapPosition(int rows, int cols, int height)
 		{
@@ -37,24 +33,9 @@ namespace XCom.Interfaces.Base
 			get { return _hMax; }
 		}
 
-		public int Rows
+		public int GetLocationId(int r, int c, int h)
 		{
-			set { _r = value; }
-		}
-
-		public int Cols
-		{
-			set { _c = value; }
-		}
-
-		public int Height
-		{
-			set { _h = value; }
-		}
-
-		public int GetLocationId()
-		{
-			return (_rMax * _cMax * _h) + (_cMax * _r) + _c;
+			return (_rMax * _cMax * h) + (_cMax * r) + c;
 		}
 	}
 }

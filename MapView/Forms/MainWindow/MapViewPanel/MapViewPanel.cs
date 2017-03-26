@@ -86,7 +86,7 @@ namespace MapView
 			}
 		}
 
-		public IMap_Base BaseMap
+		public IMapBase BaseMap
 		{
 			get { return _mapView.Map; }
 		}
@@ -157,7 +157,7 @@ namespace MapView
 			_mapView.Refresh();
 		}
 
-		public void SetMap(IMap_Base baseMap)
+		public void SetMap(IMapBase baseMap)
 		{
 			_mapView.Map = baseMap;
 			_mapView.Focus();

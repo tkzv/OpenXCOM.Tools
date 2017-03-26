@@ -144,7 +144,7 @@ namespace MapView
 
 					list1.Clear();
 
-					foreach (string ob1 in it.Subsets.Keys) // subsets
+					foreach (string ob1 in it.Subsets.Keys) // make a node for each subset
 						list1.Add(ob1);
 
 					list1.Sort();

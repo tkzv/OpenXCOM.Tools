@@ -29,7 +29,7 @@ namespace MapView
 		private System.Windows.Forms.Label label2;
 
 		private CheckBox CeilingCheckBox;
-		private IMap_Base _baseMap;
+		private IMapBase _baseMap;
 
 
 		public ChangeMapSizeForm()
@@ -39,7 +39,7 @@ namespace MapView
 		}
 
 
-		public IMap_Base Map
+		public IMapBase Map
 		{
 			get { return _baseMap; }
 			set

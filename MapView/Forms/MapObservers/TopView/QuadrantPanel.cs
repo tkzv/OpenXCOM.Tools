@@ -113,14 +113,14 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh();
 		}
 
-		public override void HeightChanged(IMap_Base sender, HeightChangedEventArgs e)
+		public override void HeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
 			_lastLoc.Height = e.NewHeight;
 			_mapTile = Map[_lastLoc.Row, _lastLoc.Col] as XCMapTile;
 			Refresh();
 		}
 
-		public override void SelectedTileChanged(IMap_Base sender, SelectedTileChangedEventArgs e)
+		public override void SelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			_mapTile = (XCMapTile)e.SelectedTile;
 			_lastLoc = e.MapPosition;

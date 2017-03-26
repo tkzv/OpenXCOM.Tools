@@ -20,7 +20,7 @@ namespace MapView
 		}
 
 
-		public void Analyze(IMap_Base baseMap)
+		public void Analyze(IMapBase baseMap)
 		{
 			groupInfo.Text = "Map: " + baseMap.Name;
 

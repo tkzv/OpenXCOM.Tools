@@ -104,7 +104,7 @@ namespace MapView
 //			}
 //		}
 
-		public void HeightChanged(XCom.Interfaces.Base.IMap_Base mapFile,XCom.Interfaces.Base.HeightChangedEventArgs e)
+		public void HeightChanged(XCom.Interfaces.Base.IMapBase mapFile,XCom.Interfaces.Base.HeightChangedEventArgs e)
 		{
 			int maxLevel = mapFile.MapSize.Height;
 

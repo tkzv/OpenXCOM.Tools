@@ -12,25 +12,25 @@ namespace MapView
 	public class MapObserverControl1
 		:
 		DoubleBufferControl,
-		IMap_Observer
+		IMapObserver
 	{
-		private IMap_Base _baseMap;
+		private IMapBase _baseMap;
 
 		private RegistryInfo _regInfo;
 
-		private readonly Dictionary<string, IMap_Observer> moreObservers;
+		private readonly Dictionary<string, IMapObserver> moreObservers;
 
 
 		public MapObserverControl1()
 		{
-			moreObservers = new Dictionary<string, IMap_Observer>();
+			moreObservers = new Dictionary<string, IMapObserver>();
 		}
 
 
-		#region IMap_Observer Members
+		#region IMapObserver Members
 
 		[Browsable(false), DefaultValue(null)] // DefaultValue *cough
-		public virtual IMap_Base Map
+		public virtual IMapBase Map
 		{
 			get { return _baseMap; }
 			set
@@ -40,12 +40,12 @@ namespace MapView
 			}
 		}
 
-		public virtual void HeightChanged(IMap_Base sender, HeightChangedEventArgs e)
+		public virtual void HeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
 			Refresh();
 		}
 
-		public virtual void SelectedTileChanged(IMap_Base sender, SelectedTileChangedEventArgs e)
+		public virtual void SelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			Refresh();
 		}
@@ -77,7 +77,7 @@ namespace MapView
 		{}
 
 		[Browsable(false)]
-		public Dictionary<string, IMap_Observer> MoreObservers
+		public Dictionary<string, IMapObserver> MoreObservers
 		{
 			get { return moreObservers; }
 		}

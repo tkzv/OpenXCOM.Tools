@@ -59,7 +59,7 @@ namespace XCom
 
 		public override void Save(StreamWriter sw, VarCollection vars)
 		{
-			sw.WriteLine("Tileset:" + name);
+			sw.WriteLine("Tileset:" + Name);
 			sw.WriteLine(Tab + "type:1");
 
 			if (vars.Vars[rootPath] == null)
@@ -79,15 +79,15 @@ namespace XCom
 
 			sw.WriteLine(Tab + "palette:" + myPal.Name);
 
-			foreach (string keySubsets in subsets.Keys)
+			foreach (string keySubsets in Subsets.Keys)
 			{
-				Dictionary<string, IMapDesc> valDesc = subsets[keySubsets];
+				Dictionary<string, IMapDesc> valDesc = Subsets[keySubsets];
 				if (valDesc != null)
 				{
 					var deps = new VarCollection("Deps");
 					foreach (string keyDesc in valDesc.Keys)
 					{
-						var desc = maps[keyDesc] as XCMapDesc;
+						var desc = MapDescs[keyDesc] as XCMapDesc;
 						if (desc != null)
 						{
 							string depList = String.Empty;
@@ -125,20 +125,20 @@ namespace XCom
 								rmpPath,
 								new string[0],
 								myPal);
-			maps[desc.Name] = desc;
-			subsets[subset][desc.Name] = desc;
+			MapDescs[desc.Name] = desc;
+			Subsets[subset][desc.Name] = desc;
 		}
 
 		public override void AddMap(XCMapDesc desc, string subset)
 		{
-			maps[desc.Name] = desc;
-			subsets[subset][desc.Name] = desc;
+			MapDescs[desc.Name] = desc;
+			Subsets[subset][desc.Name] = desc;
 		}
 
 		public override XCMapDesc RemoveMap(string name, string subset)
 		{
-			var desc = subsets[subset][name] as XCMapDesc;
-			subsets[subset].Remove(name);
+			var desc = Subsets[subset][name] as XCMapDesc;
+			Subsets[subset].Remove(name);
 			return desc;
 		}
 
@@ -153,7 +153,7 @@ namespace XCom
 				case "FILES":
 				{
 					var dictDescs = new Dictionary<string, IMapDesc>();
-					subsets[line] = dictDescs;
+					Subsets[line] = dictDescs;
 					string lineVars = VarCollection.ReadLine(sr, vars);
 					while (lineVars.ToUpperInvariant() != "END")
 					{
@@ -169,7 +169,7 @@ namespace XCom
 											deps,
 											myPal);
 
-						maps[file]      = desc;
+						MapDescs[file] =
 						dictDescs[file] = desc;
 
 						lineVars = VarCollection.ReadLine(sr, vars);
@@ -208,7 +208,7 @@ namespace XCom
 					xConsole.AddLine(string.Format(
 												System.Globalization.CultureInfo.CurrentCulture,
 												"Unknown line in tileset {0}-> {1}:{2}",
-												name, key, line));
+												Name, key, line));
 					break;
 			}
 		}

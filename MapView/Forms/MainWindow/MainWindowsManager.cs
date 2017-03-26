@@ -60,9 +60,9 @@ namespace MapView.Forms.MainWindow
 			TileView.TileViewControl.SelectedTileTypeChangedObserver += SelectedTileTypeChanged;
 		}
 
-		public void SetMap(IMap_Base baseMap)
+		public void SetMap(IMapBase baseMap)
 		{
-			var observers = new IMap_Observer[]
+			var observers = new IMapObserver[]
 			{
 				TopRouteView.TopViewControl,
 				TopRouteView.RouteViewControl,
@@ -82,7 +82,7 @@ namespace MapView.Forms.MainWindow
 //			RmpView.Refresh();
 		}
 
-		private void SetMap(IMap_Base baseMap, IMap_Observer observer)
+		private void SetMap(IMapBase baseMap, IMapObserver observer)
 		{
 			if (observer.Map != null)
 			{

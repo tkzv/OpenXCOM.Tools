@@ -21,7 +21,7 @@
 					&& col    <= _mapPos.MaxCols
 					&& height <= _mapPos.MaxHeight)
 				{
-					var id = GetIndex(row, col, height);
+					var id = _mapPos.GetLocationId(row, col, height);
 					if (id < _mapData.Length)
 						return _mapData[id];
 				}
@@ -30,18 +30,9 @@
 
 			set
 			{
-				var id = GetIndex(row, col, height);
+				var id = _mapPos.GetLocationId(row, col, height);
 				_mapData[id] = value;
 			}
-		}
-
-		private int GetIndex(int row, int col, int height)
-		{
-			_mapPos.Rows   = row;
-			_mapPos.Cols   = col;
-			_mapPos.Height = height;
-
-			return _mapPos.GetLocationId();
 		}
 	}
 }

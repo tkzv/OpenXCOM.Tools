@@ -10,9 +10,9 @@ namespace XCom
 {
 	public class XCMapFile
 		:
-		IMap_Base
+		IMapBase
 	{
-		private readonly string _blankPath;
+//		private readonly string _blankPath;
 		private readonly string[] _deps;
 
 		public static readonly string MapExt = ".MAP";
@@ -33,7 +33,7 @@ namespace XCom
 			BaseName = baseName;
 			BasePath = basePath;
 
-			_blankPath = blankPath;
+//			_blankPath = blankPath;
 
 			_deps = depList;
 
@@ -87,8 +87,8 @@ namespace XCom
 				var cols   = input.ReadByte();
 				var height = input.ReadByte();
 	
-				MapSize = new MapSize(rows, cols, height);
-				MapData = new MapTileList(rows, cols, height);
+				MapSize  = new MapSize(rows, cols, height);
+				MapTiles = new MapTileList(rows, cols, height);
 	
 				for (int h = 0; h != height; ++h)
 					for (int r = 0; r != rows; ++r)
@@ -284,7 +284,7 @@ namespace XCom
 													newC,
 													newH,
 													MapSize,
-													MapData,
+													MapTiles,
 													wrtCeiling);
 			if (tileList != null)
 			{
@@ -307,7 +307,7 @@ namespace XCom
 					RouteFile.CheckNodeBounds(newC, newR, newH);
 				}
 
-				MapData = tileList;
+				MapTiles = tileList;
 				MapSize = new MapSize(newR, newC, newH);
 				CurrentHeight = (byte)(MapSize.Height - 1);
 				MapChanged = true;

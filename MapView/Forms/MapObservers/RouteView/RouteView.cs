@@ -382,7 +382,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			Map = args.Map;
 		}
 
-		public override IMap_Base Map
+		public override IMapBase Map
 		{
 			set
 			{
@@ -424,7 +424,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		public override void SelectedTileChanged(IMap_Base sender, SelectedTileChangedEventArgs e)
+		public override void SelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			Text = string.Format(
 							System.Globalization.CultureInfo.InvariantCulture,
@@ -432,7 +432,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							Environment.NewLine, e.MapPosition.Col, e.MapPosition.Row);
 		}
 
-		public override void HeightChanged(IMap_Base sender, HeightChangedEventArgs e)
+		public override void HeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
 			DeselectNode();
 			FillNodeInformation();

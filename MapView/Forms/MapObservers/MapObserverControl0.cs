@@ -12,17 +12,17 @@ namespace MapView
 	public class MapObserverControl0
 		:
 		UserControl,
-		IMap_Observer
+		IMapObserver
 	{
-		private IMap_Base _baseMap;
+		private IMapBase _baseMap;
 
 		private RegistryInfo _regInfo;
-		private readonly Dictionary<string, IMap_Observer> _moreObservers;
+		private readonly Dictionary<string, IMapObserver> _moreObservers;
 
 
 		public MapObserverControl0()
 		{
-			_moreObservers = new Dictionary<string, IMap_Observer>();
+			_moreObservers = new Dictionary<string, IMapObserver>();
 			Settings = new Settings();
 		}
 
@@ -33,7 +33,7 @@ namespace MapView
 		public Settings Settings
 		{ get; set; }
 
-		public Dictionary<string, IMap_Observer> MoreObservers
+		public Dictionary<string, IMapObserver> MoreObservers
 		{
 			get { return _moreObservers; }
 		}
@@ -57,7 +57,7 @@ namespace MapView
 		{}
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public virtual IMap_Base Map
+		public virtual IMapBase Map
 		{
 			get { return _baseMap; }
 			set
@@ -78,12 +78,12 @@ namespace MapView
 			else if (e.Delta > 0) _baseMap.Down();
 		}
 
-		public virtual void HeightChanged(IMap_Base sender, HeightChangedEventArgs e)
+		public virtual void HeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
 			Refresh();
 		}
 
-		public virtual void SelectedTileChanged(IMap_Base sender, SelectedTileChangedEventArgs e)
+		public virtual void SelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			Refresh();
 		}

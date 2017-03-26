@@ -14,7 +14,7 @@ namespace XCom.GameFiles.Map.RouteData
 		/// Map's x/y/z bounds. See also RouteFile.CheckNodeBounds().
 		/// </summary>
 		/// <param name="baseMap"></param>
-		public static void CheckNodeBounds(IMap_Base baseMap)
+		public static void CheckNodeBounds(IMapBase baseMap)
 		{
 			var mapFile = baseMap as XCMapFile;
 			if (mapFile != null)
