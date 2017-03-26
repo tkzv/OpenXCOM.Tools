@@ -8,12 +8,31 @@ namespace XCom.Interfaces
 		:
 		ICloneable
 	{
-		protected byte[] _id;
-		protected int _fileId;
-		protected Bitmap _image;
-		protected Bitmap _gray;
+		private byte[] _offsets;
+		public byte[] Offsets
+		{
+			get { return _offsets; }
+			protected set { _offsets = value; }
+		}
 
-		private const byte _transparent = 0xFE;
+		private int _fileId;
+		public int FileId
+		{
+			get { return _fileId; }
+			set { _fileId = value; }
+		}
+
+		private Bitmap _image;
+		public Bitmap Image
+		{
+			get { return _image; }
+			protected set { _image = value; }
+		}
+
+		public Bitmap Gray
+		{ get; protected set; }
+
+		protected const byte TransparentId = 0xFE;
 
 		private Palette _palette;
 
@@ -21,27 +40,27 @@ namespace XCom.Interfaces
 		/// <summary>
 		/// Entries must not be compressed.
 		/// </summary>
-		/// <param name="entries"></param>
+		/// <param name="offsets"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="pal"></param>
 		/// <param name="id"></param>
 		public XCImage(
-				byte[] entries,
+				byte[] offsets,
 				int width,
 				int height,
 				Palette pal,
 				int id)
 		{
 			_fileId = id;
-			_id = entries;
+			_offsets = offsets;
 			_palette = pal;
 
 			if (pal != null)
 				_image = Bmp.MakeBitmap8(
 									width,
 									height,
-									entries,
+									offsets,
 									pal.Colors);
 		}
 
@@ -54,30 +73,14 @@ namespace XCom.Interfaces
 				-1)
 		{}
 
-		public XCImage(Bitmap bmp, int idx)
+		public XCImage(Bitmap image, int id)
 		{
-			_fileId = idx;
-			_image = bmp;
-			_id = null;
+			_fileId = id;
+			_image = image;
+			_offsets = null;
 			_palette = null;
 		}
 
-
-		public byte[] Bytes
-		{
-			get { return _id; }
-		}
-
-		public int FileId
-		{
-			get { return _fileId; }
-			set { _fileId = value; }
-		}
-
-		public Bitmap Image
-		{
-			get { return _image; }
-		}
 
 		public Palette Palette
 		{
@@ -91,26 +94,16 @@ namespace XCom.Interfaces
 			}
 		}
 
-		public virtual byte TransparentIndex
-		{
-			get { return _transparent; }
-		}
-
-		public Bitmap Gray
-		{
-			get { return _gray; }
-		}
-
 		public object Clone()
 		{
-			if (_id != null)
+			if (_offsets != null)
 			{
-				var bites = new byte[_id.Length];
-				for (int i = 0; i != bites.Length; ++i)
-					bites[i] = _id[i];
+				var offsets = new byte[_offsets.Length];
+				for (int i = 0; i != offsets.Length; ++i)
+					offsets[i] = _offsets[i];
 
 				return new XCImage(
-								bites,
+								offsets,
 								_image.Width,
 								_image.Height,
 								_palette,
@@ -122,7 +115,7 @@ namespace XCom.Interfaces
 
 		}
 
-		public virtual void Hq2x()
+		public void Hq2x()
 		{
 			_image = Bmp.Hq2x(/*_image*/);
 		}

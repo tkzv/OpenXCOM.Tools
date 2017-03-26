@@ -1,18 +1,22 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+
 using DSShared;
+
 
 namespace PckView
 {
-	public class OpenSaveFilter:IFilter<XCom.Interfaces.IXCImageFile>
+	public class OpenSaveFilter
+		:
+		IFilter<XCom.Interfaces.IXCImageFile>
 	{
 		private XCom.Interfaces.IXCImageFile.Filter filterBy;
+
 
 		public OpenSaveFilter()
 		{
 			filterBy = XCom.Interfaces.IXCImageFile.Filter.Open;
 		}
+
 
 		public void SetFilter(XCom.Interfaces.IXCImageFile.Filter filter)
 		{

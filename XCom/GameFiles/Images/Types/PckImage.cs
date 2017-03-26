@@ -13,17 +13,15 @@ namespace XCom
 //		private int _mapId;
 
 		private readonly PckFile _pckFile;
-		private readonly byte[] _expanded;
+		private readonly byte[] _expanded; // i suspect this should be '_scaled'
 		private int _moveId = -1;
-		private byte _moveVal = 0;
+//		private byte _moveVal = 0;
 
 		private static int _globalStaticId = 0;
 		private int _staticId;
 
 		public static int Width  = 32;
 		public static int Height = 40;
-
-		private const byte TransId = 0xFE;
 
 
 /*		internal PckImage(
@@ -50,7 +48,7 @@ namespace XCom
 		{
 			Palette = pal;
 			_pckFile = pckFile;
-			_fileId = imageId;
+			FileId = imageId;
 
 //			this.imageNum = imageNum;
 //			this.idx = idx;
@@ -63,8 +61,8 @@ namespace XCom
 //			image = new Bitmap(Width, Height, PixelFormat.Format8bppIndexed);
 			_expanded = new byte[Width * Height];
 
-			for (int i = 0; i < _expanded.Length; i++)
-				_expanded[i] = TransparentIndex;
+			for (int i = 0; i != _expanded.Length; ++i)
+				_expanded[i] = TransparentId;
 
 			int startId = 0;
 			int expandedId = 0;
@@ -72,7 +70,7 @@ namespace XCom
 			if (id[0] != 254)
 				expandedId = id[startId++] * Width;
 
-			for (int i = startId; i < id.Length; i++)
+			for (int i = startId; i < id.Length; ++i)
 			{
 				switch (id[i])
 				{
@@ -80,7 +78,7 @@ namespace XCom
 						if (_moveId == -1)
 						{
 							_moveId = i + 1;
-							_moveVal = id[i + 1];
+//							_moveVal = id[i + 1];
 						}
 						expandedId += id[i + 1];
 						++i;
@@ -94,14 +92,14 @@ namespace XCom
 						break;
 				}
 			}
-			_id = _expanded;
+			Offsets = _expanded;
 		
-			_image = Bmp.MakeBitmap8(
+			Image = Bmp.MakeBitmap8(
 								Width,
 								Height,
 								_expanded,
 								pal.Colors);
-			_gray = Bmp.MakeBitmap8(
+			Gray = Bmp.MakeBitmap8(
 								Width,
 								Height,
 								_expanded,
@@ -114,7 +112,7 @@ namespace XCom
 			int count = 0;
 			bool flag = true;
 
-			byte[] input = tile.Bytes;
+			byte[] input = tile.Offsets;
 
 			var bytes = new List<byte>();
 
@@ -122,13 +120,13 @@ namespace XCom
 //			pal.SetTransparent(false);
 
 			int totalCount = 0;
-			for (int i = 0; i < input.Length; i++)
+			for (int i = 0; i != input.Length; ++i)
 			{
-				byte idx = input[i];
-				totalCount++;
+				byte id = input[i];
+				++totalCount;
 
-				if (idx == TransId)
-					count++;
+				if (id == TransparentId)
+					++count;
 				else
 				{
 					if (count != 0)
@@ -138,25 +136,25 @@ namespace XCom
 							flag = false;
 
 							bytes.Add((byte)(count / tile.Image.Width));	// # of initial rows to skip
-							count   = (byte)(count % tile.Image.Width);		// where we currently are in the transparent row
+							count   = (byte)(count % tile.Image.Width);		// current position in the transparent row
 							//Console.WriteLine("count, lines: {0}, cells {1}", count/PckImage.IMAGE_WIDTH, count%PckImage.IMAGE_WIDTH);
 						}
 
 						while (count >= 255)
 						{
-							bytes.Add(TransId);
+							bytes.Add(TransparentId);
 							bytes.Add(255);
 							count -= 255;
 						}
 
 						if (count != 0)
 						{
-							bytes.Add(TransId);
+							bytes.Add(TransparentId);
 							bytes.Add((byte)count);
 						}
 						count = 0;
 					}
-					bytes.Add(idx);
+					bytes.Add(id);
 				}
 			}
 
@@ -277,7 +275,7 @@ namespace XCom
 			if (_pckFile != null)
 				ret += _pckFile.ToString();
 
-			ret += _fileId + Environment.NewLine;
+			ret += FileId + Environment.NewLine;
 
 			for (int i = 0; i != _expanded.Length; ++i)
 			{

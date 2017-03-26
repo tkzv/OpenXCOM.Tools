@@ -35,7 +35,7 @@ namespace XCom.Interfaces.Base
 		protected IMapBase(string name, List<TileBase> tiles)
 		{
 			Name = name;
-			Tiles = tiles;
+			_tiles = tiles;
 		}
 
 
@@ -45,12 +45,15 @@ namespace XCom.Interfaces.Base
 		public string Name
 		{ get; protected set; }
 
+		private readonly List<TileBase> _tiles;
 		public List<TileBase> Tiles
-		{ get; protected set; }
+		{
+			get { return _tiles; }
+		}
 
 		public virtual void Save()
 		{
-			throw new Exception("IMapBase: Save() is not implemented."); // ... odd ....
+			throw new InvalidOperationException("IMapBase: Save() is not implemented."); // ... odd ....
 		}
 
 		public event HeightChangedEventHandler HeightChanged;
@@ -202,7 +205,7 @@ namespace XCom.Interfaces.Base
 		{
 			var palette = GetFirstGroundPalette();
 			if (palette == null)
-				throw new ApplicationException("IMapBase: At least 1 ground tile is required");
+				throw new ArgumentNullException("file", "IMapBase: At least 1 ground tile is required.");
 
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
 			var b = Bmp.MakeBitmap(
@@ -251,6 +254,7 @@ namespace XCom.Interfaces.Base
 			catch
 			{
 				b.Save(file, ImageFormat.Gif);
+				throw;
 			}
 		}
 

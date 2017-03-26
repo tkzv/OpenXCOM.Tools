@@ -74,8 +74,8 @@ namespace PckView
 			_share.AllocateObject(SharedSpace.SettingsDir, Environment.CurrentDirectory + @"\settings");
 			_share.AllocateObject(SharedSpace.CustomDir,   Environment.CurrentDirectory + @"\custom");
 		
-			xConsole.AddLine("Current directory: "  + _share[SharedSpace.AppDir]);
-			xConsole.AddLine("Settings directory: " + _share[SharedSpace.SettingsDir].ToString());
+			xConsole.AddLine("Current directory: "  + _share[SharedSpace.AppDir]);					// TODO: I don't trust that since changing SharedSpace.
+			xConsole.AddLine("Settings directory: " + _share[SharedSpace.SettingsDir].ToString());	// it may well need an explicit cast to (PathInfo)
 			xConsole.AddLine("Custom directory: "   + _share[SharedSpace.CustomDir].ToString());
 			#endregion
 
@@ -129,8 +129,8 @@ namespace PckView
 			_loadedTypes.LoadFrom(Assembly.GetExecutingAssembly());
 			_loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(IXCImageFile)));
 
-			string dir = _share[SharedSpace.CustomDir].ToString(); // TODO: I don't trust that since changing SharedSpace.
-			if (Directory.Exists(dir))
+			string dir = _share[SharedSpace.CustomDir].ToString();	// TODO: I don't trust that since changing SharedSpace.
+			if (Directory.Exists(dir))								// it may well need an explicit cast to (PathInfo)
 			{
 				xConsole.AddLine("Custom directory exists: " + dir);
 				foreach (string st in Directory.GetFiles(dir))
@@ -259,10 +259,10 @@ namespace PckView
 					rtb.Dock = DockStyle.Fill;
 					f.Controls.Add(rtb);
 
-					foreach (byte b in totalViewPck.SelectedItems[0].Image.Bytes)
+					foreach (byte b in totalViewPck.SelectedItems[0].Image.Offsets)
 						rtb.Text += string.Format("{0:x} ", b);
 
-					f.Text = "Bytes: " + totalViewPck.SelectedItems[0].Image.Bytes.Length;
+					f.Text = "Bytes: " + totalViewPck.SelectedItems[0].Image.Offsets.Length;
 					f.Show();
 				}
 			}

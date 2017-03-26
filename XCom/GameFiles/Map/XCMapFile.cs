@@ -163,12 +163,12 @@ namespace XCom
 		{
 			int id = -1;
 
-			foreach (var tile0 in Tiles)
+			foreach (var tile1 in Tiles)
 			{
-				if (tile0.Id == 0)
+				if (tile1.Id == 0)
 					++id;
 
-				if (tile0 == tile)
+				if (tile1 == tile)
 					break;
 			}
 
@@ -352,8 +352,8 @@ namespace XCom
 
 		public void Hq2x()
 		{
-			foreach (string st in _deps) // instead i would want to make an image of the whole map and run that through hq2x
-				foreach (var image in GameInfo.GetPckFile(st))
+			foreach (string dep in _deps) // instead i would want to make an image of the whole map and run that through hq2x
+				foreach (var image in GameInfo.GetPckFile(dep))
 					image.Hq2x();
 
 			PckImage.Width  *= 2;

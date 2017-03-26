@@ -26,8 +26,8 @@ namespace PckView
 
 			var ri = new DSShared.Windows.RegistryInfo(this);
 
-			string dirCustom = SharedSpace.Instance[SharedSpace.CustomDir].ToString();
-			if (!Directory.Exists(dirCustom))
+			string dirCustom = SharedSpace.Instance[SharedSpace.CustomDir].ToString();	// TODO: I don't trust that since changing SharedSpace.
+			if (!Directory.Exists(dirCustom))											// it may well need an explicit cast to (PathInfo)
 				Directory.CreateDirectory(dirCustom);
 
 			saveFile.InitialDirectory = dirCustom;

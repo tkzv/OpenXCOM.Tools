@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
+
 using PckView.Panels;
+
 
 namespace PckView.Forms.ImageBytes
 {
@@ -38,13 +38,13 @@ namespace PckView.Forms.ImageBytes
 				bytesText.Dock = DockStyle.Fill;
 				bytesFrame.Controls.Add(bytesText);
 
-				foreach (byte b in selected.Image.Bytes)
+				foreach (byte b in selected.Image.Offsets)
 					bytesText.Text += b + " ";
 
 				bytesFrame.Closing += bClosing;
 				bytesFrame.Closing += (s, e) => closedCallBack();
 				bytesFrame.Location = location;
-				bytesFrame.Text = "Length: " + selected.Image.Bytes.Length;
+				bytesFrame.Text = "Length: " + selected.Image.Offsets.Length;
 				bytesFrame.Show();
 			}
 		}
@@ -59,17 +59,19 @@ namespace PckView.Forms.ImageBytes
 			if (bytesFrame == null) return;
 			if (selected != null && selected.Image != null)
 			{
-				bytesFrame.Text = "Length: " + selected.Image.Bytes.Length;
+				bytesFrame.Text = "Length: " + selected.Image.Offsets.Length;
 				bytesText.Clear();
+
 				var text = string.Empty;
-				foreach (byte b in selected.Image.Bytes)
+				foreach (byte b in selected.Image.Offsets)
 					text += b + " ";
+
 				bytesText.Text = text;
 			}
 			else
 			{
-				bytesFrame.Text = "";
-				bytesText.Text = "";
+				bytesFrame.Text = String.Empty;
+				bytesText.Text  = String.Empty;
 			}
 		}
 	}

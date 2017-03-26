@@ -11,27 +11,34 @@ namespace XCom
 		List<XCImage>
 	{
 		private string _name;
-		private string _path;
-
-		private Palette _pal;
-
-		private int _scale = 1;
-
-		private IXCImageFile _file;
-
-
 		public string Name
 		{
 			get { return _name; }
 			set { _name = value; }
 		}
 
+		private string _path;
 		public string Path
 		{
 			get { return _path; }
 			set { _path = value; }
 		}
 
+		private Palette _pal;
+		public virtual Palette Pal
+		{
+			get { return _pal; }
+			set
+			{
+				_pal = value;
+				foreach (XCImage image in this)
+					image.Image.Palette = _pal.Colors;
+			}
+		}
+
+		private int _scale = 1;
+
+		private IXCImageFile _file;
 		public IXCImageFile IXCFile
 		{
 			get { return _file; }
@@ -46,25 +53,14 @@ namespace XCom
 			_scale *= 2;
 		}
 
-		public virtual Palette Pal
+		public new XCImage this[int id]
 		{
-			get { return _pal; }
+			get { return (id > -1 && id < Count) ? base[id]
+												 : null; }
 			set
 			{
-				_pal = value;
-				foreach (XCImage image in this)
-					image.Image.Palette = _pal.Colors;
-			}
-		}
-
-		public new XCImage this[int i]
-		{
-			get { return (i > -1 && i < Count) ? base[i]
-											   : null; }
-			set
-			{
-				if (i > -1 && i < Count)
-					base[i] = value;
+				if (id > -1 && id < Count)
+					base[id] = value;
 				else
 				{
 					value.FileId = Count;
@@ -73,9 +69,9 @@ namespace XCom
 			}
 		}
 
-		public void Remove(int i)
+		public void Remove(int id)
 		{
-			RemoveAt(i);
+			RemoveAt(id);
 		}
 	}
 }
