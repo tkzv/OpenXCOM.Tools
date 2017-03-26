@@ -216,6 +216,8 @@ namespace MapView
 			this.mapList.Name = "mapList";
 			this.mapList.Size = new System.Drawing.Size(249, 454);
 			this.mapList.TabIndex = 0;
+			this.mapList.BeforeSelect += mapList_BeforeSelect;
+			this.mapList.AfterSelect += mapList_AfterSelect;
 			// 
 			// saveFile
 			// 
@@ -365,7 +367,7 @@ namespace MapView
 			this.cSplitList.TabIndex = 1;
 			this.cSplitList.TabStop = false;
 			// 
-			// XCMainWindow
+			// MainWindow
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.BackColor = System.Drawing.SystemColors.Control;
@@ -379,7 +381,7 @@ namespace MapView
 			this.MaximumSize = new System.Drawing.Size(640, 480);
 			this.Menu = this.mainMenu;
 			this.MinimumSize = new System.Drawing.Size(640, 480);
-			this.Name = "XCMainWindow";
+			this.Name = "MainWindow";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Map Editor";
 			this.Activated += new System.EventHandler(this.MainWindow_Activated);
