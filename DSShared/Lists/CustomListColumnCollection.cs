@@ -23,7 +23,9 @@ namespace DSShared.Lists
 	/// <summary>
 	/// Class that manages a collection of CustomListColumn objects in a CustomList control.
 	/// </summary>
-	public class CustomListColumnCollection:System.Collections.IEnumerable
+	public class CustomListColumnCollection
+		:
+		System.Collections.IEnumerable
 	{
 		private List<CustomListColumn> list;
 		private Dictionary<string, CustomListColumn> colHash;
