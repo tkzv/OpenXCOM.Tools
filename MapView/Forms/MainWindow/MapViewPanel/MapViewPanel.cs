@@ -201,7 +201,6 @@ namespace MapView
 		public static event EventHandler ImageUpdate;
 
 		private static Timer _timer;
-		private static bool _started;
 		private static int _current;
 
 		// NOTE: Remove suppression for Release cfg.
@@ -213,17 +212,12 @@ namespace MapView
 			if (_timer == null)
 			{
 				_timer = new Timer();
-				_timer.Interval = 100;
-				_timer.Tick += tick;
-				_timer.Start();
-				_started = true;
+				_timer.Interval = 250;
+				_timer.Tick += Animate;
 			}
 
-			if (!_started)
-			{
+			if (!_timer.Enabled)
 				_timer.Start();
-				_started = true;
-			}
 		}
 
 		// NOTE: Remove suppression for Release cfg.
@@ -232,24 +226,13 @@ namespace MapView
 		Justification = "Because animations at or greater than 1 second ain't gonna cut it.")]
 		public static void Stop()
 		{
-			if (_timer == null)
-			{
-				_timer = new Timer();
-				_timer.Interval = 100;
-				_timer.Tick += tick;
-				_started = false;
-			}
-
-			if (_started)
-			{
+			if (_timer != null)
 				_timer.Stop();
-				_started = false;
-			}
 		}
 
-		public static bool Updating
+		public static bool IsAnimated
 		{
-			get { return _started; }
+			get { return (_timer != null && _timer.Enabled); }
 		}
 
 /*		public static int Interval
@@ -258,7 +241,7 @@ namespace MapView
 			set { _timer.Interval = value; }
 		} */
 
-		private static void tick(object sender, EventArgs e)
+		private static void Animate(object sender, EventArgs e)
 		{
 			_current = (_current + 1) % 8;
 

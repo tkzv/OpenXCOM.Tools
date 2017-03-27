@@ -443,7 +443,7 @@ namespace MapView
 
 			settings.AddSetting(
 							"Animation",
-							MapViewPanel.Updating,
+							MapViewPanel.IsAnimated,
 							"If true the map will animate itself.",
 							"Main",
 							change, false, null);

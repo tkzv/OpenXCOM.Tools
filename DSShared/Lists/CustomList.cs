@@ -48,19 +48,19 @@ namespace DSShared.Lists
 		/// </summary>
 		private ObjRow _clicked;
 
-		private int _startY = 0;
-		private int _yOffset = 0;
+		private int _startY;
+		private int _yOffset;
 		private int _selRow = -1;
 
 		private VScrollBar _scrollbar;
 
-		private CustomListColumn _overCol = null;
+		private CustomListColumn _colOver;
 
 		private DSShared.Windows.RegistryInfo _regInfo;
 
 		private Type _rowType;
 
-		private string _name = "";
+		private string _name = String.Empty;
 
 		/// <summary>
 		/// Occurs when a row is clicked.
@@ -79,7 +79,7 @@ namespace DSShared.Lists
 		public CustomList()
 		{
 			_columns = new CustomListColumnCollection();
-			_columns.OffX = 1;
+			_columns.OffX =
 			_columns.OffY = 1;
 			_columns.Font=Font;
 
@@ -167,9 +167,9 @@ namespace DSShared.Lists
 
 		private void saving(object sender, RegistrySaveLoadEventArgs e)
 		{
-			RegistryKey key = e.OpenRegistryKey;
+			RegistryKey regkey = e.OpenRegistryKey;
 			foreach (CustomListColumn cc in _columns)
-				key.SetValue("strLen" + _name + cc.Index, cc.Width);
+				regkey.SetValue("strLen" + _name + cc.Index, cc.Width);
 		}
 
 		private void rowClicked(object sender, MouseEventArgs e)
@@ -178,8 +178,8 @@ namespace DSShared.Lists
 			if (_clicked != null)
 				_clicked.UnClick();
 
-			if (_sel != null && _overCol != null)
-				_sel.Click(_overCol);
+			if (_sel != null && _colOver != null)
+				_sel.Click(_colOver);
 
 			_clicked = _sel;
 
@@ -193,7 +193,7 @@ namespace DSShared.Lists
 		[Browsable(false)]
 		public int PreferredHeight
 		{
-			get { return _columns.HeaderHeight + ((_items.Count + 1) * RowHeight); }
+			get { return _columns.HeaderHeight + (_items.Count + 1) * RowHeight; }
 		}
 
 		/// <summary>
@@ -262,7 +262,7 @@ namespace DSShared.Lists
 			else
 				_sel = null;
 
-			_overCol = curCol;
+			_colOver = curCol;
 		}
 
 		/// <summary>

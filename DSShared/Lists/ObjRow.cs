@@ -39,31 +39,24 @@ namespace DSShared.Lists
 		private CustomListColumn _colClicked;
 
 		/// <summary>
-		/// Timer to make a blinking cursor when an editable cell is clicked on.
+		/// Timer to make a blinking caret when an editable cell is clicked on.
 		/// </summary>
-		private Timer _cursorTimer;
+		private Timer _caretTimer;
 
 		/// <summary>
-		/// String for the blinking cursor.
+		/// String for the blinking caret.
 		/// </summary>
 		private string _addStr = String.Empty;
 
 		/// <summary>
-		/// Timer information.
-		/// </summary>
-		private bool _flip = true;
-		private bool _timerStarted;
-//		private bool putDecimal;
-
-		/// <summary>
 		/// Row index.
 		/// </summary>
-		private int _rowIdx;
+		private int _rowId;
 
 		/// <summary>
 		/// True if in edit mode.
 		/// </summary>
-		private bool _editing;
+		private bool _edit;
 
 		/// <summary>
 		/// Raised when the control needs to refresh itself.
@@ -87,13 +80,11 @@ namespace DSShared.Lists
 			_obj = obj;
 			_columns = columns;
 
-			if (_cursorTimer == null)
+			if (_caretTimer == null)
 			{
-				_cursorTimer = new Timer();
-				_cursorTimer.Interval = 500;
-				_cursorTimer.Tick += new EventHandler(timerTick);
-
-				_timerStarted = false;
+				_caretTimer = new Timer();
+				_caretTimer.Interval = 200;
+				_caretTimer.Tick += CaretBlink;
 			}
 
 			_createdId = _createdTotal++;
@@ -143,7 +134,7 @@ namespace DSShared.Lists
 		/// <param name="id">the index of the row</param>
 		public void SetRowIndex(int id)
 		{
-			_rowIdx = id;
+			_rowId = id;
 		}
 
 		/// <summary>
@@ -153,11 +144,12 @@ namespace DSShared.Lists
 		/// <returns></returns>
 		public override bool Equals(object obj)
 		{
-			if (_obj == null)
-				return (this == obj);
-
-			var obj2 = obj as ObjRow;
-			return (obj2 != null && _obj.Equals(obj2._obj));
+			if (_obj != null)
+			{
+				var obj1 = obj as ObjRow;
+				return (obj1 != null && _obj.Equals(obj1._obj));
+			}
+			return (this == obj);
 		}
 
 		/// <summary>
@@ -176,26 +168,23 @@ namespace DSShared.Lists
 			return _obj.GetHashCode() >> 1;
 		}
 
-		private void timerTick(object sender, EventArgs e)
+		private void CaretBlink(object sender, EventArgs e)
 		{
-			_addStr = _flip ? String.Empty : "|";
-			_flip = !_flip;
+			_addStr = (_addStr.Length == 0) ? "|" : String.Empty;
 
 			if (RefreshEvent != null)
 				RefreshEvent();
 		}
 
-		private void startTimer()
+/*		private void startTimer()
 		{
-			if (!_timerStarted)
-				_cursorTimer.Start();
+			if (!_caretTimer.Enabled)
+				_caretTimer.Start();
 		}
-
 		private void stopTimer()
 		{
-			if (_timerStarted)
-				_cursorTimer.Stop();
-		}
+			_caretTimer.Stop();
+		} */
 
 /*		/// <summary>
 		/// Sets the width of the row. This is used for the drawing
@@ -257,14 +246,14 @@ namespace DSShared.Lists
 		/// <param name="col">the column the mouse was over when the button was clicked</param>
 		public void Click(CustomListColumn col)
 		{
-			_colClicked = col;
 			_addStr = "|";
-			_cursorTimer.Start();
+			_caretTimer.Start();
 
+			_colClicked = col;
 			if (col.Property != null)
 			{
 				_editBuffer = _colClicked.Property.Value(_obj).ToString();
-				_editing = true;
+				_edit = true;
 			}
 			col.FireClick(this);
 		}
@@ -275,7 +264,7 @@ namespace DSShared.Lists
 		/// </summary>
 		public void UnClick()
 		{
-			_cursorTimer.Stop();
+			_caretTimer.Stop();
 
 			if (_colClicked != null && _colClicked.Property != null)
 			{
@@ -301,7 +290,7 @@ namespace DSShared.Lists
 					// FIX: "Empty general catch clause suppresses any error."
 //				}
 
-				_editing = false;
+				_edit = false;
 			}
 
 			_colClicked = null;
@@ -345,7 +334,7 @@ namespace DSShared.Lists
 							if (_editBuffer.Length > 0)
 								_editBuffer = _editBuffer.Substring(0, _editBuffer.Length - 1);
 						}
-						else if (e.KeyChar >= 32) // printable characters only
+						else if (e.KeyChar > 31) // printable characters only
 							_editBuffer += e.KeyChar;
 
 						if (RefreshEvent != null)
@@ -415,7 +404,7 @@ namespace DSShared.Lists
 						&& _colClicked.Property.EditType == EditStrType.Custom)
 					{
 						e.Graphics.DrawString(
-										col.Property.Value(_obj).ToString() + _addStr,
+										col.Property.Value(_obj) + _addStr,
 										_columns.Font,
 										Brushes.Black,
 										rect);
@@ -425,7 +414,7 @@ namespace DSShared.Lists
 						&& _colClicked.Property.EditType != EditStrType.None)
 					{
 						e.Graphics.DrawString(
-										(_editing ? _editBuffer : col.Property.Value(_obj).ToString()) + _addStr,
+										(_edit) ? _editBuffer : col.Property.Value(_obj) + _addStr,
 										_columns.Font,
 										Brushes.Black,
 										rect);
@@ -433,8 +422,7 @@ namespace DSShared.Lists
 					else if (col.Property != null)
 					{
 						e.Graphics.DrawString(
-//										col.Property.Value(_obj).ToString() + (putDecimal ? "." : String.Empty),
-										col.Property.Value(_obj).ToString() + String.Empty,
+										col.Property.Value(_obj).ToString(),
 										_columns.Font,
 										Brushes.Black,
 										rect);
