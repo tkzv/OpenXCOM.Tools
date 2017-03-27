@@ -106,7 +106,7 @@ namespace XCom
 			if (!palHash.ContainsKey(pathfile))
 			{
 				using (var pckStream = File.OpenRead(pathfile + ".PCK")) // TODO: check if these catch lowercase extensions.
-				using (var tabStream = File.OpenRead(pathfile + ".TAB"))
+				using (var tabStream = File.OpenRead(pathfile + ".TAB")) // they should, it's for Windows.
 				{
 					palHash.Add(pathfile, new PckFile(
 													pckStream,

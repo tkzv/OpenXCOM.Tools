@@ -13,6 +13,11 @@ namespace DSShared.Lists
 		IComparable
 	{
 		/// <summary>
+		/// Raised when the control needs to refresh itself.
+		/// </summary>
+		public event RefreshDelegate RefreshEvent;
+
+		/// <summary>
 		/// The object this row wraps around.
 		/// </summary>
 		private Object _obj;
@@ -25,8 +30,8 @@ namespace DSShared.Lists
 		/// <summary>
 		/// Row screen information.
 		/// </summary>
-//		private int _width;
 		private int _top;
+//		private int _width;
 
 		/// <summary>
 		/// Selected column.
@@ -49,24 +54,22 @@ namespace DSShared.Lists
 		private string _addStr = String.Empty;
 
 		/// <summary>
+		/// True if in edit mode.
+		/// </summary>
+		private bool _editMode;
+
+		/// <summary>
+		/// The edit-buffer.
+		/// </summary>
+		private string _editBuffer = String.Empty;
+
+		/// <summary>
 		/// Row index.
 		/// </summary>
 		private int _rowId;
 
-		/// <summary>
-		/// True if in edit mode.
-		/// </summary>
-		private bool _edit;
-
-		/// <summary>
-		/// Raised when the control needs to refresh itself.
-		/// </summary>
-		public event RefreshDelegate RefreshEvent;
-
-		private static int _createdTotal;
-		private readonly int _createdId;
-
-		private string _editBuffer = String.Empty;
+		private static int _idCanonical;
+		private readonly int _id;
 
 
 		/// <summary>
@@ -87,7 +90,7 @@ namespace DSShared.Lists
 				_caretTimer.Tick += CaretBlink;
 			}
 
-			_createdId = _createdTotal++;
+			_id = _idCanonical++;
 		}
 
 		/// <summary>
@@ -163,7 +166,7 @@ namespace DSShared.Lists
 		public override int GetHashCode()
 		{
 			if (_obj == null) // FIX: "Non-readonly field referenced in GetHashCode()."
-				return _createdId;
+				return _id;
 
 			return _obj.GetHashCode() >> 1;
 		}
@@ -253,7 +256,7 @@ namespace DSShared.Lists
 			if (col.Property != null)
 			{
 				_editBuffer = _colClicked.Property.Value(_obj).ToString();
-				_edit = true;
+				_editMode = true;
 			}
 			col.FireClick(this);
 		}
@@ -290,7 +293,7 @@ namespace DSShared.Lists
 					// FIX: "Empty general catch clause suppresses any error."
 //				}
 
-				_edit = false;
+				_editMode = false;
 			}
 
 			_colClicked = null;
@@ -414,7 +417,7 @@ namespace DSShared.Lists
 						&& _colClicked.Property.EditType != EditStrType.None)
 					{
 						e.Graphics.DrawString(
-										(_edit) ? _editBuffer : col.Property.Value(_obj) + _addStr,
+										(_editMode) ? _editBuffer : col.Property.Value(_obj) + _addStr,
 										_columns.Font,
 										Brushes.Black,
 										rect);

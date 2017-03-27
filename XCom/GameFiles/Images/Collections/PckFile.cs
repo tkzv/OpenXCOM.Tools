@@ -13,45 +13,49 @@ namespace XCom
 		:
 		XCImageCollection
 	{
-		private int _bpp;
-
+		public static readonly string PckExt = ".pck";
 		public static readonly string TabExt = ".tab";
+
+		private int _bpp;
+		public int Bpp
+		{
+			get { return _bpp; }
+		}
 
 
 		public PckFile(
-					Stream pckFile,
-					Stream tabFile,
+					Stream strPck,
+					Stream strTab,
 					int bpp,
 					Palette pal,
 					int width,
 					int height)
 		{
-			if (tabFile != null)
-				tabFile.Position = 0;
-
-			pckFile.Position = 0;
-
-			var info = new byte[pckFile.Length];
-			pckFile.Read(info, 0, info.Length);
-
 			_bpp = bpp;
 			Pal = pal;
 
 			uint[] offsets;
 			
-			if (tabFile != null)
+			if (strTab != null)
 			{
-				offsets = new uint[(tabFile.Length / bpp) + 1];
-				var br = new BinaryReader(tabFile);
+				strTab.Position = 0;
 
-				if (bpp == 2)
-					for (int i = 0; i < tabFile.Length / bpp; i++)
-						offsets[i] = br.ReadUInt16();
-				else
-					for (int i = 0; i < tabFile.Length / bpp; i++)
-						offsets[i] = br.ReadUInt32();
-
-				br.Close();
+				offsets = new uint[(strTab.Length / bpp) + 1];
+				using (var br = new BinaryReader(strTab))
+				{
+					switch (bpp)
+					{
+						case 2:
+							for (int i = 0; i != strTab.Length / bpp; ++i)
+								offsets[i] = br.ReadUInt16();
+							break;
+	
+						default:
+							for (int i = 0; i != strTab.Length / bpp; ++i)
+								offsets[i] = br.ReadUInt32();
+							break;
+					}
+				}
 			}
 			else
 			{
@@ -59,17 +63,23 @@ namespace XCom
 				offsets[0] = 0;
 			}
 
+
+			strPck.Position = 0;
+
+			var info = new byte[strPck.Length];
+			strPck.Read(info, 0, info.Length);
+
 			offsets[offsets.Length - 1] = (uint)info.Length;
 
-			for (int i = 0; i < offsets.Length - 1; i++)
+			for (int i = 0; i != offsets.Length - 1; ++i)
 			{
-				var imgDat = new byte[offsets[i + 1] - offsets[i]];
-				for (int j = 0; j < imgDat.Length; j++)
-					imgDat[j] = info[offsets[i] + j];
+				var binData = new byte[offsets[i + 1] - offsets[i]];
+				for (int j = 0; j != binData.Length; ++j)
+					binData[j] = info[offsets[i] + j];
 
 				Add(new PckImage(
 							i,
-							imgDat,
+							binData,
 							pal,
 							this,
 							width,
@@ -78,24 +88,19 @@ namespace XCom
 		}
 
 		public PckFile(
-					Stream pckFile,
-					Stream tabFile,
+					Stream strPck,
+					Stream strTab,
 					int bpp,
 					Palette pal)
 			:
 			this(
-				pckFile,
-				tabFile,
+				strPck,
+				strTab,
 				bpp,
 				pal,
 				32, 40)
 		{}
 
-
-		public int Bpp
-		{
-			get { return _bpp; }
-		}
 
 		public static void Save(
 				string directory,
@@ -103,7 +108,7 @@ namespace XCom
 				XCImageCollection images,
 				int bpp)
 		{
-			using (var pck = new BinaryWriter(File.Create(directory + @"\" + file + ".pck")))
+			using (var pck = new BinaryWriter(File.Create(directory + @"\" + file + PckExt)))
 			using (var tab = new BinaryWriter(File.Create(directory + @"\" + file + TabExt)))
 			{
 				switch (bpp)

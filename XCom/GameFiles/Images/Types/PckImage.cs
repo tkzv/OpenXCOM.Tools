@@ -17,8 +17,8 @@ namespace XCom
 		private int _moveId = -1;
 //		private byte _moveVal = 0;
 
-		private static int _globalStaticId = 0;
-		private int _staticId;
+		private static int _idCanonical = 0;
+		private int _id;
 
 		public static int Width  = 32;
 		public static int Height = 40;
@@ -40,7 +40,7 @@ namespace XCom
 
 		internal PckImage(
 				int imageId,
-				byte[] id,
+				byte[] binData,
 				Palette pal,
 				PckFile pckFile,
 				int width,
@@ -53,7 +53,7 @@ namespace XCom
 //			this.imageNum = imageNum;
 //			this.idx = idx;
 
-			_staticId = _globalStaticId++;
+			_id = _idCanonical++;
 
 			Width  = width;
 			Height = height;
@@ -67,12 +67,12 @@ namespace XCom
 			int startId = 0;
 			int expandedId = 0;
 
-			if (id[0] != 254)
-				expandedId = id[startId++] * Width;
+			if (binData[0] != 254)
+				expandedId = binData[startId++] * Width;
 
-			for (int i = startId; i < id.Length; ++i)
+			for (int i = startId; i < binData.Length; ++i)
 			{
-				switch (id[i])
+				switch (binData[i])
 				{
 					case 254: // skip required pixels
 						if (_moveId == -1)
@@ -80,7 +80,7 @@ namespace XCom
 							_moveId = i + 1;
 //							_moveVal = id[i + 1];
 						}
-						expandedId += id[i + 1];
+						expandedId += binData[i + 1];
 						++i;
 						break;
 
@@ -88,7 +88,7 @@ namespace XCom
 						break;
 
 					default:
-						_expanded[expandedId++] = id[i];
+						_expanded[expandedId++] = binData[i];
 						break;
 				}
 			}
@@ -186,7 +186,7 @@ namespace XCom
 
 		public int StaticId
 		{
-			get { return _staticId; }
+			get { return _id; }
 		}
 
 /*		public static Type GetCollectionType()
