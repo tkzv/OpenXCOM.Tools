@@ -16,7 +16,7 @@ namespace DSShared.Loadable
 	public class LoadOfType<T> where T
 		:
 		IAssemblyLoadable,
-		IOpenSave,
+		IDialogFilter,
 		new()
 	{
 		/// <summary>
@@ -134,17 +134,17 @@ namespace DSShared.Loadable
 			int filterId = 0;
 
 			bool first = true;
-			foreach (var fc in _allLoaded)
+			foreach (var fileType in _allLoaded)
 			{
-				if (filter.FilterObj(fc))
+				if (filter.FilterObj(fileType))
 				{
 					if (first)
 						first = false;
 					else
 						fileFilter += "|";
 
-					fileFilter += fc.FileFilter;
-					filterDictionary.Add(++filterId, fc); // id starts at 1
+					fileFilter += fileType.FileFilter;
+					filterDictionary.Add(++filterId, fileType); // id starts at 1
 				}
 			}
 			return fileFilter;
@@ -176,9 +176,9 @@ namespace DSShared.Loadable
 		/// <param name="fc"></param>
 		public void Add(T fc)
 		{
-			//Console.WriteLine("Adding file: " + fc.ExplorerDescription);
+			//Console.WriteLine("Adding file: " + fc.Brief);
 			_allLoaded.Add(fc);
-			//CreateFilter();
+//			CreateFilter();
 		}
 		
 		/// <summary>
@@ -209,16 +209,15 @@ namespace DSShared.Loadable
 					{
 						try
 						{
-							var fc = (T)ctorInfo.Invoke(new object[]{});
-							objList.Add(fc);
+							var fileType = (T)ctorInfo.Invoke(new object[]{});
+							objList.Add(fileType);
 	
-							bool register = fc.RegisterFile();
-							if (register)
+							if (fileType.RegisterFile())
 							{
-								_allLoaded.Add(fc);
+								_allLoaded.Add(fileType);
 
 								if (OnLoad != null)
-									OnLoad(this, new TypeLoadArgs(fc));
+									OnLoad(this, new TypeLoadArgs(fileType));
 							}
 						}
 						catch(Exception ex)

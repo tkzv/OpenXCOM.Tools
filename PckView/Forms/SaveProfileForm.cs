@@ -54,9 +54,9 @@ namespace PckView
 			txtInfo.Text = String.Empty;
 			
 			if (ImgType != null)
-				txtInfo.Text += "Type: " + ImgType.ExplorerDescription + "\n";
+				txtInfo.Text += "Type: " + ImgType.Brief + Environment.NewLine;
 			
-			txtInfo.Text += "Width: " + ImgWid + "\nHeight: " + ImgHei;
+			txtInfo.Text += "Width: " + ImgWid + Environment.NewLine + "Height: " + ImgHei;
 		}
 
 		public int ImgWid

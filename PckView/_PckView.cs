@@ -50,7 +50,8 @@ namespace PckView
 
 		private readonly IFileBackupManager _fileBackupManager = new FileBackupManager();
 
-		public bool SavedFile { get; private set; }
+		public bool SavedFile
+		{ get; private set; }
 
 
 		public PckViewForm()
@@ -402,11 +403,11 @@ namespace PckView
 						toLoad = filterIdx.LoadFile(path, fName);
 						recover = true;
 					}
-					else if (filterIdx.GetType() == typeof (xcCustom)) // for *.* files, try singles and then extensions
+					else if (filterIdx.GetType() == typeof(xcCustom)) // for *.* files, try singles and then extensions
 					{
 						// try singles
 						foreach (XCom.Interfaces.IXCImageFile ixf in _loadedTypes.AllLoaded)
-							if (ixf.SingleFileName != null && ixf.SingleFileName.ToLower() == fName.ToLower())
+							if (ixf.SingleFile != null && ixf.SingleFile.ToUpperInvariant() == fName.ToUpperInvariant())
 							{
 								try
 								{
@@ -419,7 +420,7 @@ namespace PckView
 						if (toLoad == null) // singles not loaded, try non singles
 						{
 							foreach (XCom.Interfaces.IXCImageFile ixf in _loadedTypes.AllLoaded)
-								if (ixf.SingleFileName == null && ixf.FileExtension.ToLower() == ext.ToLower())
+								if (ixf.SingleFile == null && ixf.FileExtension.ToUpperInvariant() == ext.ToUpperInvariant())
 								{
 									try
 									{
@@ -484,9 +485,9 @@ namespace PckView
 		}
 
 		private static XCImageCollection LoadImageCollection(
-														IXCImageFile filterIdx,
-														string path,
-														string fName)
+				IXCImageFile filterIdx,
+				string path,
+				string fName)
 		{
 			return filterIdx.LoadFile( // load file based on its filterIndex
 									path,
@@ -530,7 +531,7 @@ namespace PckView
 			var selected = _totalViewPck.SelectedItems[_totalViewPck.SelectedItems.Count - 1];
 			if (_totalViewPck.Collection != null)
 			{
-				if (_totalViewPck.Collection.IXCFile.SingleFileName != null)
+				if (_totalViewPck.Collection.IXCFile.SingleFile != null)
 				{
 					string file = _totalViewPck.Collection.Name.Substring(0, _totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal));
 					string ext  = _totalViewPck.Collection.Name.Substring(_totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal) + 1);

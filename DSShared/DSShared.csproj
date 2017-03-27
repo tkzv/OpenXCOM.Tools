@@ -101,7 +101,7 @@
     <Compile Include="DB\DBTableType.cs" />
     <Compile Include="FileSystems\FileBackupManager.cs" />
     <Compile Include="Interfaces\IUpdater.cs" />
-    <Compile Include="Interfaces\IOpenSave.cs" />
+    <Compile Include="Interfaces\IDialogFilter.cs" />
     <Compile Include="FilterBy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

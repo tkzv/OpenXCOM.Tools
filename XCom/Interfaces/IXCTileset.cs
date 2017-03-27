@@ -10,13 +10,68 @@ namespace XCom.Interfaces
 		:
 		ITileset
 	{
-		protected Palette myPal; // TODO: change these to properties ->
-		protected string rootPath, rmpPath, blankPath;
+		protected Palette myPal;
+		public Palette Palette
+		{
+			get { return myPal; }
+			set { myPal = value; }
+		}
+
+		protected string rootPath;
+		public string MapPath
+		{
+			get { return rootPath; }
+			set { rootPath = value; }
+		}
+
+		protected string rmpPath;
+		public string RmpPath
+		{
+			get { return rmpPath; }
+			set { rmpPath = value; }
+		}
+
+		protected string blankPath;
+		public string BlankPath
+		{
+			get { return blankPath; }
+			set { blankPath = value; }
+		}
+
 		protected string[] groundMaps;
-		protected bool underwater, baseStyle;
+		public string[] Ground // TODO: return a collection or make it a method.
+		{
+			get { return groundMaps; }
+		}
+
+		protected bool underwater;
+		public bool Underwater
+		{
+			get { return underwater; }
+		}
+
+		protected bool baseStyle;
+		public bool BaseStyle
+		{
+			get { return baseStyle; }
+		}
+
 		protected int mapDepth;
-		protected string scanFile, loftFile;
+		public int Depth
+		{
+			get { return mapDepth; }
+		}
+
 		protected MapSize mapSize;
+		public MapSize Size
+		{
+			get { return mapSize; }
+		}
+
+		protected string scanFile;
+
+		protected string loftFile;
+
 
 
 		protected IXCTileset(string name)
@@ -125,57 +180,8 @@ namespace XCom.Interfaces
 		}
 
 
-		public MapSize Size
-		{
-			get { return mapSize; }
-		}
-
 		public virtual void Save(StreamWriter sw, VarCollection vars)
 		{}
-
-		public bool Underwater
-		{
-			get { return underwater; }
-		}
-
-		public string MapPath
-		{
-			get { return rootPath; }
-			set { rootPath = value; }
-		}
-
-		public string RmpPath
-		{
-			get { return rmpPath; }
-			set { rmpPath = value; }
-		}
-
-		public string BlankPath
-		{
-			get { return blankPath; }
-			set { blankPath = value; }
-		}
-
-		public Palette Palette
-		{
-			get { return myPal; }
-			set { myPal = value; }
-		}
-
-		public int Depth
-		{
-			get { return mapDepth; }
-		}
-
-		public string[] Ground // TODO: return a collection or make it a method.
-		{
-			get { return groundMaps; }
-		}
-
-		public bool BaseStyle
-		{
-			get { return baseStyle; }
-		}
 
 		public virtual void ParseLine(
 				string key,

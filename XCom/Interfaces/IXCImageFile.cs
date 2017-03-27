@@ -15,20 +15,77 @@ namespace XCom.Interfaces
 	public class IXCImageFile
 		:
 		IAssemblyLoadable,
-		IOpenSave
+		IDialogFilter
 	{
-		protected Palette _palDefault = Palette.UFOBattle;
+		private Palette _palDefault = Palette.UFOBattle;
+		/// <summary>
+		/// Defines the initial palette for the sprites.
+		/// </summary>
+		public Palette DefaultPalette
+		{
+			get { return _palDefault; }
+			protected set { _palDefault = value; }
+		}
 
-		protected System.Drawing.Size _imageSize;
+		private System.Drawing.Size _imageSize;
+		/// <summary>
+		/// Image size that will be loaded.
+		/// </summary>
+		public System.Drawing.Size ImageSize
+		{
+			get { return _imageSize; }
+			protected set { _imageSize = value; }
+		}
 
-		protected xcFileOptions _fileOptions = new xcFileOptions();
+		private XCFileOptions _fileOptions = new XCFileOptions();
+		/// <summary>
+		/// Flags that tell the OS where each filetype should be displayed.
+		/// </summary>
+		public XCFileOptions FileOptions
+		{
+			get { return _fileOptions; }
+		}
 
-		protected string _ext        = ".bad";
-		protected string _fileFilter = "Bad Description";
-		protected string _desc       = "Description";
-		protected string _author     = "Author";
+		private string _ext = ".default";
+		/// <summary>
+		/// Gets/Sets the file-extension.
+		/// </summary>
+		public string FileExtension
+		{
+			get { return _ext; }
+			protected set { _ext = value; }
+		}
 
-		protected string _singleFile = null;
+		private string _desc = "Default Description";
+		/// <summary>
+		/// Gets/Sets a description of this filetype.
+		/// </summary>
+		public string Description
+		{
+			get { return _desc; }
+			protected set { _desc = value; }
+		}
+
+		protected string _author = "Default Author";
+		/// <summary>
+		/// Gets/Sets who wrote this filetype.
+		/// </summary>
+		public string Author
+		{
+			get { return _author; }
+			protected set { _author = value; }
+		}
+
+		private string _singleFile;
+		/// <summary>
+		/// The complete file.extension that this object will open. If null,
+		/// then this object will open files based on the FileExtension property.
+		/// </summary>
+		public virtual string SingleFile
+		{
+			get { return _singleFile; }
+			protected set { _singleFile = value; }
+		}
 
 		public enum Filter
 		{
@@ -38,18 +95,37 @@ namespace XCom.Interfaces
 			Bmp
 		};
 
+		#region IDialogFilter (interface) implementation
+		private string _brief = "Default Brief";
+		/// <summary>
+		/// See: IDialogFilter.Brief
+		/// </summary>
+		public string Brief
+		{
+			get { return _brief; }
+			protected set { _brief = value; } // NOTE: the setter is not part of the interface.
+		}
 
-		#region AssemblyLoadable implementation
-
+		/// <summary>
+		/// See: IDialogFilter.FileFilter
+		/// </summary>
 		public virtual string FileFilter
 		{
 			get
 			{
-				return (_singleFile != null) ? _singleFile + " - " + _fileFilter + "|" + _singleFile
-											 : "*" + _ext + " - " + _fileFilter + "|*" + _ext;
+				return (_singleFile != null) ? String.Format(
+														System.Globalization.CultureInfo.CurrentCulture,
+														"{0} - {1}|{0}",
+														_singleFile, _brief)
+											 : String.Format(
+														System.Globalization.CultureInfo.CurrentCulture,
+														"*{0} - {1}|{0}",
+														_ext, _brief);
 			}
 		}
+		#endregion
 
+		#region AssemblyLoadable (interface) implementation
 		/// <summary>
 		/// See: AssemblyLoadable.RegisterFile
 		/// </summary>
@@ -60,32 +136,18 @@ namespace XCom.Interfaces
 			xConsole.AddLine(string.Format(
 										System.Globalization.CultureInfo.InvariantCulture,
 										"{0} registered: {1}",
-										this.GetType(),
+										GetType(),
 										GetType() != typeof(IXCImageFile)));
 
 			return (GetType() != typeof(IXCImageFile));
 		}
 
 		/// <summary>
-		/// See: AssemblyLoadable.ExplorerDescription
+		/// See: AssemblyLoadable.Unload()
 		/// </summary>
-		public virtual string ExplorerDescription
-		{
-			get { return _fileFilter; }
-		}
-		#endregion
-
-
-		/// <summary>
-		/// Read only access to the file extension.
-		/// </summary>
-		public virtual string FileExtension
-		{
-			get { return _ext; }
-		}
-
 		public void Unload()
 		{}
+		#endregion
 
 
 		/// <summary>
@@ -98,7 +160,7 @@ namespace XCom.Interfaces
 		public IXCImageFile(int width, int height)
 		{
 			_imageSize = new System.Drawing.Size(width, height);
-			_fileFilter = this.GetType().ToString();
+			_brief = this.GetType().ToString();
 		}
 
 		/// <summary>
@@ -109,22 +171,6 @@ namespace XCom.Interfaces
 			this(0, 0)
 		{}
 
-
-		/// <summary>
-		/// Gets who wrote this class.
-		/// </summary>
-		public string Author
-		{
-			get { return _author; }
-		}
-
-		/// <summary>
-		/// Short description of this class.
-		/// </summary>
-		public string Description
-		{
-			get { return _desc; }
-		}
 
 		/// <summary>
 		/// Loads a file and return a collection of images.
@@ -211,14 +257,6 @@ namespace XCom.Interfaces
 		}
 
 		/// <summary>
-		/// flags that tell the system where each mod should be displayed
-		/// </summary>
-		public xcFileOptions FileOptions
-		{
-			get { return _fileOptions; }
-		}
-
-		/// <summary>
 		/// Saves a collection
 		/// </summary>
 		/// <param name="directory">directory to save to</param>
@@ -228,49 +266,24 @@ namespace XCom.Interfaces
 		{
 			throw new Exception("Override not yet implemented: IXCFile::SaveCollection(...)");
 		}
-
-		/// <summary>
-		/// Defines the initial coloring of the sprites when loaded
-		/// </summary>
-		public virtual Palette DefaultPalette
-		{
-			get { return _palDefault; }
-		}
-
-		/// <summary>
-		/// Image size that will be loaded
-		/// </summary>
-		public System.Drawing.Size ImageSize
-		{
-			get { return _imageSize; }
-		}
-
-		/// <summary>
-		/// The complete file.extension that this object will open. If null,
-		/// then this object will open files based on the FileExtension property.
-		/// </summary>
-		public virtual string SingleFileName
-		{
-			get { return _singleFile; }
-		}
 	}
 
 
 	/// <summary>
-	/// class xcFileOptions
+	/// class XCFileOptions
 	/// </summary>
-	public class xcFileOptions
+	public class XCFileOptions
 	{
 		private Dictionary<IXCImageFile.Filter, bool> _filters;
 		private int _bpp = 8;
 		private int _pad = 1;
 
-		public xcFileOptions()
+		public XCFileOptions()
 			:
 			this(true, true, true, true)
 		{}
 
-		public xcFileOptions(
+		public XCFileOptions(
 				bool save,
 				bool bmp,
 				bool open,
@@ -292,10 +305,10 @@ namespace XCom.Interfaces
 				bool open,
 				bool custom)
 		{
-			_filters[IXCImageFile.Filter.Bmp]    = bmp;
-			_filters[IXCImageFile.Filter.Custom] = custom;
-			_filters[IXCImageFile.Filter.Open]   = open;
 			_filters[IXCImageFile.Filter.Save]   = save;
+			_filters[IXCImageFile.Filter.Bmp]    = bmp;
+			_filters[IXCImageFile.Filter.Open]   = open;
+			_filters[IXCImageFile.Filter.Custom] = custom;
 		}
 
 		public bool this[IXCImageFile.Filter filter]

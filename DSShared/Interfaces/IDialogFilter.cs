@@ -5,14 +5,14 @@ namespace DSShared.Interfaces
 {
 	/// <summary>
 	/// Interface to define methods to properly display information in open/save
-	/// dialog boxes.
+	/// dialog boxes. This is becoming a problem not an enhancement.
 	/// </summary>
-	public interface IOpenSave
+	public interface IDialogFilter
 	{
 		/// <summary>
 		/// Short description to use in the open/save file dialog.
 		/// </summary>
-		string ExplorerDescription
+		string Brief
 		{ get; }
 
 		/// <summary>

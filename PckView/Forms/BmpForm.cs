@@ -47,7 +47,7 @@ namespace PckView
 
 			foreach (XCom.Interfaces.IXCImageFile xcf in XCom.SharedSpace.Instance.GetImageModList())
 				if (xcf.FileOptions[XCom.Interfaces.IXCImageFile.Filter.Bmp])
-					cbTypes.Items.Add(new CbxItem(xcf, xcf.ExplorerDescription));
+					cbTypes.Items.Add(new CbxItem(xcf, xcf.Brief));
 
 			if (cbTypes.Items.Count > 0)
 				cbTypes.SelectedIndex = 0;

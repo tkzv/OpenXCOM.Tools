@@ -10,14 +10,14 @@ namespace PckView
 	public partial class OpenCustomForm
 	{
 		private string _file;
-		private string _directory;
+		private string _dir;
 
 		public event TryDecodeEventHandler TryClick;
 
 
-		public OpenCustomForm(string directory, string file)
+		public OpenCustomForm(string dir, string file)
 		{
-			_directory = directory;
+			_dir  = dir;
 			_file = file;
 
 			InitializeComponent();
@@ -30,7 +30,7 @@ namespace PckView
 
 			foreach (XCom.Interfaces.IXCImageFile imageFile in sharedSpace.GetImageModList())
 				if (imageFile.FileOptions[XCom.Interfaces.IXCImageFile.Filter.Custom])
-					cbTypes.Items.Add(new BmpForm.CbxItem(imageFile, imageFile.ExplorerDescription));
+					cbTypes.Items.Add(new BmpForm.CbxItem(imageFile, imageFile.Brief));
 
 			if (cbTypes.Items.Count > 0)
 				cbTypes.SelectedIndex = 0;
@@ -82,7 +82,7 @@ namespace PckView
 					TryClick(this, new TryDecodeEventArgs(
 													scrollWid.Value,
 													scrollHei.Value,
-													_directory,
+													_dir,
 													_file,
 													((BmpForm.CbxItem)cbTypes.SelectedItem)._imageFile));
 					txtErr.Text = String.Empty;
@@ -132,12 +132,34 @@ namespace PckView
 		EventArgs
 	{
 		private readonly int _width;
+		public int TryWidth
+		{
+			get { return _width; }
+		}
+
 		private readonly int _height;
+		public int TryHeight
+		{		
+			get { return _height; }
+		}
 
 		private readonly string _file;
+		public string File
+		{
+			get { return _file; }
+		}
+
 		private readonly string _directory;
+		public string Directory
+		{
+			get { return _directory; }
+		}
 
 		private readonly XCom.Interfaces.IXCImageFile _imageFile;
+		public XCom.Interfaces.IXCImageFile XCFile
+		{
+			get { return _imageFile; }
+		}
 
 
 		public TryDecodeEventArgs(
@@ -147,37 +169,11 @@ namespace PckView
 				string file,
 				XCom.Interfaces.IXCImageFile imageFile)
 		{
-			_imageFile	= imageFile;
-			_file		= file;
-			_width		= width;
-			_height		= height;
-			_directory	= directory;
-		}
-
-
-		public XCom.Interfaces.IXCImageFile XCFile
-		{
-			get { return _imageFile; }
-		}
-
-		public string File
-		{
-			get { return _file; }
-		}
-
-		public string Directory
-		{
-			get { return _directory; }
-		}
-
-		public int TryWidth
-		{
-			get { return _width; }
-		}
-
-		public int TryHeight
-		{		
-			get { return _height; }
+			_imageFile = imageFile;
+			_file      = file;
+			_width     = width;
+			_height    = height;
+			_directory = directory;
 		}
 	}
 }

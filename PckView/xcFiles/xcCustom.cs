@@ -18,14 +18,14 @@ namespace PckView
 			:
 			base(width, height)
 		{
-			_ext        = ".*";
-			_fileFilter = "Any File";
-			_desc       = "Options for opening unknown files";
-			_author     = "Ben Ratzlaff";
+			Brief         = "Any File";
+			Description   = "Options for opening unknown files.";
+			FileExtension = ".*";
+			Author        = "Ben Ratzlaff";
 
-			_fileOptions.Init(false, false, true, false);
+			FileOptions.Init(false, false, true, false);
 
-			_palDefault = XCom.Palette.UFOBattle;
+			DefaultPalette = XCom.Palette.UFOBattle;
 		}
 
 /*		public override int FilterIndex

@@ -12,8 +12,38 @@ namespace PckView
 	{
 		public static readonly string ProfileExt = ".pvp";
 
-		private readonly IXCImageFile _codec;
+//		private readonly IXCImageFile _codec;
 
+
+		public XCProfile(ImgProfile profile)
+			:
+			base(0, 0)
+		{
+			ImageSize = new System.Drawing.Size(profile.Width, profile.Height);
+
+//			_codec = profile.ImgType;
+
+			Brief         = profile.Description;
+			Description   = profile.Description;
+			FileExtension = profile.Extension;
+			Author        = "Profile";
+
+			if (profile.OpenSingle != Environment.NewLine)
+				SingleFile = profile.OpenSingle;
+
+			FileOptions.Init(false, true, true, false);
+
+			xConsole.AddLine("Profile created: " + Description);
+
+			try
+			{
+				DefaultPalette = SharedSpace.Instance.GetPaletteTable()[profile.Palette];
+			}
+			catch
+			{
+				DefaultPalette = Palette.UFOBattle;
+			}
+		}
 
 /*		public XCProfile()
 			:
@@ -25,36 +55,6 @@ namespace PckView
 			desc   = "Provides profile support";
 			author = "Ben Ratzlaff";
 		} */
-
-		public XCProfile(ImgProfile profile)
-			:
-			base(0, 0)
-		{
-			_imageSize = new System.Drawing.Size(profile.Width, profile.Height);
-
-			_codec = profile.ImgType;
-
-			_ext        = profile.Extension;
-			_fileFilter = profile.Description;
-			_desc       = profile.Description;
-			_author     = "Profile";
-
-			if (profile.OpenSingle != Environment.NewLine)
-				_singleFile = profile.OpenSingle;
-
-			_fileOptions.Init(false, true, true, false);
-
-			xConsole.AddLine("Profile created: " + _desc);
-
-			try
-			{
-				_palDefault = SharedSpace.Instance.GetPaletteTable()[profile.Palette];
-			}
-			catch
-			{
-				_palDefault = Palette.UFOBattle;
-			}
-		}
 
 
 /*		public IXCImageFile Codec

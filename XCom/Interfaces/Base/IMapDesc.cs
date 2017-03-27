@@ -9,17 +9,31 @@ namespace XCom.Interfaces.Base
 	public class IMapDesc
 		:
 		IAssemblyLoadable,
-		IOpenSave
+		IDialogFilter
 	{
-		private const string _ext = ".notused";
+		// TODO: Dialog Filters do not appear to be implemented. cf, IXCImageFile.
+		private const string _ext = ".default";
 
-		private const string _fileFilter = "no description";
+		private const string _brief = "Default Brief";
 		/// <summary>
-		/// See: AssemblyLoadable.ExplorerDescription
+		/// See: IDialogFilter.Brief
 		/// </summary>
-		public virtual string ExplorerDescription
+		public virtual string Brief // needed only to satisfy base interface.
 		{
-			get { return _fileFilter; }
+			get { return _brief; }
+		}
+		/// <summary>
+		/// See: IDialogFilter.FileFilter
+		/// </summary>
+		public string FileFilter	// needed only to satisfy base interface and _PckView.
+		{							// see LoadOfType.CreateFilter()
+			get
+			{
+				return string.Format(
+								System.Globalization.CultureInfo.CurrentCulture,
+								"*{0} - {1}|*{0}",
+								_ext, _brief);
+			}
 		}
 
 		private string _name;
@@ -40,20 +54,6 @@ namespace XCom.Interfaces.Base
 			return _name;
 		}
 
-		public virtual void Unload()
-		{}
-
-		public virtual string FileFilter
-		{
-			get
-			{
-				return string.Format(
-								System.Globalization.CultureInfo.CurrentCulture,
-								"*{0} - {1}|*{0}",
-								_ext, _fileFilter);
-			}
-		}
-
 		/// <summary>
 		/// See: AssemblyLoadable.RegisterFile
 		/// </summary>
@@ -62,5 +62,11 @@ namespace XCom.Interfaces.Base
 		{
 			return (GetType() != typeof(IMapDesc));
 		}
+
+		/// <summary>
+		/// See: AssemblyLoadable.RegisterFile
+		/// </summary>
+		public virtual void Unload()
+		{}
 	}
 }

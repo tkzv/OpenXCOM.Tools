@@ -354,7 +354,7 @@ namespace XCom
 		{
 			foreach (string dep in _deps) // instead i would want to make an image of the whole map and run that through hq2x
 				foreach (var image in GameInfo.GetPckFile(dep))
-					image.Hq2x();
+					image.HQ2X();
 
 			PckImage.Width  *= 2;
 			PckImage.Height *= 2;

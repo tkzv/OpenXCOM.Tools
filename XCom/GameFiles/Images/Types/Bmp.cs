@@ -595,7 +595,7 @@ namespace XCom
 							(collection.Count / across + mod) * (collection.IXCFile.ImageSize.Height + pad) - pad,
 							pal.Colors);
 
-			for (int i = 0; i < collection.Count; i++)
+			for (int i = 0; i != collection.Count; ++i)
 			{
 				int x = i % across * (collection.IXCFile.ImageSize.Width  + pad);
 				int y = i / across * (collection.IXCFile.ImageSize.Height + pad);

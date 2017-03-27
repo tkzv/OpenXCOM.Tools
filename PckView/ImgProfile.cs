@@ -13,69 +13,69 @@ namespace PckView
 {
 	public class ImgProfile
 	{
-		private int _width  = 0; // NOTE: class-vars are default-initialized.
-		private int _height = 0;
+		private int _width;
+		private int _height;
 
 		private IXCImageFile _imageType;
 
-		private string desc   = String.Empty;
-		private string defPal = String.Empty;
-		private string single = String.Empty;
-		private string ext    = String.Empty;
+		private string _desc   = String.Empty;
+		private string _pal    = String.Empty;
+		private string _single = String.Empty;
+		private string _ext    = String.Empty;
 
 
 		public static List<XCProfile> LoadFile(string inFile)
 		{
-			var sr = new StreamReader(inFile);
-			var vars = new VarCollection_Structure(sr);
-			sr.Close();
-
-			var profiles = new List<XCProfile>();
-
-			foreach (string st in vars.KeyValList.Keys)
+			using (var sr = new StreamReader(inFile))
 			{
-				var profile = new ImgProfile();
+				var vars = new VarCollection_Structure(sr);
+				var profiles = new List<XCProfile>();
 
-				Dictionary<string, DSShared.KeyVal> info = vars.KeyValList[st].SubHash;
+				foreach (string key in vars.KeyValList.Keys)
+				{
+					var profile = new ImgProfile();
 
-				profile.desc	= st;
-				profile.ext		= info["open"].Rest;
-				profile._width	= int.Parse(info["width"].Rest);
-				profile._height	= int.Parse(info["height"].Rest);
-				profile.defPal	= info["palette"].Rest;
+					Dictionary<string, DSShared.KeyVal> info = vars.KeyValList[key].SubHash;
 
-				if (info.ContainsKey("openSingle") && info["openSingle"] != null)
-					profile.single = info["openSingle"].Rest + info["open"].Rest;
+					profile._desc   = key;
+					profile._ext    = info["open"].Rest;
+					profile._width  = int.Parse(info["width"].Rest);
+					profile._height = int.Parse(info["height"].Rest);
+					profile._pal    = info["palette"].Rest;
 
-				foreach (IXCImageFile ixc in SharedSpace.Instance.GetImageModList())
-					if (ixc.ExplorerDescription == info["codec"].Rest)
-					{
-						profile._imageType = ixc;
-						break;
-					}
+					if (info.ContainsKey("openSingle") && info["openSingle"] != null)
+						profile._single = info["openSingle"].Rest + info["open"].Rest;
 
-				profiles.Add(new XCProfile(profile));
+					foreach (IXCImageFile file in SharedSpace.Instance.GetImageModList())
+						if (file.Brief == info["codec"].Rest)
+						{
+							profile._imageType = file;
+							break;
+						}
+
+					profiles.Add(new XCProfile(profile));
+				}
+
+				return profiles;
 			}
-
-			return profiles;
 		}
 
 		public string OpenSingle
 		{
-			get { return single; }
-			set { single = value; }
+			get { return _single; }
+			set { _single = value; }
 		}
 
 		public string Palette
 		{
-			get { return defPal; }
-			set { defPal = value; }
+			get { return _pal; }
+			set { _pal = value; }
 		}
 
 		public string Description
 		{
-			get { return desc; }
-			set { desc = value; }
+			get { return _desc; }
+			set { _desc = value; }
 		}
 
 		public int Width
@@ -98,13 +98,13 @@ namespace PckView
 
 		public string Extension
 		{
-			get { return ext; }
+			get { return _ext; }
 		}
 
 		public string FileString
 		{
-			get { return ext; }
-			set { ext = value; }
+			get { return _ext; }
+			set { _ext = value; }
 		}
 
 		public void SaveProfile(string outFile)
@@ -122,14 +122,14 @@ namespace PckView
 			sw.WriteLine(Description);
 			sw.WriteLine("{");
 
-			sw.WriteLine("\tcodec:" + ImgType.ExplorerDescription);
-			sw.WriteLine("\topen:." + ext.Substring(ext.LastIndexOf(".", StringComparison.Ordinal) + 1));
+			sw.WriteLine("\tcodec:" + ImgType.Brief);
+			sw.WriteLine("\topen:." + _ext.Substring(_ext.LastIndexOf(".", StringComparison.Ordinal) + 1));
 			sw.WriteLine("\twidth:" + Width);
 			sw.WriteLine("\theight:" + Height);
 			sw.WriteLine("\tpalette:" + Palette);
 
-			if (single != String.Empty)
-				sw.WriteLine("\topenSingle:" + single);
+			if (_single != String.Empty)
+				sw.WriteLine("\topenSingle:" + _single);
 
 			// here would be the place to put decoder-specific settings
 

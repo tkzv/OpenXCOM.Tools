@@ -115,7 +115,7 @@ namespace XCom.Interfaces
 
 		}
 
-		public void Hq2x()
+		public void HQ2X()
 		{
 			_image = Bmp.Hq2x(/*_image*/);
 		}

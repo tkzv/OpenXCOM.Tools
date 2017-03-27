@@ -4,7 +4,7 @@ using System;
 namespace DSShared.Loadable
 {
 	/// <summary>
-	/// Top-level interface for user-created addons. The classes that will be
+	/// Top-level interface for user-created addons. The filetypes that will be
 	/// actively searched for at runtime will be defined by the program's author.
 	/// </summary>
 	public interface IAssemblyLoadable

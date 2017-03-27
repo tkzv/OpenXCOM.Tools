@@ -48,7 +48,7 @@ namespace XCom
 		public void Hq2x()
 		{
 			foreach (XCImage image in this)
-				image.Hq2x();
+				image.HQ2X();
 
 			_scale *= 2;
 		}
