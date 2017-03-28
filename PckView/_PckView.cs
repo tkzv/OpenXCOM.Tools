@@ -397,16 +397,16 @@ namespace PckView
 				try
 				{
 #endif
-					IXCImageFile filterIdx = openDictionary[openFile.FilterIndex]; //filterIndex[openFile.FilterIndex];
-					if (filterIdx.GetType() == typeof(xcForceCustom)) // special case
+					IXCImageFile filterType = openDictionary[openFile.FilterIndex]; //filterIndex[openFile.FilterIndex];
+					if (filterType.GetType() == typeof(xcForceCustom)) // special case
 					{
-						toLoad = filterIdx.LoadFile(path, fName);
+						toLoad = filterType.LoadFile(path, fName);
 						recover = true;
 					}
-					else if (filterIdx.GetType() == typeof(xcCustom)) // for *.* files, try singles and then extensions
+					else if (filterType.GetType() == typeof(xcCustom)) // for *.* files, try singles and then extensions
 					{
 						// try singles
-						foreach (XCom.Interfaces.IXCImageFile ixf in _loadedTypes.AllLoaded)
+						foreach (IXCImageFile ixf in _loadedTypes.AllLoaded)
 							if (ixf.SingleFile != null && ixf.SingleFile.ToUpperInvariant() == fName.ToUpperInvariant())
 							{
 								try
@@ -419,7 +419,7 @@ namespace PckView
 
 						if (toLoad == null) // singles not loaded, try non singles
 						{
-							foreach (XCom.Interfaces.IXCImageFile ixf in _loadedTypes.AllLoaded)
+							foreach (IXCImageFile ixf in _loadedTypes.AllLoaded)
 								if (ixf.SingleFile == null && ixf.FileExtension.ToUpperInvariant() == ext.ToUpperInvariant())
 								{
 									try
@@ -435,7 +435,7 @@ namespace PckView
 						}
 					}
 					else
-						toLoad = LoadImageCollection(filterIdx, path, fName);
+						toLoad = LoadImageCollection(filterType, path, fName);
 #if !DEBUG
 				}
 				catch (Exception ex)

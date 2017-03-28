@@ -3,53 +3,59 @@
 
 namespace XCom.Services
 {
-	public static class MapResizeService
+	internal static class MapResizeService
 	{
 		public static MapTileList ResizeMap(
-				int newR,
-				int newC,
-				int newH,
-				MapSize mapSize,
-				MapTileList oldMapTileList,
+				int rPost,
+				int cPost,
+				int hPost,
+				MapSize sizePre,
+				MapTileList tileListPre,
 				bool toCeiling)
 		{
-			if (   newR != 0
-				&& newC != 0
-				&& newH != 0)
+			if (   rPost > 0
+				&& cPost > 0
+				&& hPost > 0)
 			{
-				var newMap = new MapTileList(newR, newC, newH);
+				var tileListPost = new MapTileList(rPost, cPost, hPost);
 
-				FillNewMap(newR, newC, newH, newMap);
+				for (int h = 0; h != hPost; ++h)
+					for (int r = 0; r != rPost; ++r)
+						for (int c = 0; c != cPost; ++c)
+							tileListPost[r, c, h] = XCMapTile.BlankTile;
 
-				for (int h = 0; h < newH && h < mapSize.Height; h++)
-					for (int r = 0; r < newR && r < mapSize.Rows; r++)
-						for (int c = 0; c < newC && c < mapSize.Cols; c++)
+				int levelPost;
+				int levelPre;
+
+				for (int
+						h = 0;
+						h != hPost && h < sizePre.Height;
+						++h)
+					for (int
+							r = 0;
+							r != rPost && r < sizePre.Rows;
+							++r)
+						for (int
+								c = 0;
+								c != cPost && c < sizePre.Cols;
+								++c)
 						{
-							int hCopy = h;
-							int hCurrent = h;
 							if (toCeiling)
 							{
-								hCopy = mapSize.Height - h - 1;
-								hCurrent = newH - h - 1;
+								levelPost = hPost          - h - 1;
+								levelPre  = sizePre.Height - h - 1;
 							}
-							newMap[r, c, hCurrent] = oldMapTileList[r, c, hCopy];
+							else
+							{
+								levelPost = h;
+								levelPre  = h;
+							}
+							tileListPost[r, c, levelPost] = tileListPre[r, c, levelPre];
 						}
 
-				return newMap;
+				return tileListPost;
 			}
 			return null;
-		}
-
-		private static void FillNewMap(
-				int newR,
-				int newC,
-				int newH,
-				MapTileList newMap)
-		{
-			for (int h = 0; h < newH; h++)
-				for (int r = 0; r < newR; r++)
-					for (int c = 0; c < newC; c++)
-						newMap[r, c, h] = XCMapTile.BlankTile;
 		}
 	}
 }

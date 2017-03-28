@@ -36,14 +36,14 @@ namespace XCom
 					}
 				}
 
-				var RMP = new RouteFile(desc.BaseName, desc.RmpPath);
+				var RMP = new RouteFile(desc.Label, desc.RoutePath);
 				var MAP = new XCMapFile(
-										desc.BaseName,
-										desc.BasePath,
-										desc.BlankPath,
-										tiles,
-										desc.Dependencies,
-										RMP);
+									desc.Label,
+									desc.MapPath,
+									desc.BlankPath,
+									tiles,
+									desc.Dependencies,
+									RMP);
 				return MAP;
 			}
 			return null;

@@ -444,7 +444,7 @@ Tileset:TFTD - Ships
 	rmpPath:${rmpPath}
 	blankPath:${blankPath}
 	palette:tftd
-	
+
 	${deps}:UEXT2 UEXT3 UINT1 UINT2 UINT3
 	files:Alien
 		UFO06:${deps}

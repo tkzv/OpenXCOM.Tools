@@ -10,67 +10,66 @@ namespace XCom.Interfaces
 		:
 		ITileset
 	{
-		protected Palette myPal;
+		private Palette _pal;
 		public Palette Palette
 		{
-			get { return myPal; }
-			set { myPal = value; }
+			get { return _pal; }
+			set { _pal = value; }
 		}
 
-		protected string rootPath;
+		private string _pathMaps;
 		public string MapPath
 		{
-			get { return rootPath; }
-			set { rootPath = value; }
+			get { return _pathMaps; }
+			set { _pathMaps = value; }
 		}
 
-		protected string rmpPath;
-		public string RmpPath
+		private string _pathRoutes;
+		public string RoutePath
 		{
-			get { return rmpPath; }
-			set { rmpPath = value; }
+			get { return _pathRoutes; }
+			set { _pathRoutes = value; }
 		}
 
-		protected string blankPath;
+		private string _pathBlanks;
 		public string BlankPath
 		{
-			get { return blankPath; }
-			set { blankPath = value; }
+			get { return _pathBlanks; }
+			set { _pathBlanks = value; }
 		}
 
-		protected string[] groundMaps;
-		public string[] Ground // TODO: return a collection or make it a method.
-		{
-			get { return groundMaps; }
-		}
+//		private string[] _ground;
+//		public string[] Ground // TODO: return a collection or make it a method.
+//		{
+//			get { return _ground; }
+//		}
 
-		protected bool underwater;
-		public bool Underwater
-		{
-			get { return underwater; }
-		}
+//		private bool _underwater;
+//		public bool Underwater
+//		{
+//			get { return _underwater; }
+//		}
 
-		protected bool baseStyle;
-		public bool BaseStyle
-		{
-			get { return baseStyle; }
-		}
+//		private bool _baseStyle;
+//		public bool BaseStyle
+//		{
+//			get { return _baseStyle; }
+//		}
 
-		protected int mapDepth;
-		public int Depth
-		{
-			get { return mapDepth; }
-		}
+//		private int _mapDepth;
+//		public int Depth
+//		{
+//			get { return _mapDepth; }
+//		}
 
-		protected MapSize mapSize;
+		private MapSize _mapSize;
 		public MapSize Size
 		{
-			get { return mapSize; }
+			get { return _mapSize; }
 		}
 
-		protected string scanFile;
-
-		protected string loftFile;
+//		private string scanFile;
+//		private string loftFile;
 
 
 
@@ -78,11 +77,11 @@ namespace XCom.Interfaces
 			:
 			base(name)
 		{
-			myPal = GameInfo.DefaultPalette;
-			mapSize = new MapSize(60, 60, 4);
-			mapDepth = 0;
-			underwater = true;
-			baseStyle = false;
+			_pal = GameInfo.DefaultPalette;
+			_mapSize = new MapSize(60, 60, 4);
+//			_mapDepth = 0;
+//			_underwater = true;
+//			_baseStyle = false;
 		}
 
 		protected IXCTileset(string name, StreamReader sr, VarCollection vars)
@@ -115,60 +114,60 @@ namespace XCom.Interfaces
 					case "PALETTE":
 						switch (val.ToUpperInvariant())
 						{
-							case "UFO":  myPal = Palette.UFOBattle;       break;
-							case "TFTD": myPal = Palette.TFTDBattle;      break;
-							default:     myPal = Palette.GetPalette(val); break;
+							case "UFO":  _pal = Palette.UFOBattle;       break;
+							case "TFTD": _pal = Palette.TFTDBattle;      break;
+							default:     _pal = Palette.GetPalette(val); break;
 						}
 						break;
 
-					case "DLL":
-						string dll = val.Substring(val.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
-						Console.WriteLine(name + " is in dll " + dll);
+					case "DLL": // not used. Might want to throw it at default:ParseLine()
+//						string dll = val.Substring(val.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+//						Console.WriteLine(name + " is in dll " + dll);
 						break;
 
 					case "ROOTPATH":
-						rootPath = val;
+						_pathMaps = val;
 						break;
 
 					case "RMPPATH":
-						rmpPath = val;
-						break;
-
-					case "BASESTYLE":
-						baseStyle = true;
-						break;
-
-					case "GROUND":
-						groundMaps = val.Split(' ');
-						break;
-
-					case "SIZE":
-						string[] dim = val.Split(',');
-						int rows   = int.Parse(dim[0], System.Globalization.CultureInfo.InvariantCulture);
-						int cols   = int.Parse(dim[1], System.Globalization.CultureInfo.InvariantCulture);
-						int height = int.Parse(dim[2], System.Globalization.CultureInfo.InvariantCulture);
-
-						mapSize = new MapSize(rows, cols, height);
-						break;
-
-					case "LANDMAP":
-						underwater = false;
-						break;
-
-					case "DEPTH":
-						mapDepth = int.Parse(val, System.Globalization.CultureInfo.InvariantCulture);
+						_pathRoutes = val;
 						break;
 
 					case "BLANKPATH":
-						blankPath = val;
+						_pathBlanks = val;
 						break;
 
-					case "SCANG":
-						scanFile = val;
+					case "BASESTYLE": // not used. Might want to throw it at default:ParseLine()
+//						_baseStyle = true;
 						break;
 
-					case "LOFTEMP":
-						loftFile = val;
+					case "GROUND": // not used. Might want to throw it at default:ParseLine()
+//						_ground = val.Split(' ');
+						break;
+
+					case "SIZE": // not used. Might want to throw it at default:ParseLine()
+//						string[] dim = val.Split(',');
+//						int rows   = int.Parse(dim[0], System.Globalization.CultureInfo.InvariantCulture);
+//						int cols   = int.Parse(dim[1], System.Globalization.CultureInfo.InvariantCulture);
+//						int height = int.Parse(dim[2], System.Globalization.CultureInfo.InvariantCulture);
+//
+//						_mapSize = new MapSize(rows, cols, height);
+						break;
+
+					case "LANDMAP": // not used. Might want to throw it at default:ParseLine()
+//						_underwater = false;
+						break;
+
+					case "DEPTH": // not used. Might want to throw it at default:ParseLine()
+//						_mapDepth = int.Parse(val, System.Globalization.CultureInfo.InvariantCulture);
+						break;
+
+					case "SCANG": // not used. Might want to throw it at default:ParseLine()
+//						scanFile = val;
+						break;
+
+					case "LOFTEMP": // not used. Might want to throw it at default:ParseLine()
+//						loftFile = val;
 						break;
 
 					default:

@@ -8,7 +8,7 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
-	public class XCTileset
+	internal sealed class XCTileset
 		:
 		IXCTileset
 	{
@@ -62,22 +62,22 @@ namespace XCom
 			sw.WriteLine("Tileset:" + Name);
 			sw.WriteLine(Tab + "type:1");
 
-			if (vars.Vars[rootPath] == null)
-				sw.WriteLine(Tab + "rootpath:" + rootPath);
+			if (vars.Vars[MapPath] != null)
+				sw.WriteLine(Tab + "rootpath:" + ((Variable)vars.Vars[MapPath]).Name);
 			else
-				sw.WriteLine(Tab + "rootpath:" + ((Variable)vars.Vars[rootPath]).Name);
+				sw.WriteLine(Tab + "rootpath:" + MapPath);
 
-			if (vars.Vars[rmpPath] == null)
-				sw.WriteLine(Tab + "rmpPath:" + rootPath);
+			if (vars.Vars[RoutePath] != null)
+				sw.WriteLine(Tab + "rmpPath:" + ((Variable)vars.Vars[RoutePath]).Name);
 			else
-				sw.WriteLine(Tab + "rmpPath:" + ((Variable)vars.Vars[rmpPath]).Name);
+				sw.WriteLine(Tab + "rmpPath:" + RoutePath);
 
-			if (vars.Vars[blankPath] == null)
-				sw.WriteLine(Tab + "blankPath:" + blankPath);
+			if (vars.Vars[BlankPath] != null)
+				sw.WriteLine(Tab + "blankPath:" + ((Variable)vars.Vars[BlankPath]).Name);
 			else
-				sw.WriteLine(Tab + "blankPath:" + ((Variable)vars.Vars[blankPath]).Name);
+				sw.WriteLine(Tab + "blankPath:" + BlankPath);
 
-			sw.WriteLine(Tab + "palette:" + myPal.Name);
+			sw.WriteLine(Tab + "palette:" + Palette.Name);
 
 			foreach (string keySubsets in Subsets.Keys)
 			{
@@ -99,7 +99,7 @@ namespace XCom
 	
 								depList += desc.Dependencies[i];
 							}
-							deps.AddKeyVal(desc.Name, depList);
+							deps.AddKeyVal(desc.Label, depList);
 						}
 					}
 
@@ -120,19 +120,19 @@ namespace XCom
 		{
 			var desc = new XCMapDesc(
 								name,
-								rootPath,
-								blankPath,
-								rmpPath,
+								MapPath,
+								BlankPath,
+								RoutePath,
 								new string[0],
-								myPal);
-			MapDescs[desc.Name] = desc;
-			Subsets[subset][desc.Name] = desc;
+								Palette);
+			MapDescs[desc.Label] = desc;
+			Subsets[subset][desc.Label] = desc;
 		}
 
 		public override void AddMap(XCMapDesc desc, string subset)
 		{
-			MapDescs[desc.Name] = desc;
-			Subsets[subset][desc.Name] = desc;
+			MapDescs[desc.Label] = desc;
+			Subsets[subset][desc.Label] = desc;
 		}
 
 		public override XCMapDesc RemoveMap(string name, string subset)
@@ -163,11 +163,11 @@ namespace XCom
 
 						var desc = new XCMapDesc(
 											file,
-											rootPath,
-											blankPath,
-											rmpPath,
+											MapPath,
+											BlankPath,
+											RoutePath,
 											deps,
-											myPal);
+											Palette);
 
 						MapDescs[file] =
 						dictDescs[file] = desc;

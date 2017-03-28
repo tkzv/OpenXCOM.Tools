@@ -203,6 +203,7 @@ Tileset:UFO - Ships
 	rmpPath:${rmpPathUFO}
 	blankPath:${blankUFO}
 	palette:ufo
+
 	files:XCom
 		PLANE:PLANE
 		LIGHTNIN:LIGHTNIN

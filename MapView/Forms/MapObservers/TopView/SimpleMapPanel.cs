@@ -47,9 +47,9 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		public SimpleMapPanel()
 		{
-			_cell	= new GraphicsPath();
-			_sel	= new GraphicsPath();
-			_copy	= new GraphicsPath();
+			_cell = new GraphicsPath();
+			_sel  = new GraphicsPath();
+			_copy = new GraphicsPath();
 		}
 
 
@@ -69,7 +69,7 @@ namespace MapView.Forms.MapObservers.TopViews
 						hWidth = width / (Map.MapSize.Rows + Map.MapSize.Cols);
 
 						if (hWidth % 2 != 0)
-							hWidth--;
+							--hWidth;
 
 						hHeight = hWidth / 2;
 					}
@@ -233,13 +233,13 @@ namespace MapView.Forms.MapObservers.TopViews
 			{
 				for (int
 						r = 0, startX = _offX, startY = _offY;
-						r < Map.MapSize.Rows;
-						r++, startX -= hWidth, startY += hHeight)
+						r != Map.MapSize.Rows;
+						++r, startX -= hWidth, startY += hHeight)
 				{
 					for (int
 							c = 0, x = startX, y = startY;
-							c < Map.MapSize.Cols;
-							c++, x += hWidth, y += hHeight)
+							c != Map.MapSize.Cols;
+							++c, x += hWidth, y += hHeight)
 					{
 						var mapTile = Map[r, c] as MapTileBase;
 						if (mapTile != null)
@@ -247,7 +247,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					}
 				}
 
-				for (int i = 0; i <= Map.MapSize.Rows; i++)
+				for (int i = 0; i <= Map.MapSize.Rows; ++i)
 					backBuffer.DrawLine(
 									Pens["GridColor"],
 									_offX - i * hWidth,
@@ -255,7 +255,7 @@ namespace MapView.Forms.MapObservers.TopViews
 									(Map.MapSize.Cols - i) * hWidth  + _offX,
 									(Map.MapSize.Cols + i) * hHeight + _offY);
 
-				for (int i = 0; i <= Map.MapSize.Cols; i++)
+				for (int i = 0; i <= Map.MapSize.Cols; ++i)
 					backBuffer.DrawLine(
 									Pens["GridColor"],
 									_offX + i * hWidth,

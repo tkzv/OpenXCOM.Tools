@@ -510,17 +510,17 @@ namespace MapView
 				Environment.Exit(0);
 		} */
 
-		private void onItem_Click(object sender, System.EventArgs e)
+		private void onItem_Click(object sender, EventArgs e)
 		{
 			ChangeSetting(this, "Animation", true);
 		}
 
-		private void offItem_Click(object sender, System.EventArgs e)
+		private void offItem_Click(object sender, EventArgs e)
 		{
 			ChangeSetting(this, "Animation", false);
 		}
 
-		private void saveItem_Click(object sender, System.EventArgs e)
+		private void saveItem_Click(object sender, EventArgs e)
 		{
 			if (_mapViewPanel.BaseMap != null)
 			{
@@ -529,13 +529,13 @@ namespace MapView
 			}
 		}
 
-		private void miQuit_Click(object sender, System.EventArgs e)
+		private void miQuit_Click(object sender, EventArgs e)
 		{
 			CloseAllSaveRegistry(null, new CancelEventArgs(true));
 			Environment.Exit(0);
 		}
 
-		private void miPaths_Click(object sender, System.EventArgs e)
+		private void miPaths_Click(object sender, EventArgs e)
 		{
 			var share = SharedSpace.Instance[PathInfo.PathsFile];
 
@@ -601,7 +601,7 @@ namespace MapView
 
 				RouteService.CheckNodeBounds(map);
 
-				statusMapName.Text = desc.Name;
+				statusMapName.Text = desc.Label;
 
 				tsMapSize.Text = (map != null) ? map.MapSize.ToString()
 											   : "size: n/a";
@@ -648,14 +648,14 @@ namespace MapView
 			return DialogResult.OK;
 		}
 
-		private void miOptions_Click(object sender, System.EventArgs e)
+		private void miOptions_Click(object sender, EventArgs e)
 		{
 			var f = new PropertyForm("MainViewOptions", Settings);
 			f.Text = "Main View Options";
 			f.Show();
 		}
 
-		private void miSaveImage_Click(object sender, System.EventArgs e)
+		private void miSaveImage_Click(object sender, EventArgs e)
 		{
 			if (_mapViewPanel.BaseMap != null)
 			{
@@ -676,7 +676,7 @@ namespace MapView
 			}
 		}
 
-		private void miHq_Click(object sender, System.EventArgs e)
+		private void miHq_Click(object sender, EventArgs e)
 		{
 			var map = _mapViewPanel.BaseMap as XCMapFile;
 			if (map != null)
@@ -686,7 +686,7 @@ namespace MapView
 			}
 		}
 
-		private void miDoors_Click(object sender, System.EventArgs e)
+		private void miDoors_Click(object sender, EventArgs e)
 		{
 			miDoors.Checked = !miDoors.Checked;
 
@@ -700,7 +700,7 @@ namespace MapView
 				}
 		}
 
-		private void miResize_Click(object sender, System.EventArgs e)
+		private void miResize_Click(object sender, EventArgs e)
 		{
 			if (_mapViewPanel.MapView.Map != null)
 			{
@@ -722,7 +722,7 @@ namespace MapView
 
 		private bool _windowFlag = false;
 
-		private void MainWindow_Activated(object sender, System.EventArgs e)
+		private void MainWindow_Activated(object sender, EventArgs e)
 		{
 			if (!_windowFlag)
 			{
@@ -739,7 +739,7 @@ namespace MapView
 			}
 		}
 
-		private void miInfo_Click(object sender, System.EventArgs e)
+		private void miInfo_Click(object sender, EventArgs e)
 		{
 			if (_mapViewPanel.BaseMap != null)
 			{

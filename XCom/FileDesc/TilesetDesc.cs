@@ -109,15 +109,15 @@ namespace XCom
 
 		public ITileset AddTileset(
 								string name,
-								string mapPath,
-								string rmpPath,
-								string blankPath)
+								string pathMaps,
+								string pathRoutes,
+								string pathBlanks)
 		{
 			var tileset = new XCTileset(name);
 
-			tileset.MapPath   = mapPath;
-			tileset.RmpPath   = rmpPath;
-			tileset.BlankPath = blankPath;
+			tileset.MapPath   = pathMaps;
+			tileset.RoutePath = pathRoutes;
+			tileset.BlankPath = pathBlanks;
 
 			return (_tilesets[name] = tileset);
 		}
@@ -128,38 +128,37 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// WARNING: This isn't used but has to be here to satisfy inheritance
-		/// from FileDesc.Save() which is abstract.
+		/// WARNING: This doesn't appear to be used but has to be here to
+		/// satisfy inheritance from FileDesc.Save() which is abstract.
 		/// </summary>
 		/// <param name="outFile"></param>
 		public override void Save(string outFile)
 		{
 			var vars = new VarCollection("Path"); // iterate thru each tileset, call save on them
 
-			foreach (string st in _tilesets.Keys)
+			foreach (string key in _tilesets.Keys)
 			{
-				var tileset = (IXCTileset)_tilesets[st];
+				var tileset = (IXCTileset)_tilesets[key];
 				if (tileset != null)
 				{
 					vars.AddKeyVal("rootPath",  tileset.MapPath);
-					vars.AddKeyVal("rmpPath",   tileset.RmpPath);
+					vars.AddKeyVal("rmpPath",   tileset.RoutePath);
 					vars.AddKeyVal("blankPath", tileset.BlankPath);
 				}
 			}
 
-			var sw = new StreamWriter(outFile);
-
-			foreach (string key in vars.Variables)
+			using (var sw = new StreamWriter(outFile))
 			{
-				var val = (Variable)vars.Vars[key];
-				sw.WriteLine(string.Format("{0}:{1}", val.Name, val.Value));
+				foreach (string key in vars.Variables)
+				{
+					var val = (Variable)vars.Vars[key];
+					sw.WriteLine(string.Format("{0}:{1}", val.Name, val.Value));
+				}
+
+				foreach (string key in _tilesets.Keys)
+					if (_tilesets[key] != null)
+						((IXCTileset)_tilesets[key]).Save(sw, vars);
 			}
-
-			foreach (string st in _tilesets.Keys)
-				if (_tilesets[st] != null)
-					((IXCTileset)_tilesets[st]).Save(sw, vars);
-
-			sw.Close();
 		}
 	}
 }

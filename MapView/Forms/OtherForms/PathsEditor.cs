@@ -227,8 +227,8 @@ namespace MapView
 
 					if (desc != null)
 					{
-						foreach (string st in desc.Dependencies)
-							listMapImages.Items.Add(st);
+						foreach (string dep in desc.Dependencies)
+							listMapImages.Items.Add(dep);
 					}
 					else
 					{
@@ -237,7 +237,7 @@ namespace MapView
 												tn.Text,
 												tileset.MapPath,
 												tileset.BlankPath,
-												tileset.RmpPath, new string[]{},
+												tileset.RoutePath, new string[]{},
 												tileset.Palette),
 									tn.Parent.Text);
 					}
@@ -256,10 +256,16 @@ namespace MapView
 			}
 
 			txtRoot.Text  = tileset.MapPath;
-			txtRmp.Text   = tileset.RmpPath;
+			txtRmp.Text   = tileset.RoutePath;
 			txtBlank.Text = tileset.BlankPath;
 
 			cbPalette.SelectedItem = tileset.Palette;
+		}
+
+		private void txtRoot_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == (char)Keys.Enter)
+				txtRoot_Leave(null, null);
 		}
 
 		private void txtRoot_Leave(object sender, System.EventArgs e)
@@ -273,10 +279,10 @@ namespace MapView
 			tileset.MapPath = txtRoot.Text;
 		}
 
-		private void txtRoot_KeyPress(object sender, KeyPressEventArgs e)
+		private void txtRmp_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == 13)
-				txtRoot_Leave(null, null);
+			if (e.KeyChar == (char)Keys.Enter)
+				txtRmp_Leave(null, null);
 		}
 
 		private void txtRmp_Leave(object sender, System.EventArgs e)
@@ -285,38 +291,32 @@ namespace MapView
 			if (!Directory.Exists(txtRmp.Text)
 				&& NoDirForm.Show(txtRmp.Text) != DialogResult.OK)
 			{
-				txtRmp.Text = tileset.RmpPath;
+				txtRmp.Text = tileset.RoutePath;
 			}
-			tileset.RmpPath = txtRmp.Text;
-		}
-
-		private void txtRmp_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (e.KeyChar == 13) // [Enter]
-				txtRmp_Leave(null, null);
+			tileset.RoutePath = txtRmp.Text;
 		}
 
 		private void btnUp_Click(object sender, System.EventArgs e)
 		{
 			var tileset = getCurrentTileset();
-			string[] dep = ((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies;
+			string[] deps = ((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies;
 
-			for (int i = 1; i < dep.Length; i++)
+			for (int i = 1; i != deps.Length; ++i)
 			{
-				if (dep[i] == (string)listMapImages.SelectedItem)
+				if (deps[i] == (string)listMapImages.SelectedItem)
 				{
-					string old = dep[i - 1];
-					dep[i - 1] = dep[i];
-					dep[i] = old;
+					string old = deps[i - 1];
+					deps[i - 1] = deps[i];
+					deps[i] = old;
 
-					((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies = dep;
+					((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies = deps;
 
 					listMapImages.Items.Clear();
 
-					foreach (string st in dep)
-						listMapImages.Items.Add(st);
+					foreach (string dep in deps)
+						listMapImages.Items.Add(dep);
 
-					listMapImages.SelectedItem = dep[i - 1];
+					listMapImages.SelectedItem = deps[i - 1];
 					return;
 				}
 			}
@@ -325,24 +325,24 @@ namespace MapView
 		private void btnDown_Click(object sender, System.EventArgs e)
 		{
 			var tileset = getCurrentTileset();
-			string[] dep = ((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies;
+			string[] deps = ((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies;
 
-			for (int i = 0; i < dep.Length - 1; i++)
+			for (int i = 0; i != deps.Length - 1; ++i)
 			{
-				if (dep[i] == (string)listMapImages.SelectedItem)
+				if (deps[i] == (string)listMapImages.SelectedItem)
 				{
-					string old = dep[i + 1];
-					dep[i + 1] = dep[i];
-					dep[i] = old;
+					string old = deps[i + 1];
+					deps[i + 1] = deps[i];
+					deps[i] = old;
 
-					((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies = dep;
+					((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies = deps;
 					
 					listMapImages.Items.Clear();
 
-					foreach (string st in dep)
-						listMapImages.Items.Add(st);
+					foreach (string dep in deps)
+						listMapImages.Items.Add(dep);
 
-					listMapImages.SelectedItem = dep[i + 1];
+					listMapImages.SelectedItem = deps[i + 1];
 					return;
 				}
 			}
@@ -351,14 +351,14 @@ namespace MapView
 		private void btnMoveRight_Click(object sender, System.EventArgs e)
 		{
 			var tileset = getCurrentTileset();
-			var dep = new ArrayList(((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies);
-			dep.Remove(listMapImages.SelectedItem);
-			((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies = (string[])dep.ToArray(typeof(string));
+			var deps = new ArrayList(((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies);
+			deps.Remove(listMapImages.SelectedItem);
+			((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies = (string[])deps.ToArray(typeof(string));
 			
 			listMapImages.Items.Clear();
 
-			foreach (string st in dep)
-				listMapImages.Items.Add(st);
+			foreach (string dep in deps)
+				listMapImages.Items.Add(dep);
 		}
 
 		private void btnMoveLeft_Click(object sender, System.EventArgs e)
@@ -441,11 +441,11 @@ namespace MapView
 
 			if (openFile.ShowDialog(this) == DialogResult.OK)
 			{
-				foreach (string st in openFile.FileNames)
+				foreach (string pfe in openFile.FileNames) // pfe=PathFileExt
 				{
-					string path = st.Substring(0, st.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
-					string file = st.Substring(st.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
-					file = file.Substring(0, file.IndexOf(".", StringComparison.Ordinal));
+					string path = pfe.Substring(0, pfe.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+					string file = pfe.Substring(pfe.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+					file        = file.Substring(0, file.IndexOf(".", StringComparison.Ordinal));
 					GameInfo.ImageInfo[file] = new ImageDescriptor(file, path);
 				}
 
@@ -474,21 +474,19 @@ namespace MapView
 
 		private void btnSavePaths_Click(object sender, System.EventArgs e)
 		{
-			var sw = new StreamWriter(new FileStream(_paths, FileMode.Create));
-			
-//			GameInfo.MapPath		= txtMap.Text;
-//			GameInfo.ImagePath		= txtImages.Text;
-//			GameInfo.CursorPath		= txtCursor.Text;
-//			GameInfo.PalettePath	= txtPalettes.Text;
+			using (var sw = new StreamWriter(new FileStream(_paths, FileMode.Create)))
+			{
+//				GameInfo.MapPath     = txtMap.Text;
+//				GameInfo.ImagePath   = txtImages.Text;
+//				GameInfo.CursorPath  = txtCursor.Text;
+//				GameInfo.PalettePath = txtPalettes.Text;
 
-//			sw.WriteLine("palettes:" + txtPalettes.Text);
-
-			sw.WriteLine("mapdata:" + txtMap.Text);
-			sw.WriteLine("images:"  + txtImages.Text);
-			sw.WriteLine("cursor:"  + txtCursor.Text);
-
-			sw.Flush();
-			sw.Close();
+//				sw.WriteLine("palettes:" + txtPalettes.Text);
+	
+				sw.WriteLine("mapdata:" + txtMap.Text);
+				sw.WriteLine("images:"  + txtImages.Text);
+				sw.WriteLine("cursor:"  + txtCursor.Text);
+			}
 		}
 
 		private void btnSaveImages_Click(object sender, System.EventArgs e)
@@ -498,21 +496,21 @@ namespace MapView
 
 		private void newGroup_Click(object sender, System.EventArgs e)
 		{
-			var tf = new TilesetForm();
-			tf.ShowDialog(this);
+			var f = new TilesetForm();
+			f.ShowDialog(this);
 
-			if (tf.TilesetText != null)
+			if (f.TilesetText != null)
 			{
 				var tileset = (IXCTileset)GameInfo.TilesetInfo.AddTileset(
-																	tf.TilesetText,
-																	tf.MapPath,
-																	tf.RmpPath,
-																	tf.BlankPath);
+																	f.TilesetText,
+																	f.MapPath,
+																	f.RmpPath,
+																	f.BlankPath);
 //				addTileset(tileset.Name);
 				treeMaps.Nodes.Add(tileset.Name);
 
 				txtRoot.Text = tileset.MapPath;
-				txtRmp.Text = tileset.RmpPath;
+				txtRmp.Text  = tileset.RoutePath;
 
 //				saveMapedit();
 			}
@@ -526,17 +524,17 @@ namespace MapView
 
 		private void addSub_Click(object sender, System.EventArgs e)
 		{
-			var sf = new SubsetForm();
-			sf.ShowDialog(this);
-			if (sf.SubsetName != null)
+			var f = new SubsetForm();
+			f.ShowDialog(this);
+			if (f.SubsetName != null)
 			{
 				var tileset = getCurrentTileset();
 
 //				TreeNode tn = treeMaps.SelectedNode; // TODO: Check if not used.
 
-				tileset.Subsets[sf.SubsetName] = new Dictionary<string, IMapDesc>();
+				tileset.Subsets[f.SubsetName] = new Dictionary<string, IMapDesc>();
 
-//				tileset.NewSubset(sf.SubsetName);
+//				tileset.NewSubset(f.SubsetName);
 //				saveMapedit();
 
 				populateTree();

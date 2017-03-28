@@ -17,78 +17,13 @@ namespace XCom.Interfaces.Base
 	/// </summary>
 	public class IMapBase
 	{
-		private MapLocation _selLoc;
+		public event HeightChangedEventHandler HeightChanged;
+		public event SelectedTileChangedEventHandler SelectedTileChanged;
 
 		private const int HalfWidth  = 16;
 		private const int HalfHeight =  8;
 
 		private byte _height;
-
-
-		/// <summary>
-		/// User is shown the "Do you want to save?" dialog if true.
-		/// </summary>
-		public bool MapChanged
-		{ get; set; }
-
-
-		protected IMapBase(string name, List<TileBase> tiles)
-		{
-			Name = name;
-			_tiles = tiles;
-		}
-
-
-		protected MapTileList MapTiles
-		{ get; set; }
-
-		public string Name
-		{ get; protected set; }
-
-		private readonly List<TileBase> _tiles;
-		public List<TileBase> Tiles
-		{
-			get { return _tiles; }
-		}
-
-		public virtual void Save()
-		{
-			throw new InvalidOperationException("IMapBase: Save() is not implemented."); // ... odd ....
-		}
-
-		public event HeightChangedEventHandler HeightChanged;
-		public event SelectedTileChangedEventHandler SelectedTileChanged;
-
-		/// <summary>
-		/// Changes the '_curHeight' property and fires a HeightChanged event.
-		/// </summary>
-		public void Up()
-		{
-			if (_height > 0)
-			{
-				var args = new HeightChangedEventArgs(_height, _height - 1);
-				--_height;
-
-				if (HeightChanged != null)
-					HeightChanged(this, args);
-			}
-		}
-
-		/// <summary>
-		/// Changes the '_curHeight' property and fires a HeightChanged event.
-		/// </summary>
-		public void Down()
-		{
-			if (_height < MapSize.Height - 1)
-			{
-				++_height;
-				var args = new HeightChangedEventArgs(_height, _height + 1);
-
-				if (HeightChanged != null)
-					HeightChanged(this, args);
-			}
-		}
-
 		/// <summary>
 		/// Gets the current height.
 		/// Setting the height will fire a HeightChanged event.
@@ -110,11 +45,24 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Gets the current size of the Map.
+		/// User is shown the "Do you want to save?" dialog if true.
 		/// </summary>
-		public MapSize MapSize
+		public bool MapChanged
+		{ get; set; }
+
+		public string Name
 		{ get; protected set; }
 
+		protected MapTileList MapTiles
+		{ get; set; }
+
+		private readonly List<TileBase> _tiles;
+		public List<TileBase> Tiles
+		{
+			get { return _tiles; }
+		}
+
+		private MapLocation _selLoc;
 		/// <summary>
 		/// Gets/Sets the current selected location. Setting the location will fire a SelectedTileChanged event.
 		/// </summary>
@@ -137,7 +85,14 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Gets/Sets a MapTile using row,col,height values. No error checking is done to ensure that the location is valid.
+		/// Gets the current size of the Map.
+		/// </summary>
+		public MapSize MapSize
+		{ get; protected set; }
+
+		/// <summary>
+		/// Gets/Sets a MapTile using row,col,height values. No error checking
+		/// is done to ensure that the location is valid.
 		/// </summary>
 		/// <param name="row"></param>
 		/// <param name="col"></param>
@@ -148,11 +103,10 @@ namespace XCom.Interfaces.Base
 			get
 			{
 				return (MapTiles != null) ? MapTiles[row, col, height]
-										   : null;
+										  : null;
 			}
 			set { MapTiles[row, col, height] = value; }
 		}
-
 		/// <summary>
 		/// Gets/Sets a MapTile at the current height using row,col values.
 		/// </summary>
@@ -164,34 +118,80 @@ namespace XCom.Interfaces.Base
 			get { return this[row, col, _height]; }
 			set { this[row, col, _height] = value; }
 		}
-
 		/// <summary>
 		/// Gets/Sets a MapTile using a MapLocation.
 		/// </summary>
-		public MapTileBase this[MapLocation position]
+		public MapTileBase this[MapLocation loc]
 		{
-			get { return this[position.Row, position.Col, position.Height]; }
-			set { this[position.Row, position.Col, position.Height] = value; }
+			get { return this[loc.Row, loc.Col, loc.Height]; }
+			set { this[loc.Row, loc.Col, loc.Height] = value; }
+		}
+
+
+		protected IMapBase(string name, List<TileBase> tiles)
+		{
+			Name = name;
+			_tiles = tiles;
+		}
+
+
+		public virtual void Save()
+		{
+			throw new InvalidOperationException("IMapBase: Save() is not implemented."); // ... odd ....
+		}
+
+		/// <summary>
+		/// Changes the '_height' property and fires a HeightChanged event.
+		/// </summary>
+		public void Up()
+		{
+			if (_height > 0)
+			{
+				var args = new HeightChangedEventArgs(_height, _height - 1);
+				--_height;
+
+				if (HeightChanged != null)
+					HeightChanged(this, args);
+			}
+		}
+
+		/// <summary>
+		/// Changes the '_height' property and fires a HeightChanged event.
+		/// </summary>
+		public void Down()
+		{
+			if (_height < MapSize.Height - 1)
+			{
+				++_height;
+				var args = new HeightChangedEventArgs(_height, _height + 1);
+
+				if (HeightChanged != null)
+					HeightChanged(this, args);
+			}
 		}
 
 		public virtual void ResizeTo(
-				int newR,
-				int newC,
-				int newH,
-				bool wrtCeiling)
+				int rPost,
+				int cPost,
+				int hPost,
+				bool toCeiling)
 		{
-			var newMap = MapResizeService.ResizeMap(
-												newR,
-												newC,
-												newH,
+			var tileList = MapResizeService.ResizeMap(
+												rPost,
+												cPost,
+												hPost,
 												MapSize,
 												MapTiles,
-												wrtCeiling);
-			if (newMap != null)
+												toCeiling);
+			if (tileList != null)
 			{
-				MapTiles = newMap;
-				MapSize = new MapSize(newR, newC, newH);
-				_height = (byte)(MapSize.Height - 1);
+				// NOTE: This doesn't handle Routes or node-checking which XCMapFile.ResizeTo() does.
+				MapTiles = tileList;
+				MapSize  = new MapSize(rPost, cPost, hPost);
+
+				if (hPost > 0) // assuage FxCop re 'possible' underflow.
+					_height = (byte)(hPost - 1);
+
 				MapChanged = true;
 			}
 		}
@@ -218,19 +218,18 @@ namespace XCom.Interfaces.Base
 								-(24 * _height));
 
 			int i = 0;
-
 			if (MapTiles != null)
 			{
 				for (int h = MapSize.Height - 1; h >= _height; --h)
 				{
 					for (int
 							row = 0, startX = start.X, startY = start.Y + h * 24;
-							row < MapSize.Rows;
+							row != MapSize.Rows;
 							++row, startX -= HalfWidth, startY += HalfHeight)
 					{
 						for (int
 								col = 0, x = startX, y = startY;
-								col < MapSize.Cols;
+								col != MapSize.Cols;
 								++col, x += HalfWidth, y += HalfHeight, ++i)
 						{
 							var tiles = this[row, col, h].UsedTiles;

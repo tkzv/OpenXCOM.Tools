@@ -135,7 +135,7 @@
     <Compile Include="GameFiles\Images\ImageInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\Types\BDYImage.cs">
+    <Compile Include="GameFiles\Images\Types\BdyImage.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Images\Types\Bmp.cs">
@@ -147,7 +147,7 @@
     <Compile Include="GameFiles\Images\Types\Empty Files\SCRImage.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\Types\SPKImage.cs">
+    <Compile Include="GameFiles\Images\Types\SpkImage.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Images\Types\XCImage.cs">

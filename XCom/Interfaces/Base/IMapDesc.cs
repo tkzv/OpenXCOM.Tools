@@ -6,7 +6,7 @@ using DSShared.Loadable;
 
 namespace XCom.Interfaces.Base
 {
-	public class IMapDesc
+	public class IMapDesc // psst. This isn't an interface.
 		:
 		IAssemblyLoadable,
 		IDialogFilter
@@ -36,22 +36,23 @@ namespace XCom.Interfaces.Base
 			}
 		}
 
-		private string _name;
-		public string Name
+		private string _label;
+		public string Label
 		{
-			get { return _name; }
+			get { return _label; }
+			protected set { _label = value; }
 		}
 
 
-		public IMapDesc(string name)
+		public IMapDesc(string label)
 		{
-			_name = name;
+			_label = label;
 		}
 
 
-		public override string ToString()
+		public override string ToString() // isUsed yes/no
 		{
-			return _name;
+			return _label;
 		}
 
 		/// <summary>
@@ -64,7 +65,7 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// See: AssemblyLoadable.RegisterFile
+		/// See: AssemblyLoadable.Unload
 		/// </summary>
 		public virtual void Unload()
 		{}

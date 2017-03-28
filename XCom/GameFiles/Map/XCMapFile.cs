@@ -274,42 +274,44 @@ namespace XCom
 		}
 
 		public override void ResizeTo(
-				int newR,
-				int newC,
-				int newH,
-				bool wrtCeiling)
+				int rPost,
+				int cPost,
+				int hPost,
+				bool toCeiling)
 		{
 			var tileList = MapResizeService.ResizeMap(
-													newR,
-													newC,
-													newH,
-													MapSize,
-													MapTiles,
-													wrtCeiling);
+												rPost,
+												cPost,
+												hPost,
+												MapSize,
+												MapTiles,
+												toCeiling);
 			if (tileList != null)
 			{
-				if (wrtCeiling && newH != MapSize.Height) // update Routes
+				if (toCeiling && hPost != MapSize.Height) // update Routes
 				{
-					var d = newH - MapSize.Height;
+					int d = hPost - MapSize.Height;
 					foreach (RouteNode node in RouteFile)
 					{
-						if (newH < MapSize.Height)
-							node.Height = (byte)(node.Height + d);
-						else
-							node.Height += (byte)d;
+//						if (hPost < MapSize.Height)
+//							node.Height = node.Height + d;
+//						else
+						node.Height += d;
 					}
 				}
 
-				if (   newC < MapSize.Cols // delete route-nodes outside the new bounds
-					|| newR < MapSize.Rows
-					|| newH < MapSize.Height)
+				if (   cPost < MapSize.Cols // delete route-nodes outside the new bounds
+					|| rPost < MapSize.Rows
+					|| hPost < MapSize.Height)
 				{
-					RouteFile.CheckNodeBounds(newC, newR, newH);
+					RouteFile.CheckNodeBounds(cPost, rPost, hPost);
 				}
 
 				MapTiles = tileList;
-				MapSize = new MapSize(newR, newC, newH);
+				MapSize  = new MapSize(rPost, cPost, hPost);
+
 				CurrentHeight = (byte)(MapSize.Height - 1);
+
 				MapChanged = true;
 			}
 		}
