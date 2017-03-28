@@ -80,10 +80,10 @@ namespace MapView
 			LoadDefaults();
 			LogFile.WriteLine("Default settings loaded");
 
-			Palette.UFOBattle.SetTransparent(true);
-			Palette.TFTDBattle.SetTransparent(true);
-			Palette.UFOBattle.Grayscale.SetTransparent(true);
-			Palette.TFTDBattle.Grayscale.SetTransparent(true);
+			Palette.UfoBattle.SetTransparent(true);
+			Palette.TftdBattle.SetTransparent(true);
+			Palette.UfoBattle.Grayscale.SetTransparent(true);
+			Palette.TftdBattle.Grayscale.SetTransparent(true);
 			LogFile.WriteLine("Palette transparencies set");
 
 			#region Setup SharedSpace information and paths
@@ -160,22 +160,22 @@ namespace MapView
 
 			try
 			{
-				PckFile cursor = GameInfo.CachePckFile(
-													SharedSpace.Instance.GetString(SharedSpace.CursorFile),
-													String.Empty,
-													2,
-													Palette.UFOBattle);
+				PckSpriteCollection cursor = GameInfo.CachePckPack(
+															SharedSpace.Instance.GetString(SharedSpace.CursorFile),
+															String.Empty,
+															2,
+															Palette.UfoBattle);
 				_mapViewPanel.MapView.SetCursor(new CursorSprite(cursor));
 			}
 			catch
 			{
 				try
 				{
-					PckFile cursor = GameInfo.CachePckFile(
-													SharedSpace.Instance.GetString(SharedSpace.CursorFile),
-													String.Empty,
-													4,
-													Palette.TFTDBattle);
+					PckSpriteCollection cursor = GameInfo.CachePckPack(
+																SharedSpace.Instance.GetString(SharedSpace.CursorFile),
+																String.Empty,
+																4,
+																Palette.TftdBattle);
 					_mapViewPanel.MapView.SetCursor(new CursorSprite(cursor));
 				}
 				catch
@@ -238,7 +238,7 @@ namespace MapView
 
 		private static void InitGameInfo(PathInfo filePaths)
 		{
-			GameInfo.Init(Palette.UFOBattle, filePaths);
+			GameInfo.Init(Palette.UfoBattle, filePaths);
 		}
 
 		private static XCMainWindow _instance;
@@ -248,7 +248,7 @@ namespace MapView
 			get { return _instance; }
 		}
 
-		private void parseLine(XCom.KeyVal line, XCom.VarCollection vars)
+		private void parseLine(XCom.KeyvalPair line, XCom.VarCollection vars)
 		{
 			switch (line.Keyword.ToUpperInvariant())
 			{
@@ -525,7 +525,7 @@ namespace MapView
 			if (_mapViewPanel.BaseMap != null)
 			{
 				_mapViewPanel.BaseMap.Save();
-				xConsole.AddLine("Saved: " + _mapViewPanel.BaseMap.Name);
+				XConsole.AdZerg("Saved: " + _mapViewPanel.BaseMap.Name);
 			}
 		}
 

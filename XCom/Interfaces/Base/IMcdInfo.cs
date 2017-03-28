@@ -3,7 +3,7 @@ using System;
 
 namespace XCom.Interfaces.Base
 {
-	public interface IInfo
+	public interface IMcdInfo
 	{
 		int Id
 		{ get; }

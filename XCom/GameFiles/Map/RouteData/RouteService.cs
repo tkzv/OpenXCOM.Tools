@@ -22,11 +22,11 @@ namespace XCom.GameFiles.Map.RouteData
 				var invalid = new List<RouteNode>();
 
 				foreach (RouteNode node in mapFile.RouteFile)
-					if (RouteFile.IsOutsideMap(
-										node,
-										baseMap.MapSize.Cols,
-										baseMap.MapSize.Rows,
-										baseMap.MapSize.Height))
+					if (RouteNodeCollection.IsOutsideMap(
+													node,
+													baseMap.MapSize.Cols,
+													baseMap.MapSize.Rows,
+													baseMap.MapSize.Height))
 					{
 						invalid.Add(node);
 					}

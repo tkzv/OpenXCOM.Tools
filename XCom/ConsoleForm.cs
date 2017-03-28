@@ -6,7 +6,7 @@ using DSShared.Windows;
 
 namespace XCom
 {
-	public partial class ConsoleForm
+	public sealed partial class ConsoleForm
 		:
 		Form
 	{
@@ -14,8 +14,8 @@ namespace XCom
 		{
 			InitializeComponent();
 
-			xConsole.Init(100);
-			xConsole.BufferChanged += xConsole_BufferChanged; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			XConsole.Init(100);
+			XConsole.BufferChanged += xConsole_BufferChanged; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			new RegistryInfo(this); // <- looks like this writes some registry entries ....
 
@@ -23,18 +23,18 @@ namespace XCom
 		}
 
 
-		private void xConsole_BufferChanged(Node current)
+		private void xConsole_BufferChanged(Zerg zerg)
 		{
-			string buffer = current._st + "\n";
-			Node curr = current._next;
+			string buffer = zerg.ZergBull + Environment.NewLine;
+			Zerg zerg1 = zerg.Post;
 
-			while (current != curr)
+			while (zerg != zerg1)
 			{
-				buffer = buffer + curr._st + "\n";
-				curr = curr._next;
+				buffer = buffer + zerg1.ZergBull + Environment.NewLine;
+				zerg1 = zerg1.Post;
 			}
-
 			consoleText.Text = buffer;
+
 			Refresh();
 		}
 

@@ -17,7 +17,7 @@ namespace XCom.Interfaces
 		IAssemblyLoadable,
 		IDialogFilter
 	{
-		private Palette _palDefault = Palette.UFOBattle;
+		private Palette _palDefault = Palette.UfoBattle;
 		/// <summary>
 		/// Defines the initial palette for the sprites.
 		/// </summary>
@@ -66,7 +66,7 @@ namespace XCom.Interfaces
 			protected set { _desc = value; }
 		}
 
-		protected string _author = "Default Author";
+		private string _author = "Default Author";
 		/// <summary>
 		/// Gets/Sets who wrote this filetype.
 		/// </summary>
@@ -109,7 +109,7 @@ namespace XCom.Interfaces
 		/// <summary>
 		/// See: IDialogFilter.FileFilter
 		/// </summary>
-		public virtual string FileFilter
+		public string FileFilter
 		{
 			get
 			{
@@ -133,7 +133,7 @@ namespace XCom.Interfaces
 		public virtual bool RegisterFile()
 		{
 //			Console.WriteLine("{0} registered: {1}", this.GetType(), GetType() != typeof(IXCFile));
-			xConsole.AddLine(string.Format(
+			XConsole.AdZerg(string.Format(
 										System.Globalization.CultureInfo.InvariantCulture,
 										"{0} registered: {1}",
 										GetType(),
@@ -162,7 +162,6 @@ namespace XCom.Interfaces
 			_imageSize = new System.Drawing.Size(width, height);
 			_brief = this.GetType().ToString();
 		}
-
 		/// <summary>
 		/// Creates an object of this class with width and height of 0.
 		/// </summary>
@@ -173,71 +172,59 @@ namespace XCom.Interfaces
 
 
 		/// <summary>
-		/// Loads a file and return a collection of images.
-		/// </summary>
-		/// <param name="directory"></param>
-		/// <param name="file"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="pal"></param>
-		/// <returns></returns>
-		protected virtual XCImageCollection LoadFileOverride(
-				string directory,
-				string file,
-				int width,
-				int height,
-				Palette pal)
-		{
-			throw new Exception("base function is abstract: IXCImageFile.LoadFileOverride(...)");
-		}
-
-		/// <summary>
 		/// Calls LoadFile with ImageSize.Width and ImageSize.Height.
 		/// </summary>
-		/// <param name="directory"></param>
+		/// <param name="dir"></param>
 		/// <param name="file"></param>
 		/// <returns></returns>
-		public XCImageCollection LoadFile(string directory, string file)
+		public XCImageCollection LoadFile(string dir, string file)
 		{
 			return LoadFile(
-						directory,
+						dir,
 						file,
 						ImageSize.Width,
 						ImageSize.Height);
 		}
-
 		/// <summary>
 		/// Method that calls the overloaded load function in order to do some
 		/// similar functionality across all instances of this class.
 		/// </summary>
-		/// <param name="directory"></param>
+		/// <param name="dir"></param>
 		/// <param name="file"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <returns></returns>
 		public XCImageCollection LoadFile(
-				string directory,
+				string dir,
 				string file,
 				int width,
 				int height)
 		{
 			return LoadFile(
-						directory,
+						dir,
 						file,
 						width,
 						height,
 						_palDefault);
 		}
-
+		/// <summary>
+		/// Have another LoadFile().
+		/// </summary>
+		/// <param name="dir"></param>
+		/// <param name="file"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="pal"></param>
+		/// <returns></returns>
 		public XCImageCollection LoadFile(
-				string directory,
+				string dir,
 				string file,
 				int width,
 				int height,
 				Palette pal)
 		{
 			var collection = LoadFileOverride(
-											directory,
+											dir,
 											file,
 											width,
 											height,
@@ -246,7 +233,7 @@ namespace XCom.Interfaces
 			if (collection != null)
 			{
 				collection.IXCFile = this;
-				collection.Path = directory;
+				collection.Path = dir;
 				collection.Name = file;
 
 				if (collection.Pal == null)
@@ -257,12 +244,31 @@ namespace XCom.Interfaces
 		}
 
 		/// <summary>
+		/// Loads a file and return a collection of images.
+		/// </summary>
+		/// <param name="dir"></param>
+		/// <param name="file"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="pal"></param>
+		/// <returns></returns>
+		private XCImageCollection LoadFileOverride(
+				string dir,
+				string file,
+				int width,
+				int height,
+				Palette pal)
+		{
+			throw new Exception("base function is abstract: IXCImageFile.LoadFileOverride(...)");
+		}
+
+		/// <summary>
 		/// Saves a collection
 		/// </summary>
-		/// <param name="directory">directory to save to</param>
+		/// <param name="dir">directory to save to</param>
 		/// <param name="file">file</param>
 		/// <param name="images">images to save in this format</param>
-		public virtual void SaveCollection(string directory, string file, XCImageCollection images)
+		public virtual void SaveCollection(string dir, string file, XCImageCollection images)
 		{
 			throw new Exception("Override not yet implemented: IXCFile::SaveCollection(...)");
 		}
@@ -274,9 +280,27 @@ namespace XCom.Interfaces
 	/// </summary>
 	public class XCFileOptions
 	{
-		private Dictionary<IXCImageFile.Filter, bool> _filters;
+		private readonly Dictionary<IXCImageFile.Filter, bool> _filters;
+
 		private int _bpp = 8;
+		public int BitDepth
+		{
+			get { return _bpp; }
+			set { _bpp = value; }
+		}
+
 		private int _pad = 1;
+		public int Pad
+		{
+			get { return _pad; }
+			set { _pad = value; }
+		}
+
+		public bool this[IXCImageFile.Filter filter]
+		{
+			get { return _filters[filter]; }
+		}
+
 
 		public XCFileOptions()
 			:
@@ -309,23 +333,6 @@ namespace XCom.Interfaces
 			_filters[IXCImageFile.Filter.Bmp]    = bmp;
 			_filters[IXCImageFile.Filter.Open]   = open;
 			_filters[IXCImageFile.Filter.Custom] = custom;
-		}
-
-		public bool this[IXCImageFile.Filter filter]
-		{
-			get { return _filters[filter]; }
-		}
-
-		public int BitDepth
-		{
-			get { return _bpp; }
-			set { _bpp = value; }
-		}
-
-		public int Pad
-		{
-			get { return _pad; }
-			set { _pad = value; }
 		}
 	}
 }

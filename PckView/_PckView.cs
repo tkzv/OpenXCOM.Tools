@@ -25,7 +25,7 @@ namespace PckView
 {
 	public partial class PckViewForm
 		:
-		Form
+			Form
 	{
 		private TotalViewPck _totalViewPck;
 		private Palette _palette;
@@ -75,9 +75,9 @@ namespace PckView
 			_share.AllocateObject(SharedSpace.SettingsDir, Environment.CurrentDirectory + @"\settings");
 			_share.AllocateObject(SharedSpace.CustomDir,   Environment.CurrentDirectory + @"\custom");
 		
-			xConsole.AddLine("Current directory: "  + _share[SharedSpace.AppDir]);					// TODO: I don't trust that since changing SharedSpace.
-			xConsole.AddLine("Settings directory: " + _share[SharedSpace.SettingsDir].ToString());	// it may well need an explicit cast to (PathInfo)
-			xConsole.AddLine("Custom directory: "   + _share[SharedSpace.CustomDir].ToString());
+			XConsole.AdZerg("Current directory: "  + _share[SharedSpace.AppDir]);					// TODO: I don't trust that since changing SharedSpace.
+			XConsole.AdZerg("Settings directory: " + _share[SharedSpace.SettingsDir].ToString());	// it may well need an explicit cast to (PathInfo)
+			XConsole.AdZerg("Custom directory: "   + _share[SharedSpace.CustomDir].ToString());
 			#endregion
 
 			_totalViewPck = new TotalViewPck();
@@ -94,16 +94,16 @@ namespace PckView
 			_share[SharedSpace.Palettes] = new Dictionary<string, Palette>();
 			_dictPalettes = new Dictionary<Palette, MenuItem>();
 
-			AddPalette(Palette.UFOBattle,		miPalette);
-			AddPalette(Palette.UFOGeo,			miPalette);
-			AddPalette(Palette.UFOGraph,		miPalette);
-			AddPalette(Palette.UFOResearch,		miPalette);
-			AddPalette(Palette.TFTDBattle,		miPalette);
-			AddPalette(Palette.TFTDGeo,			miPalette);
-			AddPalette(Palette.TFTDGraph,		miPalette);
-			AddPalette(Palette.TFTDResearch,	miPalette);
+			AddPalette(Palette.UfoBattle,		miPalette);
+			AddPalette(Palette.UfoGeo,			miPalette);
+			AddPalette(Palette.UfoGraph,		miPalette);
+			AddPalette(Palette.UfoResearch,		miPalette);
+			AddPalette(Palette.TftdBattle,		miPalette);
+			AddPalette(Palette.TftdGeo,			miPalette);
+			AddPalette(Palette.TftdGraph,		miPalette);
+			AddPalette(Palette.TftdResearch,	miPalette);
 
-			_palette = Palette.UFOBattle;
+			_palette = Palette.UfoBattle;
 
 			_dictPalettes[_palette].Checked = true;
 			_totalViewPck.Pal = _palette;
@@ -133,12 +133,12 @@ namespace PckView
 			string dir = _share[SharedSpace.CustomDir].ToString();	// TODO: I don't trust that since changing SharedSpace.
 			if (Directory.Exists(dir))								// it may well need an explicit cast to (PathInfo)
 			{
-				xConsole.AddLine("Custom directory exists: " + dir);
+				XConsole.AdZerg("Custom directory exists: " + dir);
 				foreach (string st in Directory.GetFiles(dir))
 				{
 					if (st.EndsWith(".dll", StringComparison.Ordinal))
 					{
-						xConsole.AddLine("Loading dll: " + st);
+						XConsole.AdZerg("Loading dll: " + st);
 						_loadedTypes.LoadFrom(Assembly.LoadFrom(st));
 					}
 					else if (st.EndsWith(XCProfile.ProfileExt, StringComparison.Ordinal))
@@ -176,7 +176,7 @@ namespace PckView
 				miPalette.Enabled =
 				transItem.Enabled = (e.Collection.IXCFile.FileOptions.BitDepth == 8);
 
-				xConsole.AddLine("bpp is: " + e.Collection.IXCFile.FileOptions.BitDepth);
+				XConsole.AdZerg("bpp is: " + e.Collection.IXCFile.FileOptions.BitDepth);
 			}
 		}
 
@@ -297,11 +297,11 @@ namespace PckView
 
 		public string SelectedPalette
 		{
-			get { return _palette.Name; }
+			get { return _palette.Label; }
 			set
 			{
 				foreach (Palette pal in _dictPalettes.Keys)
-					if (pal.Name.Equals(value))
+					if (pal.Label.Equals(value))
 						palClick(_dictPalettes[pal], null);
 			}
 		}
@@ -320,14 +320,14 @@ namespace PckView
 
 		public MenuItem AddPalette(Palette pal, MenuItem it)
 		{
-			var it0 = new MenuItem(pal.Name);
+			var it0 = new MenuItem(pal.Label);
 			it0.Tag = pal;
 			it.MenuItems.Add(it0);
 
 			it0.Click += palClick;
 			_dictPalettes[pal] = it0;
 
-			((Dictionary<string, Palette>)_share[SharedSpace.Palettes])[pal.Name] = pal;
+			((Dictionary<string, Palette>)_share[SharedSpace.Palettes])[pal.Label] = pal;
 			return it0;
 		}
 
@@ -802,11 +802,11 @@ namespace PckView
 			_fileBackupManager.Backup(_currentFilePath);
 
 			// Save
-			PckFile.Save(
-						dir,
-						fileWithoutExt,
-						_totalViewPck.Collection,
-						_currentFileBpp);
+			PckSpriteCollection.Save(
+								dir,
+								fileWithoutExt,
+								_totalViewPck.Collection,
+								_currentFileBpp);
 			SavedFile = true;
 		}
 

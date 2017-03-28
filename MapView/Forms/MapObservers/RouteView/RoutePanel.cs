@@ -100,7 +100,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 					textOver2     = (tile.Node.Index).ToString(System.Globalization.CultureInfo.CurrentCulture);
 					textPriority2 = (tile.Node.Priority).ToString();
-					textSpawn2    = (RouteFile.UnitRankUFO[tile.Node.UsableRank]).ToString();
+					textSpawn2    = (RouteNodeCollection.UnitRankUfo[tile.Node.UsableRank]).ToString();
 					textWeight2   = (tile.Node.Spawn).ToString();
 
 					int width;
@@ -342,11 +342,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 								var link = node[i] as Link;
 								switch (link.Destination)
 								{
-									case Link.NOT_USED:
-									case Link.EXIT_EAST:
-									case Link.EXIT_NORTH:
-									case Link.EXIT_SOUTH:
-									case Link.EXIT_WEST:
+									case Link.NotUsed:
+									case Link.ExitEast:
+									case Link.ExitNorth:
+									case Link.ExitSouth:
+									case Link.ExitWest:
 										break;
 
 									default:
@@ -510,25 +510,25 @@ namespace MapView.Forms.MapObservers.RouteViews
 								var link = entry[i] as Link;
 								switch (link.Destination)
 								{
-									case Link.NOT_USED:
+									case Link.NotUsed:
 										break;
 
-									case Link.EXIT_NORTH:
+									case Link.ExitNorth:
 										xEnd = Width;
 										yEnd = 0;
 										break;
 
-									case Link.EXIT_EAST:
+									case Link.ExitEast:
 										xEnd = Width;
 										yEnd = Height;
 										break;
 
-									case Link.EXIT_SOUTH:
+									case Link.ExitSouth:
 										xEnd = 0;
 										yEnd = Height;
 										break;
 
-									case Link.EXIT_WEST:
+									case Link.ExitWest:
 										xEnd = 0;
 										yEnd = 0;
 										break;
@@ -583,24 +583,24 @@ namespace MapView.Forms.MapObservers.RouteViews
 						var link = entry[i] as Link;
 						switch (link.Destination)
 						{
-							case Link.NOT_USED:
+							case Link.NotUsed:
 								break;
 
-							case Link.EXIT_NORTH:
+							case Link.ExitNorth:
 								xEnd = Width;
 								break;
 
-							case Link.EXIT_EAST:
+							case Link.ExitEast:
 								xEnd = Width;
 								yEnd = Height;
 								break;
 
-							case Link.EXIT_SOUTH:
+							case Link.ExitSouth:
 								xEnd = 0;
 								yEnd = Height;
 								break;
 
-							case Link.EXIT_WEST:
+							case Link.ExitWest:
 								xEnd = 0;
 								break;
 

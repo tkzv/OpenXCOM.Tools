@@ -114,8 +114,8 @@ namespace XCom.Interfaces
 					case "PALETTE":
 						switch (val.ToUpperInvariant())
 						{
-							case "UFO":  _pal = Palette.UFOBattle;       break;
-							case "TFTD": _pal = Palette.TFTDBattle;      break;
+							case "UFO":  _pal = Palette.UfoBattle;       break;
+							case "TFTD": _pal = Palette.TftdBattle;      break;
 							default:     _pal = Palette.GetPalette(val); break;
 						}
 						break;

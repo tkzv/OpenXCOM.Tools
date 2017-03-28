@@ -25,7 +25,7 @@ namespace PckView
 
 			FileOptions.Init(false, false, true, false);
 
-			DefaultPalette = XCom.Palette.UFOBattle;
+			DefaultPalette = XCom.Palette.UfoBattle;
 		}
 
 /*		public override int FilterIndex

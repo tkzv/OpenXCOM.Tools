@@ -93,49 +93,41 @@ observed
 namespace XCom
 {
 	public enum UnitType
-		:
-		byte
 	{
-		Any = 0,
-		Flying,
-		Small,
-		FlyingLarge,
-		Large
+		Any         = 0,
+		Flying      = 1,
+		Small       = 2,
+		FlyingLarge = 3,
+		Large       = 4
 	};
 
-	public enum UnitRankUFO
-		:
-		byte
+	public enum UnitRankUfo
 	{
-		Civilian = 0,
-		XCom,
-		Soldier,
-		Navigator,
-		LeaderCommander,
-		Engineer,
-		Misc1,
-		Medic,
-		Misc2
+		Civilian        = 0,
+		XCom            = 1,
+		Soldier         = 2,
+		Navigator       = 3,
+		LeaderCommander = 4,
+		Engineer        = 5,
+		Misc1           = 6,
+		Medic           = 7,
+		Misc2           = 8
 	};
 
-	public enum UnitRankTFTD
-		:
-		byte
+	public enum UnitRankTftd
 	{
-		Civilian = 0,
-		XCom,
-		Soldier,
-		SquadLeader,
-		LeaderCommander,
-		Medic,
-		Misc1,
-		Technician,
-		Misc2
+		Civilian        = 0,
+		XCom            = 1,
+		Soldier         = 2,
+		SquadLeader     = 3,
+		LeaderCommander = 4,
+		Medic           = 5,
+		Misc1           = 6,
+		Technician      = 7,
+		Misc2           = 8
 	};
 
 	public enum SpawnUsage
-		:
-		byte
 	{
 		NoSpawn = 0,
 		Spawn1  = 1,
@@ -151,44 +143,39 @@ namespace XCom
 	};
 
 	public enum NodeImportance
-		:
-		byte
 	{
-		Zero = 0,
-		One,
-		Two,
-		Three,
-		Four,
-		Five,
-		Six,
-		Seven,
-		Eight,
-		Nine,
-		Ten
+		Zero  = 0,
+		One   = 1,
+		Two   = 2,
+		Three = 3,
+		Four  = 4,
+		Five  = 5,
+		Six   = 6,
+		Seven = 7,
+		Eight = 8,
+		Nine  = 9,
+		Ten   = 10
 	};
 
 	public enum BaseModuleAttack
-		:
-		byte
 	{
-		Zero = 0,
-		One,
-		Two,
-		Three,
-		Four,
-		Five,
-		Six,
-		Seven,
-		Eight,
-		Nine,
-		Ten
+		Zero  = 0,
+		One   = 1,
+		Two   = 2,
+		Three = 3,
+		Four  = 4,
+		Five  = 5,
+		Six   = 6,
+		Seven = 7,
+		Eight = 8,
+		Nine  = 9,
+		Ten   = 10
 	};
 
 	public enum LinkType
-		:
-		byte
 	{
-		NotUsed   = 0xFF,
+		None      = 0x00, // pacify FxCop CA1008 BUT DO NOT USE IT.
+		NotUsed   = 0xFF, // since valid route-nodes can and will have a value of 0.
 		ExitNorth = 0xFE,
 		ExitEast  = 0xFD,
 		ExitSouth = 0xFC,
@@ -196,42 +183,42 @@ namespace XCom
 	};
 
 
-	public class RouteFile
+	public sealed class RouteNodeCollection
 		:
-		IEnumerable<RouteNode>
+			IEnumerable<RouteNode>
 	{
 		private readonly List<RouteNode> _nodes;
 
-		public static readonly string RouteExt = ".RMP";
+		public const string RouteExt = ".RMP";
 
 		private readonly string _baseName;
 		private readonly string _basePath;
 
 
-		public static readonly object[] UnitRankUFO =
+		public static readonly object[] UnitRankUfo =
 		{
-			new StrEnum("0:Civ-Scout",        XCom.UnitRankUFO.Civilian),
-			new StrEnum("1:XCom",             XCom.UnitRankUFO.XCom),
-			new StrEnum("2:Soldier",          XCom.UnitRankUFO.Soldier),
-			new StrEnum("3:Navigator",        XCom.UnitRankUFO.Navigator),
-			new StrEnum("4:Leader/Commander", XCom.UnitRankUFO.LeaderCommander),
-			new StrEnum("5:Engineer",         XCom.UnitRankUFO.Engineer),
-			new StrEnum("6:Misc1",            XCom.UnitRankUFO.Misc1),
-			new StrEnum("7:Medic",            XCom.UnitRankUFO.Medic),
-			new StrEnum("8:Misc2",            XCom.UnitRankUFO.Misc2)
+			new StrEnum("0:Civ-Scout",        XCom.UnitRankUfo.Civilian),
+			new StrEnum("1:XCom",             XCom.UnitRankUfo.XCom),
+			new StrEnum("2:Soldier",          XCom.UnitRankUfo.Soldier),
+			new StrEnum("3:Navigator",        XCom.UnitRankUfo.Navigator),
+			new StrEnum("4:Leader/Commander", XCom.UnitRankUfo.LeaderCommander),
+			new StrEnum("5:Engineer",         XCom.UnitRankUfo.Engineer),
+			new StrEnum("6:Misc1",            XCom.UnitRankUfo.Misc1),
+			new StrEnum("7:Medic",            XCom.UnitRankUfo.Medic),
+			new StrEnum("8:Misc2",            XCom.UnitRankUfo.Misc2)
 		};
 
-		public static readonly object[] UnitRankTFTD =
+		public static readonly object[] UnitRankTftd =
 		{
-			new StrEnum("0:Civ-Scout",        XCom.UnitRankTFTD.Civilian),
-			new StrEnum("1:XCom",             XCom.UnitRankTFTD.XCom),
-			new StrEnum("2:Soldier",          XCom.UnitRankTFTD.Soldier),
-			new StrEnum("3:Squad Leader",     XCom.UnitRankTFTD.SquadLeader),
-			new StrEnum("4:Leader/Commander", XCom.UnitRankTFTD.LeaderCommander),
-			new StrEnum("5:Medic",            XCom.UnitRankTFTD.Medic),
-			new StrEnum("6:Misc1",            XCom.UnitRankTFTD.Misc1),
-			new StrEnum("7:Technician",       XCom.UnitRankTFTD.Technician),
-			new StrEnum("8:Misc2",            XCom.UnitRankTFTD.Misc2)
+			new StrEnum("0:Civ-Scout",        XCom.UnitRankTftd.Civilian),
+			new StrEnum("1:XCom",             XCom.UnitRankTftd.XCom),
+			new StrEnum("2:Soldier",          XCom.UnitRankTftd.Soldier),
+			new StrEnum("3:Squad Leader",     XCom.UnitRankTftd.SquadLeader),
+			new StrEnum("4:Leader/Commander", XCom.UnitRankTftd.LeaderCommander),
+			new StrEnum("5:Medic",            XCom.UnitRankTftd.Medic),
+			new StrEnum("6:Misc1",            XCom.UnitRankTftd.Misc1),
+			new StrEnum("7:Technician",       XCom.UnitRankTftd.Technician),
+			new StrEnum("8:Misc2",            XCom.UnitRankTftd.Misc2)
 		};
 
 		public static readonly object[] SpawnUsage =
@@ -250,7 +237,7 @@ namespace XCom
 		};
 
 
-		internal RouteFile(string baseName, string basePath)
+		internal RouteNodeCollection(string baseName, string basePath)
 		{
 			_baseName = baseName;
 			_basePath = basePath;
@@ -276,24 +263,14 @@ namespace XCom
 		/// <summary>
 		/// Saves the .RMP file.
 		/// </summary>
-		public void Save() // TODO: wrap this in a 'using' block
+		internal void Save()
 		{
-//			Save(File.Create(_basePath + _baseName + RouteExt));
 			using (var fs = File.Create(_basePath + _baseName + RouteExt))
 			{
 				for (int i = 0; i != _nodes.Count; ++i)
 					_nodes[i].Save(fs); // -> RouteNode.Save() writes the node-data
-
-//				fs.Close(); // NOTE: the 'using' block (flushes &) closes the stream.
 			}
 		}
-//		public void Save(FileStream fs) // TODO: wrap this in a 'using' block
-//		{
-//			for (int i = 0; i != _nodes.Count; ++i)
-//				_nodes[i].Save(fs);
-//
-//			fs.Close();
-//		}
 
 		IEnumerator<RouteNode> IEnumerable<RouteNode>.GetEnumerator()
 		{
@@ -341,9 +318,9 @@ namespace XCom
 
 					if (link.Destination == nodeId)
 					{
-						link.Destination = Link.NOT_USED;
+						link.Destination = Link.NotUsed;
 					}
-					else if (link.Destination > nodeId && link.Destination < Link.EXIT_WEST)
+					else if (link.Destination > nodeId && link.Destination < Link.ExitWest)
 					{
 						--link.Destination;
 					}
@@ -351,7 +328,7 @@ namespace XCom
 			}
 		}
 
-		public RouteNode Add(byte row, byte col, byte height)
+		internal RouteNode Add(byte row, byte col, byte height)
 		{
 			var node = new RouteNode((byte)_nodes.Count, row, col, height);
 			_nodes.Add(node);
@@ -366,7 +343,7 @@ namespace XCom
 		/// <param name="newC"></param>
 		/// <param name="newR"></param>
 		/// <param name="newH"></param>
-		public void CheckNodeBounds(int newC, int newR, int newH)
+		internal void CheckNodeBounds(int newC, int newR, int newH)
 		{
 			var deletions = new List<RouteNode>();
 
@@ -378,7 +355,7 @@ namespace XCom
 				Delete(entry);
 		}
 
-		public static bool IsOutsideMap(
+		internal static bool IsOutsideMap(
 				RouteNode node,
 				int cols,
 				int rows,

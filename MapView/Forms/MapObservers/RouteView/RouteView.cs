@@ -71,7 +71,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			cbLink4UnitType.DropDownStyle = ComboBoxStyle.DropDownList;
 			cbLink5UnitType.DropDownStyle = ComboBoxStyle.DropDownList;
 
-			cbSpawnRank.Items.AddRange(RouteFile.UnitRankUFO);
+			cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);
 			cbSpawnRank.DropDownStyle = ComboBoxStyle.DropDownList;
 
 			foreach (var value in Enum.GetValues(typeof(NodeImportance)))
@@ -90,7 +90,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			cbLink4Dest.DropDownStyle = ComboBoxStyle.DropDownList;
 			cbLink5Dest.DropDownStyle = ComboBoxStyle.DropDownList;
 
-			cbSpawnWeight.Items.AddRange(RouteFile.SpawnUsage);
+			cbSpawnWeight.Items.AddRange(RouteNodeCollection.SpawnUsage);
 			cbSpawnWeight.DropDownStyle = ComboBoxStyle.DropDownList;
 
 			DeselectNode();
@@ -255,12 +255,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbPriority.SelectedItem = NodeImportance.Zero;
 				cbAttack.SelectedItem   = BaseModuleAttack.Zero;
 
-				if (_mapFile.Tiles[0][0].Palette == Palette.UFOBattle)
-					cbSpawnRank.SelectedItem = RouteFile.UnitRankUFO[(int)UnitRankUFO.Civilian];
+				if (_mapFile.Tiles[0][0].Palette == Palette.UfoBattle)
+					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[(int)UnitRankUfo.Civilian];
 				else
-					cbSpawnRank.SelectedItem = RouteFile.UnitRankUFO[(int)UnitRankTFTD.Civilian];
+					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[(int)UnitRankTftd.Civilian];
 
-				cbSpawnWeight.SelectedItem = RouteFile.SpawnUsage[(int)SpawnUsage.NoSpawn];
+				cbSpawnWeight.SelectedItem = RouteNodeCollection.SpawnUsage[(int)SpawnUsage.NoSpawn];
 
 				cbLink1Dest.SelectedItem = LinkType.NotUsed;
 				cbLink2Dest.SelectedItem = LinkType.NotUsed;
@@ -294,12 +294,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbPriority.SelectedItem = _nodeSelected.Priority;
 				cbAttack.SelectedItem   = _nodeSelected.Attack;
 
-				if (_mapFile.Tiles[0][0].Palette == Palette.UFOBattle)
-					cbSpawnRank.SelectedItem = RouteFile.UnitRankUFO[_nodeSelected.UsableRank];
+				if (_mapFile.Tiles[0][0].Palette == Palette.UfoBattle)
+					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[_nodeSelected.UsableRank];
 				else
-					cbSpawnRank.SelectedItem = RouteFile.UnitRankTFTD[_nodeSelected.UsableRank];
+					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankTftd[_nodeSelected.UsableRank];
 
-				cbSpawnWeight.SelectedItem = RouteFile.SpawnUsage[(byte)_nodeSelected.Spawn];
+				cbSpawnWeight.SelectedItem = RouteNodeCollection.SpawnUsage[(byte)_nodeSelected.Spawn];
 
 				cbLink1Dest.Items.Clear();
 				cbLink2Dest.Items.Clear();
@@ -331,27 +331,27 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbLink4Dest.Items.AddRange(linkListArray);
 				cbLink5Dest.Items.AddRange(linkListArray);
 
-				if (_nodeSelected[0].Destination < Link.EXIT_WEST)
+				if (_nodeSelected[0].Destination < Link.ExitWest)
 					cbLink1Dest.SelectedItem = _nodeSelected[0].Destination;
 				else
 					cbLink1Dest.SelectedItem = (LinkType)_nodeSelected[0].Destination;
 
-				if (_nodeSelected[1].Destination < Link.EXIT_WEST)
+				if (_nodeSelected[1].Destination < Link.ExitWest)
 					cbLink2Dest.SelectedItem = _nodeSelected[1].Destination;
 				else
 					cbLink2Dest.SelectedItem = (LinkType)_nodeSelected[1].Destination;
 
-				if (_nodeSelected[2].Destination < Link.EXIT_WEST)
+				if (_nodeSelected[2].Destination < Link.ExitWest)
 					cbLink3Dest.SelectedItem = _nodeSelected[2].Destination;
 				else
 					cbLink3Dest.SelectedItem = (LinkType)_nodeSelected[2].Destination;
 
-				if (_nodeSelected[3].Destination < Link.EXIT_WEST)
+				if (_nodeSelected[3].Destination < Link.ExitWest)
 					cbLink4Dest.SelectedItem = _nodeSelected[3].Destination;
 				else
 					cbLink4Dest.SelectedItem = (LinkType)_nodeSelected[3].Destination;
 
-				if (_nodeSelected[4].Destination < Link.EXIT_WEST)
+				if (_nodeSelected[4].Destination < Link.ExitWest)
 					cbLink5Dest.SelectedItem = _nodeSelected[4].Destination;
 				else
 					cbLink5Dest.SelectedItem = (LinkType)_nodeSelected[4].Destination;
@@ -409,10 +409,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 					{
 						cbSpawnRank.Items.Clear();
 
-						if (_mapFile.Tiles[0][0].Palette == Palette.UFOBattle)
-							cbSpawnRank.Items.AddRange(RouteFile.UnitRankUFO);
+						if (_mapFile.Tiles[0][0].Palette == Palette.UfoBattle)
+							cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);
 						else
-							cbSpawnRank.Items.AddRange(RouteFile.UnitRankTFTD);
+							cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankTftd);
 
 						FillNodeInformation();
 					}
@@ -503,7 +503,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					try
 					{
 						_nodeSelected[linkId].Destination = selId.Value;
-						if (_nodeSelected[linkId].Destination < Link.EXIT_WEST)
+						if (_nodeSelected[linkId].Destination < Link.ExitWest)
 						{
 							var node = _mapFile.RouteFile[_nodeSelected[linkId].Destination];
 							_nodeSelected[linkId].Distance = CalculateLinkDistance(

@@ -47,7 +47,7 @@ namespace MapView
 
 		public static void ReadSettings(
 				VarCollection vars,
-				KeyVal keyval,
+				KeyvalPair keyval,
 				Settings settings)
 		{
 			while ((keyval = vars.ReadLine()) != null)

@@ -21,9 +21,7 @@ namespace XCom
 {
 	public static class Bmp
 	{
-		public static event LoadingDelegate LoadingEvent;
-
-		public static readonly byte DefaultTransparentIndex = 0xFE;
+		public static event LoadingEventHandler LoadingEvent;
 
 		// amount of space between saved bmp image blocks
 //		private static readonly int space = 1;
@@ -31,88 +29,86 @@ namespace XCom
 
 		public static void Save(string path, Bitmap image)
 		{
-			Console.WriteLine("Start");
-			var bw = new BinaryWriter(new FileStream(path, FileMode.Create));
-
-			int more = 0;
-			while ((image.Width + more) % 4 != 0)
-				more++;
-
-			int len = (image.Width + more) * image.Height;
-
-			bw.Write('B');
-			bw.Write('M');
-			bw.Write(1078 + len); // 14 + 40 + (4 * 256)
-			bw.Write((int)0);
-			bw.Write((int)1078);
-
-			bw.Write((int)40);
-			bw.Write((int)image.Width);
-			bw.Write((int)image.Height);
-			bw.Write((short)1);
-			bw.Write((short)8);
-			bw.Write((int)0);
-			bw.Write((int)0);
-			bw.Write((int)0);
-			bw.Write((int)0);
-			bw.Write((int)0);
-			bw.Write((int)0);
-			bw.Write((int)0);
-
-			Console.WriteLine("Colors");
-
-			//Console.WriteLine("File size should be: " + (1078 + len + more));
-
-//			byte[] bArr = new byte[256 * 4];
-			Color[] entries = image.Palette.Entries;
-
-			for (int i = 1; i < 256; i++)
+			//Console.WriteLine("Start");
+			using (var bw = new BinaryWriter(new FileStream(path, FileMode.Create)))
 			{
-//			for (int i = 0; i < bArr.Length; i += 4)
-//			{
-//				bArr[i] = entries[i / 4].B;
-//				bArr[i + 1] = entries[i / 4].G;
-//				bArr[i + 2] = entries[i / 4].R;
-//				bArr[i + 3] = 0;
+				int pad = 0;
+				while ((image.Width + pad) % 4 != 0)
+					++pad;
 
-				bw.Write(entries[i].B);
-				bw.Write(entries[i].G);
-				bw.Write(entries[i].R);
-				bw.Write((byte)0);
+				int len = (image.Width + pad) * image.Height;
 
-//				bw.Write((byte)image.Palette.Entries[i].B);
-//				bw.Write((byte)image.Palette.Entries[i].G);
-//				bw.Write((byte)image.Palette.Entries[i].R);
-//				bw.Write((byte)0);
+				bw.Write('B');
+				bw.Write('M');
+				bw.Write(1078 + len); // 14 + 40 + (4 * 256)
+				bw.Write((int)0);
+				bw.Write((int)1078);
+
+				bw.Write((int)40);
+				bw.Write((int)image.Width);
+				bw.Write((int)image.Height);
+				bw.Write((short)1);
+				bw.Write((short)8);
+				bw.Write((int)0);
+				bw.Write((int)0);
+				bw.Write((int)0);
+				bw.Write((int)0);
+				bw.Write((int)0);
+				bw.Write((int)0);
+				bw.Write((int)0);
+
+				//Console.WriteLine("Colors");
+
+				//Console.WriteLine("File size should be: " + (1078 + len + more));
+
+//				byte[] bArr = new byte[256 * 4];
+				Color[] entries = image.Palette.Entries;
+
+				for (int i = 1; i != 256; ++i)
+				{
+//				for (int i = 0; i < bArr.Length; i += 4)
+//				{
+//					bArr[i] = entries[i / 4].B;
+//					bArr[i + 1] = entries[i / 4].G;
+//					bArr[i + 2] = entries[i / 4].R;
+//					bArr[i + 3] = 0;
+
+					bw.Write(entries[i].B);
+					bw.Write(entries[i].G);
+					bw.Write(entries[i].R);
+					bw.Write((byte)0);
+
+//					bw.Write((byte)image.Palette.Entries[i].B);
+//					bw.Write((byte)image.Palette.Entries[i].G);
+//					bw.Write((byte)image.Palette.Entries[i].R);
+//					bw.Write((byte)0);
+				}
+//				bw.Write(bArr);
+				//Console.WriteLine("Table");
+
+				var colorTable = new Dictionary<Color, byte>();
+
+				int id = 0;
+				foreach(Color color in image.Palette.Entries)
+					colorTable[color] = (byte)id++;
+
+//				Console.WriteLine("Colors: "+idx);
+
+				// the blank color between each individual image
+				colorTable[Color.FromArgb(0, 0, 0, 0)] = (byte)255;
+
+				//Console.WriteLine("image data");
+
+				for (int i = image.Height - 1; i > -1; --i)
+				{
+					for (int j = 0; j != image.Width; ++j)
+						bw.Write(colorTable[image.GetPixel(j, i)]);
+
+					for (int j = 0; j != pad; ++j)
+						bw.Write((byte)0x00);
+				}
 			}
-//			bw.Write(bArr);
-			Console.WriteLine("Table");
-
-			var table = new Dictionary<Color, byte>();
-
-			int idx = 0;
-			foreach(Color c in image.Palette.Entries)
-				table[c] = (byte)idx++;
-
-//			Console.WriteLine("Colors: "+idx);
-
-			// the blank color between each individual image
-			table[Color.FromArgb(0, 0, 0, 0)] = (byte)255;
-
-			Console.WriteLine("image data");
-
-			for (int i = image.Height - 1; i >= 0; i--)
-			{
-				for (int j = 0; j < image.Width; j++)
-					bw.Write(table[image.GetPixel(j, i)]);
-
-				for (int j = 0; j < more; j++)
-					bw.Write((byte)0x00);
-			}
-
-			bw.Flush();
-			bw.Close();
-			Console.WriteLine("Done");
+			//Console.WriteLine("Done");
 		}
 
 /*		public static void Save24(string path, Bitmap image)
@@ -171,13 +167,13 @@ namespace XCom
 		/// </summary>
 		/// <param name="width">width of final bitmap</param>
 		/// <param name="height">height of final bitmap</param>
-		/// <param name="idx">image data</param>
+		/// <param name="binData">image data</param>
 		/// <param name="palette">Palette to color the image with</param>
 		/// <returns></returns>
 		public static Bitmap MakeBitmap8(
 				int width,
 				int height,
-				byte[] idx,
+				byte[] binData,
 				ColorPalette palette)
 		{
 			var image = new Bitmap(
@@ -187,10 +183,10 @@ namespace XCom
 								0, 0,
 								width, height);
 
-			var bitmapData = image.LockBits(
-										rect,
-										ImageLockMode.WriteOnly,
-										PixelFormat.Format8bppIndexed);
+			var data = image.LockBits(
+									rect,
+									ImageLockMode.WriteOnly,
+									PixelFormat.Format8bppIndexed);
 
 			//Console.WriteLine("Bitmap created: {0},{1}", width, height);
 
@@ -198,7 +194,7 @@ namespace XCom
 			// Copy the pixels from the source image in this loop.
 			// Because you want an index, convert RGB to the appropriate
 			// palette index here.
-			var pixels = bitmapData.Scan0;
+			var pixels = data.Scan0;
 
 			unsafe
 			{
@@ -206,7 +202,7 @@ namespace XCom
 				// This is the unsafe operation.
 				byte* pBits;
 
-				if (bitmapData.Stride > 0)
+				if (data.Stride > 0)
 				{
 					pBits = (byte*)pixels.ToPointer();
 				}
@@ -216,23 +212,23 @@ namespace XCom
 					// scanline in the buffer. To normalize the loop, obtain
 					// a pointer to the front of the buffer that is located
 					// (Height-1) scanlines previous.
-					pBits = (byte*)pixels.ToPointer() + bitmapData.Stride * (height - 1);
+					pBits = (byte*)pixels.ToPointer() + data.Stride * ((height > 0) ? height - 1 : 0); // satiate FxCop CA2233.
 				}
-				uint stride = (uint)Math.Abs(bitmapData.Stride);
+				uint stride = (uint)Math.Abs(data.Stride);
 
 				int ex = 0;
-				for (uint row = 0; row < height; ++row )
-					for (uint col = 0; col < width && ex < idx.Length; ++col)
+				for (uint row = 0; row != height; ++row)
+					for (uint col = 0; col != width && ex < binData.Length; ++col)
 					{
 						// The destination pixel.
 						// The pointer to the color index byte of the
 						// destination; this real pointer causes this
 						// code to be considered unsafe.
 						byte* p8bppPixel = pBits + row * stride + col;
-						*p8bppPixel = idx[ex++];
+						*p8bppPixel = binData[ex++];
 					}
 			}
-			image.UnlockBits(bitmapData);
+			image.UnlockBits(data);
 			image.Palette = palette;
 			return image;
 		}
@@ -246,23 +242,23 @@ namespace XCom
 								0, 0,
 								width, height);
 
-			var bitmapData = image.LockBits(
-										rect,
-										ImageLockMode.WriteOnly,
-										PixelFormat.Format8bppIndexed);
+			var data = image.LockBits(
+									rect,
+									ImageLockMode.WriteOnly,
+									PixelFormat.Format8bppIndexed);
 
 			// Write to the temporary buffer that is provided by LockBits.
 			// Copy the pixels from the source image in this loop.
 			// Because you want an index, convert RGB to the appropriate
 			// palette index here.
-			var pixels = bitmapData.Scan0;
+			var pixels = data.Scan0;
 
 			unsafe
 			{
 				// Get the pointer to the image bits.
 				// This is the unsafe operation.
 				byte* pBits;
-				if (bitmapData.Stride > 0)
+				if (data.Stride > 0)
 				{
 					pBits = (byte*)pixels.ToPointer();
 				}
@@ -272,22 +268,22 @@ namespace XCom
 					// scanline in the buffer. To normalize the loop, obtain
 					// a pointer to the front of the buffer that is located
 					// (Height-1) scanlines previous.
-					pBits = (byte*)pixels.ToPointer() + bitmapData.Stride * (height - 1);
+					pBits = (byte*)pixels.ToPointer() + data.Stride * ((height > 0) ? height - 1 : 0); // satiate FxCop CA2233.
 				}
-				uint stride = (uint)Math.Abs(bitmapData.Stride);
+				uint stride = (uint)Math.Abs(data.Stride);
 
-				for (uint row = 0; row < height; ++row )
-					for (uint col = 0; col < width; ++col )
+				for (uint row = 0; row != height; ++row)
+					for (uint col = 0; col != width; ++col)
 					{
 						// The destination pixel.
 						// The pointer to the color index byte of the
 						// destination; this real pointer causes this
 						// code to be considered unsafe.
-						byte* p8bppPixel = pBits + row*stride + col;
-						*p8bppPixel = DefaultTransparentIndex;
+						byte* p8bppPixel = pBits + row * stride + col;
+						*p8bppPixel = Palette.TransparentId;
 					}
 			}
-			image.UnlockBits(bitmapData);
+			image.UnlockBits(data);
 			image.Palette = pal;
 			return image;
 		}
@@ -337,14 +333,14 @@ namespace XCom
 
 				uint dStride = (uint)Math.Abs(destData.Stride);
 
-				for (uint row = 0; row < src.Height; row++ )
-					for (uint col = 0; col < src.Width; col++ )
+				for (uint row = 0; row != src.Height; ++row)
+					for (uint col = 0; col != src.Width; ++col)
 					{
 						byte* d8bppPixel = dBits + (row + y) * dStride + (col + x);
 //						byte* s8bppPixel = sBits + ((row / PckImage.Scale) * sStride + (col / PckImage.Scale));
 						byte* s8bppPixel = sBits + row * sStride + col;
 
-						if (*s8bppPixel != DefaultTransparentIndex && row + y < dst.Height)
+						if (*s8bppPixel != Palette.TransparentId && row + y < dst.Height)
 							*d8bppPixel = *s8bppPixel;
 					}
 			}
@@ -365,7 +361,7 @@ namespace XCom
 
 			var srcPixels = srcData.Scan0;
 
-			int minR, minC, maxR, maxC;
+			int rMin, cMin, rMax, cMax;
 			unsafe
 			{
 				byte* sBits;
@@ -376,48 +372,40 @@ namespace XCom
 				
 				uint sStride = (uint)Math.Abs(srcData.Stride);
 
-				for (minR = 0; minR < src.Height; minR++)
-				{
-					for (uint col = 0; col < src.Width; col++)
+				for (rMin = 0; rMin != src.Height; ++rMin)
+					for (uint col = 0; col != src.Width; ++col)
 					{
-						byte idx = *(sBits + minR * sStride + col);
-						if (idx != transparent)
+						byte id = *(sBits + rMin * sStride + col);
+						if (id != transparent)
 							goto outLoop1;
 					}
-				}
 
 			outLoop1:
-				for (minC = 0; minC < src.Width; minC++)
-				{
-					for (int r = minR; r < src.Height; r++)
+				for (cMin = 0; cMin != src.Width; ++cMin)
+					for (int r = rMin; r < src.Height; ++r)
 					{
-						byte idx = *(sBits + r * sStride + minC);
-						if (idx != transparent)
+						byte id = *(sBits + r * sStride + cMin);
+						if (id != transparent)
 							goto outLoop2;
 					}
-				}
 
 			outLoop2:
-				for (maxR = src.Height - 1; maxR > minR; maxR--)
-				{
-					for (int col = minC; col < src.Width; col++)
+				for (rMax = src.Height - 1; rMax > rMin; --rMax)
+					for (int col = cMin; col < src.Width; ++col)
 					{
-						byte idx = *(sBits + maxR * sStride + col);
-						if (idx != transparent)
+						byte id = *(sBits + rMax * sStride + col);
+						if (id != transparent)
 							goto outLoop3;
 					}
-				}
 
 			outLoop3:
-				for (maxC = src.Width - 1; maxC > minC; maxC--)
-				{
-					for (int r = minR; r < maxR; r++)
+				for (cMax = src.Width - 1; cMax > cMin; --cMax)
+					for (int r = rMin; r < rMax; ++r)
 					{
-						byte idx = *(sBits + r * sStride + maxC);
-						if ( idx != transparent)
+						byte id = *(sBits + r * sStride + cMax);
+						if (id != transparent)
 							goto outLoop4;
 					}
-				}
 
 			outLoop4:
 				Console.Write("");
@@ -425,8 +413,8 @@ namespace XCom
 			src.UnlockBits(srcData);
 
 			return new Rectangle(
-							minC - 1, minR - 1,
-							maxC - minC + 3, maxR - minR + 3);
+							cMin - 1, rMin - 1,
+							cMax - cMin + 3, rMax - rMin + 3);
 		}
 
 		public static Bitmap Crop(Bitmap src, Rectangle bounds)
@@ -476,8 +464,8 @@ namespace XCom
 
 				uint dStride = (uint)Math.Abs(dstData.Stride);
 
-				for (uint row = 0; row < bounds.Height; row++)
-					for (uint col = 0; col < bounds.Width; col++)
+				for (uint row = 0; row != bounds.Height; ++row)
+					for (uint col = 0; col != bounds.Width; ++col)
 					{
 						byte* s8bppPixel = sBits + (row + bounds.Y) * sStride + (col + bounds.X);
 						byte* d8bppPixel = dBits + row * dStride + col;
@@ -497,7 +485,7 @@ namespace XCom
 				LoadingEvent(cur, total);
 		}
 
-		public static unsafe Bitmap Hq2x(/*Bitmap image*/)
+		public static unsafe Bitmap HQ2X(/*Bitmap image*/)
 		{
 #if hq2xWorks
 			CImage in24 = new CImage();
@@ -568,7 +556,7 @@ namespace XCom
 #endif
 		}
 
-		/// <summary>
+/*		/// <summary>
 		/// Saves an image collection as a bmp sprite sheet
 		/// </summary>
 		/// <param name="file">output file name</param>
@@ -576,7 +564,7 @@ namespace XCom
 		/// <param name="pal">Palette to color the images with</param>
 		/// <param name="across">number of columns to use for images</param>
 		/// <param name="pad"></param>
-		public static void SaveBMP(
+		public static void SendToSaver(
 				string file,
 				XCImageCollection collection,
 				Palette pal,
@@ -586,9 +574,7 @@ namespace XCom
 			if (collection.Count == 1)
 				across = 1;
 
-			int mod = 1;
-			if (collection.Count % across == 0)
-				mod = 0;
+			int mod = (collection.Count % across == 0) ? 0 : 1;
 
 			var b = MakeBitmap(
 							across * (collection.IXCFile.ImageSize.Width + pad) - pad,
@@ -602,7 +588,7 @@ namespace XCom
 				Draw(collection[i].Image, b, x, y);
 			}
 			Save(file, b);
-		}
+		} */
 
 		/// <summary>
 		/// Loads a previously saved sprite sheet as a generic collection to be saved later
@@ -625,21 +611,21 @@ namespace XCom
 			int cols = (bmp.Width  + pad) / (width  + pad);
 			int rows = (bmp.Height + pad) / (height + pad);
 
-			int frame = 0;
+			int aniSprite = 0;
 
 			//Console.WriteLine("Image: {0},{1} -> {2},{3}", bmp.Width, bmp.Height, cols, rows);
-			for (int i = 0; i < cols * rows; i++)
+			for (int i = 0; i != cols * rows; ++i)
 			{
 				int x = (i % cols) * (width  + pad);
 				int y = (i / cols) * (height + pad);
 				//Console.WriteLine("{0}: {1},{2} -> {3}", frame, x, y, PckImage.Width);
 				list.Add(LoadTile(
 								bmp,
-								frame++,
+								aniSprite++,
 								pal,
-								x,y,
-								width,height));
-				FireLoadingEvent(frame, rows * cols);
+								x, y,
+								width, height));
+				FireLoadingEvent(aniSprite, rows * cols);
 			}
 
 			list.Pal = pal;
@@ -680,8 +666,9 @@ namespace XCom
 				
 				uint sStride = (uint)Math.Abs(srcData.Stride);
 
-				for (uint row = 0, i = 0; row < height; row++)
-					for (uint col = 0; col < width; col++)
+				int i = 0;
+				for (uint row = 0; row < height; ++row)
+					for (uint col = 0; col < width; ++col)
 						data[i++] = *(sBits + row * sStride + col);
 			}
 
@@ -703,7 +690,7 @@ namespace XCom
 
 /*		public static XCImage LoadSingle(Bitmap src, int num, Palette pal, Type collectionType)
 		{
-//			return PckFile.FromBmpSingle(src, num, pal);
+//			return PckSpriteCollection.FromBmpSingle(src, num, pal);
 
 			MethodInfo mi = collectionType.GetMethod("FromBmpSingle");
 			if (mi == null)

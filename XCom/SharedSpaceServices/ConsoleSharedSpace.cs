@@ -2,7 +2,7 @@ namespace XCom
 {
 	public class ConsoleSharedSpace
 	{
-		private const string X_CONSOLE = "xConsole";
+		private const string xConsole = "xConsole";
 
 		private readonly SharedSpace _share;
 
@@ -15,13 +15,13 @@ namespace XCom
 
 		public ConsoleForm GetConsole()
 		{
-			return _share.AllocateObject(X_CONSOLE) as ConsoleForm;
+			return _share.AllocateObject(xConsole) as ConsoleForm;
 		}
 
 		public ConsoleForm GetNewConsole()
 		{
 			var console = GetConsole();
-			return console ?? (ConsoleForm)_share.AllocateObject(X_CONSOLE, new ConsoleForm());
+			return console ?? (ConsoleForm)_share.AllocateObject(xConsole, new ConsoleForm());
 		}
 	}
 }

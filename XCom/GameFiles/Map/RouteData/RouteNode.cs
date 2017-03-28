@@ -3,7 +3,7 @@ using System.IO;
 
 namespace XCom
 {
-	public class RouteNode
+	public sealed class RouteNode
 	{
 		#region rmprec
 
@@ -28,16 +28,60 @@ namespace XCom
 		#endregion
 
 
-		private readonly byte _col;
-		private readonly byte _row;
-		private int _height;
-
-		private readonly Link[] _links;
-
 		public const int LinkSlots = 5;
 
 
-		public RouteNode(byte id, byte[] data)
+		private readonly byte _col;
+		public byte Col
+		{
+			get { return _col; }
+		}
+
+		private readonly byte _row;
+		public byte Row
+		{
+			get { return _row; }
+		}
+
+		private int _height;
+		public int Height
+		{
+			get { return _height; }
+			set { _height = value ; }
+		}
+
+		private readonly Link[] _links;
+		/// <summary>
+		/// Gets the link-field at slot.
+		/// </summary>
+		public Link this[int id]
+		{
+			get { return _links[id]; }
+		}
+
+		public UnitType UsableType
+		{ get; set; }
+
+		public byte UsableRank
+		{ get; set; }
+
+		public NodeImportance Priority
+		{ get; set; }
+
+		public BaseModuleAttack Attack
+		{ get; set; }
+
+		public SpawnUsage Spawn
+		{ get; set; }
+
+		/// <summary>
+		/// Gets the index of this RouteNode.
+		/// </summary>
+		public byte Index
+		{ get; set; }
+
+
+		internal RouteNode(byte id, byte[] data)
 		{
 			Index = id;
 
@@ -63,8 +107,7 @@ namespace XCom
 			Attack     = (BaseModuleAttack)data[22];
 			Spawn      = (SpawnUsage)data[23];
 		}
-
-		public RouteNode(byte id, byte row, byte col, byte height)
+		internal RouteNode(byte id, byte row, byte col, byte height)
 		{
 			Index = id;
 
@@ -74,7 +117,7 @@ namespace XCom
 
 			_links = new Link[LinkSlots];
 			for (int i = 0; i != LinkSlots; ++i)
-				_links[i] = new Link(Link.NOT_USED, 0, 0);
+				_links[i] = new Link(Link.NotUsed, 0, 0);
 
 			UsableType = UnitType.Any;
 			UsableRank = 0;
@@ -83,6 +126,31 @@ namespace XCom
 			Spawn      = SpawnUsage.NoSpawn;
 		}
 
+
+		/// <summary>
+		/// Writes data to the stream provided by RouteNodeCollection.Save().
+		/// </summary>
+		/// <param name="str">the Stream provided by RouteNodeCollection.Save()</param>
+		internal void Save(Stream str)
+		{
+			str.WriteByte(_row);
+			str.WriteByte(_col);
+			str.WriteByte((byte)_height);
+			str.WriteByte((byte)0);
+
+			for (int i = 0; i != LinkSlots; ++i)
+			{
+				str.WriteByte(_links[i].Destination);
+				str.WriteByte(_links[i].Distance);
+				str.WriteByte((byte)_links[i].UsableType);
+			}
+
+			str.WriteByte((byte)UsableType);
+			str.WriteByte((byte)UsableRank);
+			str.WriteByte((byte)Priority);
+			str.WriteByte((byte)Attack);
+			str.WriteByte((byte)Spawn);
+		}
 
 		public override bool Equals(object obj)
 		{
@@ -95,85 +163,14 @@ namespace XCom
 			return Index;
 		}
 
-		/// <summary>
-		/// Writes data to the stream provided by RouteFile.Save().
-		/// </summary>
-		/// <param name="fs">the FileStream provided by RouteFile.Save()</param>
-		public void Save(FileStream fs)
-		{
-//			fs.Write(data, 0, data.Length);
-
-			fs.WriteByte(_row);
-			fs.WriteByte(_col);
-			fs.WriteByte((byte)_height);
-			fs.WriteByte(0);
-
-			for (int i = 0; i != LinkSlots; ++i)
-			{
-				fs.WriteByte(_links[i].Destination);
-				fs.WriteByte(_links[i].Distance);
-				fs.WriteByte((byte)_links[i].UsableType);
-			}
-
-			fs.WriteByte((byte)UsableType);
-			fs.WriteByte((byte)UsableRank);
-			fs.WriteByte((byte)Priority);
-			fs.WriteByte((byte)Attack);
-			fs.WriteByte((byte)Spawn);
-		}
-
 /*		public override string ToString()
 		{
 			return ("c:" + _col + " r:" + _row + " h:" + _height);
 		} */
 
-		public byte Col
-		{
-			get { return _col; }
-		}
-
-		public byte Row
-		{
-			get { return _row; }
-		}
-
-		public int Height
-		{
-			get { return _height; }
-			set { _height = value ; }
-		}
-
-		public UnitType UsableType
-		{ get; set; }
-
-		public byte UsableRank
-		{ get; set; }
-
-		public NodeImportance Priority
-		{ get; set; }
-
-		public BaseModuleAttack Attack
-		{ get; set; }
-
-		public SpawnUsage Spawn
-		{ get; set; }
-
-		/// <summary>
-		/// Gets the link-field at slot.
-		/// </summary>
-		public Link this[int id]
-		{
-			get { return _links[id]; }
-		}
 //		public Link GetLinkedNode(int id)
 //		{
 //			return _links[id];
 //		}
-
-		/// <summary>
-		/// Gets the index of this RouteNode.
-		/// </summary>
-		public byte Index
-		{ get; set; }
 	}
 }

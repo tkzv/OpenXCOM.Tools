@@ -5,7 +5,7 @@ using XCom.Interfaces;
 
 namespace XCom
 {
-	public class SharedSpace
+	public sealed class SharedSpace
 	{
 		private static SharedSpace _instance;
 
@@ -39,29 +39,28 @@ namespace XCom
 			}
 		}
 
-		public object AllocateObject(string key)
+		internal object AllocateObject(string key)
 		{
 			return AllocateObject(key, null);
 		}
-
 		/// <summary>
 		/// Allocates a key-val pair in the SharedSpace and returns the value
 		/// that is assigned. This does not change the value of an existing key
 		/// unless its value is null.
 		/// </summary>
 		/// <param name="key">the key to look for</param>
-		/// <param name="val">the object to add if the current value doesn't
+		/// <param name="value">the object to add if the current value doesn't
 		/// exist or is null</param>
 		/// <returns>the value associated with the key as an object</returns>
-		public object AllocateObject(string key, object val)
+		public object AllocateObject(string key, object value)
 		{
 			if (!_share.ContainsKey(key))
 			{
-				_share.Add(key, val);
+				_share.Add(key, value);
 			}
 			else if (_share[key] == null)
 			{
-				_share[key] = val;
+				_share[key] = value;
 			}
 
 			return _share[key];
@@ -73,7 +72,7 @@ namespace XCom
 			set { _share[key] = value; }
 		}
 
-		public int GetInt(string key)
+		public int GetIntegralValue(string key) // not used.
 		{
 			return (int)_share[key];
 		}
@@ -83,7 +82,7 @@ namespace XCom
 			return (string)_share[key];
 		}
 
-		public double GetDouble(string key)
+		public double GetDouble(string key) // not used.
 		{
 			return (double)_share[key];
 		}

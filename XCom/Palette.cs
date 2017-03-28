@@ -14,18 +14,39 @@ namespace XCom
 	//see http://support.microsoft.com/default.aspx?scid=kb%3Ben-us%3B319061
 	public class Palette
 	{
-		private readonly string name;
+		public const byte TransparentId = 0xFE;
 
-		private ColorPalette _colorPalette;
+		private readonly string _label;
+		/// <summary>
+		/// This palette's label.
+		/// </summary>
+		public string Label
+		{
+			get { return _label; }
+		}
+
+		private ColorPalette _colors;
+		public ColorPalette Colors
+		{
+			get { return _colors; }
+		}
+		/// <summary>
+		/// Gets/Sets indices for colors.
+		/// </summary>
+		public Color this[int i]
+		{
+			get { return _colors.Entries[i]; }
+			set { _colors.Entries[i] = value; }
+		}
 
 		private static Hashtable _palHash = new Hashtable();
 
-		private static readonly string EmbedPath = "XCom._Embedded.";
+		private const string EmbedPath = "XCom._Embedded.";
 
 		/// <summary>
 		/// The UFO Palette embedded in this assembly.
 		/// </summary>
-		public static Palette UFOBattle
+		public static Palette UfoBattle
 		{
 			get
 			{
@@ -38,7 +59,7 @@ namespace XCom
 			}
 		}
 
-		public static Palette UFOGeo
+		public static Palette UfoGeo
 		{
 			get
 			{
@@ -51,7 +72,7 @@ namespace XCom
 			}
 		}
 
-		public static Palette UFOGraph
+		public static Palette UfoGraph
 		{
 			get
 			{
@@ -64,7 +85,7 @@ namespace XCom
 			}
 		}
 
-		public static Palette UFOResearch
+		public static Palette UfoResearch
 		{
 			get
 			{
@@ -80,7 +101,7 @@ namespace XCom
 		/// <summary>
 		/// The TFTD Palette embedded in this assembly.
 		/// </summary>
-		public static Palette TFTDBattle
+		public static Palette TftdBattle
 		{
 			get
 			{
@@ -93,7 +114,7 @@ namespace XCom
 			}
 		}
 
-		public static Palette TFTDGeo
+		public static Palette TftdGeo
 		{
 			get
 			{
@@ -106,7 +127,7 @@ namespace XCom
 			}
 		}
 
-		public static Palette TFTDGraph
+		public static Palette TftdGraph
 		{
 			get
 			{
@@ -119,7 +140,7 @@ namespace XCom
 			}
 		}
 
-		public static Palette TFTDResearch
+		public static Palette TftdResearch
 		{
 			get
 			{
@@ -135,19 +156,19 @@ namespace XCom
 		public Palette(string name)
 		{
 			var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed);
-			_colorPalette = b.Palette;
+			_colors = b.Palette;
 			b.Dispose();
-			this.name = name;
+			this._label = name;
 		}
 
 		public Palette(Stream str)
 		{
 			var input = new StreamReader(str);
 			var line = new string[0];
-			name = input.ReadLine();
+			_label = input.ReadLine();
 
 			var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed);
-			_colorPalette = b.Palette;
+			_colors = b.Palette;
 
 			for (byte i = 0; i < 0xFF; i++)
 			{
@@ -158,10 +179,10 @@ namespace XCom
 					continue;
 				}
 				line = allLine.Split(',');
-				_colorPalette.Entries[i] = Color.FromArgb(
-													int.Parse(line[0]),
-													int.Parse(line[1]),
-													int.Parse(line[2]));
+				_colors.Entries[i] = Color.FromArgb(
+												int.Parse(line[0], System.Globalization.CultureInfo.InvariantCulture),
+												int.Parse(line[1], System.Globalization.CultureInfo.InvariantCulture),
+												int.Parse(line[2], System.Globalization.CultureInfo.InvariantCulture));
 			}
 			b.Dispose();
 
@@ -214,55 +235,31 @@ namespace XCom
 
 		public Color Transparent
 		{
-			get { return _colorPalette.Entries[Bmp.DefaultTransparentIndex]; }
+			get { return _colors.Entries[TransparentId]; }
 		}
 
 		public Palette Grayscale
 		{
 			get
 			{
-				if (_palHash[name + "#gray"] == null)
+				if (_palHash[_label + "#gray"] == null)
 				{
-					var palette = new Palette(name + "#gray");
-					_palHash[palette.name] = palette;
-					for (int i = 0; i < _colorPalette.Entries.Length; i++)
+					var palette = new Palette(_label + "#gray");
+					_palHash[palette._label] = palette;
+					for (int i = 0; i != _colors.Entries.Length; ++i)
 					{
 						int st = (int)(this[i].R * 0.1 + this[i].G * 0.5 + this[i].B * 0.25);
 						palette[i] = Color.FromArgb(st, st, st);
 					}
 				}
-				return (Palette)_palHash[name + "#gray"];
+				return (Palette)_palHash[_label + "#gray"];
 			}
 		}
 
-		public void SetTransparent(bool val)
+		public void SetTransparent(bool value)
 		{
-			int transparent = Bmp.DefaultTransparentIndex;
-			var color = _colorPalette.Entries[transparent];
-			_colorPalette.Entries[transparent] = (val) ? Color.FromArgb(  0, color)
-													   : Color.FromArgb(255, color);
-		}
-
-		public ColorPalette Colors
-		{
-			get { return _colorPalette; }
-		}
-
-		/// <summary>
-		/// This palette's name
-		/// </summary>
-		public string Name
-		{
-			get { return name; }
-		}
-
-		/// <summary>
-		/// Indexes colors on number
-		/// </summary>
-		public Color this[int i]
-		{
-			get { return _colorPalette.Entries[i]; }
-			set { _colorPalette.Entries[i] = value; }
+			_colors.Entries[TransparentId] = (value) ? Color.FromArgb(  0, _colors.Entries[TransparentId])
+												   : Color.FromArgb(255, _colors.Entries[TransparentId]);
 		}
 
 		/// <summary>
@@ -273,34 +270,35 @@ namespace XCom
 		public override bool Equals(Object obj)
 		{
 			var palette = obj as Palette;
-			return (palette != null && _colorPalette.Equals(palette._colorPalette));
+			return (palette != null && _colors.Equals(palette._colors));
 		}
 
 		public override int GetHashCode()
 		{
-			return _colorPalette.GetHashCode(); // FIX: "Non-readonly field referenced in GetHashCode()."
+			return _colors.GetHashCode(); // FIX: "Non-readonly field referenced in GetHashCode()."
 		}
 
-		public static Palette GetPalette(string name)
+		public static Palette GetPalette(string label)
 		{
-			if (_palHash[name] == null)
+			if (_palHash[label] == null)
 			{
-				Assembly thisAssembly = Assembly.GetExecutingAssembly();
+				var ass = Assembly.GetExecutingAssembly();
 				try
 				{
-					_palHash[name] = new Palette(thisAssembly.GetManifestResourceStream(EmbedPath + name + ".pal"));
+					_palHash[label] = new Palette(ass.GetManifestResourceStream(EmbedPath + label + ".pal"));
 				}
 				catch
 				{
-					_palHash[name] = null;
+					_palHash[label] = null;
+					throw;
 				}
 			}
-			return (Palette)_palHash[name];
+			return (Palette)_palHash[label];
 		}
 
 		public override string ToString()
 		{
-			return name;
+			return _label;
 		}
 	}
 }

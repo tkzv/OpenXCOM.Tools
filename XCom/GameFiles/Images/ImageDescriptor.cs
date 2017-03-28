@@ -9,9 +9,9 @@ namespace XCom
 	/// <summary>
 	/// Describes information about imagesets: the path to the PCK, TAB, and MCD files.
 	/// </summary>
-	public class ImageDescriptor
+	public sealed class ImageDescriptor
 		:
-		IComparable
+			IComparable // TODO: should override Equals, ==, !=, <, >
 	{
 		private readonly Hashtable _mcdTable;
 
@@ -25,29 +25,29 @@ namespace XCom
 		}
 
 
-		public PckFile GetPckFile(Palette pal)
+		internal PckSpriteCollection GetPckPack(Palette pal)
 		{
-			return GameInfo.CachePckFile(BasePath, BaseName, 2, pal);
+			return GameInfo.CachePckPack(BasePath, BaseName, 2, pal);
 		}
 
-		public PckFile GetPckFile()
+		public PckSpriteCollection GetPckPack()
 		{
-			return GetPckFile(GameInfo.DefaultPalette);
+			return GetPckPack(GameInfo.DefaultPalette);
 		}
 
-		public McdFile GetMcdFile(Palette palette, XCTileFactory _xcTileFactory)
+		internal McdTileCollection GetMcdRecords(Palette pal, XCTileFactory tileFactory)
 		{
-			if (_mcdTable[palette] == null)
+			if (_mcdTable[pal] == null)
 			{
-				var tiles = _xcTileFactory.CreateTiles(BaseName, BasePath, GetPckFile(palette));
-				_mcdTable[palette] = new McdFile(tiles);
+				var tiles = tileFactory.CreateTiles(BaseName, BasePath, GetPckPack(pal));
+				_mcdTable[pal] = new McdTileCollection(tiles);
 			}
-			return (McdFile)_mcdTable[palette];
+			return (McdTileCollection)_mcdTable[pal];
 		}
 
-		public McdFile GetMcdFile()
+		public McdTileCollection GetMcdRecords()
 		{
-			return GetMcdFile(GameInfo.DefaultPalette, new XCTileFactory());
+			return GetMcdRecords(GameInfo.DefaultPalette, new XCTileFactory());
 		}
 
 		public override string ToString()
@@ -55,9 +55,9 @@ namespace XCom
 			return BaseName;
 		}
 
-		public int CompareTo(object other)
+		public int CompareTo(object obj)
 		{
-			return String.CompareOrdinal(BaseName, other.ToString());
+			return String.CompareOrdinal(BaseName, obj.ToString());
 		}
 
 		public string BaseName

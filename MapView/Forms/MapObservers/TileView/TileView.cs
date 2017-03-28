@@ -241,8 +241,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 						using (var editor = new PckViewForm())
 						{
-							var pckFile = imageInfo.GetPckFile();
-							editor.SelectedPalette = pckFile.Pal.Name;
+							var pckFile = imageInfo.GetPckPack();
+							editor.SelectedPalette = pckFile.Pal.Label;
 							editor.LoadPckFile(pathfilext, pckFile.Bpp);
 
 							var parent = FindForm();

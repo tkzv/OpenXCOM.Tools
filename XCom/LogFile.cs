@@ -10,7 +10,7 @@ namespace XCom
 	public static class LogFile
 	{
 #if DEBUG
-		private static readonly string DebugLogFile = "debug.log";
+		private const string DebugLogFile = "debug.log";
 #endif
 
 		/// <summary>

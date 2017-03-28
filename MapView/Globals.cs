@@ -25,8 +25,8 @@ namespace MapView
 //		public static readonly string RegistryKey = "MapView";
 
 
-		private static XCom.PckFile _extraTiles;
-		public static XCom.PckFile ExtraTiles
+		private static XCom.PckSpriteCollection _extraTiles;
+		public static XCom.PckSpriteCollection ExtraTiles
 		{
 			get { return _extraTiles; }
 		}
@@ -40,11 +40,11 @@ namespace MapView
 				using (System.IO.Stream strTab = System.Reflection.Assembly.GetExecutingAssembly()
 												.GetManifestResourceStream("MapView._Embedded.Extra.TAB"))
 				{
-					_extraTiles = new XCom.PckFile(
-												strPck,
-												strTab,
-												2,
-												XCom.Palette.UFOBattle);
+					_extraTiles = new XCom.PckSpriteCollection(
+														strPck,
+														strTab,
+														2,
+														XCom.Palette.UfoBattle);
 				}
 			}
 		}

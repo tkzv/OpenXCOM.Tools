@@ -23,20 +23,20 @@ namespace XCom
 			if (desc != null && File.Exists(desc.FilePath))
 			{
 				var tiles = new List<TileBase>();
+				var info = GameInfo.ImageInfo;
 
-				var images = GameInfo.ImageInfo;
 				foreach (string dep in desc.Dependencies)
 				{
-					var image = images[dep];
-					if (image != null)
+					var tileInfo = info[dep];
+					if (tileInfo != null)
 					{
-						var MCD = image.GetMcdFile(desc.Palette, _tileFactory);
+						var MCD = tileInfo.GetMcdRecords(desc.Palette, _tileFactory);
 						foreach (XCTile tile in MCD)
 							tiles.Add(tile);
 					}
 				}
 
-				var RMP = new RouteFile(desc.Label, desc.RoutePath);
+				var RMP = new RouteNodeCollection(desc.Label, desc.RoutePath);
 				var MAP = new XCMapFile(
 									desc.Label,
 									desc.MapPath,

@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace XCom
 {
-	public static class McdEntryFactory
+	internal static class McdEntryFactory
 	{
 		public static McdEntry Create(byte[] info)
 		{
@@ -79,12 +79,14 @@ namespace XCom
 			entry.Unknown61		= info[61];						// unsigned char u62;
 
 			entry.ScanGReference = string.Format(
+											System.Globalization.CultureInfo.CurrentCulture,
 											"scang reference: {0} {1} -> {2}\n",
 											info[20],
 											info[21],
 											info[20] * 256 + info[21]);
 
 			entry.LoftReference = string.Format(
+											System.Globalization.CultureInfo.CurrentCulture,
 											"loft references: {0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11}\n",
 											info[8],
 											info[9],
@@ -100,11 +102,11 @@ namespace XCom
 											info[19]);
 
 			entry.Reference0To30 = string.Empty;
-			for (int i = 0; i < 30; i++)
+			for (int i = 0; i != 30; ++i)
 				entry.Reference0To30 += info[i] + " ";
 			
 			entry.Reference30To62 = string.Empty;
-			for (int i = 30; i < 62; i++)
+			for (int i = 30; i != 62; ++i)
 				entry.Reference30To62 += info[i] + " ";
 
 			entry.Bounds = new Rectangle(

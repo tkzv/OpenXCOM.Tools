@@ -48,7 +48,7 @@ namespace XCom.GameFiles.Images.XCFiles
 			{
 				try
 				{
-					return new PckFile(
+					return new PckSpriteCollection(
 									pckStream,
 									tabStream,
 									2,
@@ -58,7 +58,7 @@ namespace XCom.GameFiles.Images.XCFiles
 				}
 				catch (Exception)
 				{
-					return new PckFile(
+					return new PckSpriteCollection(
 									pckStream,
 									tabStream,
 									4,
@@ -161,7 +161,7 @@ namespace XCom.GameFiles.Images.XCFiles
 			var ib = new DSShared.Windows.InputBox("Enter Pck Options", SavingOptions);
 			if (ib.ShowDialog() == DialogResult.OK)
 			{
-				PckFile.Save(
+				PckSpriteCollection.Save(
 						directory,
 						file,
 						images,

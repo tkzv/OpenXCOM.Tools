@@ -8,7 +8,7 @@ namespace PckView
 {
 	public class XCProfile
 		:
-		IXCImageFile
+			IXCImageFile
 	{
 		public static readonly string ProfileExt = ".pvp";
 
@@ -17,7 +17,7 @@ namespace PckView
 
 		public XCProfile(ImgProfile profile)
 			:
-			base(0, 0)
+				base(0, 0)
 		{
 			ImageSize = new System.Drawing.Size(profile.Width, profile.Height);
 
@@ -33,7 +33,7 @@ namespace PckView
 
 			FileOptions.Init(false, true, true, false);
 
-			xConsole.AddLine("Profile created: " + Description);
+			XConsole.AdZerg("Profile created: " + Description);
 
 			try
 			{
@@ -41,13 +41,13 @@ namespace PckView
 			}
 			catch
 			{
-				DefaultPalette = Palette.UFOBattle;
+				DefaultPalette = Palette.UfoBattle;
 			}
 		}
 
 /*		public XCProfile()
 			:
-			base(0, 0)
+				base(0, 0)
 		{
 			_fileOptions.Init(false, false, false, false);
 
@@ -64,14 +64,14 @@ namespace PckView
 		} */
 
 /*		protected override XCImageCollection LoadFileOverride(
-				string directory,
+				string dir,
 				string file,
 				int width,
 				int height,
 				Palette pal)
 		{
 			return _codec.LoadFile(
-								directory,
+								dir,
 								file,
 								width,
 								height,
@@ -79,12 +79,12 @@ namespace PckView
 		} */
 
 /*		public override void SaveCollection(
-				string directory,
+				string dir,
 				string file,
 				XCom.XCImageCollection images)
 		{
 			_codec.SaveCollection(
-							directory,
+							dir,
 							file,
 							images);
 		} */

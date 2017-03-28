@@ -6,7 +6,7 @@ namespace XCom.Interfaces
 {
 	public class XCImage
 		:
-		ICloneable
+			ICloneable
 	{
 		private byte[] _offsets;
 		public byte[] Offsets
@@ -32,9 +32,18 @@ namespace XCom.Interfaces
 		public Bitmap Gray
 		{ get; protected set; }
 
-		protected const byte TransparentId = 0xFE;
-
 		private Palette _palette;
+		public Palette Palette
+		{
+			get { return _palette; }
+			set
+			{
+				_palette = value;
+
+				if (_image != null)
+					_image.Palette = _palette.Colors;
+			}
+		}
 
 
 		/// <summary>
@@ -63,36 +72,22 @@ namespace XCom.Interfaces
 									offsets,
 									pal.Colors);
 		}
-
-		public XCImage()
+/*		public XCImage()
 			:
-			this(
-				new byte[]{},
-				0, 0,
-				null,
-				-1)
-		{}
-
+				this(
+					new byte[]{},
+					0, 0,
+					null,
+					-1)
+		{} */
 		public XCImage(Bitmap image, int id)
 		{
 			_fileId = id;
 			_image = image;
-			_offsets = null;
-			_palette = null;
+//			_offsets = null;
+//			_palette = null;
 		}
 
-
-		public Palette Palette
-		{
-			get { return _palette; }
-			set
-			{
-				_palette = value;
-
-				if (_image != null)
-					_image.Palette = _palette.Colors;
-			}
-		}
 
 		public object Clone()
 		{
@@ -117,7 +112,7 @@ namespace XCom.Interfaces
 
 		public void HQ2X()
 		{
-			_image = Bmp.Hq2x(/*_image*/);
+			_image = Bmp.HQ2X(/*_image*/);
 		}
 	}
 }

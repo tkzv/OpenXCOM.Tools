@@ -8,25 +8,28 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
-	public class TilesetDesc
+	public sealed class TilesetDesc
 		:
-		FileDesc
+			FileDesc
 	{
 		private readonly Dictionary<string, ITileset> _tilesets;
+		public Dictionary<string, ITileset> Tilesets
+		{
+			get { return _tilesets; }
+		}
 
 //		private double version;
 
 
-		public TilesetDesc()
+/*		public TilesetDesc()
 			:
-			base(String.Empty)
+				base(String.Empty)
 		{
 			_tilesets = new Dictionary<string, ITileset>();
-		}
-
-		public TilesetDesc(string inFile, VarCollection vars)
+		} */
+		internal TilesetDesc(string inFile, VarCollection vars)
 			:
-			base(inFile)
+				base(inFile)
 		{
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("[4]TilesetDesc cTor file= " + inFile);
@@ -122,11 +125,6 @@ namespace XCom
 			return (_tilesets[name] = tileset);
 		}
 
-		public Dictionary<string, ITileset> Tilesets
-		{
-			get { return _tilesets; }
-		}
-
 		/// <summary>
 		/// WARNING: This doesn't appear to be used but has to be here to
 		/// satisfy inheritance from FileDesc.Save() which is abstract.
@@ -152,7 +150,10 @@ namespace XCom
 				foreach (string key in vars.Variables)
 				{
 					var val = (Variable)vars.Vars[key];
-					sw.WriteLine(string.Format("{0}:{1}", val.Name, val.Value));
+					sw.WriteLine(string.Format(
+											System.Globalization.CultureInfo.InvariantCulture,
+											"{0}:{1}",
+											val.Name, val.Value));
 				}
 
 				foreach (string key in _tilesets.Keys)

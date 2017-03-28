@@ -5,79 +5,97 @@ using XCom;
 
 namespace XCom
 {
-	public delegate void BufferChangedDelegate(Node current);
+	internal delegate void BufferChangedThing(Zerg zerg);
 
 
-	public class xConsole
+	public static class XConsole
 	{
-		private static Node _curLine = null;
-		private static int _qtyNodes;
+		internal static event BufferChangedThing BufferChanged;
 
-		public static event BufferChangedDelegate BufferChanged;
+		private static Zerg _zerg;
+		private static int _zergs;
 
-
-		private xConsole()
-		{}
-
-
-		public static Node CurrNode
+		public static void Init(int zergs)
 		{
-			get { return _curLine; }
-		}
-
-		public static int NumNodes
-		{
-			get { return _qtyNodes; }
-		}
-
-		private static void makeNodes(int qtyLines)
-		{
-			if (_curLine == null)
+			if (_zerg == null)
 			{
-				_curLine = new Node(String.Empty);
-				_curLine._next = new Node(String.Empty);
+				_zerg = new Zerg();
+				_zerg.Post = new Zerg();
 
-				Node curNode = _curLine._next;
-				Node lastNode = _curLine;
-				curNode._last = lastNode;
-				for (int i = 2; i < qtyLines; i++)
+				Zerg zerg = _zerg.Post;
+				Zerg zergPre = _zerg;
+				zerg.Pre = zergPre;
+				for (int i = 2; i < zergs; ++i)
 				{
-					curNode._next = new Node(String.Empty);
-					curNode = curNode._next;
-					curNode._last = lastNode._next;
-					lastNode = lastNode._next;
+					zerg.Post = new Zerg();
+					zerg = zerg.Post;
+
+					zergPre  =
+					zerg.Pre = zergPre.Post;
 				}
 
-				curNode._next = _curLine;
-				_curLine._last = curNode;
+				zerg.Post = _zerg;
+				_zerg.Pre = zerg;
 			}
 			else
 			{
-				if (qtyLines > _qtyNodes)
+				if (zergs > _zergs)
 				{
-					Node curNode = _curLine;
-					Node lastNode = _curLine._last;
+					Zerg zerg = _zerg;
+					Zerg zergPre = _zerg.Pre;
 
-					for (int i = 0; i < qtyLines - _qtyNodes; i++)
+					for (int i = 0; i < zergs - _zergs; ++i)
 					{
-						var node = new Node(String.Empty);
-						node._next = curNode;
-						node._last = lastNode;
-						lastNode._next = node;
-						curNode._last = node;
-						lastNode = node;
+						var zergPost = new Zerg();
+						zergPost.Post = zerg;
+
+						zergPost.Pre = zergPre;
+						zergPre.Post = zergPost;
+
+						zergPre  =
+						zerg.Pre = zergPost;
 					}
 				}
 				else
 				{
-					for (int i = 0; i < _qtyNodes - qtyLines; i++)
+					for (int i = 0; i < _zergs - zergs; ++i)
 					{
-						_curLine._last = _curLine._last._last;
-						_curLine._last._next = _curLine;
+						_zerg.Pre = _zerg.Pre.Pre;
+						_zerg.Pre.Post = _zerg;
 					}
 				}
 			}
+
+			_zergs = zergs;
 		}
+
+		public static void AdZerg(string zergBull)
+		{
+			_zerg = _zerg.Pre;
+			_zerg.ZergBull = zergBull;
+
+			if (BufferChanged != null)
+				BufferChanged(_zerg);
+		}
+
+//		private xConsole()
+//		{}
+
+/*		public static void AddToLine(string st)
+		{
+			_zerg.ZergString += st;
+
+			if (BufferChanged != null)
+				BufferChanged(_zerg);
+		} */
+
+/*		public static void SetLine(string st)
+		{
+			_zerg.ZergString = st;
+
+			if (BufferChanged != null)
+				BufferChanged(_zerg);
+		} */
 
 //		public static xConsole Instance
 //		{
@@ -88,37 +106,6 @@ namespace XCom
 //				return console;
 //			}
 //		}
-
-		public static void Init(int qtyLines)
-		{			
-			makeNodes(qtyLines);
-			_qtyNodes = qtyLines;
-		}
-
-		public static void AddLine(string st)
-		{
-			_curLine = _curLine._last;
-			_curLine._st = st;
-
-			if (BufferChanged != null)
-				BufferChanged(_curLine);
-		}
-
-		public static void SetLine(string st)
-		{
-			_curLine._st = st;
-
-			if (BufferChanged != null)
-				BufferChanged(_curLine);
-		}
-
-		public static void AddToLine(string st)
-		{
-			_curLine._st += st;
-
-			if (BufferChanged != null)
-				BufferChanged(_curLine);
-		}
 
 //		public void KeyDown(object sender, KeyEventArgs e)
 //		{
@@ -186,22 +173,26 @@ namespace XCom
 
 
 	/// <summary>
-	/// class Node
+	/// class Zerg.
 	/// </summary>
-	public class Node
+	internal class Zerg
 	{
-		public Node _last;
-		public Node _next;
-		public string _st;
+		public string ZergBull
+		{ get; set; }
+
+		public Zerg Post
+		{ get; set; }
+
+		public Zerg Pre
+		{ get; set; }
+
 
 		/// <summary>
 		/// cTor
 		/// </summary>
-		/// <param name="st"></param>
-		public Node(string st)
+		public Zerg()
 		{
-			_next = null;
-			_st = st;
+			ZergBull = String.Empty;
 		}
 	}
 }

@@ -10,25 +10,25 @@ namespace XCom
 {
 	public class XCMapFile
 		:
-		IMapBase
+			IMapBase
 	{
 //		private readonly string _blankPath;
 		private readonly string[] _deps;
 
 		public static readonly string MapExt = ".MAP";
 
-		private RouteFile _routeFile;
+		private RouteNodeCollection _routeFile;
 
 
-		public XCMapFile(
+		internal XCMapFile(
 				string baseName,
 				string basePath,
 				string blankPath,
 				List<TileBase> tiles,
 				string[] depList,
-				RouteFile routeFile)
+				RouteNodeCollection routeFile)
 			:
-			base(baseName, tiles)
+				base(baseName, tiles)
 		{
 			BaseName = baseName;
 			BasePath = basePath;
@@ -109,7 +109,7 @@ namespace XCom
 			}
 		}
 
-		private void SetupRoutes(RouteFile file)
+		private void SetupRoutes(RouteNodeCollection file)
 		{
 			if (file.ExtraHeight != 0) // remove ExtraHeight for editing - see Save() below_
 				foreach (RouteNode node in file)
@@ -148,10 +148,10 @@ namespace XCom
 						}
 		}
 
-		public string BaseName
+		internal string BaseName
 		{ get; private set; }
 
-		public string BasePath
+		internal string BasePath
 		{ get; private set; }
 
 		public string[] Dependencies
@@ -178,7 +178,7 @@ namespace XCom
 			return null;
 		}
 
-		public RouteFile RouteFile
+		public RouteNodeCollection RouteFile
 		{
 			get { return _routeFile; }
 		}
@@ -355,7 +355,7 @@ namespace XCom
 		public void Hq2x()
 		{
 			foreach (string dep in _deps) // instead i would want to make an image of the whole map and run that through hq2x
-				foreach (var image in GameInfo.GetPckFile(dep))
+				foreach (var image in GameInfo.GetPckPack(dep))
 					image.HQ2X();
 
 			PckImage.Width  *= 2;

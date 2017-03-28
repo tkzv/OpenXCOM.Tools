@@ -8,21 +8,21 @@ namespace XCom
 {
 	public class XCTile
 		:
-		XCom.Interfaces.Base.TileBase
+			XCom.Interfaces.Base.TileBase
 	{
-		private readonly PckFile _file;
+		private readonly PckSpriteCollection _pckPack;
 		private readonly McdEntry _info;
 
 
-		public XCTile(
+		internal XCTile(
 				int id,
-				PckFile file,
+				PckSpriteCollection pckPack,
 				McdEntry info,
 				XCTile[] tiles)
 			:
-			base(id)
+				base(id)
 		{
-			_file = file;
+			_pckPack = pckPack;
 			_info = info;
 			Info  = info;
 			Tiles = tiles;
@@ -34,42 +34,42 @@ namespace XCom
 			else
 				StopAnimate();
 
-			Dead      = null;
-			Alternate = null;
+//			Dead      = null;
+//			Alternate = null;
 		}
 
 
-		public XCTile[] Tiles
+		internal XCTile[] Tiles
 		{ get; private set; }
 
 		public XCTile Dead
 		{ get; set; }
 
-		public XCTile Alternate
+		internal XCTile Alternate
 		{ get; set; }
 
 		public void MakeAnimate()
 		{
-			Images[0] = _file[_info.Image1];
-			Images[1] = _file[_info.Image2];
-			Images[2] = _file[_info.Image3];
-			Images[3] = _file[_info.Image4];
-			Images[4] = _file[_info.Image5];
-			Images[5] = _file[_info.Image6];
-			Images[6] = _file[_info.Image7];
-			Images[7] = _file[_info.Image8];
+			Images[0] = _pckPack[_info.Image1];
+			Images[1] = _pckPack[_info.Image2];
+			Images[2] = _pckPack[_info.Image3];
+			Images[3] = _pckPack[_info.Image4];
+			Images[4] = _pckPack[_info.Image5];
+			Images[5] = _pckPack[_info.Image6];
+			Images[6] = _pckPack[_info.Image7];
+			Images[7] = _pckPack[_info.Image8];
 		}
 
 		public void StopAnimate()
 		{
-			Images[0] = _file[_info.Image1];
-			Images[1] = _file[_info.Image1];
-			Images[2] = _file[_info.Image1];
-			Images[3] = _file[_info.Image1];
-			Images[4] = _file[_info.Image1];
-			Images[5] = _file[_info.Image1];
-			Images[6] = _file[_info.Image1];
-			Images[7] = _file[_info.Image1];
+			Images[0] = _pckPack[_info.Image1];
+			Images[1] = _pckPack[_info.Image1];
+			Images[2] = _pckPack[_info.Image1];
+			Images[3] = _pckPack[_info.Image1];
+			Images[4] = _pckPack[_info.Image1];
+			Images[5] = _pckPack[_info.Image1];
+			Images[6] = _pckPack[_info.Image1];
+			Images[7] = _pckPack[_info.Image1];
 		}
 	}
 }

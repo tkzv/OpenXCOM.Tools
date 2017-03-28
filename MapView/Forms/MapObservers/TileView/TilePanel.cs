@@ -10,18 +10,18 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TileViews
 {
-	public class TilePanel
+	internal class TilePanel
 		:
-		Panel
+			Panel
 	{
 		private TileBase[] _tiles;
 
 		private const int _width  = 32;
 		private const int _height = 40;
+
 		private const int Pad     =  4; // NOTE: includes the margin for both sides of '_width'.
 
 //		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
-
 		private Pen _pen = new Pen(Brushes.Red, 2);
 
 		private static Hashtable _brushes;
@@ -55,8 +55,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		public event SelectedTileTypeChangedEventHandler SelectedTileTypeChangedPanel;
 
-//		private static PckFile extraFile;
-//		public static PckFile ExtraFile
+//		private static PckSpriteCollection extraFile;
+//		public static PckSpriteCollection ExtraFile
 //		{
 //			get { return extraFile; }
 //			set { extraFile = value; }

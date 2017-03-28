@@ -19,16 +19,16 @@ namespace MapView
 	internal class CursorSprite
 	{
 		private CursorState _state;
-		private readonly PckFile _file;
+		private readonly PckSpriteCollection _pckPack;
 
 
-		public CursorSprite(PckFile file)
+		public CursorSprite(PckSpriteCollection pckPack)
 		{
 			_state = CursorState.Select;
-			_file = file;
+			_pckPack = pckPack;
 
-			foreach (PckImage image in file)
-				image.Image.MakeTransparent(file.Pal.Transparent);
+			foreach (PckImage image in pckPack)
+				image.Image.MakeTransparent(pckPack.Pal.Transparent);
 		}
 
 
@@ -38,7 +38,7 @@ namespace MapView
 			set { _state = value; }
 		} */
 
-/*		public PckFile PckFile
+/*		public PckSpriteCollection PckSpriteCollection
 		{
 			get { return _file; }
 		} */
@@ -52,12 +52,12 @@ namespace MapView
 			Bitmap image;
 			if (top && _state != CursorState.Aim)
 			{
-				image = (over) ? _file[1].Image
-							   : _file[0].Image;
+				image = (over) ? _pckPack[1].Image
+							   : _pckPack[0].Image;
 			}
 			else
 			{
-				image = _file[2].Image;
+				image = _pckPack[2].Image;
 			}
 
 			g.DrawImage(
@@ -78,31 +78,31 @@ namespace MapView
 
 			if (top && _state != CursorState.Aim)
 			{
-				image = (over) ? _file[4].Image
-							   : _file[3].Image;
+				image = (over) ? _pckPack[4].Image
+							   : _pckPack[3].Image;
 
 				switch (_state)
 				{
 					case CursorState.SelectMControl:
-						image = _file[11 + i % 2].Image;
+						image = _pckPack[11 + i % 2].Image;
 						break;
 
 					case CursorState.Throw:
-						image = _file[15 + i % 2].Image;
+						image = _pckPack[15 + i % 2].Image;
 						break;
 
 					case CursorState.Waypoint:
-						image = _file[13 + i % 2].Image;
+						image = _pckPack[13 + i % 2].Image;
 						break;
 				}
 			}
 			else if (top) // top and aim
 			{
-				image = _file[7 + i % 4].Image;
+				image = _pckPack[7 + i % 4].Image;
 			}
 			else
 			{
-				image = _file[5].Image;
+				image = _pckPack[5].Image;
 			}
 
 			g.DrawImage(

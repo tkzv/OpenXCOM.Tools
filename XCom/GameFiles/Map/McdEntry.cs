@@ -58,22 +58,22 @@ namespace XCom
 {
 	public enum TileType
 	{
-		Ground		=  0,
-		WestWall	=  1,
-		NorthWall	=  2,
-		Object		=  3,
-		All			= -1
+		All       = -1,
+		Ground    =  0,
+		WestWall  =  1,
+		NorthWall =  2,
+		Object    =  3
 	};
 
 	public class McdEntry
 		:
-		XCom.Interfaces.Base.IInfo
+			XCom.Interfaces.Base.IMcdInfo
 	{
-		private static int _globalStaticId = 0;
+		private static int _idCanonical = 0;
 
 		internal McdEntry()
 		{
-			Id = _globalStaticId++;
+			Id = _idCanonical++;
 		}
 
 		public int Id { get; private set; }

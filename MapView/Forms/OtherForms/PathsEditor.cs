@@ -119,8 +119,8 @@ namespace MapView
 
 			populateTree();
 
-			cbPalette.Items.Add(Palette.UFOBattle);
-			cbPalette.Items.Add(Palette.TFTDBattle);
+			cbPalette.Items.Add(Palette.UfoBattle);
+			cbPalette.Items.Add(Palette.TftdBattle);
 		}
 
 
@@ -582,7 +582,7 @@ namespace MapView
 									f.MapRows,
 									f.MapCols,
 									f.MapHeight);
-					var fs = File.OpenWrite(txtRmp.Text + f.MapName + RouteFile.RouteExt); // wrap this in a 'using' block.
+					var fs = File.OpenWrite(txtRmp.Text + f.MapName + RouteNodeCollection.RouteExt); // wrap this in a 'using' block.
 					fs.Close();
 
 					IXCTileset tileset;

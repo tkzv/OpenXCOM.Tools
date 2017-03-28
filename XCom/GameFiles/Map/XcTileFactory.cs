@@ -8,36 +8,33 @@ namespace XCom.GameFiles.Map
 {
 	public class XCTileFactory
 		:
-		IWarningNotifier
+			IWarningNotifier
 	{
-		public XCTile[] CreateTiles(
+		internal XCTile[] CreateTiles(
 				string baseName,
 				string directory,
-				PckFile pckFile)
+				PckSpriteCollection pckPack)
 		{
 			int diff = (baseName == "XBASES05") ? 3 : 0; // TODO: wtf.
 
-			const int TOTAL = 62;
+			const int Total = 62;
 
-			using (var file = new BufferedStream(File.OpenRead(directory + baseName + ".MCD")))
+			using (var bs = new BufferedStream(File.OpenRead(directory + baseName + ".MCD")))
 			{
-				var tiles = new XCTile[(((int) file.Length) / TOTAL) - diff];
+				var tiles = new XCTile[(((int) bs.Length) / Total) - diff];
 
 				for (int i = 0; i != tiles.Length; ++i)
 				{
-					var info = new byte[TOTAL];
-					file.Read(info, 0, TOTAL);
-					var mcdEntry = McdEntryFactory.Create(info);
+					var info = new byte[Total];
+					bs.Read(info, 0, Total);
+					var record = McdEntryFactory.Create(info);
 
-					var dead = GetDeadValue(baseName, i, mcdEntry, tiles);
-					var alternate = GetAlternate(baseName, i, mcdEntry, tiles);
-					var tile = new XCTile(i, pckFile, mcdEntry, tiles);
-					tile.Dead = dead;
-					tile.Alternate = alternate;
+					var tile = new XCTile(i, pckPack, record, tiles);
+					tile.Dead = GetDeadValue(baseName, i, record, tiles);
+					tile.Alternate = GetAlternate(baseName, i, record, tiles);
+
 					tiles[i] = tile;
 				}
-
-//				file.Close(); // NOTE: the 'using' block closes the stream.
 
 				return tiles;
 			}
@@ -91,7 +88,7 @@ namespace XCom.GameFiles.Map
 
 		public event Action<string> HandleWarning;
 
-		protected virtual void OnHandleWarning(string message)
+		private void OnHandleWarning(string message)
 		{
 			Action<string> handler = HandleWarning;
 			if (handler != null)

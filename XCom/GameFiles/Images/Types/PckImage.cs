@@ -8,11 +8,13 @@ namespace XCom
 {
 	public class PckImage // [xImage(32,40)]
 		:
-		XCImage
+			XCImage
 	{
 //		private int _mapId;
 
-		private readonly PckFile _pckFile;
+		private const byte TransparentId = 0xFE;
+
+		private readonly PckSpriteCollection _pckPack;
 		private readonly byte[] _expanded; // i suspect this should be '_scaled'
 		private int _moveId = -1;
 //		private byte _moveVal = 0;
@@ -28,7 +30,7 @@ namespace XCom
 				int imageId,
 				byte[] id,
 				Palette pal,
-				PckFile pckFile)
+				PckSpriteCollection pckFile)
 			:
 			this(
 				imageId,
@@ -37,17 +39,22 @@ namespace XCom
 				pckFile,
 				32, 40)
 		{} */
-
 		internal PckImage(
 				int imageId,
 				byte[] binData,
 				Palette pal,
-				PckFile pckFile,
+				PckSpriteCollection pckPack,
 				int width,
 				int height)
+			:
+				base(
+					new byte[]{},
+					0, 0,
+					null,
+					-1)
 		{
 			Palette = pal;
-			_pckFile = pckFile;
+			_pckPack = pckPack;
 			FileId = imageId;
 
 //			this.imageNum = imageNum;
@@ -64,13 +71,13 @@ namespace XCom
 			for (int i = 0; i != _expanded.Length; ++i)
 				_expanded[i] = TransparentId;
 
-			int startId = 0;
-			int expandedId = 0;
+			int posStart = 0;
+			int posExpanded = 0;
 
 			if (binData[0] != 254)
-				expandedId = binData[startId++] * Width;
+				posExpanded = binData[posStart++] * Width;
 
-			for (int i = startId; i < binData.Length; ++i)
+			for (int i = posStart; i < binData.Length; ++i)
 			{
 				switch (binData[i])
 				{
@@ -80,7 +87,7 @@ namespace XCom
 							_moveId = i + 1;
 //							_moveVal = id[i + 1];
 						}
-						expandedId += binData[i + 1];
+						posExpanded += binData[i + 1];
 						++i;
 						break;
 
@@ -88,7 +95,7 @@ namespace XCom
 						break;
 
 					default:
-						_expanded[expandedId++] = binData[i];
+						_expanded[posExpanded++] = binData[i];
 						break;
 				}
 			}
@@ -107,14 +114,14 @@ namespace XCom
 		}
 
 
-		public static int EncodePck(System.IO.BinaryWriter output, XCImage tile)
+		internal static int EncodePckData(System.IO.BinaryWriter output, XCImage image)
 		{
 			int count = 0;
 			bool flag = true;
 
-			byte[] input = tile.Offsets;
+			byte[] input = image.Offsets;
 
-			var bytes = new List<byte>();
+			var binData = new List<byte>();
 
 //			Color trans = pal.Transparent;
 //			pal.SetTransparent(false);
@@ -135,47 +142,47 @@ namespace XCom
 						{
 							flag = false;
 
-							bytes.Add((byte)(count / tile.Image.Width));	// # of initial rows to skip
-							count   = (byte)(count % tile.Image.Width);		// current position in the transparent row
+							binData.Add((byte)(count / image.Image.Width));	// # of initial rows to skip
+							count     = (byte)(count % image.Image.Width);	// current position in the transparent row
 							//Console.WriteLine("count, lines: {0}, cells {1}", count/PckImage.IMAGE_WIDTH, count%PckImage.IMAGE_WIDTH);
 						}
 
 						while (count >= 255)
 						{
-							bytes.Add(TransparentId);
-							bytes.Add(255);
+							binData.Add(TransparentId);
+							binData.Add(255);
 							count -= 255;
 						}
 
 						if (count != 0)
 						{
-							bytes.Add(TransparentId);
-							bytes.Add((byte)count);
+							binData.Add(TransparentId);
+							binData.Add((byte)count);
 						}
 						count = 0;
 					}
-					bytes.Add(id);
+					binData.Add(id);
 				}
 			}
 
 			bool throughLoop = false;
 			while (count >= 255)
 			{
-				bytes.Add(254);
-				bytes.Add(255);
+				binData.Add(254);
+				binData.Add(255);
 				count -= 255;
 				throughLoop = true;
 			}
 
-			if ((byte)bytes[bytes.Count - 1] != 255 || throughLoop)
-				bytes.Add(255);
+			if ((byte)binData[binData.Count - 1] != 255 || throughLoop)
+				binData.Add(255);
 
 //			if (bytes.Count % 2 == 1 || throughLoop)
 //				bytes.Add(255);
 
-			output.Write(bytes.ToArray());
+			output.Write(binData.ToArray());
 
-			return bytes.Count;
+			return binData.Count;
 		}
 
 //		public override void Hq2x()
@@ -191,7 +198,7 @@ namespace XCom
 
 /*		public static Type GetCollectionType()
 		{
-			return typeof(PckFile);
+			return typeof(PckSpriteCollection);
 		} */
 
 /*		public void ReImage()
@@ -272,8 +279,8 @@ namespace XCom
 		{
 			string ret = String.Empty;
 
-			if (_pckFile != null)
-				ret += _pckFile.ToString();
+			if (_pckPack != null)
+				ret += _pckPack.ToString();
 
 			ret += FileId + Environment.NewLine;
 

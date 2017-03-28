@@ -139,7 +139,7 @@ namespace XCom
 		/// ReadLine
 		/// </summary>
 		/// <returns>KeyVal</returns>
-		public KeyVal ReadLine()
+		public KeyvalPair ReadLine()
 		{
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("[2]VarCollection.ReadLine()");
@@ -150,8 +150,8 @@ namespace XCom
 				int pos = line.IndexOf(':');
 				//LogFile.WriteLine((pos > 0) ? ". . [2]pos':'>0 RET key= " + line.Substring(0, pos) + " val= " + line.Substring(pos + 1)
 				//                            : ". . [2]pos':'<1 RET key= " + line + " val=");
-				return (pos > 0) ? new KeyVal(line.Substring(0, pos), line.Substring(pos + 1))
-								 : new KeyVal(line, String.Empty);
+				return (pos > 0) ? new KeyvalPair(line.Substring(0, pos), line.Substring(pos + 1))
+								 : new KeyvalPair(line, String.Empty);
 			}
 			//LogFile.WriteLine("[2]. . Ret NULL");
 			return null;
@@ -247,18 +247,18 @@ namespace XCom
 
 
 	/// <summary>
-	/// class KeyVal - helper class for VarCollection
+	/// class KeyvalPair - helper class for VarCollection.
 	/// </summary>
-	public class KeyVal
+	public class KeyvalPair
 	{
 		private readonly string _key;
 		private readonly string _val;
 
 
-		public KeyVal(string key, string val)
+		public KeyvalPair(string key, string value)
 		{
 			_key = key;
-			_val = val;
+			_val = value;
 		}
 
 

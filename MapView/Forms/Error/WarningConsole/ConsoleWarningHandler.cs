@@ -8,7 +8,7 @@ namespace MapView.Forms.XCError.WarningConsole
 {
 	public class ConsoleWarningHandler
 		:
-		IWarningHandler
+			IWarningHandler
 	{
 		private readonly ConsoleSharedSpace _consoleShare;
 
@@ -17,7 +17,7 @@ namespace MapView.Forms.XCError.WarningConsole
 			_consoleShare = consoleShare;
 		}
 
-		public void HandleWarning(string message)
+		public void HandleWarning(string st)
 		{
 			var console = _consoleShare.GetConsole();
 			if (console == null)
@@ -25,7 +25,7 @@ namespace MapView.Forms.XCError.WarningConsole
 				console = _consoleShare.GetNewConsole();
 				console.Show();
 			}
-			xConsole.AddLine("WARNING: " + message);
+			XConsole.AdZerg("WARNING: " + st);
 		}
 	}
 }

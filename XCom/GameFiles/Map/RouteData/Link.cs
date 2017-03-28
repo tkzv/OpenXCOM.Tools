@@ -2,11 +2,11 @@ namespace XCom
 {
 	public class Link
 	{
-		public const byte NOT_USED   = 0xFF;
-		public const byte EXIT_NORTH = 0xFE;
-		public const byte EXIT_EAST  = 0xFD;
-		public const byte EXIT_SOUTH = 0xFC;
-		public const byte EXIT_WEST  = 0xFB;
+		public const byte NotUsed   = 0xFF;
+		public const byte ExitNorth = 0xFE;
+		public const byte ExitEast  = 0xFD;
+		public const byte ExitSouth = 0xFC;
+		public const byte ExitWest  = 0xFB;
 
 
 		public Link(byte id, byte dist, byte type)

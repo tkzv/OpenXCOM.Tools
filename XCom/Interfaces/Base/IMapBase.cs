@@ -246,7 +246,7 @@ namespace XCom.Interfaces.Base
 			}
 			try
 			{
-				var rect = Bmp.GetBoundsRect(b, Bmp.DefaultTransparentIndex);
+				var rect = Bmp.GetBoundsRect(b, Palette.TransparentId);
 				b = Bmp.Crop(b, rect);
 				b.Save(file, ImageFormat.Gif);
 			}

@@ -44,22 +44,22 @@ namespace DSShared.Lists
 		public static int MinWidth = 20;
 
 		/// <summary>
-		/// Fired when a column's width changes
+		/// Fired when a column's width changes.
 		/// </summary>
 		public event CustomListColumChangedDelegate WidthChanged;
 
 		/// <summary>
-		/// Fired when a column's left parameter changes
+		/// Fired when a column's left parameter changes.
 		/// </summary>
 		public event CustomListColumChangedDelegate LeftChanged;
 
 		/// <summary>
-		/// Fired when a row has been clicked on under this column
+		/// Fired when a row has been clicked on under this column.
 		/// </summary>
 		public event ColClickDelegate OnClick;
 
 		/// <summary>
-		/// Fired when a row gets keyboard events under this column
+		/// Fired when a row gets keyboard events under this column.
 		/// </summary>
 		public event KeyPressDelegate KeyPress;
 

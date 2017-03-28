@@ -120,9 +120,9 @@ namespace PckView
 				try
 				{
 					view.Collection = value;
-					if (value is PckFile)
+					if (value is PckSpriteCollection)
 					{
-						_statusBPP.Text = "Bpp: " + ((PckFile)view.Collection).Bpp + "  ";
+						_statusBPP.Text = "Bpp: " + ((PckSpriteCollection)view.Collection).Bpp + "  ";
 					}
 					else
 						_statusBPP.Text = String.Empty;

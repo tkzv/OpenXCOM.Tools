@@ -12,6 +12,10 @@ namespace MapView
 		Panel
 	{
 		private MapView _mapView;
+		public MapView MapView
+		{
+			get { return _mapView; }
+		}
 
 		private readonly HScrollBar _scrollBarHori;
 		private readonly VScrollBar _scrollBarVert;
@@ -19,6 +23,16 @@ namespace MapView
 		private static MapViewPanel _instance;
 
 
+		public static MapViewPanel Instance
+		{
+			get
+			{
+				if (_instance == null)
+					_instance = new MapViewPanel();
+
+					return _instance;
+			}
+		}
 		private MapViewPanel()
 		{
 			ImageUpdate += update; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
@@ -34,12 +48,7 @@ namespace MapView
 
 			Controls.AddRange(new Control[]{ _scrollBarVert, _scrollBarHori });
 
-			SetView(new MapView());
-		}
-
-
-		private void SetView(MapView mapView)
-		{
+			var mapView = new MapView();
 			if (_mapView != null)
 			{
 				mapView.Map = _mapView.Map;
@@ -73,17 +82,6 @@ namespace MapView
 		public void Paste(object sender, EventArgs e)
 		{
 			_mapView.Paste();
-		}
-
-		public static MapViewPanel Instance
-		{
-			get
-			{
-				if (_instance == null)
-					_instance = new MapViewPanel();
-
-					return _instance;
-			}
 		}
 
 		public IMapBase BaseMap
@@ -189,11 +187,6 @@ namespace MapView
 		public void ForceResize()
 		{
 			OnResize(null);
-		}
-
-		public MapView MapView
-		{
-			get { return _mapView; }
 		}
 
 

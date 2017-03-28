@@ -77,7 +77,7 @@ namespace XCom
 			else
 				sw.WriteLine(Tab + "blankPath:" + BlankPath);
 
-			sw.WriteLine(Tab + "palette:" + Palette.Name);
+			sw.WriteLine(Tab + "palette:" + Palette.Label);
 
 			foreach (string keySubsets in Subsets.Keys)
 			{
@@ -205,7 +205,7 @@ namespace XCom
 //					break;
 
 				default:
-					xConsole.AddLine(string.Format(
+					XConsole.AdZerg(string.Format(
 												System.Globalization.CultureInfo.CurrentCulture,
 												"Unknown line in tileset {0}-> {1}:{2}",
 												Name, key, line));

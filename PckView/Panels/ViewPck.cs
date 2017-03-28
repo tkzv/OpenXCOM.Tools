@@ -51,15 +51,15 @@ namespace PckView
 		}
 
 
-		/// <summary>
+/*		/// <summary>
 		/// Saves a bitmap as an 8-bit image.
 		/// </summary>
 		/// <param name="file"></param>
 		/// <param name="pal"></param>
 		public void SaveBMP(string file, Palette pal)
 		{
-			Bmp.SaveBMP(file, _collection, pal, numAcross(), 1);
-		}
+			Bmp.SendToSaver(file, _collection, pal, numAcross(), 1);
+		} */
 
 		public void Hq2x()
 		{

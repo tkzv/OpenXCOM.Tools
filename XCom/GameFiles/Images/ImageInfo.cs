@@ -38,7 +38,7 @@ namespace XCom
 			{
 				vars = new VarCollection(sr, vars);
 
-				KeyVal keyVal;
+				KeyvalPair keyVal;
 				while ((keyVal = vars.ReadLine()) != null)
 				{
 					var img = new ImageDescriptor(keyVal.Keyword.ToUpperInvariant(), keyVal.Value);

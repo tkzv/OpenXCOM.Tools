@@ -120,7 +120,7 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\Collections\PckFile.cs">
+    <Compile Include="GameFiles\Images\Collections\PckSpriteCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Images\Collections\UncompressedCollection.cs">
@@ -171,10 +171,10 @@
     <Compile Include="GameFiles\Map\McdEntry.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Map\McdFile.cs">
+    <Compile Include="GameFiles\Map\McdTileCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Map\RouteData\RouteFile.cs">
+    <Compile Include="GameFiles\Map\RouteData\RouteNodeCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Map\StrEnum.cs">
@@ -201,7 +201,7 @@
     <Compile Include="Globals.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\Base\IInfo.cs" />
+    <Compile Include="Interfaces\Base\IMcdInfo.cs" />
     <Compile Include="Interfaces\Base\IMapDesc.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -248,7 +248,7 @@
     <Compile Include="ConsoleForm.Designer.cs">
       <DependentUpon>ConsoleForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="xConsole.cs">
+    <Compile Include="XConsole.cs">
       <SubType>Code</SubType>
     </Compile>
     <EmbeddedResource Include="ParseErrors.resx">

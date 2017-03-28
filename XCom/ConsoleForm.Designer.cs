@@ -10,10 +10,10 @@ namespace XCom
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		/// <param name="disposing">true if managed resources should be disposed</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (components != null))
+			if (disposing && components != null)
 				components.Dispose();
 
 			base.Dispose(disposing);
@@ -77,6 +77,7 @@ namespace XCom
 			this.Controls.Add(this.menuStrip1);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MainMenuStrip = this.menuStrip1;
+			this.MinimumSize = new System.Drawing.Size(300, 200);
 			this.Name = "ConsoleForm";
 			this.Text = "Output Console";
 			this.menuStrip1.ResumeLayout(false);

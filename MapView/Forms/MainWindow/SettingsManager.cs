@@ -35,7 +35,7 @@ namespace MapView.Forms.MainWindow
 			{
 				var vars = new VarCollection(sr);
 
-				KeyVal line;
+				KeyvalPair line;
 				while ((line = vars.ReadLine()) != null)
 					Settings.ReadSettings(vars, line, _dictSettings[line.Keyword]);
 			}
