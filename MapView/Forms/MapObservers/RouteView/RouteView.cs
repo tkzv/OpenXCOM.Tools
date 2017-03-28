@@ -19,9 +19,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		Soldier		Soldier
 	*/
 
-	public partial class RouteView
+	internal sealed partial class RouteView
 		:
-		MapObserverControl0
+			MapObserverControl0
 	{
 		private readonly RoutePanel _routePanel;
 
@@ -99,7 +99,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void options_click(object sender, EventArgs e)
 		{
-			var f = new PropertyForm("RouteViewOptions", Settings);
+			var f = new OptionsForm("RouteViewOptions", Settings);
 			f.Text = "Route View Options";
 			f.Show();
 		}
@@ -377,10 +377,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_loadingGui = false;
 		}
 
-		public void SetMap(object sender, SetMapEventArgs args)
+/*		public void SetMap(object sender, SetMapEventArgs args)
 		{
 			Map = args.Map;
-		}
+		} */
 
 		public override IMapBase Map
 		{

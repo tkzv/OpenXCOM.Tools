@@ -5,7 +5,7 @@ using System.IO;
 
 namespace XCom
 {
-	public delegate void ParseLineEventHandler(KeyvalPair keyval, VarCollection vars);
+	public delegate void ParseLineEventHandler(KeyvalPair keyval, Varidia vars);
 
 
 	public static class GameInfo
@@ -30,9 +30,9 @@ namespace XCom
 
 			using (var sr = new StreamReader(File.OpenRead(info.FullPath))) // open Paths.Cfg
 			{
-				var vars = new VarCollection(sr);	// this object is going to hold all sorts of keyval pairs
-													// be careful you don't duplicate/overwrite a var since the following loop
-				KeyvalPair keyVal;						// is going to rifle through all the config files and throw it together ...
+				var vars = new Varidia(sr);	// this object is going to hold all sorts of keyval pairs
+											// be careful you don't duplicate/overwrite a var since the following loop
+				KeyvalPair keyVal;				// is going to rifle through all the config files and throw it together ...
 				//LogFile.WriteLine("[1]GameInfo.Init parse Paths.cfg");
 				while ((keyVal = vars.ReadLine()) != null) // parse Paths.Cfg; will not return lines that start '$' (or whitespace lines)
 				{

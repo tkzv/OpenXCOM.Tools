@@ -2,6 +2,6 @@
 {
 	public interface IWarningHandler
 	{
-		void HandleWarning(string message);
+		void HandleWarning(string st);
 	}
 }

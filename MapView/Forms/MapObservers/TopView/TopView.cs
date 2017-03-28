@@ -14,7 +14,7 @@ namespace MapView.Forms.MapObservers.TopViews
 {
 	internal sealed partial class TopView
 		:
-		MapObserverControl0
+			MapObserverControl0
 	{
 		private readonly Dictionary<ToolStripMenuItem, int> _visibleHash;
 
@@ -153,7 +153,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private void options_click(object sender, EventArgs e)
 		{
-			var f = new PropertyForm("TopViewOptions", Settings);
+			var f = new OptionsForm("TopViewOptions", Settings);
 
 			f.Text = "Top View Options";
 			f.Show();
@@ -216,19 +216,19 @@ namespace MapView.Forms.MapObservers.TopViews
 			switch (tileType)
 			{
 				case TileType.Ground:
-					BottomPanel.SelectedQuadrant = XCMapTile.QuadrantType.Ground;
+					BottomPanel.SelectedQuadrant = QuadrantType.Ground;
 					break;
 
 				case TileType.WestWall:
-					BottomPanel.SelectedQuadrant = XCMapTile.QuadrantType.West;
+					BottomPanel.SelectedQuadrant = QuadrantType.West;
 					break;
 
 				case TileType.NorthWall:
-					BottomPanel.SelectedQuadrant = XCMapTile.QuadrantType.North;
+					BottomPanel.SelectedQuadrant = QuadrantType.North;
 					break;
 
 				case TileType.Object:
-					BottomPanel.SelectedQuadrant = XCMapTile.QuadrantType.Content;
+					BottomPanel.SelectedQuadrant = QuadrantType.Content;
 					break;
 			}
 		}

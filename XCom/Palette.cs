@@ -259,7 +259,7 @@ namespace XCom
 		public void SetTransparent(bool value)
 		{
 			_colors.Entries[TransparentId] = (value) ? Color.FromArgb(  0, _colors.Entries[TransparentId])
-												   : Color.FromArgb(255, _colors.Entries[TransparentId]);
+													 : Color.FromArgb(255, _colors.Entries[TransparentId]);
 		}
 
 		/// <summary>

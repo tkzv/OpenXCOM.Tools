@@ -21,27 +21,25 @@ namespace XCom.Interfaces.Base
 	}
 
 
-	/// <summary>
+/*	/// <summary>
 	/// EventArgs with an IMapBase for when a SetMap event fires.
 	/// </summary>
 	public class SetMapEventArgs
 		:
-		EventArgs
+			EventArgs
 	{
 		private readonly IMapBase _baseMap;
-
-
-		public SetMapEventArgs(IMapBase baseMap)
-		{
-			_baseMap = baseMap;
-		}
-
-
 		public IMapBase Map
 		{
 			get { return _baseMap; }
 		}
-	}
+
+
+		internal SetMapEventArgs(IMapBase baseMap)
+		{
+			_baseMap = baseMap;
+		}
+	} */
 
 
 	/// <summary>
@@ -49,27 +47,25 @@ namespace XCom.Interfaces.Base
 	/// </summary>
 	public class SelectedTileChangedEventArgs
 		:
-		EventArgs
+			EventArgs
 	{
 		private MapLocation _selLoc;
-		private readonly MapTileBase _selTile;
-
-
-		public SelectedTileChangedEventArgs(MapLocation selLoc, MapTileBase selTile)
-		{
-			_selLoc = selLoc;
-			_selTile = selTile;
-		}
-
-
 		public MapLocation MapPosition
 		{
 			get { return _selLoc; }
 		}
 
+		private readonly MapTileBase _selTile;
 		public MapTileBase SelectedTile
 		{
 			get { return _selTile; }
+		}
+
+
+		internal SelectedTileChangedEventArgs(MapLocation selLoc, MapTileBase selTile)
+		{
+			_selLoc  = selLoc;
+			_selTile = selTile;
 		}
 	}
 
@@ -78,27 +74,26 @@ namespace XCom.Interfaces.Base
 	/// </summary>
 	public class HeightChangedEventArgs
 		:
-		EventArgs
+			EventArgs
 	{
 		private readonly int _heightNew;
-		private readonly int _heightOld;
-
-
-		public HeightChangedEventArgs(int heightOld, int heightNew)
-		{
-			_heightNew = heightNew;
-			_heightOld = heightOld;
-		}
-
-
 		public int NewHeight
 		{
 			get { return _heightNew; }
 		}
 
+/*		private readonly int _heightOld;
 		public int OldHeight
 		{
 			get { return _heightOld; }
+		} */
+
+
+//		public HeightChangedEventArgs(int heightOld, int heightNew)
+		internal HeightChangedEventArgs(int heightNew)
+		{
+			_heightNew = heightNew;
+//			_heightOld = heightOld;
 		}
 	}
 }

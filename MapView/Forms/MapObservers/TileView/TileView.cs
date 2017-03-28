@@ -18,9 +18,9 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TileViews
 {
-	public partial class TileView
+	internal sealed partial class TileView
 		:
-		MapObserverControl0
+			MapObserverControl0
 	{
 		private IContainer components = null;
 
@@ -119,7 +119,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private void options_click(object sender, EventArgs e)
 		{
-			var f = new PropertyForm("TileViewOptions", Settings);
+			var f = new OptionsForm("TileViewOptions", Settings);
 			f.Text = "Tile View Options";
 			f.Show();
 		}
@@ -221,13 +221,13 @@ namespace MapView.Forms.MapObservers.TileViews
 				var imageInfo = GameInfo.ImageInfo[dep];
 				if (imageInfo != null)
 				{
-					var pathfilext = imageInfo.BasePath + imageInfo.BaseName + ".PCK";
+					var pfe = imageInfo.BasePath + imageInfo.BaseName + ".PCK"; // pfe=PathFileExt
 
-					if (!File.Exists(pathfilext))
+					if (!File.Exists(pfe))
 					{
 						MessageBox.Show(
 									this,
-									"File does not exist: " + pathfilext,
+									"File does not exist: " + pfe,
 									"Error",
 									MessageBoxButtons.OK,
 									MessageBoxIcon.Exclamation,
@@ -238,12 +238,11 @@ namespace MapView.Forms.MapObservers.TileViews
 					{
 						_mainWindowsShowAllManager.HideAll();
 
-
 						using (var editor = new PckViewForm())
 						{
 							var pckFile = imageInfo.GetPckPack();
 							editor.SelectedPalette = pckFile.Pal.Label;
-							editor.LoadPckFile(pathfilext, pckFile.Bpp);
+							editor.LoadPckFile(pfe, pckFile.Bpp);
 
 							var parent = FindForm();
 

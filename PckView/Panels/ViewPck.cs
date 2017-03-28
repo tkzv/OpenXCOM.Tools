@@ -63,7 +63,7 @@ namespace PckView
 
 		public void Hq2x()
 		{
-			_collection.Hq2x();
+			_collection.HQ2X();
 		}
 
 		public Palette Pal

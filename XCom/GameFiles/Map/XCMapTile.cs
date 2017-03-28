@@ -6,22 +6,46 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
-	public class XCMapTile
-		:
-		MapTileBase
+	public enum QuadrantType
 	{
-		public enum QuadrantType
-		{
-			Ground,
-			West,
-			North,
-			Content
-		};
+		Ground,
+		West,
+		North,
+		Content
+	};
 
+
+	public sealed class XCMapTile
+		:
+			MapTileBase
+	{
 		private TileBase _ground;
-		private TileBase _north;
+		public TileBase Ground
+		{
+			get { return _ground; }
+			set { ChangeMapQuadrant(QuadrantType.Ground, value); }
+		}
+
 		private TileBase _west;
+		public TileBase West
+		{
+			get { return _west; }
+			set { ChangeMapQuadrant(QuadrantType.West, value); }
+		}
+
+		private TileBase _north;
+		public TileBase North
+		{
+			get { return _north; }
+			set { ChangeMapQuadrant(QuadrantType.North, value); }
+		}
+
 		private TileBase _content;
+		public TileBase Content
+		{
+			get { return _content; }
+			set { ChangeMapQuadrant(QuadrantType.Content, value); }
+		}
 
 
 		internal XCMapTile(
@@ -31,13 +55,14 @@ namespace XCom
 				TileBase content)
 		{
 			_ground  = ground;
-			_north   = north;
 			_west    = west;
+			_north   = north;
 			_content = content;
 
-			Blank = false;
+			Blank = false; // <- not needed.
 			DrawAbove = true;
 		}
+
 
 		public static XCMapTile BlankTile
 		{
@@ -69,30 +94,6 @@ namespace XCom
 			set { ChangeMapQuadrant(quad, value); }
 		}
 
-		public TileBase North
-		{
-			get { return _north; }
-			set { ChangeMapQuadrant(QuadrantType.North, value); }
-		}
-
-		public TileBase Content
-		{
-			get { return _content; }
-			set { ChangeMapQuadrant(QuadrantType.Content, value); }
-		}
-
-		public TileBase Ground
-		{
-			get { return _ground; }
-			set { ChangeMapQuadrant(QuadrantType.Ground, value); }
-		}
-
-		public TileBase West
-		{
-			get { return _west; }
-			set { ChangeMapQuadrant(QuadrantType.West, value); }
-		}
-
 		public RouteNode Node
 		{ get; set; }
 
@@ -100,25 +101,25 @@ namespace XCom
 		{
 			get
 			{
-				var list = new List<TileBase>();
+				var tileList = new List<TileBase>();
 
-				if (Ground  != null) list.Add(Ground);
-				if (West    != null) list.Add(West);
-				if (North   != null) list.Add(North);
-				if (Content != null) list.Add(Content);
+				if (Ground  != null) tileList.Add(Ground);
+				if (West    != null) tileList.Add(West);
+				if (North   != null) tileList.Add(North);
+				if (Content != null) tileList.Add(Content);
 
-				return list.ToArray();
+				return tileList.ToArray();
 			}
 		}
 
-		private void ChangeMapQuadrant(QuadrantType quad, TileBase value)
+		private void ChangeMapQuadrant(QuadrantType quad, TileBase tile)
 		{
 			switch (quad)
 			{
-				case QuadrantType.Ground:  _ground  = value; break;
-				case QuadrantType.West:    _west    = value; break;
-				case QuadrantType.North:   _north   = value; break;
-				case QuadrantType.Content: _content = value; break;
+				case QuadrantType.Ground:  _ground  = tile; break;
+				case QuadrantType.West:    _west    = tile; break;
+				case QuadrantType.North:   _north   = tile; break;
+				case QuadrantType.Content: _content = tile; break;
 			}
 		}
 	}

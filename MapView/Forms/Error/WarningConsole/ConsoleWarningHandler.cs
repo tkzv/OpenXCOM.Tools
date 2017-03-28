@@ -6,7 +6,7 @@ using XCom.Interfaces;
 
 namespace MapView.Forms.XCError.WarningConsole
 {
-	public class ConsoleWarningHandler
+	internal sealed class ConsoleWarningHandler
 		:
 			IWarningHandler
 	{

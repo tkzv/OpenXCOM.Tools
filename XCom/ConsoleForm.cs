@@ -30,7 +30,7 @@ namespace XCom
 
 			while (zerg != zerg1)
 			{
-				buffer = buffer + zerg1.ZergBull + Environment.NewLine;
+				buffer += zerg1.ZergBull + Environment.NewLine;
 				zerg1 = zerg1.Post;
 			}
 			consoleText.Text = buffer;

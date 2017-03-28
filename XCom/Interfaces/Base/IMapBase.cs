@@ -35,7 +35,8 @@ namespace XCom.Interfaces.Base
 			{
 				if (value < (byte)MapSize.Height)
 				{
-					var args = new HeightChangedEventArgs(_height, value);
+//					var args = new HeightChangedEventArgs(_height, value);
+					var args = new HeightChangedEventArgs(value);
 					_height = value;
 
 					if (HeightChanged != null)
@@ -147,7 +148,8 @@ namespace XCom.Interfaces.Base
 		{
 			if (_height > 0)
 			{
-				var args = new HeightChangedEventArgs(_height, _height - 1);
+//				var args = new HeightChangedEventArgs(_height, _height - 1);
+				var args = new HeightChangedEventArgs(_height - 1);
 				--_height;
 
 				if (HeightChanged != null)
@@ -162,8 +164,9 @@ namespace XCom.Interfaces.Base
 		{
 			if (_height < MapSize.Height - 1)
 			{
-				++_height;
-				var args = new HeightChangedEventArgs(_height, _height + 1);
+				++_height; // TODO: wait a second !
+				var args = new HeightChangedEventArgs(_height + 1);
+//				var args = new HeightChangedEventArgs(_height, _height + 1);
 
 				if (HeightChanged != null)
 					HeightChanged(this, args);

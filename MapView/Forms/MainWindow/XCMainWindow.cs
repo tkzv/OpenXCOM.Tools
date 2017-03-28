@@ -27,7 +27,7 @@ namespace MapView
 
 	internal sealed partial class XCMainWindow
 		:
-		Form
+			Form
 	{
 		private readonly SettingsManager    _settingsManager;
 		private readonly MapViewPanel       _mapViewPanel;
@@ -248,7 +248,7 @@ namespace MapView
 			get { return _instance; }
 		}
 
-		private void parseLine(XCom.KeyvalPair line, XCom.VarCollection vars)
+		private void parseLine(KeyvalPair line, XCom.Varidia vars)
 		{
 			switch (line.Keyword.ToUpperInvariant())
 			{
@@ -650,7 +650,7 @@ namespace MapView
 
 		private void miOptions_Click(object sender, EventArgs e)
 		{
-			var f = new PropertyForm("MainViewOptions", Settings);
+			var f = new OptionsForm("MainViewOptions", Settings);
 			f.Text = "Main View Options";
 			f.Show();
 		}
@@ -681,7 +681,7 @@ namespace MapView
 			var map = _mapViewPanel.BaseMap as XCMapFile;
 			if (map != null)
 			{
-				map.Hq2x();
+				map.HQ2X();
 				_mapViewPanel.OnResize();
 			}
 		}

@@ -7,11 +7,10 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TopViews
 {
-	public class TopViewPanel
+	internal sealed class TopViewPanel
 		:
-		SimpleMapPanel
+			SimpleMapPanel
 	{
-
 		public TopViewPanel()
 		{
 			MapViewPanel.Instance.MapView.DragChanged += ViewDrag;

@@ -130,12 +130,12 @@ namespace PckView
 					if (XCImageCollectionSet != null)
 						XCImageCollectionSet(this, new XCImageCollectionSetEventArgs(value));
 				}
-				catch (Exception e)
+				catch (Exception ex)
 				{
 					if (XCImageCollectionSet != null)
 						XCImageCollectionSet(this, new XCImageCollectionSetEventArgs(null));
 
-					throw e;
+					throw ex;
 				}
 			}
 		}

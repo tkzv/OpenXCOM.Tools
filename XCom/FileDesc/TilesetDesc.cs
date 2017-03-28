@@ -27,7 +27,7 @@ namespace XCom
 		{
 			_tilesets = new Dictionary<string, ITileset>();
 		} */
-		internal TilesetDesc(string inFile, VarCollection vars)
+		internal TilesetDesc(string inFile, Varidia vars)
 			:
 				base(inFile)
 		{
@@ -38,7 +38,7 @@ namespace XCom
 
 			using (var sr = new StreamReader(File.OpenRead(inFile)))
 			{
-				var vars1 = new VarCollection(sr, vars);
+				var vars1 = new Varidia(sr, vars);
 
 				int pos;
 				string key, val, line;
@@ -59,7 +59,7 @@ namespace XCom
 					switch (key.ToUpperInvariant())
 					{
 						case "TILESET":
-							line = VarCollection.ReadLine(sr, vars1);
+							line = Varidia.ReadLine(sr, vars1);
 							pos  = line.IndexOf(':');
 							key  = line.Substring(0, pos).ToUpperInvariant();
 
@@ -75,11 +75,11 @@ namespace XCom
 									switch (int.Parse(line.Substring(pos + 1), System.Globalization.CultureInfo.InvariantCulture))
 									{
 //										case 0:
-//											_tilesets[name] = new Type0Tileset(name, sr, new VarCollection(vars1));
+//											_tilesets[name] = new Type0Tileset(name, sr, new Varidia(vars1));
 //											break;
 										case 1:
 											//LogFile.WriteLine(". . . . . [4]instantiate XCTileset _tilesets[" + val + "]");
-											_tilesets[val] = new XCTileset(val, sr, new VarCollection(vars1));
+											_tilesets[val] = new XCTileset(val, sr, new Varidia(vars1));
 											break;
 									}
 									break;
@@ -132,16 +132,16 @@ namespace XCom
 		/// <param name="outFile"></param>
 		public override void Save(string outFile)
 		{
-			var vars = new VarCollection("Path"); // iterate thru each tileset, call save on them
+			var vars = new Varidia("Path"); // iterate thru each tileset, call save on them
 
 			foreach (string key in _tilesets.Keys)
 			{
 				var tileset = (IXCTileset)_tilesets[key];
 				if (tileset != null)
 				{
-					vars.AddKeyVal("rootPath",  tileset.MapPath);
-					vars.AddKeyVal("rmpPath",   tileset.RoutePath);
-					vars.AddKeyVal("blankPath", tileset.BlankPath);
+					vars.AddKeyvalPair("rootPath",  tileset.MapPath);
+					vars.AddKeyvalPair("rmpPath",   tileset.RoutePath);
+					vars.AddKeyvalPair("blankPath", tileset.BlankPath);
 				}
 			}
 

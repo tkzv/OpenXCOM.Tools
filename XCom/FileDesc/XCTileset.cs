@@ -10,7 +10,7 @@ namespace XCom
 {
 	internal sealed class XCTileset
 		:
-		IXCTileset
+			IXCTileset
 	{
 //		private string[] _mapOrder;
 //		private MapLocation[] _startLoc;
@@ -22,12 +22,12 @@ namespace XCom
 
 		public XCTileset(string name)
 			:
-			base(name)
+				base(name)
 		{}
 
-		public XCTileset(string name, StreamReader sr, VarCollection vars)
+		public XCTileset(string name, StreamReader sr, Varidia vars)
 			:
-			base(name, sr, vars)
+				base(name, sr, vars)
 		{}
 
 
@@ -57,7 +57,7 @@ namespace XCom
 //		public override IMap GetMap(ShipDescriptor xCom, ShipDescriptor alien)
 //		{ return new Type1Map(this, xCom, alien); }
 
-		public override void Save(StreamWriter sw, VarCollection vars)
+		public override void Save(StreamWriter sw, Varidia vars)
 		{
 			sw.WriteLine("Tileset:" + Name);
 			sw.WriteLine(Tab + "type:1");
@@ -84,7 +84,7 @@ namespace XCom
 				Dictionary<string, IMapDesc> valDesc = Subsets[keySubsets];
 				if (valDesc != null)
 				{
-					var deps = new VarCollection("Deps");
+					var deps = new Varidia("Deps");
 					foreach (string keyDesc in valDesc.Keys)
 					{
 						var desc = MapDescs[keyDesc] as XCMapDesc;
@@ -99,7 +99,7 @@ namespace XCom
 	
 								depList += desc.Dependencies[i];
 							}
-							deps.AddKeyVal(desc.Label, depList);
+							deps.AddKeyvalPair(desc.Label, depList);
 						}
 					}
 
@@ -146,7 +146,7 @@ namespace XCom
 				string key,
 				string line,
 				StreamReader sr,
-				VarCollection vars)
+				Varidia vars)
 		{
 			switch (key.ToUpperInvariant())
 			{
@@ -154,7 +154,7 @@ namespace XCom
 				{
 					var dictDescs = new Dictionary<string, IMapDesc>();
 					Subsets[line] = dictDescs;
-					string lineVars = VarCollection.ReadLine(sr, vars);
+					string lineVars = Varidia.ReadLine(sr, vars);
 					while (lineVars.ToUpperInvariant() != "END")
 					{
 						int pos       = lineVars.IndexOf(':');
@@ -172,7 +172,7 @@ namespace XCom
 						MapDescs[file] =
 						dictDescs[file] = desc;
 
-						lineVars = VarCollection.ReadLine(sr, vars);
+						lineVars = Varidia.ReadLine(sr, vars);
 					}
 					break;
 				}

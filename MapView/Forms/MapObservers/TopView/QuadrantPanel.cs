@@ -12,16 +12,16 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TopViews
 {
-	public class QuadrantPanel // NOTE: These are not "quadrants"; they are tile-part types.
+	internal sealed class QuadrantPanel // NOTE: These are not "quadrants"; they are tile-part types.
 		:
-		MapObserverControl1
+			MapObserverControl1
 	{
 		private XCMapTile _mapTile;
-		private MapLocation _lastLoc;
+		private MapLocation _location;
 
 		private readonly QuadrantPanelDrawService _drawService;
 
-		private XCMapTile.QuadrantType _selQuadrant;
+		private QuadrantType _selQuadrant;
 
 
 		public QuadrantPanel()
@@ -40,14 +40,12 @@ namespace MapView.Forms.MapObservers.TopViews
 		[Browsable(false)]
 		public Dictionary<string, SolidBrush> Brushes
 		{
-			get { return _drawService.Brushes; }
 			set { _drawService.Brushes = value; }
 		}
 
 		[Browsable(false)]
 		public Dictionary<string, Pen> Pens
 		{
-			get { return _drawService.Pens; }
 			set { _drawService.Pens = value; }
 		}
 
@@ -62,7 +60,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		public XCMapTile.QuadrantType SelectedQuadrant
+		public QuadrantType SelectedQuadrant
 		{
 			get { return _selQuadrant; }
 			set
@@ -115,27 +113,27 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		public override void HeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
-			_lastLoc.Height = e.NewHeight;
-			_mapTile = Map[_lastLoc.Row, _lastLoc.Col] as XCMapTile;
+			_location.Height = e.NewHeight;
+			_mapTile = Map[_location.Row, _location.Col] as XCMapTile;
 			Refresh();
 		}
 
 		public override void SelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			_mapTile = (XCMapTile)e.SelectedTile;
-			_lastLoc = e.MapPosition;
+			_location = e.MapPosition;
 			Refresh();
 		}
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			var quad = (XCMapTile.QuadrantType)((e.X - QuadrantPanelDrawService.startX) / QuadrantPanelDrawService.TOTAL_QUADRANT_SPACE);
+			var quad = (QuadrantType)((e.X - QuadrantPanelDrawService.startX) / QuadrantPanelDrawService.TOTAL_QUADRANT_SPACE);
 			switch (quad)
 			{
-				case XCMapTile.QuadrantType.Ground:
-				case XCMapTile.QuadrantType.West:
-				case XCMapTile.QuadrantType.North:
-				case XCMapTile.QuadrantType.Content:
+				case QuadrantType.Ground:
+				case QuadrantType.West:
+				case QuadrantType.North:
+				case QuadrantType.Content:
 					SelectedQuadrant = quad;
 
 					SetSelected(e.Button, e.Clicks);

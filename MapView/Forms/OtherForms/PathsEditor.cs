@@ -582,8 +582,9 @@ namespace MapView
 									f.MapRows,
 									f.MapCols,
 									f.MapHeight);
-					var fs = File.OpenWrite(txtRmp.Text + f.MapName + RouteNodeCollection.RouteExt); // wrap this in a 'using' block.
-					fs.Close();
+
+					using (var fs = File.OpenWrite(txtRmp.Text + f.MapName + RouteNodeCollection.RouteExt))
+					{}
 
 					IXCTileset tileset;
 					string label;

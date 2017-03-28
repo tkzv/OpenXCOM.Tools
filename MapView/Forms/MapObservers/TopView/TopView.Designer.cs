@@ -102,7 +102,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.bottom.Location = new System.Drawing.Point(0, 409);
 			this.bottom.Name = "bottom";
 			this.bottom.Pens = null;
-			this.bottom.SelectedQuadrant = XCom.XCMapTile.QuadrantType.Ground;
+			this.bottom.SelectedQuadrant = XCom.QuadrantType.Ground;
 			this.bottom.Size = new System.Drawing.Size(640, 71);
 			this.bottom.TabIndex = 0;
 			this.bottom.Text = "bottom";

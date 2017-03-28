@@ -33,7 +33,7 @@ namespace MapView.Forms.MainWindow
 		{
 			using (var sr = new StreamReader(file))
 			{
-				var vars = new VarCollection(sr);
+				var vars = new Varidia(sr);
 
 				KeyvalPair line;
 				while ((line = vars.ReadLine()) != null)

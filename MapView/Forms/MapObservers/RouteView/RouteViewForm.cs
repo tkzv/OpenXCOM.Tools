@@ -4,10 +4,10 @@ using System.Windows.Forms;
 
 namespace MapView.Forms.MapObservers.RouteViews
 {
-	public partial class RouteViewForm
+	internal sealed partial class RouteViewForm
 		:
-		Form,
-		IMapObserverFormProvider
+			Form,
+			IMapObserverFormProvider
 	{
 		public RouteViewForm()
 		{

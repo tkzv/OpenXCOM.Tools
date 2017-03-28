@@ -63,17 +63,17 @@ namespace PckView
 			}
 		}
 
-		private void wid_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e)
+		private void wid_Scroll(object sender, ScrollEventArgs e)
 		{
 			txtWid.Text = scrollWid.Value.ToString();
 		}
 
-		private void hei_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e)
+		private void hei_Scroll(object sender, ScrollEventArgs e)
 		{
 			txtHei.Text = scrollHei.Value.ToString();
 		}
 
-		private void btnTry_Click(object sender, System.EventArgs e)
+		private void btnTry_Click(object sender, EventArgs e)
 		{
 			if (TryClick != null)
 			{
@@ -90,14 +90,14 @@ namespace PckView
 				}
 				catch (Exception ex)
 				{
-					txtErr.Text = ex.Message + System.Environment.NewLine + ex.StackTrace;
+					txtErr.Text = ex.Message + Environment.NewLine + ex.StackTrace;
 					if (Height <= 184)
 						Height = 184 + 200;
 				}
 			}
 		}
 
-		private void btnProfile_Click(object sender, System.EventArgs e)
+		private void btnProfile_Click(object sender, EventArgs e)
 		{
 			var spf = new SaveProfileForm();
 			spf.ImgHei = scrollHei.Value;
@@ -129,7 +129,7 @@ namespace PckView
 
 	public class TryDecodeEventArgs
 		:
-		EventArgs
+			EventArgs
 	{
 		private readonly int _width;
 		public int TryWidth

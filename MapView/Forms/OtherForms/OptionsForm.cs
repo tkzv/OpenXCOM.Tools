@@ -13,14 +13,14 @@ using DSShared.Windows;
 
 namespace MapView
 {
-	internal sealed class PropertyForm
+	internal sealed class OptionsForm
 		:
-		Form
+			Form
 	{
 		private CustomPropertyGrid propertyGrid;
 
 
-		public PropertyForm(string typeLabel, Settings settings)
+		public OptionsForm(string typeLabel, Settings settings)
 		{
 			InitializeComponent();
 
@@ -54,13 +54,14 @@ namespace MapView
 			this.propertyGrid.TabIndex = 0;
 			this.propertyGrid.TypeLabel = "DefaultType";
 			// 
-			// PropertyForm
+			// OptionsForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(592, 374);
 			this.Controls.Add(this.propertyGrid);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.Name = "PropertyForm";
+			this.MinimumSize = new System.Drawing.Size(500, 300);
+			this.Name = "OptionsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Custom PropertyGrid";
 			this.ResumeLayout(false);
@@ -70,14 +71,20 @@ namespace MapView
 	}
 
 
-	public class CustomPropertyGrid
+	internal sealed class CustomPropertyGrid
 		:
-		PropertyGrid
+			PropertyGrid
 	{
 		private string _typeLabel = "DefaultType";
+//		[Description("Name of the type that will be internally created")]
+		public string TypeLabel
+		{
+			set { _typeLabel = value; }
+		}
+
 		private Settings _settings;
 
-		private bool _instantUpdate = true;
+//		private bool _instantUpdate = true;
 
 		private Hashtable _typeHash;
 		private static Hashtable _hashTypes = new Hashtable();
@@ -111,20 +118,13 @@ namespace MapView
 			_typeHash[typeof(float)]  = OpCodes.Ldind_R4;
 		}
 
-		[Description("Name of the type that will be internally created")]
-		public string TypeLabel
-		{
-			get { return _typeLabel; }
-			set { _typeLabel = value; }
-		}
-
-		[DefaultValue(true)] // NOTE: This doesn't affect the default value; it is used only by the designer.
+/*		[DefaultValue(true)] // NOTE: This doesn't affect the default value; it is used only by the designer.
 		[Description("If true the Setting.Update() event will be called when a property changes")]
 		public bool InstantUpdate
 		{
 			get { return _instantUpdate; }
 			set { _instantUpdate = value; }
-		}
+		} */
 
 		// FxCop CA2123:OverrideLinkDemandsShouldBeIdenticalToBase
 		[System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.LinkDemand, Name = "FullTrust")]
@@ -134,10 +134,10 @@ namespace MapView
 
 			((Setting)_settings[e.ChangedItem.Label]).Value = e.ChangedItem.Value;
 
-			if (_instantUpdate)
-				((Setting)_settings[e.ChangedItem.Label]).FireUpdate(
-																e.ChangedItem.Label,
-																e.ChangedItem.Value);
+//			if (_instantUpdate)
+			((Setting)_settings[e.ChangedItem.Label]).FireUpdate(
+															e.ChangedItem.Label,
+															e.ChangedItem.Value);
 		}
 
 		/// <summary>

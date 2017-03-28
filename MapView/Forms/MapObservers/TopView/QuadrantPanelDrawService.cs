@@ -34,11 +34,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		public void Draw(
 				Graphics g,
 				XCMapTile mapTile,
-				XCMapTile.QuadrantType selectedQuadrant)
+				QuadrantType selectedQuadrant)
 		{
 			switch (selectedQuadrant) // Draw selection
 			{
-				case XCMapTile.QuadrantType.Ground:
+				case QuadrantType.Ground:
 					g.FillRectangle(
 								Brush,
 								startX,
@@ -47,7 +47,7 @@ namespace MapView.Forms.MapObservers.TopViews
 								_height + 2);
 					break;
 
-				case XCMapTile.QuadrantType.West:
+				case QuadrantType.West:
 					g.FillRectangle(
 								Brush,
 								startX + TOTAL_QUADRANT_SPACE,
@@ -56,7 +56,7 @@ namespace MapView.Forms.MapObservers.TopViews
 								_height + 2);
 					break;
 
-				case XCMapTile.QuadrantType.North:
+				case QuadrantType.North:
 					g.FillRectangle(
 								Brush,
 								startX + TOTAL_QUADRANT_SPACE * 2,
@@ -65,7 +65,7 @@ namespace MapView.Forms.MapObservers.TopViews
 								_height + 2);
 					break;
 
-				case XCMapTile.QuadrantType.Content:
+				case QuadrantType.Content:
 					g.FillRectangle(
 								Brush,
 								startX + TOTAL_QUADRANT_SPACE * 3,

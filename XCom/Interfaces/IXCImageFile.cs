@@ -14,8 +14,8 @@ namespace XCom.Interfaces
 	/// </summary>
 	public class IXCImageFile
 		:
-		IAssemblyLoadable,
-		IDialogFilter
+			IAssemblyLoadable,
+			IDialogFilter
 	{
 		private Palette _palDefault = Palette.UfoBattle;
 		/// <summary>
@@ -167,7 +167,7 @@ namespace XCom.Interfaces
 		/// </summary>
 		public IXCImageFile()
 			:
-			this(0, 0)
+				this(0, 0)
 		{}
 
 
@@ -185,6 +185,9 @@ namespace XCom.Interfaces
 						ImageSize.Width,
 						ImageSize.Height);
 		}
+
+		// From HERE TO THE END OF THIS CLASS will Crash and Burn.
+
 		/// <summary>
 		/// Method that calls the overloaded load function in order to do some
 		/// similar functionality across all instances of this class.
@@ -268,7 +271,7 @@ namespace XCom.Interfaces
 		/// <param name="dir">directory to save to</param>
 		/// <param name="file">file</param>
 		/// <param name="images">images to save in this format</param>
-		public virtual void SaveCollection(string dir, string file, XCImageCollection images)
+		public void SaveCollection(string dir, string file, XCImageCollection images)
 		{
 			throw new Exception("Override not yet implemented: IXCFile::SaveCollection(...)");
 		}
@@ -278,7 +281,7 @@ namespace XCom.Interfaces
 	/// <summary>
 	/// class XCFileOptions
 	/// </summary>
-	public class XCFileOptions
+	public sealed class XCFileOptions
 	{
 		private readonly Dictionary<IXCImageFile.Filter, bool> _filters;
 
@@ -304,7 +307,7 @@ namespace XCom.Interfaces
 
 		public XCFileOptions()
 			:
-			this(true, true, true, true)
+				this(true, true, true, true)
 		{}
 
 		public XCFileOptions(

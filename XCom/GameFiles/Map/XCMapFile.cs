@@ -8,7 +8,7 @@ using XCom.Services;
 
 namespace XCom
 {
-	public class XCMapFile
+	public sealed class XCMapFile
 		:
 			IMapBase
 	{
@@ -81,31 +81,29 @@ namespace XCom
 
 		private void ReadMapFile(Stream str, List<TileBase> tiles)
 		{
-			using (var input = new BufferedStream(str))
+			using (var bs = new BufferedStream(str))
 			{
-				var rows   = input.ReadByte();
-				var cols   = input.ReadByte();
-				var height = input.ReadByte();
+				int rows   = bs.ReadByte();
+				int cols   = bs.ReadByte();
+				int height = bs.ReadByte();
 	
-				MapSize  = new MapSize(rows, cols, height);
 				MapTiles = new MapTileList(rows, cols, height);
-	
+				MapSize  = new MapSize(rows, cols, height);
+
 				for (int h = 0; h != height; ++h)
 					for (int r = 0; r != rows; ++r)
 						for (int c = 0; c != cols; ++c)
 						{
-							int q1 = input.ReadByte();
-							int q2 = input.ReadByte();
-							int q3 = input.ReadByte();
-							int q4 = input.ReadByte();
-	
+							int q1 = bs.ReadByte();
+							int q2 = bs.ReadByte();
+							int q3 = bs.ReadByte();
+							int q4 = bs.ReadByte();
+
 							this[r, c, h] = CreateTile(tiles, q1, q2, q3, q4);
 						}
-	
-				if (input.Position < input.Length)
-					RouteFile.ExtraHeight = (byte)input.ReadByte(); // <- NON-STANDARD <-| See also Save() below_
-	
-//				input.Close(); // NOTE: the 'using' block closes the stream.
+
+//				if (bs.Position < bs.Length)
+//					RouteFile.ExtraHeight = (byte)bs.ReadByte(); // <- NON-STANDARD <-| See also Save() below_
 			}
 		}
 
@@ -266,7 +264,7 @@ namespace XCom
 								fs.WriteByte((byte)(tile.Content.TileListId + 2));
 						}
 
-				fs.WriteByte(RouteFile.ExtraHeight); // <- NON-STANDARD <-| See also ReadMapFile() above^
+//				fs.WriteByte(RouteFile.ExtraHeight); // <- NON-STANDARD <-| See also ReadMapFile() above^
 
 //				fs.Close(); // NOTE: the 'using' block closes the stream.
 			}
@@ -325,34 +323,44 @@ namespace XCom
 		{
 			try
 			{
-				XCTile a, b, c, d;
-				a =
-				b =
-				c =
-				d = null;
-
-				if (q1 != 0 && q1 != 1)
-					a = (XCTile)tiles[q1 - 2];
-
-				if (q2 != 0 && q2 != 1)
-					b = (XCTile)tiles[q2 - 2];
-
-				if (q3 != 0 && q3 != 1)
-					c = (XCTile)tiles[q3 - 2];
-
-				if (q4 != 0 && q4 != 1)
-					d = (XCTile)tiles[q4 - 2];
-
+				var a = (q1 > 1) ? (XCTile)tiles[q1 - 2]
+								 : null;
+	
+				var b = (q2 > 1) ? (XCTile)tiles[q2 - 2]
+								 : null;
+	
+				var c = (q3 > 1) ? (XCTile)tiles[q3 - 2]
+								 : null;
+	
+				var d = (q4 > 1) ? (XCTile)tiles[q4 - 2]
+								 : null;
+	
 				return new XCMapTile(a, b, c, d);
 			}
-			catch
+			catch (Exception ex)
 			{
-				//Console.WriteLine("Error in Map::createTile, indexes: {0},{1},{2},{3} length: {4}",q1,q2,q3,q4,tiles.Length);
-				return XCMapTile.BlankTile;
+				// and/or use AdZerg()
+				// TODO: Settle a graceful way to handle exceptions throughout.
+				// Unfortunately it would take a long time to force each one to
+				// be raised for investigation.
+				XConsole.AdZerg("XCMapFile.CreateTile() Invalid value(s) in .MAP file: " + BaseName);
+				System.Windows.Forms.MessageBox.Show(
+												"XCMapFile.CreateTile()" + Environment.NewLine
+													+ "Invalid value(s) in .MAP file: " + BaseName + Environment.NewLine
+													+ "indices: " + q1 + "," + q2 + "," + q3 + "," + q4 + Environment.NewLine
+													+ "length: " + tiles.Count + Environment.NewLine
+													+ ex,
+												"Error",
+												System.Windows.Forms.MessageBoxButtons.OK,
+												System.Windows.Forms.MessageBoxIcon.Warning,
+												System.Windows.Forms.MessageBoxDefaultButton.Button1,
+												0);
+//				return XCMapTile.BlankTile;
+				throw;
 			}
 		}
 
-		public void Hq2x()
+		public void HQ2X()
 		{
 			foreach (string dep in _deps) // instead i would want to make an image of the whole map and run that through hq2x
 				foreach (var image in GameInfo.GetPckPack(dep))

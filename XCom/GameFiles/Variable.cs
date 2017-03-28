@@ -5,7 +5,7 @@ using System.IO;
 
 namespace XCom
 {
-	public class Variable
+	internal sealed class Variable
 	{
 		private readonly string _name;
 		private readonly string _value;
@@ -52,11 +52,11 @@ namespace XCom
 			Write(sw, String.Empty);
 		}
 
-		public void Write(StreamWriter sw, string prefix)
+		public void Write(TextWriter sw, string prefix)
 		{
 			if (_list.Count > 1)
 			{
-				sw.WriteLine("\n" + prefix + _name + ":" + _value);
+				sw.WriteLine(Environment.NewLine + prefix + _name + ":" + _value);
 				foreach (string st in _list)
 					sw.WriteLine(prefix + st + _name);
 			}

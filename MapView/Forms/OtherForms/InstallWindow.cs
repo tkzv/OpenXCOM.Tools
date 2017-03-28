@@ -11,9 +11,9 @@ using XCom;
 
 namespace MapView
 {
-	public partial class InstallWindow
+	public sealed partial class InstallWindow
 		:
-		Form
+			Form
 	{
 //		private string pathsFile = "Paths.pth";
 //		private string mapFile   = "MapEdit.dat";
@@ -22,7 +22,7 @@ namespace MapView
 
 //		private string _runPath  = String.Empty;
 
-		private XCom.VarCollection _vars;
+		private XCom.Varidia _vars;
 
 
 		public InstallWindow()
@@ -33,7 +33,7 @@ namespace MapView
 
 			DialogResult = DialogResult.Cancel;
 
-			_vars = new XCom.VarCollection();
+			_vars = new XCom.Varidia();
 
 			// NOTE: Add your own personal XCOM resources-dir here if desired:
 			var dirsUfo = new List<string>();

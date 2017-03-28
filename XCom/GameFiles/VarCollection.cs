@@ -6,15 +6,15 @@ using System.IO;
 namespace XCom
 {
 	/// <summary>
-	/// class VarCollection
+	/// class Varidia
 	/// </summary>
-	public class VarCollection
+	public sealed class Varidia
 	{
 		private readonly Hashtable _vars;
 
 		private string _baseVar;
 
-		private readonly VarCollection _other;
+		private readonly Varidia _other;
 
 		private StreamReader _sr;
 
@@ -25,7 +25,7 @@ namespace XCom
 		/// <summary>
 		/// cTor
 		/// </summary>
-		public VarCollection()
+		public Varidia()
 		{
 			_vars = new Hashtable();
 			_other = null;
@@ -35,7 +35,7 @@ namespace XCom
 		/// <summary>
 		/// cTor
 		/// </summary>
-		public VarCollection(StreamReader sr)
+		public Varidia(StreamReader sr)
 		{
 			_sr = sr;
 
@@ -46,9 +46,9 @@ namespace XCom
 		/// <summary>
 		/// cTor
 		/// </summary>
-		public VarCollection(string baseVar)
+		public Varidia(string baseVar)
 			:
-			this()
+				this()
 		{
 			_baseVar = baseVar;
 		}
@@ -56,9 +56,9 @@ namespace XCom
 		/// <summary>
 		/// cTor
 		/// </summary>
-		public VarCollection(VarCollection other)
+		public Varidia(Varidia other)
 			:
-			this()
+				this()
 		{
 			_other = other;
 		}
@@ -66,7 +66,7 @@ namespace XCom
 		/// <summary>
 		/// cTor
 		/// </summary>
-		public VarCollection(StreamReader sr, VarCollection vars)
+		public Varidia(StreamReader sr, Varidia vars)
 		{
 			_vars = new Hashtable();
 			_sr = sr;
@@ -85,7 +85,7 @@ namespace XCom
 		/// <summary>
 		/// property Other
 		/// </summary>
-		public VarCollection Other
+		public Varidia Other
 		{
 			get { return _other; }
 		}
@@ -111,13 +111,13 @@ namespace XCom
 		/// Adds a key-val pair to this collection.
 		/// </summary>
 		/// <param name="key"></param>
-		/// <param name="val"></param>
-		public void AddKeyVal(string key, string val)
+		/// <param name="value"></param>
+		public void AddKeyvalPair(string key, string value)
 		{
-			if (_vars[val] == null)
-				_vars[val] = new Variable(_baseVar, key + ":", val);
+			if (_vars[value] == null)
+				_vars[value] = new Variable(_baseVar, key + ":", value);
 			else
-				((Variable)_vars[val]).Add(key + ":");
+				((Variable)_vars[value]).Add(key + ":");
 		}
 
 		/// <summary>
@@ -142,7 +142,7 @@ namespace XCom
 		public KeyvalPair ReadLine()
 		{
 			//LogFile.WriteLine("");
-			//LogFile.WriteLine("[2]VarCollection.ReadLine()");
+			//LogFile.WriteLine("[2]Varidia.ReadLine()");
 			string line = ReadLine(_sr, this);
 			//LogFile.WriteLine(". [2]line= " + (line ?? "null"));
 			if (line != null)
@@ -162,10 +162,10 @@ namespace XCom
 		/// </summary>
 		/// <param name="sr"></param>
 		/// <returns>string</returns>
-		public string ReadLine(StreamReader sr)
+		public string ReadLine(TextReader sr)
 		{
 			//LogFile.WriteLine("");
-			//LogFile.WriteLine("[5]VarCollection.ReadLine(sr)");
+			//LogFile.WriteLine("[5]Varidia.ReadLine(sr)");
 			return ReadLine(sr, this);
 		}
 
@@ -175,10 +175,10 @@ namespace XCom
 		/// <param name="sr"></param>
 		/// <param name="vars"></param>
 		/// <returns>string</returns>
-		public static string ReadLine(TextReader sr, VarCollection vars)
+		public static string ReadLine(TextReader sr, Varidia vars)
 		{
 			//LogFile.WriteLine("");
-			//LogFile.WriteLine("[3,6]VarCollection.ReadLine(sr, vars)");
+			//LogFile.WriteLine("[3,6]Varidia.ReadLine(sr, vars)");
 			string line = String.Empty;
 
 			while (true)
@@ -247,7 +247,7 @@ namespace XCom
 
 
 	/// <summary>
-	/// class KeyvalPair - helper class for VarCollection.
+	/// class KeyvalPair - helper class for Varidia.
 	/// </summary>
 	public class KeyvalPair
 	{

@@ -8,7 +8,7 @@ using XCom;
 
 namespace MapView
 {
-	public delegate string ConvertObject(object obj);
+	public delegate string ConvertObject(object value);
 	public delegate void ValueChangedEventHandler(object sender, string key, object value); // TODO: FxCop CA1009.
 
 
@@ -46,7 +46,7 @@ namespace MapView
 
 
 		public static void ReadSettings(
-				VarCollection vars,
+				Varidia vars,
 				KeyvalPair keyval,
 				Settings settings)
 		{

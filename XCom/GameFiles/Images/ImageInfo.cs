@@ -7,14 +7,14 @@ namespace XCom
 {
 	public class ImageInfo
 		:
-		FileDesc
+			FileDesc
 	{
 		private readonly Dictionary<string, ImageDescriptor> _images;
 
 
-		public ImageInfo(string inFile, VarCollection vars)
+		public ImageInfo(string inFile, Varidia vars)
 			:
-			base(inFile)
+				base(inFile)
 		{
 			_images = new Dictionary<string, ImageDescriptor>();
 			Load(inFile, vars);
@@ -32,11 +32,11 @@ namespace XCom
 			set { _images[name.ToUpperInvariant()] = value; }
 		}
 
-		public void Load(string inFile, VarCollection vars)
+		public void Load(string inFile, Varidia vars)
 		{
 			using (var sr = new StreamReader(File.OpenRead(inFile)))
 			{
-				vars = new VarCollection(sr, vars);
+				vars = new Varidia(sr, vars);
 
 				KeyvalPair keyVal;
 				while ((keyVal = vars.ReadLine()) != null)

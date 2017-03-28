@@ -1,11 +1,12 @@
 ﻿using System.Windows.Forms;
 
+
 namespace MapView.Forms.MapObservers.TopViews
 {
 	internal sealed partial class TopViewForm
 		:
-		Form,
-		IMapObserverFormProvider
+			Form,
+			IMapObserverFormProvider
 	{
 		public TopViewForm()
 		{

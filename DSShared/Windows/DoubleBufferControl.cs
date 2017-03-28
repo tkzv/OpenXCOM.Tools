@@ -9,7 +9,7 @@ namespace DSShared.Windows
 	/// </summary>
 	public class DoubleBufferControl
 		:
-		Control
+			Control
 	{
 		/// <summary>
 		/// </summary>

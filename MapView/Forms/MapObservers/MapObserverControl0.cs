@@ -9,10 +9,10 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	public class MapObserverControl0
+	internal class MapObserverControl0
 		:
-		UserControl,
-		IMapObserver
+			UserControl,
+			IMapObserver
 	{
 		private IMapBase _baseMap;
 

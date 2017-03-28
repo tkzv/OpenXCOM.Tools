@@ -84,9 +84,9 @@ namespace DSShared.Lists
 		/// property's property, this parameter represents that information</param>
 		public ObjProperty(PropertyInfo property, object[] propertyIndex, ObjProperty nested)
 		{
-			this._property = property;
-			this._nested = nested;
-			this._propertyId = propertyIndex;
+			_property = property;
+			_nested = nested;
+			_propertyId = propertyIndex;
 
 			if (property != null)
 			{

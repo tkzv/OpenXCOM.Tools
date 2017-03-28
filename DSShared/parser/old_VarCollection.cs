@@ -6,10 +6,10 @@ namespace DSShared.old
 {
 	/// <summary>
 	/// </summary>
-	public class VarCollection
+	public class Varidia
 	{
 		private Hashtable vars;
-		private VarCollection other;
+		private Varidia other;
 		private string baseVar;
 		private StreamReader sr;
 
@@ -19,7 +19,7 @@ namespace DSShared.old
 
 		/// <summary>
 		/// </summary>
-		public VarCollection()
+		public Varidia()
 		{
 			vars = new Hashtable();
 			other = null;
@@ -28,7 +28,7 @@ namespace DSShared.old
 
 		/// <summary>
 		/// </summary>
-		public VarCollection(StreamReader sr)
+		public Varidia(StreamReader sr)
 		{
 			this.sr = sr;
 			vars = new Hashtable();
@@ -37,7 +37,7 @@ namespace DSShared.old
 
 		/// <summary>
 		/// </summary>
-		public VarCollection(string baseVar)
+		public Varidia(string baseVar)
 			:
 			this()
 		{
@@ -46,7 +46,7 @@ namespace DSShared.old
 
 		/// <summary>
 		/// </summary>
-		public VarCollection(VarCollection other)
+		public Varidia(Varidia other)
 			:
 			this()
 		{
@@ -144,7 +144,7 @@ namespace DSShared.old
 
 		/// <summary>
 		/// </summary>
-		public static string ReadLine(StreamReader sr, VarCollection vars)
+		public static string ReadLine(StreamReader sr, Varidia vars)
 		{
 			string line = "";
 

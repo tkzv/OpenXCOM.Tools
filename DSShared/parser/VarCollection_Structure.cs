@@ -22,7 +22,7 @@ namespace DSShared
 			_keyValParent = new KeyVal("parent", "parent");
 			_keyValParent.SubHash = new Dictionary<string, KeyVal>();
 			
-			var vars = new VarCollection(sr);
+			var vars = new Varidia(sr);
 			parse_block(vars, _keyValParent);
 		}
 
@@ -35,7 +35,7 @@ namespace DSShared
 			get { return _keyValParent.SubHash; }
 		}
 
-		private void parse_block(VarCollection vars, KeyVal keyValParent)
+		private void parse_block(Varidia vars, KeyVal keyValParent)
 		{
 			KeyVal keyVal;
 			KeyVal keyVal0 = null;

@@ -45,7 +45,7 @@ namespace XCom
 			set { _file = value; }
 		}
 
-		public void Hq2x()
+		public void HQ2X()
 		{
 			foreach (XCImage image in this)
 				image.HQ2X();

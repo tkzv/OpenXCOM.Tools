@@ -10,9 +10,9 @@ namespace DSShared.old
 	{
 		private static int count = 0;
 
-		private string varName;
-		private string varValue;
-		private ArrayList list;
+		private readonly string varName;
+		private readonly string varValue;
+		private readonly ArrayList list;
 
 		/// <summary>
 		/// </summary>
@@ -68,7 +68,7 @@ namespace DSShared.old
 		{
 			if (list.Count > 1)
 			{
-				sw.WriteLine(pref + varName + VarCollection.Separator + varValue);
+				sw.WriteLine(pref + varName + Varidia.Separator + varValue);
 				foreach (string pre in list)
 					sw.WriteLine(pref + pre + varName);
 			}

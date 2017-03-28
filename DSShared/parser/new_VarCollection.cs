@@ -7,11 +7,11 @@ namespace DSShared
 {
 	/// <summary>
 	/// </summary>
-	public class VarCollection
+	public class Varidia
 	{
 		private Dictionary<string, Variable> _vars;
 
-		private VarCollection _other;
+		private Varidia _other;
 
 		private string _baseVar;
 
@@ -25,7 +25,7 @@ namespace DSShared
 
 		/// <summary>
 		/// </summary>
-		public VarCollection()
+		public Varidia()
 		{
 			_vars = new Dictionary<string, Variable>();
 			_other = null;
@@ -34,7 +34,7 @@ namespace DSShared
 
 		/// <summary>
 		/// </summary>
-		public VarCollection(StreamReader sr)
+		public Varidia(StreamReader sr)
 		{
 			_sr = sr;
 			_vars = new Dictionary<string, Variable>();
@@ -43,18 +43,18 @@ namespace DSShared
 
 		/// <summary>
 		/// </summary>
-		public VarCollection(string baseVar)
+		public Varidia(string baseVar)
 			:
-			this()
+				this()
 		{
 			_baseVar = baseVar;
 		}
 
 		/// <summary>
 		/// </summary>
-		public VarCollection(VarCollection other)
+		public Varidia(Varidia other)
 			:
-			this()
+				this()
 		{
 			_other = other;
 		}
@@ -152,7 +152,7 @@ namespace DSShared
 
 		/// <summary>
 		/// </summary>
-		public static string ReadLine(StreamReader sr, VarCollection vars)
+		public static string ReadLine(StreamReader sr, Varidia vars)
 		{
 			string line = String.Empty;
 

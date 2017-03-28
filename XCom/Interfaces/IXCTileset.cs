@@ -8,7 +8,7 @@ namespace XCom.Interfaces
 {
 	public class IXCTileset // TODO: cTor has inheritors and calls a virtual function.
 		:
-		ITileset
+			ITileset
 	{
 		private Palette _pal;
 		public Palette Palette
@@ -75,7 +75,7 @@ namespace XCom.Interfaces
 
 		protected IXCTileset(string name)
 			:
-			base(name)
+				base(name)
 		{
 			_pal = GameInfo.DefaultPalette;
 			_mapSize = new MapSize(60, 60, 4);
@@ -84,15 +84,15 @@ namespace XCom.Interfaces
 //			_baseStyle = false;
 		}
 
-		protected IXCTileset(string name, StreamReader sr, VarCollection vars)
+		protected IXCTileset(string name, StreamReader sr, Varidia vars)
 			:
-			this(name)
+				this(name)
 		{
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("[7]IXCTileset cTor");
 			while (sr.Peek() != -1)
 			{
-				string line = VarCollection.ReadLine(sr, vars);
+				string line = Varidia.ReadLine(sr, vars);
 				//LogFile.WriteLine(". [7]line= " + line);
 
 				if (line.ToUpperInvariant() == "END")
@@ -179,14 +179,14 @@ namespace XCom.Interfaces
 		}
 
 
-		public virtual void Save(StreamWriter sw, VarCollection vars)
+		public virtual void Save(StreamWriter sw, Varidia vars)
 		{}
 
 		public virtual void ParseLine(
 				string key,
 				string line,
 				StreamReader sr,
-				VarCollection vars)
+				Varidia vars)
 		{}
 
 		public virtual void AddMap(string name, string subset)
