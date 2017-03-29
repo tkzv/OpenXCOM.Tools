@@ -1,5 +1,7 @@
 using System;
 using System.Drawing;
+using System.Reflection;
+using System.Windows.Forms;
 
 
 namespace MapView
@@ -7,18 +9,18 @@ namespace MapView
 	/// <summary>
 	/// Displays the About box.
 	/// </summary>
-	public partial class AboutWindow
+	internal sealed partial class AboutWindow
 		:
-		System.Windows.Forms.Form
+			Form
 	{
 		public AboutWindow()
 		{
 			InitializeComponent();
 
-			string ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Major + "."
-					   + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Minor + "."
-					   + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Build + "."
-					   + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision;
+			string ver = Assembly.GetExecutingAssembly().GetName().Version.Major + "."
+					   + Assembly.GetExecutingAssembly().GetName().Version.Minor + "."
+					   + Assembly.GetExecutingAssembly().GetName().Version.Build + "."
+					   + Assembly.GetExecutingAssembly().GetName().Version.Revision;
 
 			lblVersion.Text = "MapView " + ver;
 #if DEBUG
@@ -79,11 +81,14 @@ namespace MapView
 			MoveWindow();
 		}
 
-		private void keyClose(object sender, System.Windows.Forms.KeyEventArgs e)
+		private void keyClose(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == System.Windows.Forms.Keys.Escape)
+			switch (e.KeyCode)
 			{
-				Close();
+				case Keys.Escape:
+				case Keys.Enter:
+					Close();
+					break;
 			}
 		}
 	}

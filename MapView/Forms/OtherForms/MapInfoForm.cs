@@ -10,7 +10,7 @@ namespace MapView
 {
 	internal sealed class MapInfoForm
 		:
-		Form
+			Form
 	{
 		public MapInfoForm()
 		{
@@ -155,15 +155,9 @@ namespace MapView
 			}
 		}
 
-		private void btnClose(object sender, MouseEventArgs e)
+		private void btnClose(object sender, EventArgs e)
 		{
 			Close();
-		}
-
-		private void keyClose(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Escape)
-				Close();
 		}
 
 
@@ -332,6 +326,7 @@ namespace MapView
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnCancel.Location = new System.Drawing.Point(0, 10);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(85, 30);
@@ -339,7 +334,7 @@ namespace MapView
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
 			this.btnCancel.Visible = false;
-			this.btnCancel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnClose);
+			this.btnCancel.Click += new System.EventHandler(this.btnClose);
 			// 
 			// groupInfo
 			// 
@@ -364,12 +359,15 @@ namespace MapView
 			// 
 			// MapInfoForm
 			// 
+			this.AcceptButton = this.btnCancel;
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
+			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(392, 144);
 			this.Controls.Add(this.groupInfo);
 			this.Controls.Add(this.groupAnalyze);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(400, 170);
@@ -378,8 +376,7 @@ namespace MapView
 			this.ShowIcon = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "- Map Info";
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyClose);
+			this.Text = "Map Info";
 			this.groupAnalyze.ResumeLayout(false);
 			this.groupInfo.ResumeLayout(false);
 			this.ResumeLayout(false);

@@ -176,7 +176,7 @@
     <Compile Include="Forms\AboutWindow.Designer.cs">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Args.cs">
+    <Compile Include="Args_.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Forms\Error\ErrorWindow.cs">
@@ -232,7 +232,7 @@
     <Compile Include="Forms\OtherForms\ChoiceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CopyGroup.cs">
+    <Compile Include="CopyGroup_.cs">
     </Compile>
     <Compile Include="Cursor.cs">
       <SubType>Code</SubType>
@@ -317,7 +317,7 @@
     <Compile Include="Forms\OtherForms\TreeEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Updator.cs" />
+    <Compile Include="Updator_.cs" />
     <Compile Include="Forms\MainWindow\MapViewPanel\MapView.cs">
       <SubType>Component</SubType>
     </Compile>

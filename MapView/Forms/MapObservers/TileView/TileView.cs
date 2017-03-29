@@ -336,7 +336,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				var service = new VolutarSettingService(Settings);
 				var path = service.FullPath;
 
-				if (!string.IsNullOrEmpty(path))
+				if (!String.IsNullOrEmpty(path))
 					Process.Start(new ProcessStartInfo(path));
 			}
 		}

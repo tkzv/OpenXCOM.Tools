@@ -9,68 +9,14 @@ using XCom;
 namespace MapView
 {
 	/// <summary>
-	/// Summary description for HelpScreen.
+	/// General HelpScreen.
 	/// </summary>
-	public class HelpScreen
+	internal sealed class HelpScreen
 		:
-		Form
+			Form
 	{
-		private TabControl tabMain;
-		private TabPage tabPage1;
-		private Label label1;
-		private Label label2;
-		private TabPage tabPage2;
-		private TabPage tabPage3;
-		private TabPage tabPage4;
-		private Label label3;
-		private Label label4;
-		private Label label5;
-		private Label label6;
-		private Label label7;
-		private Label label8;
-		private Label label9;
-		private Label label10;
-		private Label label11;
-		private Label label12;
-		private Label label14;
-		private Label label15;
-		private Label label16;
-		private Label label21;
-		private Label label13;
-		private Label label17;
-		private Label label18;
-		private Label label19;
-		private Label label20;
-		private Label label22;
-		private GroupBox groupBox1;
-		private Label l1;
-		private Label l2;
-		private Label l3;
-		private Label l6;
-		private Label l5;
-		private Label l4;
-		private Label l9;
-		private Label l8;
-		private Label l7;
-		private Label l12;
-		private Label l11;
-		private Label l10;
-		private Label l14;
-		private Label l13;
-		private Label label23;
-		private Label label24;
-
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.Container components = null;
-
-
 		public HelpScreen()
 		{
-			//
-			// Required for Windows Form Designer support.
-			//
 			InitializeComponent();
 
 			 l1.ForeColor = TilePanel.TileColors[(int)SpecialType.Tile];
@@ -87,16 +33,17 @@ namespace MapView
 			l12.ForeColor = TilePanel.TileColors[(int)SpecialType.DeadTile];
 			l13.ForeColor = TilePanel.TileColors[(int)SpecialType.EndPoint];
 			l14.ForeColor = TilePanel.TileColors[(int)SpecialType.MustDestroy];
-
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
 		}
 
-		private void keyClose(object sender, KeyEventArgs e) // TODO: doesn't work. cf, AboutWindow.keyClose()
+		private void keyClose(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.Escape)
-				Close();
+			switch (e.KeyCode)
+			{
+				case Keys.Escape:
+				case Keys.Enter:
+					Close();
+					break;
+			}
 		}
 
 		/// <summary>
@@ -109,6 +56,11 @@ namespace MapView
 
 			base.Dispose(disposing);
 		}
+
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.Container components = null;
 
 
 		#region Windows Form Designer generated code
@@ -244,7 +196,7 @@ namespace MapView
 			this.tabPage2.Controls.Add(this.label3);
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Size = new System.Drawing.Size(449, 248);
+			this.tabPage2.Size = new System.Drawing.Size(446, 250);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Top View";
 			// 
@@ -357,7 +309,7 @@ namespace MapView
 			this.tabPage3.Controls.Add(this.label21);
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
 			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(449, 248);
+			this.tabPage3.Size = new System.Drawing.Size(446, 250);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Rmp View";
 			// 
@@ -437,7 +389,7 @@ namespace MapView
 			this.tabPage4.Controls.Add(this.label19);
 			this.tabPage4.Location = new System.Drawing.Point(4, 22);
 			this.tabPage4.Name = "tabPage4";
-			this.tabPage4.Size = new System.Drawing.Size(449, 248);
+			this.tabPage4.Size = new System.Drawing.Size(446, 250);
 			this.tabPage4.TabIndex = 3;
 			this.tabPage4.Text = "Tile View";
 			// 
@@ -607,6 +559,7 @@ namespace MapView
 			this.Controls.Add(this.tabMain);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "HelpScreen";
@@ -625,5 +578,50 @@ namespace MapView
 
 		}
 		#endregion
+
+		private TabControl tabMain;
+		private TabPage tabPage1;
+		private Label label1;
+		private Label label2;
+		private TabPage tabPage2;
+		private TabPage tabPage3;
+		private TabPage tabPage4;
+		private Label label3;
+		private Label label4;
+		private Label label5;
+		private Label label6;
+		private Label label7;
+		private Label label8;
+		private Label label9;
+		private Label label10;
+		private Label label11;
+		private Label label12;
+		private Label label14;
+		private Label label15;
+		private Label label16;
+		private Label label21;
+		private Label label13;
+		private Label label17;
+		private Label label18;
+		private Label label19;
+		private Label label20;
+		private Label label22;
+		private GroupBox groupBox1;
+		private Label l1;
+		private Label l2;
+		private Label l3;
+		private Label l6;
+		private Label l5;
+		private Label l4;
+		private Label l9;
+		private Label l8;
+		private Label l7;
+		private Label l12;
+		private Label l11;
+		private Label l10;
+		private Label l14;
+		private Label l13;
+		private Label label23;
+		private Label label24;
 	}
 }

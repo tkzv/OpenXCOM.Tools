@@ -6,7 +6,7 @@ using XCom;
 
 namespace MapView
 {
-	public enum CursorState
+	internal enum CursorState
 	{
 		Select,
 		Aim,
@@ -44,10 +44,10 @@ namespace MapView
 		} */
 
 		public void DrawHigh(
-						Graphics g,
-						int x, int y,
-						bool over,
-						bool top)
+				Graphics g,
+				int x, int y,
+				bool over,
+				bool top)
 		{
 			Bitmap image;
 			if (top && _state != CursorState.Aim)
@@ -56,9 +56,7 @@ namespace MapView
 							   : _pckPack[0].Image;
 			}
 			else
-			{
 				image = _pckPack[2].Image;
-			}
 
 			g.DrawImage(
 					image,
@@ -68,21 +66,22 @@ namespace MapView
 		}
 
 		public void DrawLow(
-						Graphics g,
-						int x, int y,
-						int i,
-						bool over,
-						bool top)
+				Graphics g,
+				int x, int y,
+				int i,
+				bool over,
+				bool top)
 		{
 			Bitmap image;
 
-			if (top && _state != CursorState.Aim)
+			if (top)
 			{
-				image = (over) ? _pckPack[4].Image
-							   : _pckPack[3].Image;
-
 				switch (_state)
 				{
+					case CursorState.Aim:
+						image = _pckPack[7 + i % 4].Image;
+						break;
+
 					case CursorState.SelectMControl:
 						image = _pckPack[11 + i % 2].Image;
 						break;
@@ -94,16 +93,15 @@ namespace MapView
 					case CursorState.Waypoint:
 						image = _pckPack[13 + i % 2].Image;
 						break;
+
+					default:
+						image = (over) ? _pckPack[4].Image
+									   : _pckPack[3].Image;
+						break;
 				}
 			}
-			else if (top) // top and aim
-			{
-				image = _pckPack[7 + i % 4].Image;
-			}
 			else
-			{
 				image = _pckPack[5].Image;
-			}
 
 			g.DrawImage(
 					image,

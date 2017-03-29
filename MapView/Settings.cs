@@ -150,8 +150,8 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Gets the Setting object tied to the string. If there is no Setting
-		/// object, one will be created with the defaultValue.
+		/// Gets the object tied to the string. If there is no object one will
+		/// be created with the value specified.
 		/// </summary>
 		/// <param name="key">the name of the setting object</param>
 		/// <param name="value">if there is no Setting object tied to the
@@ -161,9 +161,9 @@ namespace MapView
 		{
 			if (!_settings.ContainsKey(key))
 			{
-				var item = new Setting(value, null, null);
-				_settings.Add(key, item);
-				item.Name = key;
+				var setting = new Setting(value, null, null);
+				_settings.Add(key, setting);
+				setting.Name = key;
 			}
 			return _settings[key];
 		}

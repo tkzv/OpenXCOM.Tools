@@ -34,11 +34,12 @@ namespace MapView
 			this.label3 = new System.Windows.Forms.Label();
 			this.MoveTimer = new System.Windows.Forms.Timer(this.components);
 			this.label4 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(5, 90);
+			this.label1.Location = new System.Drawing.Point(5, 80);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(305, 15);
 			this.label1.TabIndex = 0;
@@ -47,7 +48,7 @@ namespace MapView
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(5, 105);
+			this.label2.Location = new System.Drawing.Point(5, 95);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(305, 15);
 			this.label2.TabIndex = 1;
@@ -64,7 +65,7 @@ namespace MapView
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(5, 120);
+			this.label3.Location = new System.Drawing.Point(5, 135);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(305, 15);
 			this.label3.TabIndex = 3;
@@ -79,17 +80,27 @@ namespace MapView
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(5, 135);
+			this.label4.Location = new System.Drawing.Point(5, 150);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(305, 15);
 			this.label4.TabIndex = 3;
 			this.label4.Text = "REVISED - kevL";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
+			// label5
+			// 
+			this.label5.Location = new System.Drawing.Point(5, 120);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(305, 15);
+			this.label5.TabIndex = 4;
+			this.label5.Text = "REVISED - pmprog";
+			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// AboutWindow
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(314, 176);
+			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.lblVersion);
@@ -120,5 +131,6 @@ namespace MapView
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Timer MoveTimer;
+		private System.Windows.Forms.Label label5;
 	}
 }

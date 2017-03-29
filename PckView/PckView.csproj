@@ -142,7 +142,7 @@
     <Compile Include="Forms\BmpForm_.Designer.cs">
       <DependentUpon>BmpForm_.cs</DependentUpon>
     </Compile>
-    <Compile Include="ImgProfile.cs" />
+    <Compile Include="ImageProfile.cs" />
     <Compile Include="Editor\ButtonPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -202,7 +202,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Updator.cs" />
+    <Compile Include="Updator_.cs" />
     <Compile Include="Panels\ViewPck.cs">
       <SubType>Component</SubType>
     </Compile>

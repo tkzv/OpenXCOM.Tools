@@ -264,7 +264,7 @@ namespace MapView
 
 		private void txtRoot_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == (char)Keys.Enter)
+			if (e.KeyChar == Convert.ToChar(Keys.Enter))
 				txtRoot_Leave(null, null);
 		}
 
@@ -281,7 +281,7 @@ namespace MapView
 
 		private void txtRmp_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == (char)Keys.Enter)
+			if (e.KeyChar == Convert.ToChar(Keys.Enter))
 				txtRmp_Leave(null, null);
 		}
 
