@@ -98,36 +98,36 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DB\DBTableType.cs" />
+    <Compile Include="DB_\DBTableType_.cs" />
     <Compile Include="FileSystems\FileBackupManager.cs" />
-    <Compile Include="Interfaces\IUpdater.cs" />
+    <Compile Include="Interfaces\IUpdater_.cs" />
     <Compile Include="Interfaces\IDialogFilter.cs" />
     <Compile Include="FilterBy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DB\Access\Access_DBInterface.cs">
+    <Compile Include="DB_\Access_\Access_DBInterface_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DB\Access\Access_DBTable.cs">
+    <Compile Include="DB_\Access_\Access_DBTable_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DB\DBColumnAttribute.cs">
+    <Compile Include="DB_\DBColumnAttribute_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DB\DBTableTypeCache.cs">
+    <Compile Include="DB_\DBTableTypeCache_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DB\MySql\MySQL_DBInterface.cs">
+    <Compile Include="DB_\MySql_\MySQL_DBInterface_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DB\MySql\MySQL_DBTable.cs">
+    <Compile Include="DB_\MySql_\MySQL_DBTable_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DB\WhereCol.cs">
+    <Compile Include="DB_\WhereCol_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Exceptions\ObjPropertyNullValueException.cs">
+    <Compile Include="Exceptions_\ObjPropertyNullValueException_.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Lists\CustomList.cs">
@@ -150,12 +150,12 @@
     </Compile>
     <Compile Include="Interfaces\IAssemblyLoadable.cs" />
     <Compile Include="Loadable\LoadOfType.cs" />
-    <Compile Include="parser\old_VarCollection.cs">
+    <Compile Include="parser\old_VarCollection_.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="parser\new_VarCollection.cs" />
     <Compile Include="parser\VarCollection_Structure.cs" />
-    <Compile Include="parser\old_Variable.cs">
+    <Compile Include="parser\old_Variable_.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="parser\new_Variable.cs" />
@@ -170,10 +170,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="StrInt.cs">
+    <Compile Include="StrInt_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Updator.cs" />
+    <Compile Include="Updator_.cs" />
     <Compile Include="Windows\CollapsibleSplitter.cs">
       <SubType>Component</SubType>
     </Compile>

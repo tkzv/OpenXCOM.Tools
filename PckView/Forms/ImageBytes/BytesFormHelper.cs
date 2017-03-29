@@ -8,7 +8,7 @@ using PckView.Panels;
 
 namespace PckView.Forms.ImageBytes
 {
-	public class BytesFormHelper
+	internal sealed class BytesFormHelper
 	{
 		private static readonly BytesFormHelper _instance = new BytesFormHelper();
 

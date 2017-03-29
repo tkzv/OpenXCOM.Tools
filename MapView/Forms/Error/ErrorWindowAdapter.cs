@@ -3,13 +3,13 @@
 
 namespace MapView.Forms.XCError
 {
-	public class ErrorWindowAdapter
+	internal sealed class ErrorWindowAdapter
 		:
-		IErrorHandler
+			IErrorHandler
 	{
 		public void HandleException(Exception exception)
 		{
-			using (var errorWindow = new ErrorWindow(exception))
+			using (var errorWindow = new ErrorWindow(exception)) // wtf. 'using' ... for what.
 			{
 				errorWindow.ShowDialog();
 			}

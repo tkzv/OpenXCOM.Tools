@@ -11,7 +11,7 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	public class ImgProfile
+	internal sealed class ImageProfile
 	{
 		private int _width;
 		private int _height;
@@ -33,7 +33,7 @@ namespace PckView
 
 				foreach (string key in vars.KeyValList.Keys)
 				{
-					var profile = new ImgProfile();
+					var profile = new ImageProfile();
 
 					Dictionary<string, DSShared.KeyVal> info = vars.KeyValList[key].SubHash;
 
@@ -90,7 +90,7 @@ namespace PckView
 			set { _height = value; }
 		}
 
-		public IXCImageFile ImgType
+		public IXCImageFile ImageType
 		{
 			get { return _imageType; }
 			set { _imageType = value; }
@@ -122,7 +122,7 @@ namespace PckView
 			sw.WriteLine(Description);
 			sw.WriteLine("{");
 
-			sw.WriteLine("\tcodec:" + ImgType.Brief);
+			sw.WriteLine("\tcodec:" + ImageType.Brief);
 			sw.WriteLine("\topen:." + _ext.Substring(_ext.LastIndexOf(".", StringComparison.Ordinal) + 1));
 			sw.WriteLine("\twidth:" + Width);
 			sw.WriteLine("\theight:" + Height);

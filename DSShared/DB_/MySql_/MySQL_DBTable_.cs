@@ -1,3 +1,4 @@
+/*
 //#define USING_MYSQL
 #if USING_MYSQL
 using System;
@@ -333,3 +334,4 @@ namespace DSShared.DB_MySql
 	}
 }
 #endif
+*/

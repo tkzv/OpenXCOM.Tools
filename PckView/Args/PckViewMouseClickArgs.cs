@@ -4,25 +4,24 @@ using System.Windows.Forms;
 
 namespace PckView.Args
 {
-	public class PckViewMouseClickArgs
+	public class PckViewMouseEventArgs
 		:
-		MouseEventArgs
+			MouseEventArgs
 	{
-		public readonly int _clicked;
+		public int Clicked
+		{ get; private set; }
 
 
-		public PckViewMouseClickArgs(
-				MouseEventArgs args,
-				int clicked)
+		public PckViewMouseEventArgs(MouseEventArgs args, int clicked)
 			:
-			base(
-				args.Button,
-				args.Clicks,
-				args.X,
-				args.Y,
-				args.Delta)
+				base(
+					args.Button,
+					args.Clicks,
+					args.X,
+					args.Y,
+					args.Delta)
 		{
-			_clicked = clicked;
+			Clicked = clicked;
 		}
 	}
 }

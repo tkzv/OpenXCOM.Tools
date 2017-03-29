@@ -1,8 +1,10 @@
+/*
 using System;
 using System.Reflection;
 using System.Collections;
 using System.Data.OleDb;
 using DSShared.DB;
+
 
 namespace DSShared.DB_Access
 {
@@ -23,13 +25,13 @@ namespace DSShared.DB_Access
 	/// </summary>
 	public abstract class Access_DBTable
 		:
-		IComparable
+			IComparable
 	{
 		/// <summary>
 		/// The DBTableType that was setup upon initial table registration
 		/// </summary>
-		protected DSShared.DB.DBTableType myType;
-		private static string paramPrefix = "@DSS";
+		protected DBTableType myType;
+		private const string paramPrefix = "@DSS";
 
 		/// <summary>
 		/// When a GetAll() method is called, this event is fired right before the list of rows is 
@@ -44,7 +46,7 @@ namespace DSShared.DB_Access
 		/// <param name="tableName">Name of the table in the database this object represents</param>
 		public Access_DBTable(string tableName)
 		{
-			myType = DSShared.DB.DBTableTypeCache.Instance.CacheTable(tableName);
+			myType = DBTableTypeCache.Instance.CacheTable(tableName);
 		}
 
 		/// <summary>
@@ -57,8 +59,8 @@ namespace DSShared.DB_Access
 		/// <returns></returns>
 		public static Hashtable GetAllHash(string table, bool cache, params WhereCol[] whereQuery)
 		{
-			if (cache && DSShared.DB.DBTableTypeCache.Instance.GetHash(table) != null)
-				return DSShared.DB.DBTableTypeCache.Instance.GetHash(table);
+			if (cache && DBTableTypeCache.Instance.GetHash(table) != null)
+				return DBTableTypeCache.Instance.GetHash(table);
 
 			Access_DBInterface.Instance.Connection.Open();
 			OleDbTransaction trans = Access_DBInterface.Instance.Connection.BeginTransaction();
@@ -103,8 +105,8 @@ namespace DSShared.DB_Access
 										bool cache,
 										params WhereCol[] whereQuery)
 		{
-			if (cache && DSShared.DB.DBTableTypeCache.Instance.GetHash(table) != null)
-				return DSShared.DB.DBTableTypeCache.Instance.GetHash(table);
+			if (cache && DBTableTypeCache.Instance.GetHash(table) != null)
+				return DBTableTypeCache.Instance.GetHash(table);
 
 			ArrayList list = GetAll(
 								conn,
@@ -113,18 +115,18 @@ namespace DSShared.DB_Access
 								cache,
 								whereQuery);
 
-			DSShared.DB.DBTableType thisType = DSShared.DB.DBTableTypeCache.Instance.GetType(table);
+			DBTableType thisType = DSShared.DB.DBTableTypeCache.Instance.GetType(table);
 
 			if (thisType.AutoNumber != null)
 			{
 				PropertyInfo pi = thisType.AutoNumber;
-				Hashtable hash = new Hashtable();
+				var hash = new Hashtable();
 
 				foreach (Access_DBTable dt in list)
 					hash[pi.GetGetMethod().Invoke(dt, null)] = dt;
 
 				if (cache)
-					DSShared.DB.DBTableTypeCache.Instance.CacheHash(table, hash);
+					DBTableTypeCache.Instance.CacheHash(table, hash);
 
 				return hash;
 			}
@@ -156,8 +158,8 @@ namespace DSShared.DB_Access
 									bool cache,
 									params WhereCol[] whereQuery)
 		{
-			if (cache && DSShared.DB.DBTableTypeCache.Instance.GetList(table) != null)
-				return DSShared.DB.DBTableTypeCache.Instance.GetList(table);
+			if (cache && DBTableTypeCache.Instance.GetList(table) != null)
+				return DBTableTypeCache.Instance.GetList(table);
 
 			Access_DBInterface.Instance.Connection.Open();
 			OleDbTransaction trans = Access_DBInterface.Instance.Connection.BeginTransaction();
@@ -191,9 +193,9 @@ namespace DSShared.DB_Access
 									bool cache,
 									params WhereCol[] whereQuery)
 		{
-			DSShared.DB.DBTableType thisTable = DSShared.DB.DBTableTypeCache.Instance.CacheTable(table);
+			DBTableType thisTable = DBTableTypeCache.Instance.CacheTable(table);
 
-			OleDbCommand comm = new OleDbCommand("SELECT * FROM " + thisTable.TableName, conn, trans);
+			var comm = new OleDbCommand("SELECT * FROM " + thisTable.TableName, conn, trans);
 
 			if (whereQuery != null && whereQuery.Length > 0)
 			{
@@ -217,8 +219,8 @@ namespace DSShared.DB_Access
 			}
 
 			OleDbDataReader res = comm.ExecuteReader();
-			ArrayList list = new ArrayList();
-			Type myType = DSShared.DB.DBTableTypeCache.Instance.GetTableType(thisTable.TableName);
+			var list = new ArrayList();
+			Type myType = DBTableTypeCache.Instance.GetTableType(thisTable.TableName);
 
 			while (res.Read())
 			{
@@ -265,9 +267,9 @@ namespace DSShared.DB_Access
 								string table,
 								params WhereCol[]whereQuery)
 		{
-			DSShared.DB.DBTableType thisTable = DSShared.DB.DBTableTypeCache.Instance.CacheTable(table);
+			DBTableType thisTable = DBTableTypeCache.Instance.CacheTable(table);
 
-			OleDbCommand comm = new OleDbCommand("DELETE FROM " + thisTable.TableName + " WHERE ", conn, trans);
+			var comm = new OleDbCommand("DELETE FROM " + thisTable.TableName + " WHERE ", conn, trans);
 
 			if (whereQuery != null && whereQuery.Length > 0)
 			{
@@ -320,9 +322,9 @@ namespace DSShared.DB_Access
 		/// <summary>
 		/// It is up to the implementing class to determine how this table equals other tables
 		/// </summary>
-		/// <param name="other"></param>
+		/// <param name="obj"></param>
 		/// <returns></returns>
-		public override abstract bool Equals(object other);
+		public override abstract bool Equals(object obj);
 
 		/// <summary>
 		/// It is up to the implementing class to determine the hash code of this table
@@ -361,7 +363,7 @@ namespace DSShared.DB_Access
 		}	
 	
 		/// <summary>
-		/// Opens a connection to the database and calls Delete(OleDbConnection conn,OleDbTransaction trans)
+		/// Opens a connection to the database and calls Delete(OleDbConnection conn, OleDbTransaction trans)
 		/// </summary>
 		public void Delete()
 		{
@@ -378,7 +380,7 @@ namespace DSShared.DB_Access
 		/// </summary>
 		/// <param name="conn"></param>
 		/// <param name="trans"></param>
-		public virtual void Delete(OleDbConnection conn,OleDbTransaction trans)
+		public virtual void Delete(OleDbConnection conn, OleDbTransaction trans)
 		{
 			if (myType.AutoNumber != null)
 				Delete(conn, trans, myType[myType.AutoNumber].ColumnName);
@@ -411,12 +413,12 @@ namespace DSShared.DB_Access
 								params string[]whereCols)
 		{
 			// figure out which propertyInfo objects we wont be updating
-			Hashtable updateHash = new Hashtable();
+			var updateHash = new Hashtable();
 			foreach (string uc in whereCols)
 			{
 				foreach (PropertyInfo pi in myType.Columns)
 				{
-					DSShared.DB.DBColumnAttribute attr = myType[pi];
+					DBColumnAttribute attr = myType[pi];
 					if (uc == attr.ColumnName)
 					{
 						updateHash[pi] = true;
@@ -426,7 +428,7 @@ namespace DSShared.DB_Access
 			}
 
 			string commStr = "UPDATE " + myType.TableName + " SET ";
-			OleDbCommand comm = new OleDbCommand();
+			var comm = new OleDbCommand();
 			comm.Connection = conn;
 			comm.Transaction = trans;
 
@@ -439,7 +441,7 @@ namespace DSShared.DB_Access
 				if (updateHash[pi] == null) // if exists, this property is part of the WHERE clause
 				{
 					object val = pi.GetValue(this, null);
-					DSShared.DB.DBColumnAttribute attr = myType[pi];
+					DBColumnAttribute attr = myType[pi];
 
 					if (!attr.IsAutoNumber && val != null)
 					{
@@ -468,7 +470,7 @@ namespace DSShared.DB_Access
 			foreach (PropertyInfo pi in updateHash.Keys)
 			{
 				object val = pi.GetValue(this, null);
-				DSShared.DB.DBColumnAttribute attr = myType[pi];
+				DBColumnAttribute attr = myType[pi];
 
 				if (val != null)
 				{
@@ -505,7 +507,7 @@ namespace DSShared.DB_Access
 			string commStr = string.Format("INSERT INTO {0} (", myType.TableName);
 			string valStr = "VALUES(";
 
-			OleDbCommand comm = new OleDbCommand();
+			var comm = new OleDbCommand();
 			comm.Connection = conn;
 			comm.Transaction = trans;
 
@@ -515,7 +517,7 @@ namespace DSShared.DB_Access
 			foreach (PropertyInfo pi in myType.Columns)
 			{
 				object val = pi.GetValue(this, null);
-				DSShared.DB.DBColumnAttribute attr = myType[pi];
+				DBColumnAttribute attr = myType[pi];
 
 				if (!attr.IsAutoNumber && val != null)
 				{
@@ -553,3 +555,4 @@ namespace DSShared.DB_Access
 		}
 	}
 }
+*/

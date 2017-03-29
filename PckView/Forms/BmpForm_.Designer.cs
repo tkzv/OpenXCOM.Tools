@@ -1,8 +1,9 @@
+/*
 namespace PckView
 {
 	partial class BmpForm
 		:
-		System.Windows.Forms.Form
+			System.Windows.Forms.Form
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -332,3 +333,4 @@ namespace PckView
 		private System.Windows.Forms.TextBox txtSpace;
 	}
 }
+*/

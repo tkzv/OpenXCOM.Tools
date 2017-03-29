@@ -1,6 +1,6 @@
 namespace PckView
 {
-	public partial class ModForm
+	partial class ModForm
 	{
 		/// <summary>
 		/// Required designer variable.

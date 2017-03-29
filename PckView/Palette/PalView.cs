@@ -9,9 +9,9 @@ namespace PckView
 	/// <summary>
 	/// Summary description for PalView.
 	/// </summary>
-	public class PalView
+	internal sealed class PalView
 		:
-		System.Windows.Forms.Form
+			System.Windows.Forms.Form
 	{
 		private PalPanel _palPanel;
 		private System.Windows.Forms.Label _status;
@@ -30,23 +30,25 @@ namespace PckView
 		}
 
 
-		private void palClick(int idx)
+		private void palClick(int id)
 		{
 			switch (_palPanel.Mode)
 			{
 				case SelectMode.Single:
 					_status.Text = string.Format(
+											System.Globalization.CultureInfo.CurrentCulture,
 											"Clicked index: {0} ({1:X})",
-											idx, idx);
+											id, id);
 					break;
 
 				case SelectMode.Bar:
-					_status.Text = "Clicked range: " + idx + " - " + (idx + PalPanel._across - 1);
+					_status.Text = "Clicked range: " + id + " - " + (id + PalPanel.Across - 1);
 					break;
 			}
 
-			Color color = _palPanel.Palette[idx];
+			Color color = _palPanel.Palette[id];
 			_status.Text += string.Format(
+									System.Globalization.CultureInfo.CurrentCulture,
 									" r:{0} g:{1} b:{2} a:{3}",
 									color.R,
 									color.G,
@@ -54,12 +56,12 @@ namespace PckView
 									color.A);
 
 			if (PaletteIndexChanged != null)
-				PaletteIndexChanged(idx);
+				PaletteIndexChanged(id);
 		}
 
 		public Palette Palette
 		{
-			get { return _palPanel.Palette; }
+//			get { return _palPanel.Palette; }
 			set { _palPanel.Palette = value; }
 		}
 

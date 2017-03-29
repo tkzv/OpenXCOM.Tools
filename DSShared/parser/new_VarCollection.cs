@@ -6,8 +6,9 @@ using System.IO;
 namespace DSShared
 {
 	/// <summary>
+	/// This is used with VarCollection_Structure for PckView.
 	/// </summary>
-	public class Varidia
+	internal sealed class Varidia
 	{
 		private Dictionary<string, Variable> _vars;
 
@@ -187,7 +188,7 @@ namespace DSShared
 
 	/// <summary>
 	/// </summary>
-	public class KeyVal
+	public sealed class KeyVal
 	{
 		private readonly string _keyword;
 		private readonly string _rest;

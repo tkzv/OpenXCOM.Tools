@@ -1,8 +1,9 @@
+/*
 namespace PckView
 {
 	partial class OpenCustomForm
 		:
-		System.Windows.Forms.Form
+			System.Windows.Forms.Form
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -239,3 +240,4 @@ namespace PckView
 		private System.Windows.Forms.Panel panel2;
 	}
 }
+*/

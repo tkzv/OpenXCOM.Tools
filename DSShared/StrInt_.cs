@@ -1,13 +1,16 @@
+/*
 using System;
+
 
 namespace DSShared
 {
 	/// <summary>
-	/// A Lazy Class for storing a string and an int. CompareTo operates on the string held
+	/// A Lazy Class for storing a string and an int. CompareTo operates on the
+	/// string held.
 	/// </summary>
 	public class StrInt
 		:
-		IComparable
+			IComparable
 	{
 		/// <summary>
 		/// string parameter
@@ -69,3 +72,4 @@ namespace DSShared
 		}
 	}
 }
+*/

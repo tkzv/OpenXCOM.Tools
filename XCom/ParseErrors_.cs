@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Drawing;
 using System.Collections;
@@ -75,3 +76,4 @@ namespace XCom
 		#endregion
 	}
 }
+*/

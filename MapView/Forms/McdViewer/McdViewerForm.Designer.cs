@@ -48,7 +48,7 @@ namespace MapView.Forms.McdViewer
 			// 
 			// InfoBs
 			// 
-			this.InfoBs.DataSource = typeof(XCom.McdEntry);
+			this.InfoBs.DataSource = typeof(XCom.McdRecord);
 			// 
 			// McdViewerForm
 			// 

@@ -9,6 +9,6 @@ namespace DSShared
 	{
 		/// <summary>
 		/// </summary>
-		bool FilterObj(T o);
+		bool FilterObj(T obj);
 	}
 }

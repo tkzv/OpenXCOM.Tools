@@ -1,3 +1,4 @@
+/*
 namespace PckView
 {
 	partial class SaveProfileForm
@@ -281,3 +282,4 @@ namespace PckView
 		private System.Windows.Forms.RadioButton radioSingle;
 	}
 }
+*/

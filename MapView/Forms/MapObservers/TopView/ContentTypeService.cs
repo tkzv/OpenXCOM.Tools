@@ -10,7 +10,7 @@ namespace MapView.Forms.MapObservers.TopViews
 	{
 		public static ContentType GetContentType(TileBase content)
 		{
-			var mcdEntry = content.Info as McdEntry;
+			var mcdEntry = content.Info as McdRecord;
 			if (mcdEntry != null)
 			{
 				var loftList = mcdEntry.GetLoftList();
@@ -110,7 +110,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		public static bool IsDoor(TileBase content)
 		{
-			var mcdEntry = content.Info as McdEntry;
+			var mcdEntry = content.Info as McdRecord;
 			if (mcdEntry != null
 				&& (mcdEntry.HumanDoor || mcdEntry.UfoDoor))
 			{

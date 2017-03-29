@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,18 +10,18 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	public partial class SaveProfileForm
+	internal sealed partial class SaveProfileForm
 		:
-		Form
+			Form
 	{
-		private ImgProfile _profile;
+		private ImageProfile _profile;
 
 
 		public SaveProfileForm()
 		{
 			InitializeComponent();
 
-			_profile = new ImgProfile();
+			_profile = new ImageProfile();
 
 			DialogResult = DialogResult.Cancel; // TODO: why 2 dialogresultCancel's
 
@@ -53,8 +54,8 @@ namespace PckView
 		{
 			txtInfo.Text = String.Empty;
 			
-			if (ImgType != null)
-				txtInfo.Text += "Type: " + ImgType.Brief + Environment.NewLine;
+			if (ImageType != null)
+				txtInfo.Text += "Type: " + ImageType.Brief + Environment.NewLine;
 			
 			txtInfo.Text += "Width: " + ImgWid + Environment.NewLine + "Height: " + ImgHei;
 		}
@@ -71,15 +72,15 @@ namespace PckView
 			set { _profile.Height = value; restring(); }
 		}
 
-		public IXCImageFile ImgType
+		public IXCImageFile ImageType
 		{
-			get { return _profile.ImgType; }
-			set { _profile.ImgType = value; restring(); }
+			get { return _profile.ImageType; }
+			set { _profile.ImageType = value; restring(); }
 		}
 
 		public string FileString
 		{
-			get { return _profile.FileString; }
+//			get { return _profile.FileString; }
 			set 
 			{
 				_profile.FileString = value;
@@ -126,3 +127,4 @@ namespace PckView
 		}
 	}
 }
+*/

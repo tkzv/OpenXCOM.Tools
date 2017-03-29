@@ -1,6 +1,8 @@
+/*
 using System;
 using System.Collections;
 using System.IO;
+
 
 namespace DSShared.old
 {
@@ -39,7 +41,7 @@ namespace DSShared.old
 		/// </summary>
 		public Varidia(string baseVar)
 			:
-			this()
+				this()
 		{
 			this.baseVar = baseVar;
 		}
@@ -48,7 +50,7 @@ namespace DSShared.old
 		/// </summary>
 		public Varidia(Varidia other)
 			:
-			this()
+				this()
 		{
 			this.other = other;
 		}
@@ -213,3 +215,4 @@ namespace DSShared.old
 		}
 	}
 }
+*/

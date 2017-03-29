@@ -3,7 +3,7 @@
 
 namespace MapView.Forms.XCError
 {
-	public interface IErrorHandler
+	internal interface IErrorHandler
 	{
 		void HandleException(Exception exception);
 	}

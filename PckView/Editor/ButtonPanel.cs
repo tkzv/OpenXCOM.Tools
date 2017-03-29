@@ -4,55 +4,57 @@ using System.Windows.Forms;
 using XCom;
 using XCom.Interfaces;
 
+
 namespace PckView
 {
 	/// <summary>
 	/// Summary description for ButtonPanel.
 	/// </summary>
-	public class ButtonPanel
+	internal sealed class ButtonPanel
 		:
-		Panel
+			Panel
 	{
-		private XCImage img;
-		private SinglePanel top;
+/*		private XCImage _image;
+		public XCImage Image
+		{
+//			get { return _image; }
+			set
+			{
+				_image          =
+				_topPanel.Image = value;
+
+				Width = _topPanel.Width;
+			}
+		} */
+
+		private readonly SinglePanel _topPanel;
 
 		public ButtonPanel()
 		{
-			top = new SinglePanel();
-			Controls.Add(top);
-			top.Location = new Point(0, 0);
-		}
+			_topPanel = new SinglePanel();
 
-		public XCImage Image
-		{
-			get { return img; }
-			set
-			{
-				img = value;
-				top.Image = value;
-				Width = top.Width;
-			}
+			Controls.Add(_topPanel);
+
+			_topPanel.Location = new Point(0, 0);
 		}
 
 		public int PreferredWidth
 		{
-			get { return top.Width; }
+			get { return _topPanel.Width; }
 		}
 
-		public int PreferredHeight
+/*		public int PreferredHeight
 		{
 			get
 			{
-				if (Parent != null)
-					return Parent.Height;
-
-				return top.Height;
+				return (Parent != null) ? Parent.Height
+										: _topPanel.Height;
 			}
-		}
+		} */
 
 		public Palette Palette
 		{
-			set { top.Palette = value; }
+			set { _topPanel.SetPalette(value); }
 		}
 	}
 }

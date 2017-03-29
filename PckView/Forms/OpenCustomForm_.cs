@@ -1,13 +1,14 @@
+/*
 using System;
 using System.Windows.Forms;
 
 
 namespace PckView
 {
-	public delegate void TryDecodeEventHandler(object sender, TryDecodeEventArgs e);
+	internal delegate void TryDecodeEventHandler(object sender, TryDecodeEventArgs e);
 
 
-	public partial class OpenCustomForm
+	internal sealed partial class OpenCustomForm
 	{
 		private string _file;
 		private string _dir;
@@ -102,7 +103,7 @@ namespace PckView
 			var spf = new SaveProfileForm();
 			spf.ImgHei = scrollHei.Value;
 			spf.ImgWid = scrollWid.Value;
-			spf.ImgType = ((BmpForm.CbxItem)cbTypes.SelectedItem)._imageFile;
+			spf.ImageType = ((BmpForm.CbxItem)cbTypes.SelectedItem)._imageFile;
 			spf.FileString = _file;
 
 			if (spf.ShowDialog(this) == DialogResult.OK)
@@ -127,7 +128,7 @@ namespace PckView
 	}
 
 
-	public class TryDecodeEventArgs
+	internal sealed class TryDecodeEventArgs
 		:
 			EventArgs
 	{
@@ -149,10 +150,10 @@ namespace PckView
 			get { return _file; }
 		}
 
-		private readonly string _directory;
+		private readonly string _dir;
 		public string Directory
 		{
-			get { return _directory; }
+			get { return _dir; }
 		}
 
 		private readonly XCom.Interfaces.IXCImageFile _imageFile;
@@ -165,15 +166,16 @@ namespace PckView
 		public TryDecodeEventArgs(
 				int width,
 				int height,
-				string directory,
+				string dir,
 				string file,
 				XCom.Interfaces.IXCImageFile imageFile)
 		{
 			_imageFile = imageFile;
-			_file      = file;
-			_width     = width;
-			_height    = height;
-			_directory = directory;
+			_file   = file;
+			_width  = width;
+			_height = height;
+			_dir    = dir;
 		}
 	}
 }
+*/

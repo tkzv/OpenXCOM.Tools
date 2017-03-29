@@ -12,14 +12,14 @@ namespace XCom.GameFiles.Map
 	{
 		internal XCTile[] CreateTiles(
 				string baseName,
-				string directory,
+				string dir,
 				PckSpriteCollection pckPack)
 		{
 			int diff = (baseName == "XBASES05") ? 3 : 0; // TODO: wtf.
 
 			const int Total = 62;
 
-			using (var bs = new BufferedStream(File.OpenRead(directory + baseName + ".MCD")))
+			using (var bs = new BufferedStream(File.OpenRead(dir + baseName + ".MCD")))
 			{
 				var tiles = new XCTile[(((int) bs.Length) / Total) - diff];
 
@@ -27,12 +27,12 @@ namespace XCom.GameFiles.Map
 				{
 					var info = new byte[Total];
 					bs.Read(info, 0, Total);
-					var record = McdEntryFactory.Create(info);
+					var record = McdRecordFactory.Create(info);
 
-					var tile = new XCTile(i, pckPack, record, tiles);
-					tile.Dead = GetDeadValue(baseName, i, record, tiles);
-					tile.Alternate = GetAlternate(baseName, i, record, tiles);
-
+					var tile = new XCTile(i, pckPack, record); //, tiles);			// NOTE: Tiles is not used.
+					tile.Dead = GetDeadTile(baseName, i, record, tiles);
+//					tile.Alternate = GetAlternateTile(baseName, i, record, tiles);	// NOTE: the Alternate tile is not used.
+																					// TODO: possibly count it for MapInfoForm
 					tiles[i] = tile;
 				}
 
@@ -40,48 +40,50 @@ namespace XCom.GameFiles.Map
 			}
 		}
 
-		private XCTile GetAlternate(
+		private XCTile GetAlternateTile(
 				string baseName,
 				int index,
-				McdEntry info,
+				McdRecord record,
 				XCTile[] tiles)
 		{
-			if (info.UfoDoor || info.HumanDoor || info.Alt_MCD != 0)
+			if (record.UfoDoor || record.HumanDoor || record.Alt_MCD != 0)
 			{
-				if (tiles.Length < info.Alt_MCD)
+				if (tiles.Length < record.Alt_MCD)
 				{
-					OnHandleWarning(string.Format(
-							"In the MCD file {3}, the tile entry {0} has an invalid alternative tile (# {1} of {2} tiles).",
-							index,
-							info.Alt_MCD,
-							tiles.Length,
-							baseName));
+					OnHandleWarning(String.Format(
+											System.Globalization.CultureInfo.CurrentCulture,
+											"In the MCD file {0}, the tile entry {1} has an invalid alternate tile (id {2} of {3} tiles).",
+											baseName,
+											index,
+											record.Alt_MCD,
+											tiles.Length));
 				}
 				else
-					return tiles[info.Alt_MCD];
+					return tiles[record.Alt_MCD];
 			}
 			return null;
 		}
 
-		private XCTile GetDeadValue(
+		private XCTile GetDeadTile(
 				string baseName,
 				int index,
-				McdEntry info,
+				McdRecord record,
 				XCTile[] tiles)
 		{
 			try
 			{
-				if (info.DieTile != 0)
-					return tiles[(info).DieTile];
+				if (record.DieTile != 0)
+					return tiles[record.DieTile];
 			}
 			catch
 			{
-				OnHandleWarning(string.Format(
-						"In the MCD file {3}, the tile entry {0} has an invalid dead tile (# {1} of {2} tiles).",
-						index,
-						info.Alt_MCD,
-						tiles.Length,
-						baseName));
+				OnHandleWarning(String.Format(
+										System.Globalization.CultureInfo.CurrentCulture,
+										"In the MCD file {3}, the tile entry {0} has an invalid dead tile (# {1} of {2} tiles).",
+										index,
+										record.Alt_MCD,
+										tiles.Length,
+										baseName));
 			}
 			return null;
 		}

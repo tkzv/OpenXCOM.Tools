@@ -6,9 +6,9 @@ using System.Windows.Forms;
 
 namespace PckView
 {
-	public partial class ModForm
+	internal sealed partial class ModForm
 		:
-		Form
+			Form
 	{
 		private XCom.SharedSpace _share;
 

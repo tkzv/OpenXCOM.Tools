@@ -4,9 +4,9 @@ using System.Windows.Forms;
 
 namespace MapView.Forms.XCError
 {
-	public partial class ErrorWindow
+	internal sealed partial class ErrorWindow
 		:
-		Form
+			Form
 	{
 		private readonly Exception _exception;
 
@@ -14,6 +14,7 @@ namespace MapView.Forms.XCError
 		public ErrorWindow(Exception exception)
 		{
 			_exception = exception;
+
 			InitializeComponent();
 		}
 

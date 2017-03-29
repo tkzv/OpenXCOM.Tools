@@ -8,7 +8,7 @@ namespace DSShared
 	/// <summary>
 	/// Class to automatically parse out a VC file into a tree structure.
 	/// </summary>
-	public class VarCollection_Structure
+	public sealed class VarCollection_Structure
 	{
 		private KeyVal _keyValParent;
 
@@ -23,7 +23,7 @@ namespace DSShared
 			_keyValParent.SubHash = new Dictionary<string, KeyVal>();
 			
 			var vars = new Varidia(sr);
-			parse_block(vars, _keyValParent);
+			ParseBlock(vars, _keyValParent);
 		}
 
 
@@ -35,7 +35,7 @@ namespace DSShared
 			get { return _keyValParent.SubHash; }
 		}
 
-		private void parse_block(Varidia vars, KeyVal keyValParent)
+		private void ParseBlock(Varidia vars, KeyVal keyValParent)
 		{
 			KeyVal keyVal;
 			KeyVal keyVal0 = null;
@@ -46,7 +46,7 @@ namespace DSShared
 				{
 					case "{":
 						keyVal0.SubHash = new Dictionary<string, KeyVal>();
-						parse_block(vars, keyVal0);
+						ParseBlock(vars, keyVal0);
 						break;
 
 					case "}":

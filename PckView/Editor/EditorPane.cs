@@ -1,124 +1,129 @@
 using System;
 using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
 using System.Windows.Forms;
+
 using XCom;
 using XCom.Interfaces;
+
 
 namespace PckView
 {
 	/// <summary>
 	/// Summary description for EditorPane.
 	/// </summary>
-	public class EditorPane
+	internal sealed class EditorPane
 		:
-		Panel
+			Panel
 	{
-		private XCImage img;
-		private Palette pal;
-		private bool lines;
-		private int square = 1;
-		private int imgWidth,imgHeight;
-		private double scale = 1.0;
-
-		public EditorPane(XCImage img)
-		{
-			this.SetStyle(ControlStyles.DoubleBuffer|ControlStyles.UserPaint|ControlStyles.AllPaintingInWmPaint, true);
-			this.img = img;
-			pal = null;
-			lines = false;
-
-			imgWidth  = PckImage.Width  * square;
-			imgHeight = PckImage.Height * square;
-		}
-
-		public int PreferredWidth
-		{
-			get { return PckImage.Width * 10; }
-		}
-
-		public int PreferredHeight
-		{
-			get { return PckImage.Height * 10; }
-		}
-
-		public double ScaleVal
-		{
-			get { return scale; }
-			set
-			{
-				scale = value;
-				Refresh();
-			}
-		}
-
-		public bool Lines
-		{
-			get { return lines; }
-			set
-			{
-				lines = value;
-				Refresh();
-			}
-		}
-
+		private XCImage _image;
 		public XCImage Image
 		{
-			get { return img; }
+//			get { return _image; }
 			set
 			{
-				img = value;
+				_image = value;
 				Refresh();
 			}
 		}
 
+		private Palette _palette;
 		public Palette Palette
 		{
-			get { return pal; }
+//			get { return _palette; }
 			set
 			{
-				pal = value;
-				if (img!=null)
+				_palette = value;
+				if (_image!=null)
 				{
-					img.Image.Palette = pal.Colors;
+					_image.Image.Palette = _palette.Colors;
 					Refresh();
 				}
 			}
 		}
 
+		private bool _lines;
+		public bool Lines
+		{
+//			get { return _lines; }
+			set
+			{
+				_lines = value;
+				Refresh();
+			}
+		}
+
+		private const int Square = 1;
+
+//		private int _width;
+//		private int _height;
+
+		private double _scale = 1.0;
+		public double ScaleVal
+		{
+			get { return _scale; }
+			set
+			{
+				_scale = value;
+				Refresh();
+			}
+		}
+
+
+		public EditorPane(XCImage image)
+		{
+			SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+
+			_image = image;
+//			pal = null;
+//			lines = false;
+
+//			_width  = PckImage.Width  * Square;
+//			_height = PckImage.Height * Square;
+		}
+
+
+		public static int PreferredWidth
+		{
+			get { return PckImage.Width * 10; }
+		}
+
+		public static int PreferredHeight
+		{
+			get { return PckImage.Height * 10; }
+		}
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			Graphics g = e.Graphics;
-			int wid = img.Image.Width;
-			int hei = img.Image.Height;
+			int width  = _image.Image.Width;
+			int height = _image.Image.Height;
 
-			for (int y = 0; y < hei; y++)
-				for (int x = 0; x < wid; x++)
+			for (int y = 0; y != height; ++y)
+				for (int x = 0; x != width; ++x)
 					g.FillRectangle(
-								new SolidBrush(img.Image.GetPixel(x, y)),
-								x * (int)(square * scale),
-								y * (int)(square * scale),
-								(int)(square * scale),
-								(int)(square * scale));
+								new SolidBrush(_image.Image.GetPixel(x, y)),
+								x * (int)(Square * _scale),
+								y * (int)(Square * _scale),
+								(int)(Square * _scale),
+								(int)(Square * _scale));
 
-			if (lines)
+			if (_lines)
 			{
-				for (int x = 0; x < wid + 1; x++)
+				for (int x = 0; x != width + 1; ++x)
 					g.DrawLine(
 							Pens.Black,
-							x * (int)(square * scale),
+							x * (int)(Square * _scale),
 							0,
-							x * (int)(square * scale),
-							hei * (int)(square * scale));
+							x * (int)(Square * _scale),
+							height * (int)(Square * _scale));
 
-				for (int y = 0; y < hei + 1; y++)
+				for (int y = 0; y != height + 1; ++y)
 					g.DrawLine(
 							Pens.Black,
 							0,
-							y * (int)(square * scale),
-							wid * (int)(square * scale),
-							y * (int)(square * scale));
+							y * (int)(Square * _scale),
+							width * (int)(Square * _scale),
+							y * (int)(Square * _scale));
 			}
 		}
 

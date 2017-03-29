@@ -8,33 +8,35 @@ using XCom;
 
 namespace PckView
 {
-	public delegate void PaletteClickDelegate(int selectedIndex);
+	internal delegate void PaletteClickDelegate(int selectedIndex);
 
-	public enum SelectMode
+	internal enum SelectMode
 	{
 		Bar,
 		Single
 	};
 
 
-	public class PalPanel
+	internal sealed class PalPanel
 		:
-		Panel
+			Panel
 	{
-		private Palette _palette;
 //		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
 
-		private const int _pad = 0;
+		private Palette _palette;
+
+		private const int Pad = 0; // well, you know ...
 
 		private int _width  = 15;
 		private int _height = 10;
 
 		private int _id;
-		private int _clickX, _clickY;
+		private int _clickX;
+		private int _clickY;
 
-		private SelectMode mode;
+		private SelectMode _mode;
 
-		public const int _across = 16;
+		public const int Across = 16;
 
 		public event PaletteClickDelegate PaletteIndexChanged;
 
@@ -49,46 +51,46 @@ namespace PckView
 			_clickX = -100;
 			_clickY = -100;
 			_id = -1;
-			mode = SelectMode.Single;
+			_mode = SelectMode.Single;
 		}
 
 
 		protected override void OnResize(EventArgs eventargs)
 		{
-			_width  = (Width  / _across) - 2 * _pad;
-			_height = (Height / _across) - 2 * _pad;
+			_width  = (Width  / Across) - 2 * Pad;
+			_height = (Height / Across) - 2 * Pad;
 
-			switch (mode)
+			switch (_mode)
 			{
 				case SelectMode.Single:
-					_clickX = (_id % _across) * (_width + 2 * _pad);
+					_clickX = (_id % Across) * (_width + 2 * Pad);
 					break;
 
 				case SelectMode.Bar:
 					_clickX = 0;
 					break;
 			}
-			_clickY = (_id / _across) * (_height + 2 * _pad);
+			_clickY = (_id / Across) * (_height + 2 * Pad);
 
 			Refresh();
 		}
 
 		private void mouseDown(object sender, MouseEventArgs e)
 		{
-			switch (mode)
+			switch (_mode)
 			{
 				case SelectMode.Single:
-					_clickX = (e.X / (_width + 2 * _pad)) * (_width + 2 * _pad);
-					_id = (e.X / (_width + 2 * _pad)) + (e.Y / (_height + 2 * _pad)) * _across;
+					_clickX = (e.X / (_width + 2 * Pad)) * (_width + 2 * Pad);
+					_id = (e.X / (_width + 2 * Pad)) + (e.Y / (_height + 2 * Pad)) * Across;
 					break;
 
 				case SelectMode.Bar:
 					_clickX = 0;
-					_id = (e.Y / (_height + 2 * _pad)) * _across;
+					_id = (e.Y / (_height + 2 * Pad)) * Across;
 					break;
 			}
 
-			_clickY = (e.Y / (_height + 2 * _pad)) * (_height + 2 * _pad);
+			_clickY = (e.Y / (_height + 2 * Pad)) * (_height + 2 * Pad);
 
 			if (PaletteIndexChanged != null && _id < 256)
 			{
@@ -101,8 +103,8 @@ namespace PckView
 		[Category("Behavior")]
 		public SelectMode Mode
 		{
-			get { return mode; }
-			set { mode = value; }
+			get { return _mode; }
+//			set { mode = value; }
 		}
 
 		[DefaultValue(null)]
@@ -125,34 +127,34 @@ namespace PckView
 				Graphics g = e.Graphics;
 
 				for (int
-						i = 0, y = _pad;
-						i < _across;
-						i++, y += _height + 2 * _pad)
+						i = 0, y = Pad;
+						i < Across;
+						i++, y += _height + 2 * Pad)
 					for (int
-							j = 0, x = _pad;
-							j < _across;
-							j++, x += _width + 2 * _pad)
+							j = 0, x = Pad;
+							j < Across;
+							j++, x += _width + 2 * Pad)
 					{
 						g.FillRectangle(new SolidBrush(
-													_palette[i * _across + j]),
+													_palette[i * Across + j]),
 													x, y,
 													_width, _height);
 					}
 
-				switch(mode)
+				switch (_mode)
 				{
 					case SelectMode.Single:
 						g.DrawRectangle(
 									Pens.Red, // _brush
 									_clickX, _clickY,
-									_width + 2 * _pad - 1, _height + 2 * _pad - 1);
+									_width + 2 * Pad - 1, _height + 2 * Pad - 1);
 						break;
 
 					case SelectMode.Bar:
 						g.DrawRectangle(
 									Pens.Red, // _brush
 									_clickX, _clickY,
-									(_width + 2 * _pad) * _across - 1, _height + 2 * _pad - 1);
+									(_width + 2 * Pad) * Across - 1, _height + 2 * Pad - 1);
 						break;
 				}
 			}

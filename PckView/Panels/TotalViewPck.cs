@@ -12,11 +12,15 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	public class TotalViewPck
+	internal sealed class TotalViewPck
 		:
-		Panel
+			Panel
 	{
 		private readonly ViewPck view;
+		public ViewPck View
+		{
+			get { return view; }
+		}
 
 		private VScrollBar _scrollBar;
 		private StatusBar _statusBar;
@@ -65,12 +69,7 @@ namespace PckView
 			OnResize(null); // FIX: "Virtual member call in constructor."
 		}
 
-		public ViewPck View
-		{
-			get { return view; }
-		}
-
-		private void viewClik(object sender, PckViewMouseClickArgs e)
+		private void viewClik(object sender, PckViewMouseEventArgs e)
 		{
 			if (ViewClicked != null)
 				ViewClicked(sender, e);
@@ -153,14 +152,14 @@ namespace PckView
 				_scrollBar.Visible = false;
 		}
 
-		private void tileChooser_SelectedIndexChanged(object sender, EventArgs e)
+/*		private void tileChooser_SelectedIndexChanged(object sender, EventArgs e)
 		{
 //			view.Pck = ImageCollection.GetPckFile(tileChooser.SelectedItem.ToString());
 			view.Refresh();
 //			_scrollBar.Maximum = Math.Max((view.Height - Height + tileChooser.Height + 50), _scrollBar.Minimum);
 			_scrollBar.Value = _scrollBar.Minimum;
 			scroll_Scroll(null, null);
-		}
+		} */
 
 		private void scroll_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e)
 		{
@@ -168,9 +167,9 @@ namespace PckView
 			view.Refresh();
 		}
 
-		private void viewClicked(object sender, PckViewMouseClickArgs e)
+		private void viewClicked(object sender, PckViewMouseEventArgs e)
 		{
-			click = e._clicked;
+			click = e.Clicked;
 			_statusOverTile.Text = "Selected: " + click + " Over: " + move;
 		}
 
@@ -195,7 +194,7 @@ namespace PckView
 	/// <summary>
 	/// EventArgs for XCImageCollectionSet.
 	/// </summary>
-	public class XCImageCollectionSetEventArgs
+	internal sealed class XCImageCollectionSetEventArgs
 	{
 		private readonly XCImageCollection _collection;
 
@@ -210,5 +209,5 @@ namespace PckView
 		}
 	}
 
-	public delegate void XCImageCollectionHandler(object sender, XCImageCollectionSetEventArgs e);
+	internal delegate void XCImageCollectionHandler(object sender, XCImageCollectionSetEventArgs e);
 }

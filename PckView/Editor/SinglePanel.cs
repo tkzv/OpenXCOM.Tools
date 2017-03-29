@@ -1,19 +1,34 @@
 using System;
 using System.Windows.Forms;
-using System.Collections;
+
 using XCom;
 using XCom.Interfaces;
+
 
 namespace PckView
 {
 	/// <summary>
 	/// Summary description for SinglePanel.
 	/// </summary>
-	public class SinglePanel
+	internal sealed class SinglePanel
 		:
-		Panel
+			Panel
 	{
-		private XCImage img;
+		private XCImage _image;
+		public XCImage Image
+		{
+//			get { return _image; }
+			set
+			{
+				_image = value;
+
+				Width  = _image.Image.Width;
+				Height = _image.Image.Height;
+
+				Refresh();
+			}
+		}
+
 
 		public SinglePanel()
 		{
@@ -21,34 +36,20 @@ namespace PckView
 			Height = PckImage.Height;
 		}
 
-		public XCImage Image
+
+		public void SetPalette(Palette pal)
 		{
-			get { return img; }
-			set
+			if (_image != null)
 			{
-				img = value;
-				Width  = img.Image.Width;
-				Height = img.Image.Height;
+				_image.Image.Palette = pal.Colors;
 				Refresh();
 			}
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			if (img != null)
-				e.Graphics.DrawImage(img.Image, 0, 0);
-		}
-
-		public Palette Palette
-		{
-			set
-			{
-				if (img != null)
-				{
-					img.Image.Palette = value.Colors;
-					Refresh();
-				}
-			}
+			if (_image != null)
+				e.Graphics.DrawImage(_image.Image, 0, 0);
 		}
 	}
 }

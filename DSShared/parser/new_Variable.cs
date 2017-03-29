@@ -2,11 +2,13 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
+
 namespace DSShared
 {
 	/// <summary>
+	/// This is used with VarCollection_Structure for PckView.
 	/// </summary>
-	public class Variable
+	internal sealed class Variable
 	{
 		private static int count = 0;
 
@@ -60,7 +62,7 @@ namespace DSShared
 		/// </summary>
 		public void Write(StreamWriter sw)
 		{
-			Write(sw, "");
+			Write(sw, String.Empty);
 		}
 
 		/// <summary>

@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -7,7 +8,7 @@ using DSShared.Windows;
 
 namespace PckView
 {
-	public partial class BmpForm
+	internal sealed partial class BmpForm
 	{
 		private Bitmap _bmp;
 		private Pen _pen;
@@ -201,3 +202,4 @@ namespace PckView
 		}
 	}
 }
+*/

@@ -3,13 +3,13 @@ using System;
 
 namespace PckView
 {
-	public class xcForceCustom
+	internal sealed class xcForceCustom
 		:
-		xcCustom
+			xcCustom
 	{
 /*		public xcForceCustom()
 			:
-			base(0, 0)
+				base(0, 0)
 		{
 			FileOptions.Init(false, false, true, false);
 

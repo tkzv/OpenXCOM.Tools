@@ -101,12 +101,12 @@ namespace MapView.Forms.MapObservers.TileViews
 			var f = FindForm();
 
 			var tile = SelectedTile;
-			if (tile != null && tile.Info is McdEntry)
+			if (tile != null && tile.Info is McdRecord)
 			{
 				f.Text = BuildTitleString(tile.TileListId, tile.Id);
 
 				if (MCDInfoForm != null)
-					MCDInfoForm.UpdateData((McdEntry)tile.Info);
+					MCDInfoForm.UpdateData((McdRecord)tile.Info);
 			}
 			else
 			{
@@ -161,12 +161,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		private void TileChanged(TileBase tile)
 		{
 			var f = FindForm();
-			if (tile != null && tile.Info is McdEntry)
+			if (tile != null && tile.Info is McdRecord)
 			{
 				f.Text = BuildTitleString(tile.TileListId, tile.Id);
 
 				if (MCDInfoForm != null)
-					MCDInfoForm.UpdateData((McdEntry)tile.Info);
+					MCDInfoForm.UpdateData((McdRecord)tile.Info);
 			}
 			else
 			{
@@ -283,10 +283,10 @@ namespace MapView.Forms.MapObservers.TileViews
 					var f = FindForm();
 
 					var tile = SelectedTile;
-					if (tile != null && tile.Info is McdEntry)
+					if (tile != null && tile.Info is McdRecord)
 					{
 						f.Text = BuildTitleString(tile.TileListId, tile.Id);
-						MCDInfoForm.UpdateData((McdEntry)tile.Info);
+						MCDInfoForm.UpdateData((McdRecord)tile.Info);
 					}
 					else
 					{
@@ -342,5 +342,5 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 	}
 
-	public delegate void SelectedTileTypeChangedEventHandler(TileBase tile);
+	internal delegate void SelectedTileTypeChangedEventHandler(TileBase tile);
 }

@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace PckView
 {
@@ -16,13 +15,9 @@ namespace PckView
 		/// </summary>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing)
-			{
-				if (components != null)
-				{
-					components.Dispose();
-				}
-			}
+			if (disposing && components != null)
+				components.Dispose();
+
 			base.Dispose(disposing);
 		}
 

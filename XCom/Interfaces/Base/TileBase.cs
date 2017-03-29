@@ -8,15 +8,11 @@ namespace XCom.Interfaces.Base
 	/// </summary>
 	public class TileBase
 	{
-		private IMcdInfo _info;
 		/// <summary>
 		/// The Info object that has additional flags and information about this tile.
 		/// </summary>
 		public IMcdInfo Info
-		{
-			get { return _info; }
-			set { _info = value; }
-		}
+		{ get; protected set; }
 
 		private XCImage[] _images;
 		/// <summary>
@@ -26,7 +22,7 @@ namespace XCom.Interfaces.Base
 		public XCImage[] Images
 		{
 			get { return _images; }
-			set { _images = value; }
+			protected set { _images = value; }
 		}
 		/// <summary>
 		/// Gets an image at the specified animation frame.
@@ -36,7 +32,7 @@ namespace XCom.Interfaces.Base
 		public XCImage this[int i]
 		{
 			get { return _images[i]; }
-			set { _images[i] = value; }
+//			set { _images[i] = value; }
 		}
 
 		/// <summary>

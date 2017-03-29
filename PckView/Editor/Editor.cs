@@ -1,89 +1,92 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
+
 using XCom;
 using XCom.Interfaces;
 
+
 namespace PckView
 {
-	public class Editor
+	internal sealed class Editor
 		:
-		System.Windows.Forms.Form
+			Form
 	{
 		public event EventHandler PalViewClosing;
 
-		private System.ComponentModel.Container components = null;
-		private EditorPanel edit;
-		private PalView palView;
-		private System.Windows.Forms.MainMenu menu;
-		private System.Windows.Forms.MenuItem paletteMain;
-		private System.Windows.Forms.MenuItem showPalette;
-		private ButtonPanel buttons;
-		private System.Windows.Forms.MenuItem linesItem;
-		private System.Windows.Forms.MenuItem showLines;
-		private TrackBar size;
+		private Container components = null;
+		private readonly EditorPanel _editPanel;
+		private PalView _palView;
+		private MainMenu menu;
+		private MenuItem paletteMain;
+		private MenuItem showPalette;
+		private ButtonPanel _buttonsPanel;
+		private MenuItem linesItem;
+		private MenuItem showLines;
+		private TrackBar _trackBar;
 
-		public Editor(PckImage curr)
+
+		public Editor(PckImage image)
 		{
-			edit = new EditorPanel(curr);
-			buttons = new ButtonPanel();
-			size = new TrackBar();
+			_editPanel = new EditorPanel(image);
+			_buttonsPanel = new ButtonPanel();
+			_trackBar = new TrackBar();
 
-			size.Minimum = 1;
-			size.Maximum = 10;
+			_trackBar.Minimum = 1;
+			_trackBar.Maximum = 10;
 
 			InitializeComponent();
 
-			Controls.Add(edit);
-			Controls.Add(buttons);
-			Controls.Add(size);
+			Controls.Add(_editPanel);
+			Controls.Add(_buttonsPanel);
+			Controls.Add(_trackBar);
 
-			buttons.Location = new Point(0,0);
-			buttons.Width = buttons.PreferredWidth;
+			_buttonsPanel.Location = new Point(0, 0);
+			_buttonsPanel.Width = _buttonsPanel.PreferredWidth;
 
-			size.Left =	buttons.Right;
-			size.Top =	buttons.Top;
-			edit.Top =	size.Bottom;
-			edit.Left =	buttons.Right;
+			_trackBar.Left = _buttonsPanel.Right;
+			_trackBar.Top  = _buttonsPanel.Top;
+
+			_editPanel.Top  = _trackBar.Bottom;
+			_editPanel.Left = _buttonsPanel.Right;
 
 			ClientSize = new Size(
-								buttons.PreferredWidth + edit.Editor.PreferredWidth,
-								edit.Editor.PreferredHeight + size.Height);
+								EditorPane.PreferredWidth  + _buttonsPanel.PreferredWidth,
+								EditorPane.PreferredHeight + _trackBar.Height);
 
-			palView = new PalView();
-			palView.Closing += new CancelEventHandler(palClose);
+			_palView = new PalView();
+			_palView.Closing += new CancelEventHandler(palClose);
 
-			palView.PaletteIndexChanged += new PaletteClickDelegate(edit.Editor.SelectColor);
-			size.Scroll += new EventHandler(sizeScroll);
+			_palView.PaletteIndexChanged += _editPanel.Editor.SelectColor;
+			_trackBar.Scroll += sizeScroll;
 		}
 
 		private void sizeScroll(object sender, EventArgs e)
 		{
-			edit.Editor.ScaleVal=size.Value;
+			_editPanel.Editor.ScaleVal=_trackBar.Value;
 		}
 
 		public Palette Palette
 		{
-			get { return edit.Editor.Palette; }
+//			get { return _editPanel.Editor.Palette; }
 			set
 			{
-				edit.Editor.Palette = value;
-				palView.Palette = value;
-				buttons.Palette = value;
+				_palView.Palette     =
+				_buttonsPanel.Palette     =
+				_editPanel.Editor.Palette = value;
 			}
 		}
 
 		public void ShowPalView()
 		{
-			if (palView.Visible)
-				palView.BringToFront();
+			if (_palView.Visible)
+				_palView.BringToFront();
 			else
 			{
-				palView.Left = Right;
-				palView.Top = Top;
-				palView.Show();
+				_palView.Left = Right;
+				_palView.Top = Top;
+				_palView.Show();
 			}
 			showPalette.Checked = true;
 		}
@@ -91,7 +94,7 @@ namespace PckView
 		private void palClose(object sender, CancelEventArgs e)
 		{
 			e.Cancel = true;
-			palView.Hide();
+			_palView.Hide();
 			showPalette.Checked = false;
 
 			if (PalViewClosing != null)
@@ -100,22 +103,23 @@ namespace PckView
 
 		protected override void OnResize(EventArgs e)
 		{
-			edit.Width = ClientSize.Width-buttons.PreferredWidth;
-			edit.Height = ClientSize.Height - size.Height;
-			buttons.Height = ClientSize.Height;
-			size.Width = edit.Width;
+			_editPanel.Width  = ClientSize.Width  - _buttonsPanel.PreferredWidth;
+			_editPanel.Height = ClientSize.Height - _trackBar.Height;
 
-			edit.Left = buttons.Right;
-			size.Left = edit.Left;
+			_buttonsPanel.Height = ClientSize.Height;
+			_trackBar.Width = _editPanel.Width;
+
+			_editPanel.Left = _buttonsPanel.Right;
+			_trackBar.Left = _editPanel.Left;
 		}
 
-		public XCImage CurrImage
+		public XCImage Image
 		{
-			get { return edit.Editor.Image; }
+//			get { return _editPanel.Editor.Image; }
 			set
 			{
-				edit.Editor.Image = value;
-				buttons.Image = value;
+//				_buttonsPanel.Image = value;
+				_editPanel.Editor.Image = value;
 				OnResize(null);
 			}
 		}
@@ -127,7 +131,7 @@ namespace PckView
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && components != null)
-					components.Dispose();
+				components.Dispose();
 
 			base.Dispose(disposing);
 		}
@@ -186,18 +190,18 @@ namespace PckView
 		}
 		#endregion
 
-		private void showPalette_Click(object sender, System.EventArgs e)
+		private void showPalette_Click(object sender, EventArgs e)
 		{
-			if(showPalette.Checked)
-				palView.Close();
+			if (showPalette.Checked)
+				_palView.Close();
 			else
 				ShowPalView();
 		}
 
-		private void showLines_Click(object sender, System.EventArgs e)
+		private void showLines_Click(object sender, EventArgs e)
 		{
-			showLines.Checked=!showLines.Checked;
-			edit.Editor.Lines=showLines.Checked;
+			showLines.Checked =! showLines.Checked;
+			_editPanel.Editor.Lines = showLines.Checked;
 		}
 	}
 }

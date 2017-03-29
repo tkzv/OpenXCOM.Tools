@@ -45,7 +45,7 @@ namespace XCom.Interfaces.Base
 	/// <summary>
 	/// EventArgs with a MapLocation and MapTile for when a SelectedTileChanged event fires.
 	/// </summary>
-	public class SelectedTileChangedEventArgs
+	public sealed class SelectedTileChangedEventArgs
 		:
 			EventArgs
 	{
@@ -72,7 +72,7 @@ namespace XCom.Interfaces.Base
 	/// <summary>
 	/// EventArgs for when a HeightChanged event fires.
 	/// </summary>
-	public class HeightChangedEventArgs
+	public sealed class HeightChangedEventArgs
 		:
 			EventArgs
 	{

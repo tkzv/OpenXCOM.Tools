@@ -8,7 +8,7 @@ namespace XCom
 {
 	public class XCImageCollection
 		:
-		List<XCImage>
+			List<XCImage>
 	{
 		private string _name;
 		public string Name

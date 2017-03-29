@@ -1,13 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace PckView.Panels
 {
-	public class ViewPckItem
+	internal sealed class ViewPckItem
 	{
-		public int X;
-		public int Y;
-		public int Index;
+		public int X
+		{ get; set; }
+
+		public int Y
+		{ get; set; }
+
+		public int Index
+		{ get; set; }
 	}
 }

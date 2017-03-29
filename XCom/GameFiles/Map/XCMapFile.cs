@@ -349,7 +349,7 @@ namespace XCom
 													+ "Invalid value(s) in .MAP file: " + BaseName + Environment.NewLine
 													+ "indices: " + q1 + "," + q2 + "," + q3 + "," + q4 + Environment.NewLine
 													+ "length: " + tiles.Count + Environment.NewLine
-													+ ex,
+													+ ex + ":" + ex.Message,
 												"Error",
 												System.Windows.Forms.MessageBoxButtons.OK,
 												System.Windows.Forms.MessageBoxIcon.Warning,

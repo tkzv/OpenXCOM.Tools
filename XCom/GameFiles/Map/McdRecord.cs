@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using XCom.Interfaces;
+
 
 #region About the mcdEntry
 // http://ufo2k-allegro.lxnt.info/srcdocs/terrapck_8h-source.html
@@ -54,6 +53,7 @@ using XCom.Interfaces;
 }; */
 #endregion
 
+
 namespace XCom
 {
 	public enum TileType
@@ -65,13 +65,13 @@ namespace XCom
 		Object    =  3
 	};
 
-	public class McdEntry
+	public sealed class McdRecord
 		:
 			XCom.Interfaces.Base.IMcdInfo
 	{
 		private static int _idCanonical = 0;
 
-		internal McdEntry()
+		internal McdRecord()
 		{
 			Id = _idCanonical++;
 		}

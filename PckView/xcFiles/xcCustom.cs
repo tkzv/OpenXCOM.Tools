@@ -5,13 +5,13 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	public class xcCustom
+	internal class xcCustom
 		:
-		IXCImageFile
+			IXCImageFile
 	{
 		public xcCustom()
 			:
-			this(0, 0)
+				this(0, 0)
 		{}
 
 		public xcCustom(int width, int height)

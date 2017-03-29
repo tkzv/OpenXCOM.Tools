@@ -14,11 +14,12 @@ namespace DSShared.FileSystems
 		void Backup(string filePath);
 	}
 
+
 	/// <summary>
 	/// </summary>
-	public class FileBackupManager
+	public sealed class FileBackupManager
 		:
-		IFileBackupManager
+			IFileBackupManager
 	{
 		/// <summary>
 		/// Backups a file.

@@ -130,7 +130,7 @@ namespace XCom.Interfaces
 		/// See: AssemblyLoadable.RegisterFile
 		/// </summary>
 		/// <returns></returns>
-		public virtual bool RegisterFile()
+		public bool RegisterFile()
 		{
 //			Console.WriteLine("{0} registered: {1}", this.GetType(), GetType() != typeof(IXCFile));
 			XConsole.AdZerg(string.Format(
@@ -171,6 +171,8 @@ namespace XCom.Interfaces
 		{}
 
 
+		// From HERE TO THE END OF THIS CLASS will Crash and Burn.
+
 		/// <summary>
 		/// Calls LoadFile with ImageSize.Width and ImageSize.Height.
 		/// </summary>
@@ -185,8 +187,6 @@ namespace XCom.Interfaces
 						ImageSize.Width,
 						ImageSize.Height);
 		}
-
-		// From HERE TO THE END OF THIS CLASS will Crash and Burn.
 
 		/// <summary>
 		/// Method that calls the overloaded load function in order to do some
@@ -262,7 +262,7 @@ namespace XCom.Interfaces
 				int height,
 				Palette pal)
 		{
-			throw new Exception("base function is abstract: IXCImageFile.LoadFileOverride(...)");
+			throw new Exception("muahahahha IXCImageFile.LoadFileOverride DOES NOTHING (except clock a few more CPU cycles)!");
 		}
 
 		/// <summary>
@@ -273,7 +273,7 @@ namespace XCom.Interfaces
 		/// <param name="images">images to save in this format</param>
 		public void SaveCollection(string dir, string file, XCImageCollection images)
 		{
-			throw new Exception("Override not yet implemented: IXCFile::SaveCollection(...)");
+			throw new Exception("muahahahha IXCImageFile.SaveCollection DOES NOTHING (except clock a few more CPU cycles)!");
 		}
 	}
 

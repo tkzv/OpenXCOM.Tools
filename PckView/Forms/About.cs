@@ -5,9 +5,9 @@ using System.Reflection;
 
 namespace PckView
 {
-	public partial class About
+	internal sealed partial class About
 		:
-		System.Windows.Forms.Form
+			System.Windows.Forms.Form
 	{
 		public About()
 		{

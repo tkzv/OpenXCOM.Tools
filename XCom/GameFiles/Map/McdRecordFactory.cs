@@ -3,11 +3,11 @@ using System.Drawing;
 
 namespace XCom
 {
-	internal static class McdEntryFactory
+	internal static class McdRecordFactory
 	{
-		public static McdEntry Create(byte[] info)
+		public static McdRecord Create(byte[] info)
 		{
-			var entry = new McdEntry();
+			var entry = new McdRecord();
 
 			entry.Image1 = info[0];
 			entry.Image2 = info[1];

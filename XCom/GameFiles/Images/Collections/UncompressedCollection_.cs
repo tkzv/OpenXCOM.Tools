@@ -1,3 +1,4 @@
+/*
 using System;
 using XCom.Interfaces;
 
@@ -6,7 +7,7 @@ namespace XCom
 {
 	public class UncompressedCollection
 		:
-		XCImageCollection
+			XCImageCollection
 	{
 		public UncompressedCollection(
 				int width,
@@ -42,3 +43,4 @@ namespace XCom
 		}
 	}
 }
+*/

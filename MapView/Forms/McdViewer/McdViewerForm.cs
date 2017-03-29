@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 using XCom;
@@ -11,9 +7,9 @@ using XCom;
 
 namespace MapView.Forms.McdViewer
 {
-	public partial class McdViewerForm
+	internal sealed partial class McdViewerForm
 		:
-		Form
+			Form
 	{
 		public McdViewerForm()
 		{
@@ -23,119 +19,119 @@ namespace MapView.Forms.McdViewer
 			rtb.ReadOnly = true;
 		}
 
-		public void UpdateData(McdEntry info)
+		public void UpdateData(McdRecord record)
 		{
-			InfoBs.DataSource = info;
+			InfoBs.DataSource = record;
 
-			rtb.Text = "";
+			rtb.Text = String.Empty;
 
-			if (info != null)
+			if (record != null)
 			{
 				rtb.SelectionColor = Color.DarkGray;
-				rtb.AppendText(info.Reference0To30);
-				rtb.AppendText("\n");
+				rtb.AppendText(record.Reference0To30);
+				rtb.AppendText(Environment.NewLine);
 				rtb.SelectionColor = Color.DarkGray;
-				rtb.AppendText(info.Reference30To62);
-				rtb.AppendText("\n\n");
+				rtb.AppendText(record.Reference30To62);
+				rtb.AppendText(Environment.NewLine + Environment.NewLine);
 
 				rtb.SelectionColor = Color.Black;
 				rtb.AppendText(string.Format(
 										System.Globalization.CultureInfo.InvariantCulture,
-										"Images: {0} {1} {2} {3} {4} {5} {6} {7}\n",
-										info.Image1,
-										info.Image2,
-										info.Image3,
-										info.Image4,
-										info.Image5,
-										info.Image6,
-										info.Image7,
-										info.Image8));
+										"Images: {0} {1} {2} {3} {4} {5} {6} {7}" + Environment.NewLine,
+										record.Image1,
+										record.Image2,
+										record.Image3,
+										record.Image4,
+										record.Image5,
+										record.Image6,
+										record.Image7,
+										record.Image8));
 
-				rtb.AppendText(info.LoftReference);
+				rtb.AppendText(record.LoftReference);
 
-				rtb.AppendText(info.ScanGReference);
+				rtb.AppendText(record.ScanGReference);
 
 //				short int ScanG; // A reference into the GEODATA\SCANG.DAT
-//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[22])); // unsigned char u23;
-//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[23])); // unsigned char u24;
-//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[24])); // unsigned char u25;
-//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[25])); // unsigned char u26;
-//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[26])); // unsigned char u27;
-//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[27])); // unsigned char u28;
-//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[28])); // unsigned char u29;
-//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[29])); // unsigned char u30;
+//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[22])); // unsigned char u23;
+//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[23])); // unsigned char u24;
+//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[24])); // unsigned char u25;
+//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[25])); // unsigned char u26;
+//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[26])); // unsigned char u27;
+//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[27])); // unsigned char u28;
+//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[28])); // unsigned char u29;
+//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[29])); // unsigned char u30;
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "UFO Door: {0}\n", info.UfoDoor));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "UFO Door: {0}" + Environment.NewLine, record.UfoDoor));
 //				unsigned char UFO_Door;	// If it's a UFO door it uses only Frame[0] until it is walked through, then
 										// it animates once and becomes Alt_MCD. It changes back at the end of the turn
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "SeeThru: {0}\n", info.StopLOS));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "SeeThru: {0}" + Environment.NewLine, record.StopLOS));
 //				unsigned char Stop_LOS; // You cannot see through this tile.
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "No Floor: {0}\n", info.NoGround));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "No Floor: {0}" + Environment.NewLine, record.NoGround));
 //				unsigned char No_Floor; // If 1, then a non-flying unit can't stand here
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Big Wall: {0}\n", info.BigWall));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Big Wall: {0}" + Environment.NewLine, record.BigWall));
 //				unsigned char Big_Wall; // It's an object (tile type 3), but it acts like a wall
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Grav Lift: {0}\n", info.GravLift));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Grav Lift: {0}" + Environment.NewLine, record.GravLift));
 //				unsigned char Gravlift;
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "People Door: {0}\n", info.HumanDoor));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "People Door: {0}" + Environment.NewLine, record.HumanDoor));
 //				unsigned char Door; // It's a human style door--you walk through it and it changes to Alt_MCD
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Block fire: {0}\n", info.BlockFire));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Block fire: {0}" + Environment.NewLine, record.BlockFire));
 //				unsigned char Block_Fire; // If 1, fire won't go through the tile
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Block Smoke: {0}\n", info.BlockSmoke));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Block Smoke: {0}" + Environment.NewLine, record.BlockSmoke));
 //				unsigned char Block_Smoke; // If 1, smoke won't go through the tile
 
-				//rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[38]));
+				//rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[38]));
 //				unsigned char u39;
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "TU Walk: {0}\n", info.TU_Walk));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "TU Walk: {0}" + Environment.NewLine, record.TU_Walk));
 //				unsigned char TU_Walk; // The number of TUs required to pass the tile while walking. 0xFF (255) means it's unpassable.
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "TU Fly: {0}\n", info.TU_Fly));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "TU Fly: {0}" + Environment.NewLine, record.TU_Fly));
 //				unsigned char TU_Fly; // remember, 0xFF means it's impassable!
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "TU Slide: {0}\n", info.TU_Slide));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "TU Slide: {0}" + Environment.NewLine, record.TU_Slide));
 //				unsigned char TU_Slide; // sliding things include snakemen and silacoids
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Armor: {0}\n", info.Armor));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Armor: {0}" + Environment.NewLine, record.Armor));
 //				unsigned char Armour; // The higher this is the less likely it is that a weapon will destroy this tile when it's hit.
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "HE Block: {0}\n", info.HE_Block));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "HE Block: {0}" + Environment.NewLine, record.HE_Block));
 //				unsigned char HE_Block; // How much of an explosion this tile will block
 
 				rtb.SelectionColor = Color.Crimson;
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Death tile: {0}\n", info.DieTile));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Death tile: {0}" + Environment.NewLine, record.DieTile));
 //				unsigned char Die_MCD; // If the terrain is destroyed, it is set to 0 and a tile of type Die_MCD is added
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Flammable: {0}\n", info.Flammable));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Flammable: {0}" + Environment.NewLine, record.Flammable));
 //				unsigned char Flammable; // How flammable it is (the higher the harder it is to set aflame)
 
 				rtb.SelectionColor = Color.Crimson;
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Door open tile: {0}\n", info.Alt_MCD));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Door open tile: {0}" + Environment.NewLine, record.Alt_MCD));
 //				unsigned char Alt_MCD; // If "Door" or "UFO_Door" is on, then when a unit walks through it the door is set to 0 and a tile type Alt_MCD is added.
 
-//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[47])); // unsigned char u48;
+//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[47])); // unsigned char u48;
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unit y offset: {0}\n", info.StandOffset));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unit y offset: {0}" + Environment.NewLine, record.StandOffset));
 //				signed char T_Level; // When a unit or object is standing on the tile, the unit is shifted by this amount
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "tile y offset: {0}\n", info.TileOffset));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "tile y offset: {0}" + Environment.NewLine, record.TileOffset));
 //				unsigned char P_Level; // When the tile is drawn, this amount is subtracted from its y (so y position-P_Level is where it's drawn)
 
-//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[50]));// unsigned char u51;
+//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[50]));// unsigned char u51;
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "block light[0-10]: {0}\n", info.LightBlock));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "block light[0-10]: {0}" + Environment.NewLine, record.LightBlock));
 //				unsigned char Light_Block; // The amount of light it blocks, from 0 to 10
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "footstep sound effect: {0}\n", info.Footstep));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "footstep sound effect: {0}" + Environment.NewLine, record.Footstep));
 //				unsigned char Footstep; // The Sound Effect set to choose from when footsteps are on the tile
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "tile type: {0} - {1}\n", (sbyte)info.TileType, Enum.GetName(typeof(TileType), info.TileType)));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "tile type: {0} - {1}" + Environment.NewLine, (sbyte)record.TileType, Enum.GetName(typeof(TileType), record.TileType)));
 //				info.TileType==0?"floor":info.TileType==1?"west wall":info.TileType==2?"north wall":info.TileType==3?"object":"Unknown"));
 //				unsigned char Tile_Type;	// This is the type of tile it is meant to be -- 0=floor, 1=west wall, 2=north wall, 3=object.
 											// When this type of tile is in the Die_As or Open_As flags, this value is added to the tile
@@ -143,30 +139,30 @@ namespace MapView.Forms.McdViewer
 
 				rtb.AppendText(string.Format(
 										System.Globalization.CultureInfo.InvariantCulture,
-										"high explosive type: {0} - {1}\n",
-										info.HE_Type,
-										(info.HE_Type == 0) ? "HE" : (info.HE_Type == 1) ? "smoke" : "unknown"));
+										"high explosive type: {0} - {1}" + Environment.NewLine,
+										record.HE_Type,
+										(record.HE_Type == 0) ? "HE" : (record.HE_Type == 1) ? "smoke" : "unknown"));
 //				unsigned char HE_Type; // 0=HE 1=Smoke
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "HE Strength: {0}\n", info.HE_Strength));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "HE Strength: {0}" + Environment.NewLine, record.HE_Strength));
 //				unsigned char HE_Strength; // The strength of the explosion caused when it's destroyed. 0 means no explosion.
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "smoke blockage: {0}\n", info.SmokeBlockage));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "smoke blockage: {0}" + Environment.NewLine, record.SmokeBlockage));
 //				unsigned char Smoke_Blockage; // ? Not sure about this
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "turns to burn: {0}\n", info.Fuel));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "turns to burn: {0}" + Environment.NewLine, record.Fuel));
 //				unsigned char Fuel; // The number of turns the tile will burn when set aflame
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "light produced: {0}\n", info.LightSource));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "light produced: {0}" + Environment.NewLine, record.LightSource));
 //				unsigned char Light_Source; // The amount of light this tile produces
 
-				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "special: {0}\n", info.TargetType));
+				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "special: {0}" + Environment.NewLine, record.TargetType));
 //				unsigned char Target_Type; // The special properties of the tile
 
-//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[60]));
+//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[60]));
 //				unsigned char u61;
 
-//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}\n",info[61]));
+//				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[61]));
 //				unsigned char u62;
 			}
 		}

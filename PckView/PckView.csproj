@@ -136,11 +136,11 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Forms\BmpForm.cs">
+    <Compile Include="Forms\BmpForm_.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\BmpForm.Designer.cs">
-      <DependentUpon>BmpForm.cs</DependentUpon>
+    <Compile Include="Forms\BmpForm_.Designer.cs">
+      <DependentUpon>BmpForm_.cs</DependentUpon>
     </Compile>
     <Compile Include="ImgProfile.cs" />
     <Compile Include="Editor\ButtonPanel.cs">
@@ -170,11 +170,11 @@
     <Compile Include="Forms\ModForm.Designer.cs">
       <DependentUpon>ModForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\OpenCustomForm.cs">
+    <Compile Include="Forms\OpenCustomForm_.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\OpenCustomForm.Designer.cs">
-      <DependentUpon>OpenCustomForm.cs</DependentUpon>
+    <Compile Include="Forms\OpenCustomForm_.Designer.cs">
+      <DependentUpon>OpenCustomForm_.cs</DependentUpon>
     </Compile>
     <Compile Include="Palette\PalPanel.cs">
       <SubType>Component</SubType>
@@ -183,11 +183,11 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="Forms\SaveProfileForm.cs">
+    <Compile Include="Forms\SaveProfileForm_.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SaveProfileForm.Designer.cs">
-      <DependentUpon>SaveProfileForm.cs</DependentUpon>
+    <Compile Include="Forms\SaveProfileForm_.Designer.cs">
+      <DependentUpon>SaveProfileForm_.cs</DependentUpon>
     </Compile>
     <Compile Include="Panels\TotalViewPck.cs">
       <SubType>Component</SubType>
@@ -206,24 +206,24 @@
     <Compile Include="Panels\ViewPck.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="xcFiles\xcBmp.cs">
+    <Compile Include="xcFiles\xcBmp_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="xcFiles\xcBmp32.cs" />
+    <Compile Include="xcFiles\xcBmp32_.cs" />
     <Compile Include="xcFiles\xcCustom.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="xcFiles\xcForceCustom.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="xcFiles\xcProfile.cs">
+    <Compile Include="xcFiles\XCProfile.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_PckView.cs">
+    <Compile Include="PckView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="_PckView.Designer.cs">
-      <DependentUpon>_PckView.cs</DependentUpon>
+    <Compile Include="PckView.Designer.cs">
+      <DependentUpon>PckView.cs</DependentUpon>
     </Compile>
     <Content Include="App.ico" />
   </ItemGroup>
@@ -231,30 +231,30 @@
     <EmbeddedResource Include="Forms\About.resx">
       <DependentUpon>About.Designer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\BmpForm.resx">
+    <EmbeddedResource Include="Forms\BmpForm_.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>BmpForm.cs</DependentUpon>
+      <DependentUpon>BmpForm_.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ModForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ModForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OpenCustomForm.resx">
+    <EmbeddedResource Include="Forms\OpenCustomForm_.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>OpenCustomForm.cs</DependentUpon>
+      <DependentUpon>OpenCustomForm_.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SaveProfileForm.resx">
+    <EmbeddedResource Include="Forms\SaveProfileForm_.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>SaveProfileForm.cs</DependentUpon>
+      <DependentUpon>SaveProfileForm_.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="_PckView.resx">
+    <EmbeddedResource Include="PckView.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>_PckView.cs</DependentUpon>
+      <DependentUpon>PckView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

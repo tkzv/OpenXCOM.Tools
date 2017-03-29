@@ -13,19 +13,19 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	public delegate void PckViewMouseClicked(object sender, PckViewMouseClickArgs e);
-	public delegate void PckViewMouseMoved(int moveNum);
+	public delegate void PckViewMouseClicked(object sender, PckViewMouseEventArgs e);
+	public delegate void PckViewMouseMoved(int pixels);
 
 
-	public class ViewPck
+	internal sealed class ViewPck
 		:
-		Panel
+			Panel
 	{
 		private XCImageCollection _collection;
 
-		private const int _pad = 2;
+		private const int Pad = 2;
 
-		private Color goodColor = Color.FromArgb(204, 204, 255);
+//		private Color goodColor = Color.FromArgb(204, 204, 255);
 		private SolidBrush goodBrush = new SolidBrush(Color.FromArgb(204, 204, 255));
 
 		private int _moveX;
@@ -87,7 +87,7 @@ namespace PckView
 
 		public int PreferredHeight
 		{
-			get { return (_collection != null) ? calcHeight()
+			get { return (_collection != null) ? CalculateHeight()
 											   : 0; }
 		}
 
@@ -97,7 +97,7 @@ namespace PckView
 			set
 			{
 				if ((_collection = value) != null)
-					Height = calcHeight();
+					Height = CalculateHeight();
 
 				click( null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 				moving(null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
@@ -117,7 +117,7 @@ namespace PckView
 					{
 						var item = new ViewPckItemImage();
 						item.Item = selectedItem;
-						item.Image = _collection[GetIndexOf(selectedItem)];
+						item.Image = _collection[GetId(selectedItem)];
 						list.Add(item);
 					}
 					return list.AsReadOnly();
@@ -136,18 +136,18 @@ namespace PckView
 			if (_collection != null)
 			{
 				int x =  e.X / GetSpecialWidth(_collection.IXCFile.ImageSize.Width);
-				int y = (e.Y - _startY) / (_collection.IXCFile.ImageSize.Height + 2 * _pad);
+				int y = (e.Y - _startY) / (_collection.IXCFile.ImageSize.Height + 2 * Pad);
 
 				if (x != _moveX || y != _moveY)
 				{
 					_moveX = x;
 					_moveY = y;
 
-					if (_moveX >= numAcross())
-						_moveX = numAcross() - 1;
+					if (_moveX >= PixelsAcross())
+						_moveX = PixelsAcross() - 1;
 
 					if (ViewMoved != null)
-						ViewMoved(_moveY * numAcross() + _moveX);
+						ViewMoved(_moveY * PixelsAcross() + _moveX);
 				}
 			}
 		}
@@ -157,12 +157,12 @@ namespace PckView
 			if (_collection != null)
 			{
 				var x =  e.X / GetSpecialWidth(_collection.IXCFile.ImageSize.Width);
-				var y = (e.Y - _startY) / (_collection.IXCFile.ImageSize.Height + 2 * _pad);
+				var y = (e.Y - _startY) / (_collection.IXCFile.ImageSize.Height + 2 * Pad);
 
-				if (x >= numAcross())
-					x = numAcross() - 1;
+				if (x >= PixelsAcross())
+					x = PixelsAcross() - 1;
 	
-				var index = y * numAcross() + x;
+				var index = y * PixelsAcross() + x;
 
 				var selected = new ViewPckItem();
 				selected.X = x;
@@ -197,7 +197,7 @@ namespace PckView
 
 					if (ViewClicked != null)
 					{
-						var args = new PckViewMouseClickArgs(e, index);
+						var args = new PckViewMouseEventArgs(e, index);
 						ViewClicked(this, args);
 					}
 				}
@@ -218,43 +218,43 @@ namespace PckView
 					{
 						g.FillRectangle(
 									goodBrush,
-									selectedItem.X * specialWidth - _pad,
-									_startY + selectedItem.Y * (_collection.IXCFile.ImageSize.Height + 2 * _pad) - _pad,
+									selectedItem.X * specialWidth - Pad,
+									_startY + selectedItem.Y * (_collection.IXCFile.ImageSize.Height + 2 * Pad) - Pad,
 									specialWidth,
-									_collection.IXCFile.ImageSize.Height + 2 * _pad);
+									_collection.IXCFile.ImageSize.Height + 2 * Pad);
 					}
 					else
 					{
 						g.FillRectangle(
 									Brushes.Red,
-									selectedItem.X * specialWidth - _pad,
-									_startY + selectedItem.Y * (_collection.IXCFile.ImageSize.Height + 2 * _pad) - _pad,
+									selectedItem.X * specialWidth - Pad,
+									_startY + selectedItem.Y * (_collection.IXCFile.ImageSize.Height + 2 * Pad) - Pad,
 									specialWidth,
-									_collection.IXCFile.ImageSize.Height + 2 * _pad);
+									_collection.IXCFile.ImageSize.Height + 2 * Pad);
 					}
 				}
 
-				for (int i = 0; i < numAcross() + 1; i++)
+				for (int i = 0; i < PixelsAcross() + 1; i++)
 					g.DrawLine(
 							Pens.Black,
-							new Point(i * specialWidth - _pad,          _startY),
-							new Point(i * specialWidth - _pad, Height - _startY));
+							new Point(i * specialWidth - Pad,          _startY),
+							new Point(i * specialWidth - Pad, Height - _startY));
 
-				for (int i = 0; i < _collection.Count / numAcross() + 1; i++)
+				for (int i = 0; i < _collection.Count / PixelsAcross() + 1; i++)
 					g.DrawLine(
 							Pens.Black,
-							new Point(0,     _startY + i * (_collection.IXCFile.ImageSize.Height + 2 * _pad) - _pad),
-							new Point(Width, _startY + i * (_collection.IXCFile.ImageSize.Height + 2 * _pad) - _pad));
+							new Point(0,     _startY + i * (_collection.IXCFile.ImageSize.Height + 2 * Pad) - Pad),
+							new Point(Width, _startY + i * (_collection.IXCFile.ImageSize.Height + 2 * Pad) - Pad));
 
 				for (int i = 0; i < _collection.Count; i++)
 				{
-					int x = i % numAcross();
-					int y = i / numAcross();
+					int x = i % PixelsAcross();
+					int y = i / PixelsAcross();
 					try
 					{
 						g.DrawImage(
 								_collection[i].Image, x * specialWidth,
-								_startY + y * (_collection.IXCFile.ImageSize.Height + 2 * _pad));
+								_startY + y * (_collection.IXCFile.ImageSize.Height + 2 * Pad));
 					}
 					catch {} // TODO: that.
 				}
@@ -296,34 +296,34 @@ namespace PckView
 			if (Collection.Count != 0)
 			{
 				var selected = new ViewPckItem();
-				selected.Y = lowestIndex / numAcross();
+				selected.Y = lowestIndex / PixelsAcross();
 				selected.X = lowestIndex - selected.Y;
-				selected.Index = selected.Y * numAcross() + selected.X;
+				selected.Index = selected.Y * PixelsAcross() + selected.X;
 
 				_selectedItems.Add(selected);
 			}
 		}
 
-		private int numAcross()
+		private int PixelsAcross()
 		{
 			return Math.Max(
 						1,
-						(Width - 8) / (_collection.IXCFile.ImageSize.Width + 2 * _pad));
+						(Width - 8) / (_collection.IXCFile.ImageSize.Width + 2 * Pad));
 		}
 
-		private int calcHeight()
+		private int CalculateHeight()
 		{
-			return (_collection.Count / numAcross()) * (_collection.IXCFile.ImageSize.Height + 2 * _pad) + 60;
+			return (_collection.Count / PixelsAcross()) * (_collection.IXCFile.ImageSize.Height + 2 * Pad) + 60;
 		}
 
-		private int GetIndexOf(ViewPckItem selectedItem)
+		private int GetId(ViewPckItem selectedItem)
 		{
-			return selectedItem.Y * numAcross() + selectedItem.X;
+			return selectedItem.X + selectedItem.Y * PixelsAcross();
 		}
 
-		private int GetSpecialWidth(int width)
+		private static int GetSpecialWidth(int width)
 		{
-			return width + 2 * _pad;
+			return width + 2 * Pad;
 		}
 	}
 }

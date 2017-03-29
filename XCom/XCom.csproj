@@ -99,10 +99,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileDesc\FileDesc.cs" />
-    <Compile Include="GameFiles\Images\Collections\DotNetCollection.cs" />
-    <Compile Include="GameFiles\Images\xcFiles\xcBdy.cs" />
-    <Compile Include="GameFiles\Images\xcFiles\xcSpk.cs" />
-    <Compile Include="GameFiles\Map\McdEntryFactory.cs" />
+    <Compile Include="GameFiles\Images\Collections\DotNetCollection_.cs" />
+    <Compile Include="GameFiles\Images\Types\Empty Files_\BdyImage_.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GameFiles\Images\Types\Empty Files_\SpkImage_.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GameFiles\Images\xcFiles_\xcBdy_.cs" />
+    <Compile Include="GameFiles\Images\xcFiles_\xcSpk_.cs" />
+    <Compile Include="GameFiles\Map\McdRecordFactory.cs" />
     <Compile Include="GameFiles\Map\RouteData\Link.cs" />
     <Compile Include="GameFiles\Map\RouteData\RouteNode.cs" />
     <Compile Include="GameFiles\Map\RouteData\RouteService.cs" />
@@ -123,7 +129,7 @@
     <Compile Include="GameFiles\Images\Collections\PckSpriteCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\Collections\UncompressedCollection.cs">
+    <Compile Include="GameFiles\Images\Collections\UncompressedCollection_.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Images\Collections\XCImageCollection.cs">
@@ -135,28 +141,22 @@
     <Compile Include="GameFiles\Images\ImageInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\Types\BdyImage.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="GameFiles\Images\Types\Bmp.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Images\Types\PckImage.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\Types\Empty Files\ScrImage.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameFiles\Images\Types\SpkImage.cs">
+    <Compile Include="GameFiles\Images\Types\Empty Files_\ScrImage_.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Images\Types\XCImage.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\xcFiles\xcPck.cs">
+    <Compile Include="GameFiles\Images\xcFiles_\xcPck_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\xcFiles\xcUncompressed.cs">
+    <Compile Include="GameFiles\Images\xcFiles_\xcUncompressed_.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Map\BlankFile.cs">
@@ -168,7 +168,7 @@
     <Compile Include="GameFiles\Map\XCMapTile.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Map\McdEntry.cs">
+    <Compile Include="GameFiles\Map\McdRecord.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Map\McdTileCollection.cs">
@@ -189,7 +189,7 @@
     <Compile Include="FileDesc\XCTileset.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\VarCollection.cs">
+    <Compile Include="GameFiles\Varidia.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Variable.cs">
@@ -221,7 +221,7 @@
     <Compile Include="Palette.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ParseErrors.cs">
+    <Compile Include="ParseErrors_.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MapLocation.cs">
@@ -241,7 +241,7 @@
     <Compile Include="SharedSpaceServices\SharedSpace.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Updator.cs" />
+    <Compile Include="Updator_.cs" />
     <Compile Include="ConsoleForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -251,8 +251,8 @@
     <Compile Include="XConsole.cs">
       <SubType>Code</SubType>
     </Compile>
-    <EmbeddedResource Include="ParseErrors.resx">
-      <DependentUpon>ParseErrors.cs</DependentUpon>
+    <EmbeddedResource Include="ParseErrors_.resx">
+      <DependentUpon>ParseErrors_.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>

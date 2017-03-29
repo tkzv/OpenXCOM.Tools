@@ -6,16 +6,16 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	public class XCProfile
+	internal sealed class XCProfile
 		:
 			IXCImageFile
 	{
-		public static readonly string ProfileExt = ".pvp";
+		public const string ProfileExt = ".pvp";
 
 //		private readonly IXCImageFile _codec;
 
 
-		public XCProfile(ImgProfile profile)
+		public XCProfile(ImageProfile profile)
 			:
 				base(0, 0)
 		{

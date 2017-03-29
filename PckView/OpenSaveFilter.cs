@@ -5,28 +5,28 @@ using DSShared;
 
 namespace PckView
 {
-	public class OpenSaveFilter
+	internal sealed class OpenSaveFilter
 		:
-		IFilter<XCom.Interfaces.IXCImageFile>
+			IFilter<XCom.Interfaces.IXCImageFile>
 	{
-		private XCom.Interfaces.IXCImageFile.Filter filterBy;
+		private XCom.Interfaces.IXCImageFile.Filter _filter;
 
 
 		public OpenSaveFilter()
 		{
-			filterBy = XCom.Interfaces.IXCImageFile.Filter.Open;
+			_filter = XCom.Interfaces.IXCImageFile.Filter.Open;
 		}
 
 
 		public void SetFilter(XCom.Interfaces.IXCImageFile.Filter filter)
 		{
-			filterBy = filter;
+			_filter = filter;
 		}
 
 		public bool FilterObj(XCom.Interfaces.IXCImageFile obj)
 		{
 			//Console.WriteLine("Filter: {0} -> {1}", filterBy, obj.FileOptions[filterBy]);
-			return obj.FileOptions[filterBy];
+			return obj.FileOptions[_filter];
 		}
 	}
 }

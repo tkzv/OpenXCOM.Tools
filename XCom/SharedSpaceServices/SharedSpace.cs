@@ -16,7 +16,7 @@ namespace XCom
 
 		public const string CustomDir   = "CustomDir"; // for PckView ->
 		public const string Palettes    = "Palettes";
-		public const string ImageMods   = "ImageMods";
+		public const string ImageTypes  = "ImageTypes";
 
 		public const string CursorFile  = "cursorFile";
 		public const string Cursor      = "CURSOR";
@@ -89,7 +89,7 @@ namespace XCom
 
 		public List<IXCImageFile> GetImageModList()
 		{
-			return (List<IXCImageFile>)_share[ImageMods];
+			return (List<IXCImageFile>)_share[ImageTypes];
 		}
 
 		public Dictionary<string, Palette> GetPaletteTable()

@@ -1,3 +1,4 @@
+/*
 //#define USING_MYSQL
 
 #if USING_MYSQL
@@ -14,28 +15,28 @@ namespace DSShared.DB_MySql
 
 		private MySQL_DBInterface()
 		{}
-/*
-		public MySqlDataReader ExecuteReader(MySqlCommand comm)
-		{
-			res = comm.ExecuteReader();
-			return res;
-		}
 
-		public void CloseReader()
-		{
-			res.Close();
-			res = null;
-		}
-
-		public object GetColumn(string col)
-		{
-			if (res == null)
-				throw new Exception("Call to DBInterface::GetColumn on a null reader");
-
-			int colNum = res.GetOrdinal(col);
-			Console.WriteLine("Type: " + res.GetDataTypeName(colNum));
-			return res[col];
-		}*/
+//		public MySqlDataReader ExecuteReader(MySqlCommand comm)
+//		{
+//			res = comm.ExecuteReader();
+//			return res;
+//		}
+//
+//		public void CloseReader()
+//		{
+//			res.Close();
+//			res = null;
+//		}
+//
+//		public object GetColumn(string col)
+//		{
+//			if (res == null)
+//				throw new Exception("Call to DBInterface::GetColumn on a null reader");
+//
+//			int colNum = res.GetOrdinal(col);
+//			Console.WriteLine("Type: " + res.GetDataTypeName(colNum));
+//			return res[col];
+//		}
 
 		public MySql.Data.MySqlClient.MySqlConnection Connection
 		{
@@ -68,3 +69,4 @@ namespace DSShared.DB_MySql
 	}
 }
 #endif
+*/

@@ -8,7 +8,7 @@ namespace XCom
 {
 	public sealed partial class ConsoleForm
 		:
-		Form
+			Form
 	{
 		public ConsoleForm()
 		{

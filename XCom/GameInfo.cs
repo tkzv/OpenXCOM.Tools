@@ -32,7 +32,7 @@ namespace XCom
 			{
 				var vars = new Varidia(sr);	// this object is going to hold all sorts of keyval pairs
 											// be careful you don't duplicate/overwrite a var since the following loop
-				KeyvalPair keyVal;				// is going to rifle through all the config files and throw it together ...
+				KeyvalPair keyVal;			// is going to rifle through all the config files and throw it together ...
 				//LogFile.WriteLine("[1]GameInfo.Init parse Paths.cfg");
 				while ((keyVal = vars.ReadLine()) != null) // parse Paths.Cfg; will not return lines that start '$' (or whitespace lines)
 				{
@@ -79,7 +79,6 @@ namespace XCom
 		internal static Palette DefaultPalette
 		{
 			get { return _palette; }
-			set { _palette = value; }
 		}
 
 		internal static PckSpriteCollection GetPckPack(string imageSet)

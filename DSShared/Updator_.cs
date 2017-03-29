@@ -13,7 +13,7 @@ namespace DSShared
 	/// </summary>
 	public class Updator
 		:
-		DSShared.Interfaces.IUpdater
+			DSShared.Interfaces.IUpdater
 	{
 		/// <summary>
 		/// See: IUpdater.UpdatePath

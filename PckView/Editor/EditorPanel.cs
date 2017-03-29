@@ -1,18 +1,22 @@
 using System;
 using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
 using System.Windows.Forms;
-using XCom;
+
 using XCom.Interfaces;
+
 
 namespace PckView
 {
-	public class EditorPanel
+	internal sealed class EditorPanel
 		:
-		Panel
+			Panel
 	{
-		private EditorPane editor;
+		private readonly EditorPane editor;
+		public EditorPane Editor
+		{
+			get { return editor; }
+		}
+
 
 		public EditorPanel(XCImage img)
 		{
@@ -21,12 +25,8 @@ namespace PckView
 			Controls.Add(editor);
 		}
 
-		public EditorPane Editor
-		{
-			get { return editor; }
-		}
 
-		protected override void OnResize(EventArgs e)
+		protected override void OnResize(EventArgs eventargs)
 		{
 			editor.Size = ClientSize;
 		}
