@@ -209,14 +209,11 @@ namespace XCom
 				bw.Write(rows);
 				bw.Write(cols);
 				bw.Write(height);
-	
+
 				for (int h = 0; h != height; ++h)
 					for (int r = 0; r != rows; ++r)
 						for (int c = 0; c != cols; ++c)
 							bw.Write((int)0);
-	
-//				bw.Flush();
-//				bw.Close(); // NOTE: the 'using' block flushes & closes the stream.
 			}
 		}
 
@@ -265,8 +262,6 @@ namespace XCom
 						}
 
 //				fs.WriteByte(RouteFile.ExtraHeight); // <- NON-STANDARD <-| See also ReadMapFile() above^
-
-//				fs.Close(); // NOTE: the 'using' block closes the stream.
 			}
 			MapChanged = false;
 		}

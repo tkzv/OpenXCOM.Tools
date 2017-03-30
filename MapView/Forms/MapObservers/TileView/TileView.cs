@@ -334,10 +334,17 @@ namespace MapView.Forms.MapObservers.TileViews
 			if ((Map as XCMapFile) != null)
 			{
 				var service = new VolutarSettingService(Settings);
-				var path = service.FullPath;
-
+				var path = service.FullPath;	// this will invoke a box for the user to input the
+												// executable's path if it doesn't exist in Settings.
 				if (!String.IsNullOrEmpty(path))
+				{
+					string dir = path.Substring(0, path.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+					Directory.SetCurrentDirectory(dir); // change to MCDEdit dir so that accessing MCDEdit.txt doesn't cause probs.
+
 					Process.Start(new ProcessStartInfo(path));
+
+					Directory.SetCurrentDirectory(SharedSpace.Instance.GetString(SharedSpace.AppDir)); // change back to app dir
+				}
 			}
 		}
 	}

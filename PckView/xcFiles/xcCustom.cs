@@ -16,7 +16,7 @@ namespace PckView
 
 		public xcCustom(int width, int height)
 			:
-			base(width, height)
+				base(width, height)
 		{
 			Brief         = "Any File";
 			Description   = "Options for opening unknown files.";

@@ -688,9 +688,11 @@ namespace PckView
 
 		private void miModList_Click(object sender, EventArgs e)
 		{
-			var f = new ModForm();
-			f.SharedSpace = _share;
-			f.ShowDialog();
+			using (var f = new ModForm())
+			{
+				f.SharedSpace = _share;
+				f.ShowDialog();
+			}
 		}
 
 		private void miSaveDir_Click(object sender, EventArgs e)

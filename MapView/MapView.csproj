@@ -264,7 +264,7 @@
     <Compile Include="Forms\OtherForms\NewMapForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\NoDirForm.cs">
+    <Compile Include="Forms\OtherForms\OutputBox.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\OtherForms\PathsEditor.cs">
@@ -372,8 +372,8 @@
     <EmbeddedResource Include="Forms\OtherForms\NewMapForm.resx">
       <DependentUpon>NewMapForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\NoDirForm.resx">
-      <DependentUpon>NoDirForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\OtherForms\OutputBox.resx">
+      <DependentUpon>OutputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\PathsEditor.resx">
       <DependentUpon>PathsEditor.cs</DependentUpon>
@@ -399,14 +399,14 @@
     <EmbeddedResource Include="Forms\OtherForms\TilesetForm.resx">
       <DependentUpon>TilesetForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="_Embedded\ImagesTFTD.dat" />
-    <EmbeddedResource Include="_Embedded\ImagesUFO.dat" />
+    <EmbeddedResource Include="_Embedded\ImagesTFTD.cfg" />
+    <EmbeddedResource Include="_Embedded\ImagesUFO.cfg" />
     <EmbeddedResource Include="Forms\OtherForms\InstallWindow.resx">
       <SubType>Designer</SubType>
       <DependentUpon>InstallWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="_Embedded\MapEditTFTD.dat" />
-    <EmbeddedResource Include="_Embedded\MapEditUFO.dat" />
+    <EmbeddedResource Include="_Embedded\MapEditTFTD.cfg" />
+    <EmbeddedResource Include="_Embedded\MapEditUFO.cfg" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>

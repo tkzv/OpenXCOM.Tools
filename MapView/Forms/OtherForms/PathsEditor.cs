@@ -17,80 +17,19 @@ namespace MapView
 	/// <summary>
 	/// The PathsEditor.
 	/// </summary>
-	public sealed class PathsEditor
+	internal sealed class PathsEditor
 		:
-		Form
+			Form
 	{
-		private MainMenu mainMenu;
-		private MenuItem miFile;
-		private TabControl tabs;
-		private TabPage tabPaths;
-		private TabPage tabMaps;
-		private TabPage tabImages;
-		private Label label1;
-		private Label label2;
-		private Label label3;
-		private TextBox txtMap;
-		private TextBox txtImages;
-		private TextBox txtCursor;
-		private Label lblReminder;
-		private ListBox lstImages;
-		private TextBox txtImagePath;
-		private Label label4;
-		private GroupBox grpMapGroup;
-		private GroupBox grpMap;
-		private TextBox txtRoot;
-		private TextBox txtRmp;
-		private Label label5;
-		private Label label6;
-		private Label label7;
-		private TreeView treeMaps;
-		private ContextMenu cmTree;
-		private Label label8;
-		private ListBox listMapImages;
-		private Label label9;
-		private ListBox listAllImages;
-		private Button btnMoveLeft;
-		private Button btnMoveRight;
-		private Button btnDown;
-		private Button btnUp;
-		private Button btnClearRegistry;
-		private IContainer components;
-		private TextBox txtPalettes;
-		private Label label10;
-		private Button btnFindMap;
-		private Button btnFindImage;
-		private OpenFileDialog openFile;
-		private ContextMenu imagesCM;
-		private MenuItem addImageset;
-		private MenuItem delImageset;
-		private MenuItem newGroup;
-		private MenuItem addMap;
-		private MenuItem delMap;
-		private MenuItem delGroup;
-		private MenuItem menuItem1;
-		private Button btnRunInstall;
-		private Button btnSavePaths;
-		private Button btnSaveImages;
-		private Label lblImage2;
-		private TextBox txtImage2;
-		private ComboBox cbPalette;
-		private Button btnSaveMapEdit;
-		private MenuItem addSub;
-		private MenuItem delSub;
-		private MenuItem addNewMap;
-		private MenuItem addExistingMap;
-		private Button btnEditTree;
-		private MenuItem closeItem;
-		private Label label11;
-		private TextBox txtBlank;
-		private Button btnCopy;
-		private Button btnPaste;
+		private static bool _saveRegistry = true;
+		public static bool SaveRegistry
+		{
+			get { return _saveRegistry; }
+			set { _saveRegistry = value; }
+		}
 
 		private string _paths;
 		private string[] _images;
-
-		private static bool _saveRegistry = true;
 
 
 		public PathsEditor(string pathsPath)
@@ -99,34 +38,33 @@ namespace MapView
 
 			InitializeComponent();
 
-			// WORKAROUND: See note in 'MainWindow' cTor.
+			// WORKAROUND: See note in 'XCMainWindow' cTor.
 			var size = new System.Drawing.Size();
-			size.Width  = 0;
+			size.Width  =
 			size.Height = 0;
 			MaximumSize = size; // fu.net
-//			MinimumSize = size; // keep min size.
 
 
-			txtMap.Text    = GameInfo.TilesetInfo.Path;
-			txtImages.Text = GameInfo.ImageInfo.Path;
-			txtImage2.Text = GameInfo.ImageInfo.Path;
+			tbPathsMaps.Text    = GameInfo.TilesetInfo.Path;
+			tbPathsImages.Text  = GameInfo.ImageInfo.Path;
+			tbImagesImages.Text = GameInfo.ImageInfo.Path;
 
 //			txtCursor.Text   = GameInfo.CursorPath;
 //			txtCursor.Text   = GameInfo.MiscInfo.CursorFile;
 //			txtPalettes.Text = GameInfo.PalettePath;
 
-			populateImageList();
+			PopulateImageList();
 
 			populateTree();
 
-			cbPalette.Items.Add(Palette.UfoBattle);
-			cbPalette.Items.Add(Palette.TftdBattle);
+			cbMapsPalette.Items.Add(Palette.UfoBattle);
+			cbMapsPalette.Items.Add(Palette.TftdBattle);
 		}
 
 
 		private void populateTree()
 		{
-			treeMaps.Nodes.Clear();
+			tvMaps.Nodes.Clear();
 
 			var list = new ArrayList();
 			foreach (object ob in GameInfo.TilesetInfo.Tilesets.Keys)
@@ -140,7 +78,7 @@ namespace MapView
 				var it = GameInfo.TilesetInfo.Tilesets[ob];
 				if (it != null)
 				{
-					var tn = treeMaps.Nodes.Add(ob); // make the node for the tileset
+					var tn = tvMaps.Nodes.Add(ob); // make the node for the tileset
 
 					list1.Clear();
 
@@ -171,7 +109,7 @@ namespace MapView
 			}
 		}
 
-		private void populateImageList()
+		private void PopulateImageList()
 		{
 			var list = new ArrayList();
 
@@ -183,27 +121,21 @@ namespace MapView
 
 			foreach (object ob in list)
 			{
-				lstImages.Items.Add(ob);
-				listAllImages.Items.Add(ob);
+				lbImages.Items.Add(ob);
+				lbMapsImagesAll.Items.Add(ob);
 			}
 		}
 
-		public static bool SaveRegistry
+		private void lbImages_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			get { return _saveRegistry; }
-			set { _saveRegistry = value; }
+			tbImagesTerrain.Text = GameInfo.ImageInfo[(string)lbImages.SelectedItem].BasePath;
 		}
 
-		private void lstImages_SelectedIndexChanged(object sender, System.EventArgs e)
+		private void tvMaps_AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			txtImagePath.Text = GameInfo.ImageInfo[(string)lstImages.SelectedItem].BasePath;
-		}
-
-		private void treeMaps_AfterSelect(object sender, TreeViewEventArgs e)
-		{
-			grpMapGroup.Enabled = true;
-			grpMap.Enabled =
-			delMap.Enabled = false;
+			gbMapsTerrain.Enabled = true;
+			gbMapsBlock.Enabled =
+			delMap.Enabled      = false;
 
 			IXCTileset tileset = null;
 
@@ -215,20 +147,20 @@ namespace MapView
 
 				if (tn.Parent.Parent != null) // inner node
 				{
-					grpMapGroup.Enabled = false;
-					grpMap.Enabled =
+					gbMapsTerrain.Enabled = false;
+					gbMapsBlock.Enabled =
 					delMap.Enabled = true;
 
 					tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Parent.Text];
 
 					var desc = (XCMapDesc)tileset[tn.Text];
 
-					listMapImages.Items.Clear();
+					lbMapsImagesUsed.Items.Clear();
 
 					if (desc != null)
 					{
 						foreach (string dep in desc.Dependencies)
-							listMapImages.Items.Add(dep);
+							lbMapsImagesUsed.Items.Add(dep);
 					}
 					else
 					{
@@ -255,131 +187,139 @@ namespace MapView
 				delSub.Enabled = false;
 			}
 
-			txtRoot.Text  = tileset.MapPath;
-			txtRmp.Text   = tileset.RoutePath;
-			txtBlank.Text = tileset.BlankPath;
+			tbMapsMaps.Text   = tileset.MapPath;
+			tbMapsRoutes.Text = tileset.RoutePath;
+			tbMapsBlanks.Text = tileset.BlankPath;
 
-			cbPalette.SelectedItem = tileset.Palette;
+			cbMapsPalette.SelectedItem = tileset.Palette;
 		}
 
-		private void txtRoot_KeyPress(object sender, KeyPressEventArgs e)
+		private void tbMapsMaps_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == Convert.ToChar(Keys.Enter))
-				txtRoot_Leave(null, null);
+			if (e.KeyChar == Convert.ToChar(Keys.Enter, System.Globalization.CultureInfo.InvariantCulture))
+				tbMapsMaps_Leave(null, null);
 		}
 
-		private void txtRoot_Leave(object sender, System.EventArgs e)
+		private void tbMapsMaps_Leave(object sender, EventArgs e)
 		{
 			var tileset = getCurrentTileset();
-			if (!Directory.Exists(txtRoot.Text)
-				&& NoDirForm.Show(txtRoot.Text) != DialogResult.OK)
+			if (!Directory.Exists(tbMapsMaps.Text))
 			{
-				txtRoot.Text = tileset.MapPath;
+				using (var output = new OutputBox("Directory not found: " + tbMapsMaps.Text))
+				{
+					// TODO: Directory.CreateDirectory(dir);
+					output.ShowDialog();
+					tbMapsMaps.Text = tileset.MapPath;
+				}
 			}
-			tileset.MapPath = txtRoot.Text;
+			tileset.MapPath = tbMapsMaps.Text;
 		}
 
-		private void txtRmp_KeyPress(object sender, KeyPressEventArgs e)
+		private void tbMapsRoutes_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == Convert.ToChar(Keys.Enter))
-				txtRmp_Leave(null, null);
+			if (e.KeyChar == Convert.ToChar(Keys.Enter, System.Globalization.CultureInfo.InvariantCulture))
+				tbMapsRoutes_Leave(null, null);
 		}
 
-		private void txtRmp_Leave(object sender, System.EventArgs e)
+		private void tbMapsRoutes_Leave(object sender, EventArgs e)
 		{
 			var tileset = getCurrentTileset();
-			if (!Directory.Exists(txtRmp.Text)
-				&& NoDirForm.Show(txtRmp.Text) != DialogResult.OK)
+			if (!Directory.Exists(tbMapsRoutes.Text))
 			{
-				txtRmp.Text = tileset.RoutePath;
+				using (var output = new OutputBox("Directory not found: " + tbMapsRoutes.Text))
+				{
+					// TODO: Directory.CreateDirectory(dir);
+					output.ShowDialog();
+					tbMapsRoutes.Text = tileset.RoutePath;
+				}
 			}
-			tileset.RoutePath = txtRmp.Text;
+			tileset.RoutePath = tbMapsRoutes.Text;
 		}
 
-		private void btnUp_Click(object sender, System.EventArgs e)
+		private void btnMapsUp_Click(object sender, EventArgs e)
 		{
 			var tileset = getCurrentTileset();
-			string[] deps = ((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies;
+			string[] deps = ((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies;
 
 			for (int i = 1; i != deps.Length; ++i)
 			{
-				if (deps[i] == (string)listMapImages.SelectedItem)
+				if (deps[i] == (string)lbMapsImagesUsed.SelectedItem)
 				{
 					string old = deps[i - 1];
 					deps[i - 1] = deps[i];
 					deps[i] = old;
 
-					((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies = deps;
+					((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies = deps;
 
-					listMapImages.Items.Clear();
+					lbMapsImagesUsed.Items.Clear();
 
 					foreach (string dep in deps)
-						listMapImages.Items.Add(dep);
+						lbMapsImagesUsed.Items.Add(dep);
 
-					listMapImages.SelectedItem = deps[i - 1];
+					lbMapsImagesUsed.SelectedItem = deps[i - 1];
 					return;
 				}
 			}
 		}
 
-		private void btnDown_Click(object sender, System.EventArgs e)
+		private void btnMapsDown_Click(object sender, EventArgs e)
 		{
 			var tileset = getCurrentTileset();
-			string[] deps = ((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies;
+			string[] deps = ((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies;
 
 			for (int i = 0; i != deps.Length - 1; ++i)
 			{
-				if (deps[i] == (string)listMapImages.SelectedItem)
+				if (deps[i] == (string)lbMapsImagesUsed.SelectedItem)
 				{
 					string old = deps[i + 1];
 					deps[i + 1] = deps[i];
 					deps[i] = old;
 
-					((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies = deps;
+					((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies = deps;
 					
-					listMapImages.Items.Clear();
+					lbMapsImagesUsed.Items.Clear();
 
 					foreach (string dep in deps)
-						listMapImages.Items.Add(dep);
+						lbMapsImagesUsed.Items.Add(dep);
 
-					listMapImages.SelectedItem = deps[i + 1];
+					lbMapsImagesUsed.SelectedItem = deps[i + 1];
 					return;
 				}
 			}
 		}
 
-		private void btnMoveRight_Click(object sender, System.EventArgs e)
+		private void btnMapsRight_Click(object sender, EventArgs e)
 		{
 			var tileset = getCurrentTileset();
-			var deps = new ArrayList(((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies);
-			deps.Remove(listMapImages.SelectedItem);
-			((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies = (string[])deps.ToArray(typeof(string));
+			var deps = new ArrayList(((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies);
+			deps.Remove(lbMapsImagesUsed.SelectedItem);
+			((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies = (string[])deps.ToArray(typeof(string));
 			
-			listMapImages.Items.Clear();
+			lbMapsImagesUsed.Items.Clear();
 
 			foreach (string dep in deps)
-				listMapImages.Items.Add(dep);
+				lbMapsImagesUsed.Items.Add(dep);
 		}
 
-		private void btnMoveLeft_Click(object sender, System.EventArgs e)
+		private void btnMapsLeft_Click(object sender, EventArgs e)
 		{
 			var tileset = getCurrentTileset();
-			var dep = new ArrayList(((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies);
+			var dep = new ArrayList(((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies);
 
-			foreach (object ob in listAllImages.SelectedItems)
+			foreach (object ob in lbMapsImagesAll.SelectedItems)
 				if (!dep.Contains(ob))
 				{
 					dep.Add(ob);
-					((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies = (string[])dep.ToArray(typeof(string));
+					((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies = (string[])dep.ToArray(typeof(string));
 				
-					listMapImages.Items.Clear();
+					lbMapsImagesUsed.Items.Clear();
 
 					foreach (string st in dep)
-						listMapImages.Items.Add(st);
+						lbMapsImagesUsed.Items.Add(st);
 				}
 		}
 
-		private void btnClearRegistry_Click(object sender, System.EventArgs e)
+		private void btnPathsClearRegistry_Click(object sender, EventArgs e)
 		{
 			_saveRegistry = false;
 
@@ -388,37 +328,44 @@ namespace MapView
 			keySoftware.Close();
 		}
 
-		private void btnFindMap_Click(object sender, System.EventArgs e)
+		private void btnPathsMaps_Click(object sender, EventArgs e)
 		{
-			openFile.Title = "Find the map data file";
-			openFile.Multiselect = false;
-			openFile.FilterIndex = 1;
-			if (openFile.ShowDialog() == DialogResult.OK)
-				txtMap.Text = openFile.FileName;
+			using (var f = ofdFileDialog)
+			{
+				f.Title = "Find MapEdit.cfg";
+				f.Multiselect = false;
+				f.FilterIndex = 1; // *.cfg
+
+				if (f.ShowDialog() == DialogResult.OK)
+					tbPathsMaps.Text = f.FileName;
+			}
 		}
 
-		private void btnFindImage_Click(object sender, System.EventArgs e)
+		private void btnPathsImages_Click(object sender, EventArgs e)
 		{
-			openFile.Title = "Find the image data file";
-			openFile.Multiselect = false;
-			openFile.FilterIndex = 1;
+			using (var f = ofdFileDialog)
+			{
+				f.Title = "Find Images.cfg";
+				f.Multiselect = false;
+				f.FilterIndex = 1; // *.cfg
 
-			if (openFile.ShowDialog() == DialogResult.OK)
-				txtImages.Text = openFile.FileName;
+				if (f.ShowDialog() == DialogResult.OK)
+					tbPathsImages.Text = f.FileName;
+			}
 		}
 
-/*		private void miSave_Click(object sender, System.EventArgs e)
+/*		private void miSave_Click(object sender, EventArgs e)
 		{
 			StreamWriter sw = new StreamWriter(new FileStream(this._paths, FileMode.Create));
 			
-			GameInfo.CursorPath		= txtCursor.Text;
-			GameInfo.MapPath		= txtMap.Text;
-			GameInfo.ImagePath		= txtImages.Text;
-//			GameInfo.PalettePath	= txtPalettes.Text;
+			GameInfo.CursorPath  = txtCursor.Text;
+			GameInfo.MapPath     = txtMap.Text;
+			GameInfo.ImagePath   = txtImages.Text;
+//			GameInfo.PalettePath = txtPalettes.Text;
 
-			sw.WriteLine("mapdata:" + txtMap.Text);
-			sw.WriteLine("images:" + txtImages.Text);
-			sw.WriteLine("cursor:" + txtCursor.Text);
+			sw.WriteLine("mapdata:"  + txtMap.Text);
+			sw.WriteLine("images:"   + txtImages.Text);
+			sw.WriteLine("cursor:"   + txtCursor.Text);
 //			sw.WriteLine("palettes:" + txtPalettes.Text);
 
 			sw.Flush();
@@ -428,51 +375,55 @@ namespace MapView
 //			GameInfo.GetTileInfo().Save(new FileStream(txtMap.Text, FileMode.Create));
 		}*/
 
-		private void txtImagePath_TextChanged(object sender, System.EventArgs e)
+		private void tbImagesTerrain_TextChanged(object sender, EventArgs e)
 		{
-			GameInfo.ImageInfo[(string)lstImages.SelectedItem].BasePath = txtImagePath.Text;
+			GameInfo.ImageInfo[(string)lbImages.SelectedItem].BasePath = tbImagesTerrain.Text;
 		}
 
-		private void addImageset_Click(object sender, System.EventArgs e)
+		private void cmImagesAddImageset_Click(object sender, EventArgs e)
 		{
-			openFile.Title = "Add images";
-			openFile.Multiselect = true;
-			openFile.FilterIndex = 2;
-
-			if (openFile.ShowDialog(this) == DialogResult.OK)
+			using (var f = ofdFileDialog)
 			{
-				foreach (string pfe in openFile.FileNames) // pfe=PathFileExt
+				f.Title = "Add images";
+				f.Multiselect = true;
+				f.FilterIndex = 2; // *.map
+
+				if (f.ShowDialog(this) == DialogResult.OK)
 				{
-					string path = pfe.Substring(0, pfe.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
-					string file = pfe.Substring(pfe.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
-					file        = file.Substring(0, file.IndexOf(".", StringComparison.Ordinal));
-					GameInfo.ImageInfo[file] = new ImageDescriptor(file, path);
+					foreach (string pfe in f.FileNames) // pfe=PathFileExt
+					{
+						string path = pfe.Substring(0, pfe.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+						string file = pfe.Substring(pfe.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+						file        = file.Substring(0, file.IndexOf(".", StringComparison.Ordinal));
+	
+						GameInfo.ImageInfo[file] = new ImageDescriptor(file, path);
+					}
+	
+					lbImages.Items.Clear();
+					lbMapsImagesAll.Items.Clear();
+	
+					PopulateImageList();
 				}
-
-				lstImages.Items.Clear();
-				listAllImages.Items.Clear();
-
-				populateImageList();
 			}
 		}
 
-		private void delImageset_Click(object sender, System.EventArgs e)
+		private void cmImagesDeleteImageset_Click(object sender, EventArgs e)
 		{
-			GameInfo.ImageInfo.Images.Remove(lstImages.SelectedItem.ToString());
+			GameInfo.ImageInfo.Images.Remove(lbImages.SelectedItem.ToString());
 
-			lstImages.Items.Clear();
-			listAllImages.Items.Clear();
+			lbImages.Items.Clear();
+			lbMapsImagesAll.Items.Clear();
 
-			populateImageList();
+			PopulateImageList();
 		}
 
-		private void btnRunInstall_Click(object sender, System.EventArgs e)
+		private void btnPathsInstall_Click(object sender, EventArgs e)
 		{
-			var install = new InstallWindow();
-			install.ShowDialog(this);
+			using (var install = new InstallWindow())
+				install.ShowDialog(this);
 		}
 
-		private void btnSavePaths_Click(object sender, System.EventArgs e)
+		private void btnPathsSave_Click(object sender, EventArgs e)
 		{
 			using (var sw = new StreamWriter(new FileStream(_paths, FileMode.Create)))
 			{
@@ -483,67 +434,71 @@ namespace MapView
 
 //				sw.WriteLine("palettes:" + txtPalettes.Text);
 	
-				sw.WriteLine("mapdata:" + txtMap.Text);
-				sw.WriteLine("images:"  + txtImages.Text);
-				sw.WriteLine("cursor:"  + txtCursor.Text);
+				sw.WriteLine("mapdata:" + tbPathsMaps.Text);
+				sw.WriteLine("images:"  + tbPathsImages.Text);
+				sw.WriteLine("cursor:"  + tbPathsCursor.Text);
 			}
 		}
 
-		private void btnSaveImages_Click(object sender, System.EventArgs e)
+		private void btnImagesSave_Click(object sender, EventArgs e)
 		{
-			GameInfo.ImageInfo.Save(txtImages.Text);
+			GameInfo.ImageInfo.Save(tbPathsImages.Text);
 		}
 
-		private void newGroup_Click(object sender, System.EventArgs e)
+		private void newGroup_Click(object sender, EventArgs e)
 		{
-			var f = new TilesetForm();
-			f.ShowDialog(this);
-
-			if (f.TilesetText != null)
+			using (var f = new TilesetForm())
 			{
-				var tileset = (IXCTileset)GameInfo.TilesetInfo.AddTileset(
-																	f.TilesetText,
-																	f.MapPath,
-																	f.RmpPath,
-																	f.BlankPath);
-//				addTileset(tileset.Name);
-				treeMaps.Nodes.Add(tileset.Name);
+				f.ShowDialog(this);
 
-				txtRoot.Text = tileset.MapPath;
-				txtRmp.Text  = tileset.RoutePath;
+				if (f.TilesetText != null)
+				{
+					var tileset = (IXCTileset)GameInfo.TilesetInfo.AddTileset(
+																		f.TilesetText,
+																		f.MapPath,
+																		f.RmpPath,
+																		f.BlankPath);
+//					addTileset(tileset.Name);
+					tvMaps.Nodes.Add(tileset.Name);
 
-//				saveMapedit();
+					tbMapsMaps.Text = tileset.MapPath;
+					tbMapsRoutes.Text  = tileset.RoutePath;
+
+//					saveMapedit();
+				}
 			}
 		}
 
-		private void cbPalette_SelectedIndexChanged(object sender, System.EventArgs e)
+		private void cbMapsPalette_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (treeMaps.SelectedNode.Parent == null)
-				getCurrentTileset().Palette = (Palette)cbPalette.SelectedItem;
+			if (tvMaps.SelectedNode.Parent == null)
+				getCurrentTileset().Palette = (Palette)cbMapsPalette.SelectedItem;
 		}
 
 		private void addSub_Click(object sender, System.EventArgs e)
 		{
-			var f = new SubsetForm();
-			f.ShowDialog(this);
-			if (f.SubsetName != null)
+			using (var f = new SubsetForm())
 			{
-				var tileset = getCurrentTileset();
+				f.ShowDialog(this);
+				if (f.SubsetName != null)
+				{
+					var tileset = getCurrentTileset();
 
-//				TreeNode tn = treeMaps.SelectedNode; // TODO: Check if not used.
+//					TreeNode tn = treeMaps.SelectedNode; // TODO: Check if not used.
 
-				tileset.Subsets[f.SubsetName] = new Dictionary<string, IMapDesc>();
+					tileset.Subsets[f.SubsetName] = new Dictionary<string, IMapDesc>();
 
-//				tileset.NewSubset(f.SubsetName);
-//				saveMapedit();
+//					tileset.NewSubset(f.SubsetName);
+//					saveMapedit();
 
-				populateTree();
+					populateTree();
+				}
 			}
 		}
 
 		private IXCTileset getCurrentTileset()
 		{
-			var tn = treeMaps.SelectedNode;
+			var tn = tvMaps.SelectedNode;
 			if (tn.Parent == null)
 				return (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Text];
 
@@ -558,136 +513,143 @@ namespace MapView
 //			saveMapedit();
 //		}
 
-		private void addNewMap_Click(object sender, System.EventArgs e)
+		private void addNewMap_Click(object sender, EventArgs e)
 		{
-			var f = new NewMapForm();
-			f.ShowDialog(this);
-
-			if (f.MapName != null)
+			using (var f = new NewMapForm())
 			{
-				if (treeMaps.SelectedNode.Parent != null) // add to here
+				f.ShowDialog(this);
+
+				if (f.MapName != null)
 				{
-					string path = txtRoot.Text + f.MapName + XCMapFile.MapExt;
-					if (File.Exists(path))
+					if (tvMaps.SelectedNode.Parent != null) // add to here
 					{
-						var dialog = new ChoiceDialog(path);
-						dialog.ShowDialog(this);
+						string path = tbMapsMaps.Text + f.MapName + XCMapFile.MapExt;
+						if (File.Exists(path))
+						{
+							using (var dialog = new ChoiceDialog(path))
+							{
+								dialog.ShowDialog(this);
+	
+								if (dialog.Choice == Choice.UseExisting)
+									return;
+							}
+						}
 
-						if (dialog.Choice == Choice.UseExisting)
-							return;
+						XCMapFile.CreateMap(
+										File.OpenWrite(path),
+										f.MapRows,
+										f.MapCols,
+										f.MapHeight);
+
+						using (var fs = File.OpenWrite(tbMapsRoutes.Text + f.MapName + RouteNodeCollection.RouteExt))
+						{}
+
+						IXCTileset tileset;
+						string label;
+
+						if (tvMaps.SelectedNode.Parent.Parent == null)
+						{
+							tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tvMaps.SelectedNode.Parent.Text];
+							tvMaps.SelectedNode.Nodes.Add(f.MapName);
+							label = tvMaps.SelectedNode.Text;
+						}
+						else
+						{
+							tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tvMaps.SelectedNode.Parent.Parent.Text];
+							tvMaps.SelectedNode.Parent.Nodes.Add(f.MapName);
+							label = tvMaps.SelectedNode.Parent.Text;
+						}
+
+						tileset.AddMap(f.MapName, label);
+
+//						saveMapedit();
 					}
-
-					XCMapFile.CreateMap(
-									File.OpenWrite(path),
-									f.MapRows,
-									f.MapCols,
-									f.MapHeight);
-
-					using (var fs = File.OpenWrite(txtRmp.Text + f.MapName + RouteNodeCollection.RouteExt))
-					{}
-
-					IXCTileset tileset;
-					string label;
-
-					if (treeMaps.SelectedNode.Parent.Parent == null)
-					{
-						tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[treeMaps.SelectedNode.Parent.Text];
-						treeMaps.SelectedNode.Nodes.Add(f.MapName);
-						label = treeMaps.SelectedNode.Text;
-					}
-					else
-					{
-						tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[treeMaps.SelectedNode.Parent.Parent.Text];
-						treeMaps.SelectedNode.Parent.Nodes.Add(f.MapName);
-						label = treeMaps.SelectedNode.Parent.Text;
-					}
-
-					tileset.AddMap(f.MapName, label);
-
-//					saveMapedit();
+//					else // top node, baaaaad
+//					{
+//						tileset = GameInfo.GetTileInfo()[treeMaps.SelectedNode.Parent.Text];
+//						treeMaps.SelectedNode.Parent.Nodes.Add(nf.MapName);
+//					}
 				}
-//				else // top node, baaaaad
-//				{
-//					tileset = GameInfo.GetTileInfo()[treeMaps.SelectedNode.Parent.Text];
-//					treeMaps.SelectedNode.Parent.Nodes.Add(nf.MapName);
-//				}
 			}
 		}
 
-		private void addExistingMap_Click(object sender, System.EventArgs e)
+		private void addExistingMap_Click(object sender, EventArgs e)
 		{
-			openFile.InitialDirectory = txtRoot.Text;
-			openFile.Title = "Select maps from this directory only";
-			openFile.Multiselect      =
-			openFile.RestoreDirectory = true;
-
-			if (openFile.ShowDialog() == DialogResult.OK)
+			using (var f = ofdFileDialog)
 			{
-				if (treeMaps.SelectedNode.Parent != null) // add to here
+				f.InitialDirectory = tbMapsMaps.Text;
+				f.Title = "Select maps from this directory only";
+				f.Multiselect      =
+				f.RestoreDirectory = true;
+
+				if (f.ShowDialog() == DialogResult.OK)
 				{
-					var tn = (treeMaps.SelectedNode.Parent.Parent == null) ? treeMaps.SelectedNode
-																		   : treeMaps.SelectedNode.Parent;
-
-					var tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Text];
-					foreach (string file in openFile.FileNames)
+					if (tvMaps.SelectedNode.Parent != null) // add to here
 					{
-						int start = file.LastIndexOf(@"\", StringComparison.Ordinal) + 1;
-						int end   = file.LastIndexOf(".", StringComparison.Ordinal);
+						var tn = (tvMaps.SelectedNode.Parent.Parent == null) ? tvMaps.SelectedNode
+																			 : tvMaps.SelectedNode.Parent;
 
-						string name = file.Substring(start, end-start);
-						try
+						var tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Text];
+						foreach (string file in f.FileNames)
 						{
-							tileset.AddMap(name, tn.Text);
-							tn.Nodes.Add(name);
+							int start = file.LastIndexOf(@"\", StringComparison.Ordinal) + 1;
+							int end   = file.LastIndexOf(".", StringComparison.Ordinal);
+
+							string name = file.Substring(start, end-start);
+							try
+							{
+								tileset.AddMap(name, tn.Text);
+								tn.Nodes.Add(name);
+							}
+							catch (Exception ex)
+							{
+								MessageBox.Show(
+											this,
+											"Could not add map: " + name + Environment.NewLine + "ERROR: " + ex.Message,
+											"Error",
+											MessageBoxButtons.OK,
+											MessageBoxIcon.Exclamation,
+											MessageBoxDefaultButton.Button1,
+											0);
+								throw;
+							}
 						}
-						catch (Exception ex)
-						{
-							MessageBox.Show(
-										this,
-										"Could not add map: " + name + Environment.NewLine + "ERROR: " + ex.Message,
-										"Error",
-										MessageBoxButtons.OK,
-										MessageBoxIcon.Exclamation,
-										MessageBoxDefaultButton.Button1,
-										0);
-							throw;
-						}
+//						saveMapedit();
 					}
-//					saveMapedit();
+//					else // top node, baaaaad
+//					{
+//						tileset = GameInfo.GetTileInfo()[treeMaps.SelectedNode.Parent.Text];
+//						treeMaps.SelectedNode.Parent.Nodes.Add(nfm.MapName);
+//					}
 				}
-//				else // top node, baaaaad
-//				{
-//					tileset = GameInfo.GetTileInfo()[treeMaps.SelectedNode.Parent.Text];
-//					treeMaps.SelectedNode.Parent.Nodes.Add(nfm.MapName);
-//				}
 			}
 		}
 
-		private void delGroup_Click(object sender, System.EventArgs e)
+		private void delGroup_Click(object sender, EventArgs e)
 		{
 			var tileset = getCurrentTileset();
 			GameInfo.TilesetInfo.Tilesets[tileset.Name] = null;
-			if (treeMaps.SelectedNode.Parent == null)
+			if (tvMaps.SelectedNode.Parent == null)
 			{
-				treeMaps.Nodes.Remove(treeMaps.SelectedNode);
+				tvMaps.Nodes.Remove(tvMaps.SelectedNode);
 			}
-			else if (treeMaps.SelectedNode.Parent.Parent == null)
+			else if (tvMaps.SelectedNode.Parent.Parent == null)
 			{
-				treeMaps.Nodes.Remove(treeMaps.SelectedNode.Parent);
+				tvMaps.Nodes.Remove(tvMaps.SelectedNode.Parent);
 			}
 			else
-				treeMaps.Nodes.Remove(treeMaps.SelectedNode.Parent.Parent);
+				tvMaps.Nodes.Remove(tvMaps.SelectedNode.Parent.Parent);
 
 //			saveMapedit();
 		}
 
-		private void delSub_Click(object sender, System.EventArgs e)
+		private void delSub_Click(object sender, EventArgs e)
 		{
-			var tn = treeMaps.SelectedNode.Parent;
+			var tn = tvMaps.SelectedNode.Parent;
 			if (tn != null)
 			{
-				if (treeMaps.SelectedNode.Parent.Parent == null)
-					tn = treeMaps.SelectedNode;
+				if (tvMaps.SelectedNode.Parent.Parent == null)
+					tn = tvMaps.SelectedNode;
 
 				if (tn != null)
 				{
@@ -698,12 +660,12 @@ namespace MapView
 			}
 		}
 
-		private void delMap_Click(object sender, System.EventArgs e)
+		private void delMap_Click(object sender, EventArgs e)
 		{
-			if (   treeMaps.SelectedNode.Parent != null
-				&& treeMaps.SelectedNode.Parent.Parent != null)
+			if (   tvMaps.SelectedNode.Parent != null
+				&& tvMaps.SelectedNode.Parent.Parent != null)
 			{
-				TreeNode tn = treeMaps.SelectedNode;
+				TreeNode tn = tvMaps.SelectedNode;
 				if (tn != null)
 				{
 					var tileset = getCurrentTileset();
@@ -714,7 +676,7 @@ namespace MapView
 			}
 		}
 
-		private void btnEditTree_Click(object sender, System.EventArgs e)
+		private void btnMapsEditTree_Click(object sender, EventArgs e)
 		{
 //			TreeEditor mmf = new TreeEditor();
 //			mmf.ShowDialog(this);
@@ -723,7 +685,7 @@ namespace MapView
 //			saveMapedit();
 		}
 
-		private void btnSaveMapEdit_Click(object sender, System.EventArgs e)
+		private void btnMapsSaveTree_Click(object sender, EventArgs e)
 		{
 /*			var cursor = Cursor.Current;
 			Cursor.Current = Cursors.WaitCursor;
@@ -753,7 +715,7 @@ namespace MapView
 				File.Move(fileRecent, txtMap.Text);
 
 				Cursor.Current = cursor;
-				Text = "Paths Editor - saved Mapedit.dat";
+				Text = "Paths Editor - saved MapEdit.cfg";
 			}
 			catch (Exception except)
 			{
@@ -764,34 +726,34 @@ namespace MapView
 			} */
 		}
 
-		private void closeItem_Click(object sender, System.EventArgs e)
+		private void closeItem_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
 
-		private void btnCopy_Click(object sender, System.EventArgs e)
+		private void btnMapsCopy_Click(object sender, EventArgs e)
 		{
 			var tileset = getCurrentTileset();
 
-			int length = ((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies.Length;
+			int length = ((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies.Length;
 			_images = new string[length];
 
 			for (int i = 0; i != length; ++i)
-				_images[i] = ((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies[i];
+				_images[i] = ((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies[i];
 		}
 
-		private void btnPaste_Click(object sender, System.EventArgs e)
+		private void btnMapsPaste_Click(object sender, EventArgs e)
 		{
 			var tileset = getCurrentTileset();
 
-			((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies = new string[_images.Length];
+			((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies = new string[_images.Length];
 
-			listMapImages.Items.Clear();
+			lbMapsImagesUsed.Items.Clear();
 
 			for (int i = 0; i != _images.Length; ++i)
 			{
-				((XCMapDesc)tileset[treeMaps.SelectedNode.Text]).Dependencies[i] = _images[i];
-				listMapImages.Items.Add(_images[i]);
+				((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies[i] = _images[i];
+				lbMapsImagesUsed.Items.Add(_images[i]);
 			}
 		}
 
@@ -816,49 +778,49 @@ namespace MapView
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
+			this.mmMenu = new System.Windows.Forms.MainMenu(this.components);
 			this.miFile = new System.Windows.Forms.MenuItem();
 			this.menuItem1 = new System.Windows.Forms.MenuItem();
 			this.closeItem = new System.Windows.Forms.MenuItem();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabPaths = new System.Windows.Forms.TabPage();
-			this.btnSavePaths = new System.Windows.Forms.Button();
-			this.btnRunInstall = new System.Windows.Forms.Button();
-			this.btnFindImage = new System.Windows.Forms.Button();
-			this.btnFindMap = new System.Windows.Forms.Button();
-			this.txtPalettes = new System.Windows.Forms.TextBox();
-			this.label10 = new System.Windows.Forms.Label();
-			this.btnClearRegistry = new System.Windows.Forms.Button();
-			this.lblReminder = new System.Windows.Forms.Label();
-			this.txtCursor = new System.Windows.Forms.TextBox();
-			this.txtImages = new System.Windows.Forms.TextBox();
-			this.txtMap = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
+			this.btnPathsSave = new System.Windows.Forms.Button();
+			this.btnPathsInstall = new System.Windows.Forms.Button();
+			this.btnPathsImages = new System.Windows.Forms.Button();
+			this.btnPathsMaps = new System.Windows.Forms.Button();
+			this.tbPathsPalettes = new System.Windows.Forms.TextBox();
+			this.lblPathsPalettes = new System.Windows.Forms.Label();
+			this.btnPathsClearRegistry = new System.Windows.Forms.Button();
+			this.lblPathsSave = new System.Windows.Forms.Label();
+			this.tbPathsCursor = new System.Windows.Forms.TextBox();
+			this.tbPathsImages = new System.Windows.Forms.TextBox();
+			this.tbPathsMaps = new System.Windows.Forms.TextBox();
+			this.lblPathsCursor = new System.Windows.Forms.Label();
+			this.lblPathsImages = new System.Windows.Forms.Label();
+			this.lblPathsMaps = new System.Windows.Forms.Label();
 			this.tabMaps = new System.Windows.Forms.TabPage();
-			this.grpMap = new System.Windows.Forms.GroupBox();
-			this.btnPaste = new System.Windows.Forms.Button();
-			this.btnCopy = new System.Windows.Forms.Button();
-			this.btnUp = new System.Windows.Forms.Button();
-			this.btnDown = new System.Windows.Forms.Button();
-			this.btnMoveRight = new System.Windows.Forms.Button();
-			this.btnMoveLeft = new System.Windows.Forms.Button();
-			this.listAllImages = new System.Windows.Forms.ListBox();
-			this.label9 = new System.Windows.Forms.Label();
-			this.listMapImages = new System.Windows.Forms.ListBox();
-			this.label8 = new System.Windows.Forms.Label();
-			this.grpMapGroup = new System.Windows.Forms.GroupBox();
-			this.label11 = new System.Windows.Forms.Label();
-			this.txtBlank = new System.Windows.Forms.TextBox();
-			this.cbPalette = new System.Windows.Forms.ComboBox();
-			this.label7 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.txtRmp = new System.Windows.Forms.TextBox();
-			this.txtRoot = new System.Windows.Forms.TextBox();
-			this.treeMaps = new System.Windows.Forms.TreeView();
-			this.cmTree = new System.Windows.Forms.ContextMenu();
+			this.gbMapsBlock = new System.Windows.Forms.GroupBox();
+			this.btnMapsPaste = new System.Windows.Forms.Button();
+			this.btnMapsCopy = new System.Windows.Forms.Button();
+			this.btnMapsUp = new System.Windows.Forms.Button();
+			this.btnMapsDown = new System.Windows.Forms.Button();
+			this.btnMapsRight = new System.Windows.Forms.Button();
+			this.btnMapsLeft = new System.Windows.Forms.Button();
+			this.lbMapsImagesAll = new System.Windows.Forms.ListBox();
+			this.lblMapsImagesAll = new System.Windows.Forms.Label();
+			this.lbMapsImagesUsed = new System.Windows.Forms.ListBox();
+			this.lblMapsImagesUsed = new System.Windows.Forms.Label();
+			this.gbMapsTerrain = new System.Windows.Forms.GroupBox();
+			this.lblMapsBlanks = new System.Windows.Forms.Label();
+			this.tbMapsBlanks = new System.Windows.Forms.TextBox();
+			this.cbMapsPalette = new System.Windows.Forms.ComboBox();
+			this.lblMapsPalette = new System.Windows.Forms.Label();
+			this.lblMapsRoutes = new System.Windows.Forms.Label();
+			this.lblMapsMaps = new System.Windows.Forms.Label();
+			this.tbMapsRoutes = new System.Windows.Forms.TextBox();
+			this.tbMapsMaps = new System.Windows.Forms.TextBox();
+			this.tvMaps = new System.Windows.Forms.TreeView();
+			this.cmMain = new System.Windows.Forms.ContextMenu();
 			this.newGroup = new System.Windows.Forms.MenuItem();
 			this.delGroup = new System.Windows.Forms.MenuItem();
 			this.addSub = new System.Windows.Forms.MenuItem();
@@ -867,30 +829,32 @@ namespace MapView
 			this.addNewMap = new System.Windows.Forms.MenuItem();
 			this.addExistingMap = new System.Windows.Forms.MenuItem();
 			this.delMap = new System.Windows.Forms.MenuItem();
-			this.btnSaveMapEdit = new System.Windows.Forms.Button();
-			this.btnEditTree = new System.Windows.Forms.Button();
+			this.btnMapsSaveTree = new System.Windows.Forms.Button();
+			this.btnMapsEditTree = new System.Windows.Forms.Button();
 			this.tabImages = new System.Windows.Forms.TabPage();
-			this.lblImage2 = new System.Windows.Forms.Label();
-			this.txtImage2 = new System.Windows.Forms.TextBox();
-			this.btnSaveImages = new System.Windows.Forms.Button();
-			this.label4 = new System.Windows.Forms.Label();
-			this.txtImagePath = new System.Windows.Forms.TextBox();
-			this.lstImages = new System.Windows.Forms.ListBox();
-			this.imagesCM = new System.Windows.Forms.ContextMenu();
+			this.lblImagesImages = new System.Windows.Forms.Label();
+			this.tbImagesImages = new System.Windows.Forms.TextBox();
+			this.btnImagesSave = new System.Windows.Forms.Button();
+			this.lblImagesTerrain = new System.Windows.Forms.Label();
+			this.tbImagesTerrain = new System.Windows.Forms.TextBox();
+			this.lbImages = new System.Windows.Forms.ListBox();
+			this.cmImages = new System.Windows.Forms.ContextMenu();
 			this.addImageset = new System.Windows.Forms.MenuItem();
 			this.delImageset = new System.Windows.Forms.MenuItem();
-			this.openFile = new System.Windows.Forms.OpenFileDialog();
+			this.ofdFileDialog = new System.Windows.Forms.OpenFileDialog();
+			this.lblPathsClearRegistry = new System.Windows.Forms.Label();
+			this.lblPathsInstall = new System.Windows.Forms.Label();
 			this.tabs.SuspendLayout();
 			this.tabPaths.SuspendLayout();
 			this.tabMaps.SuspendLayout();
-			this.grpMap.SuspendLayout();
-			this.grpMapGroup.SuspendLayout();
+			this.gbMapsBlock.SuspendLayout();
+			this.gbMapsTerrain.SuspendLayout();
 			this.tabImages.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// mainMenu
+			// mmMenu
 			// 
-			this.mainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.mmMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miFile});
 			// 
 			// miFile
@@ -926,381 +890,383 @@ namespace MapView
 			// 
 			// tabPaths
 			// 
-			this.tabPaths.Controls.Add(this.btnSavePaths);
-			this.tabPaths.Controls.Add(this.btnRunInstall);
-			this.tabPaths.Controls.Add(this.btnFindImage);
-			this.tabPaths.Controls.Add(this.btnFindMap);
-			this.tabPaths.Controls.Add(this.txtPalettes);
-			this.tabPaths.Controls.Add(this.label10);
-			this.tabPaths.Controls.Add(this.btnClearRegistry);
-			this.tabPaths.Controls.Add(this.lblReminder);
-			this.tabPaths.Controls.Add(this.txtCursor);
-			this.tabPaths.Controls.Add(this.txtImages);
-			this.tabPaths.Controls.Add(this.txtMap);
-			this.tabPaths.Controls.Add(this.label3);
-			this.tabPaths.Controls.Add(this.label2);
-			this.tabPaths.Controls.Add(this.label1);
+			this.tabPaths.Controls.Add(this.lblPathsInstall);
+			this.tabPaths.Controls.Add(this.lblPathsClearRegistry);
+			this.tabPaths.Controls.Add(this.btnPathsSave);
+			this.tabPaths.Controls.Add(this.btnPathsInstall);
+			this.tabPaths.Controls.Add(this.btnPathsImages);
+			this.tabPaths.Controls.Add(this.btnPathsMaps);
+			this.tabPaths.Controls.Add(this.tbPathsPalettes);
+			this.tabPaths.Controls.Add(this.lblPathsPalettes);
+			this.tabPaths.Controls.Add(this.btnPathsClearRegistry);
+			this.tabPaths.Controls.Add(this.lblPathsSave);
+			this.tabPaths.Controls.Add(this.tbPathsCursor);
+			this.tabPaths.Controls.Add(this.tbPathsImages);
+			this.tabPaths.Controls.Add(this.tbPathsMaps);
+			this.tabPaths.Controls.Add(this.lblPathsCursor);
+			this.tabPaths.Controls.Add(this.lblPathsImages);
+			this.tabPaths.Controls.Add(this.lblPathsMaps);
 			this.tabPaths.Location = new System.Drawing.Point(4, 21);
 			this.tabPaths.Name = "tabPaths";
 			this.tabPaths.Size = new System.Drawing.Size(624, 509);
 			this.tabPaths.TabIndex = 0;
 			this.tabPaths.Text = "Paths";
 			// 
-			// btnSavePaths
+			// btnPathsSave
 			// 
-			this.btnSavePaths.Location = new System.Drawing.Point(10, 140);
-			this.btnSavePaths.Name = "btnSavePaths";
-			this.btnSavePaths.Size = new System.Drawing.Size(125, 35);
-			this.btnSavePaths.TabIndex = 14;
-			this.btnSavePaths.Text = "Save paths";
-			this.btnSavePaths.Click += new System.EventHandler(this.btnSavePaths_Click);
+			this.btnPathsSave.Location = new System.Drawing.Point(10, 115);
+			this.btnPathsSave.Name = "btnPathsSave";
+			this.btnPathsSave.Size = new System.Drawing.Size(125, 35);
+			this.btnPathsSave.TabIndex = 14;
+			this.btnPathsSave.Text = "Save paths";
+			this.btnPathsSave.Click += new System.EventHandler(this.btnPathsSave_Click);
 			// 
-			// btnRunInstall
+			// btnPathsInstall
 			// 
-			this.btnRunInstall.Location = new System.Drawing.Point(145, 185);
-			this.btnRunInstall.Name = "btnRunInstall";
-			this.btnRunInstall.Size = new System.Drawing.Size(125, 35);
-			this.btnRunInstall.TabIndex = 13;
-			this.btnRunInstall.Text = "Run installer";
-			this.btnRunInstall.Click += new System.EventHandler(this.btnRunInstall_Click);
+			this.btnPathsInstall.Location = new System.Drawing.Point(10, 205);
+			this.btnPathsInstall.Name = "btnPathsInstall";
+			this.btnPathsInstall.Size = new System.Drawing.Size(125, 35);
+			this.btnPathsInstall.TabIndex = 13;
+			this.btnPathsInstall.Text = "Run installer";
+			this.btnPathsInstall.Click += new System.EventHandler(this.btnPathsInstall_Click);
 			// 
-			// btnFindImage
+			// btnPathsImages
 			// 
-			this.btnFindImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnFindImage.Location = new System.Drawing.Point(493, 35);
-			this.btnFindImage.Name = "btnFindImage";
-			this.btnFindImage.Size = new System.Drawing.Size(70, 20);
-			this.btnFindImage.TabIndex = 11;
-			this.btnFindImage.Text = "Find";
-			this.btnFindImage.Click += new System.EventHandler(this.btnFindImage_Click);
+			this.btnPathsImages.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnPathsImages.Location = new System.Drawing.Point(495, 35);
+			this.btnPathsImages.Name = "btnPathsImages";
+			this.btnPathsImages.Size = new System.Drawing.Size(60, 20);
+			this.btnPathsImages.TabIndex = 11;
+			this.btnPathsImages.Text = "...";
+			this.btnPathsImages.Click += new System.EventHandler(this.btnPathsImages_Click);
 			// 
-			// btnFindMap
+			// btnPathsMaps
 			// 
-			this.btnFindMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnFindMap.Location = new System.Drawing.Point(493, 10);
-			this.btnFindMap.Name = "btnFindMap";
-			this.btnFindMap.Size = new System.Drawing.Size(70, 20);
-			this.btnFindMap.TabIndex = 10;
-			this.btnFindMap.Text = "Find";
-			this.btnFindMap.Click += new System.EventHandler(this.btnFindMap_Click);
+			this.btnPathsMaps.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnPathsMaps.Location = new System.Drawing.Point(495, 10);
+			this.btnPathsMaps.Name = "btnPathsMaps";
+			this.btnPathsMaps.Size = new System.Drawing.Size(60, 20);
+			this.btnPathsMaps.TabIndex = 10;
+			this.btnPathsMaps.Text = "...";
+			this.btnPathsMaps.Click += new System.EventHandler(this.btnPathsMaps_Click);
 			// 
-			// txtPalettes
+			// tbPathsPalettes
 			// 
-			this.txtPalettes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tbPathsPalettes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtPalettes.Location = new System.Drawing.Point(70, 85);
-			this.txtPalettes.Name = "txtPalettes";
-			this.txtPalettes.Size = new System.Drawing.Size(418, 19);
-			this.txtPalettes.TabIndex = 9;
-			this.txtPalettes.Visible = false;
+			this.tbPathsPalettes.Location = new System.Drawing.Point(70, 85);
+			this.tbPathsPalettes.Name = "tbPathsPalettes";
+			this.tbPathsPalettes.Size = new System.Drawing.Size(420, 19);
+			this.tbPathsPalettes.TabIndex = 9;
+			this.tbPathsPalettes.Visible = false;
 			// 
-			// label10
+			// lblPathsPalettes
 			// 
-			this.label10.Location = new System.Drawing.Point(5, 90);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(60, 15);
-			this.label10.TabIndex = 8;
-			this.label10.Text = "Palettes";
-			this.label10.Visible = false;
+			this.lblPathsPalettes.Location = new System.Drawing.Point(5, 90);
+			this.lblPathsPalettes.Name = "lblPathsPalettes";
+			this.lblPathsPalettes.Size = new System.Drawing.Size(60, 15);
+			this.lblPathsPalettes.TabIndex = 8;
+			this.lblPathsPalettes.Text = "Palettes";
+			this.lblPathsPalettes.Visible = false;
 			// 
-			// btnClearRegistry
+			// btnPathsClearRegistry
 			// 
-			this.btnClearRegistry.Location = new System.Drawing.Point(10, 185);
-			this.btnClearRegistry.Name = "btnClearRegistry";
-			this.btnClearRegistry.Size = new System.Drawing.Size(125, 35);
-			this.btnClearRegistry.TabIndex = 7;
-			this.btnClearRegistry.Text = "Clear Registry Settings";
-			this.btnClearRegistry.Click += new System.EventHandler(this.btnClearRegistry_Click);
+			this.btnPathsClearRegistry.Location = new System.Drawing.Point(10, 160);
+			this.btnPathsClearRegistry.Name = "btnPathsClearRegistry";
+			this.btnPathsClearRegistry.Size = new System.Drawing.Size(125, 35);
+			this.btnPathsClearRegistry.TabIndex = 7;
+			this.btnPathsClearRegistry.Text = "Clear Registry Settings";
+			this.btnPathsClearRegistry.Click += new System.EventHandler(this.btnPathsClearRegistry_Click);
 			// 
-			// lblReminder
+			// lblPathsSave
 			// 
-			this.lblReminder.Location = new System.Drawing.Point(10, 120);
-			this.lblReminder.Name = "lblReminder";
-			this.lblReminder.Size = new System.Drawing.Size(320, 15);
-			this.lblReminder.TabIndex = 6;
-			this.lblReminder.Text = "No changes will be made until you click the Save button.";
+			this.lblPathsSave.Location = new System.Drawing.Point(145, 120);
+			this.lblPathsSave.Name = "lblPathsSave";
+			this.lblPathsSave.Size = new System.Drawing.Size(355, 15);
+			this.lblPathsSave.TabIndex = 6;
+			this.lblPathsSave.Text = "Path changes will not be made until the Save button is clicked.";
 			// 
-			// txtCursor
+			// tbPathsCursor
 			// 
-			this.txtCursor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tbPathsCursor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtCursor.Location = new System.Drawing.Point(70, 60);
-			this.txtCursor.Name = "txtCursor";
-			this.txtCursor.Size = new System.Drawing.Size(418, 19);
-			this.txtCursor.TabIndex = 5;
+			this.tbPathsCursor.Location = new System.Drawing.Point(70, 60);
+			this.tbPathsCursor.Name = "tbPathsCursor";
+			this.tbPathsCursor.Size = new System.Drawing.Size(420, 19);
+			this.tbPathsCursor.TabIndex = 5;
 			// 
-			// txtImages
+			// tbPathsImages
 			// 
-			this.txtImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tbPathsImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtImages.Location = new System.Drawing.Point(70, 35);
-			this.txtImages.Name = "txtImages";
-			this.txtImages.Size = new System.Drawing.Size(418, 19);
-			this.txtImages.TabIndex = 4;
+			this.tbPathsImages.Location = new System.Drawing.Point(70, 35);
+			this.tbPathsImages.Name = "tbPathsImages";
+			this.tbPathsImages.Size = new System.Drawing.Size(420, 19);
+			this.tbPathsImages.TabIndex = 4;
 			// 
-			// txtMap
+			// tbPathsMaps
 			// 
-			this.txtMap.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tbPathsMaps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtMap.Location = new System.Drawing.Point(70, 10);
-			this.txtMap.Name = "txtMap";
-			this.txtMap.Size = new System.Drawing.Size(418, 19);
-			this.txtMap.TabIndex = 3;
+			this.tbPathsMaps.Location = new System.Drawing.Point(70, 10);
+			this.tbPathsMaps.Name = "tbPathsMaps";
+			this.tbPathsMaps.Size = new System.Drawing.Size(420, 19);
+			this.tbPathsMaps.TabIndex = 3;
 			// 
-			// label3
+			// lblPathsCursor
 			// 
-			this.label3.Location = new System.Drawing.Point(5, 65);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(60, 15);
-			this.label3.TabIndex = 2;
-			this.label3.Text = "Cursor";
+			this.lblPathsCursor.Location = new System.Drawing.Point(5, 65);
+			this.lblPathsCursor.Name = "lblPathsCursor";
+			this.lblPathsCursor.Size = new System.Drawing.Size(60, 15);
+			this.lblPathsCursor.TabIndex = 2;
+			this.lblPathsCursor.Text = "Cursor";
 			// 
-			// label2
+			// lblPathsImages
 			// 
-			this.label2.Location = new System.Drawing.Point(5, 40);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(65, 15);
-			this.label2.TabIndex = 1;
-			this.label2.Text = "Images";
+			this.lblPathsImages.Location = new System.Drawing.Point(5, 40);
+			this.lblPathsImages.Name = "lblPathsImages";
+			this.lblPathsImages.Size = new System.Drawing.Size(65, 15);
+			this.lblPathsImages.TabIndex = 1;
+			this.lblPathsImages.Text = "Images";
 			// 
-			// label1
+			// lblPathsMaps
 			// 
-			this.label1.Location = new System.Drawing.Point(5, 15);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(65, 15);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Maps";
+			this.lblPathsMaps.Location = new System.Drawing.Point(5, 15);
+			this.lblPathsMaps.Name = "lblPathsMaps";
+			this.lblPathsMaps.Size = new System.Drawing.Size(65, 15);
+			this.lblPathsMaps.TabIndex = 0;
+			this.lblPathsMaps.Text = "Maps";
 			// 
 			// tabMaps
 			// 
-			this.tabMaps.Controls.Add(this.grpMap);
-			this.tabMaps.Controls.Add(this.grpMapGroup);
-			this.tabMaps.Controls.Add(this.treeMaps);
-			this.tabMaps.Controls.Add(this.btnSaveMapEdit);
-			this.tabMaps.Controls.Add(this.btnEditTree);
+			this.tabMaps.Controls.Add(this.gbMapsBlock);
+			this.tabMaps.Controls.Add(this.gbMapsTerrain);
+			this.tabMaps.Controls.Add(this.tvMaps);
+			this.tabMaps.Controls.Add(this.btnMapsSaveTree);
+			this.tabMaps.Controls.Add(this.btnMapsEditTree);
 			this.tabMaps.Location = new System.Drawing.Point(4, 22);
 			this.tabMaps.Name = "tabMaps";
 			this.tabMaps.Size = new System.Drawing.Size(624, 508);
 			this.tabMaps.TabIndex = 1;
 			this.tabMaps.Text = "Map Files";
 			// 
-			// grpMap
+			// gbMapsBlock
 			// 
-			this.grpMap.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.gbMapsBlock.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 			| System.Windows.Forms.AnchorStyles.Left)));
-			this.grpMap.Controls.Add(this.btnPaste);
-			this.grpMap.Controls.Add(this.btnCopy);
-			this.grpMap.Controls.Add(this.btnUp);
-			this.grpMap.Controls.Add(this.btnDown);
-			this.grpMap.Controls.Add(this.btnMoveRight);
-			this.grpMap.Controls.Add(this.btnMoveLeft);
-			this.grpMap.Controls.Add(this.listAllImages);
-			this.grpMap.Controls.Add(this.label9);
-			this.grpMap.Controls.Add(this.listMapImages);
-			this.grpMap.Controls.Add(this.label8);
-			this.grpMap.Enabled = false;
-			this.grpMap.Location = new System.Drawing.Point(240, 170);
-			this.grpMap.Name = "grpMap";
-			this.grpMap.Size = new System.Drawing.Size(385, 340);
-			this.grpMap.TabIndex = 2;
-			this.grpMap.TabStop = false;
-			this.grpMap.Text = "MAP BLOCK";
+			this.gbMapsBlock.Controls.Add(this.btnMapsPaste);
+			this.gbMapsBlock.Controls.Add(this.btnMapsCopy);
+			this.gbMapsBlock.Controls.Add(this.btnMapsUp);
+			this.gbMapsBlock.Controls.Add(this.btnMapsDown);
+			this.gbMapsBlock.Controls.Add(this.btnMapsRight);
+			this.gbMapsBlock.Controls.Add(this.btnMapsLeft);
+			this.gbMapsBlock.Controls.Add(this.lbMapsImagesAll);
+			this.gbMapsBlock.Controls.Add(this.lblMapsImagesAll);
+			this.gbMapsBlock.Controls.Add(this.lbMapsImagesUsed);
+			this.gbMapsBlock.Controls.Add(this.lblMapsImagesUsed);
+			this.gbMapsBlock.Enabled = false;
+			this.gbMapsBlock.Location = new System.Drawing.Point(240, 170);
+			this.gbMapsBlock.Name = "gbMapsBlock";
+			this.gbMapsBlock.Size = new System.Drawing.Size(385, 340);
+			this.gbMapsBlock.TabIndex = 2;
+			this.gbMapsBlock.TabStop = false;
+			this.gbMapsBlock.Text = "MAP BLOCK";
 			// 
-			// btnPaste
+			// btnMapsPaste
 			// 
-			this.btnPaste.Location = new System.Drawing.Point(165, 275);
-			this.btnPaste.Name = "btnPaste";
-			this.btnPaste.Size = new System.Drawing.Size(55, 25);
-			this.btnPaste.TabIndex = 9;
-			this.btnPaste.Text = "Paste";
-			this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
+			this.btnMapsPaste.Location = new System.Drawing.Point(165, 275);
+			this.btnMapsPaste.Name = "btnMapsPaste";
+			this.btnMapsPaste.Size = new System.Drawing.Size(55, 25);
+			this.btnMapsPaste.TabIndex = 9;
+			this.btnMapsPaste.Text = "Paste";
+			this.btnMapsPaste.Click += new System.EventHandler(this.btnMapsPaste_Click);
 			// 
-			// btnCopy
+			// btnMapsCopy
 			// 
-			this.btnCopy.Location = new System.Drawing.Point(165, 245);
-			this.btnCopy.Name = "btnCopy";
-			this.btnCopy.Size = new System.Drawing.Size(55, 25);
-			this.btnCopy.TabIndex = 8;
-			this.btnCopy.Text = "Copy";
-			this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
+			this.btnMapsCopy.Location = new System.Drawing.Point(165, 245);
+			this.btnMapsCopy.Name = "btnMapsCopy";
+			this.btnMapsCopy.Size = new System.Drawing.Size(55, 25);
+			this.btnMapsCopy.TabIndex = 8;
+			this.btnMapsCopy.Text = "Copy";
+			this.btnMapsCopy.Click += new System.EventHandler(this.btnMapsCopy_Click);
 			// 
-			// btnUp
+			// btnMapsUp
 			// 
-			this.btnUp.Location = new System.Drawing.Point(165, 65);
-			this.btnUp.Name = "btnUp";
-			this.btnUp.Size = new System.Drawing.Size(55, 25);
-			this.btnUp.TabIndex = 7;
-			this.btnUp.Text = "Up";
-			this.btnUp.Click += new System.EventHandler(this.btnUp_Click);
+			this.btnMapsUp.Location = new System.Drawing.Point(165, 65);
+			this.btnMapsUp.Name = "btnMapsUp";
+			this.btnMapsUp.Size = new System.Drawing.Size(55, 25);
+			this.btnMapsUp.TabIndex = 7;
+			this.btnMapsUp.Text = "Up";
+			this.btnMapsUp.Click += new System.EventHandler(this.btnMapsUp_Click);
 			// 
-			// btnDown
+			// btnMapsDown
 			// 
-			this.btnDown.Location = new System.Drawing.Point(165, 95);
-			this.btnDown.Name = "btnDown";
-			this.btnDown.Size = new System.Drawing.Size(55, 25);
-			this.btnDown.TabIndex = 6;
-			this.btnDown.Text = "Down";
-			this.btnDown.Click += new System.EventHandler(this.btnDown_Click);
+			this.btnMapsDown.Location = new System.Drawing.Point(165, 95);
+			this.btnMapsDown.Name = "btnMapsDown";
+			this.btnMapsDown.Size = new System.Drawing.Size(55, 25);
+			this.btnMapsDown.TabIndex = 6;
+			this.btnMapsDown.Text = "Down";
+			this.btnMapsDown.Click += new System.EventHandler(this.btnMapsDown_Click);
 			// 
-			// btnMoveRight
+			// btnMapsRight
 			// 
-			this.btnMoveRight.Location = new System.Drawing.Point(165, 175);
-			this.btnMoveRight.Name = "btnMoveRight";
-			this.btnMoveRight.Size = new System.Drawing.Size(55, 25);
-			this.btnMoveRight.TabIndex = 5;
-			this.btnMoveRight.Text = ">";
-			this.btnMoveRight.Click += new System.EventHandler(this.btnMoveRight_Click);
+			this.btnMapsRight.Location = new System.Drawing.Point(165, 175);
+			this.btnMapsRight.Name = "btnMapsRight";
+			this.btnMapsRight.Size = new System.Drawing.Size(55, 25);
+			this.btnMapsRight.TabIndex = 5;
+			this.btnMapsRight.Text = ">";
+			this.btnMapsRight.Click += new System.EventHandler(this.btnMapsRight_Click);
 			// 
-			// btnMoveLeft
+			// btnMapsLeft
 			// 
-			this.btnMoveLeft.Location = new System.Drawing.Point(165, 145);
-			this.btnMoveLeft.Name = "btnMoveLeft";
-			this.btnMoveLeft.Size = new System.Drawing.Size(55, 25);
-			this.btnMoveLeft.TabIndex = 4;
-			this.btnMoveLeft.Text = "<";
-			this.btnMoveLeft.Click += new System.EventHandler(this.btnMoveLeft_Click);
+			this.btnMapsLeft.Location = new System.Drawing.Point(165, 145);
+			this.btnMapsLeft.Name = "btnMapsLeft";
+			this.btnMapsLeft.Size = new System.Drawing.Size(55, 25);
+			this.btnMapsLeft.TabIndex = 4;
+			this.btnMapsLeft.Text = "<";
+			this.btnMapsLeft.Click += new System.EventHandler(this.btnMapsLeft_Click);
 			// 
-			// listAllImages
+			// lbMapsImagesAll
 			// 
-			this.listAllImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.lbMapsImagesAll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.listAllImages.ItemHeight = 12;
-			this.listAllImages.Location = new System.Drawing.Point(225, 30);
-			this.listAllImages.Name = "listAllImages";
-			this.listAllImages.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.listAllImages.Size = new System.Drawing.Size(155, 304);
-			this.listAllImages.TabIndex = 3;
+			this.lbMapsImagesAll.ItemHeight = 12;
+			this.lbMapsImagesAll.Location = new System.Drawing.Point(225, 30);
+			this.lbMapsImagesAll.Name = "lbMapsImagesAll";
+			this.lbMapsImagesAll.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+			this.lbMapsImagesAll.Size = new System.Drawing.Size(155, 304);
+			this.lbMapsImagesAll.TabIndex = 3;
 			// 
-			// label9
+			// lblMapsImagesAll
 			// 
-			this.label9.Location = new System.Drawing.Point(225, 15);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(65, 15);
-			this.label9.TabIndex = 2;
-			this.label9.Text = "not in use";
+			this.lblMapsImagesAll.Location = new System.Drawing.Point(225, 15);
+			this.lblMapsImagesAll.Name = "lblMapsImagesAll";
+			this.lblMapsImagesAll.Size = new System.Drawing.Size(65, 15);
+			this.lblMapsImagesAll.TabIndex = 2;
+			this.lblMapsImagesAll.Text = "not in use";
 			// 
-			// listMapImages
+			// lbMapsImagesUsed
 			// 
-			this.listMapImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.lbMapsImagesUsed.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 			| System.Windows.Forms.AnchorStyles.Left)));
-			this.listMapImages.ItemHeight = 12;
-			this.listMapImages.Location = new System.Drawing.Point(5, 30);
-			this.listMapImages.Name = "listMapImages";
-			this.listMapImages.Size = new System.Drawing.Size(155, 304);
-			this.listMapImages.TabIndex = 1;
+			this.lbMapsImagesUsed.ItemHeight = 12;
+			this.lbMapsImagesUsed.Location = new System.Drawing.Point(5, 30);
+			this.lbMapsImagesUsed.Name = "lbMapsImagesUsed";
+			this.lbMapsImagesUsed.Size = new System.Drawing.Size(155, 304);
+			this.lbMapsImagesUsed.TabIndex = 1;
 			// 
-			// label8
+			// lblMapsImagesUsed
 			// 
-			this.label8.Location = new System.Drawing.Point(5, 15);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(100, 15);
-			this.label8.TabIndex = 0;
-			this.label8.Text = "SpriteSets in use";
+			this.lblMapsImagesUsed.Location = new System.Drawing.Point(5, 15);
+			this.lblMapsImagesUsed.Name = "lblMapsImagesUsed";
+			this.lblMapsImagesUsed.Size = new System.Drawing.Size(100, 15);
+			this.lblMapsImagesUsed.TabIndex = 0;
+			this.lblMapsImagesUsed.Text = "SpriteSets in use";
 			// 
-			// grpMapGroup
+			// gbMapsTerrain
 			// 
-			this.grpMapGroup.Controls.Add(this.label11);
-			this.grpMapGroup.Controls.Add(this.txtBlank);
-			this.grpMapGroup.Controls.Add(this.cbPalette);
-			this.grpMapGroup.Controls.Add(this.label7);
-			this.grpMapGroup.Controls.Add(this.label6);
-			this.grpMapGroup.Controls.Add(this.label5);
-			this.grpMapGroup.Controls.Add(this.txtRmp);
-			this.grpMapGroup.Controls.Add(this.txtRoot);
-			this.grpMapGroup.Enabled = false;
-			this.grpMapGroup.Location = new System.Drawing.Point(240, 0);
-			this.grpMapGroup.Name = "grpMapGroup";
-			this.grpMapGroup.Size = new System.Drawing.Size(385, 170);
-			this.grpMapGroup.TabIndex = 1;
-			this.grpMapGroup.TabStop = false;
-			this.grpMapGroup.Text = "TERRAIN GROUP";
+			this.gbMapsTerrain.Controls.Add(this.lblMapsBlanks);
+			this.gbMapsTerrain.Controls.Add(this.tbMapsBlanks);
+			this.gbMapsTerrain.Controls.Add(this.cbMapsPalette);
+			this.gbMapsTerrain.Controls.Add(this.lblMapsPalette);
+			this.gbMapsTerrain.Controls.Add(this.lblMapsRoutes);
+			this.gbMapsTerrain.Controls.Add(this.lblMapsMaps);
+			this.gbMapsTerrain.Controls.Add(this.tbMapsRoutes);
+			this.gbMapsTerrain.Controls.Add(this.tbMapsMaps);
+			this.gbMapsTerrain.Enabled = false;
+			this.gbMapsTerrain.Location = new System.Drawing.Point(240, 0);
+			this.gbMapsTerrain.Name = "gbMapsTerrain";
+			this.gbMapsTerrain.Size = new System.Drawing.Size(385, 170);
+			this.gbMapsTerrain.TabIndex = 1;
+			this.gbMapsTerrain.TabStop = false;
+			this.gbMapsTerrain.Text = "TERRAIN GROUP";
 			// 
-			// label11
+			// lblMapsBlanks
 			// 
-			this.label11.Location = new System.Drawing.Point(5, 95);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(75, 15);
-			this.label11.TabIndex = 7;
-			this.label11.Text = "Blanks path";
+			this.lblMapsBlanks.Location = new System.Drawing.Point(5, 95);
+			this.lblMapsBlanks.Name = "lblMapsBlanks";
+			this.lblMapsBlanks.Size = new System.Drawing.Size(100, 15);
+			this.lblMapsBlanks.TabIndex = 7;
+			this.lblMapsBlanks.Text = "Path to BLK files";
 			// 
-			// txtBlank
+			// tbMapsBlanks
 			// 
-			this.txtBlank.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tbMapsBlanks.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtBlank.Location = new System.Drawing.Point(5, 112);
-			this.txtBlank.Name = "txtBlank";
-			this.txtBlank.Size = new System.Drawing.Size(373, 19);
-			this.txtBlank.TabIndex = 6;
+			this.tbMapsBlanks.Location = new System.Drawing.Point(5, 112);
+			this.tbMapsBlanks.Name = "tbMapsBlanks";
+			this.tbMapsBlanks.Size = new System.Drawing.Size(373, 19);
+			this.tbMapsBlanks.TabIndex = 6;
 			// 
-			// cbPalette
+			// cbMapsPalette
 			// 
-			this.cbPalette.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cbPalette.Location = new System.Drawing.Point(65, 140);
-			this.cbPalette.Name = "cbPalette";
-			this.cbPalette.Size = new System.Drawing.Size(115, 20);
-			this.cbPalette.TabIndex = 5;
-			this.cbPalette.SelectedIndexChanged += new System.EventHandler(this.cbPalette_SelectedIndexChanged);
+			this.cbMapsPalette.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cbMapsPalette.Location = new System.Drawing.Point(5, 140);
+			this.cbMapsPalette.Name = "cbMapsPalette";
+			this.cbMapsPalette.Size = new System.Drawing.Size(115, 20);
+			this.cbMapsPalette.TabIndex = 5;
+			this.cbMapsPalette.SelectedIndexChanged += new System.EventHandler(this.cbMapsPalette_SelectedIndexChanged);
 			// 
-			// label7
+			// lblMapsPalette
 			// 
-			this.label7.Location = new System.Drawing.Point(10, 145);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(45, 15);
-			this.label7.TabIndex = 4;
-			this.label7.Text = "Palette";
+			this.lblMapsPalette.Location = new System.Drawing.Point(125, 145);
+			this.lblMapsPalette.Name = "lblMapsPalette";
+			this.lblMapsPalette.Size = new System.Drawing.Size(45, 15);
+			this.lblMapsPalette.TabIndex = 4;
+			this.lblMapsPalette.Text = "Palette";
 			// 
-			// label6
+			// lblMapsRoutes
 			// 
-			this.label6.Location = new System.Drawing.Point(5, 55);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(75, 15);
-			this.label6.TabIndex = 3;
-			this.label6.Text = "Routes path";
+			this.lblMapsRoutes.Location = new System.Drawing.Point(5, 55);
+			this.lblMapsRoutes.Name = "lblMapsRoutes";
+			this.lblMapsRoutes.Size = new System.Drawing.Size(100, 15);
+			this.lblMapsRoutes.TabIndex = 3;
+			this.lblMapsRoutes.Text = "Path to RMP files";
 			// 
-			// label5
+			// lblMapsMaps
 			// 
-			this.label5.Location = new System.Drawing.Point(5, 15);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(65, 15);
-			this.label5.TabIndex = 2;
-			this.label5.Text = "Maps path";
+			this.lblMapsMaps.Location = new System.Drawing.Point(5, 15);
+			this.lblMapsMaps.Name = "lblMapsMaps";
+			this.lblMapsMaps.Size = new System.Drawing.Size(100, 15);
+			this.lblMapsMaps.TabIndex = 2;
+			this.lblMapsMaps.Text = "Path to MAP files";
 			// 
-			// txtRmp
+			// tbMapsRoutes
 			// 
-			this.txtRmp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tbMapsRoutes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtRmp.Location = new System.Drawing.Point(5, 72);
-			this.txtRmp.Name = "txtRmp";
-			this.txtRmp.Size = new System.Drawing.Size(373, 19);
-			this.txtRmp.TabIndex = 1;
-			this.txtRmp.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtRmp_KeyPress);
-			this.txtRmp.Leave += new System.EventHandler(this.txtRmp_Leave);
+			this.tbMapsRoutes.Location = new System.Drawing.Point(5, 72);
+			this.tbMapsRoutes.Name = "tbMapsRoutes";
+			this.tbMapsRoutes.Size = new System.Drawing.Size(373, 19);
+			this.tbMapsRoutes.TabIndex = 1;
+			this.tbMapsRoutes.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbMapsRoutes_KeyPress);
+			this.tbMapsRoutes.Leave += new System.EventHandler(this.tbMapsRoutes_Leave);
 			// 
-			// txtRoot
+			// tbMapsMaps
 			// 
-			this.txtRoot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tbMapsMaps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtRoot.Location = new System.Drawing.Point(5, 32);
-			this.txtRoot.Name = "txtRoot";
-			this.txtRoot.Size = new System.Drawing.Size(373, 19);
-			this.txtRoot.TabIndex = 0;
-			this.txtRoot.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtRoot_KeyPress);
-			this.txtRoot.Leave += new System.EventHandler(this.txtRoot_Leave);
+			this.tbMapsMaps.Location = new System.Drawing.Point(5, 32);
+			this.tbMapsMaps.Name = "tbMapsMaps";
+			this.tbMapsMaps.Size = new System.Drawing.Size(373, 19);
+			this.tbMapsMaps.TabIndex = 0;
+			this.tbMapsMaps.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbMapsMaps_KeyPress);
+			this.tbMapsMaps.Leave += new System.EventHandler(this.tbMapsMaps_Leave);
 			// 
-			// treeMaps
+			// tvMaps
 			// 
-			this.treeMaps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.tvMaps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 			| System.Windows.Forms.AnchorStyles.Left)));
-			this.treeMaps.ContextMenu = this.cmTree;
-			this.treeMaps.Location = new System.Drawing.Point(0, 35);
-			this.treeMaps.Name = "treeMaps";
-			this.treeMaps.Size = new System.Drawing.Size(240, 472);
-			this.treeMaps.TabIndex = 0;
-			this.treeMaps.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeMaps_AfterSelect);
+			this.tvMaps.ContextMenu = this.cmMain;
+			this.tvMaps.Location = new System.Drawing.Point(0, 35);
+			this.tvMaps.Name = "tvMaps";
+			this.tvMaps.Size = new System.Drawing.Size(240, 472);
+			this.tvMaps.TabIndex = 0;
+			this.tvMaps.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvMaps_AfterSelect);
 			// 
-			// cmTree
+			// cmMain
 			// 
-			this.cmTree.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.cmMain.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.newGroup,
 			this.delGroup,
 			this.addSub,
@@ -1358,98 +1324,98 @@ namespace MapView
 			this.delMap.Text = "Delete map";
 			this.delMap.Click += new System.EventHandler(this.delMap_Click);
 			// 
-			// btnSaveMapEdit
+			// btnMapsSaveTree
 			// 
-			this.btnSaveMapEdit.Location = new System.Drawing.Point(130, 5);
-			this.btnSaveMapEdit.Name = "btnSaveMapEdit";
-			this.btnSaveMapEdit.Size = new System.Drawing.Size(85, 35);
-			this.btnSaveMapEdit.TabIndex = 8;
-			this.btnSaveMapEdit.Text = "Save - out of order";
-			this.btnSaveMapEdit.Click += new System.EventHandler(this.btnSaveMapEdit_Click);
+			this.btnMapsSaveTree.Location = new System.Drawing.Point(130, 5);
+			this.btnMapsSaveTree.Name = "btnMapsSaveTree";
+			this.btnMapsSaveTree.Size = new System.Drawing.Size(85, 35);
+			this.btnMapsSaveTree.TabIndex = 8;
+			this.btnMapsSaveTree.Text = "Save - out of order";
+			this.btnMapsSaveTree.Click += new System.EventHandler(this.btnMapsSaveTree_Click);
 			// 
-			// btnEditTree
+			// btnMapsEditTree
 			// 
-			this.btnEditTree.Location = new System.Drawing.Point(25, 5);
-			this.btnEditTree.Name = "btnEditTree";
-			this.btnEditTree.Size = new System.Drawing.Size(85, 35);
-			this.btnEditTree.TabIndex = 6;
-			this.btnEditTree.Text = "Edit - out of order";
-			this.btnEditTree.Click += new System.EventHandler(this.btnEditTree_Click);
+			this.btnMapsEditTree.Location = new System.Drawing.Point(25, 5);
+			this.btnMapsEditTree.Name = "btnMapsEditTree";
+			this.btnMapsEditTree.Size = new System.Drawing.Size(85, 35);
+			this.btnMapsEditTree.TabIndex = 6;
+			this.btnMapsEditTree.Text = "Edit - out of order";
+			this.btnMapsEditTree.Click += new System.EventHandler(this.btnMapsEditTree_Click);
 			// 
 			// tabImages
 			// 
-			this.tabImages.Controls.Add(this.lblImage2);
-			this.tabImages.Controls.Add(this.txtImage2);
-			this.tabImages.Controls.Add(this.btnSaveImages);
-			this.tabImages.Controls.Add(this.label4);
-			this.tabImages.Controls.Add(this.txtImagePath);
-			this.tabImages.Controls.Add(this.lstImages);
+			this.tabImages.Controls.Add(this.lblImagesImages);
+			this.tabImages.Controls.Add(this.tbImagesImages);
+			this.tabImages.Controls.Add(this.btnImagesSave);
+			this.tabImages.Controls.Add(this.lblImagesTerrain);
+			this.tabImages.Controls.Add(this.tbImagesTerrain);
+			this.tabImages.Controls.Add(this.lbImages);
 			this.tabImages.Location = new System.Drawing.Point(4, 22);
 			this.tabImages.Name = "tabImages";
 			this.tabImages.Size = new System.Drawing.Size(624, 508);
 			this.tabImages.TabIndex = 2;
 			this.tabImages.Text = "Image Files";
 			// 
-			// lblImage2
+			// lblImagesImages
 			// 
-			this.lblImage2.Location = new System.Drawing.Point(245, 195);
-			this.lblImage2.Name = "lblImage2";
-			this.lblImage2.Size = new System.Drawing.Size(100, 15);
-			this.lblImage2.TabIndex = 14;
-			this.lblImage2.Text = "Images.dat path";
+			this.lblImagesImages.Location = new System.Drawing.Point(245, 50);
+			this.lblImagesImages.Name = "lblImagesImages";
+			this.lblImagesImages.Size = new System.Drawing.Size(115, 15);
+			this.lblImagesImages.TabIndex = 14;
+			this.lblImagesImages.Text = "Path to Images.cfg";
 			// 
-			// txtImage2
+			// tbImagesImages
 			// 
-			this.txtImage2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tbImagesImages.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtImage2.Location = new System.Drawing.Point(245, 212);
-			this.txtImage2.Name = "txtImage2";
-			this.txtImage2.ReadOnly = true;
-			this.txtImage2.Size = new System.Drawing.Size(373, 19);
-			this.txtImage2.TabIndex = 12;
+			this.tbImagesImages.Location = new System.Drawing.Point(245, 67);
+			this.tbImagesImages.Name = "tbImagesImages";
+			this.tbImagesImages.ReadOnly = true;
+			this.tbImagesImages.Size = new System.Drawing.Size(375, 19);
+			this.tbImagesImages.TabIndex = 12;
 			// 
-			// btnSaveImages
+			// btnImagesSave
 			// 
-			this.btnSaveImages.Location = new System.Drawing.Point(245, 295);
-			this.btnSaveImages.Name = "btnSaveImages";
-			this.btnSaveImages.Size = new System.Drawing.Size(85, 35);
-			this.btnSaveImages.TabIndex = 3;
-			this.btnSaveImages.Text = "Save";
-			this.btnSaveImages.Click += new System.EventHandler(this.btnSaveImages_Click);
+			this.btnImagesSave.Location = new System.Drawing.Point(250, 115);
+			this.btnImagesSave.Name = "btnImagesSave";
+			this.btnImagesSave.Size = new System.Drawing.Size(85, 35);
+			this.btnImagesSave.TabIndex = 3;
+			this.btnImagesSave.Text = "Save";
+			this.btnImagesSave.Click += new System.EventHandler(this.btnImagesSave_Click);
 			// 
-			// label4
+			// lblImagesTerrain
 			// 
-			this.label4.Location = new System.Drawing.Point(245, 95);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(110, 15);
-			this.label4.TabIndex = 2;
-			this.label4.Text = "PCK TAB MCD path";
+			this.lblImagesTerrain.Location = new System.Drawing.Point(245, 10);
+			this.lblImagesTerrain.Name = "lblImagesTerrain";
+			this.lblImagesTerrain.Size = new System.Drawing.Size(155, 15);
+			this.lblImagesTerrain.TabIndex = 2;
+			this.lblImagesTerrain.Text = "Path to MCD/PCK/TAB files";
 			// 
-			// txtImagePath
+			// tbImagesTerrain
 			// 
-			this.txtImagePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tbImagesTerrain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtImagePath.Location = new System.Drawing.Point(245, 112);
-			this.txtImagePath.Name = "txtImagePath";
-			this.txtImagePath.ReadOnly = true;
-			this.txtImagePath.Size = new System.Drawing.Size(373, 19);
-			this.txtImagePath.TabIndex = 1;
-			this.txtImagePath.TextChanged += new System.EventHandler(this.txtImagePath_TextChanged);
+			this.tbImagesTerrain.Location = new System.Drawing.Point(245, 25);
+			this.tbImagesTerrain.Name = "tbImagesTerrain";
+			this.tbImagesTerrain.ReadOnly = true;
+			this.tbImagesTerrain.Size = new System.Drawing.Size(375, 19);
+			this.tbImagesTerrain.TabIndex = 1;
+			this.tbImagesTerrain.TextChanged += new System.EventHandler(this.tbImagesTerrain_TextChanged);
 			// 
-			// lstImages
+			// lbImages
 			// 
-			this.lstImages.ContextMenu = this.imagesCM;
-			this.lstImages.Dock = System.Windows.Forms.DockStyle.Left;
-			this.lstImages.ItemHeight = 12;
-			this.lstImages.Location = new System.Drawing.Point(0, 0);
-			this.lstImages.Name = "lstImages";
-			this.lstImages.Size = new System.Drawing.Size(240, 508);
-			this.lstImages.TabIndex = 0;
-			this.lstImages.SelectedIndexChanged += new System.EventHandler(this.lstImages_SelectedIndexChanged);
+			this.lbImages.ContextMenu = this.cmImages;
+			this.lbImages.Dock = System.Windows.Forms.DockStyle.Left;
+			this.lbImages.ItemHeight = 12;
+			this.lbImages.Location = new System.Drawing.Point(0, 0);
+			this.lbImages.Name = "lbImages";
+			this.lbImages.Size = new System.Drawing.Size(240, 508);
+			this.lbImages.TabIndex = 0;
+			this.lbImages.SelectedIndexChanged += new System.EventHandler(this.lbImages_SelectedIndexChanged);
 			// 
-			// imagesCM
+			// cmImages
 			// 
-			this.imagesCM.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.cmImages.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.addImageset,
 			this.delImageset});
 			// 
@@ -1457,17 +1423,34 @@ namespace MapView
 			// 
 			this.addImageset.Index = 0;
 			this.addImageset.Text = "Add";
-			this.addImageset.Click += new System.EventHandler(this.addImageset_Click);
+			this.addImageset.Click += new System.EventHandler(this.cmImagesAddImageset_Click);
 			// 
 			// delImageset
 			// 
 			this.delImageset.Index = 1;
 			this.delImageset.Text = "Remove";
-			this.delImageset.Click += new System.EventHandler(this.delImageset_Click);
+			this.delImageset.Click += new System.EventHandler(this.cmImagesDeleteImageset_Click);
 			// 
-			// openFile
+			// ofdFileDialog
 			// 
-			this.openFile.Filter = "map files|*.map|dat files|*.dat|Pck files|*.pck|All files|*.*";
+			this.ofdFileDialog.Filter = "Config files|*.cfg|Map files|*.map|Pck files|*.pck|All files|*.*";
+			// 
+			// lblPathsClearRegistry
+			// 
+			this.lblPathsClearRegistry.Location = new System.Drawing.Point(145, 165);
+			this.lblPathsClearRegistry.Name = "lblPathsClearRegistry";
+			this.lblPathsClearRegistry.Size = new System.Drawing.Size(300, 25);
+			this.lblPathsClearRegistry.TabIndex = 15;
+			this.lblPathsClearRegistry.Text = "Clear MapView from the Windows Registry and switch the option to save window posi" +
+	"tions and sizes off.";
+			// 
+			// lblPathsInstall
+			// 
+			this.lblPathsInstall.Location = new System.Drawing.Point(145, 215);
+			this.lblPathsInstall.Name = "lblPathsInstall";
+			this.lblPathsInstall.Size = new System.Drawing.Size(120, 15);
+			this.lblPathsInstall.TabIndex = 16;
+			this.lblPathsInstall.Text = "Re-run the installer.";
 			// 
 			// PathsEditor
 			// 
@@ -1477,7 +1460,7 @@ namespace MapView
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximizeBox = false;
 			this.MaximumSize = new System.Drawing.Size(640, 560);
-			this.Menu = this.mainMenu;
+			this.Menu = this.mmMenu;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(640, 560);
 			this.Name = "PathsEditor";
@@ -1487,14 +1470,82 @@ namespace MapView
 			this.tabPaths.ResumeLayout(false);
 			this.tabPaths.PerformLayout();
 			this.tabMaps.ResumeLayout(false);
-			this.grpMap.ResumeLayout(false);
-			this.grpMapGroup.ResumeLayout(false);
-			this.grpMapGroup.PerformLayout();
+			this.gbMapsBlock.ResumeLayout(false);
+			this.gbMapsTerrain.ResumeLayout(false);
+			this.gbMapsTerrain.PerformLayout();
 			this.tabImages.ResumeLayout(false);
 			this.tabImages.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
 		#endregion
+
+		private MainMenu mmMenu;
+		private MenuItem miFile;
+		private TabControl tabs;
+		private TabPage tabPaths;
+		private TabPage tabMaps;
+		private TabPage tabImages;
+		private Label lblPathsMaps;
+		private Label lblPathsImages;
+		private Label lblPathsCursor;
+		private TextBox tbPathsMaps;
+		private TextBox tbPathsImages;
+		private TextBox tbPathsCursor;
+		private Label lblPathsSave;
+		private ListBox lbImages;
+		private TextBox tbImagesTerrain;
+		private Label lblImagesTerrain;
+		private GroupBox gbMapsTerrain;
+		private GroupBox gbMapsBlock;
+		private TextBox tbMapsMaps;
+		private TextBox tbMapsRoutes;
+		private Label lblMapsMaps;
+		private Label lblMapsRoutes;
+		private Label lblMapsPalette;
+		private TreeView tvMaps;
+		private ContextMenu cmMain;
+		private Label lblMapsImagesUsed;
+		private ListBox lbMapsImagesUsed;
+		private Label lblMapsImagesAll;
+		private ListBox lbMapsImagesAll;
+		private Button btnMapsLeft;
+		private Button btnMapsRight;
+		private Button btnMapsDown;
+		private Button btnMapsUp;
+		private Button btnPathsClearRegistry;
+		private IContainer components;
+		private TextBox tbPathsPalettes;
+		private Label lblPathsPalettes;
+		private Button btnPathsMaps;
+		private Button btnPathsImages;
+		private OpenFileDialog ofdFileDialog;
+		private ContextMenu cmImages;
+		private MenuItem addImageset;
+		private MenuItem delImageset;
+		private MenuItem newGroup;
+		private MenuItem addMap;
+		private MenuItem delMap;
+		private MenuItem delGroup;
+		private MenuItem menuItem1;
+		private Button btnPathsInstall;
+		private Button btnPathsSave;
+		private Button btnImagesSave;
+		private Label lblImagesImages;
+		private TextBox tbImagesImages;
+		private ComboBox cbMapsPalette;
+		private Button btnMapsSaveTree;
+		private MenuItem addSub;
+		private MenuItem delSub;
+		private MenuItem addNewMap;
+		private MenuItem addExistingMap;
+		private Button btnMapsEditTree;
+		private MenuItem closeItem;
+		private Label lblMapsBlanks;
+		private TextBox tbMapsBlanks;
+		private Button btnMapsCopy;
+		private Button btnMapsPaste;
+		private System.Windows.Forms.Label lblPathsInstall;
+		private System.Windows.Forms.Label lblPathsClearRegistry;
 	}
 }

@@ -45,56 +45,56 @@ namespace MapView
 			// 
 			// tbUfo
 			// 
-			this.tbUfo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tbUfo.Location = new System.Drawing.Point(85, 0);
+			this.tbUfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
+			this.tbUfo.Location = new System.Drawing.Point(75, 0);
 			this.tbUfo.Name = "tbUfo";
-			this.tbUfo.Size = new System.Drawing.Size(344, 19);
+			this.tbUfo.Size = new System.Drawing.Size(365, 19);
 			this.tbUfo.TabIndex = 0;
 			// 
 			// tbTftd
 			// 
-			this.tbTftd.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tbTftd.Location = new System.Drawing.Point(85, 0);
+			this.tbTftd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
+			this.tbTftd.Location = new System.Drawing.Point(75, 0);
 			this.tbTftd.Name = "tbTftd";
-			this.tbTftd.Size = new System.Drawing.Size(344, 19);
+			this.tbTftd.Size = new System.Drawing.Size(365, 19);
 			this.tbTftd.TabIndex = 1;
 			// 
 			// labelUfo
 			// 
-			this.labelUfo.Dock = System.Windows.Forms.DockStyle.Left;
-			this.labelUfo.Location = new System.Drawing.Point(0, 0);
+			this.labelUfo.Location = new System.Drawing.Point(0, 5);
 			this.labelUfo.Name = "labelUfo";
-			this.labelUfo.Size = new System.Drawing.Size(85, 25);
+			this.labelUfo.Size = new System.Drawing.Size(75, 15);
 			this.labelUfo.TabIndex = 2;
 			this.labelUfo.Text = "UFO Folder";
 			this.labelUfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// labelTftd
 			// 
-			this.labelTftd.Dock = System.Windows.Forms.DockStyle.Left;
-			this.labelTftd.Location = new System.Drawing.Point(0, 0);
+			this.labelTftd.Location = new System.Drawing.Point(0, 5);
 			this.labelTftd.Name = "labelTftd";
-			this.labelTftd.Size = new System.Drawing.Size(85, 25);
+			this.labelTftd.Size = new System.Drawing.Size(75, 15);
 			this.labelTftd.TabIndex = 3;
 			this.labelTftd.Text = "TFTD Folder";
 			this.labelTftd.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// btnFindUfo
 			// 
-			this.btnFindUfo.Dock = System.Windows.Forms.DockStyle.Right;
-			this.btnFindUfo.Location = new System.Drawing.Point(429, 0);
+			this.btnFindUfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnFindUfo.Location = new System.Drawing.Point(440, 0);
 			this.btnFindUfo.Name = "btnFindUfo";
-			this.btnFindUfo.Size = new System.Drawing.Size(45, 25);
+			this.btnFindUfo.Size = new System.Drawing.Size(30, 20);
 			this.btnFindUfo.TabIndex = 4;
 			this.btnFindUfo.Text = "...";
 			this.btnFindUfo.Click += new System.EventHandler(this.btnFindUfo_Click);
 			// 
 			// btnFindTftd
 			// 
-			this.btnFindTftd.Dock = System.Windows.Forms.DockStyle.Right;
-			this.btnFindTftd.Location = new System.Drawing.Point(429, 0);
+			this.btnFindTftd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnFindTftd.Location = new System.Drawing.Point(440, 0);
 			this.btnFindTftd.Name = "btnFindTftd";
-			this.btnFindTftd.Size = new System.Drawing.Size(45, 25);
+			this.btnFindTftd.Size = new System.Drawing.Size(30, 20);
 			this.btnFindTftd.TabIndex = 5;
 			this.btnFindTftd.Text = "...";
 			this.btnFindTftd.Click += new System.EventHandler(this.btnFindTftd_Click);
@@ -102,7 +102,7 @@ namespace MapView
 			// btnOk
 			// 
 			this.btnOk.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.btnOk.Location = new System.Drawing.Point(85, 50);
+			this.btnOk.Location = new System.Drawing.Point(84, 50);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(165, 25);
 			this.btnOk.TabIndex = 6;
@@ -117,7 +117,7 @@ namespace MapView
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(474, 25);
+			this.panel1.Size = new System.Drawing.Size(472, 25);
 			this.panel1.TabIndex = 7;
 			// 
 			// panel2
@@ -128,13 +128,14 @@ namespace MapView
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel2.Location = new System.Drawing.Point(0, 25);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(474, 25);
+			this.panel2.Size = new System.Drawing.Size(472, 25);
 			this.panel2.TabIndex = 8;
 			// 
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.btnCancel.Location = new System.Drawing.Point(265, 50);
+			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnCancel.Location = new System.Drawing.Point(264, 50);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(165, 25);
 			this.btnCancel.TabIndex = 9;
@@ -143,17 +144,20 @@ namespace MapView
 			// 
 			// InstallWindow
 			// 
+			this.AcceptButton = this.btnOk;
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-			this.ClientSize = new System.Drawing.Size(474, 81);
+			this.CancelButton = this.btnCancel;
+			this.ClientSize = new System.Drawing.Size(472, 79);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.btnOk);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.MaximumSize = new System.Drawing.Size(480, 105);
+			this.MinimumSize = new System.Drawing.Size(480, 105);
 			this.Name = "InstallWindow";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Set up";
+			this.Text = "set Resource folder(s)";
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
 			this.panel2.ResumeLayout(false);

@@ -9,10 +9,8 @@ namespace MapView.Forms.XCError
 	{
 		public void HandleException(Exception exception)
 		{
-			using (var errorWindow = new ErrorWindow(exception)) // wtf. 'using' ... for what.
-			{
-				errorWindow.ShowDialog();
-			}
+			using (var f = new ErrorWindow(exception))
+				f.ShowDialog();
 		}
 	}
 }

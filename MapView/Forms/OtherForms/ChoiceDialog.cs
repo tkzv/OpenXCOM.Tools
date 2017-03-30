@@ -4,17 +4,22 @@ using System;
 namespace MapView
 {
 	/// <summary>
+	/// Options for the ChoiceDialog.
+	/// </summary>
+	public enum Choice
+	{
+		Overwrite,
+		UseExisting
+	};
+
+
+	/// <summary>
 	/// This form is used only for adding a new Map with the PathsEditor.
 	/// </summary>
-	public class ChoiceDialog
+	internal sealed class ChoiceDialog
 		:
-		System.Windows.Forms.Form
+			System.Windows.Forms.Form
 	{
-		private System.Windows.Forms.Label txt;
-		private System.Windows.Forms.Button overwrite;
-		private System.Windows.Forms.Button exist;
-		private System.ComponentModel.Container components = null;
-
 		private Choice _choice;
 
 
@@ -29,7 +34,7 @@ namespace MapView
 		}
 
 
-		public Choice Choice
+		public Choice Choice // hello DialogResult hello.
 		{
 			get { return _choice; }
 		}
@@ -114,15 +119,10 @@ namespace MapView
 
 		}
 		#endregion
+
+		private System.Windows.Forms.Label txt;
+		private System.Windows.Forms.Button overwrite;
+		private System.Windows.Forms.Button exist;
+		private System.ComponentModel.Container components = null;
 	}
-
-
-	/// <summary>
-	/// Options for the ChoiceDialog.
-	/// </summary>
-	public enum Choice
-	{
-		Overwrite,
-		UseExisting
-	};
 }

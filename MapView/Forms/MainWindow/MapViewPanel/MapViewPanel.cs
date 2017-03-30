@@ -112,14 +112,14 @@ namespace MapView
 			vert_Scroll(null, null);
 			horiz_Scroll(null, null);
 
-			int h = 0;
-			int w = 0;
+//			int h = 0;
+//			int w = 0;
 
 			_scrollBarVert.Visible = (_mapView.Height > ClientSize.Height);
 			if (_scrollBarVert.Visible)
 			{
 				_scrollBarVert.Maximum = _mapView.Height - ClientSize.Height + _scrollBarHori.Height;
-				w = _scrollBarVert.Width;
+//				w = _scrollBarVert.Width;
 			}
 			else
 				_scrollBarHori.Width = ClientSize.Width;
@@ -130,7 +130,7 @@ namespace MapView
 				_scrollBarHori.Maximum = Math.Max(
 									_mapView.Width - ClientSize.Width + _scrollBarVert.Width,
 									_scrollBarHori.Minimum);
-				h = _scrollBarHori.Height;
+//				h = _scrollBarHori.Height;
 			}
 			else
 				_scrollBarVert.Height = ClientSize.Height;

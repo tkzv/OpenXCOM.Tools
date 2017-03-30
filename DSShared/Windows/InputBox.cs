@@ -5,8 +5,7 @@ using System.Windows.Forms;
 namespace DSShared.Windows
 {
 	/// <summary>
-	/// A generic form providing a textbox for user-input plus Ok and Cancel
-	/// buttons.
+	/// A generic form providing a textbox for user-input.
 	/// </summary>
 	public sealed partial class InputBox
 		:
@@ -44,6 +43,19 @@ namespace DSShared.Windows
 		public string InputString
 		{
 			get { return tbInput.Text; }
+		}
+
+		private void btnFindFile_Click(object sender, EventArgs e)
+		{
+			using (var f = openFileDialog)
+			{
+				f.Title = "Find MCDEdit.exe";
+				f.Multiselect = false;
+				f.FilterIndex = 1; // *.exe
+
+				if (f.ShowDialog() == DialogResult.OK)
+					tbInput.Text = f.FileName;
+			}
 		}
 	}
 }

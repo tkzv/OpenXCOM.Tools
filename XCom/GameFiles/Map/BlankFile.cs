@@ -46,7 +46,6 @@ namespace XCom
 				string baseName,
 				string blankPath,
 				XCom.Interfaces.Base.IMapBase file)
-//				XCMapFile file)
 		{
 			Directory.CreateDirectory(blankPath);
 
@@ -70,9 +69,6 @@ namespace XCom
 							else
 								++i;
 						}
-
-//				bw.Flush();
-//				bw.Close(); // NOTE: the 'using' block flushes & closes the stream.
 			}
 		}
 	}

@@ -55,7 +55,7 @@ namespace MapView
 			// the designer cap the form's Size by setting its MaximumSize to
 			// the Size - but now run this code that sets the MaximumSize to
 			// "0,0" (unlimited, as wanted). And, as a safety, do the same thing
-			// with MinimumSize ....
+			// with MinimumSize ... if desired.
 			//
 			// - observed & tested in SharpDevelop 5.1
 			//
@@ -67,7 +67,6 @@ namespace MapView
 			size.Width  =
 			size.Height = 0;
 			MaximumSize = size; // fu.net
-//			MinimumSize = size;
 
 
 			_mapViewPanel = MapViewPanel.Instance;
@@ -126,11 +125,11 @@ namespace MapView
 
 			#endregion
 
-			if (!infoPaths.FileExists())
+			if (!infoPaths.FileExists()) // check if Paths.cfg exists yet
 			{
-				var install = new InstallWindow();
-				if (install.ShowDialog(this) != DialogResult.OK)
-					Environment.Exit(-1); // wtf -1
+				using (var install = new InstallWindow())
+					if (install.ShowDialog(this) != DialogResult.OK)
+						Environment.Exit(-1); // wtf -1
 			}
 			LogFile.WriteLine("Installation checked");
 
@@ -408,9 +407,6 @@ namespace MapView
 					keyMainView.SetValue("Width",  Width);
 					keyMainView.SetValue("Height", Height - SystemInformation.CaptionButtonSize.Height);
 
-//					keyMainView.SetValue("Animation", onItem.Checked.ToString());
-//					keyMainView.SetValue("Doors", miDoors.Checked.ToString());
-
 					keyMainView.Close();
 					keyMapView.Close();
 					keySoftware.Close();
@@ -539,8 +535,8 @@ namespace MapView
 		{
 			var share = SharedSpace.Instance[PathInfo.PathsFile];
 
-			var paths = new PathsEditor(share.ToString());
-			paths.ShowDialog();
+			using (var paths = new PathsEditor(share.ToString()))
+				paths.ShowDialog();
 
 			var pathInfo = (PathInfo)share;
 			InitGameInfo(pathInfo);

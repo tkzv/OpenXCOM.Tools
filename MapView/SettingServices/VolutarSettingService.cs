@@ -7,7 +7,7 @@ using DSShared.Windows;
 namespace MapView.SettingServices
 {
 	/// <summary>
-	/// Opens Volutar's MCD Editor app.
+	/// Deals with Volutar's MCD Editor app.
 	/// </summary>
 	internal sealed class VolutarSettingService
 	{
@@ -23,18 +23,18 @@ namespace MapView.SettingServices
 				var setting = _settings.GetSetting(VolutarMcdEditorPath, String.Empty);
 
 				_fullpath = setting.Value as String;
-				if (String.IsNullOrEmpty(_fullpath) || !File.Exists(_fullpath))
+				if (!File.Exists(_fullpath))
 				{
-					var input = new InputBox("Enter the Volutar MCD Editor Path in full");
-
-					if (input.ShowDialog() == System.Windows.Forms.DialogResult.OK
-						&& !String.IsNullOrEmpty(input.InputString)
-						&& File.Exists(input.InputString))
+					using (var input = new InputBox("Enter the Volutar MCD Editor Path in full"))
 					{
-						_fullpath = input.InputString;
-						setting.Value = (object)input.InputString;
+						if (input.ShowDialog() == System.Windows.Forms.DialogResult.OK
+							&& File.Exists(input.InputString))
+						{
+							_fullpath = input.InputString;
+							setting.Value = (object)input.InputString;
+						}
+						// TODO: Error handling. As is the input form simply disappears.
 					}
-					// TODO: Error handling. As is the input form simply disappears.
 				}
 				return _fullpath;
 			}
