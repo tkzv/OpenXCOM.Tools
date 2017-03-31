@@ -45,15 +45,15 @@ namespace MapView
 			set
 			{
 				_regInfo = value;
-				value.Loading += (sender, e) => OnRISettingsLoad(e);
-				value.Saving  += (sender, e) => OnRISettingsSave(e);
+				value.LoadingEvent += (sender, e) => OnRISettingsLoad(e);
+				value.SavingEvent  += (sender, e) => OnRISettingsSave(e);
 			}
 		}
 
-		protected virtual void OnRISettingsSave(RegistrySaveLoadEventArgs e)
+		protected virtual void OnRISettingsSave(RegistryEventArgs e)
 		{}
 
-		protected virtual void OnRISettingsLoad(RegistrySaveLoadEventArgs e)
+		protected virtual void OnRISettingsLoad(RegistryEventArgs e)
 		{}
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

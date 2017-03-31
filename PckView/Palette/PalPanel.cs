@@ -8,7 +8,7 @@ using XCom;
 
 namespace PckView
 {
-	internal delegate void PaletteClickDelegate(int selectedIndex);
+	internal delegate void PaletteClickEventHandler(int selectedId);
 
 	internal enum SelectMode
 	{
@@ -38,7 +38,7 @@ namespace PckView
 
 		public const int Across = 16;
 
-		public event PaletteClickDelegate PaletteIndexChanged;
+		public event PaletteClickEventHandler PaletteIndexChanged;
 
 
 		public PalPanel()

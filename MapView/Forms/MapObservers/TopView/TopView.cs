@@ -108,7 +108,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			_topViewPanel.MinHeight = (int)val;
 		}
 
-		protected override void OnRISettingsLoad(DSShared.Windows.RegistrySaveLoadEventArgs e)
+		protected override void OnRISettingsLoad(DSShared.Windows.RegistryEventArgs e)
 		{
 			bottom.Height = 74;
 			RegistryKey riKey = e.OpenRegistryKey;
@@ -117,7 +117,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				mi.Checked = bool.Parse((string)riKey.GetValue("vis" + _visibleHash[mi], "true"));
 		}
 
-		protected override void OnRISettingsSave(DSShared.Windows.RegistrySaveLoadEventArgs e)
+		protected override void OnRISettingsSave(DSShared.Windows.RegistryEventArgs e)
 		{
 			RegistryKey riKey = e.OpenRegistryKey;
 

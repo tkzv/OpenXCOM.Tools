@@ -58,22 +58,22 @@ namespace MapView
 			{
 				_regInfo = value;
 
-				value.Loading += delegate(object sender, RegistrySaveLoadEventArgs e)
+				value.LoadingEvent += delegate(object sender, RegistryEventArgs e)
 				{
 					OnRISettingsLoad(e);
 				};
 
-				value.Saving += delegate(object sender, RegistrySaveLoadEventArgs e)
+				value.SavingEvent += delegate(object sender, RegistryEventArgs e)
 				{
 					OnRISettingsSave(e);
 				};
 			}
 		}
 
-		protected virtual void OnRISettingsSave(RegistrySaveLoadEventArgs e)
+		protected virtual void OnRISettingsSave(RegistryEventArgs e)
 		{}
 
-		protected virtual void OnRISettingsLoad(RegistrySaveLoadEventArgs e)
+		protected virtual void OnRISettingsLoad(RegistryEventArgs e)
 		{}
 
 		[Browsable(false)]

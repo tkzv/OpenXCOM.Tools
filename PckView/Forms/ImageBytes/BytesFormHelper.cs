@@ -41,7 +41,7 @@ namespace PckView.Forms.ImageBytes
 				foreach (byte b in selected.Image.Offsets)
 					bytesText.Text += b + " ";
 
-				bytesFrame.Closing += bClosing;
+				bytesFrame.Closing += OnClosing;
 				bytesFrame.Closing += (s, e) => closedCallBack();
 				bytesFrame.Location = location;
 				bytesFrame.Text = "Length: " + selected.Image.Offsets.Length;
@@ -49,29 +49,31 @@ namespace PckView.Forms.ImageBytes
 			}
 		}
 
-		private void bClosing(object sender, CancelEventArgs e)
+		private void OnClosing(object sender, CancelEventArgs e)
 		{
 			bytesFrame = null;
 		}
 
 		public void ReloadBytesCore(ViewPckItemImage selected)
 		{
-			if (bytesFrame == null) return;
-			if (selected != null && selected.Image != null)
+			if (bytesFrame != null)
 			{
-				bytesFrame.Text = "Length: " + selected.Image.Offsets.Length;
-				bytesText.Clear();
-
-				var text = string.Empty;
-				foreach (byte b in selected.Image.Offsets)
-					text += b + " ";
-
-				bytesText.Text = text;
-			}
-			else
-			{
-				bytesFrame.Text = String.Empty;
-				bytesText.Text  = String.Empty;
+				if (selected != null && selected.Image != null)
+				{
+					bytesFrame.Text = "Length: " + selected.Image.Offsets.Length;
+					bytesText.Clear();
+	
+					var text = string.Empty;
+					foreach (byte b in selected.Image.Offsets)
+						text += b + " ";
+	
+					bytesText.Text = text;
+				}
+				else
+				{
+					bytesFrame.Text = String.Empty;
+					bytesText.Text  = String.Empty;
+				}
 			}
 		}
 	}

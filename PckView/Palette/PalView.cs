@@ -13,14 +13,11 @@ namespace PckView
 		:
 			System.Windows.Forms.Form
 	{
+		public event PaletteClickEventHandler PaletteIndexChanged;
+
+
 		private PalPanel _palPanel;
 		private System.Windows.Forms.Label _status;
-
-		public event PaletteClickDelegate PaletteIndexChanged;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.Container components = null;
 
 
 		public PalView()
@@ -65,20 +62,28 @@ namespace PckView
 			set { _palPanel.Palette = value; }
 		}
 
-/*		protected override void OnResize(EventArgs e)
+		protected override void OnResize(EventArgs e)
 		{
-			if (palPanel != null)
+			if (_palPanel != null)
 			{
-				palPanel.Width = ClientSize.Width;
-				palPanel.Height = ClientSize.Height - status.Height;
+				_palPanel.Width  = ClientSize.Width;
+				_palPanel.Height = ClientSize.Height - _status.Height;
 
-				status.Location = new Point(palPanel.Left, palPanel.Bottom);
-				status.Width = ClientSize.Width;
+				_status.Location = new Point(
+										_palPanel.Left,
+										_palPanel.Bottom);
+
+				_status.Width = ClientSize.Width;
 			}
-		} */
+		}
 
 
 		#region Windows Form Designer generated code
+
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.Container components = null;
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -116,7 +121,7 @@ namespace PckView
 			this._palPanel.Name = "palPanel";
 			this._palPanel.Size = new System.Drawing.Size(292, 237);
 			this._palPanel.TabIndex = 0;
-			this._palPanel.PaletteIndexChanged += new PckView.PaletteClickDelegate(this.palClick);
+			this._palPanel.PaletteIndexChanged += new PckView.PaletteClickEventHandler(this.palClick);
 			//
 			// PalView
 			//

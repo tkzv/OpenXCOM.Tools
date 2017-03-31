@@ -14,9 +14,8 @@ namespace PckView
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && (components != null))
-			{
 				components.Dispose();
-			}
+
 			base.Dispose(disposing);
 		}
 
@@ -86,45 +85,45 @@ namespace PckView
 			// 
 			this.openItem.Index = 0;
 			this.openItem.Text = "&Open";
-			this.openItem.Click += new System.EventHandler(this.openItem_Click);
+			this.openItem.Click += new System.EventHandler(this.OnOpenClick);
 			// 
 			// miCompare
 			// 
 			this.miCompare.Index = 1;
 			this.miCompare.Text = "Compare";
-			this.miCompare.Click += new System.EventHandler(this.miCompare_Click);
+			this.miCompare.Click += new System.EventHandler(this.OnCompareClick);
 			// 
 			// SaveMenuItem
 			// 
 			this.SaveMenuItem.Index = 2;
 			this.SaveMenuItem.Text = "Save";
-			this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
+			this.SaveMenuItem.Click += new System.EventHandler(this.OnSaveClick);
 			// 
 			// saveitem
 			// 
 			this.saveitem.Enabled = false;
 			this.saveitem.Index = 3;
 			this.saveitem.Text = "&Save To FIle";
-			this.saveitem.Click += new System.EventHandler(this.saveAs_Click);
+			this.saveitem.Click += new System.EventHandler(this.OnSaveAsClick);
 			// 
 			// miSaveDir
 			// 
 			this.miSaveDir.Index = 4;
 			this.miSaveDir.Text = "Save &Image";
-			this.miSaveDir.Click += new System.EventHandler(this.miSaveDir_Click);
+			this.miSaveDir.Click += new System.EventHandler(this.OnSaveDirectoryClick);
 			// 
 			// miHq2x
 			// 
 			this.miHq2x.Index = 5;
 			this.miHq2x.Text = "&Hq2x";
 			this.miHq2x.Visible = false;
-			this.miHq2x.Click += new System.EventHandler(this.miHq2x_Click);
+			this.miHq2x.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
 			// quitItem
 			// 
 			this.quitItem.Index = 6;
 			this.quitItem.Text = "&Quit";
-			this.quitItem.Click += new System.EventHandler(this.quitItem_Click);
+			this.quitItem.Click += new System.EventHandler(this.OnQuitClick);
 			// 
 			// miPalette
 			// 
@@ -143,7 +142,7 @@ namespace PckView
 			// 
 			this.showBytes.Index = 0;
 			this.showBytes.Text = "&Show";
-			this.showBytes.Click += new System.EventHandler(this.showBytes_Click);
+			this.showBytes.Click += new System.EventHandler(this.OnShowBytesClick);
 			// 
 			// transItem
 			// 
@@ -157,7 +156,7 @@ namespace PckView
 			// 
 			this.transOn.Index = 0;
 			this.transOn.Text = "On";
-			this.transOn.Click += new System.EventHandler(this.transOn_Click);
+			this.transOn.Click += new System.EventHandler(this.OnTransparencyClick);
 			// 
 			// menuItem4
 			// 
@@ -174,32 +173,32 @@ namespace PckView
 			// 
 			this.aboutItem.Index = 0;
 			this.aboutItem.Text = "About";
-			this.aboutItem.Click += new System.EventHandler(this.aboutItem_Click);
+			this.aboutItem.Click += new System.EventHandler(this.OnAboutClick);
 			// 
 			// helpItem
 			// 
 			this.helpItem.Index = 1;
 			this.helpItem.Text = "Basic Help";
-			this.helpItem.Click += new System.EventHandler(this.helpItem_Click);
+			this.helpItem.Click += new System.EventHandler(this.OnHelpClick);
 			// 
 			// miModList
 			// 
 			this.miModList.Index = 2;
 			this.miModList.Text = "Mod List";
-			this.miModList.Click += new System.EventHandler(this.miModList_Click);
+			this.miModList.Click += new System.EventHandler(this.OnModListClick);
 			// 
 			// miConsole
 			// 
 			this.miConsole.Index = 3;
 			this.miConsole.Text = "Console";
-			this.miConsole.Click += new System.EventHandler(this.miConsole_Click);
+			this.miConsole.Click += new System.EventHandler(this.OnConsoleClick);
 			// 
 			// MapViewIntegrationMenuItem
 			// 
 			this.MapViewIntegrationMenuItem.Index = 4;
 			this.MapViewIntegrationMenuItem.Text = "MapView Integration";
 			this.MapViewIntegrationMenuItem.Visible = false;
-			this.MapViewIntegrationMenuItem.Click += new System.EventHandler(this.MapViewIntegrationMenuItem_Click);
+			this.MapViewIntegrationMenuItem.Click += new System.EventHandler(this.OnMapViewIntegrationClick);
 			// 
 			// saveBmpSingle
 			// 
@@ -237,7 +236,7 @@ namespace PckView
 			this.GotItMapViewButton.TabIndex = 2;
 			this.GotItMapViewButton.Text = "Got it";
 			this.GotItMapViewButton.UseVisualStyleBackColor = true;
-			this.GotItMapViewButton.Click += new System.EventHandler(this.GotItMapViewButton_Click);
+			this.GotItMapViewButton.Click += new System.EventHandler(this.OnGotItClick);
 			// 
 			// label1
 			// 
@@ -260,8 +259,8 @@ namespace PckView
 			this.Name = "PckViewForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "PckView";
-			this.Shown += new System.EventHandler(this.PckViewForm_Shown);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PckView_KeyDown);
+			this.Shown += new System.EventHandler(this.OnShown);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
 			this.MapViewIntegrationHelpPanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 

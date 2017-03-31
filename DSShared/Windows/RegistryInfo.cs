@@ -14,7 +14,8 @@ namespace DSShared.Windows
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
-	public delegate void RegistrySaveLoadHandler(object sender, RegistrySaveLoadEventArgs e);
+//	public delegate void EventHandler<RegistryEventArgs>(object sender, RegistryEventArgs e);
+	public delegate void RegistryEventHandler(object sender, RegistryEventArgs e);
 
 
 	/// <summary>
@@ -26,10 +27,10 @@ namespace DSShared.Windows
 		public const string Software  = "Software";
 		private const string DSShared = "DSShared";
 
-		private object _obj;
-		private string _label;
+		private readonly object _obj;
+		private readonly string _regkey;
 
-		private Dictionary<string, PropertyInfo> _properties;
+		private readonly Dictionary<string, PropertyInfo> _dictInfo;
 
 //		private bool _saveOnClose = true;
 
@@ -37,48 +38,65 @@ namespace DSShared.Windows
 		/// Event fired when retrieving values from the registry. This happens
 		/// after the values are read and set in the object.
 		/// </summary>
-		public event RegistrySaveLoadHandler Loading;
+//		public event EventHandler LoadingEvent;
+		public event RegistryEventHandler LoadingEvent;
 
 		/// <summary>
 		/// Event fired when saving values to the registry. This happens after
 		/// the values are saved.
 		/// </summary>
-		public event RegistrySaveLoadHandler Saving;
+//		public event EventHandler SavingEvent;
+		public event RegistryEventHandler SavingEvent;
 
 
 		/// <summary>
-		/// Constructor that uses the name parameter as the registry key to save
-		/// values under.
+		/// Main cTor. Uses the specified string as a registry key.
 		/// </summary>
 		/// <param name="obj">the object to save/load values into the registry</param>
-		/// <param name="label">the name of the registry key to save/load</param>
-		public RegistryInfo(object obj, string label)
+		/// <param name="regkey">the name of the registry key to save/load</param>
+		public RegistryInfo(object obj, string regkey)
 		{
 			_obj = obj;
-			_label = label;
+			_regkey = regkey;
 
-			_properties = new Dictionary<string, PropertyInfo>();
+			_dictInfo = new Dictionary<string, PropertyInfo>();
 
 			var f = obj as Form;
 			if (f != null)
 			{
 				f.StartPosition = FormStartPosition.Manual;
-				f.Load += Load;
-				f.Closing += Closing;
+				f.Load += OnLoad;
+				f.Closing += OnClose;
 				AddProperty("Width", "Height", "Left", "Top");
 			}
 		}
-
 		/// <summary>
-		/// Constructor that uses the ToString() value of the object as the name
-		/// of the constructor parameter.
+		/// Auxiliary cTor. Uses the ToString() return of the specified object
+		/// as a registry key.
 		/// </summary>
 		/// <param name="obj"></param>
 		public RegistryInfo(object obj)
 			:
-			this(obj, obj.GetType().ToString())
+				this(obj, obj.GetType().ToString())
 		{}
 
+
+		/// <summary>
+		/// Adds properties to be saved/loaded.
+		/// </summary>
+		/// <param name="keys">the names of the properties to be saved/loaded</param>
+		public void AddProperty(params string[] keys)
+		{
+			var type = _obj.GetType();
+
+			PropertyInfo info;
+			foreach (string key in keys)
+			{
+				info = type.GetProperty(key);
+				if (info != null) // kL_add
+					_dictInfo[info.Name] = info;
+			}
+		}
 
 		/// <summary>
 		/// Loads the specified values from the registry. Parameters match those
@@ -86,20 +104,20 @@ namespace DSShared.Windows
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void Load(object sender, EventArgs e)
+		private void OnLoad(object sender, EventArgs e)
 		{
 			RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey(Software);
 			RegistryKey keyDSShared = keySoftware.CreateSubKey(DSShared);
-			RegistryKey keyLabel    = keyDSShared.CreateSubKey(_label);
+			RegistryKey keyLabel    = keyDSShared.CreateSubKey(_regkey);
 
-			foreach (string st in _properties.Keys)
-				_properties[st].SetValue(
+			foreach (string key in _dictInfo.Keys)
+				_dictInfo[key].SetValue(
 									_obj,
-									keyLabel.GetValue(st, _properties[st].GetValue(_obj, null)),
+									keyLabel.GetValue(key, _dictInfo[key].GetValue(_obj, null)),
 									null);
 
-			if (Loading != null)
-				Loading(this, new RegistrySaveLoadEventArgs(keyLabel));
+			if (LoadingEvent != null)
+				LoadingEvent(this, new RegistryEventArgs(keyLabel));
 
 			keyLabel.Close();
 			keyDSShared.Close();
@@ -107,27 +125,11 @@ namespace DSShared.Windows
 		}
 
 		/// <summary>
-		/// Adds properties to be saved/loaded.
-		/// </summary>
-		/// <param name="labels">the names of the properties to be saved/loaded</param>
-		public void AddProperty(params string[] labels)
-		{
-			var type = _obj.GetType();
-
-			PropertyInfo info;
-			foreach (string label in labels)
-			{
-				info = type.GetProperty(label);
-				_properties[info.Name] = info;
-			}
-		}
-
-		/// <summary>
-		/// Saves the specified values to the registry.
+		/// Saves values to the registry on the Closing events of various forms.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void Save(object sender, EventArgs e)
+		private void OnClose(object sender, EventArgs e)
 		{
 			var f = _obj as Form;
 			if (f != null)
@@ -137,34 +139,25 @@ namespace DSShared.Windows
 //			{
 			RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey(Software);
 			RegistryKey keyDSShared = keySoftware.CreateSubKey(DSShared);
-			RegistryKey keyLabel    = keyDSShared.CreateSubKey(_label);
+			RegistryKey regkey      = keyDSShared.CreateSubKey(_regkey);
 
-			foreach (string st in _properties.Keys)
-				keyLabel.SetValue(
-							st,
-							_properties[st].GetValue(_obj, null));
+			foreach (string key in _dictInfo.Keys)
+				regkey.SetValue(
+							key,
+							_dictInfo[key].GetValue(_obj, null));
 
-			if (Saving != null)
-				Saving(this, new RegistrySaveLoadEventArgs(keyLabel));
+			if (SavingEvent != null)
+				SavingEvent(this, new RegistryEventArgs(regkey));
 
-			keyLabel.Close();
+			regkey.Close();
+
 			keyDSShared.Close();
 			keySoftware.Close();
 //			}
 		}
 
-		/// <summary>
-		/// Method intended for use with Form.Closing events - directly calls
-		/// Save() to the registry for various windows.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void Closing(object sender, EventArgs e)
-		{
-			Save(sender, e);
-		}
+		// TODO: Vet the PathsEditor button that clears registry keys.
 
-		// TODO: Implement a btn to clear registry keys. See 'PathsEditor'.
 
 /*		/// <summary>
 		/// Deletes the key located at HKEY_CURRENT_USER\Software\'_regKey'\
@@ -236,12 +229,11 @@ namespace DSShared.Windows
 	/// <summary>
 	/// EventArgs for saving and loading events.
 	/// </summary>
-	public class RegistrySaveLoadEventArgs
+	public class RegistryEventArgs
 		:
-		EventArgs
+			EventArgs
 	{
 		private readonly RegistryKey _regkey;
-
 		/// <summary>
 		/// The registry key that is now open for saving and loading to. Do not
 		/// close the key here.
@@ -257,7 +249,7 @@ namespace DSShared.Windows
 		/// </summary>
 		/// <param name="regkey">registry key that has been opened for reading
 		/// and writing to</param>
-		public RegistrySaveLoadEventArgs(RegistryKey regkey)
+		public RegistryEventArgs(RegistryKey regkey)
 		{
 			_regkey = regkey;
 		}

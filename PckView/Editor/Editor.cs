@@ -13,25 +13,18 @@ namespace PckView
 		:
 			Form
 	{
-		public event EventHandler PalViewClosing;
+//		public event EventHandler PalViewClosing;
 
-		private Container components = null;
+
 		private readonly EditorPanel _editPanel;
-		private PalView _palView;
-		private MainMenu menu;
-		private MenuItem paletteMain;
-		private MenuItem showPalette;
-		private ButtonPanel _buttonsPanel;
-		private MenuItem linesItem;
-		private MenuItem showLines;
-		private TrackBar _trackBar;
 
 
 		public Editor(PckImage image)
 		{
-			_editPanel = new EditorPanel(image);
+			_editPanel    = new EditorPanel(image);
 			_buttonsPanel = new ButtonPanel();
-			_trackBar = new TrackBar();
+			_trackBar     = new TrackBar();
+
 
 			_trackBar.Minimum = 1;
 			_trackBar.Maximum = 10;
@@ -56,9 +49,10 @@ namespace PckView
 								EditorPane.PreferredHeight + _trackBar.Height);
 
 			_palView = new PalView();
-			_palView.Closing += new CancelEventHandler(palClose);
+			_palView.Closing += OnPaletteClosing;
 
 			_palView.PaletteIndexChanged += _editPanel.Editor.SelectColor;
+
 			_trackBar.Scroll += sizeScroll;
 		}
 
@@ -72,7 +66,7 @@ namespace PckView
 //			get { return _editPanel.Editor.Palette; }
 			set
 			{
-				_palView.Palette     =
+				_palView.Palette          =
 				_buttonsPanel.Palette     =
 				_editPanel.Editor.Palette = value;
 			}
@@ -91,14 +85,14 @@ namespace PckView
 			showPalette.Checked = true;
 		}
 
-		private void palClose(object sender, CancelEventArgs e)
+		private void OnPaletteClosing(object sender, CancelEventArgs e)
 		{
 			e.Cancel = true;
 			_palView.Hide();
 			showPalette.Checked = false;
 
-			if (PalViewClosing != null)
-				PalViewClosing(this, new EventArgs());
+//			if (PalViewClosing != null)
+//				PalViewClosing(this, new EventArgs());
 		}
 
 		protected override void OnResize(EventArgs e)
@@ -124,7 +118,24 @@ namespace PckView
 			}
 		}
 
+
+		private void showPalette_Click(object sender, EventArgs e)
+		{
+			if (showPalette.Checked)
+				_palView.Close();
+			else
+				ShowPalView();
+		}
+
+		private void showLines_Click(object sender, EventArgs e)
+		{
+			showLines.Checked =! showLines.Checked;
+			_editPanel.Editor.Lines = showLines.Checked;
+		}
+
+
 		#region Windows Form Designer generated code
+
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
@@ -190,18 +201,14 @@ namespace PckView
 		}
 		#endregion
 
-		private void showPalette_Click(object sender, EventArgs e)
-		{
-			if (showPalette.Checked)
-				_palView.Close();
-			else
-				ShowPalView();
-		}
-
-		private void showLines_Click(object sender, EventArgs e)
-		{
-			showLines.Checked =! showLines.Checked;
-			_editPanel.Editor.Lines = showLines.Checked;
-		}
+		private Container components = null;
+		private PalView _palView;
+		private MainMenu menu;
+		private MenuItem paletteMain;
+		private MenuItem showPalette;
+		private ButtonPanel _buttonsPanel;
+		private MenuItem linesItem;
+		private MenuItem showLines;
+		private TrackBar _trackBar;
 	}
 }

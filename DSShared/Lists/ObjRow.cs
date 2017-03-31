@@ -106,7 +106,7 @@ namespace DSShared.Lists
 		/// <param name="obj">the obj</param>
 		public ObjRow(object obj)
 			:
-			this(obj, null)
+				this(obj, null)
 		{}
 
 
@@ -362,8 +362,8 @@ namespace DSShared.Lists
 		/// Method that paints this row.
 		/// </summary>
 		/// <param name="e"></param>
-		/// <param name="yOffset"></param>
-		public virtual void Render(PaintEventArgs e, int yOffset)
+//		/// <param name="yOffset"></param>
+		public void Render(PaintEventArgs e/*, int yOffset*/)
 		{
 //			base.OnPaint(e);
 
@@ -372,7 +372,7 @@ namespace DSShared.Lists
 				int startX = 0;
 				var rowRect = new System.Drawing.RectangleF(
 														_columns.OffX,
-														_top + yOffset + 1,
+														_top /*+ yOffset*/ + 1,
 														_columns.TableWidth - 1,
 														_columns.Font.Height + CustomListColumnCollection.PadY * 2 - 1);
 				if (_colSelected != null)
@@ -382,7 +382,7 @@ namespace DSShared.Lists
 				{
 					var rect = new System.Drawing.Rectangle(
 														_colClicked.Left,
-														_top + yOffset + 1,
+														_top /*+ yOffset*/ + 1,
 														_colClicked.Width,
 														_columns.Font.Height + CustomListColumnCollection.PadY + 1);
 					e.Graphics.FillRectangle(Brushes.LightSeaGreen, rowRect);
@@ -395,7 +395,7 @@ namespace DSShared.Lists
 
 					var rect = new System.Drawing.Rectangle(
 														startX + _columns.OffX,
-														_top + yOffset + CustomListColumnCollection.PadY,
+														_top /*+ yOffset*/ + CustomListColumnCollection.PadY,
 														col.Width - 4,
 														_columns.Font.Height);
 
@@ -414,7 +414,8 @@ namespace DSShared.Lists
 						&& _colClicked.Property.EditType != EditStrType.None)
 					{
 						e.Graphics.DrawString(
-										(_editMode) ? _editBuffer : col.Property.Value(Object) + _addStr,
+										(_editMode) ? _editBuffer
+													: col.Property.Value(Object) + _addStr,
 										_columns.Font,
 										Brushes.Black,
 										rect);
@@ -436,9 +437,9 @@ namespace DSShared.Lists
 				e.Graphics.DrawLine(
 								Pens.Black,
 								_columns.OffX,
-								_top + _columns.Font.Height + CustomListColumnCollection.PadY * 2 + yOffset,
+								_top + _columns.Font.Height + CustomListColumnCollection.PadY * 2 /*+ yOffset*/,
 								_columns.TableWidth - 1,
-								_top + _columns.Font.Height + CustomListColumnCollection.PadY * 2 + yOffset);
+								_top + _columns.Font.Height + CustomListColumnCollection.PadY * 2 /*+ yOffset*/);
 			}
 		}
 

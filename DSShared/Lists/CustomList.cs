@@ -36,7 +36,16 @@ namespace DSShared.Lists
 			Control
 	{
 		private readonly CustomListColumnCollection _columns;
+
 		private List<ObjRow> _items;
+/*		/// <summary>
+		/// Gets the items.
+		/// </summary>
+		/// <value>the items</value>
+		public List<ObjRow> Items
+		{
+			get { return _items; }
+		} */
 
 		/// <summary>
 		/// The currently selected ObjRow.
@@ -49,18 +58,41 @@ namespace DSShared.Lists
 		private ObjRow _clicked;
 
 		private int _startY;
-		private int _yOffset;
+
+//		private int _yOffset; // TODO: ALWAYS 0.
+
 		private int _selRow = -1;
 
-		private VScrollBar _scrollbar;
+//		private VScrollBar _scrollbar; // TODO: ALWAYS NULL.
 
 		private CustomListColumn _colOver;
 
-		private DSShared.Windows.RegistryInfo _regInfo;
+		private RegistryInfo _regInfo;
 
 		private Type _rowType;
+/*		/// <summary>
+		/// Gets or sets the type of the row.
+		/// </summary>
+		/// <value>the type of the row</value>
+		[Browsable(false)]
+		[DefaultValue(typeof(ObjRow))]
+		public Type RowType
+		{
+			get { return _rowType; }
+			set { _rowType = value; }
+		} */
 
 		private string _name = String.Empty;
+/*		/// <summary>
+		/// Gets or sets the name of the control.
+		/// </summary>
+		/// <value></value>
+		/// <returns>the name of the control. The default is an empty string ("")</returns>
+		public new string Name
+		{
+			get { return _name; }
+			set { _name = value; }
+		} */
 
 		/// <summary>
 		/// Occurs when a row is clicked.
@@ -81,54 +113,22 @@ namespace DSShared.Lists
 			_columns = new CustomListColumnCollection();
 			_columns.OffX =
 			_columns.OffY = 1;
-			_columns.Font=Font;
+			_columns.Font = Font;
 
 			_columns.RefreshEvent += Refresh;
-			_columns.MouseOverEvent += mouseOverRows;
-			_columns.MouseEvent += rowClicked;
+			_columns.MouseOverEvent += OnMouseOverRows;
+			_columns.MouseEvent += OnRowClick;
 			_columns.Parent = this;
 
 			_items = new List<ObjRow>();
 
-			SetStyle(ControlStyles.DoubleBuffer|ControlStyles.AllPaintingInWmPaint|ControlStyles.UserPaint,true);
+			SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
 
 			_startY = _columns.HeaderHeight;
 
 			_rowType = typeof(ObjRow);
 		}
 
-
-		/// <summary>
-		/// Gets or sets the name of the control.
-		/// </summary>
-		/// <value></value>
-		/// <returns>the name of the control. The default is an empty string ("")</returns>
-		public new string Name
-		{
-			get { return _name; }
-			set { _name = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the type of the row.
-		/// </summary>
-		/// <value>the type of the row</value>
-		[Browsable(false)]
-		[DefaultValue(typeof(ObjRow))]
-		public Type RowType
-		{
-			get { return _rowType; }
-			set { _rowType = value; }
-		}
-
-		/// <summary>
-		/// Gets the items.
-		/// </summary>
-		/// <value>the items</value>
-		public List<ObjRow> Items
-		{
-			get { return _items; }
-		}
 
 		/// <summary>
 		/// Gets/Sets the registry info object.
@@ -142,12 +142,12 @@ namespace DSShared.Lists
 			set
 			{
 				_regInfo = value;
-				_regInfo.Loading += loading;
-				_regInfo.Saving += saving;
+				_regInfo.LoadingEvent += OnLoad;
+				_regInfo.SavingEvent += OnSave;
 			}
 		}
 
-		private void loading(object sender, RegistrySaveLoadEventArgs e)
+		private void OnLoad(object sender, RegistryEventArgs e)
 		{
 			RegistryKey key = e.OpenRegistryKey;
 //			Graphics g = Graphics.FromHwnd(Handle);
@@ -165,14 +165,14 @@ namespace DSShared.Lists
 			}
 		}
 
-		private void saving(object sender, RegistrySaveLoadEventArgs e)
+		private void OnSave(object sender, RegistryEventArgs e)
 		{
 			RegistryKey regkey = e.OpenRegistryKey;
-			foreach (CustomListColumn cc in _columns)
-				regkey.SetValue("strLen" + _name + cc.Index, cc.Width);
+			foreach (CustomListColumn col in _columns)
+				regkey.SetValue("strLen" + _name + col.Index, col.Width);
 		}
 
-		private void rowClicked(object sender, MouseEventArgs e)
+		private void OnRowClick(object sender, MouseEventArgs e)
 		{
 //			int overY = (e.Y - (_columns.HeaderHeight + _yOffset)) / (Font.Height + _columns.RowSpace * 2);
 			if (_clicked != null)
@@ -188,7 +188,8 @@ namespace DSShared.Lists
 		}
 
 		/// <summary>
-		/// Gets the preferred height of the control. This is the draw height of all the rows.
+		/// Gets the preferred height of the control. This is the draw height of
+		/// all the rows.
 		/// </summary>
 		[Browsable(false)]
 		public int PreferredHeight
@@ -206,22 +207,22 @@ namespace DSShared.Lists
 			_columns.Width  = Width;
 			_columns.Height = Height;
 
-			if (_scrollbar != null)
-			{
-				_scrollbar.Value = _scrollbar.Minimum;
-				_startY = _columns.HeaderHeight + _scrollbar.Value;
-				if (PreferredHeight > Height)
-				{
-					_scrollbar.Maximum = (((_items.Count + 1) * (RowHeight + 3))) - Height;
-					_scrollbar.Enabled = true;
-				}
-				else
-					_scrollbar.Enabled = false;
-			}
+//			if (_scrollbar != null)
+//			{
+//				_scrollbar.Value = _scrollbar.Minimum;
+//				_startY = _columns.HeaderHeight + _scrollbar.Value;
+//				if (PreferredHeight > Height)
+//				{
+//					_scrollbar.Maximum = (((_items.Count + 1) * (RowHeight + 3))) - Height;
+//					_scrollbar.Enabled = true;
+//				}
+//				else
+//					_scrollbar.Enabled = false;
+//			}
 			Refresh();
 		}
 
-		/// <summary>
+/*		/// <summary>
 		/// Gets/Sets the vertical scroll-bar. 
 		/// </summary>
 		/// <value>the vertical scroll-bar</value>
@@ -238,17 +239,19 @@ namespace DSShared.Lists
 				_scrollbar.Minimum = 0; 
 				_scrollbar.Scroll += new ScrollEventHandler(scroll);
 			}
-		}
+		} */
 
-		private void scroll(object sender, ScrollEventArgs e)
+/*		private void OnScroll(object sender, ScrollEventArgs e)
 		{
-			_yOffset = -_scrollbar.Value;
+			if (_scrollbar != null)
+				_yOffset = -_scrollbar.Value;
+
 			Refresh();
-		}
+		} */
 
-		private void mouseOverRows(int mouseY, CustomListColumn curCol)
+		private void OnMouseOverRows(int mouseY, CustomListColumn curCol)
 		{
-			int overY = (mouseY - (_columns.HeaderHeight + _yOffset)) / (Font.Height + CustomListColumnCollection.PadY * 2);
+			int overY = (mouseY - (_columns.HeaderHeight /*+ _yOffset*/)) / (Font.Height + CustomListColumnCollection.PadY * 2);
 			
 			if (_sel != null)
 				_sel.MouseLeave();
@@ -268,7 +271,8 @@ namespace DSShared.Lists
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseMove"></see> event.
 		/// </summary>
-		/// <param name="e">a <see cref="T:System.Windows.Forms.MouseEventArgs"></see> that contains the event data</param>
+		/// <param name="e">a <see cref="T:System.Windows.Forms.MouseEventArgs"></see>
+		/// that contains the event data</param>
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
@@ -278,18 +282,20 @@ namespace DSShared.Lists
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseDown"></see> event.
 		/// </summary>
-		/// <param name="e">a <see cref="T:System.Windows.Forms.MouseEventArgs"></see> that contains the event data</param>
+		/// <param name="e">a <see cref="T:System.Windows.Forms.MouseEventArgs"></see>
+		/// that contains the event data</param>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
 			_columns.MouseDown(e);
-			Focus();
+			Focus(); // TODO: or Select()
 		}
 
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseUp"></see> event.
 		/// </summary>
-		/// <param name="e">a <see cref="T:System.Windows.Forms.MouseEventArgs"></see> that contains the event data</param>
+		/// <param name="e">a <see cref="T:System.Windows.Forms.MouseEventArgs"></see>
+		/// that contains the event data</param>
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
@@ -299,7 +305,8 @@ namespace DSShared.Lists
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.LostFocus"></see> event.
 		/// </summary>
-		/// <param name="e">a <see cref="T:System.EventArgs"></see> that contains the event data</param>
+		/// <param name="e">a <see cref="T:System.EventArgs"></see> that
+		/// contains the event data</param>
 		protected override void OnLostFocus(EventArgs e)
 		{
 			if (_clicked != null)
@@ -312,25 +319,26 @@ namespace DSShared.Lists
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.Paint"></see> event.
 		/// </summary>
-		/// <param name="e">a <see cref="T:System.Windows.Forms.PaintEventArgs"></see> that contains the event data</param>
+		/// <param name="e">a <see cref="T:System.Windows.Forms.PaintEventArgs"></see>
+		/// that contains the event data</param>
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
 			int rowHeight = 0;
-			for (int i = 0; i < _items.Count; i++)
+			for (int i = 0; i != _items.Count; ++i)
 			{
 				var row = (ObjRow)_items[i];
-				if (rowHeight + _yOffset + row.Height > -1 && rowHeight + _yOffset < Height)
-					row.Render(e, _yOffset);
+				if (rowHeight /*+ _yOffset*/ + row.Height > -1 && rowHeight /*+ _yOffset*/ < Height)
+					row.Render(e/*, _yOffset*/);
 
 				rowHeight += row.Height;
 			}
-			_columns.Render(e, rowHeight, _yOffset);
+			_columns.Render(e, rowHeight/*, _yOffset*/);
 		}
 
 		// if row.equals(any other row) then you start to have weird behavior
 
-		/// <summary>
+/*		/// <summary>
 		/// Deletes the row.
 		/// </summary>
 		/// <param name="row">the row to delete</param>
@@ -353,14 +361,13 @@ namespace DSShared.Lists
 				_items.Remove(_items[_items.Count - 1]);
 				_startY -= Font.Height + CustomListColumnCollection.PadY * 2;
 
-				if (refreshOnAdd)
+				if (_refreshOnAdd)
 					Refresh();
 			}
-		}
+		} */
 
-		private bool refreshOnAdd = true;
-
-		/// <summary>
+//		private bool _refreshOnAdd = true;
+/*		/// <summary>
 		/// Gets or sets a value indicating whether to refresh the list when a row is added to the collection.
 		/// </summary>
 		/// <value><c>true</c> if [refresh on add]; otherwise, <c>false</c></value>
@@ -368,9 +375,9 @@ namespace DSShared.Lists
 		[DefaultValue(true)]
 		public bool RefreshOnAdd
 		{
-			get { return refreshOnAdd; }
-			set { refreshOnAdd = value; }
-		}
+			get { return _refreshOnAdd; }
+			set { _refreshOnAdd = value; }
+		} */
 
 		/// <summary>
 		/// Adds a row to the item-collection. Creates an ObjRow and calls AddItem(ObjRow row).
@@ -400,8 +407,8 @@ namespace DSShared.Lists
 			_items.Add(row);
 			_startY += Font.Height + CustomListColumnCollection.PadY * 2;
 
-			if (refreshOnAdd)
-				Refresh();
+//			if (_refreshOnAdd)
+			Refresh();
 		}
 
 		/// <summary>
