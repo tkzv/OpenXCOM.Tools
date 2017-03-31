@@ -45,7 +45,7 @@ namespace PckView
 		{
 			this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 			_palette = null;
-			this.MouseDown += new MouseEventHandler(mouseDown);
+			this.MouseDown += mouseDown;
 //			Width  = (width  + 2 * space) * NumAcross;
 //			Height = (height + 2 * space) * NumAcross;
 			_clickX = -100;

@@ -9,14 +9,14 @@ namespace DSShared.Lists
 	/// </summary>
 	/// <param name="columnChanged">Column that is changed</param>
 	/// <param name="changeAmount">How much it has changed</param>
-	public delegate void CustomListColumChangedDelegate(CustomListColumn columnChanged, int changeAmount);
+	internal delegate void CustomListColumChangedEventHandler(CustomListColumn columnChanged, int changeAmount);
 
 	/// <summary>
 	/// Delegate for use when a column is clicked on.
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="e"></param>
-	public delegate void ColClickDelegate(object sender, RowClickEventArgs e);
+	internal delegate void ColClickEventHandler(object sender, RowClickEventArgs e);
 
 	/// <summary>
 	/// Delegate for use when a key is pressed on a row in this column.
@@ -24,44 +24,63 @@ namespace DSShared.Lists
 	/// <param name="row"></param>
 	/// <param name="col"></param>
 	/// <param name="e"></param>
-	public delegate void KeyPressDelegate(ObjRow row, CustomListColumn col, KeyPressEventArgs e);
+	internal delegate void KeyPressEventHandler(ObjRow row, CustomListColumn col, KeyPressEventArgs e);
 
 
 	/// <summary>
 	/// Class representing a column in a CustomList control.
 	/// </summary>
-	public class CustomListColumn
+	public sealed class CustomListColumn
 	{
-		private ObjProperty _colProperty;
-		private string _title;
+		/// <summary>
+		/// Gets or sets the property this column holds.
+		/// </summary>
+		/// <value>The property.</value>
+		public ObjProperty Property
+		{ get; set; }
+
+		/// <summary>
+		/// Gets or sets the title.
+		/// </summary>
+		/// <value>The title.</value>
+		public string Title
+		{ get; set; }
+
+		/// <summary>
+		/// Gets or sets the index. This value is the position in the column list.
+		/// </summary>
+		/// <value>The index.</value>
+		public int Index
+		{ get; set; }
+
 		private int _width = 50;
 		private int _left;
-		private int _index;
+
 
 		/// <summary>
 		/// Minimum width of a column
 		/// </summary>
-		public static int MinWidth = 20;
+		public const int MinWidth = 20;
 
 		/// <summary>
 		/// Fired when a column's width changes.
 		/// </summary>
-		public event CustomListColumChangedDelegate WidthChanged;
+		internal event CustomListColumChangedEventHandler WidthChanged;
 
 		/// <summary>
 		/// Fired when a column's left parameter changes.
 		/// </summary>
-		public event CustomListColumChangedDelegate LeftChanged;
+		internal event CustomListColumChangedEventHandler LeftChanged;
 
 		/// <summary>
 		/// Fired when a row has been clicked on under this column.
 		/// </summary>
-		public event ColClickDelegate OnClick;
+		private event ColClickEventHandler OnClick;
 
 		/// <summary>
 		/// Fired when a row gets keyboard events under this column.
 		/// </summary>
-		public event KeyPressDelegate KeyPress;
+		private event KeyPressEventHandler KeyPress;
 
 
 		/// <summary>
@@ -71,8 +90,8 @@ namespace DSShared.Lists
 		/// <param name="property">ObjProperty that will reflect on the objects contained in the list</param>
 		public CustomListColumn(string title, ObjProperty property)
 		{
-			_title = title;
-			_colProperty = property;
+			Title = title;
+			Property = property;
 		}
 
 		/// <summary>
@@ -82,8 +101,8 @@ namespace DSShared.Lists
 		/// <param name="property">PropertyInfo that will reflect on the objects contained in the list</param>
 		public CustomListColumn(string title, System.Reflection.PropertyInfo property)
 		{
-			_title = title;
-			_colProperty = new ObjProperty(property);
+			Title = title;
+			Property = new ObjProperty(property);
 		}
 
 		/// <summary>
@@ -134,7 +153,7 @@ namespace DSShared.Lists
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return _title.GetHashCode(); // TODO: fix: Non-readonly field referenced ....
+			return Title.GetHashCode(); // TODO: fix: Non-readonly field referenced ....
 		}
 
 		/// <summary>
@@ -155,39 +174,9 @@ namespace DSShared.Lists
 		{
 			Width = Math.Max(
 						MinWidth,
-						TextRenderer.MeasureText(_title, font).Width) + 2;
+						TextRenderer.MeasureText(Title, font).Width) + 2;
 		}
 
-
-		/// <summary>
-		/// Gets or sets the title.
-		/// </summary>
-		/// <value>The title.</value>
-		public string Title
-		{
-			get { return _title; }
-			set { _title = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the index. This value is the position in the column list.
-		/// </summary>
-		/// <value>The index.</value>
-		public int Index
-		{
-			get { return _index; }
-			set { _index = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the property this column holds.
-		/// </summary>
-		/// <value>The property.</value>
-		public ObjProperty Property
-		{
-			get { return _colProperty; }
-			set { _colProperty = value; }
-		}
 
 		/// <summary>
 		/// Gets or sets the left in screen coordinates.
@@ -230,11 +219,11 @@ namespace DSShared.Lists
 	}
 
 	/// <summary>
-	/// Args class that holds a row and a column. 
+	/// Args class that holds a row and a column.
 	/// </summary>
-	public class RowClickEventArgs
+	internal sealed class RowClickEventArgs
 		:
-		EventArgs
+			EventArgs
 	{
 		private readonly ObjRow _row;
 		private readonly CustomListColumn _col;

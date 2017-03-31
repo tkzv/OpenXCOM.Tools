@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -10,14 +11,14 @@ namespace DSShared.Lists
 	/// <summary>
 	/// Delegate for when the control wants to be refreshed.
 	/// </summary>
-	public delegate void RefreshDelegate();
+	public delegate void RefreshEventHandler();
 
 	/// <summary>
 	/// Delegate for when the mouse moves over a row.
 	/// </summary>
 	/// <param name="mouseY">y-coordinate of the mouse</param>
 	/// <param name="overCol">Column that the y-coordinate is under</param>
-	public delegate void RowMoveDelegate(int mouseY, CustomListColumn overCol);
+	public delegate void MouseOverEventHandler(int mouseY, CustomListColumn overCol);
 
 
 	/// <summary>
@@ -25,38 +26,99 @@ namespace DSShared.Lists
 	/// </summary>
 	public class CustomListColumnCollection
 		:
-		System.Collections.IEnumerable
+			IEnumerable
 	{
-		private List<CustomListColumn> list;
-		private Dictionary<string, CustomListColumn> colHash;
-		private int tableWidth = 0;
-		private int offX, offY;
-		private int colSpace = 2, rowSpace = 2, headerHeight = 14;
+		private List<CustomListColumn> _list;
 
-		private BorderStyle bStyle = BorderStyle.FixedSingle;
-		private Border3DStyle border = Border3DStyle.Etched;
+		private Dictionary<string, CustomListColumn> _dictColumns;
 
-		private SolidBrush foreBrush, headerBrush;
-		private Font font;
-		private int width, height, threshhold = 5;
+		private  const int PadX = 2;
+		internal const int PadY = 2;
 
-		private CustomListColumn movingCol = null, overCol = null, overThreshhold;
-		private CustomList parent;
+		private const int Threshhold = 5;
+
+		private int _widthTable;
+		/// <summary>
+		/// Gets the width of the table.
+		/// </summary>
+		/// <value>the width of the table</value>
+		public int TableWidth
+		{
+			get { return _widthTable; }
+		}
+
+		private int _heightHeader = 14;
+
+		/// <summary>
+		/// Gets/Sets the x-offset value. Tweaking this will move where the
+		/// control is drawn.
+		/// </summary>
+		/// <value></value>
+		public int OffX
+		{ get; set; }
+
+		/// <summary>
+		/// Gets/Sets the y-offset value. Tweaking this will move where the
+		/// control is drawn.
+		/// </summary>
+		/// <value></value>
+		public int OffY
+		{ get; set; }
+
+		private BorderStyle styleBorder = BorderStyle.FixedSingle;
+		private Border3DStyle styleBorder3D = Border3DStyle.Etched;
+
+		private SolidBrush _brushFore;
+		private SolidBrush _brushHeader;
+
+		/// <summary>
+		/// Gets/Sets the font.
+		/// </summary>
+		/// <value>the font</value>
+		public Font Font
+		{ get; set; }
+
+		private CustomListColumn movingCol;
+		private CustomListColumn overCol;
+		private CustomListColumn overThreshhold;
+
+		/// <summary>
+		/// Gets/Sets the parent control of this object.
+		/// </summary>
+		/// <value>the parent</value>
+		public CustomList Parent
+		{ get; set; }
+
+		/// <summary>
+		/// Gets/Sets the width.
+		/// </summary>
+		/// <value>the width</value>
+		public int Width
+		{ get; set; }
+
+		/// <summary>
+		/// Gets/Sets the height.
+		/// </summary>
+		/// <value>the height</value>
+		public int Height
+		{ get; set; }
+
 
 		/// <summary>
 		/// Event for when this collection wants to be refreshed.
 		/// </summary>
-		public event RefreshDelegate RefreshEvent;
+		public event RefreshEventHandler RefreshEvent;
 
 		/// <summary>
-		/// Event for when the mouse moves under a column.
+		/// Event for when the mouse moves over a column.
 		/// </summary>
-		public event RowMoveDelegate RowMoveOver;
+		public event MouseOverEventHandler MouseOverEvent;
 
 		/// <summary>
 		/// Event for when a row gets clicked.
 		/// </summary>
-		public event MouseEventHandler RowClicked;
+		public event MouseEventHandler MouseEvent;
+
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:DSShared.Lists.CustomListColumnCollection"/> class.
@@ -70,53 +132,13 @@ namespace DSShared.Lists
 //				| ControlStyles.UserPaint
 //				| ControlStyles.ResizeRedraw, true);
 
-			headerBrush = new SolidBrush(Color.LightGray);
-			foreBrush = new SolidBrush(Color.Black);
-			headerHeight = 14;
+			_brushHeader = new SolidBrush(Color.LightGray);
+			_brushFore = new SolidBrush(Color.Black);
 
-			list = new List<CustomListColumn>();
-			colHash = new Dictionary<string, CustomListColumn>();
+			_list = new List<CustomListColumn>();
+			_dictColumns = new Dictionary<string, CustomListColumn>();
 		}
 
-		/// <summary>
-		/// Gets/Sets the parent control of this object.
-		/// </summary>
-		/// <value>the parent</value>
-		public CustomList Parent
-		{
-			get { return parent; }
-			set { parent = value; }
-		}
-
-		/// <summary>
-		/// Gets/Sets the width.
-		/// </summary>
-		/// <value>the width</value>
-		public int Width
-		{
-			get { return width; }
-			set { width = value; }
-		}
-
-		/// <summary>
-		/// Gets/Sets the height.
-		/// </summary>
-		/// <value>the height</value>
-		public int Height
-		{
-			get { return height; }
-			set { height = value; }
-		}
-
-		/// <summary>
-		/// Gets/Sets the font.
-		/// </summary>
-		/// <value>the font</value>
-		public Font Font
-		{
-			get { return font; }
-			set { font = value; }
-		}
 
 		/// <summary>
 		/// Gets/Sets the <see cref="T:DSShared.Lists.CustomListColumn"/> with the specified idx.
@@ -124,8 +146,8 @@ namespace DSShared.Lists
 		/// <value></value>
 		public CustomListColumn this[int idx]
 		{
-			get { return list[idx]; }
-			set { list[idx] = value; }
+			get { return _list[idx]; }
+			set { _list[idx] = value; }
 		}
 
 		/// <summary>
@@ -134,18 +156,18 @@ namespace DSShared.Lists
 		/// <param name="column">the column</param>
 		public void Add(CustomListColumn column)
 		{
-			if (!list.Contains(column))
+			if (!_list.Contains(column))
 			{
-				colHash[column.Title] = column;
+				_dictColumns[column.Title] = column;
 
-				column.Left = tableWidth;
-				column.Index = list.Count;
+				column.Left = _widthTable;
+				column.Index = _list.Count;
 
-				column.LeftChanged += new CustomListColumChangedDelegate(colLeftChanged);
-				column.WidthChanged += new CustomListColumChangedDelegate(colWidthChanged);
-				tableWidth += column.Width;
+				column.LeftChanged += colLeftChanged;
+				column.WidthChanged += colWidthChanged;
+				_widthTable += column.Width;
 
-				list.Add(column);
+				_list.Add(column);
 			}
 		}
 
@@ -156,27 +178,7 @@ namespace DSShared.Lists
 		/// <returns></returns>
 		public CustomListColumn GetColumn(string name)
 		{
-			return colHash[name];
-		}
-
-		/// <summary>
-		/// Gets/Sets the x-offset value. Tweaking this will move where the control is drawn.
-		/// </summary>
-		/// <value></value>
-		public int OffX
-		{
-			get { return offX; }
-			set { offX = value; }
-		}
-
-		/// <summary>
-		/// Gets/Sets the y-offset value. Tweaking this will move where the control is drawn.
-		/// </summary>
-		/// <value></value>
-		public int OffY
-		{
-			get { return offY; }
-			set { offY = value; }
+			return _dictColumns[name];
 		}
 
 		/// <summary>
@@ -185,9 +187,9 @@ namespace DSShared.Lists
 		/// <returns>
 		/// a <see cref="T:System.Collections.IEnumerator"></see> object that can be used to iterate through the collection
 		/// </returns>
-		public System.Collections.IEnumerator GetEnumerator()
+		public IEnumerator GetEnumerator()
 		{
-			return list.GetEnumerator();
+			return _list.GetEnumerator();
 		}
 
 		/// <summary>
@@ -196,37 +198,18 @@ namespace DSShared.Lists
 		/// <value>the count</value>
 		public int Count
 		{
-			get { return list.Count; }
+			get { return _list.Count; }
 		}
 
-		/// <summary>
-		/// Gets the width of the table.
-		/// </summary>
-		/// <value>the width of the table</value>
-		public int TableWidth
+		private void colWidthChanged(CustomListColumn col, int amount)
 		{
-			get { return tableWidth; }
-		}
-
-		/// <summary>
-		/// Gets/Sets the row space.
-		/// </summary>
-		/// <value>the row space</value>
-		public int RowSpace
-		{
-			get { return rowSpace; }
-			set { rowSpace = value; }
-		}
-
-		private void colWidthChanged(CustomListColumn col,int amount)
-		{
-			tableWidth -= amount;
+			_widthTable -= amount;
 
 			if (!leftChangeLock)
 			{
 				leftChangeLock = true;
 
-				for (int i = col.Index + 1; i < Count; i++)
+				for (int i = col.Index + 1; i < Count; ++i)
 					this[i].Left -= amount;
 
 				if (RefreshEvent != null)
@@ -248,7 +231,7 @@ namespace DSShared.Lists
 				this[col.Index - 1].Width -= amount;
 
 				int startX = this[col.Index - 1].Width + this[col.Index - 1].Left;
-				for (int i = col.Index; i < Count; i++)
+				for (int i = col.Index; i < Count; ++i)
 				{
 					this[i].Left = startX;
 					startX += this[i].Width;
@@ -262,29 +245,6 @@ namespace DSShared.Lists
 		}
 
 		/// <summary>
-		/// Gets/Sets the color of the foreground.
-		/// </summary>
-		/// <value></value>
-		public Color ForeColor
-		{
-			get { return foreBrush.Color; }
-			set { foreBrush.Color = value; }
-		}
-
-		/// <summary>
-		/// Gets/Sets the color of the header.
-		/// </summary>
-		/// <value>the color of the header</value>
-		[Browsable(true)]
-		[Category("Appearance")]
-		[Description("Background color of the column-row")]
-		public Color HeaderColor
-		{
-			get { return headerBrush.Color; }
-			set { headerBrush.Color = value; }
-		}
-
-		/// <summary>
 		/// Gets/Sets the height of the header.
 		/// </summary>
 		/// <value>the height of the header</value>
@@ -294,8 +254,8 @@ namespace DSShared.Lists
 		[Description("Height of the row with column headers")]
 		public int HeaderHeight
 		{
-			get { return offY + headerHeight + rowSpace * 2; }
-			set { headerHeight = value; }
+			get { return OffY + _heightHeader + PadY * 2; }
+			set { _heightHeader = value; }
 		}
 
 		/// <summary>
@@ -306,26 +266,26 @@ namespace DSShared.Lists
 		[Category("Appearance")]
 		[DefaultValue(BorderStyle.FixedSingle)] // NOTE: This does not set the default value; it sets a value only for the designer.
 		[Description("Displays a border around the control")]
-		public System.Windows.Forms.BorderStyle BorderStyle
+		public BorderStyle BorderStyle
 		{
-			get { return bStyle; }
+			get { return styleBorder; }
 			set
 			{
-				switch (bStyle = value)
+				switch (styleBorder = value)
 				{
 					case BorderStyle.None:
-						offX =
-						offY = 0;
+						OffX =
+						OffY = 0;
 						break;
 
 					case BorderStyle.FixedSingle:
-						offX =
-						offY = 1;
+						OffX =
+						OffY = 1;
 						break;
 
 					default:
-						offX =
-						offY = 2;
+						OffX =
+						OffY = 2;
 						break;
 				}
 			}
@@ -341,8 +301,8 @@ namespace DSShared.Lists
 		[Description("Displays a border around the control")]
 		public Border3DStyle Border3DStyle
 		{
-			get { return border; }
-			set { border = value; }
+			get { return styleBorder3D; }
+			set { styleBorder3D = value; }
 		}
 
 		/// <summary>
@@ -354,36 +314,36 @@ namespace DSShared.Lists
 		public void Render(PaintEventArgs e, int rowHeight, int yOffset)
 		{
 			e.Graphics.FillRectangle(
-								headerBrush,
-								offX, offY,
-								tableWidth - 1,
-								headerHeight + rowSpace * 2);
+								_brushHeader,
+								OffX, OffY,
+								_widthTable - 1,
+								_heightHeader + PadY * 2);
 
 			int startX = 0;
-			for (int i = 0; i < list.Count; i++)
+			for (int i = 0; i != _list.Count; ++i)
 			{
-				var col = list[i] as CustomListColumn;
+				var col = _list[i] as CustomListColumn;
 				if (col == overCol)
 					e.Graphics.FillRectangle(
 										Brushes.LightBlue,
-										col.Left, offY,
+										col.Left, OffY,
 										col.Width,
-										headerHeight + rowSpace * 2);
+										_heightHeader + PadY * 2);
 
 				// vertical lines
 				e.Graphics.DrawLine(
 								Pens.Black,
-								col.Width + startX - colSpace + offX,
-								offY,
-								col.Width + startX - colSpace + offX,
+								col.Width + startX - PadX + OffX,
+								OffY,
+								col.Width + startX - PadX + OffX,
 								HeaderHeight + rowHeight + yOffset);
 				e.Graphics.DrawString(
 								col.Title,
 								Font,
-								foreBrush,
+								_brushFore,
 								new RectangleF(
-											startX + offX,
-											offY,
+											startX + OffX,
+											OffY,
 											startX + col.Width,
 											Font.Height));
 //				e.Graphics.DrawLine(
@@ -398,25 +358,25 @@ namespace DSShared.Lists
 
 			e.Graphics.DrawLine(
 							Pens.Black,
-							offX,
-							offY + headerHeight + rowSpace * 2,
-							tableWidth - 1,
-							offY + headerHeight + rowSpace * 2);
+							OffX,
+							OffY + _heightHeader + PadY * 2,
+							_widthTable - 1,
+							OffY + _heightHeader + PadY * 2);
 
-			switch (bStyle)
+			switch (styleBorder)
 			{
 				case BorderStyle.Fixed3D:
 					System.Windows.Forms.ControlPaint.DrawBorder3D(
 															e.Graphics,
 															0, 0,
 															Width, Height,
-															border);
+															styleBorder3D);
 					break;
 
 				case BorderStyle.FixedSingle:
 					System.Windows.Forms.ControlPaint.DrawBorder(
 															e.Graphics,
-															new Rectangle(0,0, Width,Height),
+															new Rectangle(0, 0, Width, Height),
 															Color.Black,
 															ButtonBorderStyle.Solid);
 					break;
@@ -426,34 +386,37 @@ namespace DSShared.Lists
 		/// <summary>
 		/// The parent calls this when the mouse button is released.
 		/// </summary>
-		/// <param name="e">the <see cref="T:System.Windows.Forms.MouseEventArgs"/> instance containing the event data</param>
+		/// <param name="e">the <see cref="T:System.Windows.Forms.MouseEventArgs"/>
+		/// instance containing the event data</param>
 		public void MouseUp(MouseEventArgs e)
 		{
-			movingCol=null;
+			movingCol = null;
 		}
 
 		/// <summary>
 		/// The parent calls this when the mouse button is pressed.
 		/// </summary>
-		/// <param name="e">the <see cref="T:System.Windows.Forms.MouseEventArgs"/> instance containing the event data</param>
+		/// <param name="e">the <see cref="T:System.Windows.Forms.MouseEventArgs"/>
+		/// instance containing the event data</param>
 		public void MouseDown(MouseEventArgs e)
 		{
-			if (e.Y < headerHeight)
+			if (e.Y < _heightHeader)
 			{
 				if (overThreshhold != null)
 					movingCol = overThreshhold;
 			}
 			else
 			{
-				if (RowClicked != null)
-					RowClicked(this,e);
+				if (MouseEvent != null)
+					MouseEvent(this, e);
 			}
 		}
 
 		/// <summary>
 		/// The parent calls this when the mouse is moved.
 		/// </summary>
-		/// <param name="e">the <see cref="T:System.Windows.Forms.MouseEventArgs"/> instance containing the event data</param>
+		/// <param name="e">the <see cref="T:System.Windows.Forms.MouseEventArgs"/>
+		/// instance containing the event data</param>
 		public void MouseMove(MouseEventArgs e)
 		{
 			if (movingCol != null)
@@ -468,22 +431,23 @@ namespace DSShared.Lists
 			}
 			else
 			{
-				if (e.Y < headerHeight)
+				if (e.Y < _heightHeader)
 				{
 					overThreshhold = null;
 
-					for (int i = 0; i < Count; i++)
-						if (   e.X >= this[i].Left + this[i].Width - threshhold
-							&& e.X <= this[i].Left + this[i].Width + threshhold)
+					for (int i = 0; i != Count; ++i)
+						if (   e.X >= this[i].Left + this[i].Width - Threshhold
+							&& e.X <= this[i].Left + this[i].Width + Threshhold)
 						{
 							overThreshhold = this[i];
 							break;
 						}
 
-					parent.Cursor = (overThreshhold != null) ? Cursors.VSplit : Cursors.Arrow;
+					Parent.Cursor = (overThreshhold != null) ? Cursors.VSplit
+															 : Cursors.Arrow;
 				}
 				else
-					parent.Cursor = Cursors.Arrow;
+					Parent.Cursor = Cursors.Arrow;
 			}
 
 			overCol = null;
@@ -497,8 +461,8 @@ namespace DSShared.Lists
 					break;
 				}
 
-			if (e.Y > headerHeight && RowMoveOver != null)
-				RowMoveOver(e.Y, overCol);
+			if (e.Y > _heightHeader && MouseOverEvent != null)
+				MouseOverEvent(e.Y, overCol);
 		}
 	}
 }

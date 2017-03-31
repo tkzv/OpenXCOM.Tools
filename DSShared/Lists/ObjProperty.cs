@@ -8,7 +8,7 @@ namespace DSShared.Lists
 	/// <summary>
 	/// Class that a CustomList uses to figure out the value of a particular row+column
 	/// </summary>
-	public class ObjProperty
+	public sealed class ObjProperty
 	{
 		private readonly PropertyInfo _property;
 		private object[] _propertyId;
@@ -26,17 +26,13 @@ namespace DSShared.Lists
 			set { _editType = value; }
 		}
 
-		private EditStrDelegate _editFunc;
 		/// <summary>
-		/// Gets or sets the key function. This is called when a key is pressed.
-		/// on a selected row
+		/// Gets or sets the key function. This is called when a key is pressed
+		/// on a selected row.
 		/// </summary>
 		/// <value>the key function</value>
 		public EditStrDelegate KeyFunction
-		{
-			get { return _editFunc; }
-			set { _editFunc = value; }
-		}
+		{ get; set; }
 
 
 		/// <summary>
@@ -93,9 +89,7 @@ namespace DSShared.Lists
 				object[] attr = property.GetCustomAttributes(typeof(EditStrAttribute), true);
 
 				if (attr != null && attr.Length > 0)
-				{
 					_editType = ((EditStrAttribute)attr[0]).EditType;
-				}
 			}
 		}
 
@@ -160,7 +154,7 @@ namespace DSShared.Lists
 		public override int GetHashCode()
 		{
 			return (_property != null) ? _property.GetHashCode()
-									  : 0;
+									   : 0;
 		}
 	}
 }

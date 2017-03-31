@@ -29,29 +29,34 @@ namespace DSShared.Lists
 		Custom
 	};
 
+
 	/// <summary>
-	/// Delegate that gets called when a keyboard button is pressed after a row has been clicked on
+	/// Delegate that gets called when a keyboard button is pressed after a row
+	/// has been clicked on.
 	/// </summary>
 	/// <param name="row"></param>
 	/// <param name="col"></param>
 	/// <param name="e"></param>
 	public delegate void EditStrDelegate(ObjRow row, CustomListColumn col, System.Windows.Forms.KeyPressEventArgs e);
 
+
 	/// <summary>
-	/// Tags a property as being editable in some fashion when used in a CustomList
+	/// Tags a property as being editable in some fashion when used in a CustomList.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Property)]
-	public class EditStrAttribute:Attribute
+	internal sealed class EditStrAttribute
+		:
+			Attribute
 	{
-		private EditStrType editType;
+		private EditStrType _editType;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:EditStrAttribute"/> class.
+		/// Initializes a new instance of the <see cref="T:DSShared.Lists.EditStrAttribute"/> class.
 		/// </summary>
 		/// <param name="editType">Type of the edit.</param>
 		public EditStrAttribute(EditStrType editType)
 		{
-			this.editType = editType;
+			_editType = editType;
 		}
 
 		/// <summary>
@@ -60,7 +65,7 @@ namespace DSShared.Lists
 		/// <value>The type of the edit.</value>
 		public EditStrType EditType
 		{
-			get { return editType; }
+			get { return _editType; }
 		}
 	}
 }

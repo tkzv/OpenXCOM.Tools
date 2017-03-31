@@ -10,17 +10,24 @@ namespace DSShared.Lists
 	/// </summary>
 	public class ObjRow
 		:
-		IComparable
+			IComparable
 	{
 		/// <summary>
 		/// Raised when the control needs to refresh itself.
 		/// </summary>
-		public event RefreshDelegate RefreshEvent;
+		public event RefreshEventHandler RefreshEvent;
 
 		/// <summary>
 		/// The object this row wraps around.
 		/// </summary>
-		private Object _obj;
+//		private Object _obj;
+		/// <summary>
+		/// Gets/Sets the object this row displays.
+		/// </summary>
+		/// <value>The object.</value>
+		public object Object
+		{ get; set; }
+
 
 		/// <summary>
 		/// The list of columns that specify what information of the obj is being displayed.
@@ -80,7 +87,7 @@ namespace DSShared.Lists
 		/// <param name="columns">the columns</param>
 		public ObjRow(object obj, CustomListColumnCollection columns)
 		{
-			_obj = obj;
+			Object = obj;
 			_columns = columns;
 
 			if (_caretTimer == null)
@@ -107,28 +114,18 @@ namespace DSShared.Lists
 		/// Compares one row to another.
 		/// </summary>
 		/// <param name="other">The object to compare with.
-		/// Must be an ObjRow and ObjRow._obj must implement IComparable</param>
+		/// Must be an ObjRow and ObjRow.Object must implement IComparable</param>
 		/// <returns></returns>
 		public int CompareTo(object other)
 		{
 			var rowOther = other as ObjRow;
 			if (rowOther != null)
 			{
-				var rowThis = _obj as IComparable;
+				var rowThis = Object as IComparable;
 				if (rowThis != null)
-					return rowThis.CompareTo(rowOther._obj);
+					return rowThis.CompareTo(rowOther.Object);
 			}
 			return -1;
-		}
-
-		/// <summary>
-		/// Gets/Sets the object this row displays.
-		/// </summary>
-		/// <value>The object.</value>
-		public object Object
-		{
-			get { return _obj; }
-			set { _obj = value; }
 		}
 
 		/// <summary>
@@ -147,10 +144,10 @@ namespace DSShared.Lists
 		/// <returns></returns>
 		public override bool Equals(object obj)
 		{
-			if (_obj != null)
+			if (Object != null)
 			{
 				var obj1 = obj as ObjRow;
-				return (obj1 != null && _obj.Equals(obj1._obj));
+				return (obj1 != null && Object.Equals(obj1.Object));
 			}
 			return (this == obj);
 		}
@@ -165,10 +162,10 @@ namespace DSShared.Lists
 		/// </returns>
 		public override int GetHashCode()
 		{
-			if (_obj == null) // FIX: "Non-readonly field referenced in GetHashCode()."
+			if (Object == null) // FIX: "Non-readonly field referenced in GetHashCode()."
 				return _id;
 
-			return _obj.GetHashCode() >> 1;
+			return Object.GetHashCode() >> 1;
 		}
 
 		private void CaretBlink(object sender, EventArgs e)
@@ -255,7 +252,7 @@ namespace DSShared.Lists
 			_colClicked = col;
 			if (col.Property != null)
 			{
-				_editBuffer = _colClicked.Property.Value(_obj).ToString();
+				_editBuffer = _colClicked.Property.Value(Object).ToString();
 				_editMode = true;
 			}
 			col.FireClick(this);
@@ -276,15 +273,15 @@ namespace DSShared.Lists
 				switch (_colClicked.Property.EditType)
 				{
 					case EditStrType.String:
-						_colClicked.Property.SetValue(_obj, _editBuffer);
+						_colClicked.Property.SetValue(Object, _editBuffer);
 						break;
 
 					case EditStrType.Int:
-						_colClicked.Property.SetValue(_obj, int.Parse(_editBuffer));
+						_colClicked.Property.SetValue(Object, int.Parse(_editBuffer));
 						break;
 
 					case EditStrType.Float:
-						_colClicked.Property.SetValue(_obj, double.Parse(_editBuffer));
+						_colClicked.Property.SetValue(Object, double.Parse(_editBuffer));
 						break;
 				}
 //				}
@@ -370,14 +367,14 @@ namespace DSShared.Lists
 		{
 //			base.OnPaint(e);
 
-			if (_obj != null)
+			if (Object != null)
 			{
 				int startX = 0;
 				var rowRect = new System.Drawing.RectangleF(
 														_columns.OffX,
 														_top + yOffset + 1,
 														_columns.TableWidth - 1,
-														_columns.Font.Height + _columns.RowSpace * 2 - 1);
+														_columns.Font.Height + CustomListColumnCollection.PadY * 2 - 1);
 				if (_colSelected != null)
 					e.Graphics.FillRectangle(Brushes.LightGreen, rowRect);
 
@@ -387,7 +384,7 @@ namespace DSShared.Lists
 														_colClicked.Left,
 														_top + yOffset + 1,
 														_colClicked.Width,
-														_columns.Font.Height + _columns.RowSpace + 1);
+														_columns.Font.Height + CustomListColumnCollection.PadY + 1);
 					e.Graphics.FillRectangle(Brushes.LightSeaGreen, rowRect);
 					e.Graphics.FillRectangle(Brushes.LightSteelBlue, rect);
 				}
@@ -398,7 +395,7 @@ namespace DSShared.Lists
 
 					var rect = new System.Drawing.Rectangle(
 														startX + _columns.OffX,
-														_top + yOffset + _columns.RowSpace,
+														_top + yOffset + CustomListColumnCollection.PadY,
 														col.Width - 4,
 														_columns.Font.Height);
 
@@ -407,7 +404,7 @@ namespace DSShared.Lists
 						&& _colClicked.Property.EditType == EditStrType.Custom)
 					{
 						e.Graphics.DrawString(
-										col.Property.Value(_obj) + _addStr,
+										col.Property.Value(Object) + _addStr,
 										_columns.Font,
 										Brushes.Black,
 										rect);
@@ -417,7 +414,7 @@ namespace DSShared.Lists
 						&& _colClicked.Property.EditType != EditStrType.None)
 					{
 						e.Graphics.DrawString(
-										(_editMode) ? _editBuffer : col.Property.Value(_obj) + _addStr,
+										(_editMode) ? _editBuffer : col.Property.Value(Object) + _addStr,
 										_columns.Font,
 										Brushes.Black,
 										rect);
@@ -425,7 +422,7 @@ namespace DSShared.Lists
 					else if (col.Property != null)
 					{
 						e.Graphics.DrawString(
-										col.Property.Value(_obj).ToString(),
+										col.Property.Value(Object).ToString(),
 										_columns.Font,
 										Brushes.Black,
 										rect);
@@ -439,9 +436,9 @@ namespace DSShared.Lists
 				e.Graphics.DrawLine(
 								Pens.Black,
 								_columns.OffX,
-								_top + _columns.Font.Height + _columns.RowSpace * 2 + yOffset,
+								_top + _columns.Font.Height + CustomListColumnCollection.PadY * 2 + yOffset,
 								_columns.TableWidth - 1,
-								_top + _columns.Font.Height + _columns.RowSpace * 2 + yOffset);
+								_top + _columns.Font.Height + CustomListColumnCollection.PadY * 2 + yOffset);
 			}
 		}
 

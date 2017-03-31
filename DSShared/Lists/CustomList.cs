@@ -33,7 +33,7 @@ namespace DSShared.Lists
 	/// </summary>
 	public class CustomList
 		:
-		Control
+			Control
 	{
 		private readonly CustomListColumnCollection _columns;
 		private List<ObjRow> _items;
@@ -84,8 +84,8 @@ namespace DSShared.Lists
 			_columns.Font=Font;
 
 			_columns.RefreshEvent += Refresh;
-			_columns.RowMoveOver += mouseOverRows;
-			_columns.RowClicked += rowClicked;
+			_columns.MouseOverEvent += mouseOverRows;
+			_columns.MouseEvent += rowClicked;
 			_columns.Parent = this;
 
 			_items = new List<ObjRow>();
@@ -248,7 +248,7 @@ namespace DSShared.Lists
 
 		private void mouseOverRows(int mouseY, CustomListColumn curCol)
 		{
-			int overY = (mouseY - (_columns.HeaderHeight + _yOffset)) / (Font.Height + _columns.RowSpace * 2);
+			int overY = (mouseY - (_columns.HeaderHeight + _yOffset)) / (Font.Height + CustomListColumnCollection.PadY * 2);
 			
 			if (_sel != null)
 				_sel.MouseLeave();
@@ -348,10 +348,10 @@ namespace DSShared.Lists
 			if (obj != null) // actually deleted something
 			{
 				_items[_items.Count - 1].Object = obj;
-				_items[_items.Count - 1].RefreshEvent -= new RefreshDelegate(Refresh);
+				_items[_items.Count - 1].RefreshEvent -= new RefreshEventHandler(Refresh);
 
 				_items.Remove(_items[_items.Count - 1]);
-				_startY -= Font.Height + _columns.RowSpace * 2;
+				_startY -= Font.Height + CustomListColumnCollection.PadY * 2;
 
 				if (refreshOnAdd)
 					Refresh();
@@ -393,12 +393,12 @@ namespace DSShared.Lists
 			row.SetTop(_startY);
 //			row.SetWidth(Width);
 //			row.Height = RowHeight;
-			row.Height += Font.Height + _columns.RowSpace * 2;
+			row.Height += Font.Height + CustomListColumnCollection.PadY * 2;
 			row.SetColumns(_columns);
-			row.RefreshEvent += new RefreshDelegate(Refresh);
+			row.RefreshEvent += new RefreshEventHandler(Refresh);
 			row.SetRowIndex(_items.Count);
 			_items.Add(row);
-			_startY += Font.Height + _columns.RowSpace * 2;
+			_startY += Font.Height + CustomListColumnCollection.PadY * 2;
 
 			if (refreshOnAdd)
 				Refresh();
@@ -445,7 +445,7 @@ namespace DSShared.Lists
 		/// <value>the height of a row</value>
 		public int RowHeight
 		{
-			get { return Font.Height + _columns.RowSpace * 2; }
+			get { return Font.Height + CustomListColumnCollection.PadY * 2; }
 		}
 
 		/// <summary>
