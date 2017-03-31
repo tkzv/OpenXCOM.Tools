@@ -28,26 +28,26 @@ namespace PckView
 		{
 			using (var sr = new StreamReader(inFile))
 			{
-				var vars = new VarCollection_Structure(sr);
+				var vars = new DSVaridiaStructured(sr);
 				var profiles = new List<XCProfile>();
 
-				foreach (string key in vars.KeyValList.Keys)
+				foreach (string key in vars.KeyvalList.Keys)
 				{
 					var profile = new ImageProfile();
 
-					Dictionary<string, DSShared.KeyVal> info = vars.KeyValList[key].SubHash;
+					Dictionary<string, DSKeyvalPair> info = vars.KeyvalList[key].SubHash;
 
 					profile._desc   = key;
-					profile._ext    = info["open"].Rest;
-					profile._width  = int.Parse(info["width"].Rest);
-					profile._height = int.Parse(info["height"].Rest);
-					profile._pal    = info["palette"].Rest;
+					profile._ext    = info["open"].Value;
+					profile._width  = int.Parse(info["width"].Value);
+					profile._height = int.Parse(info["height"].Value);
+					profile._pal    = info["palette"].Value;
 
 					if (info.ContainsKey("openSingle") && info["openSingle"] != null)
-						profile._single = info["openSingle"].Rest + info["open"].Rest;
+						profile._single = info["openSingle"].Value + info["open"].Value;
 
 					foreach (IXCImageFile file in SharedSpace.Instance.GetImageModList())
-						if (file.Brief == info["codec"].Rest)
+						if (file.Brief == info["codec"].Value)
 						{
 							profile._imageType = file;
 							break;

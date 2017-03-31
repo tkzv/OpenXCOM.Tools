@@ -247,7 +247,7 @@ namespace MapView
 			get { return _instance; }
 		}
 
-		private void parseLine(KeyvalPair line, XCom.Varidia vars)
+		private void parseLine(KeyvalPair line, Varidia vars)
 		{
 			switch (line.Keyword.ToUpperInvariant())
 			{

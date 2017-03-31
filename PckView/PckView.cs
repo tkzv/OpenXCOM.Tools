@@ -372,12 +372,12 @@ namespace PckView
 			}
 		}
 
-		private void quitItem_Click(object sender, System.EventArgs e)
+		private void quitItem_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
 
-		private void openItem_Click(object sender, System.EventArgs e)
+		private void openItem_Click(object sender, EventArgs e)
 		{
 			if (openFile.ShowDialog() == DialogResult.OK)
 			{
@@ -515,7 +515,7 @@ namespace PckView
 			get { return _totalViewPck; }
 		} */
 
-		private void saveAs_Click(object sender, System.EventArgs e)
+		private void saveAs_Click(object sender, EventArgs e)
 		{
 			var saveFile = new SaveFileDialog();
 
@@ -622,7 +622,7 @@ namespace PckView
 			showBytes.Checked = false;
 		}
 
-		private void transOn_Click(object sender, System.EventArgs e)
+		private void transOn_Click(object sender, EventArgs e)
 		{
 			transOn.Checked = !transOn.Checked;
 
@@ -631,12 +631,12 @@ namespace PckView
 			Refresh();
 		}
 
-		private void aboutItem_Click(object sender, System.EventArgs e)
+		private void aboutItem_Click(object sender, EventArgs e)
 		{
 			new About().ShowDialog(this);
 		}
 
-		private void helpItem_Click(object sender, System.EventArgs e)
+		private void helpItem_Click(object sender, EventArgs e)
 		{
 			new HelpForm().ShowDialog(this);
 		}
@@ -669,7 +669,7 @@ namespace PckView
 			_editor.Hide();
 		}
 
-		private void miHq2x_Click(object sender, System.EventArgs e)
+		private void miHq2x_Click(object sender, EventArgs e)
 		{
 			miPalette.Enabled = false;
 			bytesMenu.Enabled = false;
