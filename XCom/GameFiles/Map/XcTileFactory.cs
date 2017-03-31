@@ -40,7 +40,7 @@ namespace XCom.GameFiles.Map
 			}
 		}
 
-		private XCTile GetAlternateTile(
+/*		private XCTile GetAlternateTile(
 				string baseName,
 				int index,
 				McdRecord record,
@@ -62,7 +62,7 @@ namespace XCom.GameFiles.Map
 					return tiles[record.Alt_MCD];
 			}
 			return null;
-		}
+		} */
 
 		private XCTile GetDeadTile(
 				string baseName,

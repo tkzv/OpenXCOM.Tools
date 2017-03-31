@@ -15,7 +15,7 @@ namespace XCom.Interfaces.Base
 	/// <summary>
 	/// Abstract base class definining all common functionality of an editable Map.
 	/// </summary>
-	public class IMapBase
+	public class IMapBase // psst. This isn't an interface.
 	{
 		public event HeightChangedEventHandler HeightChanged;
 		public event SelectedTileChangedEventHandler SelectedTileChanged;
@@ -226,16 +226,16 @@ namespace XCom.Interfaces.Base
 				for (int h = MapSize.Height - 1; h >= _height; --h)
 				{
 					for (int
-							row = 0, startX = start.X, startY = start.Y + h * 24;
-							row != MapSize.Rows;
-							++row, startX -= HalfWidth, startY += HalfHeight)
+							r = 0, startX = start.X, startY = start.Y + h * 24;
+							r != MapSize.Rows;
+							++r, startX -= HalfWidth, startY += HalfHeight)
 					{
 						for (int
-								col = 0, x = startX, y = startY;
-								col != MapSize.Cols;
-								++col, x += HalfWidth, y += HalfHeight, ++i)
+								c = 0, x = startX, y = startY;
+								c != MapSize.Cols;
+								++c, x += HalfWidth, y += HalfHeight, ++i)
 						{
-							var tiles = this[row, col, h].UsedTiles;
+							var tiles = this[r, c, h].UsedTiles;
 							foreach (var tileBase in tiles)
 							{
 								var tile = (XCTile)tileBase;

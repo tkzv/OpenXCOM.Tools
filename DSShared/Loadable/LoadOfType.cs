@@ -13,11 +13,11 @@ namespace DSShared.Loadable
 	/// save/load plugins.
 	/// </summary>
 	/// <typeparam name="T">Objects of this type are stored in this class</typeparam>
-	public class LoadOfType<T> where T
+	public sealed class LoadOfType<T> where T
 		:
-		IAssemblyLoadable,
-		IDialogFilter,
-		new()
+			IAssemblyLoadable,
+			IDialogFilter,
+			new()
 	{
 		/// <summary>
 		/// Delegate for use with the OnLoad event.
@@ -240,9 +240,9 @@ namespace DSShared.Loadable
 		/// Args class to pass on to a load event signifying that this object
 		/// was successfully created from an assembly and registered properly.
 		/// </summary>
-		public class TypeLoadArgs
+		public sealed class TypeLoadArgs
 			:
-			EventArgs
+				EventArgs
 		{
 			private readonly T _obj;
 
@@ -253,7 +253,7 @@ namespace DSShared.Loadable
 			/// <param name="obj">object that has just been created and registered</param>
 			public TypeLoadArgs(T obj)
 				:
-				base()
+					base()
 			{
 				_obj = obj;
 			}

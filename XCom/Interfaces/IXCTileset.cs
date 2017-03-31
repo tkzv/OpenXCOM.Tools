@@ -6,37 +6,21 @@ using XCom.Interfaces.Base;
 
 namespace XCom.Interfaces
 {
-	public class IXCTileset // TODO: cTor has inheritors and calls a virtual function.
-		:
+	public class IXCTileset	// psst. This isn't an interface.
+		:					// TODO: cTor has inheritors and calls a virtual function.
 			ITileset
 	{
-		private Palette _pal;
 		public Palette Palette
-		{
-			get { return _pal; }
-			set { _pal = value; }
-		}
+		{ get; set; }
 
-		private string _pathMaps;
 		public string MapPath
-		{
-			get { return _pathMaps; }
-			set { _pathMaps = value; }
-		}
+		{ get; set; }
 
-		private string _pathRoutes;
 		public string RoutePath
-		{
-			get { return _pathRoutes; }
-			set { _pathRoutes = value; }
-		}
+		{ get; set; }
 
-		private string _pathBlanks;
 		public string BlankPath
-		{
-			get { return _pathBlanks; }
-			set { _pathBlanks = value; }
-		}
+		{ get; set; }
 
 //		private string[] _ground;
 //		public string[] Ground // TODO: return a collection or make it a method.
@@ -77,8 +61,9 @@ namespace XCom.Interfaces
 			:
 				base(name)
 		{
-			_pal = GameInfo.DefaultPalette;
+			Palette = GameInfo.DefaultPalette;
 			_mapSize = new MapSize(60, 60, 4);
+
 //			_mapDepth = 0;
 //			_underwater = true;
 //			_baseStyle = false;
@@ -114,9 +99,9 @@ namespace XCom.Interfaces
 					case "PALETTE":
 						switch (val.ToUpperInvariant())
 						{
-							case "UFO":  _pal = Palette.UfoBattle;       break;
-							case "TFTD": _pal = Palette.TftdBattle;      break;
-							default:     _pal = Palette.GetPalette(val); break;
+							case "UFO":  Palette = Palette.UfoBattle;       break;
+							case "TFTD": Palette = Palette.TftdBattle;      break;
+							default:     Palette = Palette.GetPalette(val); break;
 						}
 						break;
 
@@ -126,15 +111,15 @@ namespace XCom.Interfaces
 						break;
 
 					case "ROOTPATH":
-						_pathMaps = val;
+						MapPath = val;
 						break;
 
 					case "RMPPATH":
-						_pathRoutes = val;
+						RoutePath = val;
 						break;
 
 					case "BLANKPATH":
-						_pathBlanks = val;
+						BlankPath = val;
 						break;
 
 					case "BASESTYLE": // not used. Might want to throw it at default:ParseLine()

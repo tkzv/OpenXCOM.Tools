@@ -93,10 +93,10 @@ namespace MapView
 
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
-					tbUfo.Text = f.SelectedPath;
-
 					if (f.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))
-						tbUfo.Text = tbUfo.Text.Substring(0, tbUfo.Text.Length - 1);
+						tbUfo.Text = f.SelectedPath.Substring(0, f.SelectedPath.Length - 1);
+					else
+						tbUfo.Text = f.SelectedPath;
 				}
 			}
 		}
@@ -109,10 +109,10 @@ namespace MapView
 
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
-					tbTftd.Text = f.SelectedPath;
-
 					if (f.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))
-						tbTftd.Text = tbTftd.Text.Substring(0, tbTftd.Text.Length - 1);
+						tbTftd.Text = f.SelectedPath.Substring(0, f.SelectedPath.Length - 1);
+					else
+						tbTftd.Text = f.SelectedPath;
 				}
 			}
 		}
@@ -165,8 +165,8 @@ namespace MapView
 					}
 				}
 
-				#region write misc.cfg
-/*				StreamWriter sw2 = new StreamWriter(new FileStream(miscFile, FileMode.Create));
+/*				#region write misc.cfg
+				StreamWriter sw2 = new StreamWriter(new FileStream(miscFile, FileMode.Create));
 				if (txtTFTD.Text != "")
 				{
 					sw2.WriteLine(@"${ufoGraph}:${tftd}\UFOGRAPH\");
@@ -180,15 +180,15 @@ namespace MapView
 					sw2.WriteLine("cursor:${ufoGraph}cursor");
 				}
 				sw2.Flush();
-				sw2.Close();*/
-				#endregion
+				sw2.Close();
+				#endregion */
 
 
-	//			_vars["##UFOPath##"]  = txtUFO.Text;
-	//			_vars["##TFTDPath##"] = txtTFTD.Text;
+//				_vars["##UFOPath##"]  = txtUFO.Text;
+//				_vars["##TFTDPath##"] = txtTFTD.Text;
 
-	//			_vars["##imgUFO##"]  = txtUFO.Text  + @"\TERRAIN\";
-	//			_vars["##imgTFTD##"] = txtTFTD.Text + @"\TERRAIN\";
+//				_vars["##imgUFO##"]  = txtUFO.Text  + @"\TERRAIN\";
+//				_vars["##imgTFTD##"] = txtTFTD.Text + @"\TERRAIN\";
 
 				_vars["##RunPath##"] = SharedSpace.Instance.GetString(SharedSpace.AppDir);
 

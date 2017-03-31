@@ -12,7 +12,7 @@ namespace XCom.Interfaces
 	/// collections. This class should not be instantiated directly. Objects
 	/// from derived classes will be created and tracked on startup.
 	/// </summary>
-	public class IXCImageFile
+	public class IXCImageFile// psst. This isn't an interface.
 		:
 			IAssemblyLoadable,
 			IDialogFilter
@@ -27,15 +27,11 @@ namespace XCom.Interfaces
 			protected set { _palDefault = value; }
 		}
 
-		private System.Drawing.Size _imageSize;
 		/// <summary>
 		/// Image size that will be loaded.
 		/// </summary>
 		public System.Drawing.Size ImageSize
-		{
-			get { return _imageSize; }
-			protected set { _imageSize = value; }
-		}
+		{ get; protected set; }
 
 		private XCFileOptions _fileOptions = new XCFileOptions();
 		/// <summary>
@@ -76,16 +72,12 @@ namespace XCom.Interfaces
 			protected set { _author = value; }
 		}
 
-		private string _singleFile;
 		/// <summary>
 		/// The complete file.extension that this object will open. If null,
 		/// then this object will open files based on the FileExtension property.
 		/// </summary>
-		public virtual string SingleFile
-		{
-			get { return _singleFile; }
-			protected set { _singleFile = value; }
-		}
+		public string SingleFile
+		{ get; protected set; }
 
 		public enum Filter
 		{
@@ -95,7 +87,7 @@ namespace XCom.Interfaces
 			Bmp
 		};
 
-		#region IDialogFilter (interface) implementation
+		#region IDialogFilter implementation
 		private string _brief = "Default Brief";
 		/// <summary>
 		/// See: IDialogFilter.Brief
@@ -113,11 +105,11 @@ namespace XCom.Interfaces
 		{
 			get
 			{
-				return (_singleFile != null) ? String.Format(
+				return (SingleFile != null) ? String.Format(
 														System.Globalization.CultureInfo.CurrentCulture,
 														"{0} - {1}|{0}",
-														_singleFile, _brief)
-											 : String.Format(
+														SingleFile, _brief)
+											: String.Format(
 														System.Globalization.CultureInfo.CurrentCulture,
 														"*{0} - {1}|{0}",
 														_ext, _brief);
@@ -125,7 +117,7 @@ namespace XCom.Interfaces
 		}
 		#endregion
 
-		#region AssemblyLoadable (interface) implementation
+		#region AssemblyLoadable implementation
 		/// <summary>
 		/// See: AssemblyLoadable.RegisterFile
 		/// </summary>
@@ -140,6 +132,9 @@ namespace XCom.Interfaces
 										GetType() != typeof(IXCImageFile)));
 
 			return (GetType() != typeof(IXCImageFile));
+//			return !(this is IXCImageFile);
+//			return (this == null); // but how could this be null
+//			return false;
 		}
 
 		/// <summary>
@@ -159,7 +154,7 @@ namespace XCom.Interfaces
 		/// <param name="height">default height</param>
 		public IXCImageFile(int width, int height)
 		{
-			_imageSize = new System.Drawing.Size(width, height);
+			ImageSize = new System.Drawing.Size(width, height);
 			_brief = this.GetType().ToString();
 		}
 		/// <summary>

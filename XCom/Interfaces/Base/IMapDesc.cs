@@ -8,8 +8,8 @@ namespace XCom.Interfaces.Base
 {
 	public class IMapDesc // psst. This isn't an interface.
 		:
-		IAssemblyLoadable,
-		IDialogFilter
+			IAssemblyLoadable,
+			IDialogFilter
 	{
 		// TODO: Dialog Filters do not appear to be implemented. cf, IXCImageFile.
 		private const string _ext = ".default";

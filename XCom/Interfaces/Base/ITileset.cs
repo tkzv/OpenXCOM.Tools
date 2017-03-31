@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace XCom.Interfaces.Base
 {
-	public class ITileset
+	public class ITileset // psst. This isn't an interface.
 	{
 		private readonly string _name;
 		public string Name
