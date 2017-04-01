@@ -465,7 +465,6 @@
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <StartAction>Project</StartAction>
     <PostBuildEvent>copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Release\MapView.exe C:\0xC_kL\editors\MapView_kL\
-copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Release\PckView.exe C:\0xC_kL\editors\MapView_kL\
 copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Release\DSShared.dll C:\0xC_kL\editors\MapView_kL\
 copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Release\XCom.dll C:\0xC_kL\editors\MapView_kL\
 </PostBuildEvent>

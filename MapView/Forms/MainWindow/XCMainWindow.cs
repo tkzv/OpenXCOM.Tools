@@ -40,11 +40,20 @@ namespace MapView
 
 		public XCMainWindow()
 		{
+			_instance = this;
+
 			LogFile.CreateLogFile();
 			LogFile.WriteLine("Starting MAIN MapView window ...");
 
 			InitializeComponent();
 			LogFile.WriteLine("MapView window created");
+
+
+			// jijack: These two events keep getting deleted in my designer:
+			this.tvMaps.BeforeSelect += OnMapSelect;
+			this.tvMaps.AfterSelect  += OnMapSelected;
+			// welcome to your new home.
+
 
 			// WORKAROUND: The size of the form in the designer keeps increasing
 			// (for whatever reason) based on the
@@ -89,12 +98,12 @@ namespace MapView
 
 			var share = SharedSpace.Instance;
 			var consoleShare = new ConsoleSharedSpace(share);
-			_warningHandler = new ConsoleWarningHandler(consoleShare);
+			_warningHandler  = new ConsoleWarningHandler(consoleShare);
 
 			MainWindowsManager.EditButtonsFactory = new EditButtonsFactory(_mapViewPanel);
 
 			_mainWindowsManager = new MainWindowsManager();
-			_mainViewsManager = new MainViewsManager(_settingsManager, consoleShare);
+			_mainViewsManager   = new MainViewsManager(_settingsManager, consoleShare);
 
 			_mainMenusManager.PopulateMenus(consoleShare.GetNewConsole(), Settings);
 
@@ -122,8 +131,8 @@ namespace MapView
 			share.AllocateObject(PathInfo.MapEditFile,         infoMapEdit);
 			share.AllocateObject(PathInfo.ImagesFile,          infoImages);
 			LogFile.WriteLine("Paths set");
-
 			#endregion
+
 
 			if (!infoPaths.FileExists()) // check if Paths.cfg exists yet
 			{
@@ -133,7 +142,9 @@ namespace MapView
 			}
 			LogFile.WriteLine("Installation checked");
 
-			GameInfo.ParseLine += parseLine; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+
+
+			GameInfo.ParseLine += ParseLine; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 			LogFile.WriteLine("Line parsed");
 
 			InitGameInfo(infoPaths);
@@ -141,20 +152,18 @@ namespace MapView
 
 			_mainViewsManager.ManageViews();
 
-			MainWindowsManager.TileView.TileViewControl.MapChanged += TileView_MapChanged;
+			MainWindowsManager.TileView.TileViewControl.MapChangedEventHandler += OnMapChanged;
 
-			MapViewPanel.ImageUpdate += update; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			MapViewPanel.ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			_mapViewPanel.Dock = DockStyle.Fill;
 
-			_instance = this;
-
-			mapList.TreeViewNodeSorter = StringComparer.OrdinalIgnoreCase;
+			tvMaps.TreeViewNodeSorter = StringComparer.OrdinalIgnoreCase;
 
 			toolStripContainer1.ContentPanel.Controls.Add(_mapViewPanel);
-			MainWindowsManager.EditButtonsFactory.MakeToolStrip(toolStrip);
-			toolStrip.Enabled = false;
-			toolStrip.Items.Add(new ToolStripSeparator());
+			MainWindowsManager.EditButtonsFactory.MakeToolStrip(tsEdit);
+			tsEdit.Enabled = false;
+			tsEdit.Items.Add(new ToolStripSeparator());
 
 
 			try
@@ -199,7 +208,7 @@ namespace MapView
 
 
 			OnResize(null);
-			this.Closing += new CancelEventHandler(CloseAllSaveRegistry);
+			this.Closing += OnCloseSaveRegistry;
 
 			_loadingProgress = new LoadingForm();
 			Bmp.LoadingEvent += _loadingProgress.Update;
@@ -241,13 +250,12 @@ namespace MapView
 		}
 
 		private static XCMainWindow _instance;
-
 		public static XCMainWindow Instance
 		{
 			get { return _instance; }
 		}
 
-		private void parseLine(KeyvalPair line, Varidia vars)
+		private void ParseLine(KeyvalPair line, Varidia vars)
 		{
 			switch (line.Keyword.ToUpperInvariant())
 			{
@@ -330,14 +338,14 @@ namespace MapView
 			}
 		}
 
-		private class SortableTreeNode
+		private sealed class SortableTreeNode
 			:
-			TreeNode,
-			IComparable
+				TreeNode,
+				IComparable
 		{
 			public SortableTreeNode(string text)
 				:
-				base(text)
+					base(text)
 			{}
 
 			public int CompareTo(object other)
@@ -362,7 +370,7 @@ namespace MapView
 		{
 			var node = new SortableTreeNode(tileset.Name);
 			node.Tag = tileset;
-			mapList.Nodes.Add(node);
+			tvMaps.Nodes.Add(node);
 
 			foreach (string key in tileset.Subsets.Keys)
 			{
@@ -376,13 +384,13 @@ namespace MapView
 
 		private void InitList()
 		{
-			mapList.Nodes.Clear();
+			tvMaps.Nodes.Clear();
 
 			foreach (string key in GameInfo.TilesetInfo.Tilesets.Keys)
 				AddTileset(GameInfo.TilesetInfo.Tilesets[key]);
 		}
 
-		private void CloseAllSaveRegistry(object sender, CancelEventArgs args)
+		private void OnCloseSaveRegistry(object sender, CancelEventArgs args)
 		{
 			if (NotifySave() == DialogResult.Cancel)
 			{
@@ -495,7 +503,7 @@ namespace MapView
 			Settings = settings;
 		}
 
-		private void update(object sender, EventArgs e)
+		private void OnImageUpdate(object sender, EventArgs e)
 		{
 			MainWindowsManager.TopView.Control.BottomPanel.Refresh();
 		}
@@ -527,7 +535,7 @@ namespace MapView
 
 		private void miQuit_Click(object sender, EventArgs e)
 		{
-			CloseAllSaveRegistry(null, new CancelEventArgs(true));
+			OnCloseSaveRegistry(null, new CancelEventArgs(true));
 			Environment.Exit(0);
 		}
 
@@ -549,15 +557,15 @@ namespace MapView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void mapList_BeforeSelect(object sender, CancelEventArgs e)
+		private void OnMapSelect(object sender, CancelEventArgs e)
 		{
 			if (NotifySave() == DialogResult.Cancel)
 			{
 				e.Cancel = true;
 			}
-			else if (mapList.SelectedNode != null)
+			else if (tvMaps.SelectedNode != null)
 			{
-				mapList.SelectedNode.BackColor = SystemColors.Control;
+				tvMaps.SelectedNode.BackColor = SystemColors.Control;
 			}
 		}
 
@@ -567,20 +575,20 @@ namespace MapView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void mapList_AfterSelect(object sender, TreeViewEventArgs e)
+		private void OnMapSelected(object sender, TreeViewEventArgs e)
 		{
-			mapList.SelectedNode.BackColor = Color.Gold;
+			tvMaps.SelectedNode.BackColor = Color.Gold;
 			LoadSelectedMap();
 		}
 
-		private void TileView_MapChanged()
+		private void OnMapChanged()
 		{
 			LoadSelectedMap();
 		}
 
 		private void LoadSelectedMap()
 		{
-			var desc = mapList.SelectedNode.Tag as IMapDesc;
+			var desc = tvMaps.SelectedNode.Tag as IMapDesc;
 			if (desc != null)
 			{
 				miExport.Enabled = true;
@@ -588,18 +596,18 @@ namespace MapView
 				var tileFactory = new XCTileFactory();
 				tileFactory.HandleWarning += _warningHandler.HandleWarning;
 
-				var mapService = new XCMapFileService(tileFactory);
+				var fileService = new XCMapFileService(tileFactory);
 
-				var map = mapService.Load(desc as XCMapDesc);
-				_mapViewPanel.SetMap(map);
+				var baseMap = fileService.Load(desc as XCMapDesc);
+				_mapViewPanel.SetMap(baseMap);
 
-				toolStrip.Enabled = true;
+				tsEdit.Enabled = true;
 
-				RouteService.CheckNodeBounds(map);
+				RouteService.CheckNodeBounds(baseMap);
 
-				statusMapName.Text = desc.Label;
+				tsslMap.Text = desc.Label;
 
-				tsMapSize.Text = (map != null) ? map.MapSize.ToString()
+				tsslDimensions.Text = (baseMap != null) ? baseMap.MapSize.ToString()
 											   : "size: n/a";
 
 				if (miDoors.Checked) // turn off door animations
@@ -611,7 +619,7 @@ namespace MapView
 				if (!showMenu.Enabled) // open all the forms in the show menu once
 					_mainMenusManager.LoadState();
 
-				_mainWindowsManager.SetMap(map); // reset all observer events
+				_mainWindowsManager.SetMap(baseMap); // reset all observer events
 			}
 			else
 				miExport.Enabled = false;
@@ -655,14 +663,14 @@ namespace MapView
 		{
 			if (_mapViewPanel.BaseMap != null)
 			{
-				saveFile.FileName = _mapViewPanel.BaseMap.Name;
-				if (saveFile.ShowDialog() == DialogResult.OK)
+				sfdSaveDialog.FileName = _mapViewPanel.BaseMap.Name;
+				if (sfdSaveDialog.ShowDialog() == DialogResult.OK)
 				{
 					_loadingProgress.Show();
 
 					try
 					{
-						_mapViewPanel.BaseMap.SaveGif(saveFile.FileName);
+						_mapViewPanel.BaseMap.SaveGif(sfdSaveDialog.FileName);
 					}
 					finally
 					{
@@ -777,7 +785,7 @@ namespace MapView
 		private void drawSelectionBoxButton_Click(object sender, EventArgs e)
 		{
 			_mapViewPanel.MapView.DrawSelectionBox = !_mapViewPanel.MapView.DrawSelectionBox;
-			drawSelectionBoxButton.Checked = !drawSelectionBoxButton.Checked;
+			tsbSelectionBox.Checked = !tsbSelectionBox.Checked;
 		}
 
 		private void ZoomInButton_Click(object sender, EventArgs e)
@@ -786,7 +794,7 @@ namespace MapView
 			{
 				Globals.PckImageScale += 0.125;
 				Globals.AutoPckImageScale = false;
-				AutoZoomButton.Checked = false;
+				tsbAutoZoom.Checked = false;
 
 				_mapViewPanel.SetupMapSize();
 
@@ -802,7 +810,7 @@ namespace MapView
 			{
 				Globals.PckImageScale -= 0.125;
 				Globals.AutoPckImageScale = false;
-				AutoZoomButton.Checked = false;
+				tsbAutoZoom.Checked = false;
 
 				_mapViewPanel.SetupMapSize();
 
@@ -819,7 +827,7 @@ namespace MapView
 			if (!Globals.AutoPckImageScale)
 				Globals.PckImageScale = 1;
 
-			AutoZoomButton.Checked = !AutoZoomButton.Checked;
+			tsbAutoZoom.Checked = !tsbAutoZoom.Checked;
 
 			_mapViewPanel.SetupMapSize();
 
@@ -830,7 +838,7 @@ namespace MapView
 
 		public void StatusBarPrintPosition(int col, int row)
 		{
-			statusPosition.Text = string.Format(
+			tsslPosition.Text = string.Format(
 											System.Globalization.CultureInfo.CurrentCulture,
 											"c:{0} r:{1}",
 											col, row);

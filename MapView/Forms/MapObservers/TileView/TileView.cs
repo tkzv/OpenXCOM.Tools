@@ -30,13 +30,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				handler(tile);
 		}
 
-		public event MethodInvoker MapChanged;
-		private void OnMapChanged()
-		{
-			MethodInvoker handler = MapChanged;
-			if (handler != null)
-				handler();
-		}
+		public event MethodInvoker MapChangedEventHandler;
 
 
 		private IMainShowAllManager _showAllManager;
@@ -315,7 +309,7 @@ namespace MapView.Forms.MapObservers.TileViews
 								GameInfo.ImageInfo.Images[dep].ClearMcdTable();
 								GameInfo.ClearPckCache(imageInfo.BasePath, imageInfo.BaseName);
 
-								OnMapChanged();
+								HandleMapChanged();
 							}
 						}
 
@@ -323,6 +317,13 @@ namespace MapView.Forms.MapObservers.TileViews
 					}
 				}
 			}
+		}
+
+		private void HandleMapChanged()
+		{
+			MethodInvoker handler = MapChangedEventHandler;
+			if (handler != null)
+				handler();
 		}
 	}
 

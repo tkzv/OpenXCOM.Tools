@@ -72,11 +72,11 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			_type = type;
 			_scrollBar = new VScrollBar();
-			_scrollBar.ValueChanged += valChange;
+			_scrollBar.ValueChanged += OnValueChange;
 			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
 
 			Controls.Add(_scrollBar);
-			MapViewPanel.ImageUpdate += tick; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			MapViewPanel.ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
 			_sel = 0;
@@ -85,7 +85,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 
-		private void valChange(object sender, EventArgs e)
+		private void OnValueChange(object sender, EventArgs e)
 		{
 			_startY = -_scrollBar.Value;
 			Refresh();
@@ -136,29 +136,23 @@ namespace MapView.Forms.MapObservers.TileViews
 					_tiles = new TileBase[tiles.Count + 1];
 					_tiles[0] = null;
 
-					for (int i = 0; i < tiles.Count; i++)
+					for (int i = 0; i != tiles.Count; ++i)
 						_tiles[i + 1] = tiles[i];
 				}
 				else
 				{
 					int qtyTiles = 0;
 
-					for (int i = 0; i < tiles.Count; i++)
+					for (int i = 0; i != tiles.Count; ++i)
 						if (tiles[i].Info.TileType == _type)
 							++qtyTiles;
 
 					_tiles = new TileBase[qtyTiles + 1];
 					_tiles[0] = null;
 
-					for (int i = 0, j = 1; i < tiles.Count; i++)
+					for (int i = 0, j = 1; i != tiles.Count; ++i)
 						if (tiles[i].Info.TileType == _type)
 							_tiles[j++] = tiles[i];
-
-/*					var list = new List<TileBase>(); // NOTE: Replaced by above^ to add 1st blank/erasure-tile to each tile-group.
-					for (int i = 0; i < tiles.Count; i++)
-						if (tiles[i].Info.TileType == _type)
-							list.Add(tiles[i]);
-					_tiles = list.ToArray(); */
 				}
 
 				if (_sel >= _tiles.Length)
@@ -349,7 +343,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
-		private void tick(object sender, EventArgs e)
+		private void OnImageUpdate(object sender, EventArgs e)
 		{
 			Refresh();
 		}

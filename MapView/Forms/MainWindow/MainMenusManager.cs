@@ -10,8 +10,8 @@ namespace MapView.Forms.MainWindow
 {
 	internal sealed class MainMenusManager
 	{
-		private readonly MenuItem _show;
-		private readonly MenuItem _help;
+		private readonly MenuItem _viewsMenu;
+		private readonly MenuItem _helpMenu;
 
 		private readonly List<MenuItem> _allItems = new List<MenuItem>();
 		private readonly List<Form>     _allForms = new List<Form>();
@@ -25,8 +25,8 @@ namespace MapView.Forms.MainWindow
 
 		public MainMenusManager(MenuItem show, MenuItem help)
 		{
-			_show = show;
-			_help = help;
+			_viewsMenu = show;
+			_helpMenu = help;
 		}
 
 
@@ -39,38 +39,38 @@ namespace MapView.Forms.MainWindow
 		{
 			_settings = settings;
 
-			LinkMenuItemToForm(MainWindowsManager.TileView,     "Tile View",     _show);
+			CreateMenuItem(MainWindowsManager.TileView,     "Tile View",     _viewsMenu);
 
-			_show.MenuItems.Add(new MenuItem(Separator));
+			_viewsMenu.MenuItems.Add(new MenuItem(Separator));
 
-			LinkMenuItemToForm(MainWindowsManager.TopView,      "Top View",      _show);
-			LinkMenuItemToForm(MainWindowsManager.RouteView,    "Route View",    _show);
-			LinkMenuItemToForm(MainWindowsManager.TopRouteView, "TopRoute View", _show);
+			CreateMenuItem(MainWindowsManager.TopView,      "Top View",      _viewsMenu);
+			CreateMenuItem(MainWindowsManager.RouteView,    "Route View",    _viewsMenu);
+			CreateMenuItem(MainWindowsManager.TopRouteView, "TopRoute View", _viewsMenu);
 
-			_show.MenuItems.Add(new MenuItem(Separator));
+			_viewsMenu.MenuItems.Add(new MenuItem(Separator));
 
-			LinkMenuItemToForm(console,                         "Console",       _show);
+			CreateMenuItem(console,                         "Console",       _viewsMenu);
 
 
-			LinkMenuItemToForm(MainWindowsManager.HelpScreen,   "Quick Help",    _help);
-			LinkMenuItemToForm(MainWindowsManager.AboutWindow,  "About",         _help);
+			CreateMenuItem(MainWindowsManager.HelpScreen,   "Quick Help",    _helpMenu);
+			CreateMenuItem(MainWindowsManager.AboutWindow,  "About",         _helpMenu);
 
 			AddMenuItemSettings();
 		}
 
-		private void LinkMenuItemToForm(
+		private void CreateMenuItem(
 				Form f,
-				string caption,
+				string text,
 				Menu parent)
 		{
-			f.Text = caption;
+			f.Text = text;
 
-			var it = new MenuItem(caption);
+			var it = new MenuItem(text);
 			it.Tag = f;
 
 			parent.MenuItems.Add(it);
 
-			it.Click += FormItemClick;
+			it.Click += OnMenuItemClick;
 
 			f.Closing += (sender, e) =>
 			{
@@ -83,7 +83,7 @@ namespace MapView.Forms.MainWindow
 			_allForms.Add(f);
 		}
 
-		private static void FormItemClick(object sender, EventArgs e)
+		private static void OnMenuItemClick(object sender, EventArgs e)
 		{
 			var it = (MenuItem)sender;
 
@@ -102,13 +102,13 @@ namespace MapView.Forms.MainWindow
 
 		private void AddMenuItemSettings()
 		{
-			foreach (MenuItem it in _show.MenuItems)
+			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
-				var label = GetWindowSettingLabel(it);
-				if (label != null)
+				var key = GetWindowSettingKey(it);
+				if (key != null)
 				{
 					_settings.AddSetting(
-									label,
+									key,
 									!(it.Tag is TopViewForm) && !(it.Tag is RouteViewForm),
 									"Default display window - " + it.Text,
 									"Windows",
@@ -119,7 +119,7 @@ namespace MapView.Forms.MainWindow
 					var f = it.Tag as Form;
 					if (f != null)
 					{
-						f.VisibleChanged += (sender, a) =>
+						f.VisibleChanged += (sender, e) =>
 						{
 							if (_disposed)
 								return;
@@ -128,7 +128,7 @@ namespace MapView.Forms.MainWindow
 							if (senderForm == null)
 								return;
 
-							_settings[label].Value = senderForm.Visible;
+							_settings[key].Value = senderForm.Visible;
 						};
 					}
 				}
@@ -137,12 +137,12 @@ namespace MapView.Forms.MainWindow
 
 		public void LoadState()
 		{
-			foreach (MenuItem it in _show.MenuItems)
+			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
-				var label = GetWindowSettingLabel(it);
-				if (label != null)
+				var key = GetWindowSettingKey(it);
+				if (key != null)
 				{
-					if (_settings[label].IsBoolean)
+					if (_settings[key].IsBoolean)
 					{
 						it.PerformClick();
 					}
@@ -154,21 +154,21 @@ namespace MapView.Forms.MainWindow
 				}
 			}
 /*			foreach (MenuItem it in _show.MenuItems)	// NOTE: Don't do this. Go figure.
-			{											// All the View-Panels will load ...
+			{											// All the Views will load ...
 				it.PerformClick();						// regardless of their saved settings.
 
 				var label = GetWindowSettingName(it);
 				if (!(_settings[label].ValueBool))
 					it.PerformClick();
 			} */
-			_show.Enabled = true;
+			_viewsMenu.Enabled = true;
 		}
 
-		private static string GetWindowSettingLabel(MenuItem item)
+		private static string GetWindowSettingKey(MenuItem it)
 		{
-			string st = item.Text;
-			return (st != Separator) ? "Window-" + st
-									 : null;
+			string suffix = it.Text;
+			return (suffix != Separator) ? "Window" + Separator + suffix
+										 : null;
 		}
 
 		public IMainShowAllManager CreateShowAllManager()

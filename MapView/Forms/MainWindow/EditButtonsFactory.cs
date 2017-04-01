@@ -106,7 +106,7 @@ namespace MapView.Forms.MainWindow
 			btnCut.Click += (o, args) =>
 			{
 				EnablePasteButtons();
-				_mapViewPanel.Cut(o, args);
+				_mapViewPanel.OnCut(o, args);
 				Refresh();
 			};
 
@@ -124,7 +124,7 @@ namespace MapView.Forms.MainWindow
 			btnCopy.Click += (o, args) =>
 			{
 				EnablePasteButtons();
-				_mapViewPanel.Copy(o, args);
+				_mapViewPanel.OnCopy(o, args);
 			};
 
 			//
@@ -140,7 +140,7 @@ namespace MapView.Forms.MainWindow
 			btnPaste.ToolTipText = "Paste";
 			btnPaste.Click += delegate(object sender, EventArgs args)
 			{
-				_mapViewPanel.Paste(sender,args);
+				_mapViewPanel.OnPaste(sender,args);
 				Refresh();
 			};
 			btnPaste.Enabled = false;

@@ -9,7 +9,7 @@ namespace MapView
 {
 	internal sealed class MapViewPanel
 		:
-		Panel
+			Panel
 	{
 		private MapView _mapView;
 		public MapView MapView
@@ -21,8 +21,6 @@ namespace MapView
 		private readonly VScrollBar _scrollBarVert;
 
 		private static MapViewPanel _instance;
-
-
 		public static MapViewPanel Instance
 		{
 			get
@@ -33,9 +31,11 @@ namespace MapView
 					return _instance;
 			}
 		}
+
+
 		private MapViewPanel()
 		{
-			ImageUpdate += update; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			_scrollBarHori = new HScrollBar();
 			_scrollBarVert = new VScrollBar();
@@ -68,18 +68,19 @@ namespace MapView
 			Controls.Add(_mapView);
 		}
 
-		public void Cut(object sender, EventArgs e)
+
+		public void OnCut(object sender, EventArgs e)
 		{
 			_mapView.Copy();
 			_mapView.ClearSelection();
 		}
 
-		public void Copy(object sender, EventArgs e)
+		public void OnCopy(object sender, EventArgs e)
 		{
 			_mapView.Copy();
 		}
 
-		public void Paste(object sender, EventArgs e)
+		public void OnPaste(object sender, EventArgs e)
 		{
 			_mapView.Paste();
 		}
@@ -89,7 +90,7 @@ namespace MapView
 			get { return _mapView.Map; }
 		}
 
-		private void update(object sender, EventArgs e)
+		private void OnImageUpdate(object sender, EventArgs e)
 		{
 			_mapView.Refresh();
 		}
@@ -191,7 +192,7 @@ namespace MapView
 
 
 		/*** Timer stuff ***/
-		public static event EventHandler ImageUpdate;
+		public static event EventHandler ImageUpdateEvent;
 
 		private static Timer _timer;
 		private static int _current;
@@ -238,8 +239,8 @@ namespace MapView
 		{
 			_current = (_current + 1) % 8;
 
-			if (ImageUpdate != null)
-				ImageUpdate(null, null);
+			if (ImageUpdateEvent != null)
+				ImageUpdateEvent(null, null);
 		}
 
 		public static int Current

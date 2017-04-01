@@ -9,16 +9,16 @@ using XCom;
 
 namespace MapView.Forms.MainWindow
 {
-	public interface IMainViewsManager
+	internal interface IMainViewsManager
 	{
 		void ManageViews();
 		void CloseAllViews();
 	}
 
 
-	public class MainViewsManager
+	internal sealed class MainViewsManager
 		:
-		IMainViewsManager
+			IMainViewsManager
 	{
 		private readonly SettingsManager _settingsManager;
 		private readonly ConsoleSharedSpace _consoleShare;
@@ -46,10 +46,10 @@ namespace MapView.Forms.MainWindow
 			MainWindowsManager.TopRouteView.TopViewControl.LoadDefaultSettings();
 			MainWindowsManager.TopRouteView.RouteViewControl.LoadDefaultSettings();
 
-			SetViewToObserver(MainWindowsManager.TopView,		"Top View",			"TopView");
-			SetViewToObserver(MainWindowsManager.RouteView,		"Route View",		"RouteView");
-			SetViewToObserver(MainWindowsManager.TopRouteView,	"TopRoute View");
-			SetViewToObserver(MainWindowsManager.TileView,		"Tile View",		"TileView");
+			SetViewToObserver(MainWindowsManager.TopView,      "Top View",   "TopView");
+			SetViewToObserver(MainWindowsManager.RouteView,    "Route View", "RouteView");
+			SetViewToObserver(MainWindowsManager.TopRouteView, "TopRoute View");
+			SetViewToObserver(MainWindowsManager.TileView,     "Tile View",  "TileView");
 
 			SetViewToObserver(_consoleShare.GetNewConsole(), "Console");
 

@@ -10,7 +10,7 @@ namespace MapView
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		/// <param name="disposing">true if managed resources should be disposed</param>
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && components != null)
@@ -19,7 +19,9 @@ namespace MapView
 			base.Dispose(disposing);
 		}
 
+
 		#region Windows Form Designer generated code
+
 		/// <summary>
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
@@ -28,7 +30,7 @@ namespace MapView
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(XCMainWindow));
-			this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
+			this.mmMain = new System.Windows.Forms.MainMenu(this.components);
 			this.fileMenu = new System.Windows.Forms.MenuItem();
 			this.miOpen = new System.Windows.Forms.MenuItem();
 			this.saveItem = new System.Windows.Forms.MenuItem();
@@ -48,28 +50,28 @@ namespace MapView
 			this.miDoors = new System.Windows.Forms.MenuItem();
 			this.showMenu = new System.Windows.Forms.MenuItem();
 			this.miHelp = new System.Windows.Forms.MenuItem();
-			this.mapList = new System.Windows.Forms.TreeView();
-			this.saveFile = new System.Windows.Forms.SaveFileDialog();
-			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-			this.statusMapName = new System.Windows.Forms.ToolStripStatusLabel();
-			this.tsMapSize = new System.Windows.Forms.ToolStripStatusLabel();
-			this.statusPosition = new System.Windows.Forms.ToolStripStatusLabel();
+			this.tvMaps = new System.Windows.Forms.TreeView();
+			this.sfdSaveDialog = new System.Windows.Forms.SaveFileDialog();
+			this.ssMain = new System.Windows.Forms.StatusStrip();
+			this.tsslMap = new System.Windows.Forms.ToolStripStatusLabel();
+			this.tsslDimensions = new System.Windows.Forms.ToolStripStatusLabel();
+			this.tsslPosition = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-			this.toolStrip = new System.Windows.Forms.ToolStrip();
-			this.drawSelectionBoxButton = new System.Windows.Forms.ToolStripButton();
-			this.ZoomInButton = new System.Windows.Forms.ToolStripButton();
-			this.ZoomOutButton = new System.Windows.Forms.ToolStripButton();
-			this.AutoZoomButton = new System.Windows.Forms.ToolStripButton();
-			this.cSplitList = new DSShared.Windows.CollapsibleSplitter();
-			this.statusStrip1.SuspendLayout();
+			this.tsEdit = new System.Windows.Forms.ToolStrip();
+			this.tsbSelectionBox = new System.Windows.Forms.ToolStripButton();
+			this.tsbZoomIn = new System.Windows.Forms.ToolStripButton();
+			this.tsbZoomOut = new System.Windows.Forms.ToolStripButton();
+			this.tsbAutoZoom = new System.Windows.Forms.ToolStripButton();
+			this.csSplitter = new DSShared.Windows.CollapsibleSplitter();
+			this.ssMain.SuspendLayout();
 			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
 			this.toolStripContainer1.SuspendLayout();
-			this.toolStrip.SuspendLayout();
+			this.tsEdit.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// mainMenu
+			// mmMain
 			// 
-			this.mainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.mmMain.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.fileMenu,
 			this.miEdit,
 			this.miAnimation,
@@ -208,63 +210,61 @@ namespace MapView
 			this.miHelp.Index = 4;
 			this.miHelp.Text = "Help";
 			// 
-			// mapList
+			// tvMaps
 			// 
-			this.mapList.BackColor = System.Drawing.SystemColors.Control;
-			this.mapList.Dock = System.Windows.Forms.DockStyle.Left;
-			this.mapList.Location = new System.Drawing.Point(0, 0);
-			this.mapList.Name = "mapList";
-			this.mapList.Size = new System.Drawing.Size(249, 454);
-			this.mapList.TabIndex = 0;
-			this.mapList.BeforeSelect += mapList_BeforeSelect;
-			this.mapList.AfterSelect += mapList_AfterSelect;
+			this.tvMaps.BackColor = System.Drawing.SystemColors.Control;
+			this.tvMaps.Dock = System.Windows.Forms.DockStyle.Left;
+			this.tvMaps.Location = new System.Drawing.Point(0, 0);
+			this.tvMaps.Name = "tvMaps";
+			this.tvMaps.Size = new System.Drawing.Size(249, 454);
+			this.tvMaps.TabIndex = 0;
 			// 
-			// saveFile
+			// sfdSaveDialog
 			// 
-			this.saveFile.DefaultExt = "gif";
-			this.saveFile.Filter = "gif files|*.gif";
-			this.saveFile.RestoreDirectory = true;
+			this.sfdSaveDialog.DefaultExt = "gif";
+			this.sfdSaveDialog.Filter = "gif files|*.gif";
+			this.sfdSaveDialog.RestoreDirectory = true;
 			// 
-			// statusStrip1
+			// ssMain
 			// 
-			this.statusStrip1.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.statusMapName,
-			this.tsMapSize,
-			this.statusPosition});
-			this.statusStrip1.Location = new System.Drawing.Point(257, 432);
-			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(375, 22);
-			this.statusStrip1.TabIndex = 2;
-			this.statusStrip1.Text = "statusStrip1";
+			this.ssMain.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.ssMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.tsslMap,
+			this.tsslDimensions,
+			this.tsslPosition});
+			this.ssMain.Location = new System.Drawing.Point(257, 432);
+			this.ssMain.Name = "ssMain";
+			this.ssMain.Size = new System.Drawing.Size(375, 22);
+			this.ssMain.TabIndex = 2;
+			this.ssMain.Text = "statusStrip1";
 			// 
-			// statusMapName
+			// tsslMap
 			// 
-			this.statusMapName.AutoSize = false;
-			this.statusMapName.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+			this.tsslMap.AutoSize = false;
+			this.tsslMap.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-			this.statusMapName.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.statusMapName.Name = "statusMapName";
-			this.statusMapName.Size = new System.Drawing.Size(150, 17);
+			this.tsslMap.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsslMap.Name = "tsslMap";
+			this.tsslMap.Size = new System.Drawing.Size(150, 17);
 			// 
-			// tsMapSize
+			// tsslDimensions
 			// 
-			this.tsMapSize.AutoSize = false;
-			this.tsMapSize.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+			this.tsslDimensions.AutoSize = false;
+			this.tsslDimensions.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-			this.tsMapSize.Name = "tsMapSize";
-			this.tsMapSize.Size = new System.Drawing.Size(80, 17);
+			this.tsslDimensions.Name = "tsslDimensions";
+			this.tsslDimensions.Size = new System.Drawing.Size(80, 17);
 			// 
-			// statusPosition
+			// tsslPosition
 			// 
-			this.statusPosition.AutoSize = false;
-			this.statusPosition.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+			this.tsslPosition.AutoSize = false;
+			this.tsslPosition.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-			this.statusPosition.Name = "statusPosition";
-			this.statusPosition.Size = new System.Drawing.Size(80, 17);
+			this.tsslPosition.Name = "tsslPosition";
+			this.tsslPosition.Size = new System.Drawing.Size(80, 17);
 			// 
 			// toolStripContainer1
 			// 
@@ -294,105 +294,105 @@ namespace MapView
 			// 
 			// toolStripContainer1.TopToolStripPanel
 			// 
-			this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip);
+			this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsEdit);
 			this.toolStripContainer1.TopToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			// 
-			// toolStrip
+			// tsEdit
 			// 
-			this.toolStrip.Dock = System.Windows.Forms.DockStyle.None;
-			this.toolStrip.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.drawSelectionBoxButton,
-			this.ZoomInButton,
-			this.ZoomOutButton,
-			this.AutoZoomButton});
-			this.toolStrip.Location = new System.Drawing.Point(3, 0);
-			this.toolStrip.Name = "toolStrip";
-			this.toolStrip.Size = new System.Drawing.Size(165, 25);
-			this.toolStrip.TabIndex = 0;
+			this.tsEdit.Dock = System.Windows.Forms.DockStyle.None;
+			this.tsEdit.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsEdit.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.tsbSelectionBox,
+			this.tsbZoomIn,
+			this.tsbZoomOut,
+			this.tsbAutoZoom});
+			this.tsEdit.Location = new System.Drawing.Point(3, 0);
+			this.tsEdit.Name = "tsEdit";
+			this.tsEdit.Size = new System.Drawing.Size(196, 25);
+			this.tsEdit.TabIndex = 0;
 			// 
-			// drawSelectionBoxButton
+			// tsbSelectionBox
 			// 
-			this.drawSelectionBoxButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.drawSelectionBoxButton.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.drawSelectionBoxButton.Image = ((System.Drawing.Image)(resources.GetObject("drawSelectionBoxButton.Image")));
-			this.drawSelectionBoxButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.drawSelectionBoxButton.Name = "drawSelectionBoxButton";
-			this.drawSelectionBoxButton.Size = new System.Drawing.Size(84, 22);
-			this.drawSelectionBoxButton.Text = "Selection Box";
-			this.drawSelectionBoxButton.ToolTipText = "Draws a selection box in the floor";
-			this.drawSelectionBoxButton.Click += new System.EventHandler(this.drawSelectionBoxButton_Click);
+			this.tsbSelectionBox.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.tsbSelectionBox.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsbSelectionBox.Image = ((System.Drawing.Image)(resources.GetObject("tsbSelectionBox.Image")));
+			this.tsbSelectionBox.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbSelectionBox.Name = "tsbSelectionBox";
+			this.tsbSelectionBox.Size = new System.Drawing.Size(84, 22);
+			this.tsbSelectionBox.Text = "Selection Box";
+			this.tsbSelectionBox.ToolTipText = "Draws a selection box in the floor";
+			this.tsbSelectionBox.Click += new System.EventHandler(this.drawSelectionBoxButton_Click);
 			// 
-			// ZoomInButton
+			// tsbZoomIn
 			// 
-			this.ZoomInButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.ZoomInButton.Image = global::MapView.Properties.Resources._12_Zoom_in_16;
-			this.ZoomInButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.ZoomInButton.Name = "ZoomInButton";
-			this.ZoomInButton.Size = new System.Drawing.Size(23, 22);
-			this.ZoomInButton.Text = "Zoom In";
-			this.ZoomInButton.Click += new System.EventHandler(this.ZoomInButton_Click);
+			this.tsbZoomIn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.tsbZoomIn.Image = global::MapView.Properties.Resources._12_Zoom_in_16;
+			this.tsbZoomIn.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbZoomIn.Name = "tsbZoomIn";
+			this.tsbZoomIn.Size = new System.Drawing.Size(23, 22);
+			this.tsbZoomIn.Text = "Zoom In";
+			this.tsbZoomIn.Click += new System.EventHandler(this.ZoomInButton_Click);
 			// 
-			// ZoomOutButton
+			// tsbZoomOut
 			// 
-			this.ZoomOutButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.ZoomOutButton.Image = global::MapView.Properties.Resources._13_Zoom_out_16;
-			this.ZoomOutButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.ZoomOutButton.Name = "ZoomOutButton";
-			this.ZoomOutButton.Size = new System.Drawing.Size(23, 22);
-			this.ZoomOutButton.Text = "Zoom Out";
-			this.ZoomOutButton.Click += new System.EventHandler(this.ZoomOutButton_Click);
+			this.tsbZoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.tsbZoomOut.Image = global::MapView.Properties.Resources._13_Zoom_out_16;
+			this.tsbZoomOut.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbZoomOut.Name = "tsbZoomOut";
+			this.tsbZoomOut.Size = new System.Drawing.Size(23, 22);
+			this.tsbZoomOut.Text = "Zoom Out";
+			this.tsbZoomOut.Click += new System.EventHandler(this.ZoomOutButton_Click);
 			// 
-			// AutoZoomButton
+			// tsbAutoZoom
 			// 
-			this.AutoZoomButton.Checked = true;
-			this.AutoZoomButton.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.AutoZoomButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.AutoZoomButton.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.AutoZoomButton.Image = global::MapView.Properties.Resources._11_Search_16;
-			this.AutoZoomButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.AutoZoomButton.Name = "AutoZoomButton";
-			this.AutoZoomButton.Size = new System.Drawing.Size(23, 22);
-			this.AutoZoomButton.Text = "Auto Zoom";
-			this.AutoZoomButton.Click += new System.EventHandler(this.AutoZoomButton_Click);
+			this.tsbAutoZoom.Checked = true;
+			this.tsbAutoZoom.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.tsbAutoZoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.tsbAutoZoom.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsbAutoZoom.Image = global::MapView.Properties.Resources._11_Search_16;
+			this.tsbAutoZoom.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbAutoZoom.Name = "tsbAutoZoom";
+			this.tsbAutoZoom.Size = new System.Drawing.Size(23, 22);
+			this.tsbAutoZoom.Text = "Auto Zoom";
+			this.tsbAutoZoom.Click += new System.EventHandler(this.AutoZoomButton_Click);
 			// 
-			// cSplitList
+			// csSplitter
 			// 
-			this.cSplitList.BorderStyle3D = System.Windows.Forms.Border3DStyle.Flat;
-			this.cSplitList.ControlToHide = this.mapList;
-			this.cSplitList.Location = new System.Drawing.Point(249, 0);
-			this.cSplitList.MinimumSize = new System.Drawing.Size(5, 5);
-			this.cSplitList.Name = "cSplitList";
-			this.cSplitList.Size = new System.Drawing.Size(8, 454);
-			this.cSplitList.TabIndex = 1;
-			this.cSplitList.TabStop = false;
+			this.csSplitter.BorderStyle3D = System.Windows.Forms.Border3DStyle.Flat;
+			this.csSplitter.ControlToHide = this.tvMaps;
+			this.csSplitter.Location = new System.Drawing.Point(249, 0);
+			this.csSplitter.MinimumSize = new System.Drawing.Size(5, 5);
+			this.csSplitter.Name = "cSplitList";
+			this.csSplitter.Size = new System.Drawing.Size(8, 454);
+			this.csSplitter.TabIndex = 1;
+			this.csSplitter.TabStop = false;
 			// 
-			// MainWindow
+			// XCMainWindow
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.BackColor = System.Drawing.SystemColors.Control;
 			this.ClientSize = new System.Drawing.Size(632, 454);
 			this.Controls.Add(this.toolStripContainer1);
-			this.Controls.Add(this.statusStrip1);
-			this.Controls.Add(this.cSplitList);
-			this.Controls.Add(this.mapList);
+			this.Controls.Add(this.ssMain);
+			this.Controls.Add(this.csSplitter);
+			this.Controls.Add(this.tvMaps);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximumSize = new System.Drawing.Size(640, 480);
-			this.Menu = this.mainMenu;
+			this.Menu = this.mmMain;
 			this.MinimumSize = new System.Drawing.Size(640, 480);
-			this.Name = "MainWindow";
+			this.Name = "XCMainWindow";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Map Editor";
 			this.Activated += new System.EventHandler(this.MainWindow_Activated);
-			this.statusStrip1.ResumeLayout(false);
-			this.statusStrip1.PerformLayout();
+			this.ssMain.ResumeLayout(false);
+			this.ssMain.PerformLayout();
 			this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
 			this.toolStripContainer1.TopToolStripPanel.PerformLayout();
 			this.toolStripContainer1.ResumeLayout(false);
 			this.toolStripContainer1.PerformLayout();
-			this.toolStrip.ResumeLayout(false);
-			this.toolStrip.PerformLayout();
+			this.tsEdit.ResumeLayout(false);
+			this.tsEdit.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -402,35 +402,35 @@ namespace MapView
 		private System.Windows.Forms.MenuItem miQuit;
 		private System.Windows.Forms.MenuItem showMenu;
 		private System.Windows.Forms.MenuItem saveItem;
-		private System.Windows.Forms.MainMenu mainMenu;
+		private System.Windows.Forms.MainMenu mmMain;
 		private System.Windows.Forms.MenuItem bar;
 		private System.Windows.Forms.MenuItem onItem;
 		private System.Windows.Forms.MenuItem offItem;
 		private System.Windows.Forms.MenuItem miAnimation;
 		private System.Windows.Forms.MenuItem miHelp;
 		private System.Windows.Forms.MenuItem miEdit;
-		private System.Windows.Forms.TreeView mapList;
+		private System.Windows.Forms.TreeView tvMaps;
 		private System.Windows.Forms.MenuItem miPaths;
 		private System.Windows.Forms.MenuItem miOptions;
 		private System.Windows.Forms.MenuItem miSaveImage;
-		private System.Windows.Forms.SaveFileDialog saveFile;
+		private System.Windows.Forms.SaveFileDialog sfdSaveDialog;
 		private System.Windows.Forms.MenuItem miHq;
 		private System.Windows.Forms.MenuItem miDoors;
 		private System.Windows.Forms.MenuItem miResize;
 		private System.Windows.Forms.MenuItem miInfo;
 		private System.Windows.Forms.MenuItem miExport;
-		private DSShared.Windows.CollapsibleSplitter cSplitList;
-		private System.Windows.Forms.StatusStrip statusStrip1;
-		private System.Windows.Forms.ToolStripStatusLabel statusMapName;
-		private System.Windows.Forms.ToolStripStatusLabel tsMapSize;
-		private System.Windows.Forms.ToolStripStatusLabel statusPosition;
+		private DSShared.Windows.CollapsibleSplitter csSplitter;
+		private System.Windows.Forms.StatusStrip ssMain;
+		private System.Windows.Forms.ToolStripStatusLabel tsslMap;
+		private System.Windows.Forms.ToolStripStatusLabel tsslDimensions;
+		private System.Windows.Forms.ToolStripStatusLabel tsslPosition;
 		private System.Windows.Forms.ToolStripContainer toolStripContainer1;
-		private System.Windows.Forms.ToolStrip toolStrip;
+		private System.Windows.Forms.ToolStrip tsEdit;
 		private System.Windows.Forms.MenuItem miOpen;
-		private System.Windows.Forms.ToolStripButton drawSelectionBoxButton;
-		private System.Windows.Forms.ToolStripButton ZoomInButton;
-		private System.Windows.Forms.ToolStripButton ZoomOutButton;
-		private System.Windows.Forms.ToolStripButton AutoZoomButton;
+		private System.Windows.Forms.ToolStripButton tsbSelectionBox;
+		private System.Windows.Forms.ToolStripButton tsbZoomIn;
+		private System.Windows.Forms.ToolStripButton tsbZoomOut;
+		private System.Windows.Forms.ToolStripButton tsbAutoZoom;
 
 		#endregion
 	}

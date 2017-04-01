@@ -9,11 +9,11 @@ using XCom;
 using XCom.Interfaces.Base;
 
 
-namespace MapView
+namespace MapView // NOTE: namespace conflict w/ .NET itself
 {
-	internal sealed class MapView // NOTE: namespace conflict w/ .NET itself
+	internal sealed class MapView
 		:
-		Panel
+			Panel
 	{
 		private IMapBase _baseMap;
 
