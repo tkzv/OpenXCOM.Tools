@@ -50,8 +50,8 @@ namespace MapView
 
 
 			// jijack: These two events keep getting deleted in my designer:
-			this.tvMaps.BeforeSelect += OnMapSelect;
-			this.tvMaps.AfterSelect  += OnMapSelected;
+			tvMaps.BeforeSelect += OnMapSelect;
+			tvMaps.AfterSelect  += OnMapSelected;
 			// welcome to your new home.
 
 
@@ -208,10 +208,10 @@ namespace MapView
 
 
 			OnResize(null);
-			this.Closing += OnCloseSaveRegistry;
+			Closing += OnCloseSaveRegistry;
 
 			_loadingProgress = new LoadingForm();
-			Bmp.LoadingEvent += _loadingProgress.Update;
+			Bmp.LoadingEvent += _loadingProgress.HandleProgress;
 
 			// I should rewrite the hq2x wrapper for .NET sometime -- not the code it's pretty insane
 //			if (!File.Exists("hq2xa.dll"))

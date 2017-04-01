@@ -24,10 +24,10 @@ namespace MapView
 
 		private static Dictionary<Type, ConvertObjectHandler> _converters;
 
-/*		public static void AddConverter(Type type, ConvertObject obj)
+/*		public static void AddConverter(Type type, ConvertObjectHandler obj)
 		{
 			if (_converters == null)
-				_converters = new Dictionary<Type, ConvertObject>();
+				_converters = new Dictionary<Type, ConvertObjectHandler>();
 
 			_converters[type] = obj;
 		} */

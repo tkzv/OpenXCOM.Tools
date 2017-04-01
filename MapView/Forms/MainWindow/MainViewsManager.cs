@@ -63,9 +63,9 @@ namespace MapView.Forms.MainWindow
 				MainWindowsManager.RouteView.RouteViewControl.RegistryInfo;
 		}
 
-		private void SetViewToObserver(Form f, string title, string regkey = null)
+		private void SetViewToObserver(Form f, string caption, string regkey = null)
 		{
-			f.Text = title;
+			f.Text = caption;
 
 			var fObserver = f as IMapObserverFormProvider;
 			if (fObserver != null)
@@ -79,9 +79,9 @@ namespace MapView.Forms.MainWindow
 			}
 
 //			f.ShowInTaskbar = false;
-			f.FormBorderStyle = FormBorderStyle.SizableToolWindow;
+//			f.FormBorderStyle = FormBorderStyle.SizableToolWindow;
 
-			_dictForms.Add(title, f);
+			_dictForms.Add(caption, f);
 		}
 
 		public void CloseAllViews()
@@ -89,7 +89,7 @@ namespace MapView.Forms.MainWindow
 			foreach (string key in _dictForms.Keys)
 			{
 				var f = _dictForms[key];
-				f.WindowState = FormWindowState.Normal;
+//				f.WindowState = FormWindowState.Normal;
 
 				f.Close();
 			}

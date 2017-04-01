@@ -25,7 +25,7 @@ namespace MapView.Forms.MainWindow
 
 		public MainMenusManager(MenuItem show, MenuItem help)
 		{
-			_viewsMenu = show;
+			_viewsMenu = show; // why are these MenuItems
 			_helpMenu = help;
 		}
 
