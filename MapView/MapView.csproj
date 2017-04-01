@@ -39,7 +39,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <NoWin32Manifest>False</NoWin32Manifest>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
@@ -50,6 +50,7 @@
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -59,7 +60,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
-    <Optimize>False</Optimize>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
@@ -71,7 +71,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
-    <Optimize>True</Optimize>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
@@ -88,7 +87,6 @@
     <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
-    <Optimize>True</Optimize>
     <FileAlignment>4096</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -97,8 +95,14 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Design">
       <Name>System.Design</Name>
@@ -128,6 +132,9 @@
       <Project>{66DC3C20-8041-48DD-962B-DEA050F89179}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Forms\MainWindow\SettingsManager.cs" />
@@ -470,6 +477,7 @@ copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Release\XCom.dll C:\0xC_kL\editors
 </PostBuildEvent>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -485,5 +493,6 @@ copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Release\XCom.dll C:\0xC_kL\editors
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
   </PropertyGroup>
 </Project>

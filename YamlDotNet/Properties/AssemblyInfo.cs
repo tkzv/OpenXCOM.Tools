@@ -50,9 +50,9 @@ using System.Runtime.CompilerServices;
 [assembly: CLSCompliant (true)]
 #if !SIGNED
 #if PORTABLE
-[assembly: InternalsVisibleTo("YamlDotNet.Test.Portable")]
+//kL_edit[assembly: InternalsVisibleTo("YamlDotNet.Test.Portable")]
 #else
-[assembly: InternalsVisibleTo ("YamlDotNet.Test")]
+//kL_edit[assembly: InternalsVisibleTo ("YamlDotNet.Test")]
 #endif
 #endif
 #endif

@@ -25,7 +25,7 @@
     <SignAssembly>True</SignAssembly>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <PublishUrl>http://localhost/PckView/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -49,6 +49,7 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -59,7 +60,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
-    <Optimize>False</Optimize>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
@@ -72,7 +72,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
-    <Optimize>True</Optimize>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
@@ -91,7 +90,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <Optimize>True</Optimize>
     <FileAlignment>4096</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -108,8 +106,14 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
@@ -119,6 +123,9 @@
     </Reference>
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -297,11 +304,13 @@
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DebugType>Full</DebugType>
+    <Optimize>False</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
     <StartAction>Project</StartAction>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DebugType>None</DebugType>
+    <Optimize>True</Optimize>
   </PropertyGroup>
 </Project>
