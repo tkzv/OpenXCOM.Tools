@@ -4,15 +4,16 @@ using System.Windows.Forms;
 
 namespace MapView.Forms.MainWindow
 {
-	public interface IMainShowAllManager
+	internal interface IMainShowAllManager
 	{
 		void HideAll();
 		void RestoreAll();
 	}
 
-	public class MainShowAllManager
+
+	internal sealed class MainShowAllManager
 		:
-		IMainShowAllManager
+			IMainShowAllManager
 	{
 		private readonly IEnumerable<Form> _allForms;
 		private readonly IEnumerable<MenuItem> _allItems;
@@ -33,15 +34,15 @@ namespace MapView.Forms.MainWindow
 		public void HideAll()
 		{
 			_items = new List<MenuItem>();
-			foreach (var i in _allItems)
-				if (i.Checked)
-					_items.Add(i);
+			foreach (var it in _allItems)
+				if (it.Checked)
+					_items.Add(it);
 
 			_forms = new List<Form>();
 			foreach (var f in _allForms)
 				if (f.Visible)
 				{
-					f.Close();
+					f.Close(); // TODO: just use Hide()
 					_forms.Add(f);
 				}
 		}
@@ -54,8 +55,8 @@ namespace MapView.Forms.MainWindow
 				f.WindowState = FormWindowState.Normal;
 			}
 
-			foreach (var i in _items)
-				i.Checked = true;
+			foreach (var it in _items)
+				it.Checked = true;
 		}
 	}
 }

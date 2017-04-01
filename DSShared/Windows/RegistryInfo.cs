@@ -108,18 +108,19 @@ namespace DSShared.Windows
 		{
 			RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey(Software);
 			RegistryKey keyDSShared = keySoftware.CreateSubKey(DSShared);
-			RegistryKey keyLabel    = keyDSShared.CreateSubKey(_regkey);
+			RegistryKey regkey      = keyDSShared.CreateSubKey(_regkey);
 
 			foreach (string key in _dictInfo.Keys)
 				_dictInfo[key].SetValue(
 									_obj,
-									keyLabel.GetValue(key, _dictInfo[key].GetValue(_obj, null)),
+									regkey.GetValue(key, _dictInfo[key].GetValue(_obj, null)),
 									null);
 
 			if (LoadingEvent != null)
-				LoadingEvent(this, new RegistryEventArgs(keyLabel));
+				LoadingEvent(this, new RegistryEventArgs(regkey));
 
-			keyLabel.Close();
+			regkey.Close();
+
 			keyDSShared.Close();
 			keySoftware.Close();
 		}

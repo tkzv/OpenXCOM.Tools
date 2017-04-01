@@ -22,28 +22,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		:
 			MapObserverControl0
 	{
-		private IContainer components = null;
-
-		private MenuItem mcdInfoTab;
-
-		private TilePanel allTiles;
-		private TilePanel[] panels;
-
-		private McdViewerForm MCDInfoForm;
-
-		private TabControl tabs;
-		private TabPage allTab;
-		private TabPage groundTab;
-		private TabPage objectsTab;
-		private TabPage nWallsTab;
-		private TabPage wWallsTab;
-
-		private Hashtable _brushes;
-
-		private IMainShowAllManager _mainWindowsShowAllManager;
-
 		public event SelectedTileTypeChangedEventHandler SelectedTileTypeChangedObserver;
-
 		private void OnSelectedTileTypeChanged(TileBase tile)
 		{
 			var handler = SelectedTileTypeChangedObserver;
@@ -52,7 +31,6 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 		public event MethodInvoker MapChanged;
-
 		private void OnMapChanged()
 		{
 			MethodInvoker handler = MapChanged;
@@ -61,11 +39,22 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 
+		private IMainShowAllManager _showAllManager;
+
+		private IContainer components = null; // quahhaha
+
+		private TilePanel allTiles;
+		private TilePanel[] panels;
+
+		private McdViewerForm McdInfoForm;
+
+		private Hashtable _brushes;
+
 		public TileView()
 		{
 			InitializeComponent();
 
-			tabs.Selected += tabs_Selected;
+			tcTileTypes.Selected += OnTabSelected;
 
 			allTiles    = new TilePanel(TileType.All);
 			var ground  = new TilePanel(TileType.Ground);
@@ -82,67 +71,61 @@ namespace MapView.Forms.MapObservers.TileViews
 				objects
 			};
 
-			AddPanel(allTiles, allTab);
+			AddPanel(allTiles, tpAll);
 
-			AddPanel(ground,  groundTab);
-			AddPanel(wWalls,  wWallsTab);
-			AddPanel(nWalls,  nWallsTab);
-			AddPanel(objects, objectsTab);
+			AddPanel(ground,  tpFloors);
+			AddPanel(wWalls,  tpWestwalls);
+			AddPanel(nWalls,  tpNorthwalls);
+			AddPanel(objects, tpObjects);
 		}
 
 
-		public void Initialize(IMainShowAllManager mainWindowsShowAllManager)
+		private void AddPanel(TilePanel panel, Control page)
 		{
-			_mainWindowsShowAllManager = mainWindowsShowAllManager;
+			panel.Dock = DockStyle.Fill;
+			page.Controls.Add(panel);
+			panel.SelectedTileTypeChangedPanel += OnTileChanged;
 		}
 
-		private void tabs_Selected(object sender, TabControlEventArgs e)
+		private void OnTileChanged(TileBase tile)
 		{
 			var f = FindForm();
-
-			var tile = SelectedTile;
 			if (tile != null && tile.Info is McdRecord)
 			{
 				f.Text = BuildTitleString(tile.TileListId, tile.Id);
 
-				if (MCDInfoForm != null)
-					MCDInfoForm.UpdateData((McdRecord)tile.Info);
+				if (McdInfoForm != null)
+					McdInfoForm.UpdateData((McdRecord)tile.Info);
 			}
 			else
 			{
 				f.Text = "Tile View";
 
-				if (MCDInfoForm != null)
-					MCDInfoForm.UpdateData(null);
+				if (McdInfoForm != null)
+					McdInfoForm.UpdateData(null);
 			}
+
+			OnSelectedTileTypeChanged(tile);
 		}
 
-		private void options_click(object sender, EventArgs e)
+		public void Initialize(IMainShowAllManager showAllManager)
 		{
-			var f = new OptionsForm("TileViewOptions", Settings);
-			f.Text = "Tile View Options";
-			f.Show();
-		}
-
-		private void BrushChanged(object sender,string key, object val)
-		{
-			((SolidBrush)_brushes[key]).Color = (Color)val;
-			Refresh();
+			_showAllManager = showAllManager;
 		}
 
 		public override void LoadDefaultSettings()
 		{
 			_brushes = new Hashtable();
 
-			foreach (string st in Enum.GetNames(typeof(SpecialType)))
+			foreach (string type in Enum.GetNames(typeof(SpecialType)))
 			{
-				_brushes[st] = new SolidBrush(TilePanel.TileColors[(int)Enum.Parse(typeof(SpecialType), st)]);
+				_brushes[type] = new SolidBrush(TilePanel.TileColors[(int)Enum.Parse(typeof(SpecialType), type)]);
 				Settings.AddSetting(
-								st,
-								((SolidBrush)_brushes[st]).Color,
+								type,
+								((SolidBrush)_brushes[type]).Color,
 								"Color of specified tile type",
 								"TileView",
-								BrushChanged,
+								OnBrushChanged,
 								false,
 								null);
 			}
@@ -151,32 +134,38 @@ namespace MapView.Forms.MapObservers.TileViews
 			TilePanel.SetColors(_brushes);
 		}
 
-		private void AddPanel(TilePanel panel, Control page)
+		private void OnBrushChanged(object sender, string key, object val)
 		{
-			panel.Dock = DockStyle.Fill;
-			page.Controls.Add(panel);
-			panel.SelectedTileTypeChangedPanel += TileChanged;
+			((SolidBrush)_brushes[key]).Color = (Color)val;
+			Refresh();
 		}
 
-		private void TileChanged(TileBase tile)
+		private void OnTabSelected(object sender, TabControlEventArgs e)
 		{
 			var f = FindForm();
+
+			var tile = SelectedTile;
 			if (tile != null && tile.Info is McdRecord)
 			{
 				f.Text = BuildTitleString(tile.TileListId, tile.Id);
 
-				if (MCDInfoForm != null)
-					MCDInfoForm.UpdateData((McdRecord)tile.Info);
+				if (McdInfoForm != null)
+					McdInfoForm.UpdateData((McdRecord)tile.Info);
 			}
 			else
 			{
 				f.Text = "Tile View";
 
-				if (MCDInfoForm != null)
-					MCDInfoForm.UpdateData(null);
+				if (McdInfoForm != null)
+					McdInfoForm.UpdateData(null);
 			}
+		}
 
-			OnSelectedTileTypeChanged(tile);
+		private void OnOptionsClick(object sender, EventArgs e)
+		{
+			var f = new OptionsForm("TileViewOptions", Settings);
+			f.Text = "Tile View Options";
+			f.Show();
 		}
 
 		public override IMapBase Map
@@ -203,19 +192,86 @@ namespace MapView.Forms.MapObservers.TileViews
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public TileBase SelectedTile
 		{
-			get { return panels[tabs.SelectedIndex].SelectedTile; }
+			get { return panels[tcTileTypes.SelectedIndex].SelectedTile; }
 			set
 			{
 				allTiles.SelectedTile = value;
-				tabs.SelectedIndex = 0;
+				tcTileTypes.SelectedIndex = 0;
 
 				Refresh();
 			}
 		}
 
-		private void EditPckMenuItem_Click(object sender, EventArgs e)
+		private void OnMcdInfoClick(object sender, EventArgs e)
 		{
-			var dep = GetSelectedDependencyName();
+			if (McdInfoForm == null)
+			{
+				McdInfoForm = new McdViewerForm();
+				McdInfoForm.Closing += OnMcdInfoClosing;
+
+				var f = FindForm();
+
+				var tile = SelectedTile;
+				if (tile != null && tile.Info is McdRecord)
+				{
+					f.Text = BuildTitleString(tile.TileListId, tile.Id);
+					McdInfoForm.UpdateData((McdRecord)tile.Info);
+				}
+				else
+				{
+					f.Text = "Tile View";
+					McdInfoForm.UpdateData(null);
+				}
+			}
+			McdInfoForm.Show();
+		}
+
+		private void OnMcdInfoClosing(object sender, CancelEventArgs e)
+		{
+			e.Cancel = true;
+			McdInfoForm.Hide();
+		}
+
+		private void OnVolutarMcdEditorClick(object sender, EventArgs e)
+		{
+			if ((Map as XCMapFile) != null)
+			{
+				var service = new VolutarSettingService(Settings);
+				var path = service.FullPath;	// this will invoke a box for the user to input the
+												// executable's path if it doesn't exist in Settings.
+				if (!String.IsNullOrEmpty(path))
+				{
+					string dir = path.Substring(0, path.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+					Directory.SetCurrentDirectory(dir); // change to MCDEdit dir so that accessing MCDEdit.txt doesn't cause probs.
+
+					Process.Start(new ProcessStartInfo(path));
+
+					Directory.SetCurrentDirectory(SharedSpace.Instance.GetString(SharedSpace.AppDir)); // change back to app dir
+				}
+			}
+		}
+
+		private string BuildTitleString(int id, int mcd)
+		{
+			var dep = GetDepLabel();
+			return "Tile View : id " + id + " - mcd " + mcd + " - " + (dep ?? "unknown");
+		}
+
+		private string GetDepLabel()
+		{
+			var tile = SelectedTile;
+			if (tile != null)
+			{
+				var file = Map as XCMapFile;
+				if (file != null)
+					return file.GetDepLabel(tile);
+			}
+			return null;
+		}
+
+		private void OnEditPckClick(object sender, EventArgs e) // NOTE: The dropdown button has been disabled (Visible=FALSE).
+		{
+			var dep = GetDepLabel();
 			if (dep != null)
 			{
 				var imageInfo = GameInfo.ImageInfo[dep];
@@ -236,7 +292,7 @@ namespace MapView.Forms.MapObservers.TileViews
 					}
 					else
 					{
-						_mainWindowsShowAllManager.HideAll();
+						_showAllManager.HideAll();
 
 						using (var editor = new PckViewForm())
 						{
@@ -263,87 +319,8 @@ namespace MapView.Forms.MapObservers.TileViews
 							}
 						}
 
-						_mainWindowsShowAllManager.RestoreAll();
+						_showAllManager.RestoreAll();
 					}
-				}
-			}
-		}
-
-		private void mcdInfoTab_Click(object sender, System.EventArgs e)
-		{
-			if (!mcdInfoTab.Checked)
-			{
-				mcdInfoTab.Checked = true;
-
-				if (MCDInfoForm == null)
-				{
-					MCDInfoForm = new McdViewerForm();
-					MCDInfoForm.Closing += infoTabClosing;
-
-					var f = FindForm();
-
-					var tile = SelectedTile;
-					if (tile != null && tile.Info is McdRecord)
-					{
-						f.Text = BuildTitleString(tile.TileListId, tile.Id);
-						MCDInfoForm.UpdateData((McdRecord)tile.Info);
-					}
-					else
-					{
-						f.Text = "Tile View";
-						MCDInfoForm.UpdateData(null);
-					}
-				}
-
-//				MCDInfoForm.Location = new Point( // this is f'd.
-//											this.Location.X - MCDInfoForm.Width,
-//											this.Location.Y);
-				MCDInfoForm.Visible = true;
-
-				MCDInfoForm.Show();
-			}
-		}
-
-		private void infoTabClosing(object sender, CancelEventArgs e)
-		{
-			e.Cancel = true;
-			MCDInfoForm.Visible = false;
-			mcdInfoTab.Checked = false;
-		}
-
-		private string GetSelectedDependencyName()
-		{
-			var tile = SelectedTile;
-			if (tile != null)
-			{
-				var map = Map as XCMapFile;
-				if (map != null)
-					return map.GetDependencyName(tile);
-			}
-			return null;
-		}
-
-		private string BuildTitleString(int id, int mcd)
-		{
-			var dep = GetSelectedDependencyName();
-			return "Tile View : id " + id + " - mcd " + mcd + " - " + (dep ?? "unknown");
-		}
-
-		private void VolutarMcdEditMenuItem_Click(object sender, EventArgs e)
-		{
-			if ((Map as XCMapFile) != null)
-			{
-				var service = new VolutarSettingService(Settings);
-				var path = service.FullPath;	// this will invoke a box for the user to input the
-												// executable's path if it doesn't exist in Settings.
-				if (!String.IsNullOrEmpty(path))
-				{
-					string dir = path.Substring(0, path.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
-					Directory.SetCurrentDirectory(dir); // change to MCDEdit dir so that accessing MCDEdit.txt doesn't cause probs.
-
-					Process.Start(new ProcessStartInfo(path));
-
-					Directory.SetCurrentDirectory(SharedSpace.Instance.GetString(SharedSpace.AppDir)); // change back to app dir
 				}
 			}
 		}

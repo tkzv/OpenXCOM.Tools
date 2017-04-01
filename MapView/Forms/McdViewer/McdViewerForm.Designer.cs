@@ -1,6 +1,4 @@
-﻿using XCom;
-
-namespace MapView.Forms.McdViewer
+﻿namespace MapView.Forms.McdViewer
 {
 	partial class McdViewerForm
 	{
@@ -10,9 +8,9 @@ namespace MapView.Forms.McdViewer
 		private System.ComponentModel.IContainer components = null;
 
 		/// <summary>
-		/// Clean up any resources being used.
+		/// Cleans up any resources being used.
 		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		/// <param name="disposing">true if managed resources should be disposed</param>
 		protected override void Dispose(bool disposing)
 		{
 			if (disposing && components != null)
@@ -30,25 +28,25 @@ namespace MapView.Forms.McdViewer
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.rtb = new System.Windows.Forms.RichTextBox();
-			this.InfoBs = new System.Windows.Forms.BindingSource(this.components);
-			((System.ComponentModel.ISupportInitialize)(this.InfoBs)).BeginInit();
+			this.rtbInfo = new System.Windows.Forms.RichTextBox();
+			this.bsInfo = new System.Windows.Forms.BindingSource(this.components);
+			((System.ComponentModel.ISupportInitialize)(this.bsInfo)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// rtb
+			// rtbInfo
 			// 
-			this.rtb.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.rtb.Location = new System.Drawing.Point(0, 0);
-			this.rtb.Name = "rtb";
-			this.rtb.ReadOnly = true;
-			this.rtb.ShowSelectionMargin = true;
-			this.rtb.Size = new System.Drawing.Size(522, 425);
-			this.rtb.TabIndex = 0;
-			this.rtb.Text = "";
+			this.rtbInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.rtbInfo.Location = new System.Drawing.Point(0, 0);
+			this.rtbInfo.Name = "rtbInfo";
+			this.rtbInfo.ReadOnly = true;
+			this.rtbInfo.ShowSelectionMargin = true;
+			this.rtbInfo.Size = new System.Drawing.Size(522, 425);
+			this.rtbInfo.TabIndex = 0;
+			this.rtbInfo.Text = "";
 			// 
-			// InfoBs
+			// bsInfo
 			// 
-			this.InfoBs.DataSource = typeof(XCom.McdRecord);
+			this.bsInfo.DataSource = typeof(XCom.McdRecord);
 			// 
 			// McdViewerForm
 			// 
@@ -57,19 +55,20 @@ namespace MapView.Forms.McdViewer
 			this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
 			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
 			this.ClientSize = new System.Drawing.Size(522, 425);
-			this.Controls.Add(this.rtb);
+			this.Controls.Add(this.rtbInfo);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "McdViewerForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "MCD Viewer";
-			((System.ComponentModel.ISupportInitialize)(this.InfoBs)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.bsInfo)).EndInit();
 			this.ResumeLayout(false);
+
 		}
 
 		#endregion
 
-		private System.Windows.Forms.RichTextBox rtb;
-		private System.Windows.Forms.BindingSource InfoBs;
+		private System.Windows.Forms.RichTextBox rtbInfo;
+		private System.Windows.Forms.BindingSource bsInfo;
 	}
 }

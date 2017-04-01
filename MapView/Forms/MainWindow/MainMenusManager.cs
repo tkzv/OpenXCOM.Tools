@@ -8,7 +8,7 @@ using MapView.Forms.MapObservers.TopViews;
 
 namespace MapView.Forms.MainWindow
 {
-	public class MainMenusManager
+	internal sealed class MainMenusManager
 	{
 		private readonly MenuItem _show;
 		private readonly MenuItem _help;
@@ -19,7 +19,7 @@ namespace MapView.Forms.MainWindow
 		private Settings _settings;
 
 		private bool _disposed;
-		
+
 		private const string Separator = "-";
 
 
