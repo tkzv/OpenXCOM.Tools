@@ -24,7 +24,7 @@ namespace DSShared.Lists
 		/// </summary>
 		None,
 		/// <summary>
-		/// Property will be editable based on the function provided in ObjProperty.KeyFunction
+		/// Property will be editable based on the function provided in PropertyObject.KeyFunction
 		/// </summary>
 		Custom
 	};
@@ -37,7 +37,7 @@ namespace DSShared.Lists
 	/// <param name="row"></param>
 	/// <param name="col"></param>
 	/// <param name="e"></param>
-	public delegate void EditStrDelegate(ObjRow row, CustomListColumn col, System.Windows.Forms.KeyPressEventArgs e);
+	public delegate void EditStrDelegate(RowObject row, CustomListColumn col, System.Windows.Forms.KeyPressEventArgs e);
 
 
 	/// <summary>

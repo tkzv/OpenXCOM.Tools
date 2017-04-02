@@ -256,10 +256,14 @@ namespace XCom
 			}
 		}
 
-		public void SetTransparent(bool value)
+		/// <summary>
+		/// Sets the palette-id that will be used for transparency.
+		/// </summary>
+		/// <param name="zero">true to use #0 palette id; else use #255</param>
+		public void SetTransparent(bool zero)
 		{
-			_colors.Entries[TransparentId] = (value) ? Color.FromArgb(  0, _colors.Entries[TransparentId])
-													 : Color.FromArgb(255, _colors.Entries[TransparentId]);
+			_colors.Entries[TransparentId] = (zero) ? Color.FromArgb(  0, _colors.Entries[TransparentId])
+													: Color.FromArgb(255, _colors.Entries[TransparentId]);
 		}
 
 		/// <summary>

@@ -149,10 +149,10 @@
     <Compile Include="Lists\EditStrAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lists\ObjProperty.cs">
+    <Compile Include="Lists\PropertyObject.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lists\ObjRow.cs">
+    <Compile Include="Lists\RowObject.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\IAssemblyLoadable.cs" />

@@ -17,14 +17,14 @@ namespace DSShared.Lists
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="clicked"></param>
-	public delegate void RowClickEventHandler(object sender, ObjRow clicked);
+	public delegate void RowClickEventHandler(object sender, RowObject clicked);
 
 	/// <summary>
 	/// Delegate for the CustomList.RowTextChange event.
 	/// </summary>
 	/// <param name="sender"></param>
 	/// <param name="current"></param>
-	public delegate void RowTextChangeEventHandler(object sender, ObjRow current);
+	public delegate void RowTextChangeEventHandler(object sender, RowObject current);
 
 
 	/// <summary>
@@ -37,25 +37,25 @@ namespace DSShared.Lists
 	{
 		private readonly CustomListColumnCollection _columns;
 
-		private List<ObjRow> _items;
+		private List<RowObject> _items;
 /*		/// <summary>
 		/// Gets the items.
 		/// </summary>
 		/// <value>the items</value>
-		public List<ObjRow> Items
+		public List<RowObject> Items
 		{
 			get { return _items; }
 		} */
 
 		/// <summary>
-		/// The currently selected ObjRow.
+		/// The currently selected RowObject.
 		/// </summary>
-		private ObjRow _sel;
+		private RowObject _sel;
 
 		/// <summary>
-		/// The last ObjRow clicked on.
+		/// The last RowObject clicked on.
 		/// </summary>
-		private ObjRow _clicked;
+		private RowObject _clicked;
 
 		private int _startY;
 
@@ -75,7 +75,7 @@ namespace DSShared.Lists
 		/// </summary>
 		/// <value>the type of the row</value>
 		[Browsable(false)]
-		[DefaultValue(typeof(ObjRow))]
+		[DefaultValue(typeof(RowObject))]
 		public Type RowType
 		{
 			get { return _rowType; }
@@ -120,13 +120,13 @@ namespace DSShared.Lists
 			_columns.MouseEvent += OnRowClick;
 			_columns.Parent = this;
 
-			_items = new List<ObjRow>();
+			_items = new List<RowObject>();
 
 			SetStyle(ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
 
 			_startY = _columns.HeaderHeight;
 
-			_rowType = typeof(ObjRow);
+			_rowType = typeof(RowObject);
 		}
 
 
@@ -176,7 +176,7 @@ namespace DSShared.Lists
 		{
 //			int overY = (e.Y - (_columns.HeaderHeight + _yOffset)) / (Font.Height + _columns.RowSpace * 2);
 			if (_clicked != null)
-				_clicked.UnClick();
+				_clicked.ClearClick();
 
 			if (_sel != null && _colOver != null)
 				_sel.Click(_colOver);
@@ -310,7 +310,7 @@ namespace DSShared.Lists
 		protected override void OnLostFocus(EventArgs e)
 		{
 			if (_clicked != null)
-				_clicked.UnClick();
+				_clicked.ClearClick();
 
 			_clicked = null;
 			Refresh();
@@ -327,7 +327,7 @@ namespace DSShared.Lists
 			int rowHeight = 0;
 			for (int i = 0; i != _items.Count; ++i)
 			{
-				var row = (ObjRow)_items[i];
+				var row = (RowObject)_items[i];
 				if (rowHeight /*+ _yOffset*/ + row.Height > -1 && rowHeight /*+ _yOffset*/ < Height)
 					row.Render(e/*, _yOffset*/);
 
@@ -342,7 +342,7 @@ namespace DSShared.Lists
 		/// Deletes the row.
 		/// </summary>
 		/// <param name="row">the row to delete</param>
-		public virtual void DeleteRow(ObjRow row)
+		public virtual void DeleteRow(RowObject row)
 		{
 			Object obj = null;
 			for (int i = 0; i < _items.Count; i++)
@@ -380,29 +380,29 @@ namespace DSShared.Lists
 		} */
 
 		/// <summary>
-		/// Adds a row to the item-collection. Creates an ObjRow and calls AddItem(ObjRow row).
+		/// Adds a row to the item-collection. Creates an RowObject and calls AddItem(RowObject row).
 		/// </summary>
-		/// <param name="o">the item to add</param>
-		public virtual void AddItem(object o)
+		/// <param name="obj">the item to add</param>
+		public virtual void AddItem(object obj)
 		{
-			ConstructorInfo ci = _rowType.GetConstructor(new Type[]{ typeof(object) });
-			AddItem((ObjRow)ci.Invoke(new object[]{ o })); // add row.
+			ConstructorInfo info = _rowType.GetConstructor(new Type[]{ typeof(object) });
+			AddItem((RowObject)info.Invoke(new object[]{ obj })); // add row.
 		}
 
 		// GOOD GOD QUIT WASTING MY FUCKING TIME!!! oh sry.
 
 		/// <summary>
-		/// Adds an ObjRow to the collection.
+		/// Adds an RowObject to the collection.
 		/// </summary>
 		/// <param name="row">the row to add</param>
-		public virtual void AddItem(ObjRow row)
+		public virtual void AddItem(RowObject row)
 		{
 			row.SetTop(_startY);
 //			row.SetWidth(Width);
 //			row.Height = RowHeight;
 			row.Height += Font.Height + CustomListColumnCollection.PadY * 2;
 			row.SetColumns(_columns);
-			row.RefreshEvent += new RefreshEventHandler(Refresh);
+			row.RefreshEvent += Refresh;
 			row.SetRowIndex(_items.Count);
 			_items.Add(row);
 			_startY += Font.Height + CustomListColumnCollection.PadY * 2;
@@ -419,7 +419,7 @@ namespace DSShared.Lists
 		{
 			if (_clicked != null)
 			{
-				_clicked.KeyPress(e);
+				_clicked.RowKeyPress(e);
 				if (RowTextChange != null)
 					RowTextChange(this, _clicked);
 			}
@@ -432,7 +432,7 @@ namespace DSShared.Lists
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			if (_clicked != null)
-				_clicked.KeyDown(e);
+				_clicked.KeyDown(e); // does nothing.
 		}
 
 		/// <summary>
@@ -443,7 +443,7 @@ namespace DSShared.Lists
 		protected override void OnKeyUp(KeyEventArgs e)
 		{
 			if (_clicked != null)
-				_clicked.KeyUp(e);
+				_clicked.KeyUp(e); // does nothing.
 		}
 
 		/// <summary>
@@ -456,11 +456,11 @@ namespace DSShared.Lists
 		}
 
 		/// <summary>
-		/// Clears all ObjRows from the internal collection.
+		/// Clears all RowObjects from the internal collection.
 		/// </summary>
-		public virtual void Clear()
+		public void Clear()
 		{
-			_items = new List<ObjRow>();
+			_items = new List<RowObject>();
 			_startY = _columns.HeaderHeight;
 			Refresh();
 		}

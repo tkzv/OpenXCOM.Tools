@@ -9,7 +9,7 @@ namespace DSShared.Lists
 	/// </summary>
 	/// <param name="columnChanged">Column that is changed</param>
 	/// <param name="changeAmount">How much it has changed</param>
-	internal delegate void CustomListColumChangedEventHandler(CustomListColumn columnChanged, int changeAmount);
+	internal delegate void ColSizeChangedEventHandler(CustomListColumn columnChanged, int changeAmount);
 
 	/// <summary>
 	/// Delegate for use when a column is clicked on.
@@ -24,7 +24,7 @@ namespace DSShared.Lists
 	/// <param name="row"></param>
 	/// <param name="col"></param>
 	/// <param name="e"></param>
-	internal delegate void KeyPressEventHandler(ObjRow row, CustomListColumn col, KeyPressEventArgs e);
+	internal delegate void ColKeyPressEventHandler(RowObject row, CustomListColumn col, KeyPressEventArgs e);
 
 
 	/// <summary>
@@ -36,7 +36,7 @@ namespace DSShared.Lists
 		/// Gets or sets the property this column holds.
 		/// </summary>
 		/// <value>The property.</value>
-		public ObjProperty Property
+		public PropertyObject Property
 		{ get; set; }
 
 		/// <summary>
@@ -65,30 +65,31 @@ namespace DSShared.Lists
 		/// <summary>
 		/// Fired when a column's width changes.
 		/// </summary>
-		internal event CustomListColumChangedEventHandler WidthChanged;
+		internal event ColSizeChangedEventHandler WidthChangedEvent;
 
 		/// <summary>
 		/// Fired when a column's left parameter changes.
 		/// </summary>
-		internal event CustomListColumChangedEventHandler LeftChanged;
+		internal event ColSizeChangedEventHandler LeftChangedEvent;
 
 		/// <summary>
-		/// Fired when a row has been clicked on under this column.
+		/// Fired when a cell has been clicked on under this column.
 		/// </summary>
-		private event ColClickEventHandler OnClick;
+		private event ColClickEventHandler ColClickEvent;
 
 		/// <summary>
-		/// Fired when a row gets keyboard events under this column.
+		/// Fired when a cell gets keyboard events under this column.
 		/// </summary>
-		private event KeyPressEventHandler KeyPress;
+		private event ColKeyPressEventHandler ColKeyPressEvent;
 
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:DSShared.Lists.CustomListColumn"/> class.
 		/// </summary>
 		/// <param name="title">Column title</param>
-		/// <param name="property">ObjProperty that will reflect on the objects contained in the list</param>
-		public CustomListColumn(string title, ObjProperty property)
+		/// <param name="property">PropertyObject that will reflect on the
+		/// objects contained in the list</param>
+		public CustomListColumn(string title, PropertyObject property)
 		{
 			Title = title;
 			Property = property;
@@ -98,11 +99,12 @@ namespace DSShared.Lists
 		/// Initializes a new instance of the <see cref="T:DSShared.Lists.CustomListColumn"/> class.
 		/// </summary>
 		/// <param name="title">Column title</param>
-		/// <param name="property">PropertyInfo that will reflect on the objects contained in the list</param>
+		/// <param name="property">PropertyInfo that will reflect on the objects
+		/// contained in the list</param>
 		public CustomListColumn(string title, System.Reflection.PropertyInfo property)
 		{
 			Title = title;
-			Property = new ObjProperty(property);
+			Property = new PropertyObject(property);
 		}
 
 		/// <summary>
@@ -111,7 +113,7 @@ namespace DSShared.Lists
 		/// <param name="title">Column title</param>
 		public CustomListColumn(string title)
 			:
-			this(title, (ObjProperty)null)
+				this(title, (PropertyObject)null)
 		{}
 
 		/// <summary>
@@ -119,51 +121,29 @@ namespace DSShared.Lists
 		/// </summary>
 		public CustomListColumn()
 			:
-			this(String.Empty, (ObjProperty)null)
+				this(String.Empty, (PropertyObject)null)
 		{}
 
-
-		/// <summary>
-		/// Equality test. Based on GetHashCode() between objects of this type.
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns></returns>
-		public override bool Equals(object obj)
-		{
-			if (obj is CustomListColumn)
-				return GetHashCode() == obj.GetHashCode();
-
-			return false;
-		}
 
 		/// <summary>
 		/// Raises the KeyPress event for the specified row.
 		/// </summary>
 		/// <param name="row">Row to raise event with</param>
 		/// <param name="e">Args</param>
-		public void FireKeyPress(ObjRow row, KeyPressEventArgs e)
+		public void RowKeyPress(RowObject row, KeyPressEventArgs e)
 		{
-			if (KeyPress != null)
-				KeyPress(row, this, e);
-		}
-
-		/// <summary>
-		/// Gets the hash code of the title of this column.
-		/// </summary>
-		/// <returns></returns>
-		public override int GetHashCode()
-		{
-			return Title.GetHashCode(); // TODO: fix: Non-readonly field referenced ....
+			if (ColKeyPressEvent != null)
+				ColKeyPressEvent(row, this, e);
 		}
 
 		/// <summary>
 		/// Raises the OnClick event for the specified row.
 		/// </summary>
 		/// <param name="row">Row to raise event with</param>
-		public void FireClick(ObjRow row)
+		public void RowClick(RowObject row)
 		{
-			if (OnClick != null)
-				OnClick(this, new RowClickEventArgs(row, this));
+			if (ColClickEvent != null)
+				ColClickEvent(this, new RowClickEventArgs(row, this));
 		}
 
 		/// <summary>
@@ -191,8 +171,8 @@ namespace DSShared.Lists
 
 				_left = value;
 
-				if (LeftChanged != null)
-					LeftChanged(this, diff);
+				if (LeftChangedEvent != null)
+					LeftChangedEvent(this, diff);
 			}
 		}
 
@@ -211,10 +191,32 @@ namespace DSShared.Lists
 
 					_width = value;
 
-					if (WidthChanged != null)
-						WidthChanged(this, diff);
+					if (WidthChangedEvent != null)
+						WidthChangedEvent(this, diff);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Equality test. Based on GetHashCode() between objects of this type.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		public override bool Equals(object obj)
+		{
+			if (obj is CustomListColumn)
+				return GetHashCode() == obj.GetHashCode();
+
+			return false;
+		}
+
+		/// <summary>
+		/// Gets the hash code of the title of this column.
+		/// </summary>
+		/// <returns></returns>
+		public override int GetHashCode()
+		{
+			return Title.GetHashCode(); // TODO: fix: Non-readonly field referenced ....
 		}
 	}
 
@@ -225,7 +227,7 @@ namespace DSShared.Lists
 		:
 			EventArgs
 	{
-		private readonly ObjRow _row;
+		private readonly RowObject _row;
 		private readonly CustomListColumn _col;
 
 		/// <summary>
@@ -233,7 +235,7 @@ namespace DSShared.Lists
 		/// </summary>
 		/// <param name="row">the row that was clicked on</param>
 		/// <param name="col">the column that was clicked under</param>
-		public RowClickEventArgs(ObjRow row, CustomListColumn col)
+		public RowClickEventArgs(RowObject row, CustomListColumn col)
 		{
 			_row = row;
 			_col = col;
@@ -243,7 +245,7 @@ namespace DSShared.Lists
 		/// Gets the row.
 		/// </summary>
 		/// <value>The row.</value>
-		public ObjRow Row
+		public RowObject Row
 		{
 			get { return _row; }
 		}

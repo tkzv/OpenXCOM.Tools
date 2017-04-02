@@ -163,8 +163,8 @@ namespace DSShared.Lists
 				column.Left = _widthTable;
 				column.Index = _list.Count;
 
-				column.LeftChanged += colLeftChanged;
-				column.WidthChanged += colWidthChanged;
+				column.LeftChangedEvent += OnLeftChanged;
+				column.WidthChangedEvent += OnWidthChanged;
 				_widthTable += column.Width;
 
 				_list.Add(column);
@@ -201,32 +201,14 @@ namespace DSShared.Lists
 			get { return _list.Count; }
 		}
 
-		private void colWidthChanged(CustomListColumn col, int amount)
+		private bool _lockLeftSide;
+
+		private void OnLeftChanged(CustomListColumn col, int amount)
 		{
-			_widthTable -= amount;
-
-			if (!leftChangeLock)
+			if (!_lockLeftSide && col.Index != 0
+				&& this[col.Index - 1].Width - amount >= CustomListColumn.MinWidth)
 			{
-				leftChangeLock = true;
-
-				for (int i = col.Index + 1; i < Count; ++i)
-					this[i].Left -= amount;
-
-				if (RefreshEvent != null)
-					RefreshEvent();
-
-				leftChangeLock = false;
-			}
-		}
-
-		private bool leftChangeLock = false;
-
-		private void colLeftChanged(CustomListColumn col, int amount)
-		{
-			if (!leftChangeLock && col.Index != 0
-				&& this[col.Index - 1].Width-amount >= CustomListColumn.MinWidth)
-			{
-				leftChangeLock = true;
+				_lockLeftSide = true;
 
 				this[col.Index - 1].Width -= amount;
 
@@ -240,7 +222,25 @@ namespace DSShared.Lists
 				if (RefreshEvent != null)
 					RefreshEvent();
 
-				leftChangeLock = false;
+				_lockLeftSide = false;
+			}
+		}
+
+		private void OnWidthChanged(CustomListColumn col, int amount)
+		{
+			_widthTable -= amount;
+
+			if (!_lockLeftSide)
+			{
+				_lockLeftSide = true;
+
+				for (int i = col.Index + 1; i < Count; ++i)
+					this[i].Left -= amount;
+
+				if (RefreshEvent != null)
+					RefreshEvent();
+
+				_lockLeftSide = false;
 			}
 		}
 

@@ -19,8 +19,8 @@ namespace MapView
 	/// </summary>
 	public sealed class Settings
 	{
-		private Dictionary<string, Setting> _settings;
-		private Dictionary<string, PropertyObject> _propertyObject;
+		private Dictionary<string, Setting> _dictSettings;
+		private Dictionary<string, Property> _dictPropObjects;
 
 		private static Dictionary<Type, ConvertObjectHandler> _converters;
 
@@ -35,8 +35,8 @@ namespace MapView
 
 		internal Settings()
 		{
-			_settings = new Dictionary<string, Setting>();
-			_propertyObject = new Dictionary<string, PropertyObject>();
+			_dictSettings = new Dictionary<string, Setting>();
+			_dictPropObjects = new Dictionary<string, Property>();
 
 			if (_converters == null)
 			{
@@ -73,40 +73,39 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Gets the key collection for this Settings object.
+		/// Gets the dictionary for this Settings.
 		/// </summary>
 		internal Dictionary<string, Setting>.KeyCollection Keys
 		{
-			get { return _settings.Keys; }
+			get { return _dictSettings.Keys; }
 		}
 
 		/// <summary>
-		/// Gets/Sets the Setting object tied to the input string.
+		/// Gets/Sets the Setting tied to the input string.
 		/// </summary>
 		internal Setting this[string key]
 		{
 			get
 			{
 				key = key.Replace(" ", String.Empty);
-				return (_settings.ContainsKey(key)) ? _settings[key]
-													: null;
+				return (_dictSettings.ContainsKey(key)) ? _dictSettings[key]
+														: null;
 			}
-
 			set
 			{
 				key = key.Replace(" ", String.Empty);
-				if (!_settings.ContainsKey(key))
-					_settings.Add(key, value);
+				if (!_dictSettings.ContainsKey(key))
+					_dictSettings.Add(key, value);
 				else
 				{
-					_settings[key] = value;
+					_dictSettings[key] = value;
 					value.Name = key;
 				}
 			}
 		}
 
 		/// <summary>
-		/// Adds a setting to a specified object.
+		/// Adds a Setting to a specified target.
 		/// </summary>
 		/// <param name="key">property name</param>
 		/// <param name="value">start value of the property</param>
@@ -131,14 +130,14 @@ namespace MapView
 			key = key.Replace(" ", String.Empty);
 
 			Setting setting;
-			if (!_settings.ContainsKey(key))
+			if (!_dictSettings.ContainsKey(key))
 			{
 				setting = new Setting(value, desc, category);
-				_settings[key] = setting;
+				_dictSettings[key] = setting;
 			}
 			else
 			{
-				setting = _settings[key];
+				setting = _dictSettings[key];
 				setting.Value = value;
 				setting.Description = desc;
 			}
@@ -148,7 +147,7 @@ namespace MapView
 
 			if (reflect && target != null)
 			{
-				_propertyObject[key] = new PropertyObject(target, key);
+				_dictPropObjects[key] = new Property(target, key);
 				this[key].ValueChangedEvent += OnValueChanged;
 			}
 		}
@@ -163,19 +162,19 @@ namespace MapView
 		/// <returns>the Setting object tied to the string</returns>
 		internal Setting GetSetting(string key, object value)
 		{
-			if (!_settings.ContainsKey(key))
+			if (!_dictSettings.ContainsKey(key))
 			{
 				var setting = new Setting(value, null, null);
-				_settings.Add(key, setting);
+				_dictSettings.Add(key, setting);
 				setting.Name = key;
 			}
-			return _settings[key];
+			return _dictSettings[key];
 		}
 
 		private void OnValueChanged(object sender, string key, object val)
 		{
 //			System.Windows.Forms.PropertyValueChangedEventArgs pe = (System.Windows.Forms.PropertyValueChangedEventArgs)e;
-			_propertyObject[key].SetValue(val);
+			_dictPropObjects[key].SetValue(val);
 		}
 
 		internal void Save(string line, System.IO.TextWriter sw)
@@ -183,7 +182,7 @@ namespace MapView
 			sw.WriteLine(line);
 			sw.WriteLine("{");
 
-			foreach (string key in _settings.Keys)
+			foreach (string key in _dictSettings.Keys)
 				sw.WriteLine("\t" + key + ":" + Convert(this[key].Value));
 
 			sw.WriteLine("}");
@@ -331,15 +330,15 @@ namespace MapView
 
 
 	/// <summary>
-	/// struct PropertyObject
+	/// struct Property
 	/// </summary>
-	internal struct PropertyObject
+	internal struct Property
 	{
 		private readonly PropertyInfo _info;
 		private readonly object _obj;
 
 
-		public PropertyObject(object obj, string property)
+		public Property(object obj, string property)
 		{
 			_obj  = obj;
 			_info = obj.GetType().GetProperty(property);

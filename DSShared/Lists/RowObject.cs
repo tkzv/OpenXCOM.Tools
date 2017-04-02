@@ -8,25 +8,19 @@ namespace DSShared.Lists
 	/// <summary>
 	/// Class that represents a row in a CustomList.
 	/// </summary>
-	public class ObjRow
+	public sealed class RowObject
 		:
 			IComparable
 	{
 		/// <summary>
 		/// Raised when the control needs to refresh itself.
 		/// </summary>
-		public event RefreshEventHandler RefreshEvent;
+		internal event RefreshEventHandler RefreshEvent;
 
 		/// <summary>
-		/// The object this row wraps around.
+		/// The object this row displays.
 		/// </summary>
-//		private Object _obj;
-		/// <summary>
-		/// Gets/Sets the object this row displays.
-		/// </summary>
-		/// <value>The object.</value>
-		public object Object
-		{ get; set; }
+		private readonly Object _object;
 
 
 		/// <summary>
@@ -80,14 +74,15 @@ namespace DSShared.Lists
 
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:DSShared.Lists.ObjRow"/> class.
-		/// Scanning of object should have taken place before this object is created.
+		/// Initializes a new instance of the <see cref="T:DSShared.Lists.RowObject"/>
+		/// class. Scanning of object should have taken place before this object
+		/// is created.
 		/// </summary>
 		/// <param name="obj">the object</param>
 		/// <param name="columns">the columns</param>
-		public ObjRow(object obj, CustomListColumnCollection columns)
+		private RowObject(object obj, CustomListColumnCollection columns)
 		{
-			Object = obj;
+			_object = obj;
 			_columns = columns;
 
 			if (_caretTimer == null)
@@ -100,30 +95,31 @@ namespace DSShared.Lists
 			_id = _idCanonical++;
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:DSShared.Lists.ObjRow"/> class.
+/*		/// <summary>
+		/// Initializes a new instance of the <see cref="T:DSShared.Lists.RowObject"/> class.
 		/// </summary>
 		/// <param name="obj">the obj</param>
-		public ObjRow(object obj)
+		public RowObject(object obj)
 			:
 				this(obj, null)
-		{}
+		{} */
 
 
+		// NOTE: not used but required by interface.
 		/// <summary>
 		/// Compares one row to another.
 		/// </summary>
 		/// <param name="other">The object to compare with.
-		/// Must be an ObjRow and ObjRow.Object must implement IComparable</param>
+		/// Must be an RowObject and RowObject.Object must implement IComparable</param>
 		/// <returns></returns>
 		public int CompareTo(object other)
 		{
-			var rowOther = other as ObjRow;
+			var rowOther = other as RowObject;
 			if (rowOther != null)
 			{
-				var rowThis = Object as IComparable;
+				var rowThis = _object as IComparable;
 				if (rowThis != null)
-					return rowThis.CompareTo(rowOther.Object);
+					return rowThis.CompareTo(rowOther._object);
 			}
 			return -1;
 		}
@@ -132,7 +128,7 @@ namespace DSShared.Lists
 		/// Sets the index of the row. This is its position in the list.
 		/// </summary>
 		/// <param name="id">the index of the row</param>
-		public void SetRowIndex(int id)
+		internal void SetRowIndex(int id)
 		{
 			_rowId = id;
 		}
@@ -144,12 +140,12 @@ namespace DSShared.Lists
 		/// <returns></returns>
 		public override bool Equals(object obj)
 		{
-			if (Object != null)
+			if (_object != null)
 			{
-				var obj1 = obj as ObjRow;
-				return (obj1 != null && Object.Equals(obj1.Object));
+				var obj1 = obj as RowObject;
+				return (obj1 != null && _object.Equals(obj1._object));
 			}
-			return (this == obj);
+			return (obj == this);
 		}
 
 		/// <summary>
@@ -162,10 +158,10 @@ namespace DSShared.Lists
 		/// </returns>
 		public override int GetHashCode()
 		{
-			if (Object == null) // FIX: "Non-readonly field referenced in GetHashCode()."
+			if (_object == null) // FIX: "Non-readonly field referenced in GetHashCode()."
 				return _id;
 
-			return Object.GetHashCode() >> 1;
+			return _object.GetHashCode() >> 1;
 		}
 
 		private void CaretBlink(object sender, EventArgs e)
@@ -187,8 +183,8 @@ namespace DSShared.Lists
 		} */
 
 /*		/// <summary>
-		/// Sets the width of the row. This is used for the drawing
-		/// function and should not be changed by the user.
+		/// Sets the width of the row. This is used for the drawing function and
+		/// should not be changed by the user.
 		/// </summary>
 		/// <param name="width">the width</param>
 		public void SetWidth(int width)
@@ -201,15 +197,15 @@ namespace DSShared.Lists
 		/// function and should not be changed by the user.
 		/// </summary>
 		/// <value>the height</value>
-		public int Height
+		internal int Height
 		{ get; set; }
 
 		/// <summary>
-		/// Sets the top. This is used for the drawing function and
-		/// should not be changed by the user.
+		/// Sets the top. This is used for the drawing function and should not
+		/// be changed by the user.
 		/// </summary>
 		/// <param name="top">the top</param>
-		public void SetTop(int top)
+		internal void SetTop(int top)
 		{
 			_top = top;
 		}
@@ -218,7 +214,7 @@ namespace DSShared.Lists
 		/// Sets the column collection used to pull information from the object.
 		/// </summary>
 		/// <param name="collection">the columns</param>
-		public void SetColumns(CustomListColumnCollection collection)
+		internal void SetColumns(CustomListColumnCollection collection)
 		{
 			_columns = collection;
 		}
@@ -227,7 +223,7 @@ namespace DSShared.Lists
 		/// Called when a mouse moves over the row.
 		/// </summary>
 		/// <param name="col"></param>
-		public void MouseOver(CustomListColumn col)
+		internal void MouseOver(CustomListColumn col)
 		{
 			_colSelected = col;
 		}
@@ -235,7 +231,7 @@ namespace DSShared.Lists
 		/// <summary>
 		/// Called when the mouse leaves the row's bounding rectangle.
 		/// </summary>
-		public void MouseLeave()
+		internal void MouseLeave()
 		{
 			_colSelected = null;
 		}
@@ -243,8 +239,9 @@ namespace DSShared.Lists
 		/// <summary>
 		/// Called when the mouse clicks on a row.
 		/// </summary>
-		/// <param name="col">the column the mouse was over when the button was clicked</param>
-		public void Click(CustomListColumn col)
+		/// <param name="col">the column the mouse was over when the button was
+		/// clicked</param>
+		internal void Click(CustomListColumn col)
 		{
 			_addStr = "|";
 			_caretTimer.Start();
@@ -252,17 +249,17 @@ namespace DSShared.Lists
 			_colClicked = col;
 			if (col.Property != null)
 			{
-				_editBuffer = _colClicked.Property.Value(Object).ToString();
+				_editBuffer = _colClicked.Property.GetValue(_object).ToString();
 				_editMode = true;
 			}
-			col.FireClick(this);
+			col.RowClick(this);
 		}
 
 		/// <summary>
-		/// This method is called before another row is clicked.
-		/// This is used as a 'turn off' function.
+		/// This method is called before another row is clicked. This is used as
+		/// a 'turn off' function.
 		/// </summary>
-		public void UnClick()
+		internal void ClearClick()
 		{
 			_caretTimer.Stop();
 
@@ -273,15 +270,15 @@ namespace DSShared.Lists
 				switch (_colClicked.Property.EditType)
 				{
 					case EditStrType.String:
-						_colClicked.Property.SetValue(Object, _editBuffer);
+						_colClicked.Property.SetValue(_object, _editBuffer);
 						break;
 
 					case EditStrType.Int:
-						_colClicked.Property.SetValue(Object, int.Parse(_editBuffer));
+						_colClicked.Property.SetValue(_object, int.Parse(_editBuffer));
 						break;
 
 					case EditStrType.Float:
-						_colClicked.Property.SetValue(Object, double.Parse(_editBuffer));
+						_colClicked.Property.SetValue(_object, double.Parse(_editBuffer));
 						break;
 				}
 //				}
@@ -296,13 +293,13 @@ namespace DSShared.Lists
 			_colClicked = null;
 			_addStr = String.Empty;
 
-			FireRefresh();
+			RowRefresh();
 		}
 
 		/// <summary>
 		/// Outside access to fire the refresh event.
 		/// </summary>
-		public void FireRefresh()
+		private void RowRefresh()
 		{
 			if (RefreshEvent != null)
 				RefreshEvent();
@@ -313,9 +310,9 @@ namespace DSShared.Lists
 		/// </summary>
 		/// <param name="e">The <see cref="T:System.Windows.Forms.KeyPressEventArgs"/>
 		/// instance containing the event data.</param>
-		public void KeyPress(KeyPressEventArgs e)
+		internal void RowKeyPress(KeyPressEventArgs e)
 		{
-			_colClicked.FireKeyPress(this, e);
+			_colClicked.RowKeyPress(this, e);
 
 			if (_colClicked != null && _colClicked.Property.EditType != EditStrType.None)
 			{
@@ -367,7 +364,7 @@ namespace DSShared.Lists
 		{
 //			base.OnPaint(e);
 
-			if (Object != null)
+			if (_object != null)
 			{
 				int startX = 0;
 				var rowRect = new System.Drawing.RectangleF(
@@ -404,7 +401,7 @@ namespace DSShared.Lists
 						&& _colClicked.Property.EditType == EditStrType.Custom)
 					{
 						e.Graphics.DrawString(
-										col.Property.Value(Object) + _addStr,
+										col.Property.GetValue(_object) + _addStr,
 										_columns.Font,
 										Brushes.Black,
 										rect);
@@ -415,7 +412,7 @@ namespace DSShared.Lists
 					{
 						e.Graphics.DrawString(
 										(_editMode) ? _editBuffer
-													: col.Property.Value(Object) + _addStr,
+													: col.Property.GetValue(_object) + _addStr,
 										_columns.Font,
 										Brushes.Black,
 										rect);
@@ -423,7 +420,7 @@ namespace DSShared.Lists
 					else if (col.Property != null)
 					{
 						e.Graphics.DrawString(
-										col.Property.Value(Object).ToString(),
+										col.Property.GetValue(_object).ToString(),
 										_columns.Font,
 										Brushes.Black,
 										rect);
