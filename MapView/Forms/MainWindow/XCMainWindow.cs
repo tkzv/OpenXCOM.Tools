@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
 using DSShared;
@@ -112,19 +114,29 @@ namespace MapView
 			LogFile.WriteLine("MainWindowsManager initialized");
 
 			share.AllocateObject("MapView", this);
-			share.AllocateObject(SharedSpace.AppDir,      Environment.CurrentDirectory);
-			share.AllocateObject(SharedSpace.SettingsDir, Environment.CurrentDirectory + @"\settings");
+			share.AllocateObject(
+							SharedSpace.ApplicationDirectory,
+							Environment.CurrentDirectory);
+
+			string dir = share.AllocateObject(
+										SharedSpace.SettingsDirectory,
+										Environment.CurrentDirectory + @"\settings")
+									.ToString();
 
 			// I think this is needed only for PckView. so I'll assume '_PckView' can handle it.
-//			share.AllocateObject(SharedSpace.CustomDir, Environment.CurrentDirectory + @"\custom");
+//			share.AllocateObject(SharedSpace.CustomDirectory, Environment.CurrentDirectory + @"\custom");
 
 			LogFile.WriteLine("Environment set");
 
-			var dir = SharedSpace.Instance.GetString(SharedSpace.SettingsDir);
+//			string dir = SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory);
+			var infoViewers  = new PathInfo(dir, "MapViewers", "ini");
+
 			var infoSettings = new PathInfo(dir, "MVSettings", "cfg");
 			var infoPaths    = new PathInfo(dir, "Paths",      "cfg");
 			var infoMapEdit  = new PathInfo(dir, "MapEdit",    "cfg");
 			var infoImages   = new PathInfo(dir, "Images",     "cfg");
+
+			share.AllocateObject(PathInfo.MapViewers, infoViewers);
 
 			share.AllocateObject(SettingsService.SettingsFile, infoSettings);
 			share.AllocateObject(PathInfo.PathsFile,           infoPaths);
@@ -132,6 +144,11 @@ namespace MapView
 			share.AllocateObject(PathInfo.ImagesFile,          infoImages);
 			LogFile.WriteLine("Paths set");
 			#endregion
+
+
+			if (!infoViewers.FileExists())
+				CreateIni();
+
 
 
 			if (!infoPaths.FileExists()) // check if Paths.cfg exists yet
@@ -227,10 +244,10 @@ namespace MapView
 			// There are no currently loadable maps in this assembly so this is more for future use
 //			loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(XCom.Interfaces.Base.IMapDesc)));
 
-//			if (Directory.Exists(sharedSpace[SharedSpace.CustomDir].ToString()))
+//			if (Directory.Exists(sharedSpace[SharedSpace.CustomDirectory].ToString()))
 //			{
-//				xConsole.AddLine("Custom directory exists: " + sharedSpace[SharedSpace.CustomDir].ToString());
-//				foreach (string s in Directory.GetFiles(sharedSpace[SharedSpace.CustomDir].ToString()))
+//				xConsole.AddLine("Custom directory exists: " + sharedSpace[SharedSpace.CustomDirectory].ToString());
+//				foreach (string s in Directory.GetFiles(sharedSpace[SharedSpace.CustomDirectory].ToString()))
 //					if (s.EndsWith(".dll"))
 //					{
 //						xConsole.AddLine("Loading dll: " + s);
@@ -842,6 +859,56 @@ namespace MapView
 											System.Globalization.CultureInfo.CurrentCulture,
 											"c:{0} r:{1}",
 											col, row);
+		}
+
+
+
+		private Varidia _vars;
+
+		/// <summary>
+		/// Based on InstallWindow.
+		/// </summary>
+		private void CreateIni()
+		{
+			_vars = new Varidia();
+			_vars["##RunPath##"] = SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory);
+
+			var info = (PathInfo)SharedSpace.Instance[PathInfo.MapViewers];
+			info.CreateDirectory();
+
+			string pfeViewers = info.FullPath;
+
+			// Create MapViewers.Ini, will overwrite the file if it exists.
+			using (var fs = new FileStream(pfeViewers, FileMode.Create))
+			{}
+
+			using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
+													 .GetManifestResourceStream("MapView._Embedded.MapViewers.ini")))
+			using (var fs = new FileStream(pfeViewers, FileMode.Append))
+			using (var sw = new StreamWriter(fs))
+			{
+				Write(sr, sw); // write default window size and positions to MapViewers.Ini
+				sw.WriteLine();
+			}
+		}
+
+		/// <summary>
+		/// Lifted from InstallWindow.
+		/// </summary>
+		/// <param name="sr"></param>
+		/// <param name="sw"></param>
+		private void Write(TextReader sr, TextWriter sw)
+		{
+			string line;
+			while (sr.Peek() != -1)
+			{
+				line = sr.ReadLine();
+				if (line.IndexOf('#') > 0)
+					foreach (string val in _vars.Variables)
+						line = line.Replace(val, _vars[val]);
+
+				sw.WriteLine(line);
+			}
 		}
 	}
 }

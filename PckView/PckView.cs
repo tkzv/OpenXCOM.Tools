@@ -71,13 +71,13 @@ namespace PckView
 
 			_share = SharedSpace.Instance;
 			_share.AllocateObject("PckView", this);
-			_share.AllocateObject(SharedSpace.AppDir,      Environment.CurrentDirectory);
-			_share.AllocateObject(SharedSpace.SettingsDir, Environment.CurrentDirectory + @"\settings");
-			_share.AllocateObject(SharedSpace.CustomDir,   Environment.CurrentDirectory + @"\custom");
+			_share.AllocateObject(SharedSpace.ApplicationDirectory,      Environment.CurrentDirectory);
+			_share.AllocateObject(SharedSpace.SettingsDirectory, Environment.CurrentDirectory + @"\settings");
+			_share.AllocateObject(SharedSpace.CustomDirectory,   Environment.CurrentDirectory + @"\custom");
 		
-			XConsole.AdZerg("Current directory: "  + _share[SharedSpace.AppDir]);					// TODO: I don't trust that since changing SharedSpace.
-			XConsole.AdZerg("Settings directory: " + _share[SharedSpace.SettingsDir].ToString());	// it may well need an explicit cast to (PathInfo)
-			XConsole.AdZerg("Custom directory: "   + _share[SharedSpace.CustomDir].ToString());
+			XConsole.AdZerg("Current directory: "  + _share[SharedSpace.ApplicationDirectory]);					// TODO: I don't trust that since changing SharedSpace.
+			XConsole.AdZerg("Settings directory: " + _share[SharedSpace.SettingsDirectory].ToString());	// it may well need an explicit cast to (PathInfo)
+			XConsole.AdZerg("Custom directory: "   + _share[SharedSpace.CustomDirectory].ToString());
 			#endregion
 
 			_totalViewPck = new TotalViewPck();
@@ -130,7 +130,7 @@ namespace PckView
 			_loadedTypes.LoadFrom(Assembly.GetExecutingAssembly());
 			_loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(IXCImageFile)));
 
-			string dir = _share[SharedSpace.CustomDir].ToString();	// TODO: I don't trust that since changing SharedSpace.
+			string dir = _share[SharedSpace.CustomDirectory].ToString();	// TODO: I don't trust that since changing SharedSpace.
 			if (Directory.Exists(dir))								// it may well need an explicit cast to (PathInfo)
 			{
 				XConsole.AdZerg("Custom directory exists: " + dir);

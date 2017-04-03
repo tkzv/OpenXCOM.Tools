@@ -63,7 +63,7 @@ namespace XCom
 				}
 			}
 
-			Directory.SetCurrentDirectory(SharedSpace.Instance.GetString(SharedSpace.AppDir)); // change back to app dir
+			Directory.SetCurrentDirectory(SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory)); // change back to app dir
 		}
 
 		public static ImageInfo ImageInfo

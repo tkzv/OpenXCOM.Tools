@@ -136,12 +136,15 @@ namespace MapView
 				var info = (PathInfo)SharedSpace.Instance[PathInfo.PathsFile];
 				info.CreateDirectory();
 
-				((PathInfo)SharedSpace.Instance[PathInfo.MapEditFile]).CreateDirectory();
-				((PathInfo)SharedSpace.Instance[PathInfo.ImagesFile]).CreateDirectory();
+				var infoTerrains = (PathInfo)SharedSpace.Instance[PathInfo.MapEditFile];
+				var infoImages   = (PathInfo)SharedSpace.Instance[PathInfo.ImagesFile];
+
+				infoTerrains.CreateDirectory();
+				infoImages.CreateDirectory();
 
 				// 'pfe' = path+file+extension
-				string pfeMapEdit = ((PathInfo)SharedSpace.Instance[PathInfo.MapEditFile]).FullPath;
-				string pfeImages  = ((PathInfo)SharedSpace.Instance[PathInfo.ImagesFile]).FullPath;
+				string pfeTerrains = infoTerrains.FullPath;
+				string pfeImages   = infoImages.FullPath;
 
 				using (var sw = new StreamWriter(new FileStream(info.FullPath, FileMode.Create))) // NOTE: will overwrite Path.cfg if it exists.
 				{
@@ -150,7 +153,7 @@ namespace MapView
 					sw.WriteLine("${tftd}:" + ((!String.IsNullOrEmpty(tbTftd.Text)) ? tbTftd.Text
 																					: String.Empty));
 
-					sw.WriteLine("mapdata:" + pfeMapEdit);
+					sw.WriteLine("mapdata:" + pfeTerrains);
 					sw.WriteLine("images:"  + pfeImages);
 
 					sw.WriteLine("useBlanks:false");
@@ -190,9 +193,9 @@ namespace MapView
 //				_vars["##imgUFO##"]  = txtUFO.Text  + @"\TERRAIN\";
 //				_vars["##imgTFTD##"] = txtTFTD.Text + @"\TERRAIN\";
 
-				_vars["##RunPath##"] = SharedSpace.Instance.GetString(SharedSpace.AppDir);
+				_vars["##RunPath##"] = SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory);
 
-				using (var fs = new FileStream(pfeMapEdit, FileMode.Create))	// create MapEdit.Cfg
+				using (var fs = new FileStream(pfeTerrains, FileMode.Create))	// create MapEdit.Cfg
 				{}
 
 				using (var fs = new FileStream(pfeImages, FileMode.Create))		// create Images.Cfg
@@ -202,7 +205,7 @@ namespace MapView
 				{
 					using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
 													.GetManifestResourceStream("MapView._Embedded.MapEditUFO.cfg")))
-					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
+					using (var fs = new FileStream(pfeTerrains, FileMode.Append))
 					using (var sw = new StreamWriter(fs))
 						Write(sr, sw); // write UFO data to MapEdit.Cfg
 
@@ -217,7 +220,7 @@ namespace MapView
 				{
 					using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
 													.GetManifestResourceStream("MapView._Embedded.MapEditTFTD.cfg")))
-					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
+					using (var fs = new FileStream(pfeTerrains, FileMode.Append))
 					using (var sw = new StreamWriter(fs))
 					{
 						Write(sr, sw); // write TFTD data to MapEdit.Cfg
@@ -261,7 +264,6 @@ namespace MapView
 						line = line.Replace(val, _vars[val]);
 
 				sw.WriteLine(line);
-
 			}
 		}
 

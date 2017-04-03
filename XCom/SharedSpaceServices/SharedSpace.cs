@@ -11,12 +11,12 @@ namespace XCom
 
 		private readonly Dictionary<string, object> _share;
 
-		public const string AppDir      = "AppDir";
-		public const string SettingsDir = "SettingsDir";
+		public const string ApplicationDirectory = "ApplicationDirectory";
+		public const string SettingsDirectory    = "SettingsDirectory";
 
-		public const string CustomDir   = "CustomDir"; // for PckView ->
-		public const string Palettes    = "Palettes";
-		public const string ImageTypes  = "ImageTypes";
+		public const string CustomDirectory   = "CustomDirectory"; // for PckView ->
+		public const string Palettes          = "Palettes";
+		public const string ImageTypes        = "ImageTypes";
 
 		public const string CursorFile  = "cursorFile";
 		public const string Cursor      = "CURSOR";
