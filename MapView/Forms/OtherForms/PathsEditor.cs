@@ -323,9 +323,11 @@ namespace MapView
 		{
 			_saveRegistry = false;
 
-			var keySoftware = Registry.CurrentUser.OpenSubKey(DSShared.Windows.RegistryInfo.Software, true);
-			keySoftware.DeleteSubKeyTree("MapView");
-			keySoftware.Close();
+			using (var keySoftware = Registry.CurrentUser.OpenSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry, true))
+			{
+				keySoftware.DeleteSubKeyTree(DSShared.Windows.RegistryInfo.MapViewRegistry);
+				keySoftware.Close();
+			}
 		}
 
 		private void btnPathsMaps_Click(object sender, EventArgs e)

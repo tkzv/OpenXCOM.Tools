@@ -59,10 +59,10 @@ namespace MapView
 		public virtual void LoadDefaultSettings()
 		{}
 
-		protected virtual void OnRegistrySettingsSave(RegistryEventArgs e)
+		protected virtual void OnRegistrySettingsLoad(RegistryEventArgs e)
 		{}
 
-		protected virtual void OnRegistrySettingsLoad(RegistryEventArgs e)
+		protected virtual void OnRegistrySettingsSave(RegistryEventArgs e)
 		{}
 
 		/// <summary>
@@ -76,12 +76,12 @@ namespace MapView
 			else if (e.Delta > 0) _baseMap.Down();
 		}
 
-		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
+		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			Refresh();
 		}
 
-		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
+		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
 			Refresh();
 		}

@@ -419,22 +419,27 @@ namespace MapView
 
 				if (PathsEditor.SaveRegistry)
 				{
-					var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.Software);
-					var keyMapView  = keySoftware.CreateSubKey("MapView");
-					var keyMainView = keyMapView.CreateSubKey("MainView");
+					using (var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry))
+					{
+						using (var keyMapView = keySoftware.CreateSubKey(DSShared.Windows.RegistryInfo.MapViewRegistry))
+						{
+							using (var keyMainView = keyMapView.CreateSubKey("MainView"))
+							{
+								_mainViewsManager.CloseAllViews();
 
-					_mainViewsManager.CloseAllViews();
+								WindowState = FormWindowState.Normal;
 
-					WindowState = FormWindowState.Normal;
+								keyMainView.SetValue("Left", Left);
+								keyMainView.SetValue("Top", Top);
+								keyMainView.SetValue("Width", Width);
+								keyMainView.SetValue("Height", Height - SystemInformation.CaptionButtonSize.Height);
 
-					keyMainView.SetValue("Left",   Left);
-					keyMainView.SetValue("Top",    Top);
-					keyMainView.SetValue("Width",  Width);
-					keyMainView.SetValue("Height", Height - SystemInformation.CaptionButtonSize.Height);
-
-					keyMainView.Close();
-					keyMapView.Close();
-					keySoftware.Close();
+								keyMainView.Close();
+							}
+							keyMapView.Close();
+						}
+						keySoftware.Close();
+					}
 				}
 
 				_settingsManager.Save(); // save MV_SettingsFile // TODO: Save settings when closing the Options form(s).
@@ -443,18 +448,23 @@ namespace MapView
 
 		private void LoadDefaults()
 		{
-			var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.Software);
-			var keyMapView  = keySoftware.CreateSubKey("MapView");
-			var keyMainView = keyMapView.CreateSubKey("MainView");
+			using (var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry))
+			{
+				using (var keyMapView = keySoftware.CreateSubKey(DSShared.Windows.RegistryInfo.MapViewRegistry))
+				{
+					using (var keyMainView = keyMapView.CreateSubKey("MainView"))
+					{
+						Left   = (int)keyMainView.GetValue("Left",   Left);
+						Top    = (int)keyMainView.GetValue("Top",    Top);
+						Width  = (int)keyMainView.GetValue("Width",  Width);
+						Height = (int)keyMainView.GetValue("Height", Height);
 
-			Left   = (int)keyMainView.GetValue("Left",   Left);
-			Top    = (int)keyMainView.GetValue("Top",    Top);
-			Width  = (int)keyMainView.GetValue("Width",  Width);
-			Height = (int)keyMainView.GetValue("Height", Height);
-
-			keyMainView.Close();
-			keyMapView.Close();
-			keySoftware.Close();
+						keyMainView.Close();
+					}
+					keyMapView.Close();
+				}
+				keySoftware.Close();
+			}
 
 			var settings = new Settings();
 

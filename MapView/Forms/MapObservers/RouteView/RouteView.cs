@@ -426,7 +426,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
-			Text = string.Format(
+			Text = String.Format(
 							System.Globalization.CultureInfo.InvariantCulture,
 							"Position{0}c:{1} r:{2}",
 							Environment.NewLine, e.MapPosition.Col, e.MapPosition.Row);

@@ -180,17 +180,17 @@ namespace MapView.Forms.MapObservers.TopViews
 			return end;
 		}
 
-		[Browsable(false), DefaultValue(null)] // NOTE: DefaultValue has meaning only for the designer. Fortunately the default value of the class variable *is* null.
+		[Browsable(false), DefaultValue(null)]
 		public Dictionary<string, SolidBrush> Brushes
 		{ get; set; }
 
-		[Browsable(false), DefaultValue(null)] // NOTE: DefaultValue has meaning only for the designer. Fortunately the default value of the class variable *is* null.
+		[Browsable(false), DefaultValue(null)]
 		public Dictionary<string, Pen> Pens
 		{ get; set; }
 
 		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
-			MapLocation pt = e.MapPosition;
+			var pt = e.MapPosition;
 //			Text = "c: " + pt.Col + " r: " + pt.Row; // I don't think this actually prints anywhere.
 
 			var hWidth  = _drawService.HalfWidth;

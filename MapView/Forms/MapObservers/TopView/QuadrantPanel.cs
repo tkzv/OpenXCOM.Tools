@@ -111,17 +111,17 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh();
 		}
 
-		public override void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
-		{
-			_location.Height = e.NewHeight;
-			_mapTile = Map[_location.Row, _location.Col] as XCMapTile;
-			Refresh();
-		}
-
 		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			_mapTile = (XCMapTile)e.SelectedTile;
 			_location = e.MapPosition;
+			Refresh();
+		}
+
+		public override void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
+		{
+			_location.Height = e.NewHeight;
+			_mapTile = Map[_location.Row, _location.Col] as XCMapTile;
 			Refresh();
 		}
 

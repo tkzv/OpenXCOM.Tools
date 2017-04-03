@@ -24,8 +24,8 @@ namespace DSShared.Windows
 	/// </summary>
 	public class RegistryInfo
 	{
-		public const string Software  = "Software";
-		private const string DSShared = "DSShared";
+		public const string SoftwareRegistry = "Software";
+		public const string MapViewRegistry  = "MapView";
 
 		private readonly object _obj;
 		private readonly string _regkey;
@@ -92,8 +92,7 @@ namespace DSShared.Windows
 			PropertyInfo info;
 			foreach (string key in keys)
 			{
-				info = type.GetProperty(key);
-				if (info != null) // kL_add
+				if ((info = type.GetProperty(key)) != null)
 					_dictInfo[info.Name] = info;
 			}
 		}
@@ -106,23 +105,24 @@ namespace DSShared.Windows
 		/// <param name="e"></param>
 		private void OnLoad(object sender, EventArgs e)
 		{
-			RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey(Software);
-			RegistryKey keyDSShared = keySoftware.CreateSubKey(DSShared);
-			RegistryKey regkey      = keyDSShared.CreateSubKey(_regkey);
+			using (RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey(SoftwareRegistry))
+			{
+				using (RegistryKey keyDSShared = keySoftware.CreateSubKey(MapViewRegistry))
+				{
+					using (RegistryKey regkey = keyDSShared.CreateSubKey(_regkey))
+					{
+						foreach (string key in _dictInfo.Keys)
+							_dictInfo[key].SetValue(_obj, regkey.GetValue(key, _dictInfo[key].GetValue(_obj, null)), null);
 
-			foreach (string key in _dictInfo.Keys)
-				_dictInfo[key].SetValue(
-									_obj,
-									regkey.GetValue(key, _dictInfo[key].GetValue(_obj, null)),
-									null);
+						if (RegistryLoadEvent != null)
+							RegistryLoadEvent(this, new RegistryEventArgs(regkey));
 
-			if (RegistryLoadEvent != null)
-				RegistryLoadEvent(this, new RegistryEventArgs(regkey));
-
-			regkey.Close();
-
-			keyDSShared.Close();
-			keySoftware.Close();
+						regkey.Close();
+					}
+					keyDSShared.Close();
+				}
+				keySoftware.Close();
+			}
 		}
 
 		/// <summary>
@@ -134,27 +134,31 @@ namespace DSShared.Windows
 		{
 			var f = _obj as Form;
 			if (f != null)
+			{
 				f.WindowState = FormWindowState.Normal;
 
-//			if (_saveOnClose)
-//			{
-			RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey(Software);
-			RegistryKey keyDSShared = keySoftware.CreateSubKey(DSShared);
-			RegistryKey regkey      = keyDSShared.CreateSubKey(_regkey);
+//				if (_saveOnClose)
+//				{
+				using (RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey(SoftwareRegistry))
+				{
+					using (RegistryKey keyDSShared = keySoftware.CreateSubKey(MapViewRegistry))
+					{
+						using (RegistryKey regkey = keyDSShared.CreateSubKey(_regkey))
+						{
+							foreach (string key in _dictInfo.Keys)
+								regkey.SetValue(key, _dictInfo[key].GetValue(_obj, null));
 
-			foreach (string key in _dictInfo.Keys)
-				regkey.SetValue(
-							key,
-							_dictInfo[key].GetValue(_obj, null));
+							if (RegistrySaveEvent != null)
+								RegistrySaveEvent(this, new RegistryEventArgs(regkey));
 
-			if (RegistrySaveEvent != null)
-				RegistrySaveEvent(this, new RegistryEventArgs(regkey));
-
-			regkey.Close();
-
-			keyDSShared.Close();
-			keySoftware.Close();
-//			}
+							regkey.Close();
+						}
+						keyDSShared.Close();
+					}
+					keySoftware.Close();
+				}
+//				}
+			}
 		}
 
 		// TODO: Vet the PathsEditor button that clears registry keys.

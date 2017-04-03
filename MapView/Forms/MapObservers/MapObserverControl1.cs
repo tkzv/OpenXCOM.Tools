@@ -18,18 +18,18 @@ namespace MapView
 
 		private RegistryInfo _regInfo;
 
-		private readonly Dictionary<string, IMapObserver> moreObservers;
+		private readonly Dictionary<string, IMapObserver> _moreObservers;
 
 
 		public MapObserverControl1()
 		{
-			moreObservers = new Dictionary<string, IMapObserver>();
+			_moreObservers = new Dictionary<string, IMapObserver>();
 		}
 
 
 		#region IMapObserver Members
 
-		[Browsable(false), DefaultValue(null)] // DefaultValue *cough
+		[Browsable(false), DefaultValue(null)]
 		public virtual IMapBase Map
 		{
 			get { return _baseMap; }
@@ -40,38 +40,38 @@ namespace MapView
 			}
 		}
 
-		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
-		{
-			Refresh();
-		}
-
 		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			Refresh();
 		}
 
-		[Browsable(false), DefaultValue(null)]	// "A DefaultValueAttribute will not cause a member to be automatically initialized
-		public RegistryInfo RegistryInfo		// with the attribute's value. You must set the initial value in your code."
+		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
+		{
+			Refresh();
+		}
+
+		[Browsable(false), DefaultValue(null)]
+		public RegistryInfo RegistryInfo
 		{
 			get { return _regInfo; }
 			set
 			{
 				_regInfo = value;
 				value.RegistryLoadEvent += (sender, e) => OnRegistrySettingsLoad(e);
-				value.RegistrySaveEvent  += (sender, e) => OnRegistrySettingsSave(e);
+				value.RegistrySaveEvent += (sender, e) => OnRegistrySettingsSave(e);
 			}
 		}
 
-		protected virtual void OnRegistrySettingsSave(RegistryEventArgs e)
+		protected virtual void OnRegistrySettingsLoad(RegistryEventArgs e)
 		{}
 
-		protected virtual void OnRegistrySettingsLoad(RegistryEventArgs e)
+		protected virtual void OnRegistrySettingsSave(RegistryEventArgs e)
 		{}
 
 		[Browsable(false)]
 		public Dictionary<string, IMapObserver> MoreObservers
 		{
-			get { return moreObservers; }
+			get { return _moreObservers; }
 		}
 
 		#endregion
