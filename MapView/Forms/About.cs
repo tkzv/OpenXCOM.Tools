@@ -31,9 +31,20 @@ namespace MapView
 			lblVersion.Text += Environment.NewLine + Environment.NewLine + "2017";
 		}
 
+		private Point _locBase;
 		private Point _loc;
-		private bool _moving;
+		private Size _size;
 		private double _lastPoint;
+
+		private void OnShown(object sender, EventArgs e)
+		{
+			_size = new Size(Width, Height);
+
+			_locBase =
+			_loc     = Location;
+
+			MoveWindow();
+		}
 
 		private void OnTick(object sender, EventArgs e)
 		{
@@ -42,43 +53,36 @@ namespace MapView
 
 		private void MoveWindow()
 		{
-			try
+			_loc = GetLocationStep(_lastPoint += 0.035);
+
+			bool IsInsideBounds = false;
+			foreach (var screen in Screen.AllScreens)
 			{
-				MoveTimer.Interval = 1000;
-				_moving = true;
-				Location = GetLocation(_lastPoint += 0.035);
+				IsInsideBounds = screen.Bounds.Contains(_loc)
+							  && screen.Bounds.Contains(_loc + _size);
+
+				if (IsInsideBounds)
+					break;
 			}
-			finally
-			{
-				_moving = false;
-			}
+
+			if (!IsInsideBounds)
+				_loc = _locBase;
+
+			Location = _loc;
 		}
 
-		private Point GetLocation(double delta)
+		private void OnLocationChanged(object sender, EventArgs e)
+		{
+			var locPre = new Size(GetLocationStep(_lastPoint));
+			_loc += new Size(Location - locPre);
+		}
+
+		private Point GetLocationStep(double delta)
 		{
 			var loc = Location;
 			loc.X = (int)(_loc.X + (Math.Sin(delta) * 50));
 			loc.Y = (int)(_loc.Y + (Math.Cos(delta) * 50));
 			return loc;
-		}
-
-		private void OnLocationChanged(object sender, EventArgs e)
-		{
-			if (!_moving)
-			{
-				var locationBeforeMove = new Size(GetLocation(_lastPoint));
-				var distance = new Size(Location - locationBeforeMove);
-				_loc += distance;
-
-				MoveTimer.Interval = 1000;
-				MoveTimer.Enabled = true;
-			}
-		}
-
-		private void OnShown(object sender, EventArgs e)
-		{
-			_loc = Location;
-			MoveWindow();
 		}
 
 		private void OnKeyDown(object sender, KeyEventArgs e)

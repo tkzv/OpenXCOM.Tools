@@ -39,7 +39,7 @@ namespace MapView
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(5, 80);
+			this.label1.Location = new System.Drawing.Point(5, 75);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(305, 15);
 			this.label1.TabIndex = 0;
@@ -48,7 +48,7 @@ namespace MapView
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(5, 95);
+			this.label2.Location = new System.Drawing.Point(5, 90);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(305, 15);
 			this.label2.TabIndex = 1;
@@ -59,13 +59,13 @@ namespace MapView
 			// 
 			this.lblVersion.Location = new System.Drawing.Point(5, 10);
 			this.lblVersion.Name = "lblVersion";
-			this.lblVersion.Size = new System.Drawing.Size(305, 60);
+			this.lblVersion.Size = new System.Drawing.Size(305, 55);
 			this.lblVersion.TabIndex = 2;
 			this.lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(5, 135);
+			this.label3.Location = new System.Drawing.Point(5, 130);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(305, 15);
 			this.label3.TabIndex = 3;
@@ -80,7 +80,7 @@ namespace MapView
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(5, 150);
+			this.label4.Location = new System.Drawing.Point(5, 145);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(305, 15);
 			this.label4.TabIndex = 3;
@@ -89,14 +89,14 @@ namespace MapView
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(5, 120);
+			this.label5.Location = new System.Drawing.Point(5, 115);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(305, 15);
 			this.label5.TabIndex = 4;
 			this.label5.Text = "REVISED - pmprog";
 			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// AboutWindow
+			// About
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(314, 176);
@@ -112,7 +112,7 @@ namespace MapView
 			this.MaximumSize = new System.Drawing.Size(320, 200);
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(320, 200);
-			this.Name = "AboutWindow";
+			this.Name = "About";
 			this.ShowIcon = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
