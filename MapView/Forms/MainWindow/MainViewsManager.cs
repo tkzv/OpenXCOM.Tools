@@ -9,19 +9,11 @@ using XCom;
 
 namespace MapView.Forms.MainWindow
 {
-	internal interface IMainViewsManager
-	{
-		void ManageViews();
-		void CloseAllViews();
-	}
-
-
 	internal sealed class MainViewsManager
-		:
-			IMainViewsManager
 	{
-		private readonly SettingsManager _settingsManager;
+		private readonly SettingsManager    _settingsManager;
 		private readonly ConsoleSharedSpace _consoleShare;
+
 		private readonly Dictionary<string, Form> _dictForms;
 
 
@@ -46,20 +38,20 @@ namespace MapView.Forms.MainWindow
 			MainWindowsManager.TopRouteView.TopViewControl.LoadDefaultSettings();
 			MainWindowsManager.TopRouteView.RouteViewControl.LoadDefaultSettings();
 
-			SetViewToObserver(MainWindowsManager.TopView,      "Top View",   "TopView");
-			SetViewToObserver(MainWindowsManager.RouteView,    "Route View", "RouteView");
-			SetViewToObserver(MainWindowsManager.TopRouteView, "TopRoute View");
-			SetViewToObserver(MainWindowsManager.TileView,     "Tile View",  "TileView");
+			SetViewToObserver(MainWindowsManager.TopView,      "Top View",      "TopView");
+			SetViewToObserver(MainWindowsManager.RouteView,    "Route View",    "RouteView");
+			SetViewToObserver(MainWindowsManager.TopRouteView, "TopRoute View", "TopRouteView");
+			SetViewToObserver(MainWindowsManager.TileView,     "Tile View",     "TileView");
 
-			SetViewToObserver(_consoleShare.GetNewConsole(), "Console");
+			SetViewToObserver(_consoleShare.GetNewConsole(), "Console", "Console");
 
 			SetViewToObserver(MainWindowsManager.HelpScreen,  "Quick Help");
 			SetViewToObserver(MainWindowsManager.AboutWindow, "About");
 
-			MainWindowsManager.TopRouteView.TopViewControl.RegistryInfo = // TODO: check if this should really be registered.
+			MainWindowsManager.TopRouteView.TopViewControl.RegistryInfo =
 				MainWindowsManager.TopView.Control.RegistryInfo;
 
-			MainWindowsManager.TopRouteView.RouteViewControl.RegistryInfo = // TODO: check if this should really be registered.
+			MainWindowsManager.TopRouteView.RouteViewControl.RegistryInfo =
 				MainWindowsManager.RouteView.RouteViewControl.RegistryInfo;
 		}
 

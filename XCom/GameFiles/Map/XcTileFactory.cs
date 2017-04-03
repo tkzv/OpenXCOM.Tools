@@ -7,8 +7,6 @@ using XCom.Interfaces;
 namespace XCom.GameFiles.Map
 {
 	public class XCTileFactory
-		:
-			IWarningNotifier
 	{
 		internal XCTile[] CreateTiles(
 				string baseName,
@@ -83,8 +81,8 @@ namespace XCom.GameFiles.Map
 										index,
 										record.Alt_MCD,
 										tiles.Length,
-										baseName));
-			}
+										baseName));	// you've got to be kidding me ... yah you were, haha you got me yep.
+			}										// I'll remove the rest of this shenanigan later.
 			return null;
 		}
 

@@ -16,7 +16,7 @@ namespace PckView
 		{
 			InitializeComponent();
 
-			var ri = new DSShared.Windows.RegistryInfo(this);
+			var regInfo = new DSShared.Windows.RegistryInfo(this, "Mod");
 		}
 
 		public XCom.SharedSpace SharedSpace

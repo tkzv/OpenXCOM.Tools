@@ -121,7 +121,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			SetSelectionRect();
 		}
 
-		protected void ViewDrag(object sender, EventArgs e)
+		protected void OnViewDrag(object sender, EventArgs e)
 		{
 			SetSelectionRect();
 		}
@@ -211,7 +211,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					xc - hWidth, yc + hHeight);
 			_sel.CloseFigure();
 
-			ViewDrag(null, null);
+			OnViewDrag(null, null);
 
 			Refresh();
 		}
@@ -319,7 +319,7 @@ namespace MapView.Forms.MapObservers.TopViews
 						(int)Math.Floor(x2));
 		}
 
-		private bool _mDown = false;
+		private bool _mDown;
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{

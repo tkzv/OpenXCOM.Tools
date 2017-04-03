@@ -902,7 +902,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void OnExtraHeightChanged(object sender, EventArgs e)
+		private void OnExtraHeightChanged(object sender, EventArgs e) // NOTE: is disabled w/ Visible=FALSE in designer.
 		{
 			byte bite;
 			if (byte.TryParse(

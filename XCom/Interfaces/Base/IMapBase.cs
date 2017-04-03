@@ -9,6 +9,7 @@ using XCom.Services;
 namespace XCom.Interfaces.Base
 {
 	public delegate void HeightChangedEventHandler(IMapBase sender, HeightChangedEventArgs e);
+
 	public delegate void SelectedTileChangedEventHandler(IMapBase sender, SelectedTileChangedEventArgs e);
 
 

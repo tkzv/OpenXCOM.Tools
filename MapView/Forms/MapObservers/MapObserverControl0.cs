@@ -35,7 +35,7 @@ namespace MapView
 			{
 				_regInfo = value;
 				value.RegistryLoadEvent += (sender, e) => OnRegistrySettingsLoad(e);
-				value.RegistrySaveEvent  += (sender, e) => OnRegistrySettingsSave(e);
+				value.RegistrySaveEvent += (sender, e) => OnRegistrySettingsSave(e);
 			}
 		}
 

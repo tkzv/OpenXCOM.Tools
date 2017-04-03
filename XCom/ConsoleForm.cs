@@ -15,15 +15,15 @@ namespace XCom
 			InitializeComponent();
 
 			XConsole.Init(100);
-			XConsole.BufferChanged += xConsole_BufferChanged; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			XConsole.BufferChanged += OnBufferChanged; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
-			var regInfo = new RegistryInfo(this); // <- looks like this writes some registry entries ....
+			var regInfo = new RegistryInfo(this, "Console"); // <- looks like this writes some registry entries ....
 
 			SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
 		}
 
 
-		private void xConsole_BufferChanged(Zerg zerg)
+		private void OnBufferChanged(Zerg zerg)
 		{
 			string buffer = zerg.ZergBull + Environment.NewLine;
 			Zerg zerg1 = zerg.Post;
@@ -33,12 +33,12 @@ namespace XCom
 				buffer += zerg1.ZergBull + Environment.NewLine;
 				zerg1 = zerg1.Post;
 			}
-			consoleText.Text = buffer;
+			rtbConsole.Text = buffer;
 
 			Refresh();
 		}
 
-		private void miClose_Click(object sender, EventArgs e)
+		private void OnCloseClick(object sender, EventArgs e)
 		{
 			Close();
 		}

@@ -54,7 +54,6 @@ namespace MapView
 				mapView.Map = _mapView.Map;
 				Controls.Remove(_mapView);
 			}
-
 			_mapView = mapView;
 
 			_mapView.Location = new Point(0, 0);

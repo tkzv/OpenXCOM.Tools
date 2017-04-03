@@ -27,61 +27,61 @@ namespace XCom
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.consoleText = new System.Windows.Forms.RichTextBox();
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.rtbConsole = new System.Windows.Forms.RichTextBox();
+			this.msMenuStrip = new System.Windows.Forms.MenuStrip();
+			this.tsmiFile = new System.Windows.Forms.ToolStripMenuItem();
 			this.miClose = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuStrip1.SuspendLayout();
+			this.msMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// consoleText
+			// rtbConsole
 			// 
-			this.consoleText.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.consoleText.Location = new System.Drawing.Point(0, 24);
-			this.consoleText.Name = "consoleText";
-			this.consoleText.Size = new System.Drawing.Size(492, 250);
-			this.consoleText.TabIndex = 0;
-			this.consoleText.Text = "";
+			this.rtbConsole.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.rtbConsole.Location = new System.Drawing.Point(0, 24);
+			this.rtbConsole.Name = "rtbConsole";
+			this.rtbConsole.Size = new System.Drawing.Size(492, 250);
+			this.rtbConsole.TabIndex = 0;
+			this.rtbConsole.Text = "";
 			// 
-			// menuStrip1
+			// msMenuStrip
 			// 
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.fileToolStripMenuItem});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(492, 24);
-			this.menuStrip1.TabIndex = 1;
-			this.menuStrip1.Text = "menuStrip1";
+			this.msMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.tsmiFile});
+			this.msMenuStrip.Location = new System.Drawing.Point(0, 0);
+			this.msMenuStrip.Name = "msMenuStrip";
+			this.msMenuStrip.Size = new System.Drawing.Size(492, 24);
+			this.msMenuStrip.TabIndex = 1;
+			this.msMenuStrip.Text = "menuStrip1";
 			// 
-			// fileToolStripMenuItem
+			// tsmiFile
 			// 
-			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.tsmiFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.miClose});
-			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
-			this.fileToolStripMenuItem.Text = "File";
+			this.tsmiFile.Name = "tsmiFile";
+			this.tsmiFile.Size = new System.Drawing.Size(47, 20);
+			this.tsmiFile.Text = "File";
 			// 
 			// miClose
 			// 
 			this.miClose.Name = "miClose";
-			this.miClose.Size = new System.Drawing.Size(109, 22);
+			this.miClose.Size = new System.Drawing.Size(152, 22);
 			this.miClose.Text = "Close";
-			this.miClose.Click += new System.EventHandler(this.miClose_Click);
+			this.miClose.Click += new System.EventHandler(this.OnCloseClick);
 			// 
 			// ConsoleForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(492, 274);
-			this.Controls.Add(this.consoleText);
-			this.Controls.Add(this.menuStrip1);
+			this.Controls.Add(this.rtbConsole);
+			this.Controls.Add(this.msMenuStrip);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.MainMenuStrip = this.menuStrip1;
+			this.MainMenuStrip = this.msMenuStrip;
 			this.MinimumSize = new System.Drawing.Size(300, 200);
 			this.Name = "ConsoleForm";
 			this.Text = "Output Console";
-			this.menuStrip1.ResumeLayout(false);
-			this.menuStrip1.PerformLayout();
+			this.msMenuStrip.ResumeLayout(false);
+			this.msMenuStrip.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -89,9 +89,9 @@ namespace XCom
 
 		#endregion
 
-		private System.Windows.Forms.RichTextBox consoleText;
-		private System.Windows.Forms.MenuStrip menuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+		private System.Windows.Forms.RichTextBox rtbConsole;
+		private System.Windows.Forms.MenuStrip msMenuStrip;
+		private System.Windows.Forms.ToolStripMenuItem tsmiFile;
 		private System.Windows.Forms.ToolStripMenuItem miClose;
 	}
 }

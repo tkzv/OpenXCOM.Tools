@@ -157,15 +157,15 @@
     </Compile>
     <Compile Include="Interfaces\IAssemblyLoadable.cs" />
     <Compile Include="Loadable\LoadOfType.cs" />
-    <Compile Include="parser\old_VarCollection_.cs">
+    <Compile Include="Parser\old_VarCollection_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="parser\DSVaridia.cs" />
-    <Compile Include="parser\DSVaridiaStructured.cs" />
-    <Compile Include="parser\old_Variable_.cs">
+    <Compile Include="Parser\DSVaridia.cs" />
+    <Compile Include="Parser\DSVaridiaStructured.cs" />
+    <Compile Include="Parser\old_Variable_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="parser\DSVariable.cs" />
+    <Compile Include="Parser\DSVariable.cs" />
     <Compile Include="PathInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -91,7 +91,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Route View";
 			// 
-			// TopRouteViewForm
+			// TopRouteView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -99,7 +99,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			this.Controls.Add(this.tabControl);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MinimumSize = new System.Drawing.Size(640, 480);
-			this.Name = "TopRouteViewForm";
+			this.Name = "TopRouteView";
 			this.ShowInTaskbar = false;
 			this.Text = "Top/Route View";
 			this.tabControl.ResumeLayout(false);

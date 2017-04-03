@@ -70,7 +70,7 @@ namespace DSShared.Windows
 				AddProperty("Width", "Height", "Left", "Top");
 			}
 		}
-		/// <summary>
+/*		/// <summary>
 		/// Auxiliary cTor. Uses the ToString() return of the specified object
 		/// as a registry key.
 		/// </summary>
@@ -78,7 +78,7 @@ namespace DSShared.Windows
 		public RegistryInfo(object obj)
 			:
 				this(obj, obj.GetType().ToString())
-		{}
+		{} */
 
 
 		/// <summary>

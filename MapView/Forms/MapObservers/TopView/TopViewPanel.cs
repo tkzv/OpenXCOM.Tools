@@ -13,7 +13,7 @@ namespace MapView.Forms.MapObservers.TopViews
 	{
 		public TopViewPanel()
 		{
-			MapViewPanel.Instance.MapView.DragChanged += ViewDrag;
+			MapViewPanel.Instance.MapView.DragChanged += OnViewDrag;
 		}
 
 
@@ -94,7 +94,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			base.OnMouseDown(e);
 
-			ViewDrag(null, e);
+			OnViewDrag(null, e);
 
 			if (e.Button == MouseButtons.Right)
 				QuadrantPanel.SetSelected(e.Button, 1);

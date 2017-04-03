@@ -31,13 +31,13 @@ namespace MapView
 		:
 			Form
 	{
-		private readonly SettingsManager    _settingsManager;
-		private readonly MapViewPanel       _mapViewPanel;
-		private readonly LoadingForm        _loadingProgress;
-		private readonly IWarningHandler    _warningHandler;
-		private readonly IMainViewsManager  _mainViewsManager;
-		private readonly MainWindowsManager _mainWindowsManager;
-		private readonly MainMenusManager   _mainMenusManager;
+		private readonly SettingsManager       _settingsManager;
+		private readonly MapViewPanel          _mapViewPanel;
+		private readonly LoadingForm           _loadingProgress;
+		private readonly ConsoleWarningHandler _warningHandler;
+		private readonly MainViewsManager      _mainViewsManager;
+		private readonly MainWindowsManager    _mainWindowsManager;
+		private readonly MainMenusManager      _mainMenusManager;
 
 
 		public XCMainWindow()
