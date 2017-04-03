@@ -8,27 +8,8 @@ namespace MapView
 {
 	public class ChangeMapSizeForm
 		:
-		Form
+			Form
 	{
-		private System.ComponentModel.Container components = null;
-
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.TextBox txtC;
-		private System.Windows.Forms.TextBox txtR;
-		private System.Windows.Forms.TextBox txtH;
-		private System.Windows.Forms.Button btnOk;
-		private System.Windows.Forms.Button btnCancel;
-		private System.Windows.Forms.TextBox oldC;
-		private System.Windows.Forms.TextBox oldR;
-		private System.Windows.Forms.TextBox oldH;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.Label label2;
-
-		private CheckBox CeilingCheckBox;
 		private IMapBase _baseMap;
 
 
@@ -74,12 +55,12 @@ namespace MapView
 			get { return _height; }
 		}
 
-		public bool AddHeightToCeiling
+		public bool AddToCeiling
 		{
-			get { return CeilingCheckBox.Checked; }
+			get { return cbCeiling.Checked; }
 		}
 
-		private void btnOk_Click(object sender, EventArgs e)
+		private void OnOkClick(object sender, EventArgs e)
 		{
 			try
 			{
@@ -151,15 +132,15 @@ namespace MapView
 			}
 		}
 
-		private void btnCancel_Click(object sender, EventArgs e)
+		private void OnCancelClick(object sender, EventArgs e)
 		{
 			Close();
 		}
 
-		private void txtH_TextChanged(object sender, EventArgs e)
+		private void OnTextChanged(object sender, EventArgs e)
 		{
 			int current = int.Parse(txtH.Text, System.Globalization.CultureInfo.InvariantCulture);
-			CeilingCheckBox.Visible = (current != _baseMap.MapSize.Height);
+			cbCeiling.Visible = (current != _baseMap.MapSize.Height);
 		}
 
 
@@ -193,7 +174,7 @@ namespace MapView
 			this.txtH = new System.Windows.Forms.TextBox();
 			this.btnOk = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
-			this.CeilingCheckBox = new System.Windows.Forms.CheckBox();
+			this.cbCeiling = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
@@ -271,7 +252,7 @@ namespace MapView
 			this.txtH.Name = "txtH";
 			this.txtH.Size = new System.Drawing.Size(45, 19);
 			this.txtH.TabIndex = 3;
-			this.txtH.TextChanged += new System.EventHandler(this.txtH_TextChanged);
+			this.txtH.TextChanged += new System.EventHandler(this.OnTextChanged);
 			// 
 			// btnOk
 			// 
@@ -281,7 +262,7 @@ namespace MapView
 			this.btnOk.Size = new System.Drawing.Size(85, 40);
 			this.btnOk.TabIndex = 4;
 			this.btnOk.Text = "OK";
-			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+			this.btnOk.Click += new System.EventHandler(this.OnOkClick);
 			// 
 			// btnCancel
 			// 
@@ -291,21 +272,21 @@ namespace MapView
 			this.btnCancel.Size = new System.Drawing.Size(85, 40);
 			this.btnCancel.TabIndex = 5;
 			this.btnCancel.Text = "Cancel";
-			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+			this.btnCancel.Click += new System.EventHandler(this.OnCancelClick);
 			// 
-			// CeilingCheckBox
+			// cbCeiling
 			// 
-			this.CeilingCheckBox.AutoSize = true;
-			this.CeilingCheckBox.Checked = true;
-			this.CeilingCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.CeilingCheckBox.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.CeilingCheckBox.Location = new System.Drawing.Point(190, 95);
-			this.CeilingCheckBox.Name = "CeilingCheckBox";
-			this.CeilingCheckBox.Size = new System.Drawing.Size(99, 16);
-			this.CeilingCheckBox.TabIndex = 9;
-			this.CeilingCheckBox.Text = "add to ceiling";
-			this.CeilingCheckBox.UseVisualStyleBackColor = true;
-			this.CeilingCheckBox.Visible = false;
+			this.cbCeiling.AutoSize = true;
+			this.cbCeiling.Checked = true;
+			this.cbCeiling.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.cbCeiling.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.cbCeiling.Location = new System.Drawing.Point(190, 95);
+			this.cbCeiling.Name = "cbCeiling";
+			this.cbCeiling.Size = new System.Drawing.Size(99, 16);
+			this.cbCeiling.TabIndex = 9;
+			this.cbCeiling.Text = "add to ceiling";
+			this.cbCeiling.UseVisualStyleBackColor = true;
+			this.cbCeiling.Visible = false;
 			// 
 			// label1
 			// 
@@ -343,7 +324,7 @@ namespace MapView
 			this.label2.Text = "Rows and Columns must be multiples of 10 (10, 20, 30, etc) and Height must be 1 o" +
 	"r more.";
 			// 
-			// ChangeMapSize
+			// ChangeMapSizeForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(314, 176);
@@ -352,7 +333,7 @@ namespace MapView
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.label7);
-			this.Controls.Add(this.CeilingCheckBox);
+			this.Controls.Add(this.cbCeiling);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
 			this.Controls.Add(this.txtH);
@@ -370,7 +351,7 @@ namespace MapView
 			this.MaximumSize = new System.Drawing.Size(320, 200);
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(320, 200);
-			this.Name = "ChangeMapSize";
+			this.Name = "ChangeMapSizeForm";
 			this.ShowIcon = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -380,5 +361,24 @@ namespace MapView
 
 		}
 		#endregion
+
+		private System.ComponentModel.Container components = null;
+
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.TextBox txtC;
+		private System.Windows.Forms.TextBox txtR;
+		private System.Windows.Forms.TextBox txtH;
+		private System.Windows.Forms.Button btnOk;
+		private System.Windows.Forms.Button btnCancel;
+		private System.Windows.Forms.TextBox oldC;
+		private System.Windows.Forms.TextBox oldR;
+		private System.Windows.Forms.TextBox oldH;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.CheckBox cbCeiling;
 	}
 }

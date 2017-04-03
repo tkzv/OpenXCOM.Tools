@@ -173,8 +173,8 @@
     <Compile Include="Forms\MapObservers\TopView\TopViewForm.Designer.cs">
       <DependentUpon>TopViewForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\OtherForms\CopyForm.cs" />
-    <Compile Include="Forms\OtherForms\ExportForm.cs">
+    <Compile Include="Forms\OtherForms\CopyForm_.cs" />
+    <Compile Include="Forms\OtherForms\ExportForm_.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\About.cs">
@@ -230,7 +230,7 @@
     <Compile Include="Forms\MapObservers\TopView\QuadrantPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\ByteView.cs">
+    <Compile Include="Forms\OtherForms\ByteView_.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\OtherForms\ChangeMapSizeForm.cs">
@@ -244,7 +244,7 @@
     <Compile Include="Cursor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\Dialog.cs">
+    <Compile Include="Forms\OtherForms\Dialog_.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Globals.cs">
@@ -321,7 +321,7 @@
     <Compile Include="Forms\MapObservers\TopView\TopViewPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\TreeEditor.cs">
+    <Compile Include="Forms\OtherForms\TreeEditor_.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Updator_.cs" />
@@ -364,8 +364,8 @@
     <EmbeddedResource Include="Forms\OtherForms\ChoiceDialog.resx">
       <DependentUpon>ChoiceDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\Dialog.resx">
-      <DependentUpon>Dialog.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\OtherForms\Dialog_.resx">
+      <DependentUpon>Dialog_.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\HelpScreen.resx">
       <DependentUpon>HelpScreen.cs</DependentUpon>

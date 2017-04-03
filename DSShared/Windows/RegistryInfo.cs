@@ -254,7 +254,7 @@ namespace DSShared.Windows
 		/// </summary>
 		/// <param name="regkey">registry key that has been opened for reading
 		/// and writing to</param>
-		public RegistryEventArgs(RegistryKey regkey)
+		internal RegistryEventArgs(RegistryKey regkey)
 		{
 			_regkey = regkey;
 		}

@@ -111,26 +111,28 @@ namespace MapView.Forms.MapObservers.TopViews
 		protected override void OnRegistrySettingsLoad(DSShared.Windows.RegistryEventArgs e)
 		{
 			bottom.Height = 74;
-			var regKey = e.OpenRegistryKey;
+			var regkey = e.OpenRegistryKey;
 
-			foreach (var mi in _dictVisibleQuads.Keys)
-				mi.Checked = bool.Parse((string)regKey.GetValue("vis" + _dictVisibleQuads[mi], "true"));
+			foreach (var it in _dictVisibleQuads.Keys)
+				it.Checked = bool.Parse((string)regkey.GetValue("vis" + _dictVisibleQuads[it], "true"));
 		}
 
 		protected override void OnRegistrySettingsSave(DSShared.Windows.RegistryEventArgs e)
 		{
-			var regKey = e.OpenRegistryKey;
+			var regkey = e.OpenRegistryKey;
 
-			foreach (var mi in _dictVisibleQuads.Keys)
-				regKey.SetValue("vis" + _dictVisibleQuads[mi], mi.Checked);
+			foreach (var it in _dictVisibleQuads.Keys)
+				regkey.SetValue("vis" + _dictVisibleQuads[it], it.Checked);
 		}
 
 		public void OnFillClick(object sender, EventArgs e)
 		{
-			var map = MapViewPanel.Instance.MapView.Map;
+			var baseMap = MapViewPanel.Instance.MapView.Map;
 
-			if (map != null)
+			if (baseMap != null)
 			{
+				baseMap.MapChanged = true;
+
 				var start = new Point(0, 0);
 				var end   = new Point(0, 0);
 
@@ -143,9 +145,8 @@ namespace MapView.Forms.MapObservers.TopViews
 				var tileView = MainWindowsManager.TileView.Control;
 				for (int c = start.X; c <= end.X; ++c)
 					for (int r = start.Y; r <= end.Y; ++r)
-						((XCMapTile)map[r, c])[bottom.SelectedQuadrant] = tileView.SelectedTile;
+						((XCMapTile)baseMap[r, c])[bottom.SelectedQuadrant] = tileView.SelectedTile;
 
-				map.MapChanged = true;
 				MapViewPanel.Instance.Refresh();
 				Refresh();
 			}

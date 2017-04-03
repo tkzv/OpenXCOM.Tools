@@ -453,13 +453,13 @@ namespace MapView
 			{
 				f.ShowDialog(this);
 
-				if (f.TilesetText != null)
+				if (f.TilesetLabel != null)
 				{
 					var tileset = (IXCTileset)GameInfo.TilesetInfo.AddTileset(
-																		f.TilesetText,
-																		f.MapPath,
-																		f.RmpPath,
-																		f.BlankPath);
+																		f.TilesetLabel,
+																		f.MapsPath,
+																		f.RoutesPath,
+																		f.BlanksPath);
 //					addTileset(tileset.Name);
 					tvMaps.Nodes.Add(tileset.Name);
 
@@ -477,18 +477,18 @@ namespace MapView
 				getCurrentTileset().Palette = (Palette)cbMapsPalette.SelectedItem;
 		}
 
-		private void addSub_Click(object sender, System.EventArgs e)
+		private void OnSubsetClick(object sender, EventArgs e)
 		{
 			using (var f = new SubsetForm())
 			{
 				f.ShowDialog(this);
-				if (f.SubsetName != null)
+				if (!String.IsNullOrEmpty(f.SubsetLabel))
 				{
 					var tileset = getCurrentTileset();
 
 //					TreeNode tn = treeMaps.SelectedNode; // TODO: Check if not used.
 
-					tileset.Subsets[f.SubsetName] = new Dictionary<string, IMapDesc>();
+					tileset.Subsets[f.SubsetLabel] = new Dictionary<string, IMapDesc>();
 
 //					tileset.NewSubset(f.SubsetName);
 //					saveMapedit();
@@ -786,6 +786,8 @@ namespace MapView
 			this.closeItem = new System.Windows.Forms.MenuItem();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabPaths = new System.Windows.Forms.TabPage();
+			this.lblPathsInstall = new System.Windows.Forms.Label();
+			this.lblPathsClearRegistry = new System.Windows.Forms.Label();
 			this.btnPathsSave = new System.Windows.Forms.Button();
 			this.btnPathsInstall = new System.Windows.Forms.Button();
 			this.btnPathsImages = new System.Windows.Forms.Button();
@@ -825,7 +827,7 @@ namespace MapView
 			this.cmMain = new System.Windows.Forms.ContextMenu();
 			this.newGroup = new System.Windows.Forms.MenuItem();
 			this.delGroup = new System.Windows.Forms.MenuItem();
-			this.addSub = new System.Windows.Forms.MenuItem();
+			this.miAddSubset = new System.Windows.Forms.MenuItem();
 			this.delSub = new System.Windows.Forms.MenuItem();
 			this.addMap = new System.Windows.Forms.MenuItem();
 			this.addNewMap = new System.Windows.Forms.MenuItem();
@@ -844,8 +846,6 @@ namespace MapView
 			this.addImageset = new System.Windows.Forms.MenuItem();
 			this.delImageset = new System.Windows.Forms.MenuItem();
 			this.ofdFileDialog = new System.Windows.Forms.OpenFileDialog();
-			this.lblPathsClearRegistry = new System.Windows.Forms.Label();
-			this.lblPathsInstall = new System.Windows.Forms.Label();
 			this.tabs.SuspendLayout();
 			this.tabPaths.SuspendLayout();
 			this.tabMaps.SuspendLayout();
@@ -913,6 +913,23 @@ namespace MapView
 			this.tabPaths.Size = new System.Drawing.Size(624, 509);
 			this.tabPaths.TabIndex = 0;
 			this.tabPaths.Text = "Paths";
+			// 
+			// lblPathsInstall
+			// 
+			this.lblPathsInstall.Location = new System.Drawing.Point(145, 215);
+			this.lblPathsInstall.Name = "lblPathsInstall";
+			this.lblPathsInstall.Size = new System.Drawing.Size(120, 15);
+			this.lblPathsInstall.TabIndex = 16;
+			this.lblPathsInstall.Text = "Re-run the installer.";
+			// 
+			// lblPathsClearRegistry
+			// 
+			this.lblPathsClearRegistry.Location = new System.Drawing.Point(145, 165);
+			this.lblPathsClearRegistry.Name = "lblPathsClearRegistry";
+			this.lblPathsClearRegistry.Size = new System.Drawing.Size(300, 25);
+			this.lblPathsClearRegistry.TabIndex = 15;
+			this.lblPathsClearRegistry.Text = "Clear MapView from the Windows Registry and switch the option to save window posi" +
+	"tions and sizes off.";
 			// 
 			// btnPathsSave
 			// 
@@ -1046,9 +1063,9 @@ namespace MapView
 			this.tabMaps.Controls.Add(this.tvMaps);
 			this.tabMaps.Controls.Add(this.btnMapsSaveTree);
 			this.tabMaps.Controls.Add(this.btnMapsEditTree);
-			this.tabMaps.Location = new System.Drawing.Point(4, 22);
+			this.tabMaps.Location = new System.Drawing.Point(4, 21);
 			this.tabMaps.Name = "tabMaps";
-			this.tabMaps.Size = new System.Drawing.Size(624, 508);
+			this.tabMaps.Size = new System.Drawing.Size(624, 509);
 			this.tabMaps.TabIndex = 1;
 			this.tabMaps.Text = "Map Files";
 			// 
@@ -1069,7 +1086,7 @@ namespace MapView
 			this.gbMapsBlock.Enabled = false;
 			this.gbMapsBlock.Location = new System.Drawing.Point(240, 170);
 			this.gbMapsBlock.Name = "gbMapsBlock";
-			this.gbMapsBlock.Size = new System.Drawing.Size(385, 340);
+			this.gbMapsBlock.Size = new System.Drawing.Size(385, 341);
 			this.gbMapsBlock.TabIndex = 2;
 			this.gbMapsBlock.TabStop = false;
 			this.gbMapsBlock.Text = "MAP BLOCK";
@@ -1262,7 +1279,7 @@ namespace MapView
 			this.tvMaps.ContextMenu = this.cmMain;
 			this.tvMaps.Location = new System.Drawing.Point(0, 35);
 			this.tvMaps.Name = "tvMaps";
-			this.tvMaps.Size = new System.Drawing.Size(240, 472);
+			this.tvMaps.Size = new System.Drawing.Size(240, 473);
 			this.tvMaps.TabIndex = 0;
 			this.tvMaps.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvMaps_AfterSelect);
 			// 
@@ -1271,7 +1288,7 @@ namespace MapView
 			this.cmMain.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.newGroup,
 			this.delGroup,
-			this.addSub,
+			this.miAddSubset,
 			this.delSub,
 			this.addMap,
 			this.delMap});
@@ -1288,11 +1305,11 @@ namespace MapView
 			this.delGroup.Text = "Delete group";
 			this.delGroup.Click += new System.EventHandler(this.delGroup_Click);
 			// 
-			// addSub
+			// miAddSubset
 			// 
-			this.addSub.Index = 2;
-			this.addSub.Text = "Add sub-group";
-			this.addSub.Click += new System.EventHandler(this.addSub_Click);
+			this.miAddSubset.Index = 2;
+			this.miAddSubset.Text = "Add sub-group";
+			this.miAddSubset.Click += new System.EventHandler(this.OnSubsetClick);
 			// 
 			// delSub
 			// 
@@ -1352,9 +1369,9 @@ namespace MapView
 			this.tabImages.Controls.Add(this.lblImagesTerrain);
 			this.tabImages.Controls.Add(this.tbImagesTerrain);
 			this.tabImages.Controls.Add(this.lbImages);
-			this.tabImages.Location = new System.Drawing.Point(4, 22);
+			this.tabImages.Location = new System.Drawing.Point(4, 21);
 			this.tabImages.Name = "tabImages";
-			this.tabImages.Size = new System.Drawing.Size(624, 508);
+			this.tabImages.Size = new System.Drawing.Size(624, 509);
 			this.tabImages.TabIndex = 2;
 			this.tabImages.Text = "Image Files";
 			// 
@@ -1411,7 +1428,7 @@ namespace MapView
 			this.lbImages.ItemHeight = 12;
 			this.lbImages.Location = new System.Drawing.Point(0, 0);
 			this.lbImages.Name = "lbImages";
-			this.lbImages.Size = new System.Drawing.Size(240, 508);
+			this.lbImages.Size = new System.Drawing.Size(240, 509);
 			this.lbImages.TabIndex = 0;
 			this.lbImages.SelectedIndexChanged += new System.EventHandler(this.lbImages_SelectedIndexChanged);
 			// 
@@ -1436,23 +1453,6 @@ namespace MapView
 			// ofdFileDialog
 			// 
 			this.ofdFileDialog.Filter = "Config files|*.cfg|Map files|*.map|Pck files|*.pck|All files|*.*";
-			// 
-			// lblPathsClearRegistry
-			// 
-			this.lblPathsClearRegistry.Location = new System.Drawing.Point(145, 165);
-			this.lblPathsClearRegistry.Name = "lblPathsClearRegistry";
-			this.lblPathsClearRegistry.Size = new System.Drawing.Size(300, 25);
-			this.lblPathsClearRegistry.TabIndex = 15;
-			this.lblPathsClearRegistry.Text = "Clear MapView from the Windows Registry and switch the option to save window posi" +
-	"tions and sizes off.";
-			// 
-			// lblPathsInstall
-			// 
-			this.lblPathsInstall.Location = new System.Drawing.Point(145, 215);
-			this.lblPathsInstall.Name = "lblPathsInstall";
-			this.lblPathsInstall.Size = new System.Drawing.Size(120, 15);
-			this.lblPathsInstall.TabIndex = 16;
-			this.lblPathsInstall.Text = "Re-run the installer.";
 			// 
 			// PathsEditor
 			// 
@@ -1537,7 +1537,7 @@ namespace MapView
 		private TextBox tbImagesImages;
 		private ComboBox cbMapsPalette;
 		private Button btnMapsSaveTree;
-		private MenuItem addSub;
+		private MenuItem miAddSubset;
 		private MenuItem delSub;
 		private MenuItem addNewMap;
 		private MenuItem addExistingMap;

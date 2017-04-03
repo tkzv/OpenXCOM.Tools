@@ -265,7 +265,7 @@ namespace MapView
 					var type = _value.GetType();
 					if (_converters.ContainsKey(type))
 					{
-						var val = value as string;
+						string val = value as String;
 						if (val != null)
 						{
 							_value = _converters[type](val);

@@ -102,13 +102,14 @@ namespace MapView.Forms.MapObservers.TopViews
 								_mapTile[SelectedQuadrant] = null;
 								break;
 						}
+
+						Map.MapChanged = true;
+						Refresh();
+
 						break;
 					}
 				}
 			}
-
-			Map.MapChanged = true;
-			Refresh();
 		}
 
 		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
@@ -127,7 +128,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			var quad = (QuadrantType)((e.X - QuadrantPanelDrawService.startX) / QuadrantPanelDrawService.TOTAL_QUADRANT_SPACE);
+			var quad = (QuadrantType)((e.X - QuadrantPanelDrawService.startX) / QuadrantPanelDrawService.QuadsWidthTotal);
 			switch (quad)
 			{
 				case QuadrantType.Ground:

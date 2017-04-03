@@ -31,7 +31,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private RouteNode _nodeSelected;
 
 		private bool _loadingGui;
-		private bool _loadingMap;
+//		private bool _loadingMap;
 
 		private readonly List<object> _linksList = new List<object>();
 
@@ -146,7 +146,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 				if ((_nodeSelected = ((XCMapTile)args.ClickTile).Node) == null
 					&& args.MouseEventArgs.Button == MouseButtons.Right)
 				{
-					_mapFile.MapChanged = true;
 					_nodeSelected = _mapFile.AddRouteNode(args.ClickLocation);
 				}
 
@@ -169,9 +168,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					if (args.MouseEventArgs.Button == MouseButtons.Right)
 					{
-						_mapFile.MapChanged = true;
 						node = _mapFile.AddRouteNode(args.ClickLocation);
-
 						ConnectNode(node);
 					}
 
@@ -201,6 +198,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				int linkId = GetOpenLinkSlot(_nodeSelected, node.Index);
 				if (linkId != -1)
 				{
+					_mapFile.MapChanged = true;
 					_nodeSelected[linkId].Destination = node.Index;
 					_nodeSelected[linkId].Distance = CalculateLinkDistance(_nodeSelected, node);
 				}
@@ -210,6 +208,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					linkId = GetOpenLinkSlot(node, _nodeSelected.Index);
 					if (linkId != -1)
 					{
+						_mapFile.MapChanged = true;
 						node[linkId].Destination = _nodeSelected.Index;
 						node[linkId].Distance = CalculateLinkDistance(node, _nodeSelected);
 					}
@@ -389,38 +388,38 @@ namespace MapView.Forms.MapObservers.RouteViews
 				base.Map = value;
 				_mapFile = (XCMapFile)value;
 
-				_loadingMap = true;
-				try
+//				_loadingMap = true;
+//				try
+//				{
+//				tstbExtraHeight.Text = _mapFile.RouteFile.ExtraHeight.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+				DeselectNode();
+
+//				var route = _map.Rmp.GetEntryAtHeight(_map.CurrentHeight); // this forces a selected node when RouteView opens.
+//				if (route != null)
+//				{
+//					_currEntry = route;
+//					_rmpPanel.ClickPoint = new Point(
+//												_currEntry.Col,
+//												_currEntry.Row);
+//				}
+
+				if ((_routePanel.MapFile = _mapFile) != null)
 				{
-					tstbExtraHeight.Text = _mapFile.RouteFile.ExtraHeight.ToString(System.Globalization.CultureInfo.InvariantCulture);
+					cbSpawnRank.Items.Clear();
 
-					DeselectNode();
+					if (_mapFile.Tiles[0][0].Palette == Palette.UfoBattle)
+						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);
+					else
+						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankTftd);
 
-//					var route = _map.Rmp.GetEntryAtHeight(_map.CurrentHeight); // this forces a selected node when RouteView opens.
-//					if (route != null)
-//					{
-//						_currEntry = route;
-//						_rmpPanel.ClickPoint = new Point(
-//													_currEntry.Col,
-//													_currEntry.Row);
-//					}
-
-					if ((_routePanel.MapFile = _mapFile) != null)
-					{
-						cbSpawnRank.Items.Clear();
-
-						if (_mapFile.Tiles[0][0].Palette == Palette.UfoBattle)
-							cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);
-						else
-							cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankTftd);
-
-						FillNodeInformation();
-					}
+					FillNodeInformation();
 				}
-				finally
-				{
-					_loadingMap = false;
-				}
+//				}
+//				finally
+//				{
+//					_loadingMap = false;
+//				}
 			}
 		}
 
@@ -904,40 +903,41 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnExtraHeightChanged(object sender, EventArgs e) // NOTE: is disabled w/ Visible=FALSE in designer.
 		{
-			byte bite;
-			if (byte.TryParse(
-							tstbExtraHeight.Text,
-							System.Globalization.NumberStyles.Integer,
-							System.Globalization.CultureInfo.InvariantCulture,
-							out bite))
-			{
-				_mapFile.RouteFile.ExtraHeight = bite;
-				tstbExtraHeight.Text = bite.ToString(System.Globalization.CultureInfo.InvariantCulture);
-			}
-			else
-			{
-				_mapFile.RouteFile.ExtraHeight = 0;
-				tstbExtraHeight.Text = "0";
-			}
-
-			_mapFile.MapChanged |= !_loadingMap;
+//			byte bite;
+//			if (byte.TryParse(
+//							tstbExtraHeight.Text,
+//							System.Globalization.NumberStyles.Integer,
+//							System.Globalization.CultureInfo.InvariantCulture,
+//							out bite))
+//			{
+//				_mapFile.RouteFile.ExtraHeight = bite;
+//				tstbExtraHeight.Text = bite.ToString(System.Globalization.CultureInfo.InvariantCulture);
+//			}
+//			else
+//			{
+//				_mapFile.RouteFile.ExtraHeight = 0;
+//				tstbExtraHeight.Text = "0";
+//			}
+//
+//			_mapFile.MapChanged |= !_loadingMap;
 		}
 
 		private void OnMakeAllNodeRank0Click(object sender, EventArgs e)
 		{
-			var changeCount = 0;
+			var count = 0;
 			foreach (RouteNode node in _mapFile.RouteFile)
 				if (node.UsableRank != 0)
 				{
-					++changeCount;
+					++count;
 					node.UsableRank = 0;
 				}
 
-			if (changeCount > 0)
+			if (count != 0)
 			{
 				_mapFile.MapChanged = true;
+
 				MessageBox.Show(
-							changeCount + " nodes were changed.",
+							count + " nodes were changed.",
 							"Node Fix",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Information,

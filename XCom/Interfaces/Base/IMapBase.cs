@@ -189,14 +189,14 @@ namespace XCom.Interfaces.Base
 												toCeiling);
 			if (tileList != null)
 			{
+				MapChanged = true;
+
 				// NOTE: This doesn't handle Routes or node-checking which XCMapFile.ResizeTo() does.
 				MapTiles = tileList;
 				MapSize  = new MapSize(rPost, cPost, hPost);
 
 				if (hPost > 0) // assuage FxCop re 'possible' underflow.
 					_height = (byte)(hPost - 1);
-
-				MapChanged = true;
 			}
 		}
 

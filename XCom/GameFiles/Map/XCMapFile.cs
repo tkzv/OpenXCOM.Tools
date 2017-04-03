@@ -186,11 +186,14 @@ namespace XCom
 
 		public RouteNode AddRouteNode(MapLocation loc)
 		{
+			MapChanged = true;
+
 			var node = RouteFile.Add(
 								(byte)loc.Row,
 								(byte)loc.Col,
 								(byte)loc.Height);
 			((XCMapTile)this[node.Row, node.Col, node.Height]).Node = node;
+
 			return node;
 		}
 
@@ -225,6 +228,8 @@ namespace XCom
 		/// </summary>
 		public override void Save()
 		{
+			MapChanged = false;
+
 			using (var fs = File.Create(BasePath + BaseName + MapExt))
 			{
 				if (RouteFile.ExtraHeight != 0) // add ExtraHeight to save - see SetupRoutes() above^
@@ -266,7 +271,6 @@ namespace XCom
 
 //				fs.WriteByte(RouteFile.ExtraHeight); // <- NON-STANDARD <-| See also ReadMapFile() above^
 			}
-			MapChanged = false;
 		}
 
 		public override void ResizeTo(
@@ -284,6 +288,8 @@ namespace XCom
 												toCeiling);
 			if (tileList != null)
 			{
+				MapChanged = true;
+
 				if (toCeiling && hPost != MapSize.Height) // update Routes
 				{
 					int d = hPost - MapSize.Height;
@@ -307,8 +313,6 @@ namespace XCom
 				MapSize  = new MapSize(rPost, cPost, hPost);
 
 				CurrentHeight = (byte)(MapSize.Height - 1);
-
-				MapChanged = true;
 			}
 		}
 

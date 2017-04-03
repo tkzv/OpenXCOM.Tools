@@ -226,11 +226,11 @@
     <Compile Include="xcFiles\XCProfile.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PckView.cs">
+    <Compile Include="PckViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PckView.Designer.cs">
-      <DependentUpon>PckView.cs</DependentUpon>
+    <Compile Include="PckViewForm.Designer.cs">
+      <DependentUpon>PckViewForm.cs</DependentUpon>
     </Compile>
     <Content Include="App.ico" />
   </ItemGroup>
@@ -259,9 +259,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="PckView.resx">
+    <EmbeddedResource Include="PckViewForm.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>PckView.cs</DependentUpon>
+      <DependentUpon>PckViewForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1,16 +1,17 @@
+/*
 using System;
 
 using XCom;
 
 
-namespace PckView
+namespace PckView // TODO: if this is for PckView it should go in PckView.
 {
 	/// <summary>
 	/// Summary description for ByteView.
 	/// </summary>
 	public class ByteView
 		:
-		System.Windows.Forms.Form
+			System.Windows.Forms.Form
 	{
 		private PckImage _image;
 
@@ -41,30 +42,30 @@ namespace PckView
 			}
 		}
 
-/*		private void printData()
-		{
-			if (image != null)
-			{
-				output.Text = "";
-				foreach (int i in image.Bytes)
-				{
-					if (i == 254)
-					{
-						output.SelectionColor = Color.Gray;
-						output.AppendText("254\n");
-						output.SelectionColor = Color.Black;
-					}
-					else if (i == 255)
-					{
-						output.SelectionColor = Color.Red;
-						output.AppendText("\n255\n");
-						output.SelectionColor = Color.Black;
-					}
-					else
-						output.AppendText(i + " ");
-				}
-			}
-		} */
+//		private void printData()
+//		{
+//			if (image != null)
+//			{
+//				output.Text = "";
+//				foreach (int i in image.Bytes)
+//				{
+//					if (i == 254)
+//					{
+//						output.SelectionColor = Color.Gray;
+//						output.AppendText("254\n");
+//						output.SelectionColor = Color.Black;
+//					}
+//					else if (i == 255)
+//					{
+//						output.SelectionColor = Color.Red;
+//						output.AppendText("\n255\n");
+//						output.SelectionColor = Color.Black;
+//					}
+//					else
+//						output.AppendText(i + " ");
+//				}
+//			}
+//		}
 
 
 		#region Windows Form Designer generated code
@@ -111,3 +112,4 @@ namespace PckView
 		#endregion
 	}
 }
+*/

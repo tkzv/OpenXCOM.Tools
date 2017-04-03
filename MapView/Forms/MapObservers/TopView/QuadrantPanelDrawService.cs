@@ -24,9 +24,10 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private const int _width  = 32;
 		private const int _height = 40;
+
 		private const int _pad    =  2;
 
-		public const int TOTAL_QUADRANT_SPACE = _width + _pad * 2;
+		public const int QuadsWidthTotal = _width + _pad * 2;
 
 		public const int startX = 5;
 		public const int startY = 0;
@@ -50,7 +51,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				case QuadrantType.West:
 					g.FillRectangle(
 								Brush,
-								startX + TOTAL_QUADRANT_SPACE,
+								startX + QuadsWidthTotal,
 								startY,
 								_width  + 1,
 								_height + 2);
@@ -59,7 +60,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				case QuadrantType.North:
 					g.FillRectangle(
 								Brush,
-								startX + TOTAL_QUADRANT_SPACE * 2,
+								startX + QuadsWidthTotal * 2,
 								startY,
 								_width  + 1,
 								_height + 2);
@@ -68,7 +69,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				case QuadrantType.Content:
 					g.FillRectangle(
 								Brush,
-								startX + TOTAL_QUADRANT_SPACE * 3,
+								startX + QuadsWidthTotal * 3,
 								startY,
 								_width  + 1,
 								_height + 2);
@@ -109,7 +110,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			if (!topView.WestVisible) // Westwall not visible
 				g.FillRectangle(
 							System.Drawing.Brushes.DarkGray,
-							startX + TOTAL_QUADRANT_SPACE,
+							startX + QuadsWidthTotal,
 							startY,
 							_width  + 1,
 							_height + 2);
@@ -118,7 +119,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			{
 				g.DrawImage(
 							mapTile.West[MapViewPanel.Current].Image,
-							startX + TOTAL_QUADRANT_SPACE,
+							startX + QuadsWidthTotal,
 							startY - mapTile.West.Info.TileOffset);
 
 				if (mapTile.West.Info.HumanDoor || mapTile.West.Info.UfoDoor)
@@ -126,19 +127,19 @@ namespace MapView.Forms.MapObservers.TopViews
 							"Door",
 							Font,
 							System.Drawing.Brushes.Black,
-							startX + TOTAL_QUADRANT_SPACE,
+							startX + QuadsWidthTotal,
 							startY + PckImage.Height - Font.Height);
 			}
 			else
 				g.DrawImage(
 							Globals.ExtraTiles[1].Image,
-							startX + TOTAL_QUADRANT_SPACE,
+							startX + QuadsWidthTotal,
 							startY);
 
 			if (!topView.NorthVisible) // Northwall not visible
 				g.FillRectangle(
 							System.Drawing.Brushes.DarkGray,
-							startX + TOTAL_QUADRANT_SPACE * 2,
+							startX + QuadsWidthTotal * 2,
 							startY,
 							_width  + 1,
 							_height + 2);
@@ -147,7 +148,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			{
 				g.DrawImage(
 							mapTile.North[MapViewPanel.Current].Image,
-							startX + TOTAL_QUADRANT_SPACE * 2,
+							startX + QuadsWidthTotal * 2,
 							startY - mapTile.North.Info.TileOffset);
 
 				if (mapTile.North.Info.HumanDoor || mapTile.North.Info.UfoDoor)
@@ -155,19 +156,19 @@ namespace MapView.Forms.MapObservers.TopViews
 							"Door",
 							Font,
 							System.Drawing.Brushes.Black,
-							startX + TOTAL_QUADRANT_SPACE * 2,
+							startX + QuadsWidthTotal * 2,
 							startY + PckImage.Height - Font.Height);
 			}
 			else
 				g.DrawImage(
 							Globals.ExtraTiles[2].Image,
-							startX + TOTAL_QUADRANT_SPACE * 2,
+							startX + QuadsWidthTotal * 2,
 							startY);
 
 			if (!topView.ContentVisible) // Content not visible
 				g.FillRectangle(
 							System.Drawing.Brushes.DarkGray,
-							startX + TOTAL_QUADRANT_SPACE * 3,
+							startX + QuadsWidthTotal * 3,
 							startY,
 							_width  + 1,
 							_height + 2);
@@ -176,7 +177,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			{
 				g.DrawImage(
 							mapTile.Content[MapViewPanel.Current].Image,
-							startX + TOTAL_QUADRANT_SPACE * 3,
+							startX + QuadsWidthTotal * 3,
 							startY - mapTile.Content.Info.TileOffset);
 
 				if (mapTile.Content.Info.HumanDoor || mapTile.Content.Info.UfoDoor)
@@ -184,13 +185,13 @@ namespace MapView.Forms.MapObservers.TopViews
 							"Door",
 							Font,
 							System.Drawing.Brushes.Black,
-							startX + TOTAL_QUADRANT_SPACE * 3,
+							startX + QuadsWidthTotal * 3,
 							startY + PckImage.Height - Font.Height);
 			}
 			else
 				g.DrawImage(
 							Globals.ExtraTiles[4].Image,
-							startX + TOTAL_QUADRANT_SPACE * 3,
+							startX + QuadsWidthTotal * 3,
 							startY);
 
 			DrawGroundAndContent(g);
@@ -210,7 +211,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					Font,
 					System.Drawing.Brushes.Black,
 					new RectangleF(
-								startX + TOTAL_QUADRANT_SPACE,
+								startX + QuadsWidthTotal,
 								startY + _height + _pad,
 								_width,
 								50));
@@ -220,7 +221,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					Font,
 					System.Drawing.Brushes.Black,
 					new RectangleF(
-								startX + TOTAL_QUADRANT_SPACE * 2,
+								startX + QuadsWidthTotal * 2,
 								startY + _height + _pad,
 								_width,
 								50));
@@ -230,7 +231,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					Font,
 					System.Drawing.Brushes.Black,
 					new RectangleF(
-								startX + TOTAL_QUADRANT_SPACE * 3,
+								startX + QuadsWidthTotal * 3,
 								startY + _height + _pad,
 								_width + 50,
 								50));
@@ -238,7 +239,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			for (int i = 0; i < 4; i++)
 				g.DrawRectangle(
 							System.Drawing.Pens.Black,
-							startX - 1 + TOTAL_QUADRANT_SPACE * i,
+							startX - 1 + QuadsWidthTotal * i,
 							startY,
 							_width  + 2,
 							_height + 2);
@@ -259,7 +260,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				g.FillRectangle(
 							new SolidBrush(Pens["NorthColor"].Color),
 							new RectangleF(
-										startX + TOTAL_QUADRANT_SPACE,
+										startX + QuadsWidthTotal,
 										startY + _height + _pad + Font.Height,
 										_width,
 										3));
@@ -267,7 +268,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				g.FillRectangle(
 							new SolidBrush(Pens["WestColor"].Color),
 							new RectangleF(
-										startX + TOTAL_QUADRANT_SPACE * 2,
+										startX + QuadsWidthTotal * 2,
 										startY + _height + _pad + Font.Height,
 										_width,
 										3));
@@ -275,7 +276,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				g.FillRectangle(
 							Brushes["ContentColor"],
 							new RectangleF(
-										startX + TOTAL_QUADRANT_SPACE * 3,
+										startX + QuadsWidthTotal * 3,
 										startY + _height + _pad + Font.Height,
 										_width,
 										3));

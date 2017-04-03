@@ -1,7 +1,5 @@
+/*
 using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
 using System.Windows.Forms;
 
 
@@ -9,13 +7,8 @@ namespace MapView
 {
 	public class Dialog
 		:
-		System.Windows.Forms.Form
+			Form
 	{
-		private System.Windows.Forms.Label txt;
-		private System.Windows.Forms.Button btnOk;
-		private System.ComponentModel.Container components = null;
-
-
 		public Dialog(string text)
 		{
 			InitializeComponent();
@@ -28,6 +21,12 @@ namespace MapView
 			var d = new Dialog(text);
 			d.ShowDialog(parent);
 		}
+
+		private void OnOkClick(object sender, System.EventArgs e)
+		{
+			Close();
+		}
+
 
 		#region Windows Form Designer generated code
 		
@@ -67,7 +66,7 @@ namespace MapView
 			this.btnOk.Size = new System.Drawing.Size(80, 25);
 			this.btnOk.TabIndex = 1;
 			this.btnOk.Text = "Ok";
-			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+			this.btnOk.Click += new System.EventHandler(this.OnOkClick);
 			// 
 			// Dialog
 			// 
@@ -84,9 +83,9 @@ namespace MapView
 		}
 		#endregion
 
-		private void btnOk_Click(object sender, System.EventArgs e)
-		{
-			Close();
-		}
+		private System.ComponentModel.Container components = null;
+		private System.Windows.Forms.Label txt;
+		private System.Windows.Forms.Button btnOk;
 	}
 }
+*/

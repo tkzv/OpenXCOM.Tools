@@ -23,7 +23,7 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	public partial class PckViewForm
+	public sealed partial class PckViewForm
 		:
 			Form
 	{
@@ -48,7 +48,7 @@ namespace PckView
 		private string _path;
 		private int _depth;
 
-		private readonly IFileBackupManager _fileBackupManager = new FileBackupManager();
+//		private readonly FileBackupManager _fileBackupManager = new FileBackupManager();
 
 		public bool SavedFile
 		{ get; private set; }
@@ -620,7 +620,7 @@ namespace PckView
 				showBytes.Checked = true;
 
 				var selected = _totalViewPck.SelectedItems[_totalViewPck.SelectedItems.Count - 1];
-				BytesFormHelper.ShowBytes(selected, CallbackShowBytesClosing, new Point(this.Right, this.Top));
+				BytesFormHelper.ShowBytes(selected, CallbackShowBytesClosing, new Point(Right, Top));
 			}
 		}
 
@@ -820,7 +820,7 @@ namespace PckView
 			var fileWithoutExt = Path.GetFileNameWithoutExtension(_path);
 
 			// Backup
-			_fileBackupManager.Backup(_path);
+			FileBackupManager.Backup(_path);
 
 			// Save
 			PckSpriteCollection.Save(

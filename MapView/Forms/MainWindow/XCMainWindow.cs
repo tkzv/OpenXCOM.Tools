@@ -429,9 +429,9 @@ namespace MapView
 
 								WindowState = FormWindowState.Normal;
 
-								keyMainView.SetValue("Left", Left);
-								keyMainView.SetValue("Top", Top);
-								keyMainView.SetValue("Width", Width);
+								keyMainView.SetValue("Left",   Left);
+								keyMainView.SetValue("Top",    Top);
+								keyMainView.SetValue("Width",  Width);
 								keyMainView.SetValue("Height", Height - SystemInformation.CaptionButtonSize.Height);
 
 								keyMainView.Close();
@@ -744,7 +744,7 @@ namespace MapView
 									f.NewRows,
 									f.NewCols,
 									f.NewHeight,
-									f.AddHeightToCeiling);
+									f.AddToCeiling);
 						_mapViewPanel.ForceResize();
 					}
 				}

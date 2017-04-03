@@ -124,11 +124,11 @@ namespace MapView.Forms.MainWindow
 							if (_disposed)
 								return;
 
-							var senderForm = sender as Form;
-							if (senderForm == null)
+							var fsender = sender as Form;
+							if (fsender == null)
 								return;
 
-							_settings[key].Value = senderForm.Visible;
+							_settings[key].Value = fsender.Visible;
 						};
 					}
 				}

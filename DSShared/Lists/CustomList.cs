@@ -149,13 +149,13 @@ namespace DSShared.Lists
 
 		private void OnLoad(object sender, RegistryEventArgs e)
 		{
-			var regKey = e.OpenRegistryKey;
+			var regkey = e.OpenRegistryKey;
 //			Graphics g = Graphics.FromHwnd(Handle);
 			foreach (CustomListColumn col in _columns)
 			{
 				try
 				{
-					col.Width = (int)regKey.GetValue("strLen" + _name + col.Index, col.Width);
+					col.Width = (int)regkey.GetValue("strLen" + _name + col.Index, col.Width);
 				}
 				catch
 				{

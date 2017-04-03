@@ -43,10 +43,10 @@ namespace XCom.GameFiles.Map.RouteData
 
 					if (result == DialogResult.Yes)
 					{
+						mapFile.MapChanged = true;
+
 						foreach (var node in invalid)
 							mapFile.RouteFile.Delete(node);
-
-						mapFile.MapChanged = true;
 					}
 				}
 			}

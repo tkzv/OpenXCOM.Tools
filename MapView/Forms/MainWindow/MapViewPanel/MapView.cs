@@ -86,6 +86,8 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		{
 			if (_baseMap != null)
 			{
+				_baseMap.MapChanged = true;
+
 				var start = GetDragStart();
 				var end   = GetDragEnd();
 	
@@ -93,7 +95,6 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 					for (int r = start.Y; r <= end.Y; ++r)
 						_baseMap[r, c] = XCMapTile.BlankTile;
 
-				_baseMap.MapChanged = true;
 				Refresh();
 			}
 		}
@@ -119,6 +120,8 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		{
 			if (_baseMap != null && _copied != null)
 			{
+				_baseMap.MapChanged = true;
+
 				for (int
 						r = _dragStart.Y;
 						r != _baseMap.MapSize.Rows && (r - _dragStart.Y) < _copied.GetLength(0);
@@ -142,7 +145,6 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 						}
 					}
 
-				_baseMap.MapChanged = true;
 				Refresh();
 			}
 		}
