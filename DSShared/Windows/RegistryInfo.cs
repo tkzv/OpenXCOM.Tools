@@ -105,23 +105,23 @@ namespace DSShared.Windows
 		/// <param name="e"></param>
 		private void OnLoad(object sender, EventArgs e)
 		{
-			using (RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey(SoftwareRegistry))
+			using (RegistryKey regkeySoftware = Registry.CurrentUser.CreateSubKey(SoftwareRegistry))
 			{
-				using (RegistryKey keyDSShared = keySoftware.CreateSubKey(MapViewRegistry))
+				using (RegistryKey regkeyMapView = regkeySoftware.CreateSubKey(MapViewRegistry))
 				{
-					using (RegistryKey regkey = keyDSShared.CreateSubKey(_regkey))
+					using (RegistryKey regkeyViewer = regkeyMapView.CreateSubKey(_regkey))
 					{
 						foreach (string key in _dictInfo.Keys)
-							_dictInfo[key].SetValue(_obj, regkey.GetValue(key, _dictInfo[key].GetValue(_obj, null)), null);
+							_dictInfo[key].SetValue(_obj, regkeyViewer.GetValue(key, _dictInfo[key].GetValue(_obj, null)), null);
 
 						if (RegistryLoadEvent != null)
-							RegistryLoadEvent(this, new RegistryEventArgs(regkey));
+							RegistryLoadEvent(this, new RegistryEventArgs(regkeyViewer));
 
-						regkey.Close();
+						regkeyViewer.Close();
 					}
-					keyDSShared.Close();
+					regkeyMapView.Close();
 				}
-				keySoftware.Close();
+				regkeySoftware.Close();
 			}
 		}
 
@@ -139,23 +139,23 @@ namespace DSShared.Windows
 
 //				if (_saveOnClose)
 //				{
-				using (RegistryKey keySoftware = Registry.CurrentUser.CreateSubKey(SoftwareRegistry))
+				using (RegistryKey regkeySoftware = Registry.CurrentUser.CreateSubKey(SoftwareRegistry))
 				{
-					using (RegistryKey keyDSShared = keySoftware.CreateSubKey(MapViewRegistry))
+					using (RegistryKey regkeyMapView = regkeySoftware.CreateSubKey(MapViewRegistry))
 					{
-						using (RegistryKey regkey = keyDSShared.CreateSubKey(_regkey))
+						using (RegistryKey regkeyViewer = regkeyMapView.CreateSubKey(_regkey))
 						{
 							foreach (string key in _dictInfo.Keys)
-								regkey.SetValue(key, _dictInfo[key].GetValue(_obj, null));
+								regkeyViewer.SetValue(key, _dictInfo[key].GetValue(_obj, null));
 
 							if (RegistrySaveEvent != null)
-								RegistrySaveEvent(this, new RegistryEventArgs(regkey));
+								RegistrySaveEvent(this, new RegistryEventArgs(regkeyViewer));
 
-							regkey.Close();
+							regkeyViewer.Close();
 						}
-						keyDSShared.Close();
+						regkeyMapView.Close();
 					}
-					keySoftware.Close();
+					regkeySoftware.Close();
 				}
 //				}
 			}
