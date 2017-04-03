@@ -26,7 +26,7 @@ namespace MapView.Forms.MainWindow
 		public MainMenusManager(MenuItem show, MenuItem help)
 		{
 			_viewsMenu = show; // why are these MenuItems
-			_helpMenu = help;
+			_helpMenu  = help;
 		}
 
 
@@ -104,12 +104,12 @@ namespace MapView.Forms.MainWindow
 		{
 			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
-				var key = GetWindowSettingKey(it);
+				string key = GetWindowSettingKey(it);
 				if (key != null)
 				{
 					_settings.AddSetting(
 									key,
-									!(it.Tag is TopViewForm) && !(it.Tag is RouteViewForm),
+									true, // !(it.Tag is TopViewForm) && !(it.Tag is RouteViewForm)
 									"Default display window - " + it.Text,
 									"Windows",
 									null,
@@ -135,14 +135,18 @@ namespace MapView.Forms.MainWindow
 			}
 		}
 
+		/// <summary>
+		/// Opens and closes the various (nonMain) viewers, assumedly to
+		/// initialize them.
+		/// </summary>
 		public void LoadState()
 		{
 			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
-				var key = GetWindowSettingKey(it);
+				string key = GetWindowSettingKey(it);
 				if (key != null)
 				{
-					if (_settings[key].IsBoolean)
+					if (_settings[key].IsTrue)
 					{
 						it.PerformClick();
 					}

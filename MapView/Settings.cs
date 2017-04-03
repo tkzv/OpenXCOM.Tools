@@ -295,7 +295,7 @@ namespace MapView
 		}
 
 
-		internal bool IsBoolean
+		internal bool IsTrue
 		{
 			get
 			{

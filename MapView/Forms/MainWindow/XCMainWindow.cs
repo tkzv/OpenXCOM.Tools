@@ -82,7 +82,7 @@ namespace MapView
 			LogFile.WriteLine("MapView panel created");
 
 			_settingsManager = new SettingsManager();
-			_mainMenusManager = new MainMenusManager(showMenu, miHelp);
+			_mainMenusManager = new MainMenusManager(menuShow, menuHelp);
 			LogFile.WriteLine("Quick Help and About created");
 
 			LoadDefaults();
@@ -160,7 +160,7 @@ namespace MapView
 
 			tvMaps.TreeViewNodeSorter = StringComparer.OrdinalIgnoreCase;
 
-			toolStripContainer1.ContentPanel.Controls.Add(_mapViewPanel);
+			tscPanel.ContentPanel.Controls.Add(_mapViewPanel);
 			MainWindowsManager.EditButtonsFactory.MakeToolStrip(tsEdit);
 			tsEdit.Enabled = false;
 			tsEdit.Items.Add(new ToolStripSeparator());
@@ -289,10 +289,10 @@ namespace MapView
 			switch (key)
 			{
 				case "Animation":
-					onItem.Checked = (bool)val;
-					offItem.Checked = !onItem.Checked;
+					miOn.Checked = (bool)val;
+					miOff.Checked = !miOn.Checked;
 
-					if (onItem.Checked)
+					if (miOn.Checked)
 						MapViewPanel.Start();
 					else
 						MapViewPanel.Stop();
@@ -616,7 +616,7 @@ namespace MapView
 					miDoors_Click(null, null);
 				}
 
-				if (!showMenu.Enabled) // open all the forms in the show menu once
+				if (!menuShow.Enabled) // open all the forms in the show menu
 					_mainMenusManager.LoadState();
 
 				_mainWindowsManager.SetMap(baseMap); // reset all observer events
@@ -732,7 +732,7 @@ namespace MapView
 			{
 				_windowFlag = true;
 
-				foreach (MenuItem it in showMenu.MenuItems)
+				foreach (MenuItem it in menuShow.MenuItems)
 					if (it.Checked)
 						((Form)it.Tag).BringToFront();
 

@@ -31,32 +31,32 @@ namespace MapView
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(XCMainWindow));
 			this.mmMain = new System.Windows.Forms.MainMenu(this.components);
-			this.fileMenu = new System.Windows.Forms.MenuItem();
+			this.menuFile = new System.Windows.Forms.MenuItem();
 			this.miOpen = new System.Windows.Forms.MenuItem();
-			this.saveItem = new System.Windows.Forms.MenuItem();
+			this.miSave = new System.Windows.Forms.MenuItem();
 			this.miSaveImage = new System.Windows.Forms.MenuItem();
 			this.miExport = new System.Windows.Forms.MenuItem();
 			this.miResize = new System.Windows.Forms.MenuItem();
 			this.miHq = new System.Windows.Forms.MenuItem();
-			this.bar = new System.Windows.Forms.MenuItem();
+			this.miBarHori = new System.Windows.Forms.MenuItem();
 			this.miQuit = new System.Windows.Forms.MenuItem();
 			this.miEdit = new System.Windows.Forms.MenuItem();
 			this.miPaths = new System.Windows.Forms.MenuItem();
 			this.miOptions = new System.Windows.Forms.MenuItem();
 			this.miInfo = new System.Windows.Forms.MenuItem();
 			this.miAnimation = new System.Windows.Forms.MenuItem();
-			this.onItem = new System.Windows.Forms.MenuItem();
-			this.offItem = new System.Windows.Forms.MenuItem();
+			this.miOn = new System.Windows.Forms.MenuItem();
+			this.miOff = new System.Windows.Forms.MenuItem();
 			this.miDoors = new System.Windows.Forms.MenuItem();
-			this.showMenu = new System.Windows.Forms.MenuItem();
-			this.miHelp = new System.Windows.Forms.MenuItem();
+			this.menuShow = new System.Windows.Forms.MenuItem();
+			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.tvMaps = new System.Windows.Forms.TreeView();
 			this.sfdSaveDialog = new System.Windows.Forms.SaveFileDialog();
 			this.ssMain = new System.Windows.Forms.StatusStrip();
 			this.tsslMap = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tsslDimensions = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tsslPosition = new System.Windows.Forms.ToolStripStatusLabel();
-			this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+			this.tscPanel = new System.Windows.Forms.ToolStripContainer();
 			this.tsEdit = new System.Windows.Forms.ToolStrip();
 			this.tsbSelectionBox = new System.Windows.Forms.ToolStripButton();
 			this.tsbZoomIn = new System.Windows.Forms.ToolStripButton();
@@ -64,33 +64,33 @@ namespace MapView
 			this.tsbAutoZoom = new System.Windows.Forms.ToolStripButton();
 			this.csSplitter = new DSShared.Windows.CollapsibleSplitter();
 			this.ssMain.SuspendLayout();
-			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
-			this.toolStripContainer1.SuspendLayout();
+			this.tscPanel.TopToolStripPanel.SuspendLayout();
+			this.tscPanel.SuspendLayout();
 			this.tsEdit.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// mmMain
 			// 
 			this.mmMain.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.fileMenu,
+			this.menuFile,
 			this.miEdit,
 			this.miAnimation,
-			this.showMenu,
-			this.miHelp});
+			this.menuShow,
+			this.menuHelp});
 			// 
-			// fileMenu
+			// menuFile
 			// 
-			this.fileMenu.Index = 0;
-			this.fileMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.menuFile.Index = 0;
+			this.menuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miOpen,
-			this.saveItem,
+			this.miSave,
 			this.miSaveImage,
 			this.miExport,
 			this.miResize,
 			this.miHq,
-			this.bar,
+			this.miBarHori,
 			this.miQuit});
-			this.fileMenu.Text = "&File";
+			this.menuFile.Text = "&File";
 			// 
 			// miOpen
 			// 
@@ -98,12 +98,12 @@ namespace MapView
 			this.miOpen.Text = "Open";
 			this.miOpen.Click += new System.EventHandler(this.miOpen_Click);
 			// 
-			// saveItem
+			// miSave
 			// 
-			this.saveItem.Index = 1;
-			this.saveItem.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
-			this.saveItem.Text = "&Save";
-			this.saveItem.Click += new System.EventHandler(this.saveItem_Click);
+			this.miSave.Index = 1;
+			this.miSave.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
+			this.miSave.Text = "&Save";
+			this.miSave.Click += new System.EventHandler(this.saveItem_Click);
 			// 
 			// miSaveImage
 			// 
@@ -130,10 +130,10 @@ namespace MapView
 			this.miHq.Text = "Hq2x";
 			this.miHq.Click += new System.EventHandler(this.miHq_Click);
 			// 
-			// bar
+			// miBarHori
 			// 
-			this.bar.Index = 6;
-			this.bar.Text = "-";
+			this.miBarHori.Index = 6;
+			this.miBarHori.Text = "-";
 			// 
 			// miQuit
 			// 
@@ -172,26 +172,26 @@ namespace MapView
 			// 
 			this.miAnimation.Index = 2;
 			this.miAnimation.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.onItem,
-			this.offItem,
+			this.miOn,
+			this.miOff,
 			this.miDoors});
 			this.miAnimation.Text = "&Animation";
 			this.miAnimation.Visible = false;
 			// 
-			// onItem
+			// miOn
 			// 
-			this.onItem.Checked = true;
-			this.onItem.Index = 0;
-			this.onItem.Shortcut = System.Windows.Forms.Shortcut.F1;
-			this.onItem.Text = "O&n";
-			this.onItem.Click += new System.EventHandler(this.onItem_Click);
+			this.miOn.Checked = true;
+			this.miOn.Index = 0;
+			this.miOn.Shortcut = System.Windows.Forms.Shortcut.F1;
+			this.miOn.Text = "O&n";
+			this.miOn.Click += new System.EventHandler(this.onItem_Click);
 			// 
-			// offItem
+			// miOff
 			// 
-			this.offItem.Index = 1;
-			this.offItem.Shortcut = System.Windows.Forms.Shortcut.F2;
-			this.offItem.Text = "O&ff";
-			this.offItem.Click += new System.EventHandler(this.offItem_Click);
+			this.miOff.Index = 1;
+			this.miOff.Shortcut = System.Windows.Forms.Shortcut.F2;
+			this.miOff.Text = "O&ff";
+			this.miOff.Click += new System.EventHandler(this.offItem_Click);
 			// 
 			// miDoors
 			// 
@@ -199,16 +199,16 @@ namespace MapView
 			this.miDoors.Text = "Doors";
 			this.miDoors.Click += new System.EventHandler(this.miDoors_Click);
 			// 
-			// showMenu
+			// menuShow
 			// 
-			this.showMenu.Enabled = false;
-			this.showMenu.Index = 3;
-			this.showMenu.Text = "&View";
+			this.menuShow.Enabled = false;
+			this.menuShow.Index = 3;
+			this.menuShow.Text = "&View";
 			// 
-			// miHelp
+			// menuHelp
 			// 
-			this.miHelp.Index = 4;
-			this.miHelp.Text = "Help";
+			this.menuHelp.Index = 4;
+			this.menuHelp.Text = "Help";
 			// 
 			// tvMaps
 			// 
@@ -266,36 +266,36 @@ namespace MapView
 			this.tsslPosition.Name = "tsslPosition";
 			this.tsslPosition.Size = new System.Drawing.Size(80, 17);
 			// 
-			// toolStripContainer1
+			// tscPanel
 			// 
 			// 
-			// toolStripContainer1.BottomToolStripPanel
+			// tscPanel.BottomToolStripPanel
 			// 
-			this.toolStripContainer1.BottomToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tscPanel.BottomToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			// 
-			// toolStripContainer1.ContentPanel
+			// tscPanel.ContentPanel
 			// 
-			this.toolStripContainer1.ContentPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-			this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(375, 407);
-			this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tscPanel.ContentPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+			this.tscPanel.ContentPanel.Size = new System.Drawing.Size(375, 407);
+			this.tscPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			// 
-			// toolStripContainer1.LeftToolStripPanel
+			// tscPanel.LeftToolStripPanel
 			// 
-			this.toolStripContainer1.LeftToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.toolStripContainer1.Location = new System.Drawing.Point(257, 0);
-			this.toolStripContainer1.Name = "toolStripContainer1";
+			this.tscPanel.LeftToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tscPanel.Location = new System.Drawing.Point(257, 0);
+			this.tscPanel.Name = "tscPanel";
 			// 
-			// toolStripContainer1.RightToolStripPanel
+			// tscPanel.RightToolStripPanel
 			// 
-			this.toolStripContainer1.RightToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.toolStripContainer1.Size = new System.Drawing.Size(375, 432);
-			this.toolStripContainer1.TabIndex = 3;
-			this.toolStripContainer1.Text = "toolStripContainer1";
+			this.tscPanel.RightToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tscPanel.Size = new System.Drawing.Size(375, 432);
+			this.tscPanel.TabIndex = 3;
+			this.tscPanel.Text = "toolStripContainer1";
 			// 
-			// toolStripContainer1.TopToolStripPanel
+			// tscPanel.TopToolStripPanel
 			// 
-			this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.tsEdit);
-			this.toolStripContainer1.TopToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tscPanel.TopToolStripPanel.Controls.Add(this.tsEdit);
+			this.tscPanel.TopToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			// 
 			// tsEdit
 			// 
@@ -308,7 +308,7 @@ namespace MapView
 			this.tsbAutoZoom});
 			this.tsEdit.Location = new System.Drawing.Point(3, 0);
 			this.tsEdit.Name = "tsEdit";
-			this.tsEdit.Size = new System.Drawing.Size(196, 25);
+			this.tsEdit.Size = new System.Drawing.Size(165, 25);
 			this.tsEdit.TabIndex = 0;
 			// 
 			// tsbSelectionBox
@@ -372,7 +372,7 @@ namespace MapView
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.BackColor = System.Drawing.SystemColors.Control;
 			this.ClientSize = new System.Drawing.Size(632, 454);
-			this.Controls.Add(this.toolStripContainer1);
+			this.Controls.Add(this.tscPanel);
 			this.Controls.Add(this.ssMain);
 			this.Controls.Add(this.csSplitter);
 			this.Controls.Add(this.tvMaps);
@@ -387,10 +387,10 @@ namespace MapView
 			this.Activated += new System.EventHandler(this.MainWindow_Activated);
 			this.ssMain.ResumeLayout(false);
 			this.ssMain.PerformLayout();
-			this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
-			this.toolStripContainer1.TopToolStripPanel.PerformLayout();
-			this.toolStripContainer1.ResumeLayout(false);
-			this.toolStripContainer1.PerformLayout();
+			this.tscPanel.TopToolStripPanel.ResumeLayout(false);
+			this.tscPanel.TopToolStripPanel.PerformLayout();
+			this.tscPanel.ResumeLayout(false);
+			this.tscPanel.PerformLayout();
 			this.tsEdit.ResumeLayout(false);
 			this.tsEdit.PerformLayout();
 			this.ResumeLayout(false);
@@ -398,16 +398,16 @@ namespace MapView
 
 		}
 
-		private System.Windows.Forms.MenuItem fileMenu;
+		private System.Windows.Forms.MenuItem menuFile;
 		private System.Windows.Forms.MenuItem miQuit;
-		private System.Windows.Forms.MenuItem showMenu;
-		private System.Windows.Forms.MenuItem saveItem;
+		private System.Windows.Forms.MenuItem menuShow;
+		private System.Windows.Forms.MenuItem miSave;
 		private System.Windows.Forms.MainMenu mmMain;
-		private System.Windows.Forms.MenuItem bar;
-		private System.Windows.Forms.MenuItem onItem;
-		private System.Windows.Forms.MenuItem offItem;
+		private System.Windows.Forms.MenuItem miBarHori;
+		private System.Windows.Forms.MenuItem miOn;
+		private System.Windows.Forms.MenuItem miOff;
 		private System.Windows.Forms.MenuItem miAnimation;
-		private System.Windows.Forms.MenuItem miHelp;
+		private System.Windows.Forms.MenuItem menuHelp;
 		private System.Windows.Forms.MenuItem miEdit;
 		private System.Windows.Forms.TreeView tvMaps;
 		private System.Windows.Forms.MenuItem miPaths;
@@ -424,7 +424,7 @@ namespace MapView
 		private System.Windows.Forms.ToolStripStatusLabel tsslMap;
 		private System.Windows.Forms.ToolStripStatusLabel tsslDimensions;
 		private System.Windows.Forms.ToolStripStatusLabel tsslPosition;
-		private System.Windows.Forms.ToolStripContainer toolStripContainer1;
+		private System.Windows.Forms.ToolStripContainer tscPanel;
 		private System.Windows.Forms.ToolStrip tsEdit;
 		private System.Windows.Forms.MenuItem miOpen;
 		private System.Windows.Forms.ToolStripButton tsbSelectionBox;
