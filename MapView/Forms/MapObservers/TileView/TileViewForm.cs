@@ -14,14 +14,14 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 
-		public TileView TileViewControl
+		public TileView Control
 		{
-			get { return controlTileView; }
+			get { return TileViewControl; }
 		}
 
 		public MapObserverControl0 MapObserver
 		{
-			get { return controlTileView; }
+			get { return TileViewControl; }
 		}
 	}
 }

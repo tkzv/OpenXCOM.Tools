@@ -27,17 +27,17 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.controlRouteView = new global::MapView.Forms.MapObservers.RouteViews.RouteView();
+			this.RouteViewControl = new global::MapView.Forms.MapObservers.RouteViews.RouteView();
 			this.SuspendLayout();
 			// 
-			// controlRouteView
+			// RouteViewControl
 			// 
-			this.controlRouteView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.controlRouteView.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.controlRouteView.Location = new System.Drawing.Point(0, 0);
-			this.controlRouteView.Name = "controlRouteView";
-			this.controlRouteView.Size = new System.Drawing.Size(632, 454);
-			this.controlRouteView.TabIndex = 0;
+			this.RouteViewControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.RouteViewControl.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.RouteViewControl.Location = new System.Drawing.Point(0, 0);
+			this.RouteViewControl.Name = "RouteViewControl";
+			this.RouteViewControl.Size = new System.Drawing.Size(632, 454);
+			this.RouteViewControl.TabIndex = 0;
 			// 
 			// RouteViewForm
 			// 
@@ -45,7 +45,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
 			this.ClientSize = new System.Drawing.Size(632, 454);
-			this.Controls.Add(this.controlRouteView);
+			this.Controls.Add(this.RouteViewControl);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.KeyPreview = true;
 			this.MinimumSize = new System.Drawing.Size(640, 480);
@@ -58,6 +58,6 @@
 
 		#endregion
 
-		private RouteView controlRouteView;
+		private RouteView RouteViewControl;
 	}
 }

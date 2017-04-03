@@ -177,11 +177,11 @@
     <Compile Include="Forms\OtherForms\ExportForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AboutWindow.cs">
+    <Compile Include="Forms\About.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AboutWindow.Designer.cs">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
+    <Compile Include="Forms\About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
     </Compile>
     <Compile Include="Args_.cs">
       <SubType>Code</SubType>
@@ -337,8 +337,8 @@
     <Content Include="_Embedded\11_Search-16.png" />
     <Content Include="_Embedded\12_Zoom_in-16.png" />
     <Content Include="_Embedded\13_Zoom_out-16.png" />
-    <EmbeddedResource Include="Forms\AboutWindow.resx">
-      <DependentUpon>AboutWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\About.resx">
+      <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Error\ErrorWindow.resx">
       <DependentUpon>ErrorWindow.cs</DependentUpon>

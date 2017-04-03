@@ -169,7 +169,7 @@ namespace MapView
 
 			_mainViewsManager.ManageViews();
 
-			MainWindowsManager.TileView.TileViewControl.MapChangedEventHandler += OnMapChanged;
+			MainWindowsManager.TileView.Control.MapChangedEventHandler += OnMapChanged;
 
 			MapViewPanel.ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 

@@ -10,21 +10,21 @@ namespace MapView.Forms.MainWindow
 	internal sealed class MainWindowsManager
 	{
 		public static IMainShowAllManager MainShowAllManager;
-		public static EditButtonsFactory EditButtonsFactory;
+		public static EditButtonsFactory  EditButtonsFactory;
 
 
 		private static TopViewForm      _topView;
-		private static TileViewForm     _tileView;
 		private static RouteViewForm    _routeView;
 		private static TopRouteViewForm _topRouteView;
+		private static TileViewForm     _tileView;
 
 		private static HelpScreen       _helpScreen;
-		private static AboutWindow      _aboutWindow;
+		private static About      _aboutWindow;
 
 
-		public static TopRouteViewForm TopRouteView
+		public static TopViewForm TopView
 		{
-			get { return _topRouteView ?? (_topRouteView = new TopRouteViewForm()); }
+			get { return _topView ?? (_topView = new TopViewForm()); }
 		}
 
 		public static RouteViewForm RouteView
@@ -32,9 +32,9 @@ namespace MapView.Forms.MainWindow
 			get { return _routeView ?? (_routeView = new RouteViewForm()); }
 		}
 
-		public static TopViewForm TopView
+		public static TopRouteViewForm TopRouteView
 		{
-			get { return _topView ?? (_topView = new TopViewForm()); }
+			get { return _topRouteView ?? (_topRouteView = new TopRouteViewForm()); }
 		}
 
 		public static TileViewForm TileView
@@ -47,9 +47,9 @@ namespace MapView.Forms.MainWindow
 			get { return _helpScreen ?? (_helpScreen = new HelpScreen()); }
 		}
 
-		public static AboutWindow AboutWindow
+		public static About AboutWindow
 		{
-			get { return _aboutWindow ?? (_aboutWindow = new AboutWindow()); }
+			get { return _aboutWindow ?? (_aboutWindow = new About()); }
 		}
 
 		public static void Initialize()
@@ -58,8 +58,8 @@ namespace MapView.Forms.MainWindow
 
 			TopView.Control.Initialize(EditButtonsFactory);
 
-			TileView.TileViewControl.Initialize(MainShowAllManager);
-			TileView.TileViewControl.SelectedTileTypeChangedObserver += OnSelectedTileTypeChanged;
+			TileView.Control.Initialize(MainShowAllManager);
+			TileView.Control.SelectedTileTypeChangedObserver += OnSelectedTileTypeChanged;
 		}
 
 		public void SetMap(IMapBase baseMap)
@@ -68,8 +68,8 @@ namespace MapView.Forms.MainWindow
 			{
 				TopRouteView.TopViewControl,
 				TopRouteView.RouteViewControl,
-				TileView.TileViewControl,
-				RouteView.RouteViewControl,
+				TileView.Control,
+				RouteView.Control,
 				TopView.Control
 			};
 

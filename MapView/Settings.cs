@@ -91,7 +91,7 @@ namespace MapView
 				return (_dictSettings.ContainsKey(key)) ? _dictSettings[key]
 														: null;
 			}
-			set
+/*			set
 			{
 				key = key.Replace(" ", String.Empty);
 				if (!_dictSettings.ContainsKey(key))
@@ -99,9 +99,9 @@ namespace MapView
 				else
 				{
 					_dictSettings[key] = value;
-					value.Name = key;
+//					value.Key = key;
 				}
-			}
+			} */
 		}
 
 		/// <summary>
@@ -166,7 +166,7 @@ namespace MapView
 			{
 				var setting = new Setting(value, null, null);
 				_dictSettings.Add(key, setting);
-				setting.Name = key;
+//				setting.Key = key;
 			}
 			return _dictSettings[key];
 		}
@@ -312,8 +312,8 @@ namespace MapView
 		internal string Category
 		{ get; set; }
 
-		internal string Name
-		{ get; set; }
+//		internal string Key
+//		{ get; set; }
 
 		internal void FireUpdate(string key, object value) // FxCop CA1030:UseEventsWhereAppropriate
 		{

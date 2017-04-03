@@ -9,11 +9,11 @@ namespace MapView
 	/// <summary>
 	/// Displays the About box.
 	/// </summary>
-	internal sealed partial class AboutWindow
+	internal sealed partial class About
 		:
 			Form
 	{
-		public AboutWindow()
+		public About()
 		{
 			InitializeComponent();
 
@@ -35,7 +35,7 @@ namespace MapView
 		private bool _moving;
 		private double _lastPoint;
 
-		private void MoveTimer_Tick(object sender, EventArgs e)
+		private void OnTick(object sender, EventArgs e)
 		{
 			MoveWindow();
 		}
@@ -46,7 +46,7 @@ namespace MapView
 			{
 				MoveTimer.Interval = 1000;
 				_moving = true;
-				Location = GetLocation(_lastPoint += 0.01);
+				Location = GetLocation(_lastPoint += 0.035);
 			}
 			finally
 			{
@@ -62,7 +62,7 @@ namespace MapView
 			return loc;
 		}
 
-		private void AboutWindow_LocationChanged(object sender, EventArgs e)
+		private void OnLocationChanged(object sender, EventArgs e)
 		{
 			if (!_moving)
 			{
@@ -75,13 +75,13 @@ namespace MapView
 			}
 		}
 
-		private void AboutWindow_Shown(object sender, EventArgs e)
+		private void OnShown(object sender, EventArgs e)
 		{
 			_loc = Location;
 			MoveWindow();
 		}
 
-		private void keyClose(object sender, KeyEventArgs e)
+		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
 			switch (e.KeyCode)
 			{

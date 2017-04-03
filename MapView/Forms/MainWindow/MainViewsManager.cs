@@ -33,7 +33,7 @@ namespace MapView.Forms.MainWindow
 				MainWindowsManager.TopView.Control.Settings;
 
 			MainWindowsManager.TopRouteView.RouteViewControl.Settings =
-				MainWindowsManager.RouteView.RouteViewControl.Settings;
+				MainWindowsManager.RouteView.Control.Settings;
 
 			MainWindowsManager.TopRouteView.TopViewControl.LoadDefaultSettings();
 			MainWindowsManager.TopRouteView.RouteViewControl.LoadDefaultSettings();
@@ -52,7 +52,7 @@ namespace MapView.Forms.MainWindow
 				MainWindowsManager.TopView.Control.RegistryInfo;
 
 			MainWindowsManager.TopRouteView.RouteViewControl.RegistryInfo =
-				MainWindowsManager.RouteView.RouteViewControl.RegistryInfo;
+				MainWindowsManager.RouteView.Control.RegistryInfo;
 		}
 
 		private void SetViewToObserver(Form f, string caption, string regkey = null)

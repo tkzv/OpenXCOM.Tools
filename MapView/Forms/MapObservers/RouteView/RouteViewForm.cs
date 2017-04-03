@@ -14,14 +14,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
-		public RouteView RouteViewControl
+		public RouteView Control
 		{
-			get { return controlRouteView; }
+			get { return RouteViewControl; }
 		}
 
 		public MapObserverControl0 MapObserver
 		{
-			get { return controlRouteView; }
+			get { return RouteViewControl; }
 		}
 	}
 }

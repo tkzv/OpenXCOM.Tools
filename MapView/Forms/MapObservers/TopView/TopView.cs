@@ -140,7 +140,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				end.X = Math.Max(MapViewPanel.Instance.MapView.DragStart.X, MapViewPanel.Instance.MapView.DragEnd.X);
 				end.Y = Math.Max(MapViewPanel.Instance.MapView.DragStart.Y, MapViewPanel.Instance.MapView.DragEnd.Y);
 
-				var tileView = MainWindowsManager.TileView.TileViewControl;
+				var tileView = MainWindowsManager.TileView.Control;
 				for (int c = start.X; c <= end.X; ++c)
 					for (int r = start.Y; r <= end.Y; ++r)
 						((XCMapTile)map[r, c])[bottom.SelectedQuadrant] = tileView.SelectedTile;

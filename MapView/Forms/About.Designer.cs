@@ -1,6 +1,6 @@
 namespace MapView
 {
-	partial class AboutWindow
+	partial class About
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -76,7 +76,7 @@ namespace MapView
 			// 
 			this.MoveTimer.Enabled = true;
 			this.MoveTimer.Interval = 1000;
-			this.MoveTimer.Tick += new System.EventHandler(this.MoveTimer_Tick);
+			this.MoveTimer.Tick += new System.EventHandler(this.OnTick);
 			// 
 			// label4
 			// 
@@ -117,9 +117,9 @@ namespace MapView
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "About";
-			this.Shown += new System.EventHandler(this.AboutWindow_Shown);
-			this.LocationChanged += new System.EventHandler(this.AboutWindow_LocationChanged);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyClose);
+			this.Shown += new System.EventHandler(this.OnShown);
+			this.LocationChanged += new System.EventHandler(this.OnLocationChanged);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
 			this.ResumeLayout(false);
 
 		}
