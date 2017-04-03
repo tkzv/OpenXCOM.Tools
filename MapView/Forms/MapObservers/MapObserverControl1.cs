@@ -40,12 +40,12 @@ namespace MapView
 			}
 		}
 
-		public virtual void HeightChanged(IMapBase sender, HeightChangedEventArgs e)
+		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
 			Refresh();
 		}
 
-		public virtual void SelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
+		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			Refresh();
 		}
@@ -57,23 +57,15 @@ namespace MapView
 			set
 			{
 				_regInfo = value;
-
-				value.LoadingEvent += delegate(object sender, RegistryEventArgs e)
-				{
-					OnRISettingsLoad(e);
-				};
-
-				value.SavingEvent += delegate(object sender, RegistryEventArgs e)
-				{
-					OnRISettingsSave(e);
-				};
+				value.RegistryLoadEvent += (sender, e) => OnRegistrySettingsLoad(e);
+				value.RegistrySaveEvent  += (sender, e) => OnRegistrySettingsSave(e);
 			}
 		}
 
-		protected virtual void OnRISettingsSave(RegistryEventArgs e)
+		protected virtual void OnRegistrySettingsSave(RegistryEventArgs e)
 		{}
 
-		protected virtual void OnRISettingsLoad(RegistryEventArgs e)
+		protected virtual void OnRegistrySettingsLoad(RegistryEventArgs e)
 		{}
 
 		[Browsable(false)]

@@ -40,10 +40,10 @@ namespace MapView
 			_scrollBarHori = new HScrollBar();
 			_scrollBarVert = new VScrollBar();
 
-			_scrollBarHori.Scroll += horiz_Scroll;
+			_scrollBarHori.Scroll += OnHorizontalScroll;
 			_scrollBarHori.Dock = DockStyle.Bottom;
 
-			_scrollBarVert.Scroll += vert_Scroll;
+			_scrollBarVert.Scroll += OnVerticalScroll;
 			_scrollBarVert.Dock = DockStyle.Right;
 
 			Controls.AddRange(new Control[]{ _scrollBarVert, _scrollBarHori });
@@ -110,8 +110,8 @@ namespace MapView
 			_scrollBarVert.Value  = _scrollBarVert.Minimum;
 			_scrollBarHori.Value = _scrollBarHori.Minimum;
 
-			vert_Scroll(null, null);
-			horiz_Scroll(null, null);
+			OnVerticalScroll(null, null);
+			OnHorizontalScroll(null, null);
 
 //			int h = 0;
 //			int w = 0;
@@ -140,7 +140,7 @@ namespace MapView
 			_mapView.Refresh();
 		}
 
-		private void vert_Scroll(object sender, ScrollEventArgs e)
+		private void OnVerticalScroll(object sender, ScrollEventArgs e)
 		{
 			_mapView.Location = new Point(
 										_mapView.Left,
@@ -148,7 +148,7 @@ namespace MapView
 			_mapView.Refresh();
 		}
 
-		private void horiz_Scroll(object sender, ScrollEventArgs e)
+		private void OnHorizontalScroll(object sender, ScrollEventArgs e)
 		{
 			_mapView.Location = new Point(
 										-(_scrollBarHori.Value),

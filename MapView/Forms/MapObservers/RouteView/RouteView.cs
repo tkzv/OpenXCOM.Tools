@@ -25,7 +25,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 	{
 		private readonly RoutePanel _routePanel;
 
-		private Panel _contentPanel;
+		private Panel pRoutes;
 
 		private XCMapFile _mapFile;
 		private RouteNode _nodeSelected;
@@ -41,9 +41,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			InitializeComponent();
 
 			_routePanel = new RoutePanel();
-			_contentPanel.Controls.Add(_routePanel);
-			_routePanel.MapPanelClicked += RoutePanel_Click;
-			_routePanel.MouseMove += RoutePanel_MouseMove;
+			pRoutes.Controls.Add(_routePanel);
+			_routePanel.MapPanelClicked += OnRoutePanelClick;
+			_routePanel.MouseMove += OnRoutePanelMouseMove;
 			_routePanel.Dock = DockStyle.Fill;
 
 			var unitTypes = new object[]
@@ -97,32 +97,32 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
-		private void options_click(object sender, EventArgs e)
+		private void OnOptionsClick(object sender, EventArgs e)
 		{
 			var f = new OptionsForm("RouteViewOptions", Settings);
 			f.Text = "Route View Options";
 			f.Show();
 		}
 
-		private void BrushColorChanged(object sender, string key, object val)
+		private void OnBrushColorChanged(object sender, string key, object val)
 		{
 			_routePanel.MapBrushes[key].Color = (Color)val;
 			Refresh();
 		}
 
-		private void PenColorChanged(object sender, string key, object val)
+		private void OnPenColorChanged(object sender, string key, object val)
 		{
 			_routePanel.MapPens[key].Color = (Color)val;
 			Refresh();
 		}
 
-		private void PenWidthChanged(object sender, string key, object val)
+		private void OnPenWidthChanged(object sender, string key, object val)
 		{
 			_routePanel.MapPens[key].Width = (int)val;
 			Refresh();
 		}
 		
-		private void RoutePanel_MouseMove(object sender, MouseEventArgs args)
+		private void OnRoutePanelMouseMove(object sender, MouseEventArgs args)
 		{
 			var tile = _routePanel.GetTile(args.X, args.Y);
 			if (tile != null && tile.Node != null)
@@ -136,7 +136,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_routePanel.Refresh(); // mouseover refresh for RouteView.
 		}
 
-		private void RoutePanel_Click(object sender, MapPanelClickEventArgs args)
+		private void OnRoutePanelClick(object sender, MapPanelClickEventArgs args)
 		{
 			_routePanel.Focus();
 			labelSelectedPos.Text = Text;
@@ -184,10 +184,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private ConnectNodeType GetConnectionSetting()
 		{
-			if (connectNodesToolStripMenuItem.Text == "Connect One way")
+			if (tsmiConnectType.Text == "Connect One way")
 				return ConnectNodeType.ConnectOneWay;
 
-			if (connectNodesToolStripMenuItem.Text == "Connect Two ways")
+			if (tsmiConnectType.Text == "Connect Two ways")
 				return ConnectNodeType.ConnectTwoWays;
 
 			return ConnectNodeType.DoNotConnect;
@@ -392,7 +392,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				_loadingMap = true;
 				try
 				{
-					textboxExtraHeight.Text = _mapFile.RouteFile.ExtraHeight.ToString(System.Globalization.CultureInfo.InvariantCulture);
+					tstbExtraHeight.Text = _mapFile.RouteFile.ExtraHeight.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
 					DeselectNode();
 
@@ -424,7 +424,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		public override void SelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
+		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			Text = string.Format(
 							System.Globalization.CultureInfo.InvariantCulture,
@@ -432,7 +432,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							Environment.NewLine, e.MapPosition.Col, e.MapPosition.Row);
 		}
 
-		public override void HeightChanged(IMapBase sender, HeightChangedEventArgs e)
+		public override void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
 			DeselectNode();
 			FillNodeInformation();
@@ -440,13 +440,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			Refresh();
 		}
 
-		private void cbUnitType_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnUnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 				_nodeSelected.UsableType = (UnitType)cbUnitType.SelectedItem;
 		}
 
-		private void cbPriority_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnPatrolPrioritySelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 			{
@@ -455,19 +455,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void cbAttack_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnBaseAttackSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 				_nodeSelected.Attack = (BaseModuleAttack)cbAttack.SelectedItem;
 		}
 
-		private void cbSpawnRank_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnSpawnRankSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 				_nodeSelected.UsableRank = (byte)((StrEnum)cbSpawnRank.SelectedItem).Enum;
 		}
 
-		private void cbSpawnWeight_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnSpawnWeightSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 			{
@@ -572,57 +572,57 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		} */
 
-		private void cbLink1Dest_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnLink1DestSelectedIndexChanged(object sender, EventArgs e)
 		{
 			cbLink_SelectedIndexChanged(cbLink1Dest, 0, tbLink1Dist);
 		}
 
-		private void cbLink1Dest_Leave(object sender, EventArgs e)
+		private void OnLink1DestLeave(object sender, EventArgs e)
 		{
 //			cbLink_Leave(cbLink1, 0); // don't do any node-linking OnLeave unless i vet it first.
 		}
 
-		private void cbLink2_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnLink2DestSelectedIndexChanged(object sender, EventArgs e)
 		{
 			cbLink_SelectedIndexChanged(cbLink2Dest, 1, tbLink2Dist);
 		}
 
-		private void cbLink2Dest_Leave(object sender, EventArgs e)
+		private void OnLink2DestLeave(object sender, EventArgs e)
 		{
 //			cbLink_Leave(cbLink2, 1); // don't do any node-linking OnLeave unless i vet it first.
 		}
 
-		private void cbLink3Dest_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnLink3DestSelectedIndexChanged(object sender, EventArgs e)
 		{
 			cbLink_SelectedIndexChanged(cbLink3Dest, 2, tbLink3Dist);
 		}
 
-		private void cbLink3Dest_Leave(object sender, EventArgs e)
+		private void OnLink3DestLeave(object sender, EventArgs e)
 		{
 //			cbLink_Leave(cbLink3, 2); // don't do any node-linking OnLeave unless i vet it first.
 		}
 
-		private void cbLink4Dest_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnLink4DestSelectedIndexChanged(object sender, EventArgs e)
 		{
 			cbLink_SelectedIndexChanged(cbLink4Dest, 3, tbLink4Dist);
 		}
 
-		private void cbLink4Dest_Leave(object sender, EventArgs e)
+		private void OnLink4DestLeave(object sender, EventArgs e)
 		{
 //			cbLink_Leave(cbLink4, 3); // don't do any node-linking OnLeave unless i vet it first.
 		}
 
-		private void cbLink5Dest_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnLink5DestSelectedIndexChanged(object sender, EventArgs e)
 		{
 			cbLink_SelectedIndexChanged(cbLink5Dest, 4, tbLink5Dist);
 		}
 
-		private void cbLink5Dest_Leave(object sender, EventArgs e)
+		private void OnLink5DestLeave(object sender, EventArgs e)
 		{
 //			cbLink_Leave(cbLink5, 4); // don't do any node-linking OnLeave unless i vet it first.
 		}
 
-		private void cbLink1UnitType_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnLink1UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 			{
@@ -631,7 +631,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void cbLink2UnitType_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnLink2UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 			{
@@ -640,7 +640,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void cbLink3UnitType_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnLink3UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 			{
@@ -649,7 +649,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void cbLink4UnitType_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnLink4UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 			{
@@ -658,7 +658,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void cbLink5UnitType_SelectedIndexChanged(object sender, EventArgs e)
+		private void OnLink5UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 			{
@@ -667,7 +667,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void tbLink1Dist_KeyDown(object sender, KeyEventArgs e)
+		private void OnLink1DistKeyDown(object sender, KeyEventArgs e)
 		{
 			switch (e.KeyCode)
 			{
@@ -685,7 +685,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void tbLink1Dist_Leave(object sender, EventArgs e)
+		private void OnLink1DistLeave(object sender, EventArgs e)
 		{
 			if (_nodeSelected != null)
 			{
@@ -701,7 +701,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void tbLink2Dist_KeyDown(object sender, KeyEventArgs e)
+		private void OnLink2DistKeyDown(object sender, KeyEventArgs e)
 		{
 			switch (e.KeyCode)
 			{
@@ -719,7 +719,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void tbLink2Dist_Leave(object sender, EventArgs e)
+		private void OnLink2DistLeave(object sender, EventArgs e)
 		{
 			if (_nodeSelected != null)
 			{
@@ -735,7 +735,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void tbLink3Dist_KeyDown(object sender, KeyEventArgs e)
+		private void OnLink3DistKeyDown(object sender, KeyEventArgs e)
 		{
 			switch (e.KeyCode)
 			{
@@ -753,7 +753,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void tbLink3Dist_Leave(object sender, EventArgs e)
+		private void OnLink3DistLeave(object sender, EventArgs e)
 		{
 			if (_nodeSelected != null)
 			{
@@ -769,7 +769,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void tbLink4Dist_KeyDown(object sender, KeyEventArgs e)
+		private void OnLink4DistKeyDown(object sender, KeyEventArgs e)
 		{
 			switch (e.KeyCode)
 			{
@@ -787,7 +787,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void tbLink4Dist_Leave(object sender, EventArgs e)
+		private void OnLink4DistLeave(object sender, EventArgs e)
 		{
 			if (_nodeSelected != null)
 			{
@@ -803,7 +803,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void tbLink5Dist_KeyDown(object sender, KeyEventArgs e)
+		private void OnLink5DistKeyDown(object sender, KeyEventArgs e)
 		{
 			switch (e.KeyCode)
 			{
@@ -821,7 +821,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void tbLink5Dist_Leave(object sender, EventArgs e)
+		private void OnLink5DistLeave(object sender, EventArgs e)
 		{
 			if (_nodeSelected != null)
 			{
@@ -837,7 +837,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void btnCopy_Click(object sender, EventArgs e)
+		private void OnCopyClick(object sender, EventArgs e)
 		{
 			var nodeText = string.Format(
 									System.Globalization.CultureInfo.InvariantCulture,
@@ -850,7 +850,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			Clipboard.SetText(nodeText);
 		}
 
-		private void btnPaste_Click(object sender, EventArgs e)
+		private void OnPasteClick(object sender, EventArgs e)
 		{
 			var nodeData = Clipboard.GetText().Split('|');
 			if (nodeData[0] == "MVNode")
@@ -863,7 +863,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void btnDelete_Click(object sender, EventArgs e)
+		private void OnDeleteClick(object sender, EventArgs e)
 		{
 			if (_nodeSelected != null)
 			{
@@ -892,7 +892,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_routePanel.DeselectLocation();
 		}
 
-		private void RmpView_KeyDown(object sender, KeyEventArgs e)
+		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control && e.KeyCode == Keys.S
 				&& _mapFile != null)
@@ -902,28 +902,28 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void ExtraHeight_TextChanged(object sender, EventArgs e)
+		private void OnExtraHeightChanged(object sender, EventArgs e)
 		{
 			byte bite;
 			if (byte.TryParse(
-							textboxExtraHeight.Text,
+							tstbExtraHeight.Text,
 							System.Globalization.NumberStyles.Integer,
 							System.Globalization.CultureInfo.InvariantCulture,
 							out bite))
 			{
 				_mapFile.RouteFile.ExtraHeight = bite;
-				textboxExtraHeight.Text = bite.ToString(System.Globalization.CultureInfo.InvariantCulture);
+				tstbExtraHeight.Text = bite.ToString(System.Globalization.CultureInfo.InvariantCulture);
 			}
 			else
 			{
 				_mapFile.RouteFile.ExtraHeight = 0;
-				textboxExtraHeight.Text = "0";
+				tstbExtraHeight.Text = "0";
 			}
 
 			_mapFile.MapChanged |= !_loadingMap;
 		}
 
-		private void makeAllNodeRank0ToolStripMenuItem_Click(object sender, EventArgs e)
+		private void OnMakeAllNodeRank0Click(object sender, EventArgs e)
 		{
 			var changeCount = 0;
 			foreach (RouteNode node in _mapFile.RouteFile)
@@ -962,11 +962,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 		public override void LoadDefaultSettings()
 		{
 			var brushes = _routePanel.MapBrushes;
-			var pens = _routePanel.MapPens;
+			var pens    = _routePanel.MapPens;
 
-			var bc = new ValueChangedEventHandler(BrushColorChanged);
-			var pc = new ValueChangedEventHandler(PenColorChanged);
-			var pw = new ValueChangedEventHandler(PenWidthChanged);
+			var bc = new ValueChangedEventHandler(OnBrushColorChanged);
+			var pc = new ValueChangedEventHandler(OnPenColorChanged);
+			var pw = new ValueChangedEventHandler(OnPenWidthChanged);
 
 			var settings = Settings;
 			var redPen = new Pen(new SolidBrush(Color.Red), 2);
@@ -1069,7 +1069,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							"Other",
 							bc, false, null);
 
-			connectNodesToolStripMenuItem.SelectedIndex = 0;
+			tsmiConnectType.SelectedIndex = 0;
 		}
 	}
 }

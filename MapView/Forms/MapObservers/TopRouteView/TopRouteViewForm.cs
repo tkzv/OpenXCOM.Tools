@@ -10,16 +10,13 @@ namespace MapView.Forms.MapObservers.TileViews
 {
 	internal sealed partial class TopRouteViewForm
 		:
-		Form
+			Form
 	{
-		public RegistryInfo RegistryInfo; // FxCop CA1823.
-
-
 		public TopRouteViewForm()
 		{
 			InitializeComponent();
 
-			RegistryInfo = new RegistryInfo(this, "TopRouteViewForm"); // TODO: what's this doing if anything.
+			var regInfo = new RegistryInfo(this, "TopRouteViewForm"); // TODO: what's this doing if anything.
 		}
 
 

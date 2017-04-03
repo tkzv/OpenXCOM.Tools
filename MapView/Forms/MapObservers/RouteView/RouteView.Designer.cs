@@ -64,14 +64,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink2UnitType = new System.Windows.Forms.ComboBox();
 			this.cbLink1UnitType = new System.Windows.Forms.ComboBox();
 			this.labelUnitInfo = new System.Windows.Forms.Label();
-			this._contentPanel = new System.Windows.Forms.Panel();
+			this.pRoutes = new System.Windows.Forms.Panel();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.miEdit = new System.Windows.Forms.ToolStripMenuItem();
 			this.miOptions = new System.Windows.Forms.ToolStripMenuItem();
-			this.makeAllNodeRank0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.connectNodesToolStripMenuItem = new System.Windows.Forms.ToolStripComboBox();
-			this.extraHeightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.textboxExtraHeight = new System.Windows.Forms.ToolStripTextBox();
+			this.tsmiMakeAllNodeRank0 = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmiConnectType = new System.Windows.Forms.ToolStripComboBox();
+			this.tsmiExtraHeight = new System.Windows.Forms.ToolStripMenuItem();
+			this.tstbExtraHeight = new System.Windows.Forms.ToolStripTextBox();
 			this.gbLinkData = new System.Windows.Forms.GroupBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.panel2 = new System.Windows.Forms.Panel();
@@ -95,8 +95,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink5Dest.Name = "cbLink5Dest";
 			this.cbLink5Dest.Size = new System.Drawing.Size(75, 20);
 			this.cbLink5Dest.TabIndex = 20;
-			this.cbLink5Dest.SelectedIndexChanged += new System.EventHandler(this.cbLink5Dest_SelectedIndexChanged);
-			this.cbLink5Dest.Leave += new System.EventHandler(this.cbLink5Dest_Leave);
+			this.cbLink5Dest.SelectedIndexChanged += new System.EventHandler(this.OnLink5DestSelectedIndexChanged);
+			this.cbLink5Dest.Leave += new System.EventHandler(this.OnLink5DestLeave);
 			// 
 			// cbLink4Dest
 			// 
@@ -104,8 +104,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink4Dest.Name = "cbLink4Dest";
 			this.cbLink4Dest.Size = new System.Drawing.Size(75, 20);
 			this.cbLink4Dest.TabIndex = 19;
-			this.cbLink4Dest.SelectedIndexChanged += new System.EventHandler(this.cbLink4Dest_SelectedIndexChanged);
-			this.cbLink4Dest.Leave += new System.EventHandler(this.cbLink4Dest_Leave);
+			this.cbLink4Dest.SelectedIndexChanged += new System.EventHandler(this.OnLink4DestSelectedIndexChanged);
+			this.cbLink4Dest.Leave += new System.EventHandler(this.OnLink4DestLeave);
 			// 
 			// cbLink3Dest
 			// 
@@ -113,8 +113,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink3Dest.Name = "cbLink3Dest";
 			this.cbLink3Dest.Size = new System.Drawing.Size(75, 20);
 			this.cbLink3Dest.TabIndex = 18;
-			this.cbLink3Dest.SelectedIndexChanged += new System.EventHandler(this.cbLink3Dest_SelectedIndexChanged);
-			this.cbLink3Dest.Leave += new System.EventHandler(this.cbLink3Dest_Leave);
+			this.cbLink3Dest.SelectedIndexChanged += new System.EventHandler(this.OnLink3DestSelectedIndexChanged);
+			this.cbLink3Dest.Leave += new System.EventHandler(this.OnLink3DestLeave);
 			// 
 			// cbLink2Dest
 			// 
@@ -122,8 +122,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink2Dest.Name = "cbLink2Dest";
 			this.cbLink2Dest.Size = new System.Drawing.Size(75, 20);
 			this.cbLink2Dest.TabIndex = 17;
-			this.cbLink2Dest.SelectedIndexChanged += new System.EventHandler(this.cbLink2_SelectedIndexChanged);
-			this.cbLink2Dest.Leave += new System.EventHandler(this.cbLink2Dest_Leave);
+			this.cbLink2Dest.SelectedIndexChanged += new System.EventHandler(this.OnLink2DestSelectedIndexChanged);
+			this.cbLink2Dest.Leave += new System.EventHandler(this.OnLink2DestLeave);
 			// 
 			// cbLink1Dest
 			// 
@@ -131,8 +131,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink1Dest.Name = "cbLink1Dest";
 			this.cbLink1Dest.Size = new System.Drawing.Size(75, 20);
 			this.cbLink1Dest.TabIndex = 16;
-			this.cbLink1Dest.SelectedIndexChanged += new System.EventHandler(this.cbLink1Dest_SelectedIndexChanged);
-			this.cbLink1Dest.Leave += new System.EventHandler(this.cbLink1Dest_Leave);
+			this.cbLink1Dest.SelectedIndexChanged += new System.EventHandler(this.OnLink1DestSelectedIndexChanged);
+			this.cbLink1Dest.Leave += new System.EventHandler(this.OnLink1DestLeave);
 			// 
 			// labelLink5
 			// 
@@ -181,7 +181,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbPriority.Size = new System.Drawing.Size(130, 20);
 			this.cbPriority.TabIndex = 8;
 			this.toolTip1.SetToolTip(this.cbPriority, "How likely an alien will go to this location");
-			this.cbPriority.SelectedIndexChanged += new System.EventHandler(this.cbPriority_SelectedIndexChanged);
+			this.cbPriority.SelectedIndexChanged += new System.EventHandler(this.OnPatrolPrioritySelectedIndexChanged);
 			// 
 			// cbSpawnRank
 			// 
@@ -190,7 +190,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbSpawnRank.Size = new System.Drawing.Size(130, 20);
 			this.cbSpawnRank.TabIndex = 7;
 			this.toolTip1.SetToolTip(this.cbSpawnRank, "Rank must be 0 if this isn\'t a UFO or UFO base, else will not spawn");
-			this.cbSpawnRank.SelectedIndexChanged += new System.EventHandler(this.cbSpawnRank_SelectedIndexChanged);
+			this.cbSpawnRank.SelectedIndexChanged += new System.EventHandler(this.OnSpawnRankSelectedIndexChanged);
 			// 
 			// cbUnitType
 			// 
@@ -198,7 +198,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbUnitType.Name = "cbUnitType";
 			this.cbUnitType.Size = new System.Drawing.Size(130, 20);
 			this.cbUnitType.TabIndex = 6;
-			this.cbUnitType.SelectedIndexChanged += new System.EventHandler(this.cbUnitType_SelectedIndexChanged);
+			this.cbUnitType.SelectedIndexChanged += new System.EventHandler(this.OnUnitTypeSelectedIndexChanged);
 			// 
 			// labelSpawnWeight
 			// 
@@ -265,7 +265,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbSpawnWeight.Name = "cbSpawnWeight";
 			this.cbSpawnWeight.Size = new System.Drawing.Size(130, 20);
 			this.cbSpawnWeight.TabIndex = 10;
-			this.cbSpawnWeight.SelectedIndexChanged += new System.EventHandler(this.cbSpawnWeight_SelectedIndexChanged);
+			this.cbSpawnWeight.SelectedIndexChanged += new System.EventHandler(this.OnSpawnWeightSelectedIndexChanged);
 			// 
 			// btnPaste
 			// 
@@ -274,7 +274,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnPaste.Size = new System.Drawing.Size(85, 30);
 			this.btnPaste.TabIndex = 35;
 			this.btnPaste.Text = "Paste";
-			this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
+			this.btnPaste.Click += new System.EventHandler(this.OnPasteClick);
 			// 
 			// labelCurrentMouseOver
 			// 
@@ -292,7 +292,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnCopy.Size = new System.Drawing.Size(85, 30);
 			this.btnCopy.TabIndex = 34;
 			this.btnCopy.Text = "Copy";
-			this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
+			this.btnCopy.Click += new System.EventHandler(this.OnCopyClick);
 			// 
 			// btnDelete
 			// 
@@ -301,7 +301,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnDelete.Size = new System.Drawing.Size(85, 30);
 			this.btnDelete.TabIndex = 36;
 			this.btnDelete.Text = "Delete";
-			this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+			this.btnDelete.Click += new System.EventHandler(this.OnDeleteClick);
 			// 
 			// labelSelected
 			// 
@@ -318,8 +318,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tbLink5Dist.Name = "tbLink5Dist";
 			this.tbLink5Dist.Size = new System.Drawing.Size(30, 19);
 			this.tbLink5Dist.TabIndex = 32;
-			this.tbLink5Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLink5Dist_KeyDown);
-			this.tbLink5Dist.Leave += new System.EventHandler(this.tbLink5Dist_Leave);
+			this.tbLink5Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnLink5DistKeyDown);
+			this.tbLink5Dist.Leave += new System.EventHandler(this.OnLink5DistLeave);
 			// 
 			// tbLink4Dist
 			// 
@@ -327,8 +327,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tbLink4Dist.Name = "tbLink4Dist";
 			this.tbLink4Dist.Size = new System.Drawing.Size(30, 19);
 			this.tbLink4Dist.TabIndex = 31;
-			this.tbLink4Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLink4Dist_KeyDown);
-			this.tbLink4Dist.Leave += new System.EventHandler(this.tbLink4Dist_Leave);
+			this.tbLink4Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnLink4DistKeyDown);
+			this.tbLink4Dist.Leave += new System.EventHandler(this.OnLink4DistLeave);
 			// 
 			// tbLink3Dist
 			// 
@@ -336,8 +336,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tbLink3Dist.Name = "tbLink3Dist";
 			this.tbLink3Dist.Size = new System.Drawing.Size(30, 19);
 			this.tbLink3Dist.TabIndex = 30;
-			this.tbLink3Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLink3Dist_KeyDown);
-			this.tbLink3Dist.Leave += new System.EventHandler(this.tbLink3Dist_Leave);
+			this.tbLink3Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnLink3DistKeyDown);
+			this.tbLink3Dist.Leave += new System.EventHandler(this.OnLink3DistLeave);
 			// 
 			// tbLink2Dist
 			// 
@@ -345,8 +345,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tbLink2Dist.Name = "tbLink2Dist";
 			this.tbLink2Dist.Size = new System.Drawing.Size(30, 19);
 			this.tbLink2Dist.TabIndex = 29;
-			this.tbLink2Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLink2Dist_KeyDown);
-			this.tbLink2Dist.Leave += new System.EventHandler(this.tbLink2Dist_Leave);
+			this.tbLink2Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnLink2DistKeyDown);
+			this.tbLink2Dist.Leave += new System.EventHandler(this.OnLink2DistLeave);
 			// 
 			// tbLink1Dist
 			// 
@@ -354,8 +354,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tbLink1Dist.Name = "tbLink1Dist";
 			this.tbLink1Dist.Size = new System.Drawing.Size(30, 19);
 			this.tbLink1Dist.TabIndex = 28;
-			this.tbLink1Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbLink1Dist_KeyDown);
-			this.tbLink1Dist.Leave += new System.EventHandler(this.tbLink1Dist_Leave);
+			this.tbLink1Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnLink1DistKeyDown);
+			this.tbLink1Dist.Leave += new System.EventHandler(this.OnLink1DistLeave);
 			// 
 			// labelDist
 			// 
@@ -371,7 +371,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink5UnitType.Name = "cbLink5UnitType";
 			this.cbLink5UnitType.Size = new System.Drawing.Size(110, 20);
 			this.cbLink5UnitType.TabIndex = 26;
-			this.cbLink5UnitType.SelectedIndexChanged += new System.EventHandler(this.cbLink5UnitType_SelectedIndexChanged);
+			this.cbLink5UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLink5UnitTypeSelectedIndexChanged);
 			// 
 			// cbLink4UnitType
 			// 
@@ -379,7 +379,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink4UnitType.Name = "cbLink4UnitType";
 			this.cbLink4UnitType.Size = new System.Drawing.Size(110, 20);
 			this.cbLink4UnitType.TabIndex = 25;
-			this.cbLink4UnitType.SelectedIndexChanged += new System.EventHandler(this.cbLink4UnitType_SelectedIndexChanged);
+			this.cbLink4UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLink4UnitTypeSelectedIndexChanged);
 			// 
 			// cbLink3UnitType
 			// 
@@ -387,7 +387,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink3UnitType.Name = "cbLink3UnitType";
 			this.cbLink3UnitType.Size = new System.Drawing.Size(110, 20);
 			this.cbLink3UnitType.TabIndex = 24;
-			this.cbLink3UnitType.SelectedIndexChanged += new System.EventHandler(this.cbLink3UnitType_SelectedIndexChanged);
+			this.cbLink3UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLink3UnitTypeSelectedIndexChanged);
 			// 
 			// cbLink2UnitType
 			// 
@@ -395,7 +395,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink2UnitType.Name = "cbLink2UnitType";
 			this.cbLink2UnitType.Size = new System.Drawing.Size(110, 20);
 			this.cbLink2UnitType.TabIndex = 23;
-			this.cbLink2UnitType.SelectedIndexChanged += new System.EventHandler(this.cbLink2UnitType_SelectedIndexChanged);
+			this.cbLink2UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLink2UnitTypeSelectedIndexChanged);
 			// 
 			// cbLink1UnitType
 			// 
@@ -403,7 +403,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink1UnitType.Name = "cbLink1UnitType";
 			this.cbLink1UnitType.Size = new System.Drawing.Size(110, 20);
 			this.cbLink1UnitType.TabIndex = 22;
-			this.cbLink1UnitType.SelectedIndexChanged += new System.EventHandler(this.cbLink1UnitType_SelectedIndexChanged);
+			this.cbLink1UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLink1UnitTypeSelectedIndexChanged);
 			// 
 			// labelUnitInfo
 			// 
@@ -413,24 +413,24 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelUnitInfo.TabIndex = 21;
 			this.labelUnitInfo.Text = "Unit Info";
 			// 
-			// _contentPanel
+			// pRoutes
 			// 
-			this._contentPanel.AutoScroll = true;
-			this._contentPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this._contentPanel.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this._contentPanel.Location = new System.Drawing.Point(0, 24);
-			this._contentPanel.Name = "_contentPanel";
-			this._contentPanel.Size = new System.Drawing.Size(640, 217);
-			this._contentPanel.TabIndex = 2;
+			this.pRoutes.AutoScroll = true;
+			this.pRoutes.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pRoutes.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.pRoutes.Location = new System.Drawing.Point(0, 24);
+			this.pRoutes.Name = "pRoutes";
+			this.pRoutes.Size = new System.Drawing.Size(640, 217);
+			this.pRoutes.TabIndex = 2;
 			// 
 			// menuStrip1
 			// 
 			this.menuStrip1.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.miEdit,
-			this.connectNodesToolStripMenuItem,
-			this.extraHeightToolStripMenuItem,
-			this.textboxExtraHeight});
+			this.tsmiConnectType,
+			this.tsmiExtraHeight,
+			this.tstbExtraHeight});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(640, 24);
@@ -441,7 +441,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.miEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.miOptions,
-			this.makeAllNodeRank0ToolStripMenuItem});
+			this.tsmiMakeAllNodeRank0});
 			this.miEdit.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.miEdit.Name = "miEdit";
 			this.miEdit.Size = new System.Drawing.Size(37, 20);
@@ -452,43 +452,45 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.miOptions.Name = "miOptions";
 			this.miOptions.Size = new System.Drawing.Size(199, 22);
 			this.miOptions.Text = "Options";
-			this.miOptions.Click += new System.EventHandler(this.options_click);
+			this.miOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
-			// makeAllNodeRank0ToolStripMenuItem
+			// tsmiMakeAllNodeRank0
 			// 
-			this.makeAllNodeRank0ToolStripMenuItem.Name = "makeAllNodeRank0ToolStripMenuItem";
-			this.makeAllNodeRank0ToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.makeAllNodeRank0ToolStripMenuItem.Text = "Make all nodes Rank 0";
-			this.makeAllNodeRank0ToolStripMenuItem.Click += new System.EventHandler(this.makeAllNodeRank0ToolStripMenuItem_Click);
+			this.tsmiMakeAllNodeRank0.Name = "tsmiMakeAllNodeRank0";
+			this.tsmiMakeAllNodeRank0.Size = new System.Drawing.Size(199, 22);
+			this.tsmiMakeAllNodeRank0.Text = "Make all nodes Rank 0";
+			this.tsmiMakeAllNodeRank0.Click += new System.EventHandler(this.OnMakeAllNodeRank0Click);
 			// 
-			// connectNodesToolStripMenuItem
+			// tsmiConnectType
 			// 
-			this.connectNodesToolStripMenuItem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.connectNodesToolStripMenuItem.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.connectNodesToolStripMenuItem.Items.AddRange(new object[] {
+			this.tsmiConnectType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.tsmiConnectType.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsmiConnectType.Items.AddRange(new object[] {
 			"Dont connect",
 			"Connect One way",
 			"Connect Two ways"});
-			this.connectNodesToolStripMenuItem.Name = "connectNodesToolStripMenuItem";
-			this.connectNodesToolStripMenuItem.Size = new System.Drawing.Size(154, 20);
+			this.tsmiConnectType.Name = "tsmiConnectType";
+			this.tsmiConnectType.Size = new System.Drawing.Size(154, 20);
 			// 
-			// extraHeightToolStripMenuItem
+			// tsmiExtraHeight
 			// 
-			this.extraHeightToolStripMenuItem.Enabled = false;
-			this.extraHeightToolStripMenuItem.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.extraHeightToolStripMenuItem.ForeColor = System.Drawing.Color.Black;
-			this.extraHeightToolStripMenuItem.Name = "extraHeightToolStripMenuItem";
-			this.extraHeightToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
-			this.extraHeightToolStripMenuItem.Text = "Extra Height";
+			this.tsmiExtraHeight.Enabled = false;
+			this.tsmiExtraHeight.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsmiExtraHeight.ForeColor = System.Drawing.Color.Black;
+			this.tsmiExtraHeight.Name = "tsmiExtraHeight";
+			this.tsmiExtraHeight.Size = new System.Drawing.Size(85, 20);
+			this.tsmiExtraHeight.Text = "Extra Height";
+			this.tsmiExtraHeight.Visible = false;
 			// 
-			// textboxExtraHeight
+			// tstbExtraHeight
 			// 
-			this.textboxExtraHeight.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.textboxExtraHeight.Name = "textboxExtraHeight";
-			this.textboxExtraHeight.Size = new System.Drawing.Size(100, 20);
-			this.textboxExtraHeight.ToolTipText = "This amount will be added to the link\'s vertical position. Helps in UFO maps when" +
+			this.tstbExtraHeight.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tstbExtraHeight.Name = "tstbExtraHeight";
+			this.tstbExtraHeight.Size = new System.Drawing.Size(100, 20);
+			this.tstbExtraHeight.ToolTipText = "This amount will be added to the link\'s vertical position. Helps in UFO maps when" +
 	" the UFO terrain maps have basement floors.";
-			this.textboxExtraHeight.TextChanged += new System.EventHandler(this.ExtraHeight_TextChanged);
+			this.tstbExtraHeight.Visible = false;
+			this.tstbExtraHeight.TextChanged += new System.EventHandler(this.OnExtraHeightChanged);
 			// 
 			// gbLinkData
 			// 
@@ -572,7 +574,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbAttack.Size = new System.Drawing.Size(130, 20);
 			this.cbAttack.TabIndex = 8;
 			this.toolTip1.SetToolTip(this.cbAttack, "How likely an alien may start shooting base modules.");
-			this.cbAttack.SelectedIndexChanged += new System.EventHandler(this.cbAttack_SelectedIndexChanged);
+			this.cbAttack.SelectedIndexChanged += new System.EventHandler(this.OnBaseAttackSelectedIndexChanged);
 			// 
 			// labelAttack
 			// 
@@ -598,13 +600,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// RouteView
 			// 
-			this.Controls.Add(this._contentPanel);
+			this.Controls.Add(this.pRoutes);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.menuStrip1);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "RouteView";
 			this.Size = new System.Drawing.Size(640, 480);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.RmpView_KeyDown);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
 			this.gbSpawnData.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
@@ -660,17 +662,17 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.ToolStripMenuItem miOptions;
 		private System.Windows.Forms.Button btnPaste;
 		private System.Windows.Forms.Button btnCopy;
-		private System.Windows.Forms.ToolStripComboBox connectNodesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripComboBox tsmiConnectType;
 		private System.Windows.Forms.GroupBox gbLinkData;
 		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.ToolStripMenuItem extraHeightToolStripMenuItem;
-		private System.Windows.Forms.ToolStripTextBox textboxExtraHeight;
+		private System.Windows.Forms.ToolStripMenuItem tsmiExtraHeight;
+		private System.Windows.Forms.ToolStripTextBox tstbExtraHeight;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.GroupBox gbPatrolData;
 		private System.Windows.Forms.ComboBox cbAttack;
 		private System.Windows.Forms.Label labelAttack;
 		private System.Windows.Forms.GroupBox gbNodeData;
-		private System.Windows.Forms.ToolStripMenuItem makeAllNodeRank0ToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem tsmiMakeAllNodeRank0;
 	}
 }

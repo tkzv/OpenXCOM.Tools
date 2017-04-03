@@ -138,10 +138,10 @@ namespace MapView
 
 			share.AllocateObject(PathInfo.MapViewers, infoViewers);
 
-			share.AllocateObject(SettingsService.SettingsFile, infoSettings);
-			share.AllocateObject(PathInfo.PathsFile,           infoPaths);
-			share.AllocateObject(PathInfo.MapEditFile,         infoMapEdit);
-			share.AllocateObject(PathInfo.ImagesFile,          infoImages);
+			share.AllocateObject(PathInfo.SettingsFile, infoSettings);
+			share.AllocateObject(PathInfo.PathsFile,    infoPaths);
+			share.AllocateObject(PathInfo.MapEditFile,  infoMapEdit);
+			share.AllocateObject(PathInfo.ImagesFile,   infoImages);
 			LogFile.WriteLine("Paths set");
 			#endregion
 
@@ -300,7 +300,7 @@ namespace MapView
 			}
 		}
 
-		private void ChangeSetting(object sender, string key, object val)
+		private void OnSettingChange(object sender, string key, object val)
 		{
 			Settings[key].Value = val;
 			switch (key)
@@ -373,7 +373,7 @@ namespace MapView
 			}
 		}
 
-		private static void addMaps(TreeNode tn, IDictionary<string, IMapDesc> maps)
+		private static void AddMaps(TreeNode tn, IDictionary<string, IMapDesc> maps)
 		{
 			foreach (string key in maps.Keys)
 			{
@@ -395,7 +395,7 @@ namespace MapView
 				group.Tag = tileset.Subsets[key];
 				node.Nodes.Add(group);
 
-				addMaps(group, tileset.Subsets[key]);
+				AddMaps(group, tileset.Subsets[key]);
 			}
 		}
 
@@ -460,7 +460,7 @@ namespace MapView
 
 //			Color.FromArgb(175, 69, 100, 129)
 
-			var change = new ValueChangedEventHandler(ChangeSetting);
+			var change = new ValueChangedEventHandler(OnSettingChange);
 
 			settings.AddSetting(
 							"Animation",
@@ -531,17 +531,17 @@ namespace MapView
 				Environment.Exit(0);
 		} */
 
-		private void onItem_Click(object sender, EventArgs e)
+		private void OnOnClick(object sender, EventArgs e)
 		{
-			ChangeSetting(this, "Animation", true);
+			OnSettingChange(this, "Animation", true);
 		}
 
-		private void offItem_Click(object sender, EventArgs e)
+		private void OnOffClick(object sender, EventArgs e)
 		{
-			ChangeSetting(this, "Animation", false);
+			OnSettingChange(this, "Animation", false);
 		}
 
-		private void saveItem_Click(object sender, EventArgs e)
+		private void OnSaveClick(object sender, EventArgs e)
 		{
 			if (_mapViewPanel.BaseMap != null)
 			{
@@ -550,13 +550,13 @@ namespace MapView
 			}
 		}
 
-		private void miQuit_Click(object sender, EventArgs e)
+		private void OnQuitClick(object sender, EventArgs e)
 		{
 			OnCloseSaveRegistry(null, new CancelEventArgs(true));
 			Environment.Exit(0);
 		}
 
-		private void miPaths_Click(object sender, EventArgs e)
+		private void OnPathsEditorClick(object sender, EventArgs e)
 		{
 			var share = SharedSpace.Instance[PathInfo.PathsFile];
 
@@ -630,11 +630,11 @@ namespace MapView
 				if (miDoors.Checked) // turn off door animations
 				{
 					miDoors.Checked = false;
-					miDoors_Click(null, null);
+					OnDoorsClick(null, null);
 				}
 
 				if (!menuShow.Enabled) // open all the forms in the show menu
-					_mainMenusManager.LoadState();
+					_mainMenusManager.StartViewers();
 
 				_mainWindowsManager.SetMap(baseMap); // reset all observer events
 			}
@@ -669,14 +669,14 @@ namespace MapView
 			return DialogResult.OK;
 		}
 
-		private void miOptions_Click(object sender, EventArgs e)
+		private void OnOptionsClick(object sender, EventArgs e)
 		{
 			var f = new OptionsForm("MainViewOptions", Settings);
 			f.Text = "Main View Options";
 			f.Show();
 		}
 
-		private void miSaveImage_Click(object sender, EventArgs e)
+		private void OnSaveImageClick(object sender, EventArgs e)
 		{
 			if (_mapViewPanel.BaseMap != null)
 			{
@@ -697,7 +697,7 @@ namespace MapView
 			}
 		}
 
-		private void miHq_Click(object sender, EventArgs e)
+		private void OnHq2xClick(object sender, EventArgs e)
 		{
 			var map = _mapViewPanel.BaseMap as XCMapFile;
 			if (map != null)
@@ -707,21 +707,21 @@ namespace MapView
 			}
 		}
 
-		private void miDoors_Click(object sender, EventArgs e)
+		private void OnDoorsClick(object sender, EventArgs e)
 		{
 			miDoors.Checked = !miDoors.Checked;
 
 			foreach (XCTile tile in _mapViewPanel.BaseMap.Tiles)
-				if (tile.Info.UfoDoor || tile.Info.HumanDoor)
-				{
-					if (miDoors.Checked)
+				if (tile.Info.UfoDoor || tile.Info.HumanDoor)	// uhh, human doors don't animate
+				{												// only ufo doors animate
+					if (miDoors.Checked)						// human doors use their Alternate tile.
 						tile.MakeAnimate();
 					else
 						tile.StopAnimate();
 				}
 		}
 
-		private void miResize_Click(object sender, EventArgs e)
+		private void OnResizeClick(object sender, EventArgs e)
 		{
 			if (_mapViewPanel.MapView.Map != null)
 			{
@@ -743,7 +743,7 @@ namespace MapView
 
 		private bool _windowFlag = false;
 
-		private void MainWindow_Activated(object sender, EventArgs e)
+		private void OnMainWindowActivated(object sender, EventArgs e)
 		{
 			if (!_windowFlag)
 			{
@@ -760,7 +760,7 @@ namespace MapView
 			}
 		}
 
-		private void miInfo_Click(object sender, EventArgs e)
+		private void OnInfoClick(object sender, EventArgs e)
 		{
 			if (_mapViewPanel.BaseMap != null)
 			{
@@ -770,7 +770,7 @@ namespace MapView
 			}
 		}
 
-		private void miExport_Click(object sender, EventArgs e)
+		private void OnExportClick(object sender, EventArgs e)
 		{
 //			if (mapList.SelectedNode.Parent == null) // top level node - bad
 //				throw new Exception("miExport_Click: Should not be here");
@@ -790,7 +790,7 @@ namespace MapView
 //			ef.ShowDialog();
 		}
 
-		private void miOpen_Click(object sender, EventArgs e)
+		private void OnOpenClick(object sender, EventArgs e)
 		{}
 
 		private Settings Settings
@@ -799,13 +799,13 @@ namespace MapView
 			set { _settingsManager["MainWindow"] = value; }
 		}
 
-		private void drawSelectionBoxButton_Click(object sender, EventArgs e)
+		private void OnSelectionBoxClick(object sender, EventArgs e) // NOTE: is disabled w/ Visible=FALSE in designer.
 		{
 			_mapViewPanel.MapView.DrawSelectionBox = !_mapViewPanel.MapView.DrawSelectionBox;
 			tsbSelectionBox.Checked = !tsbSelectionBox.Checked;
 		}
 
-		private void ZoomInButton_Click(object sender, EventArgs e)
+		private void OnZoomInClick(object sender, EventArgs e)
 		{
 			if (Globals.PckImageScale < Globals.MaxPckImageScale)
 			{
@@ -821,7 +821,7 @@ namespace MapView
 			}
 		}
 
-		private void ZoomOutButton_Click(object sender, EventArgs e)
+		private void OnZoomOutClick(object sender, EventArgs e)
 		{
 			if (Globals.PckImageScale > Globals.MinPckImageScale)
 			{
@@ -837,7 +837,7 @@ namespace MapView
 			}
 		}
 
-		private void AutoZoomButton_Click(object sender, EventArgs e)
+		private void OnAutoZoomClick(object sender, EventArgs e)
 		{
 			Globals.AutoPckImageScale = !Globals.AutoPckImageScale;
 

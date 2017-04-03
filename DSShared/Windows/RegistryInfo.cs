@@ -39,14 +39,14 @@ namespace DSShared.Windows
 		/// after the values are read and set in the object.
 		/// </summary>
 //		public event EventHandler LoadingEvent;
-		public event RegistryEventHandler LoadingEvent;
+		public event RegistryEventHandler RegistryLoadEvent;
 
 		/// <summary>
 		/// Event fired when saving values to the registry. This happens after
 		/// the values are saved.
 		/// </summary>
 //		public event EventHandler SavingEvent;
-		public event RegistryEventHandler SavingEvent;
+		public event RegistryEventHandler RegistrySaveEvent;
 
 
 		/// <summary>
@@ -65,7 +65,7 @@ namespace DSShared.Windows
 			if (f != null)
 			{
 				f.StartPosition = FormStartPosition.Manual;
-				f.Load += OnLoad;
+				f.Load    += OnLoad;
 				f.Closing += OnClose;
 				AddProperty("Width", "Height", "Left", "Top");
 			}
@@ -116,8 +116,8 @@ namespace DSShared.Windows
 									regkey.GetValue(key, _dictInfo[key].GetValue(_obj, null)),
 									null);
 
-			if (LoadingEvent != null)
-				LoadingEvent(this, new RegistryEventArgs(regkey));
+			if (RegistryLoadEvent != null)
+				RegistryLoadEvent(this, new RegistryEventArgs(regkey));
 
 			regkey.Close();
 
@@ -147,8 +147,8 @@ namespace DSShared.Windows
 							key,
 							_dictInfo[key].GetValue(_obj, null));
 
-			if (SavingEvent != null)
-				SavingEvent(this, new RegistryEventArgs(regkey));
+			if (RegistrySaveEvent != null)
+				RegistrySaveEvent(this, new RegistryEventArgs(regkey));
 
 			regkey.Close();
 

@@ -144,7 +144,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
 			this.optionsToolStripMenuItem.Text = "Options";
-			this.optionsToolStripMenuItem.Click += new System.EventHandler(this.options_click);
+			this.optionsToolStripMenuItem.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
 			// TopView
 			// 
@@ -154,7 +154,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "TopView";
 			this.Size = new System.Drawing.Size(640, 480);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TopView_KeyDown);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
 			this.toolStripContainer2.ContentPanel.ResumeLayout(false);
 			this.toolStripContainer2.LeftToolStripPanel.ResumeLayout(false);
 			this.toolStripContainer2.LeftToolStripPanel.PerformLayout();

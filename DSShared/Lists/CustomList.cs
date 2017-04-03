@@ -142,20 +142,20 @@ namespace DSShared.Lists
 			set
 			{
 				_regInfo = value;
-				_regInfo.LoadingEvent += OnLoad;
-				_regInfo.SavingEvent += OnSave;
+				_regInfo.RegistryLoadEvent += OnLoad;
+				_regInfo.RegistrySaveEvent += OnSave;
 			}
 		}
 
 		private void OnLoad(object sender, RegistryEventArgs e)
 		{
-			RegistryKey key = e.OpenRegistryKey;
+			var regKey = e.OpenRegistryKey;
 //			Graphics g = Graphics.FromHwnd(Handle);
 			foreach (CustomListColumn col in _columns)
 			{
 				try
 				{
-					col.Width = (int)key.GetValue("strLen" + _name + col.Index, col.Width);
+					col.Width = (int)regKey.GetValue("strLen" + _name + col.Index, col.Width);
 				}
 				catch
 				{

@@ -6,8 +6,8 @@ namespace XCom.Interfaces.Base
 {
 	public interface IMapObserver
 	{
-		void SelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e);
-		void HeightChanged(IMapBase sender, HeightChangedEventArgs e);
+		void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e);
+		void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e);
 
 
 		IMapBase Map

@@ -188,7 +188,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		public Dictionary<string, Pen> Pens
 		{ get; set; }
 
-		public override void SelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
+		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			MapLocation pt = e.MapPosition;
 //			Text = "c: " + pt.Col + " r: " + pt.Row; // I don't think this actually prints anywhere.

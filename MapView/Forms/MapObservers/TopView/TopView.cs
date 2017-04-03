@@ -16,7 +16,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		:
 			MapObserverControl0
 	{
-		private readonly Dictionary<ToolStripMenuItem, int> _visibleHash;
+		private readonly Dictionary<ToolStripMenuItem, int> _dictVisibleQuads;
 
 		private Dictionary<string, Pen> _topPens;
 		private Dictionary<string, SolidBrush> _topBrushes;
@@ -24,7 +24,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		private readonly TopViewPanel _topViewPanel;
 		private EditButtonsFactory _editButtonsFactory;
 
-		public event EventHandler VisibleTileChanged;
+		private event EventHandler VisibleTileChangedEvent;
 
 
 		public TopView()
@@ -42,35 +42,35 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			center.Resize += (sender, e) => _topViewPanel.ParentSize(center.Width, center.Height);
 
-			_visibleHash = new Dictionary<ToolStripMenuItem, int>();
+			_dictVisibleQuads = new Dictionary<ToolStripMenuItem, int>();
 
 			var visItems = VisibleToolStripButton.DropDown.Items;
-			var ground = new ToolStripMenuItem("Floor");
-			visItems.Add(ground);
-			_topViewPanel.Ground = ground;
-			_visibleHash[_topViewPanel.Ground] = 0;
+			var itGround = new ToolStripMenuItem("Floor");
+			visItems.Add(itGround);
+			_topViewPanel.Ground = itGround;
+			_dictVisibleQuads[_topViewPanel.Ground] = 0;
 			_topViewPanel.Ground.ShortcutKeys = Keys.F1;
 
-			var west = new ToolStripMenuItem("West");
-			visItems.Add(west);
-			_topViewPanel.West = west;
-			_visibleHash[_topViewPanel.West] = 1;
+			var itWest = new ToolStripMenuItem("West");
+			visItems.Add(itWest);
+			_topViewPanel.West = itWest;
+			_dictVisibleQuads[_topViewPanel.West] = 1;
 			_topViewPanel.West.ShortcutKeys = Keys.F2;
 
-			var north = new ToolStripMenuItem("North");
-			visItems.Add(north);
-			_topViewPanel.North = north;
-			_visibleHash[_topViewPanel.North] = 2;
+			var itNorth = new ToolStripMenuItem("North");
+			visItems.Add(itNorth);
+			_topViewPanel.North = itNorth;
+			_dictVisibleQuads[_topViewPanel.North] = 2;
 			_topViewPanel.West.ShortcutKeys = Keys.F3;
 
-			var content = new ToolStripMenuItem("Content");
-			visItems.Add(content);
-			_topViewPanel.Content = content;
-			_visibleHash[_topViewPanel.Content] = 3;
+			var itContent = new ToolStripMenuItem("Content");
+			visItems.Add(itContent);
+			_topViewPanel.Content = itContent;
+			_dictVisibleQuads[_topViewPanel.Content] = 3;
 			_topViewPanel.Content.ShortcutKeys = Keys.F4;
 
 			foreach (ToolStripItem visItem in visItems)
-				visItem.Click += VisibleClick;
+				visItem.Click += OnVisibleQuadsClick;
 
 			_topViewPanel.QuadrantPanel = bottom;
 
@@ -91,41 +91,41 @@ namespace MapView.Forms.MapObservers.TopViews
 			get { return bottom; }
 		}
 
-		private void VisibleClick(object sender, EventArgs e)
+		private void OnVisibleQuadsClick(object sender, EventArgs e)
 		{
-			var ts = sender as ToolStripMenuItem;
-			ts.Checked = !ts.Checked;
+			var it = sender as ToolStripMenuItem;
+			it.Checked = !it.Checked;
 
-			if (VisibleTileChanged != null)
-				VisibleTileChanged(this, new EventArgs());
+			if (VisibleTileChangedEvent != null)
+				VisibleTileChangedEvent(this, new EventArgs());
 
 			MapViewPanel.Instance.Refresh();
 			Refresh();
 		}
 
-		private void DiamondHeight(object sender, string keyword, object val)
+		private void OnDiamondHeight(object sender, string keyword, object val)
 		{
 			_topViewPanel.MinHeight = (int)val;
 		}
 
-		protected override void OnRISettingsLoad(DSShared.Windows.RegistryEventArgs e)
+		protected override void OnRegistrySettingsLoad(DSShared.Windows.RegistryEventArgs e)
 		{
 			bottom.Height = 74;
-			RegistryKey riKey = e.OpenRegistryKey;
+			var regKey = e.OpenRegistryKey;
 
-			foreach (var mi in _visibleHash.Keys)
-				mi.Checked = bool.Parse((string)riKey.GetValue("vis" + _visibleHash[mi], "true"));
+			foreach (var mi in _dictVisibleQuads.Keys)
+				mi.Checked = bool.Parse((string)regKey.GetValue("vis" + _dictVisibleQuads[mi], "true"));
 		}
 
-		protected override void OnRISettingsSave(DSShared.Windows.RegistryEventArgs e)
+		protected override void OnRegistrySettingsSave(DSShared.Windows.RegistryEventArgs e)
 		{
-			RegistryKey riKey = e.OpenRegistryKey;
+			var regKey = e.OpenRegistryKey;
 
-			foreach (var mi in _visibleHash.Keys)
-				riKey.SetValue("vis" + _visibleHash[mi], mi.Checked);
+			foreach (var mi in _dictVisibleQuads.Keys)
+				regKey.SetValue("vis" + _dictVisibleQuads[mi], mi.Checked);
 		}
 
-		public void FillClick(object sender, EventArgs e)
+		public void OnFillClick(object sender, EventArgs e)
 		{
 			var map = MapViewPanel.Instance.MapView.Map;
 
@@ -141,8 +141,8 @@ namespace MapView.Forms.MapObservers.TopViews
 				end.Y = Math.Max(MapViewPanel.Instance.MapView.DragStart.Y, MapViewPanel.Instance.MapView.DragEnd.Y);
 
 				var tileView = MainWindowsManager.TileView.TileViewControl;
-				for (int c = start.X; c <= end.X; c++)
-					for (int r = start.Y; r <= end.Y; r++)
+				for (int c = start.X; c <= end.X; ++c)
+					for (int r = start.Y; r <= end.Y; ++r)
 						((XCMapTile)map[r, c])[bottom.SelectedQuadrant] = tileView.SelectedTile;
 
 				map.MapChanged = true;
@@ -151,7 +151,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		private void options_click(object sender, EventArgs e)
+		private void OnOptionsClick(object sender, EventArgs e)
 		{
 			var f = new OptionsForm("TopViewOptions", Settings);
 
@@ -159,7 +159,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			f.Show();
 		}
 
-		private void BrushChanged(object sender, string key, object val)
+		private void OnBrushChanged(object sender, string key, object val)
 		{
 			_topBrushes[key].Color = (Color)val;
 
@@ -169,13 +169,13 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh();
 		}
 
-		private void PenColorChanged(object sender, string key, object val)
+		private void OnPenColorChanged(object sender, string key, object val)
 		{
 			_topPens[key].Color = (Color)val;
 			Refresh();
 		}
 
-		private void PenWidthChanged(object sender, string key, object val)
+		private void OnPenWidthChanged(object sender, string key, object val)
 		{
 			_topPens[key].Width = (int)val;
 			Refresh();
@@ -201,7 +201,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			get { return _topViewPanel.Content.Checked; }
 		}
 
-		private void TopView_KeyDown(object sender, KeyEventArgs e)
+		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control && e.KeyCode == Keys.S
 				&& Map != null)
@@ -265,10 +265,10 @@ namespace MapView.Forms.MapObservers.TopViews
 			_topPens.Add("MouseColor", mousePen);
 			_topPens.Add("MouseWidth", mousePen);
 
-			ValueChangedEventHandler bc = BrushChanged;
-			ValueChangedEventHandler pc = PenColorChanged;
-			ValueChangedEventHandler pw = PenWidthChanged;
-			ValueChangedEventHandler dh = DiamondHeight;
+			ValueChangedEventHandler bc = OnBrushChanged;
+			ValueChangedEventHandler pc = OnPenColorChanged;
+			ValueChangedEventHandler pw = OnPenWidthChanged;
+			ValueChangedEventHandler dh = OnDiamondHeight;
 
 			Settings.AddSetting("GroundColor",      Color.Orange,            "Color of the ground tile indicator",          "Tile",   bc, false, null);
 			Settings.AddSetting("NorthColor",       Color.Red,               "Color of the north tile indicator",           "Tile",   pc, false, null);

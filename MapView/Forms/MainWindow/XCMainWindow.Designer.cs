@@ -96,39 +96,39 @@ namespace MapView
 			// 
 			this.miOpen.Index = 0;
 			this.miOpen.Text = "Open";
-			this.miOpen.Click += new System.EventHandler(this.miOpen_Click);
+			this.miOpen.Click += new System.EventHandler(this.OnOpenClick);
 			// 
 			// miSave
 			// 
 			this.miSave.Index = 1;
 			this.miSave.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
 			this.miSave.Text = "&Save";
-			this.miSave.Click += new System.EventHandler(this.saveItem_Click);
+			this.miSave.Click += new System.EventHandler(this.OnSaveClick);
 			// 
 			// miSaveImage
 			// 
 			this.miSaveImage.Index = 2;
 			this.miSaveImage.Text = "Save Image";
-			this.miSaveImage.Click += new System.EventHandler(this.miSaveImage_Click);
+			this.miSaveImage.Click += new System.EventHandler(this.OnSaveImageClick);
 			// 
 			// miExport
 			// 
 			this.miExport.Index = 3;
 			this.miExport.Text = "Export";
 			this.miExport.Visible = false;
-			this.miExport.Click += new System.EventHandler(this.miExport_Click);
+			this.miExport.Click += new System.EventHandler(this.OnExportClick);
 			// 
 			// miResize
 			// 
 			this.miResize.Index = 4;
 			this.miResize.Text = "Resize map";
-			this.miResize.Click += new System.EventHandler(this.miResize_Click);
+			this.miResize.Click += new System.EventHandler(this.OnResizeClick);
 			// 
 			// miHq
 			// 
 			this.miHq.Index = 5;
 			this.miHq.Text = "Hq2x";
-			this.miHq.Click += new System.EventHandler(this.miHq_Click);
+			this.miHq.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
 			// miBarHori
 			// 
@@ -139,7 +139,7 @@ namespace MapView
 			// 
 			this.miQuit.Index = 7;
 			this.miQuit.Text = "&Quit";
-			this.miQuit.Click += new System.EventHandler(this.miQuit_Click);
+			this.miQuit.Click += new System.EventHandler(this.OnQuitClick);
 			// 
 			// miEdit
 			// 
@@ -154,19 +154,19 @@ namespace MapView
 			// 
 			this.miPaths.Index = 0;
 			this.miPaths.Text = "Paths";
-			this.miPaths.Click += new System.EventHandler(this.miPaths_Click);
+			this.miPaths.Click += new System.EventHandler(this.OnPathsEditorClick);
 			// 
 			// miOptions
 			// 
 			this.miOptions.Index = 1;
 			this.miOptions.Text = "Options";
-			this.miOptions.Click += new System.EventHandler(this.miOptions_Click);
+			this.miOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
 			// miInfo
 			// 
 			this.miInfo.Index = 2;
 			this.miInfo.Text = "Map Info";
-			this.miInfo.Click += new System.EventHandler(this.miInfo_Click);
+			this.miInfo.Click += new System.EventHandler(this.OnInfoClick);
 			// 
 			// miAnimation
 			// 
@@ -184,20 +184,20 @@ namespace MapView
 			this.miOn.Index = 0;
 			this.miOn.Shortcut = System.Windows.Forms.Shortcut.F1;
 			this.miOn.Text = "O&n";
-			this.miOn.Click += new System.EventHandler(this.onItem_Click);
+			this.miOn.Click += new System.EventHandler(this.OnOnClick);
 			// 
 			// miOff
 			// 
 			this.miOff.Index = 1;
 			this.miOff.Shortcut = System.Windows.Forms.Shortcut.F2;
 			this.miOff.Text = "O&ff";
-			this.miOff.Click += new System.EventHandler(this.offItem_Click);
+			this.miOff.Click += new System.EventHandler(this.OnOffClick);
 			// 
 			// miDoors
 			// 
 			this.miDoors.Index = 2;
 			this.miDoors.Text = "Doors";
-			this.miDoors.Click += new System.EventHandler(this.miDoors_Click);
+			this.miDoors.Click += new System.EventHandler(this.OnDoorsClick);
 			// 
 			// menuShow
 			// 
@@ -308,7 +308,7 @@ namespace MapView
 			this.tsbAutoZoom});
 			this.tsEdit.Location = new System.Drawing.Point(3, 0);
 			this.tsEdit.Name = "tsEdit";
-			this.tsEdit.Size = new System.Drawing.Size(165, 25);
+			this.tsEdit.Size = new System.Drawing.Size(196, 25);
 			this.tsEdit.TabIndex = 0;
 			// 
 			// tsbSelectionBox
@@ -321,7 +321,8 @@ namespace MapView
 			this.tsbSelectionBox.Size = new System.Drawing.Size(84, 22);
 			this.tsbSelectionBox.Text = "Selection Box";
 			this.tsbSelectionBox.ToolTipText = "Draws a selection box in the floor";
-			this.tsbSelectionBox.Click += new System.EventHandler(this.drawSelectionBoxButton_Click);
+			this.tsbSelectionBox.Visible = false;
+			this.tsbSelectionBox.Click += new System.EventHandler(this.OnSelectionBoxClick);
 			// 
 			// tsbZoomIn
 			// 
@@ -331,7 +332,7 @@ namespace MapView
 			this.tsbZoomIn.Name = "tsbZoomIn";
 			this.tsbZoomIn.Size = new System.Drawing.Size(23, 22);
 			this.tsbZoomIn.Text = "Zoom In";
-			this.tsbZoomIn.Click += new System.EventHandler(this.ZoomInButton_Click);
+			this.tsbZoomIn.Click += new System.EventHandler(this.OnZoomInClick);
 			// 
 			// tsbZoomOut
 			// 
@@ -341,7 +342,7 @@ namespace MapView
 			this.tsbZoomOut.Name = "tsbZoomOut";
 			this.tsbZoomOut.Size = new System.Drawing.Size(23, 22);
 			this.tsbZoomOut.Text = "Zoom Out";
-			this.tsbZoomOut.Click += new System.EventHandler(this.ZoomOutButton_Click);
+			this.tsbZoomOut.Click += new System.EventHandler(this.OnZoomOutClick);
 			// 
 			// tsbAutoZoom
 			// 
@@ -354,7 +355,7 @@ namespace MapView
 			this.tsbAutoZoom.Name = "tsbAutoZoom";
 			this.tsbAutoZoom.Size = new System.Drawing.Size(23, 22);
 			this.tsbAutoZoom.Text = "Auto Zoom";
-			this.tsbAutoZoom.Click += new System.EventHandler(this.AutoZoomButton_Click);
+			this.tsbAutoZoom.Click += new System.EventHandler(this.OnAutoZoomClick);
 			// 
 			// csSplitter
 			// 
@@ -384,7 +385,7 @@ namespace MapView
 			this.Name = "XCMainWindow";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Map Editor";
-			this.Activated += new System.EventHandler(this.MainWindow_Activated);
+			this.Activated += new System.EventHandler(this.OnMainWindowActivated);
 			this.ssMain.ResumeLayout(false);
 			this.ssMain.PerformLayout();
 			this.tscPanel.TopToolStripPanel.ResumeLayout(false);

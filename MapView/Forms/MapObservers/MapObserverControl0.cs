@@ -15,9 +15,38 @@ namespace MapView
 			IMapObserver
 	{
 		private IMapBase _baseMap;
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public virtual IMapBase Map
+		{
+			get { return _baseMap; }
+			set
+			{
+				_baseMap = value;
+				Refresh();
+			}
+		}
 
 		private RegistryInfo _regInfo;
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public RegistryInfo RegistryInfo
+		{
+			get { return _regInfo; }
+			set
+			{
+				_regInfo = value;
+				value.RegistryLoadEvent += (sender, e) => OnRegistrySettingsLoad(e);
+				value.RegistrySaveEvent  += (sender, e) => OnRegistrySettingsSave(e);
+			}
+		}
+
 		private readonly Dictionary<string, IMapObserver> _moreObservers;
+		public Dictionary<string, IMapObserver> MoreObservers
+		{
+			get { return _moreObservers; }
+		}
+
+		public Settings Settings
+		{ get; set; }
 
 
 		public MapObserverControl0()
@@ -30,42 +59,11 @@ namespace MapView
 		public virtual void LoadDefaultSettings()
 		{}
 
-		public Settings Settings
-		{ get; set; }
-
-		public Dictionary<string, IMapObserver> MoreObservers
-		{
-			get { return _moreObservers; }
-		}
-
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public RegistryInfo RegistryInfo
-		{
-			get { return _regInfo; }
-			set
-			{
-				_regInfo = value;
-				value.LoadingEvent += (sender, e) => OnRISettingsLoad(e);
-				value.SavingEvent  += (sender, e) => OnRISettingsSave(e);
-			}
-		}
-
-		protected virtual void OnRISettingsSave(RegistryEventArgs e)
+		protected virtual void OnRegistrySettingsSave(RegistryEventArgs e)
 		{}
 
-		protected virtual void OnRISettingsLoad(RegistryEventArgs e)
+		protected virtual void OnRegistrySettingsLoad(RegistryEventArgs e)
 		{}
-
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public virtual IMapBase Map
-		{
-			get { return _baseMap; }
-			set
-			{
-				_baseMap = value;
-				Refresh();
-			}
-		}
 
 		/// <summary>
 		/// Scrolls the z-axis for TopView and RouteView.
@@ -78,12 +76,12 @@ namespace MapView
 			else if (e.Delta > 0) _baseMap.Down();
 		}
 
-		public virtual void HeightChanged(IMapBase sender, HeightChangedEventArgs e)
+		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
 			Refresh();
 		}
 
-		public virtual void SelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
+		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			Refresh();
 		}

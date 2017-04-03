@@ -136,10 +136,9 @@ namespace MapView.Forms.MainWindow
 		}
 
 		/// <summary>
-		/// Opens and closes the various (nonMain) viewers, assumedly to
-		/// initialize them.
+		/// Opens the subsidiary viewers.
 		/// </summary>
-		public void LoadState()
+		public void StartViewers()
 		{
 			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
@@ -150,10 +149,10 @@ namespace MapView.Forms.MainWindow
 					{
 						it.PerformClick();
 					}
-					else
-					{
-						it.PerformClick();
-						it.PerformClick();
+					else					// NOTE: does not run unless a viewer's key was
+					{						// set "false" in AddMenuItemSettings() above^
+						it.PerformClick();	// not sure that this double-click gimmick
+						it.PerformClick();	// is necessary even then ...
 					}
 				}
 			}
@@ -161,8 +160,8 @@ namespace MapView.Forms.MainWindow
 			{											// All the Views will load ...
 				it.PerformClick();						// regardless of their saved settings.
 
-				var label = GetWindowSettingName(it);
-				if (!(_settings[label].ValueBool))
+				var key = GetWindowSettingName(it);
+				if (!(_settings[key].IsTrue))
 					it.PerformClick();
 			} */
 			_viewsMenu.Enabled = true;

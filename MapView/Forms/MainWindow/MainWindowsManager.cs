@@ -55,9 +55,11 @@ namespace MapView.Forms.MainWindow
 		public static void Initialize()
 		{
 			TopRouteView.TopViewControl.Initialize(EditButtonsFactory);
+
 			TopView.Control.Initialize(EditButtonsFactory);
+
 			TileView.TileViewControl.Initialize(MainShowAllManager);
-			TileView.TileViewControl.SelectedTileTypeChangedObserver += SelectedTileTypeChanged;
+			TileView.TileViewControl.SelectedTileTypeChangedObserver += OnSelectedTileTypeChanged;
 		}
 
 		public void SetMap(IMapBase baseMap)
@@ -86,14 +88,14 @@ namespace MapView.Forms.MainWindow
 		{
 			if (observer.Map != null)
 			{
-				observer.Map.HeightChanged -= observer.HeightChanged;
-				observer.Map.SelectedTileChanged -= observer.SelectedTileChanged;
+				observer.Map.HeightChanged -= observer.OnHeightChanged;
+				observer.Map.SelectedTileChanged -= observer.OnSelectedTileChanged;
 			}
 
 			if ((observer.Map = baseMap) != null)
 			{
-				baseMap.HeightChanged += observer.HeightChanged;
-				baseMap.SelectedTileChanged += observer.SelectedTileChanged;
+				baseMap.HeightChanged += observer.OnHeightChanged;
+				baseMap.SelectedTileChanged += observer.OnSelectedTileChanged;
 			}
 
 			foreach (string key in observer.MoreObservers.Keys)
@@ -105,7 +107,7 @@ namespace MapView.Forms.MainWindow
 		/// in TileView.
 		/// </summary>
 		/// <param name="tile"></param>
-		private static void SelectedTileTypeChanged(TileBase tile)
+		private static void OnSelectedTileTypeChanged(TileBase tile)
 		{
 			if (tile != null && tile.Info != null)
 				TopView.Control.SelectQuadrant(tile.Info.TileType);
