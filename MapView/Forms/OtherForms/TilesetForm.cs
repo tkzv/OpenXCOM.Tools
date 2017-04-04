@@ -39,128 +39,116 @@ namespace MapView
 
 		private void OnOkClick(object sender, EventArgs e)
 		{
-			if (String.IsNullOrEmpty(txtTileset.Text))
+			if (String.IsNullOrEmpty(tbLabel.Text))
 			{
-//				Dialog.ShowDialog(this, "You must specify a map name");
 				MessageBox.Show(
 							this,
-							"You must specify a MAP name",
+							"You must specify a label.",
 							"Err..",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Exclamation,
 							MessageBoxDefaultButton.Button1,
 							0);
-				return;
 			}
-
-			if (String.IsNullOrEmpty(txtMap.Text))
+			else if (String.IsNullOrEmpty(tbMaps.Text))
 			{
-//				Dialog.ShowDialog(this, "You must have a map path");
 				MessageBox.Show(
 							this,
-							"You must have a MAP path",
+							"You must have a MAP path.",
 							"Err..",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Exclamation,
 							MessageBoxDefaultButton.Button1,
 							0);
-				return;
 			}
-
-			if (String.IsNullOrEmpty(txtRmp.Text))
+			else if (String.IsNullOrEmpty(tbRoutes.Text))
 			{
 				MessageBox.Show(
 							this,
-							"You must have a RMP path",
+							"You must have a RMP path.",
 							"Err..",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Exclamation,
 							MessageBoxDefaultButton.Button1,
 							0);
-				return;
 			}
-
-			if (String.IsNullOrEmpty(txtBlank.Text))
+			else if (String.IsNullOrEmpty(tbBlanks.Text))
 			{
 				MessageBox.Show(
 							this,
-							"You must have a BLANKS path",
+							"You must have a Blanks path.",
 							"Err..",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Exclamation,
 							MessageBoxDefaultButton.Button1,
 							0);
-				return;
 			}
-
-			if (!System.IO.Directory.Exists(txtMap.Text))
+			else if (!System.IO.Directory.Exists(tbMaps.Text))
 			{
 				MessageBox.Show(
 							this,
-							"MAP directory " + txtMap.Text + " does not exist",
+							"MAP directory " + tbMaps.Text + " does not exist.",
 							"Err..",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Exclamation,
 							MessageBoxDefaultButton.Button1,
 							0);
-				return;
 			}
-
-			if (!System.IO.Directory.Exists(txtRmp.Text))
+			else if (!System.IO.Directory.Exists(tbRoutes.Text))
 			{
 				MessageBox.Show(
 							this,
-							"RMP directory " + txtRmp.Text + " does not exist", "Err..",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Exclamation,
-							MessageBoxDefaultButton.Button1,
-							0);
-				return;
-			}
-
-			if (!System.IO.Directory.Exists(txtBlank.Text))
-			{
-				MessageBox.Show(
-							this,
-							"BLANKS directory " + txtBlank.Text + " does not exist",
+							"RMP directory " + tbRoutes.Text + " does not exist.",
 							"Err..",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Exclamation,
 							MessageBoxDefaultButton.Button1,
 							0);
-				return;
 			}
+			else if (!System.IO.Directory.Exists(tbBlanks.Text))
+			{
+				MessageBox.Show(
+							this,
+							"Blanks directory " + tbBlanks.Text + " does not exist.",
+							"Err..",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Exclamation,
+							MessageBoxDefaultButton.Button1,
+							0);
+			}
+			else
+			{
+				_label      = tbLabel.Text;
+				_pathMaps   = tbMaps.Text;
+				_pathRoutes = tbRoutes.Text;
+				_pathBlanks = tbBlanks.Text;
 
-			_label = txtTileset.Text;
-			_pathMaps = txtMap.Text;
-			_pathRoutes = txtRmp.Text;
-			_pathBlanks = txtBlank.Text;
-
-			Close();
+				Close();
+			}
 		}
 
 		private void OnFindMapsClick(object sender, System.EventArgs e)
 		{
-			var fs = new FolderBrowserDialog();
-			fs.Description = "Find MAP directory";
-			if (fs.ShowDialog(this) == DialogResult.OK)
-				txtMap.Text = fs.SelectedPath;
+			var f = new FolderBrowserDialog();
+			f.Description = "Find MAP directory";
+			if (f.ShowDialog(this) == DialogResult.OK)
+				tbMaps.Text = f.SelectedPath;
 		}
 
 		private void OnFindRoutesClick(object sender, System.EventArgs e)
 		{
-			var fs = new FolderBrowserDialog();
-			fs.Description = "Find RMP directory";
-			if (fs.ShowDialog(this) == DialogResult.OK)
-				txtRmp.Text=fs.SelectedPath;
+			var f = new FolderBrowserDialog();
+			f.Description = "Find RMP directory";
+			if (f.ShowDialog(this) == DialogResult.OK)
+				tbRoutes.Text = f.SelectedPath;
 		}
 
 		private void OnFindBlanksClick(object sender, System.EventArgs e)
 		{
-			var fs = new FolderBrowserDialog();
-			fs.Description = "Find BLANKS directory";
-			if (fs.ShowDialog(this) == DialogResult.OK)
-				txtBlank.Text=fs.SelectedPath;
+			var f = new FolderBrowserDialog();
+			f.Description = "Find BLANKS directory";
+			if (f.ShowDialog(this) == DialogResult.OK)
+				tbBlanks.Text = f.SelectedPath;
 		}
 
 
@@ -183,156 +171,158 @@ namespace MapView
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label1 = new Label();
-			this.txtTileset = new TextBox();
-			this.btnOk = new Button();
-			this.txtRmp = new TextBox();
-			this.label2 = new Label();
-			this.txtMap = new TextBox();
-			this.label3 = new Label();
-			this.btnFindMap = new Button();
-			this.btnFindRmp = new Button();
-			this.btnFindBlank = new Button();
-			this.txtBlank = new TextBox();
-			this.label4 = new Label();
+			this.lblLabel = new System.Windows.Forms.Label();
+			this.tbLabel = new System.Windows.Forms.TextBox();
+			this.btnOk = new System.Windows.Forms.Button();
+			this.tbRoutes = new System.Windows.Forms.TextBox();
+			this.lblRoutes = new System.Windows.Forms.Label();
+			this.tbMaps = new System.Windows.Forms.TextBox();
+			this.lblMaps = new System.Windows.Forms.Label();
+			this.btnFindMaps = new System.Windows.Forms.Button();
+			this.btnFindRoutes = new System.Windows.Forms.Button();
+			this.btnFindBlanks = new System.Windows.Forms.Button();
+			this.tbBlanks = new System.Windows.Forms.TextBox();
+			this.lblBlanks = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
-			// label1
+			// lblLabel
 			// 
-			this.label1.Location = new System.Drawing.Point(5, 5);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(70, 15);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Tileset label";
+			this.lblLabel.Location = new System.Drawing.Point(10, 15);
+			this.lblLabel.Name = "lblLabel";
+			this.lblLabel.Size = new System.Drawing.Size(75, 15);
+			this.lblLabel.TabIndex = 0;
+			this.lblLabel.Text = "Tileset label";
 			// 
-			// txtTileset
+			// tbLabel
 			// 
-			this.txtTileset.Location = new System.Drawing.Point(5, 20);
-			this.txtTileset.Name = "txtTileset";
-			this.txtTileset.Size = new System.Drawing.Size(305, 20);
-			this.txtTileset.TabIndex = 1;
+			this.tbLabel.Location = new System.Drawing.Point(90, 10);
+			this.tbLabel.Name = "tbLabel";
+			this.tbLabel.Size = new System.Drawing.Size(220, 19);
+			this.tbLabel.TabIndex = 1;
 			// 
 			// btnOk
 			// 
-			this.btnOk.Location = new System.Drawing.Point(115, 160);
+			this.btnOk.Location = new System.Drawing.Point(115, 155);
 			this.btnOk.Name = "btnOk";
-			this.btnOk.Size = new System.Drawing.Size(80, 25);
+			this.btnOk.Size = new System.Drawing.Size(80, 30);
 			this.btnOk.TabIndex = 2;
 			this.btnOk.Text = "Ok";
 			this.btnOk.Click += new System.EventHandler(this.OnOkClick);
 			// 
-			// txtRmp
+			// tbRoutes
 			// 
-			this.txtRmp.Location = new System.Drawing.Point(5, 95);
-			this.txtRmp.Name = "txtRmp";
-			this.txtRmp.Size = new System.Drawing.Size(265, 20);
-			this.txtRmp.TabIndex = 4;
+			this.tbRoutes.Location = new System.Drawing.Point(5, 95);
+			this.tbRoutes.Name = "tbRoutes";
+			this.tbRoutes.Size = new System.Drawing.Size(275, 19);
+			this.tbRoutes.TabIndex = 4;
 			// 
-			// label2
+			// lblRoutes
 			// 
-			this.label2.Location = new System.Drawing.Point(5, 80);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(75, 15);
-			this.label2.TabIndex = 3;
-			this.label2.Text = "RMP directory";
+			this.lblRoutes.Location = new System.Drawing.Point(5, 80);
+			this.lblRoutes.Name = "lblRoutes";
+			this.lblRoutes.Size = new System.Drawing.Size(65, 15);
+			this.lblRoutes.TabIndex = 3;
+			this.lblRoutes.Text = "RMP folder";
 			// 
-			// txtMap
+			// tbMaps
 			// 
-			this.txtMap.Location = new System.Drawing.Point(5, 60);
-			this.txtMap.Name = "txtMap";
-			this.txtMap.Size = new System.Drawing.Size(265, 20);
-			this.txtMap.TabIndex = 6;
+			this.tbMaps.Location = new System.Drawing.Point(5, 60);
+			this.tbMaps.Name = "tbMaps";
+			this.tbMaps.Size = new System.Drawing.Size(275, 19);
+			this.tbMaps.TabIndex = 6;
 			// 
-			// label3
+			// lblMaps
 			// 
-			this.label3.Location = new System.Drawing.Point(5, 45);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(75, 15);
-			this.label3.TabIndex = 5;
-			this.label3.Text = "MAP directory";
+			this.lblMaps.Location = new System.Drawing.Point(5, 45);
+			this.lblMaps.Name = "lblMaps";
+			this.lblMaps.Size = new System.Drawing.Size(65, 15);
+			this.lblMaps.TabIndex = 5;
+			this.lblMaps.Text = "MAP folder";
 			// 
-			// btnFindMap
+			// btnFindMaps
 			// 
-			this.btnFindMap.Location = new System.Drawing.Point(270, 60);
-			this.btnFindMap.Name = "btnFindMap";
-			this.btnFindMap.Size = new System.Drawing.Size(40, 20);
-			this.btnFindMap.TabIndex = 7;
-			this.btnFindMap.Text = "Find";
-			this.btnFindMap.Click += new System.EventHandler(this.OnFindMapsClick);
+			this.btnFindMaps.Location = new System.Drawing.Point(280, 60);
+			this.btnFindMaps.Name = "btnFindMaps";
+			this.btnFindMaps.Size = new System.Drawing.Size(30, 20);
+			this.btnFindMaps.TabIndex = 7;
+			this.btnFindMaps.Text = "...";
+			this.btnFindMaps.Click += new System.EventHandler(this.OnFindMapsClick);
 			// 
-			// btnFindRmp
+			// btnFindRoutes
 			// 
-			this.btnFindRmp.Location = new System.Drawing.Point(270, 95);
-			this.btnFindRmp.Name = "btnFindRmp";
-			this.btnFindRmp.Size = new System.Drawing.Size(40, 20);
-			this.btnFindRmp.TabIndex = 8;
-			this.btnFindRmp.Text = "Find";
-			this.btnFindRmp.Click += new System.EventHandler(this.OnFindRoutesClick);
+			this.btnFindRoutes.Location = new System.Drawing.Point(280, 95);
+			this.btnFindRoutes.Name = "btnFindRoutes";
+			this.btnFindRoutes.Size = new System.Drawing.Size(30, 20);
+			this.btnFindRoutes.TabIndex = 8;
+			this.btnFindRoutes.Text = "...";
+			this.btnFindRoutes.Click += new System.EventHandler(this.OnFindRoutesClick);
 			// 
-			// btnFindBlank
+			// btnFindBlanks
 			// 
-			this.btnFindBlank.Location = new System.Drawing.Point(270, 130);
-			this.btnFindBlank.Name = "btnFindBlank";
-			this.btnFindBlank.Size = new System.Drawing.Size(40, 20);
-			this.btnFindBlank.TabIndex = 11;
-			this.btnFindBlank.Text = "Find";
-			this.btnFindBlank.Click += new System.EventHandler(this.OnFindBlanksClick);
+			this.btnFindBlanks.Location = new System.Drawing.Point(280, 130);
+			this.btnFindBlanks.Name = "btnFindBlanks";
+			this.btnFindBlanks.Size = new System.Drawing.Size(30, 20);
+			this.btnFindBlanks.TabIndex = 11;
+			this.btnFindBlanks.Text = "...";
+			this.btnFindBlanks.Click += new System.EventHandler(this.OnFindBlanksClick);
 			// 
-			// txtBlank
+			// tbBlanks
 			// 
-			this.txtBlank.Location = new System.Drawing.Point(5, 130);
-			this.txtBlank.Name = "txtBlank";
-			this.txtBlank.Size = new System.Drawing.Size(265, 20);
-			this.txtBlank.TabIndex = 10;
+			this.tbBlanks.Location = new System.Drawing.Point(5, 130);
+			this.tbBlanks.Name = "tbBlanks";
+			this.tbBlanks.Size = new System.Drawing.Size(275, 19);
+			this.tbBlanks.TabIndex = 10;
 			// 
-			// label4
+			// lblBlanks
 			// 
-			this.label4.Location = new System.Drawing.Point(5, 115);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(95, 15);
-			this.label4.TabIndex = 9;
-			this.label4.Text = "BLANKS directory";
+			this.lblBlanks.Location = new System.Drawing.Point(5, 115);
+			this.lblBlanks.Name = "lblBlanks";
+			this.lblBlanks.Size = new System.Drawing.Size(80, 15);
+			this.lblBlanks.TabIndex = 9;
+			this.lblBlanks.Text = "Blanks folder";
 			// 
 			// TilesetForm
 			// 
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(314, 192);
-			this.Controls.Add(this.btnFindBlank);
-			this.Controls.Add(this.txtBlank);
-			this.Controls.Add(this.label4);
-			this.Controls.Add(this.btnFindRmp);
-			this.Controls.Add(this.btnFindMap);
-			this.Controls.Add(this.txtMap);
-			this.Controls.Add(this.label3);
-			this.Controls.Add(this.txtRmp);
-			this.Controls.Add(this.label2);
+			this.Controls.Add(this.btnFindBlanks);
+			this.Controls.Add(this.tbBlanks);
+			this.Controls.Add(this.lblBlanks);
+			this.Controls.Add(this.btnFindRoutes);
+			this.Controls.Add(this.btnFindMaps);
+			this.Controls.Add(this.tbMaps);
+			this.Controls.Add(this.lblMaps);
+			this.Controls.Add(this.tbRoutes);
+			this.Controls.Add(this.lblRoutes);
 			this.Controls.Add(this.btnOk);
-			this.Controls.Add(this.txtTileset);
-			this.Controls.Add(this.label1);
-			this.FormBorderStyle = FormBorderStyle.FixedSingle;
+			this.Controls.Add(this.tbLabel);
+			this.Controls.Add(this.lblLabel);
+			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TilesetForm";
-			this.StartPosition = FormStartPosition.CenterParent;
-			this.Text = "TilesetForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "New Tileset";
 			this.ResumeLayout(false);
 			this.PerformLayout();
+
 		}
 		#endregion
 
 		private System.ComponentModel.Container components = null;
 
-		private Label label1;
-		private TextBox txtTileset;
+		private Label lblLabel;
+		private TextBox tbLabel;
 		private Button btnOk;
-		private Label label2;
-		private Label label3;
-		private TextBox txtRmp;
-		private TextBox txtMap;
-		private Button btnFindMap;
-		private Button btnFindBlank;
-		private TextBox txtBlank;
-		private Label label4;
-		private Button btnFindRmp;
+		private Label lblRoutes;
+		private Label lblMaps;
+		private TextBox tbRoutes;
+		private TextBox tbMaps;
+		private Button btnFindMaps;
+		private Button btnFindBlanks;
+		private TextBox tbBlanks;
+		private Label lblBlanks;
+		private Button btnFindRoutes;
 	}
 }

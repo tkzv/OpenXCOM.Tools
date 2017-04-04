@@ -65,7 +65,7 @@ namespace MapView
 			try
 			{
 				var icon = MessageBoxIcon.None;
-				string title = null;
+				string title   = null;
 				string message = null;
 
 				_cols   = int.Parse(txtC.Text, System.Globalization.CultureInfo.InvariantCulture);
@@ -88,7 +88,7 @@ namespace MapView
 						else
 						{
 							icon = MessageBoxIcon.Information;
-							title = "Notice";
+							title = "uh";
 							message = "The new size is the same as the old size.";
 						}
 					}
@@ -183,7 +183,7 @@ namespace MapView
 			// 
 			// oldC
 			// 
-			this.oldC.Location = new System.Drawing.Point(70, 55);
+			this.oldC.Location = new System.Drawing.Point(20, 55);
 			this.oldC.Name = "oldC";
 			this.oldC.ReadOnly = true;
 			this.oldC.Size = new System.Drawing.Size(45, 19);
@@ -191,7 +191,7 @@ namespace MapView
 			// 
 			// oldR
 			// 
-			this.oldR.Location = new System.Drawing.Point(20, 55);
+			this.oldR.Location = new System.Drawing.Point(70, 55);
 			this.oldR.Name = "oldR";
 			this.oldR.ReadOnly = true;
 			this.oldR.Size = new System.Drawing.Size(45, 19);
@@ -207,14 +207,14 @@ namespace MapView
 			// 
 			// txtR
 			// 
-			this.txtR.Location = new System.Drawing.Point(20, 95);
+			this.txtR.Location = new System.Drawing.Point(70, 95);
 			this.txtR.Name = "txtR";
 			this.txtR.Size = new System.Drawing.Size(45, 19);
 			this.txtR.TabIndex = 1;
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(70, 40);
+			this.label3.Location = new System.Drawing.Point(20, 40);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(45, 15);
 			this.label3.TabIndex = 6;
@@ -223,7 +223,7 @@ namespace MapView
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(20, 40);
+			this.label4.Location = new System.Drawing.Point(70, 40);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(45, 15);
 			this.label4.TabIndex = 7;
@@ -241,7 +241,7 @@ namespace MapView
 			// 
 			// txtC
 			// 
-			this.txtC.Location = new System.Drawing.Point(70, 95);
+			this.txtC.Location = new System.Drawing.Point(20, 95);
 			this.txtC.Name = "txtC";
 			this.txtC.Size = new System.Drawing.Size(45, 19);
 			this.txtC.TabIndex = 2;
@@ -299,7 +299,7 @@ namespace MapView
 			// 
 			// label6
 			// 
-			this.label6.Location = new System.Drawing.Point(20, 80);
+			this.label6.Location = new System.Drawing.Point(70, 80);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(45, 15);
 			this.label6.TabIndex = 11;
@@ -308,7 +308,7 @@ namespace MapView
 			// 
 			// label7
 			// 
-			this.label7.Location = new System.Drawing.Point(70, 80);
+			this.label7.Location = new System.Drawing.Point(20, 80);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(45, 15);
 			this.label7.TabIndex = 10;
@@ -321,7 +321,7 @@ namespace MapView
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(305, 28);
 			this.label2.TabIndex = 13;
-			this.label2.Text = "Rows and Columns must be multiples of 10 (10, 20, 30, etc) and Height must be 1 o" +
+			this.label2.Text = "Columns and Rows must be multiples of 10 (10, 20, 30, etc) and Height must be 1 o" +
 	"r more.";
 			// 
 			// ChangeMapSizeForm

@@ -112,7 +112,10 @@ namespace DSShared.Windows
 					using (RegistryKey regkeyViewer = regkeyMapView.CreateSubKey(_regkey))
 					{
 						foreach (string key in _dictInfo.Keys)
-							_dictInfo[key].SetValue(_obj, regkeyViewer.GetValue(key, _dictInfo[key].GetValue(_obj, null)), null);
+							_dictInfo[key].SetValue(
+												_obj,
+												regkeyViewer.GetValue(key, _dictInfo[key].GetValue(_obj, null)),
+												null);
 
 						if (RegistryLoadEvent != null)
 							RegistryLoadEvent(this, new RegistryEventArgs(regkeyViewer));
@@ -146,7 +149,9 @@ namespace DSShared.Windows
 						using (RegistryKey regkeyViewer = regkeyMapView.CreateSubKey(_regkey))
 						{
 							foreach (string key in _dictInfo.Keys)
-								regkeyViewer.SetValue(key, _dictInfo[key].GetValue(_obj, null));
+								regkeyViewer.SetValue(
+													key,
+													_dictInfo[key].GetValue(_obj, null));
 
 							if (RegistrySaveEvent != null)
 								RegistrySaveEvent(this, new RegistryEventArgs(regkeyViewer));
