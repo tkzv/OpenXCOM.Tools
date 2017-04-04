@@ -17,9 +17,6 @@ namespace MapView
 			get { return _mapView; }
 		}
 
-		private readonly HScrollBar _scrollBarHori;
-		private readonly VScrollBar _scrollBarVert;
-
 		private static MapViewPanel _instance;
 		public static MapViewPanel Instance
 		{
@@ -31,6 +28,9 @@ namespace MapView
 					return _instance;
 			}
 		}
+
+		private readonly HScrollBar _scrollBarHori;
+		private readonly VScrollBar _scrollBarVert;
 
 
 		private MapViewPanel()
@@ -158,7 +158,21 @@ namespace MapView
 		public void SetMap(IMapBase baseMap)
 		{
 			_mapView.Map = baseMap;
-			_mapView.Focus();
+//			_mapView.Select();				// TODO: Select the *panel*
+
+//			Select();						// doesn't work right.
+//			MapViewPanel.Instance.Select();	// doesn't work.
+//			MapViewPanel.Instance.Focus();	// doesn't work.
+
+//			var controls = _mapView.Controls.Find("tscPanel", true);
+//			if (controls.GetLength(0) != 0)
+//				controls[0].Select();		// doesn't work.
+
+//			Focus();
+//			Select();						// doesn't work.
+
+			//LeftToolStripPanel
+
 
 			OnResize(null);
 		}

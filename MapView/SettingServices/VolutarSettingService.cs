@@ -25,13 +25,13 @@ namespace MapView.SettingServices
 				_fullpath = setting.Value as String;
 				if (!File.Exists(_fullpath))
 				{
-					using (var input = new InputBox("Enter the Volutar MCD Editor Path in full"))
+					using (var f = new InputBox("Enter the Volutar MCD Editor Path in full"))
 					{
-						if (input.ShowDialog() == System.Windows.Forms.DialogResult.OK
-							&& File.Exists(input.InputString))
+						if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK
+							&& File.Exists(f.InputString))
 						{
-							_fullpath = input.InputString;
-							setting.Value = (object)input.InputString;
+							_fullpath = f.InputString;
+							setting.Value = (object)f.InputString;
 						}
 						// TODO: Error handling. As is the input form simply disappears.
 					}

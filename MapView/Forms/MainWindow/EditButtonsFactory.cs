@@ -138,9 +138,9 @@ namespace MapView.Forms.MainWindow
 			btnPaste.Size = new Size(25, 25);
 			btnPaste.Text = "toolStripButton5";
 			btnPaste.ToolTipText = "Paste";
-			btnPaste.Click += delegate(object sender, EventArgs args)
+			btnPaste.Click += (sender, args) =>
 			{
-				_mapViewPanel.OnPaste(sender,args);
+				_mapViewPanel.OnPaste(sender, args);
 				Refresh();
 			};
 			btnPaste.Enabled = false;

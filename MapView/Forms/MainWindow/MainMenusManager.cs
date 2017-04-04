@@ -20,7 +20,7 @@ namespace MapView.Forms.MainWindow
 
 		private bool _disposed;
 
-		private const string Separator = "-";
+		private const string Divider = "-";
 
 
 		public MainMenusManager(MenuItem show, MenuItem help)
@@ -41,13 +41,13 @@ namespace MapView.Forms.MainWindow
 
 			CreateMenuItem(MainWindowsManager.TileView,     "Tile View",     _viewsMenu);
 
-			_viewsMenu.MenuItems.Add(new MenuItem(Separator));
+			_viewsMenu.MenuItems.Add(new MenuItem(Divider));
 
 			CreateMenuItem(MainWindowsManager.TopView,      "Top View",      _viewsMenu);
 			CreateMenuItem(MainWindowsManager.RouteView,    "Route View",    _viewsMenu);
 			CreateMenuItem(MainWindowsManager.TopRouteView, "TopRoute View", _viewsMenu);
 
-			_viewsMenu.MenuItems.Add(new MenuItem(Separator));
+			_viewsMenu.MenuItems.Add(new MenuItem(Divider));
 
 			CreateMenuItem(console,                         "Console",       _viewsMenu);
 
@@ -170,11 +170,11 @@ namespace MapView.Forms.MainWindow
 		private static string GetWindowSettingKey(MenuItem it)
 		{
 			string suffix = it.Text;
-			return (suffix != Separator) ? "Window" + Separator + suffix
-										 : null;
+			return (suffix != Divider) ? "Window" + Divider + suffix
+									   : null;
 		}
 
-		public IMainShowAllManager CreateShowAllManager()
+		public MainShowAllManager CreateShowAllManager()
 		{
 			return new MainShowAllManager(_allForms, _allItems);
 		}

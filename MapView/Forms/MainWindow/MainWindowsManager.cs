@@ -9,8 +9,8 @@ namespace MapView.Forms.MainWindow
 {
 	internal sealed class MainWindowsManager
 	{
-		public static IMainShowAllManager MainShowAllManager;
-		public static EditButtonsFactory  EditButtonsFactory;
+		public static MainShowAllManager ShowAllManager;
+		public static EditButtonsFactory EditFactory;
 
 
 		private static TopViewForm      _topView;
@@ -19,7 +19,7 @@ namespace MapView.Forms.MainWindow
 		private static TileViewForm     _tileView;
 
 		private static HelpScreen       _helpScreen;
-		private static About      _aboutWindow;
+		private static About            _aboutWindow;
 
 
 		public static TopViewForm TopView
@@ -54,11 +54,11 @@ namespace MapView.Forms.MainWindow
 
 		public static void Initialize()
 		{
-			TopRouteView.TopViewControl.Initialize(EditButtonsFactory);
+			TopRouteView.TopViewControl.Initialize(EditFactory);
 
-			TopView.Control.Initialize(EditButtonsFactory);
+			TopView.Control.Initialize(EditFactory);
 
-			TileView.Control.Initialize(MainShowAllManager);
+			TileView.Control.Initialize(ShowAllManager);
 			TileView.Control.SelectedTileTypeChangedObserver += OnSelectedTileTypeChanged;
 		}
 

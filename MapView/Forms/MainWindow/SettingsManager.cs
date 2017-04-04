@@ -8,7 +8,7 @@ using XCom;
 
 namespace MapView.Forms.MainWindow
 {
-	public class SettingsManager
+	internal sealed class SettingsManager
 	{
 		private readonly Dictionary<string, Settings> _dictSettings;
 

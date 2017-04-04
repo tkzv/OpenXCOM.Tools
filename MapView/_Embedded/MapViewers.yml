@@ -1,0 +1,43 @@
+# delete this file if things go wrong with your window positions and/or sizes.
+# It will be recreated from a hardcoded manifest the next time the program runs.
+#
+MainView:
+  left: 100
+  top: 100
+  width: 640
+  height: 480
+TopView:
+  left: 120
+  top: 120
+  width: 640
+  height: 480
+RouteView:
+  left: 140
+  top: 140
+  width: 640
+  height: 480
+TopRouteView:
+  left: 160
+  top: 160
+  width: 640
+  height: 480
+TileView:
+  left: 180
+  top: 180
+  width: 640
+  height: 480
+Options:
+  left: 200
+  top: 200
+  width: 640
+  height: 480
+Console:
+  left: 220
+  top: 220
+  width: 640
+  height: 480
+PckView:
+  left: 240
+  top: 240
+  width: 640
+  height: 480

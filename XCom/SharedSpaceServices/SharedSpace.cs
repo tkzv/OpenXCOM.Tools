@@ -72,14 +72,14 @@ namespace XCom
 			set { _share[key] = value; }
 		}
 
-		public int GetIntegralValue(string key) // not used.
-		{
-			return (int)_share[key];
-		}
-
 		public string GetString(string key)
 		{
 			return (string)_share[key];
+		}
+
+		public int GetIntegralValue(string key) // not used.
+		{
+			return (int)_share[key];
 		}
 
 		public double GetDouble(string key) // not used.

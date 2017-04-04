@@ -92,6 +92,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\YamlDotNet\YamlDotNet.csproj">
+      <Project>{bf32de1b-6276-4341-b212-f8862adbba7a}</Project>
+      <Name>YamlDotNet</Name>
+    </ProjectReference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -438,7 +442,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <EmbeddedResource Include="_Embedded\MapViewers.ini" />
+    <EmbeddedResource Include="_Embedded\MapViewers.yml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -475,6 +479,7 @@
     <PostBuildEvent>copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Release\MapView.exe C:\0xC_kL\editors\MapView_kL\
 copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Release\DSShared.dll C:\0xC_kL\editors\MapView_kL\
 copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Release\XCom.dll C:\0xC_kL\editors\MapView_kL\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Release\YamlDotNet.dll C:\0xC_kL\editors\MapView_kL\
 </PostBuildEvent>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DebugType>None</DebugType>

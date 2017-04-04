@@ -96,6 +96,7 @@ namespace MapView
 			// 
 			this.miOpen.Index = 0;
 			this.miOpen.Text = "Open";
+			this.miOpen.Visible = false;
 			this.miOpen.Click += new System.EventHandler(this.OnOpenClick);
 			// 
 			// miSave
@@ -308,7 +309,7 @@ namespace MapView
 			this.tsbAutoZoom});
 			this.tsEdit.Location = new System.Drawing.Point(3, 0);
 			this.tsEdit.Name = "tsEdit";
-			this.tsEdit.Size = new System.Drawing.Size(196, 25);
+			this.tsEdit.Size = new System.Drawing.Size(81, 25);
 			this.tsEdit.TabIndex = 0;
 			// 
 			// tsbSelectionBox

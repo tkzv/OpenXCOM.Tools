@@ -20,6 +20,8 @@ using XCom.GameFiles.Map.RouteData;
 using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
+using YamlDotNet.RepresentationModel;
+
 
 namespace MapView
 {
@@ -32,7 +34,7 @@ namespace MapView
 			Form
 	{
 		private readonly SettingsManager       _settingsManager;
-		private readonly MapViewPanel          _mapViewPanel;
+		private readonly MapViewPanel          _mainViewPanel;
 		private readonly LoadingForm           _loadingProgress;
 		private readonly ConsoleWarningHandler _warningHandler;
 		private readonly MainViewsManager      _mainViewsManager;
@@ -42,20 +44,70 @@ namespace MapView
 
 		public XCMainWindow()
 		{
-			_instance = this;
+			// TODO: further optimize this loading sequence ....
 
 			LogFile.CreateLogFile();
 			LogFile.WriteLine("Starting MAIN MapView window ...");
 
+
+			var share = SharedSpace.Instance;
+
+			share.AllocateObject("MapView", this);
+			share.AllocateObject(
+							SharedSpace.ApplicationDirectory,
+							Environment.CurrentDirectory);
+
+			string dir = share.AllocateObject(
+										SharedSpace.SettingsDirectory,
+										Environment.CurrentDirectory + @"\settings")
+									.ToString();
+
+			// I think this is needed only for PckView. so I'll assume 'PckViewForm' can handle it.
+//			share.AllocateObject(SharedSpace.CustomDirectory, Environment.CurrentDirectory + @"\custom");
+
+			LogFile.WriteLine("Environment cached.");
+
+//			string dir = SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory);
+			var infoViewers  = new PathInfo(dir, "MapViewers", "yml");
+
+			var infoSettings = new PathInfo(dir, "MVSettings", "cfg");
+			var infoPaths    = new PathInfo(dir, "Paths",      "cfg");
+			var infoMapEdit  = new PathInfo(dir, "MapEdit",    "cfg");
+			var infoImages   = new PathInfo(dir, "Images",     "cfg");
+
+			share.AllocateObject(PathInfo.MapViewers, infoViewers);
+
+			share.AllocateObject(PathInfo.SettingsFile, infoSettings);
+			share.AllocateObject(PathInfo.PathsFile,    infoPaths);
+			share.AllocateObject(PathInfo.MapEditFile,  infoMapEdit);
+			share.AllocateObject(PathInfo.ImagesFile,   infoImages);
+			LogFile.WriteLine("PathInfo cached.");
+
+
+			if (!infoPaths.FileExists()) // check if Paths.cfg exists yet
+			{
+				using (var f = new InstallWindow())
+					if (f.ShowDialog(this) != DialogResult.OK)
+						Environment.Exit(-1); // wtf -1
+
+				LogFile.WriteLine("Installation files created.");
+			}
+			else
+				LogFile.WriteLine("Paths.Cfg file exists.");
+
+
+			if (!infoViewers.FileExists())
+			{
+				CreateIni();
+				LogFile.WriteLine("Window configuration file created.");
+			}
+			else
+				LogFile.WriteLine("Window configuration file exists.");
+
+
+
 			InitializeComponent();
-			LogFile.WriteLine("MapView window created");
-
-
-			// jijack: These two events keep getting deleted in my designer:
-			tvMaps.BeforeSelect += OnMapSelect;
-			tvMaps.AfterSelect  += OnMapSelected;
-			// welcome to your new home.
-
+			LogFile.WriteLine("MainView window initialized.");
 
 			// WORKAROUND: The size of the form in the designer keeps increasing
 			// (for whatever reason) based on the
@@ -80,15 +132,23 @@ namespace MapView
 			MaximumSize = size; // fu.net
 
 
-			_mapViewPanel = MapViewPanel.Instance;
-			LogFile.WriteLine("MapView panel created");
+			// jijack: These two events keep getting deleted in my designer:
+			tvMaps.BeforeSelect += OnMapSelect;
+			tvMaps.AfterSelect  += OnMapSelected;
+			// ... welcome to your new home
 
-			_settingsManager = new SettingsManager();
-			_mainMenusManager = new MainMenusManager(menuShow, menuHelp);
-			LogFile.WriteLine("Quick Help and About created");
+			_instance = this;
+
+
+			_settingsManager = new SettingsManager(); // goes before LoadDefaults()
 
 			LoadDefaults();
-			LogFile.WriteLine("Default settings loaded");
+			LogFile.WriteLine("MainView Settings loaded.");
+
+
+			_mainViewPanel = MapViewPanel.Instance;
+			LogFile.WriteLine("MainView panel instantiated.");
+
 
 			Palette.UfoBattle.SetTransparent(true);
 			Palette.TftdBattle.SetTransparent(true);
@@ -96,76 +156,34 @@ namespace MapView
 			Palette.TftdBattle.Grayscale.SetTransparent(true);
 			LogFile.WriteLine("Palette transparencies set");
 
-			#region Setup SharedSpace information and paths
 
-			var share = SharedSpace.Instance;
 			var consoleShare = new ConsoleSharedSpace(share);
 			_warningHandler  = new ConsoleWarningHandler(consoleShare);
 
-			MainWindowsManager.EditButtonsFactory = new EditButtonsFactory(_mapViewPanel);
 
 			_mainWindowsManager = new MainWindowsManager();
 			_mainViewsManager   = new MainViewsManager(_settingsManager, consoleShare);
+			_mainMenusManager   = new MainMenusManager(menuShow, menuHelp);
+
+
+
+			MainWindowsManager.ShowAllManager = _mainMenusManager.CreateShowAllManager();
+			MainWindowsManager.EditFactory = new EditButtonsFactory(_mainViewPanel);
+			MainWindowsManager.Initialize();
+			LogFile.WriteLine("MainWindowsManager initialized.");
+
+
 
 			_mainMenusManager.PopulateMenus(consoleShare.GetNewConsole(), Settings);
+			LogFile.WriteLine("MainView menus populated.");
 
-			MainWindowsManager.MainShowAllManager = _mainMenusManager.CreateShowAllManager();
-			MainWindowsManager.Initialize();
-			LogFile.WriteLine("MainWindowsManager initialized");
-
-			share.AllocateObject("MapView", this);
-			share.AllocateObject(
-							SharedSpace.ApplicationDirectory,
-							Environment.CurrentDirectory);
-
-			string dir = share.AllocateObject(
-										SharedSpace.SettingsDirectory,
-										Environment.CurrentDirectory + @"\settings")
-									.ToString();
-
-			// I think this is needed only for PckView. so I'll assume '_PckView' can handle it.
-//			share.AllocateObject(SharedSpace.CustomDirectory, Environment.CurrentDirectory + @"\custom");
-
-			LogFile.WriteLine("Environment set");
-
-//			string dir = SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory);
-			var infoViewers  = new PathInfo(dir, "MapViewers", "ini");
-
-			var infoSettings = new PathInfo(dir, "MVSettings", "cfg");
-			var infoPaths    = new PathInfo(dir, "Paths",      "cfg");
-			var infoMapEdit  = new PathInfo(dir, "MapEdit",    "cfg");
-			var infoImages   = new PathInfo(dir, "Images",     "cfg");
-
-			share.AllocateObject(PathInfo.MapViewers, infoViewers);
-
-			share.AllocateObject(PathInfo.SettingsFile, infoSettings);
-			share.AllocateObject(PathInfo.PathsFile,    infoPaths);
-			share.AllocateObject(PathInfo.MapEditFile,  infoMapEdit);
-			share.AllocateObject(PathInfo.ImagesFile,   infoImages);
-			LogFile.WriteLine("Paths set");
-			#endregion
-
-
-			if (!infoViewers.FileExists())
-				CreateIni();
-
-
-
-			if (!infoPaths.FileExists()) // check if Paths.cfg exists yet
-			{
-				using (var install = new InstallWindow())
-					if (install.ShowDialog(this) != DialogResult.OK)
-						Environment.Exit(-1); // wtf -1
-			}
-			LogFile.WriteLine("Installation checked");
 
 
 
 			GameInfo.ParseLine += ParseLine; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
-			LogFile.WriteLine("Line parsed");
-
 			InitGameInfo(infoPaths);
 			LogFile.WriteLine("GameInfo initialized");
+
 
 			_mainViewsManager.ManageViews();
 
@@ -173,12 +191,13 @@ namespace MapView
 
 			MapViewPanel.ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
-			_mapViewPanel.Dock = DockStyle.Fill;
+			_mainViewPanel.Dock = DockStyle.Fill;
 
 			tvMaps.TreeViewNodeSorter = StringComparer.OrdinalIgnoreCase;
 
-			tscPanel.ContentPanel.Controls.Add(_mapViewPanel);
-			MainWindowsManager.EditButtonsFactory.MakeToolStrip(tsEdit);
+			tscPanel.ContentPanel.Controls.Add(_mainViewPanel);
+
+			MainWindowsManager.EditFactory.MakeToolStrip(tsEdit);
 			tsEdit.Enabled = false;
 			tsEdit.Items.Add(new ToolStripSeparator());
 
@@ -190,7 +209,7 @@ namespace MapView
 															String.Empty,
 															2,
 															Palette.UfoBattle);
-				_mapViewPanel.MapView.SetCursor(new CursorSprite(cursor));
+				_mainViewPanel.MapView.SetCursor(new CursorSprite(cursor));
 			}
 			catch
 			{
@@ -201,19 +220,19 @@ namespace MapView
 																String.Empty,
 																4,
 																Palette.TftdBattle);
-					_mapViewPanel.MapView.SetCursor(new CursorSprite(cursor));
+					_mainViewPanel.MapView.SetCursor(new CursorSprite(cursor));
 				}
 				catch
 				{
-					_mapViewPanel.Cursor = null;
+					_mainViewPanel.Cursor = null;
 					throw; // TODO: there's got to be a better way to do that ....
 				}
 				throw;
 			}
-			LogFile.WriteLine("Cursor loaded");
+			LogFile.WriteLine("Cursor loaded.");
 
 			InitList();
-			LogFile.WriteLine("Tilesets created and loaded to Main window's tree panel");
+			LogFile.WriteLine("Tilesets created and loaded to Main window's tree panel.");
 
 			if (infoSettings.FileExists())
 			{
@@ -221,7 +240,7 @@ namespace MapView
 				LogFile.WriteLine("User settings loaded");
 			}
 			else
-				LogFile.WriteLine("User settings NOT loaded - no settings file to load");
+				LogFile.WriteLine("User settings NOT loaded - no settings file to load.");
 
 
 			OnResize(null);
@@ -256,7 +275,7 @@ namespace MapView
 //			}
 			/****************************************/
 
-			LogFile.WriteLine("About to show Main window");
+			LogFile.WriteLine("About to show MainView ...");
 			Show();
 		}
 
@@ -407,89 +426,101 @@ namespace MapView
 				AddTileset(GameInfo.TilesetInfo.Tilesets[key]);
 		}
 
-		private void OnCloseSaveRegistry(object sender, CancelEventArgs args)
-		{
-			if (NotifySave() == DialogResult.Cancel)
-			{
-				args.Cancel = true;
-			}
-			else
-			{
-				_mainMenusManager.Dispose();
-
-				if (PathsEditor.SaveRegistry)
-				{
-					using (var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry))
-					{
-						using (var keyMapView = keySoftware.CreateSubKey(DSShared.Windows.RegistryInfo.MapViewRegistry))
-						{
-							using (var keyMainView = keyMapView.CreateSubKey("MainView"))
-							{
-								_mainViewsManager.CloseAllViews();
-
-								WindowState = FormWindowState.Normal;
-
-								keyMainView.SetValue("Left",   Left);
-								keyMainView.SetValue("Top",    Top);
-								keyMainView.SetValue("Width",  Width);
-								keyMainView.SetValue("Height", Height - SystemInformation.CaptionButtonSize.Height);
-
-								keyMainView.Close();
-							}
-							keyMapView.Close();
-						}
-						keySoftware.Close();
-					}
-				}
-
-				_settingsManager.Save(); // save MV_SettingsFile // TODO: Save settings when closing the Options form(s).
-			}
-		}
-
 		private void LoadDefaults()
 		{
-			using (var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry))
-			{
-				using (var keyMapView = keySoftware.CreateSubKey(DSShared.Windows.RegistryInfo.MapViewRegistry))
-				{
-					using (var keyMainView = keyMapView.CreateSubKey("MainView"))
-					{
-						Left   = (int)keyMainView.GetValue("Left",   Left);
-						Top    = (int)keyMainView.GetValue("Top",    Top);
-						Width  = (int)keyMainView.GetValue("Width",  Width);
-						Height = (int)keyMainView.GetValue("Height", Height);
+//			string file = SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory) + @"\settings\MapViewers.yml";
 
-						keyMainView.Close();
+			string file = Environment.CurrentDirectory + @"\settings\MapViewers.yml";
+			using (var sr = new StreamReader(File.OpenRead(file)))
+			{
+				var str = new YamlStream();
+				str.Load(sr);
+
+				var top = (YamlMappingNode)str.Documents[0].RootNode;
+				foreach (var entry in top.Children)
+				{
+					//LogFile.WriteLine("entry= " + entry);			// this can be stored/recreated and emitted.
+					//LogFile.WriteLine("key= " + entry.Key);		// NOTE: Key and Value are the same here.
+					string stEntry = ((YamlScalarNode)entry.Key).Value;
+					//LogFile.WriteLine("value= " + st);
+					LogFile.WriteLine("entry key/value= " + entry.Key + "/" + stEntry);
+
+					//int i = 0;
+					var pars = (YamlMappingNode)top.Children[new YamlScalarNode(stEntry)];
+					foreach (var par in pars)
+					{
+						//LogFile.WriteLine(". " + i + " sub= " + sub); // this can be stored/recreated and emitted.
+						string stKey = par.Key.ToString();
+						LogFile.WriteLine(". " + stKey + "= " + (stKey.Length < 4 ? "\t" : "") + "\t" + par.Value);
+						//++i;
+
+						if (String.Compare(
+										stKey,
+										"MainView",
+										System.Globalization.CultureInfo.InvariantCulture,
+										System.Globalization.CompareOptions.OrdinalIgnoreCase) == 0)
+						{
+							switch (((String)par.Value).ToUpperInvariant())
+							{
+								case "LEFT":
+									Left = Int32.Parse(par.Value.ToString()); // TODO: Error handling. ->
+									break;
+								case "TOP":
+									Top = Int32.Parse(par.Value.ToString());
+									break;
+								case "WIDTH":
+									Width = Int32.Parse(par.Value.ToString());
+									break;
+								case "HEIGHT":
+									Height = Int32.Parse(par.Value.ToString());
+									break;
+							}
+						}
 					}
-					keyMapView.Close();
 				}
-				keySoftware.Close();
 			}
+//			using (var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry))
+//			{
+//				using (var keyMapView = keySoftware.CreateSubKey(DSShared.Windows.RegistryInfo.MapViewRegistry))
+//				{
+//					using (var keyMainView = keyMapView.CreateSubKey("MainView"))
+//					{
+//						Left   = (int)keyMainView.GetValue("Left",   Left);
+//						Top    = (int)keyMainView.GetValue("Top",    Top);
+//						Width  = (int)keyMainView.GetValue("Width",  Width);
+//						Height = (int)keyMainView.GetValue("Height", Height);
+//
+//						keyMainView.Close();
+//					}
+//					keyMapView.Close();
+//				}
+//				keySoftware.Close();
+//			}
 
 			var settings = new Settings();
 
 //			Color.FromArgb(175, 69, 100, 129)
 
-			var change = new ValueChangedEventHandler(OnSettingChange);
+			var handler = new ValueChangedEventHandler(OnSettingChange);
 
 			settings.AddSetting(
 							"Animation",
 							MapViewPanel.IsAnimated,
 							"If true the map will animate itself.",
 							"Main",
-							change, false, null);
+							handler, false, null);
 			settings.AddSetting(
 							"Doors",
 							false,
 							"If true the door tiles will animate themselves.",
 							"Main",
-							change, false, null);
+							handler, false, null);
 			settings.AddSetting(
 							"SaveWindowPositions",
 							PathsEditor.SaveRegistry,
 							"If true the window positions and sizes will be saved in the windows registry.",
 							"Main",
-							change, false, null);
+							handler, false, null);
 			settings.AddSetting(
 							"UseGrid",
 							MapViewPanel.Instance.MapView.UseGrid,
@@ -530,6 +561,45 @@ namespace MapView
 			Settings = settings;
 		}
 
+		private void OnCloseSaveRegistry(object sender, CancelEventArgs args)
+		{
+			if (NotifySave() == DialogResult.Cancel)
+			{
+				args.Cancel = true;
+			}
+			else
+			{
+				_mainMenusManager.Dispose();
+
+				if (PathsEditor.SaveRegistry)
+				{
+					using (var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry))
+					{
+						using (var keyMapView = keySoftware.CreateSubKey(DSShared.Windows.RegistryInfo.MapViewRegistry))
+						{
+							using (var keyMainView = keyMapView.CreateSubKey("MainView"))
+							{
+								_mainViewsManager.CloseAllViews();
+
+								WindowState = FormWindowState.Normal;
+
+								keyMainView.SetValue("Left",   Left);
+								keyMainView.SetValue("Top",    Top);
+								keyMainView.SetValue("Width",  Width);
+								keyMainView.SetValue("Height", Height - SystemInformation.CaptionButtonSize.Height);
+
+								keyMainView.Close();
+							}
+							keyMapView.Close();
+						}
+						keySoftware.Close();
+					}
+				}
+
+				_settingsManager.Save(); // save MV_SettingsFile // TODO: Save settings when closing the Options form(s).
+			}
+		}
+
 		private void OnImageUpdate(object sender, EventArgs e)
 		{
 			MainWindowsManager.TopView.Control.BottomPanel.Refresh();
@@ -553,10 +623,10 @@ namespace MapView
 
 		private void OnSaveClick(object sender, EventArgs e)
 		{
-			if (_mapViewPanel.BaseMap != null)
+			if (_mainViewPanel.BaseMap != null)
 			{
-				_mapViewPanel.BaseMap.Save();
-				XConsole.AdZerg("Saved: " + _mapViewPanel.BaseMap.Name);
+				_mainViewPanel.BaseMap.Save();
+				XConsole.AdZerg("Saved: " + _mainViewPanel.BaseMap.Name);
 			}
 		}
 
@@ -618,7 +688,7 @@ namespace MapView
 			var desc = tvMaps.SelectedNode.Tag as IMapDesc;
 			if (desc != null)
 			{
-				miExport.Enabled = true;
+//				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.
 
 				var tileFactory = new XCTileFactory();
 				tileFactory.HandleWarning += _warningHandler.HandleWarning;
@@ -626,7 +696,7 @@ namespace MapView
 				var fileService = new XCMapFileService(tileFactory);
 
 				var baseMap = fileService.Load(desc as XCMapDesc);
-				_mapViewPanel.SetMap(baseMap);
+				_mainViewPanel.SetMap(baseMap);
 
 				tsEdit.Enabled = true;
 
@@ -648,13 +718,13 @@ namespace MapView
 
 				_mainWindowsManager.SetMap(baseMap); // reset all observer events
 			}
-			else
-				miExport.Enabled = false;
+//			else
+//				miExport.Enabled = false;
 		}
 
 		private DialogResult NotifySave()
 		{
-			if (_mapViewPanel.BaseMap != null && _mapViewPanel.BaseMap.MapChanged)
+			if (_mainViewPanel.BaseMap != null && _mainViewPanel.BaseMap.MapChanged)
 			{
 				switch (MessageBox.Show(
 									this,
@@ -669,7 +739,7 @@ namespace MapView
 						break;
 
 					case DialogResult.Yes:		// save
-						_mapViewPanel.BaseMap.Save();
+						_mainViewPanel.BaseMap.Save();
 						break;
 
 					case DialogResult.Cancel:	// do nothing
@@ -688,16 +758,16 @@ namespace MapView
 
 		private void OnSaveImageClick(object sender, EventArgs e)
 		{
-			if (_mapViewPanel.BaseMap != null)
+			if (_mainViewPanel.BaseMap != null)
 			{
-				sfdSaveDialog.FileName = _mapViewPanel.BaseMap.Name;
+				sfdSaveDialog.FileName = _mainViewPanel.BaseMap.Name;
 				if (sfdSaveDialog.ShowDialog() == DialogResult.OK)
 				{
 					_loadingProgress.Show();
 
 					try
 					{
-						_mapViewPanel.BaseMap.SaveGif(sfdSaveDialog.FileName);
+						_mainViewPanel.BaseMap.SaveGif(sfdSaveDialog.FileName);
 					}
 					finally
 					{
@@ -709,11 +779,11 @@ namespace MapView
 
 		private void OnHq2xClick(object sender, EventArgs e)
 		{
-			var map = _mapViewPanel.BaseMap as XCMapFile;
+			var map = _mainViewPanel.BaseMap as XCMapFile;
 			if (map != null)
 			{
 				map.HQ2X();
-				_mapViewPanel.OnResize();
+				_mainViewPanel.OnResize();
 			}
 		}
 
@@ -721,7 +791,7 @@ namespace MapView
 		{
 			miDoors.Checked = !miDoors.Checked;
 
-			foreach (XCTile tile in _mapViewPanel.BaseMap.Tiles)
+			foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
 				if (tile.Info.UfoDoor || tile.Info.HumanDoor)	// uhh, human doors don't animate
 				{												// only ufo doors animate
 					if (miDoors.Checked)						// human doors use their Alternate tile.
@@ -733,11 +803,11 @@ namespace MapView
 
 		private void OnResizeClick(object sender, EventArgs e)
 		{
-			if (_mapViewPanel.MapView.Map != null)
+			if (_mainViewPanel.MapView.Map != null)
 			{
 				using (var f = new ChangeMapSizeForm())
 				{
-					f.Map = _mapViewPanel.MapView.Map;
+					f.Map = _mainViewPanel.MapView.Map;
 					if (f.ShowDialog(this) == DialogResult.OK)
 					{
 						f.Map.ResizeTo(
@@ -745,7 +815,7 @@ namespace MapView
 									f.NewCols,
 									f.NewHeight,
 									f.AddToCeiling);
-						_mapViewPanel.ForceResize();
+						_mainViewPanel.ForceResize();
 					}
 				}
 			}
@@ -772,11 +842,11 @@ namespace MapView
 
 		private void OnInfoClick(object sender, EventArgs e)
 		{
-			if (_mapViewPanel.BaseMap != null)
+			if (_mainViewPanel.BaseMap != null)
 			{
 				var f = new MapInfoForm();
 				f.Show();
-				f.Analyze(_mapViewPanel.BaseMap);
+				f.Analyze(_mainViewPanel.BaseMap);
 			}
 		}
 
@@ -800,7 +870,7 @@ namespace MapView
 //			ef.ShowDialog();
 		}
 
-		private void OnOpenClick(object sender, EventArgs e)
+		private void OnOpenClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE.
 		{}
 
 		private Settings Settings
@@ -811,7 +881,7 @@ namespace MapView
 
 		private void OnSelectionBoxClick(object sender, EventArgs e) // NOTE: is disabled w/ Visible=FALSE in designer.
 		{
-			_mapViewPanel.MapView.DrawSelectionBox = !_mapViewPanel.MapView.DrawSelectionBox;
+			_mainViewPanel.MapView.DrawSelectionBox = !_mainViewPanel.MapView.DrawSelectionBox;
 			tsbSelectionBox.Checked = !tsbSelectionBox.Checked;
 		}
 
@@ -823,11 +893,11 @@ namespace MapView
 				Globals.AutoPckImageScale = false;
 				tsbAutoZoom.Checked = false;
 
-				_mapViewPanel.SetupMapSize();
+				_mainViewPanel.SetupMapSize();
 
 				Refresh();
 
-				_mapViewPanel.OnResize();
+				_mainViewPanel.OnResize();
 			}
 		}
 
@@ -839,11 +909,11 @@ namespace MapView
 				Globals.AutoPckImageScale = false;
 				tsbAutoZoom.Checked = false;
 
-				_mapViewPanel.SetupMapSize();
+				_mainViewPanel.SetupMapSize();
 
 				Refresh();
 
-				_mapViewPanel.OnResize();
+				_mainViewPanel.OnResize();
 			}
 		}
 
@@ -856,11 +926,11 @@ namespace MapView
 
 			tsbAutoZoom.Checked = !tsbAutoZoom.Checked;
 
-			_mapViewPanel.SetupMapSize();
+			_mainViewPanel.SetupMapSize();
 
 			Refresh();
 
-			_mapViewPanel.OnResize();
+			_mainViewPanel.OnResize();
 		}
 
 		public void StatusBarPrintPosition(int col, int row)
@@ -876,6 +946,8 @@ namespace MapView
 		private Varidia _vars;
 
 		/// <summary>
+		/// Transposes all the default viewer sizes and positions from the
+		/// embedded MapViewers.yml manifest to a /settings/MapViewers.yml file.
 		/// Based on InstallWindow.
 		/// </summary>
 		private void CreateIni()
@@ -888,36 +960,17 @@ namespace MapView
 
 			string pfeViewers = info.FullPath;
 
-			// Create MapViewers.Ini, will overwrite the file if it exists.
+			// Create MapViewers.yml, will overwrite the file if it exists.
 			using (var fs = new FileStream(pfeViewers, FileMode.Create))
 			{}
 
 			using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
-													 .GetManifestResourceStream("MapView._Embedded.MapViewers.ini")))
+													 .GetManifestResourceStream("MapView._Embedded.MapViewers.yml")))
 			using (var fs = new FileStream(pfeViewers, FileMode.Append))
 			using (var sw = new StreamWriter(fs))
 			{
-				Write(sr, sw); // write default window size and positions to MapViewers.Ini
-				sw.WriteLine();
-			}
-		}
-
-		/// <summary>
-		/// Lifted from InstallWindow.
-		/// </summary>
-		/// <param name="sr"></param>
-		/// <param name="sw"></param>
-		private void Write(TextReader sr, TextWriter sw)
-		{
-			string line;
-			while (sr.Peek() != -1)
-			{
-				line = sr.ReadLine();
-				if (line.IndexOf('#') > 0)
-					foreach (string val in _vars.Variables)
-						line = line.Replace(val, _vars[val]);
-
-				sw.WriteLine(line);
+				while (sr.Peek() != -1)
+					sw.WriteLine(sr.ReadLine());
 			}
 		}
 	}
