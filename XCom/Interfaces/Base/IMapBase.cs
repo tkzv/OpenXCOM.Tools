@@ -66,7 +66,8 @@ namespace XCom.Interfaces.Base
 
 		private MapLocation _selLoc;
 		/// <summary>
-		/// Gets/Sets the current selected location. Setting the location will fire a SelectedTileChanged event.
+		/// Gets/Sets the current selected location. Setting the location will
+		/// fire a SelectedTileChanged event.
 		/// </summary>
 		public MapLocation SelectedTile
 		{
@@ -174,13 +175,13 @@ namespace XCom.Interfaces.Base
 			}
 		}
 
-		public virtual void ResizeTo(
-				int rPost,
+		public virtual void ResizeTo(	// NOTE: This doesn't handle Routes or node-checking
+				int rPost,				// which XCMapFile.ResizeTo() does.
 				int cPost,
 				int hPost,
 				bool toCeiling)
 		{
-			var tileList = MapResizeService.ResizeMap(
+/*			var tileList = MapResizeService.ResizeMap(
 												rPost,
 												cPost,
 												hPost,
@@ -191,18 +192,17 @@ namespace XCom.Interfaces.Base
 			{
 				MapChanged = true;
 
-				// NOTE: This doesn't handle Routes or node-checking which XCMapFile.ResizeTo() does.
 				MapTiles = tileList;
 				MapSize  = new MapSize(rPost, cPost, hPost);
 
 				if (hPost > 0) // assuage FxCop re 'possible' underflow.
 					_height = (byte)(hPost - 1);
-			}
+			} */
 		}
 
 		/// <summary>
-		/// Not yet generic enough to call with custom derived classes other
-		/// than XCMapFile.
+		/// Not generic enough to call with custom derived classes other than
+		/// XCMapFile.
 		/// </summary>
 		/// <param name="file"></param>
 		public void SaveGif(string file)

@@ -11,15 +11,24 @@ namespace MapView.Forms.MapObservers.RouteViews
 //	public delegate void MapPanelClickDelegate(object sender, MapPanelClickEventArgs e);
 
 
-	public class MapPanel
+	internal class MapPanel
 		:
-		UserControl
+			UserControl
 	{
 		public event EventHandler<MapPanelClickEventArgs> MapPanelClicked;
 //		public event MapPanelClickDelegate MapPanelClicked;
 
 
 		private XCMapFile _mapFile;
+		public XCMapFile MapFile
+		{
+			get { return _mapFile; }
+			set
+			{
+				_mapFile = value;
+				OnResize(null);
+			}
+		}
 
 		private Point _clickPoint;
 		protected Point ClickPoint
@@ -68,16 +77,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
 		}
 
-
-		public XCMapFile MapFile
-		{
-			get { return _mapFile; }
-			set
-			{
-				_mapFile = value;
-				OnResize(null);
-			}
-		}
 
 		/// <summary>
 		/// Get the tile contained at (x,y) in local screen coordinates.

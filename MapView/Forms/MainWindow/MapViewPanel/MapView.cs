@@ -11,6 +11,9 @@ using XCom.Interfaces.Base;
 
 namespace MapView // NOTE: namespace conflict w/ .NET itself
 {
+	public delegate void MouseDragEventHandler();
+
+
 	internal sealed class MapView
 		:
 			Panel
@@ -48,7 +51,8 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			}
 		}
 
-		public event EventHandler DragChanged;
+//		public event EventHandler MouseDragEvent;
+		public event MouseDragEventHandler MouseDragEvent;
 
 
 		public MapView()
@@ -288,8 +292,8 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 				DragStart = dragStart;
 				DragEnd   = dragEnd;
 	
-				if (DragChanged != null)
-					DragChanged(this, EventArgs.Empty);
+				if (MouseDragEvent != null)
+					MouseDragEvent();
 
 				Refresh();
 			}

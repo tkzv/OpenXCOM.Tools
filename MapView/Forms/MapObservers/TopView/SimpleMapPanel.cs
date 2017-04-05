@@ -13,6 +13,9 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TopViews
 {
+	/// <summary>
+	/// A base class for TopViewPanel.
+	/// </summary>
 	internal class SimpleMapPanel
 		:
 			MapObserverControl1
@@ -20,9 +23,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		private int _offX = 0;
 		private int _offY = 0;
 
-		private readonly GraphicsPath _cell;
-		private readonly GraphicsPath _copy;
-		private readonly GraphicsPath _sel;
+		private readonly GraphicsPath _lozCell;
+		private readonly GraphicsPath _lozSel;
+		private readonly GraphicsPath _lozCopy;
 
 		private int _mR = -1;
 		private int _mC = -1;
@@ -47,9 +50,9 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		public SimpleMapPanel()
 		{
-			_cell = new GraphicsPath();
-			_sel  = new GraphicsPath();
-			_copy = new GraphicsPath();
+			_lozCell = new GraphicsPath();
+			_lozSel  = new GraphicsPath();
+			_lozCopy = new GraphicsPath();
 		}
 
 
@@ -102,7 +105,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		[Browsable(false), DefaultValue(null)] // NOTE: this is only for the designer, it doesn't actually set the default-value.
+		[Browsable(false), DefaultValue(null)]
 		public override IMapBase Map
 		{
 			set
@@ -121,7 +124,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			SetSelectionRect();
 		}
 
-		protected void OnViewDrag(object sender, EventArgs e)
+		protected void OnMouseDrag()
 		{
 			SetSelectionRect();
 		}
@@ -147,11 +150,11 @@ namespace MapView.Forms.MapObservers.TopViews
 							_offX + (start.X - end.Y) * hWidth - hWidth,
 							_offY + (start.X + end.Y) * hHeight + hHeight);
 
-			_copy.Reset();
-			_copy.AddLine(sel1, sel2);
-			_copy.AddLine(sel2, sel3);
-			_copy.AddLine(sel3, sel4);
-			_copy.CloseFigure();
+			_lozCopy.Reset();
+			_lozCopy.AddLine(sel1, sel2);
+			_lozCopy.AddLine(sel2, sel3);
+			_lozCopy.AddLine(sel3, sel4);
+			_lozCopy.CloseFigure();
 
 			Refresh();
 		}
@@ -199,19 +202,19 @@ namespace MapView.Forms.MapObservers.TopViews
 			int xc = (pt.Col - pt.Row) * hWidth;
 			int yc = (pt.Col + pt.Row) * hHeight;
 
-			_sel.Reset();
-			_sel.AddLine(
+			_lozSel.Reset();
+			_lozSel.AddLine(
 					xc, yc,
 					xc + hWidth, yc + hHeight);
-			_sel.AddLine(
+			_lozSel.AddLine(
 					xc + hWidth, yc + hHeight,
 					xc, yc + 2 * hHeight);
-			_sel.AddLine(
+			_lozSel.AddLine(
 					xc, yc + 2 * hHeight,
 					xc - hWidth, yc + hHeight);
-			_sel.CloseFigure();
+			_lozSel.CloseFigure();
 
-			OnViewDrag(null, null);
+			OnMouseDrag();
 
 			Refresh();
 		}
@@ -263,8 +266,8 @@ namespace MapView.Forms.MapObservers.TopViews
 									i * hWidth  - Map.MapSize.Rows * hWidth  + _offX,
 									i * hHeight + Map.MapSize.Rows * hHeight + _offY);
 
-				if (_copy != null)
-					backBuffer.DrawPath(Pens["SelectColor"], _copy);
+				if (_lozCopy != null)
+					backBuffer.DrawPath(Pens["SelectColor"], _lozCopy);
 
 //				if (selected != null) // clicked on
 //					backBuffer.DrawPath(new Pen(Brushes.Blue, 2), selected);
@@ -288,19 +291,19 @@ namespace MapView.Forms.MapObservers.TopViews
 			var hWidth  = _drawService.HalfWidth;
 			var hHeight = _drawService.HalfHeight ;
 
-			_cell.Reset();
-			_cell.AddLine(
+			_lozCell.Reset();
+			_lozCell.AddLine(
 						x, y,
 						x + hWidth, y + hHeight);
-			_cell.AddLine(
+			_lozCell.AddLine(
 						x + hWidth, y + hHeight,
 						x, y + 2 * hHeight);
-			_cell.AddLine(
+			_lozCell.AddLine(
 						x, y + 2 * hHeight,
 						x - hWidth, y + hHeight);
-			_cell.CloseFigure();
+			_lozCell.CloseFigure();
 
-			return _cell;
+			return _lozCell;
 		}
 
 		private Point ConvertCoordsDiamond(int x, int y)

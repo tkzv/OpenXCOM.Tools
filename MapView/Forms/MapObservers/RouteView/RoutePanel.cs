@@ -10,9 +10,9 @@ using XCom;
 
 namespace MapView.Forms.MapObservers.RouteViews
 {
-	public class RoutePanel
+	internal sealed class RoutePanel
 		:
-		MapPanel
+			MapPanel
 	{
 		private Point _pos = new Point(-1, -1);
 		public Point Pos
