@@ -9,7 +9,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 {
 	public class MapPanelClickEventArgs
 		:
-		EventArgs
+			EventArgs
 	{
 		public MapLocation ClickLocation
 		{ get; set; }

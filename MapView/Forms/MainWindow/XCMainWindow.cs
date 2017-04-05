@@ -356,8 +356,8 @@ namespace MapView
 					PathsEditor.SaveRegistry = (bool)val;
 					break;
 
-				case "UseGrid":
-					MapViewPanel.Instance.MapView.UseGrid = (bool)val;
+				case "ShowGrid":
+					MapViewPanel.Instance.MapView.ShowGrid = (bool)val;
 					break;
 
 				case "GridColor":
@@ -498,10 +498,8 @@ namespace MapView
 //			}
 
 			var settings = new Settings();
-
+			var handler  = new ValueChangedEventHandler(OnSettingChange);
 //			Color.FromArgb(175, 69, 100, 129)
-
-			var handler = new ValueChangedEventHandler(OnSettingChange);
 
 			settings.AddSetting(
 							"Animation",
@@ -522,8 +520,8 @@ namespace MapView
 							"Main",
 							handler, false, null);
 			settings.AddSetting(
-							"UseGrid",
-							MapViewPanel.Instance.MapView.UseGrid,
+							"ShowGrid",
+							MapViewPanel.Instance.MapView.ShowGrid,
 							"If true a grid will show up at the current level of editing.",
 							"MapView",
 							null, true, MapViewPanel.Instance.MapView);
@@ -546,8 +544,8 @@ namespace MapView
 							"MapView",
 							null, true, MapViewPanel.Instance.MapView);
 			settings.AddSetting(
-							"SelectGrayscale",
-							MapViewPanel.Instance.MapView.SelectGrayscale,
+							"GraySelection",
+							MapViewPanel.Instance.MapView.GraySelection,
 							"If true the selection area will show up in gray.",
 							"MapView",
 							null, true, MapViewPanel.Instance.MapView);
@@ -602,7 +600,7 @@ namespace MapView
 
 		private void OnImageUpdate(object sender, EventArgs e)
 		{
-			MainWindowsManager.TopView.Control.BottomPanel.Refresh();
+			MainWindowsManager.TopView.Control.QuadrantsPanel.Refresh();
 		}
 
 /*		private static void myQuit(object sender, string command)

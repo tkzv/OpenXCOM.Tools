@@ -8,15 +8,11 @@ using XCom;
 
 namespace MapView.Forms.MapObservers.RouteViews
 {
-//	public delegate void MapPanelClickDelegate(object sender, MapPanelClickEventArgs e);
-
-
 	internal class MapPanel
 		:
 			UserControl
 	{
 		public event EventHandler<MapPanelClickEventArgs> MapPanelClicked;
-//		public event MapPanelClickDelegate MapPanelClicked;
 
 
 		private XCMapFile _mapFile;
@@ -30,19 +26,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private Point _clickPoint;
 		protected Point ClickPoint
-		{
-			get { return _clickPoint; }
-			set { _clickPoint = value; }
-		}
+		{ get; set; }
 
-		private Point _origin;
 		protected Point Origin
-		{
-			get { return _origin; }
-			set { _origin = value; }
-		}
+		{ get; set; }
 
 		private int _drawAreaWidth = 8;
 		protected int DrawAreaWidth
@@ -111,7 +99,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		public void DeselectLocation()
 		{
-			_clickPoint = new Point(-1, -1);
+			ClickPoint = new Point(-1, -1);
 		}
 
 		protected override void OnMouseDown(MouseEventArgs e)
@@ -127,11 +115,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 						var tile = _mapFile[pt.Y, pt.X];
 						if (tile != null)
 						{
-							_clickPoint = pt;
+							ClickPoint = pt;
 
 							_mapFile.SelectedTile = new MapLocation(
-															_clickPoint.Y,
-															_clickPoint.X,
+															ClickPoint.Y,
+															ClickPoint.X,
 															_mapFile.CurrentHeight);
 
 							MapViewPanel.Instance.MapView.SetDrag(pt, pt);
@@ -140,8 +128,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 							args.ClickTile = tile;
 							args.MouseEventArgs = e;
 							args.ClickLocation = new MapLocation(
-															_clickPoint.Y,
-															_clickPoint.X,
+															ClickPoint.Y,
+															ClickPoint.X,
 															_mapFile.CurrentHeight);
 							MapPanelClicked(this, args);
 
@@ -173,15 +161,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 					_drawAreaWidth  = _drawAreaHeight * 2;
 				}
 
-				_origin = new Point(_mapFile.MapSize.Rows * _drawAreaWidth, 0);
+				Origin = new Point(_mapFile.MapSize.Rows * _drawAreaWidth, 0);
 				Refresh();
 			}
 		}
 
 		private Point ConvertCoordsDiamond(int ptX, int ptY)
 		{
-			int x = ptX - _origin.X;
-			int y = ptY - _origin.Y;
+			int x = ptX - Origin.X;
+			int y = ptY - Origin.Y;
 
 			double x1 = ((double)x / (_drawAreaWidth  * 2))
 					  + ((double)y / (_drawAreaHeight * 2));

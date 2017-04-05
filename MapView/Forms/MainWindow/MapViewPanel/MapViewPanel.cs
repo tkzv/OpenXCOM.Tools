@@ -84,6 +84,11 @@ namespace MapView
 			_mapView.Paste();
 		}
 
+		public void OnFill(object sender, EventArgs e)
+		{
+			_mapView.Fill();
+		}
+
 		public IMapBase BaseMap
 		{
 			get { return _mapView.Map; }

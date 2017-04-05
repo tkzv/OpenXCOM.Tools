@@ -18,13 +18,37 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		:
 			Panel
 	{
+		public event MouseDragEventHandler MouseDragEvent;
+
+
 		private IMapBase _baseMap;
+		public IMapBase Map
+		{
+			get { return _baseMap; }
+			set
+			{
+				if (_baseMap != null)
+				{
+					_baseMap.HeightChanged -= OnHeightChanged;
+					_baseMap.SelectedTileChanged -= OnTileChange;
+				}
+
+				if ((_baseMap = value) != null)
+				{
+					_baseMap.HeightChanged += OnHeightChanged;
+					_baseMap.SelectedTileChanged += OnTileChange;
+
+					SetupMapSize();
+
+//					DragStart = _dragStart;	// this might be how to give drags their legitimate values
+//					DragEnd   = _dragEnd;	// after initialization to Point(-1/-1).
+				}
+			}
+		}
 
 		private Point _origin = new Point(100, 0);
 
 		private CursorSprite _cursor;
-
-//		private Size _viewsize;
 
 		private const int HalfWidth  = 16;
 		private const int HalfHeight =  8;
@@ -33,12 +57,66 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		private Point _dragEnd;
 
 		private GraphicsPath _gridUnder;
-		private Color _colorGrid;
 		private Brush _brushTrans;
-		private Pen _penDash;
 
-		private bool _selectGrayscale = true;
-		private bool _useGrid = true;
+		private Color _colorGrid;
+		public Color GridColor
+		{
+			get { return _colorGrid; }
+			set
+			{
+				_colorGrid = value;
+				_brushTrans = new SolidBrush(value);
+				Refresh();
+			}
+		}
+
+		private Pen _penDash;
+		public Color GridLineColor
+		{
+			get { return _penDash.Color; }
+			set
+			{
+				_penDash.Color = value;
+				Refresh();
+			}
+		}
+		public int GridLineWidth
+		{
+			get { return (int)_penDash.Width; }
+			set
+			{
+				_penDash.Width = value;
+				Refresh();
+			}
+		}
+
+
+		private bool _graySelection = true;
+		// NOTE: Remove suppression for Release cfg.
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
+		"CA1811:AvoidUncalledPrivateCode",
+		Justification = "Because the setter is called dynamically w/ Reflection or other: it is used.")]
+		public bool GraySelection
+		{
+			get { return _graySelection; }
+			set
+			{
+				_graySelection = value;
+				Refresh();
+			}
+		}
+
+		private bool _showGrid = true;
+		public bool ShowGrid
+		{
+			get { return _showGrid; }
+			set
+			{
+				_showGrid = value;
+				Refresh();
+			}
+		}
 
 		private bool _drawSelectionBox;
 		public bool DrawSelectionBox
@@ -50,9 +128,6 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 				Refresh();
 			}
 		}
-
-//		public event EventHandler MouseDragEvent;
-		public event MouseDragEventHandler MouseDragEvent;
 
 
 		public MapView()
@@ -72,20 +147,6 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		}
 
 
-		// NOTE: Remove suppression for Release cfg.
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
-		"CA1811:AvoidUncalledPrivateCode",
-		Justification = "Because the setter is called dynamically w/ Reflection or other: it is used.")]
-		public bool SelectGrayscale
-		{
-			get { return _selectGrayscale; }
-			set
-			{
-				_selectGrayscale = value;
-				Refresh();
-			}
-		}
-
 		public void ClearSelection()
 		{
 			if (_baseMap != null)
@@ -99,7 +160,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 					for (int r = start.Y; r <= end.Y; ++r)
 						_baseMap[r, c] = XCMapTile.BlankTile;
 
-				Refresh();
+//				Refresh(); // handled for all viewers by EditButtonsFactory.
 			}
 		}
 
@@ -149,48 +210,34 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 						}
 					}
 
-				Refresh();
+//				Refresh(); // handled for all viewers by EditButtonsFactory.
 			}
 		}
 
-		public Color GridColor
+		public void Fill()
 		{
-			get { return _colorGrid; }
-			set
+			if (_baseMap != null)
 			{
-				_colorGrid = value;
-				_brushTrans = new SolidBrush(value);
-				Refresh();
-			}
-		}
+				_baseMap.MapChanged = true;
 
-		public Color GridLineColor
-		{
-			get { return _penDash.Color; }
-			set
-			{
-				_penDash.Color = value;
-				Refresh();
-			}
-		}
+				var quadType = MainWindowsManager.TopView.Control.QuadrantsPanel.SelectedQuadrant;
 
-		public int GridLineWidth
-		{
-			get { return (int)_penDash.Width; }
-			set
-			{
-				_penDash.Width = value;
-				Refresh();
-			}
-		}
+				var start = new Point(0, 0);
+				var end   = new Point(0, 0);
 
-		public bool UseGrid
-		{
-			get { return _useGrid; }
-			set
-			{
-				_useGrid = value;
-				Refresh();
+				start.X = Math.Min(DragStart.X, DragEnd.X);
+				start.Y = Math.Min(DragStart.Y, DragEnd.Y);
+	
+				end.X = Math.Max(DragStart.X, DragEnd.X);
+				end.Y = Math.Max(DragStart.Y, DragEnd.Y);
+
+				var tileView = MainWindowsManager.TileView.Control;
+				for (int c = start.X; c <= end.X; ++c)
+					for (int r = start.Y; r <= end.Y; ++r)
+						((XCMapTile)_baseMap[r, c])[quadType] = tileView.SelectedTile;
+
+//				MapViewPanel.Instance.Refresh();
+//				Refresh(); // handled for all viewers by EditButtonsFactory.
 			}
 		}
 
@@ -223,7 +270,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
-			Refresh();
+			Refresh(); // is this used for anything like, at all.
 		}
 
 		/// <summary>
@@ -315,30 +362,6 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			return end;
 		}
 
-		public IMapBase Map
-		{
-			get { return _baseMap; }
-			set
-			{
-				if (_baseMap != null)
-				{
-					_baseMap.HeightChanged -= MapHeight;
-					_baseMap.SelectedTileChanged -= TileChange;
-				}
-
-				if ((_baseMap = value) != null)
-				{
-					_baseMap.HeightChanged += MapHeight;
-					_baseMap.SelectedTileChanged += TileChange;
-
-					SetupMapSize();
-
-//					DragStart = _dragStart;	// this might be how to give drags their legitimate values
-//					DragEnd   = _dragEnd;	// after initialization to Point(-1/-1).
-				}
-			}
-		}
-
 		public void SetupMapSize()
 		{
 			if (_baseMap != null)
@@ -367,13 +390,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			return Size.Empty;
 		}
 
-/*		public Size Viewable
-		{
-//			get { return _viewsize; }
-			set { _viewsize = value; }
-		} */
-
-		private void TileChange(IMapBase baseMap, SelectedTileChangedEventArgs e)
+		private void OnTileChange(IMapBase baseMap, SelectedTileChangedEventArgs e)
 		{
 			var loc = e.MapPosition;
 			var start = new Point(loc.Col, loc.Row);
@@ -382,7 +399,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			XCMainWindow.Instance.StatusBarPrintPosition(loc.Col, loc.Row);
 		}
 
-		private void MapHeight(IMapBase baseMap, HeightChangedEventArgs e)
+		private void OnHeightChanged(IMapBase baseMap, HeightChangedEventArgs e)
 		{
 			Refresh();
 		}
@@ -436,7 +453,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 								if (_baseMap.CurrentHeight == h || _baseMap[r, c, h].DrawAbove)
 								{
 									var tile = (XCMapTile)_baseMap[r, c, h];
-									if (_selectGrayscale
+									if (_graySelection
 										&& (isClicked || dragRect.IntersectsWith(tileRect)))
 									{
 										DrawTileGray(g, tile, x, y);
@@ -474,7 +491,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 
 		private void DrawGrid(int h, Graphics g)
 		{
-			if (_useGrid && _baseMap.CurrentHeight == h)
+			if (_showGrid && _baseMap.CurrentHeight == h)
 			{
 				var hWidth  = (int)(HalfWidth  * Globals.PckImageScale);
 				var hHeight = (int)(HalfHeight * Globals.PckImageScale);

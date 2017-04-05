@@ -27,154 +27,152 @@ namespace MapView.Forms.MapObservers.TopViews
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TopView));
-			this.toolStripContainer2 = new System.Windows.Forms.ToolStripContainer();
-			this.center = new System.Windows.Forms.Panel();
-			this.toolStrip = new System.Windows.Forms.ToolStrip();
-			this.bottom = new global::MapView.Forms.MapObservers.TopViews.QuadrantPanel();
-			this.MainToolStrip = new System.Windows.Forms.ToolStrip();
-			this.VisibleToolStripButton = new System.Windows.Forms.ToolStripDropDownButton();
+			this.tscMain = new System.Windows.Forms.ToolStripContainer();
+			this.pMain = new System.Windows.Forms.Panel();
+			this.tsEdit = new System.Windows.Forms.ToolStrip();
+			this.quadrants = new global::MapView.Forms.MapObservers.TopViews.QuadrantPanel();
+			this.tsMain = new System.Windows.Forms.ToolStrip();
+			this.tsddbVisibleQuads = new System.Windows.Forms.ToolStripDropDownButton();
 			this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripContainer2.ContentPanel.SuspendLayout();
-			this.toolStripContainer2.LeftToolStripPanel.SuspendLayout();
-			this.toolStripContainer2.SuspendLayout();
-			this.MainToolStrip.SuspendLayout();
+			this.tsmiOptions = new System.Windows.Forms.ToolStripMenuItem();
+			this.tscMain.ContentPanel.SuspendLayout();
+			this.tscMain.LeftToolStripPanel.SuspendLayout();
+			this.tscMain.SuspendLayout();
+			this.tsMain.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// toolStripContainer2
+			// tscMain
 			// 
 			// 
-			// toolStripContainer2.BottomToolStripPanel
+			// tscMain.BottomToolStripPanel
 			// 
-			this.toolStripContainer2.BottomToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tscMain.BottomToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			// 
-			// toolStripContainer2.ContentPanel
+			// tscMain.ContentPanel
 			// 
-			this.toolStripContainer2.ContentPanel.Controls.Add(this.center);
-			this.toolStripContainer2.ContentPanel.Size = new System.Drawing.Size(615, 359);
-			this.toolStripContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.toolStripContainer2.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tscMain.ContentPanel.Controls.Add(this.pMain);
+			this.tscMain.ContentPanel.Size = new System.Drawing.Size(615, 359);
+			this.tscMain.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tscMain.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			// 
-			// toolStripContainer2.LeftToolStripPanel
+			// tscMain.LeftToolStripPanel
 			// 
-			this.toolStripContainer2.LeftToolStripPanel.Controls.Add(this.toolStrip);
-			this.toolStripContainer2.LeftToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.toolStripContainer2.Location = new System.Drawing.Point(0, 25);
-			this.toolStripContainer2.Name = "toolStripContainer2";
+			this.tscMain.LeftToolStripPanel.Controls.Add(this.tsEdit);
+			this.tscMain.LeftToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tscMain.Location = new System.Drawing.Point(0, 25);
+			this.tscMain.Name = "tscMain";
 			// 
-			// toolStripContainer2.RightToolStripPanel
+			// tscMain.RightToolStripPanel
 			// 
-			this.toolStripContainer2.RightToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.toolStripContainer2.Size = new System.Drawing.Size(640, 384);
-			this.toolStripContainer2.TabIndex = 4;
-			this.toolStripContainer2.Text = "toolStripContainer2";
+			this.tscMain.RightToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tscMain.Size = new System.Drawing.Size(640, 384);
+			this.tscMain.TabIndex = 4;
+			this.tscMain.Text = "toolStripContainer2";
 			// 
-			// toolStripContainer2.TopToolStripPanel
+			// tscMain.TopToolStripPanel
 			// 
-			this.toolStripContainer2.TopToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tscMain.TopToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			// 
-			// center
+			// pMain
 			// 
-			this.center.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.center.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.center.Location = new System.Drawing.Point(0, 0);
-			this.center.Name = "center";
-			this.center.Size = new System.Drawing.Size(615, 359);
-			this.center.TabIndex = 2;
+			this.pMain.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pMain.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.pMain.Location = new System.Drawing.Point(0, 0);
+			this.pMain.Name = "pMain";
+			this.pMain.Size = new System.Drawing.Size(615, 359);
+			this.pMain.TabIndex = 2;
 			// 
-			// toolStrip
+			// tsEdit
 			// 
-			this.toolStrip.Dock = System.Windows.Forms.DockStyle.None;
-			this.toolStrip.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.toolStrip.Location = new System.Drawing.Point(0, 3);
-			this.toolStrip.Name = "toolStrip";
-			this.toolStrip.Padding = new System.Windows.Forms.Padding(0);
-			this.toolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.toolStrip.Size = new System.Drawing.Size(25, 111);
-			this.toolStrip.TabIndex = 1;
-			this.toolStrip.Text = "toolStrip1";
+			this.tsEdit.Dock = System.Windows.Forms.DockStyle.None;
+			this.tsEdit.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsEdit.Location = new System.Drawing.Point(0, 3);
+			this.tsEdit.Name = "tsEdit";
+			this.tsEdit.Padding = new System.Windows.Forms.Padding(0);
+			this.tsEdit.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tsEdit.Size = new System.Drawing.Size(25, 111);
+			this.tsEdit.TabIndex = 1;
+			this.tsEdit.Text = "toolStrip1";
 			// 
-			// bottom
+			// quadrants
 			// 
-			this.bottom.Brushes = null;
-			this.bottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.bottom.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.bottom.Location = new System.Drawing.Point(0, 409);
-			this.bottom.Name = "bottom";
-			this.bottom.Pens = null;
-			this.bottom.SelectedQuadrant = XCom.QuadrantType.Ground;
-			this.bottom.Size = new System.Drawing.Size(640, 71);
-			this.bottom.TabIndex = 0;
-			this.bottom.Text = "bottom";
+			this.quadrants.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.quadrants.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.quadrants.Location = new System.Drawing.Point(0, 409);
+			this.quadrants.Name = "quadrants";
+			this.quadrants.SelectedQuadrant = XCom.QuadrantType.Ground;
+			this.quadrants.Size = new System.Drawing.Size(640, 71);
+			this.quadrants.TabIndex = 0;
+			this.quadrants.Text = "bottom";
 			// 
-			// MainToolStrip
+			// tsMain
 			// 
-			this.MainToolStrip.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.MainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.VisibleToolStripButton,
+			this.tsMain.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.tsddbVisibleQuads,
 			this.toolStripDropDownButton1});
-			this.MainToolStrip.Location = new System.Drawing.Point(0, 0);
-			this.MainToolStrip.Name = "MainToolStrip";
-			this.MainToolStrip.Size = new System.Drawing.Size(640, 25);
-			this.MainToolStrip.TabIndex = 0;
-			this.MainToolStrip.Text = "toolStrip1";
+			this.tsMain.Location = new System.Drawing.Point(0, 0);
+			this.tsMain.Name = "tsMain";
+			this.tsMain.Size = new System.Drawing.Size(640, 25);
+			this.tsMain.TabIndex = 0;
+			this.tsMain.Text = "toolStrip1";
 			// 
-			// VisibleToolStripButton
+			// tsddbVisibleQuads
 			// 
-			this.VisibleToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.VisibleToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("VisibleToolStripButton.Image")));
-			this.VisibleToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.VisibleToolStripButton.Name = "VisibleToolStripButton";
-			this.VisibleToolStripButton.Size = new System.Drawing.Size(54, 22);
-			this.VisibleToolStripButton.Text = "Visible";
+			this.tsddbVisibleQuads.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.tsddbVisibleQuads.Image = ((System.Drawing.Image)(resources.GetObject("tsddbVisibleQuads.Image")));
+			this.tsddbVisibleQuads.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsddbVisibleQuads.Name = "tsddbVisibleQuads";
+			this.tsddbVisibleQuads.Size = new System.Drawing.Size(54, 22);
+			this.tsddbVisibleQuads.Text = "Visible";
 			// 
 			// toolStripDropDownButton1
 			// 
 			this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.optionsToolStripMenuItem});
+			this.tsmiOptions});
 			this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
 			this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
 			this.toolStripDropDownButton1.Size = new System.Drawing.Size(38, 22);
 			this.toolStripDropDownButton1.Text = "Edit";
 			// 
-			// optionsToolStripMenuItem
+			// tsmiOptions
 			// 
-			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
-			this.optionsToolStripMenuItem.Text = "Options";
-			this.optionsToolStripMenuItem.Click += new System.EventHandler(this.OnOptionsClick);
+			this.tsmiOptions.Name = "tsmiOptions";
+			this.tsmiOptions.Size = new System.Drawing.Size(152, 22);
+			this.tsmiOptions.Text = "Options";
+			this.tsmiOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
 			// TopView
 			// 
-			this.Controls.Add(this.toolStripContainer2);
-			this.Controls.Add(this.bottom);
-			this.Controls.Add(this.MainToolStrip);
+			this.Controls.Add(this.tscMain);
+			this.Controls.Add(this.quadrants);
+			this.Controls.Add(this.tsMain);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "TopView";
 			this.Size = new System.Drawing.Size(640, 480);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
-			this.toolStripContainer2.ContentPanel.ResumeLayout(false);
-			this.toolStripContainer2.LeftToolStripPanel.ResumeLayout(false);
-			this.toolStripContainer2.LeftToolStripPanel.PerformLayout();
-			this.toolStripContainer2.ResumeLayout(false);
-			this.toolStripContainer2.PerformLayout();
-			this.MainToolStrip.ResumeLayout(false);
-			this.MainToolStrip.PerformLayout();
+			this.tscMain.ContentPanel.ResumeLayout(false);
+			this.tscMain.LeftToolStripPanel.ResumeLayout(false);
+			this.tscMain.LeftToolStripPanel.PerformLayout();
+			this.tscMain.ResumeLayout(false);
+			this.tscMain.PerformLayout();
+			this.tsMain.ResumeLayout(false);
+			this.tsMain.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
 		}
 		#endregion
 
-		private QuadrantPanel bottom;
-		private System.Windows.Forms.ToolStrip toolStrip;
-		private System.Windows.Forms.Panel center;
-		private System.Windows.Forms.ToolStripContainer toolStripContainer2;
-		private System.Windows.Forms.ToolStrip MainToolStrip;
-		private System.Windows.Forms.ToolStripDropDownButton VisibleToolStripButton;
+		private QuadrantPanel quadrants;
+		private System.Windows.Forms.ToolStrip tsEdit;
+		private System.Windows.Forms.Panel pMain;
+		private System.Windows.Forms.ToolStripContainer tscMain;
+		private System.Windows.Forms.ToolStrip tsMain;
+		private System.Windows.Forms.ToolStripDropDownButton tsddbVisibleQuads;
 		private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
-		private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem tsmiOptions;
 	}
 }

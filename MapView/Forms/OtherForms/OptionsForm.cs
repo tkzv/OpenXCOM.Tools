@@ -135,7 +135,7 @@ namespace MapView
 			((Setting)_settings[e.ChangedItem.Label]).Value = e.ChangedItem.Value;
 
 //			if (_instantUpdate)
-			((Setting)_settings[e.ChangedItem.Label]).FireUpdate(
+			((Setting)_settings[e.ChangedItem.Label]).doUpdate(
 															e.ChangedItem.Label,
 															e.ChangedItem.Value);
 		}

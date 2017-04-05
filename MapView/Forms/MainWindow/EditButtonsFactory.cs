@@ -1,5 +1,5 @@
 ﻿using System;
-//using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -12,8 +12,7 @@ namespace MapView.Forms.MainWindow
 	{
 		private readonly MapViewPanel _mainViewPanel;
 
-		private ToolStripButton _pasteButton;
-//		private readonly List<ToolStripButton> _pasteButtons = new List<ToolStripButton>();
+		private readonly List<ToolStripButton> _pasteButtons = new List<ToolStripButton>();
 
 
 		public EditButtonsFactory(MapViewPanel panel)
@@ -131,8 +130,7 @@ namespace MapView.Forms.MainWindow
 				Refresh();
 			};
 			tsbPaste.Enabled = false;
-			_pasteButton = tsbPaste;
-//			_pasteButtons.Add(tsbPaste);
+			_pasteButtons.Add(tsbPaste);
 			//
 			// tsbFill
 			//
@@ -144,7 +142,8 @@ namespace MapView.Forms.MainWindow
 			tsbFill.ToolTipText = "Fill";
 			tsbFill.Click += (sender, e) =>
 			{
-				MainWindowsManager.TopView.Control.OnFillClick(sender, e);
+//				MainWindowsManager.TopView.Control.OnFillClick(sender, e);
+				_mainViewPanel.OnFill(sender, e);
 				Refresh();
 			};
 			tsbUp.Image    = Resources.up;
@@ -157,15 +156,22 @@ namespace MapView.Forms.MainWindow
 
 		private static void Refresh()
 		{
+//			MapViewPanel.Instance.Refresh();			// either this
+			MapViewPanel.Instance.MapView.Refresh();	// or this, both works
+
 			MainWindowsManager.TopView.Refresh();
 			MainWindowsManager.RouteView.Refresh();
+
+			// TODO: refresh TopRouteView (both Top & Route panels) also.
 		}
 
+		/// <summary>
+		/// Enables the paste button in each viewer after cut or copy is clicked.
+		/// </summary>
 		private void EnablePasteButton()
 		{
-			_pasteButton.Enabled = true;
-//			foreach (var tsb in _pasteButtons)
-//				tsb.Enabled = true;
+			foreach (var tsb in _pasteButtons)
+				tsb.Enabled = true;
 		}
 
 		private void OnDownClick(object sender, EventArgs e)

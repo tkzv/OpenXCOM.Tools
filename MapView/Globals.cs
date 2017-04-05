@@ -35,10 +35,10 @@ namespace MapView
 		{
 			if (_extraTiles == null)
 			{
-				using (System.IO.Stream strPck = System.Reflection.Assembly.GetExecutingAssembly()
-												.GetManifestResourceStream("MapView._Embedded.Extra.PCK"))
-				using (System.IO.Stream strTab = System.Reflection.Assembly.GetExecutingAssembly()
-												.GetManifestResourceStream("MapView._Embedded.Extra.TAB"))
+				using (var strPck = System.Reflection.Assembly.GetExecutingAssembly()
+									.GetManifestResourceStream("MapView._Embedded.Extra.PCK"))
+				using (var strTab = System.Reflection.Assembly.GetExecutingAssembly()
+									.GetManifestResourceStream("MapView._Embedded.Extra.TAB"))
 				{
 					_extraTiles = new XCom.PckSpriteCollection(
 														strPck,

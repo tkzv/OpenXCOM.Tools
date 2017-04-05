@@ -65,7 +65,7 @@ namespace MapView
 						if (settings[keyval.Keyword] != null)
 						{
 							settings[keyval.Keyword].Value = keyval.Value;
-							settings[keyval.Keyword].FireUpdate(keyval.Keyword);
+							settings[keyval.Keyword].doUpdate(keyval.Keyword);
 						}
 						break;
 				}
@@ -315,13 +315,13 @@ namespace MapView
 //		internal string Key
 //		{ get; set; }
 
-		internal void FireUpdate(string key, object value) // FxCop CA1030:UseEventsWhereAppropriate
+		internal void doUpdate(string key, object value) // FxCop CA1030:UseEventsWhereAppropriate
 		{
 			if (ValueChangedEvent != null)
 				ValueChangedEvent(this, key, value);
 		}
 
-		internal void FireUpdate(string key) // FxCop CA1030:UseEventsWhereAppropriate
+		internal void doUpdate(string key) // FxCop CA1030:UseEventsWhereAppropriate
 		{
 			if (ValueChangedEvent != null)
 				ValueChangedEvent(this, key, _value);

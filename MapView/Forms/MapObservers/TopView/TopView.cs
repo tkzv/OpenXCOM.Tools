@@ -37,44 +37,45 @@ namespace MapView.Forms.MapObservers.TopViews
 			_topViewPanel.Width  = 100;
 			_topViewPanel.Height = 100;
 
-			center.AutoScroll = true;
-			center.Controls.Add(_topViewPanel);
+			pMain.AutoScroll = true;
+			pMain.Controls.Add(_topViewPanel);
 
-			center.Resize += (sender, e) => _topViewPanel.ParentSize(center.Width, center.Height);
+			pMain.Resize += (sender, e) => _topViewPanel.ParentSize(pMain.Width, pMain.Height);
 
 			_dictVisibleQuads = new Dictionary<ToolStripMenuItem, int>();
 
-			var visItems = VisibleToolStripButton.DropDown.Items;
+			var visQuads = tsddbVisibleQuads.DropDown.Items;
+
 			var itGround = new ToolStripMenuItem("Floor");
-			visItems.Add(itGround);
+			visQuads.Add(itGround);
 			_topViewPanel.Ground = itGround;
 			_dictVisibleQuads[_topViewPanel.Ground] = 0;
 			_topViewPanel.Ground.ShortcutKeys = Keys.F1;
 
 			var itWest = new ToolStripMenuItem("West");
-			visItems.Add(itWest);
+			visQuads.Add(itWest);
 			_topViewPanel.West = itWest;
 			_dictVisibleQuads[_topViewPanel.West] = 1;
 			_topViewPanel.West.ShortcutKeys = Keys.F2;
 
 			var itNorth = new ToolStripMenuItem("North");
-			visItems.Add(itNorth);
+			visQuads.Add(itNorth);
 			_topViewPanel.North = itNorth;
 			_dictVisibleQuads[_topViewPanel.North] = 2;
 			_topViewPanel.West.ShortcutKeys = Keys.F3;
 
 			var itContent = new ToolStripMenuItem("Content");
-			visItems.Add(itContent);
+			visQuads.Add(itContent);
 			_topViewPanel.Content = itContent;
 			_dictVisibleQuads[_topViewPanel.Content] = 3;
 			_topViewPanel.Content.ShortcutKeys = Keys.F4;
 
-			foreach (ToolStripItem visItem in visItems)
-				visItem.Click += OnVisibleQuadsClick;
+			foreach (ToolStripMenuItem it in visQuads)
+				it.Click += OnShowQuadClick;
 
-			_topViewPanel.QuadrantPanel = bottom;
+			_topViewPanel.QuadrantPanel = quadrants;
 
-			MoreObservers.Add("BottomPanel", bottom);
+			MoreObservers.Add("QuadrantsPanel", quadrants);
 			MoreObservers.Add("TopViewPanel", _topViewPanel);
 
 			ResumeLayout();
@@ -83,15 +84,15 @@ namespace MapView.Forms.MapObservers.TopViews
 		public void Initialize(EditButtonsFactory editButtons)
 		{
 			_editButtonsFactory = editButtons;
-			_editButtonsFactory.BuildToolStrip(toolStrip);
+			_editButtonsFactory.BuildToolStrip(tsEdit);
 		}
 
-		public QuadrantPanel BottomPanel
+		public QuadrantPanel QuadrantsPanel
 		{
-			get { return bottom; }
+			get { return quadrants; }
 		}
 
-		private void OnVisibleQuadsClick(object sender, EventArgs e)
+		private void OnShowQuadClick(object sender, EventArgs e)
 		{
 			var it = sender as ToolStripMenuItem;
 			it.Checked = !it.Checked;
@@ -110,7 +111,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		protected override void OnRegistrySettingsLoad(DSShared.Windows.RegistryEventArgs e)
 		{
-			bottom.Height = 74;
+			quadrants.Height = 74;
 			var regkey = e.OpenRegistryKey;
 
 			foreach (var it in _dictVisibleQuads.Keys)
@@ -125,32 +126,32 @@ namespace MapView.Forms.MapObservers.TopViews
 				regkey.SetValue("vis" + _dictVisibleQuads[it], it.Checked);
 		}
 
-		public void OnFillClick(object sender, EventArgs e)
-		{
-			var baseMap = MapViewPanel.Instance.MapView.Map;
-
-			if (baseMap != null)
-			{
-				baseMap.MapChanged = true;
-
-				var start = new Point(0, 0);
-				var end   = new Point(0, 0);
-
-				start.X = Math.Min(MapViewPanel.Instance.MapView.DragStart.X, MapViewPanel.Instance.MapView.DragEnd.X);
-				start.Y = Math.Min(MapViewPanel.Instance.MapView.DragStart.Y, MapViewPanel.Instance.MapView.DragEnd.Y);
-	
-				end.X = Math.Max(MapViewPanel.Instance.MapView.DragStart.X, MapViewPanel.Instance.MapView.DragEnd.X);
-				end.Y = Math.Max(MapViewPanel.Instance.MapView.DragStart.Y, MapViewPanel.Instance.MapView.DragEnd.Y);
-
-				var tileView = MainWindowsManager.TileView.Control;
-				for (int c = start.X; c <= end.X; ++c)
-					for (int r = start.Y; r <= end.Y; ++r)
-						((XCMapTile)baseMap[r, c])[bottom.SelectedQuadrant] = tileView.SelectedTile;
-
-				MapViewPanel.Instance.Refresh();
-				Refresh();
-			}
-		}
+//		public void OnFillClick(object sender, EventArgs e)
+//		{
+//			var baseMap = MapViewPanel.Instance.MapView.Map;
+//
+//			if (baseMap != null)
+//			{
+//				baseMap.MapChanged = true;
+//
+//				var start = new Point(0, 0);
+//				var end   = new Point(0, 0);
+//
+//				start.X = Math.Min(MapViewPanel.Instance.MapView.DragStart.X, MapViewPanel.Instance.MapView.DragEnd.X);
+//				start.Y = Math.Min(MapViewPanel.Instance.MapView.DragStart.Y, MapViewPanel.Instance.MapView.DragEnd.Y);
+//	
+//				end.X = Math.Max(MapViewPanel.Instance.MapView.DragStart.X, MapViewPanel.Instance.MapView.DragEnd.X);
+//				end.Y = Math.Max(MapViewPanel.Instance.MapView.DragStart.Y, MapViewPanel.Instance.MapView.DragEnd.Y);
+//
+//				var tileView = MainWindowsManager.TileView.Control;
+//				for (int c = start.X; c <= end.X; ++c)
+//					for (int r = start.Y; r <= end.Y; ++r)
+//						((XCMapTile)baseMap[r, c])[bottom.SelectedQuadrant] = tileView.SelectedTile;
+//
+//				MapViewPanel.Instance.Refresh();
+//				Refresh();
+//			}
+//		}
 
 		private void OnOptionsClick(object sender, EventArgs e)
 		{
@@ -165,7 +166,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			_topBrushes[key].Color = (Color)val;
 
 			if (key == "SelectTileColor")
-				bottom.SelectColor = _topBrushes[key];
+				quadrants.SelectColor = _topBrushes[key];
 
 			Refresh();
 		}
@@ -217,19 +218,19 @@ namespace MapView.Forms.MapObservers.TopViews
 			switch (tileType)
 			{
 				case TileType.Ground:
-					BottomPanel.SelectedQuadrant = QuadrantType.Ground;
+					QuadrantsPanel.SelectedQuadrant = QuadrantType.Ground;
 					break;
 
 				case TileType.WestWall:
-					BottomPanel.SelectedQuadrant = QuadrantType.West;
+					QuadrantsPanel.SelectedQuadrant = QuadrantType.West;
 					break;
 
 				case TileType.NorthWall:
-					BottomPanel.SelectedQuadrant = QuadrantType.North;
+					QuadrantsPanel.SelectedQuadrant = QuadrantType.North;
 					break;
 
 				case TileType.Object:
-					BottomPanel.SelectedQuadrant = QuadrantType.Content;
+					QuadrantsPanel.SelectedQuadrant = QuadrantType.Content;
 					break;
 			}
 		}
@@ -240,11 +241,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		public override void LoadDefaultSettings()
 		{
 			_topBrushes = new Dictionary<string, SolidBrush>();
-			_topPens = new Dictionary<string, Pen>();
+			_topPens    = new Dictionary<string, Pen>();
 
 			_topBrushes.Add("GroundColor", new SolidBrush(Color.Orange));
 			_topBrushes.Add("ContentColor", new SolidBrush(Color.Green));
-			_topBrushes.Add("SelectTileColor", bottom.SelectColor);
+			_topBrushes.Add("SelectTileColor", quadrants.SelectColor);
 
 			var northPen = new Pen(new SolidBrush(Color.Red), 4);
 			_topPens.Add("NorthColor", northPen);
@@ -287,10 +288,10 @@ namespace MapView.Forms.MapObservers.TopViews
 			Settings.AddSetting("DiamondMinHeight", _topViewPanel.MinHeight, "Minimum height of the grid tiles",            "Tile",   dh, false, null);
 
 			_topViewPanel.Brushes =
-			bottom.Brushes        = _topBrushes;
+			quadrants.Brushes     = _topBrushes;
 
 			_topViewPanel.Pens =
-			bottom.Pens        = _topPens;
+			quadrants.Pens     = _topPens;
 
 			Invalidate();
 		}

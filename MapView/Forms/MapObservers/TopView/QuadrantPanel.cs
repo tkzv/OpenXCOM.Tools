@@ -12,7 +12,10 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TopViews
 {
-	internal sealed class QuadrantPanel // NOTE: These are not "quadrants"; they are tile-part types.
+	/// <summary>
+	/// These are not actually "quadrants"; they are tile-part types.
+	/// </summary>
+	internal sealed class QuadrantPanel
 		:
 			MapObserverControl1
 	{
