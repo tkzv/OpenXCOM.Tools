@@ -430,9 +430,7 @@ namespace MapView
 
 		private void LoadDefaults()
 		{
-//			string file = SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory) + @"\settings\MapViewers.yml";
-
-			string file = Environment.CurrentDirectory + @"\settings\MapViewers.yml";
+			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), "MapViewers.yml");
 			using (var sr = new StreamReader(File.OpenRead(file)))
 			{
 				var str = new YamlStream();
