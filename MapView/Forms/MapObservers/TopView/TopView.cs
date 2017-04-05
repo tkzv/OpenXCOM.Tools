@@ -83,7 +83,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		public void Initialize(EditButtonsFactory editButtons)
 		{
 			_editButtonsFactory = editButtons;
-			_editButtonsFactory.MakeToolStrip(toolStrip);
+			_editButtonsFactory.BuildToolStrip(toolStrip);
 		}
 
 		public QuadrantPanel BottomPanel

@@ -197,7 +197,7 @@ namespace MapView
 
 			tscPanel.ContentPanel.Controls.Add(_mainViewPanel);
 
-			MainWindowsManager.EditFactory.MakeToolStrip(tsEdit);
+			MainWindowsManager.EditFactory.BuildToolStrip(tsEdit);
 			tsEdit.Enabled = false;
 			tsEdit.Items.Add(new ToolStripSeparator());
 

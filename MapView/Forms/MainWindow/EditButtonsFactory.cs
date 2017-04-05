@@ -10,147 +10,143 @@ namespace MapView.Forms.MainWindow
 {
 	internal sealed class EditButtonsFactory
 	{
-		private readonly List<ToolStripButton> _pasteButtons = new List<ToolStripButton>();
+		private readonly MapViewPanel _mainViewPanel;
 
-		private readonly MapViewPanel _mapViewPanel;
+		private ToolStripButton _pasteButton;
+//		private readonly List<ToolStripButton> _pasteButtons = new List<ToolStripButton>();
 
 
 		public EditButtonsFactory(MapViewPanel panel)
 		{
-			_mapViewPanel = panel;
+			_mainViewPanel = panel;
 		}
 
 
 		/// <summary>
-		/// Adds buttons for Up,Down,Cut,Copy and Paste to a toolstrip as well
-		/// as sets some properties for the toolstrip.
+		/// Adds buttons for Up,Down,Cut,Copy,Paste and Fill to the specified
+		/// toolstrip as well as sets some properties for the toolstrip.
 		/// </summary>
 		/// <param name="toolStrip"></param>
-		public void MakeToolStrip(ToolStrip toolStrip)
+		public void BuildToolStrip(ToolStrip toolStrip)
 		{
-			var btnUp    = new ToolStripButton();
-			var btnDown  = new ToolStripButton();
-			var btnCut   = new ToolStripButton();
-			var btnCopy  = new ToolStripButton();
-			var btnPaste = new ToolStripButton();
-			var btnFill  = new ToolStripButton();
-
+			//
+			// toolStripButtons
+			//
+			var tsbUp    = new ToolStripButton();
+			var tsbDown  = new ToolStripButton();
+			var tsbCut   = new ToolStripButton();
+			var tsbCopy  = new ToolStripButton();
+			var tsbPaste = new ToolStripButton();
+			var tsbFill  = new ToolStripButton();
 			//
 			// toolStrip
 			//
-			//toolStrip.Dock = DockStyle.None;
-			//toolStrip.GripMargin = new Padding(0);
-			//toolStrip.GripStyle = ToolStripGripStyle.Hidden;
-			toolStrip.Items.AddRange(new ToolStripItem[]{
-														btnUp,
-														btnDown,
-														btnCut,
-														btnCopy,
-														btnPaste,
-														btnFill });
-//			toolStrip1.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow;
-			toolStrip.Padding = new Padding(0);
-			toolStrip.RenderMode = ToolStripRenderMode.System;
-			toolStrip.TabIndex = 1;
-
+			var tsItems = new ToolStripItem[]
+			{
+				tsbUp,
+				tsbDown,
+				tsbCut,
+				tsbCopy,
+				tsbPaste,
+				tsbFill
+			};
+			toolStrip.Items.AddRange(tsItems);
 			//
-			// btnFill
+			// tsbUp
 			//
-			btnFill.AutoSize = false;
-			btnFill.DisplayStyle = ToolStripItemDisplayStyle.Text;
-			btnFill.Name = "btnFill";
-			btnFill.Size = new Size(25, 25);
-			btnFill.Text = "Fill";
-			btnFill.ToolTipText = "Fill";
-			btnFill.Click += delegate(object sender, EventArgs e)
+			tsbUp.AutoSize = false;
+			tsbUp.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			tsbUp.ImageScaling = ToolStripItemImageScaling.None;
+			tsbUp.ImageTransparentColor = Color.Magenta;
+			tsbUp.Name = "tsbUp";
+			tsbUp.Size = new Size(25, 25);
+//			tsbUp.Text = "Level Up";
+			tsbUp.ToolTipText = "Level Up";
+			tsbUp.Click += OnUpClick;
+			//
+			// tsbDown
+			//
+			tsbDown.AutoSize = false;
+			tsbDown.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			tsbDown.ImageScaling = ToolStripItemImageScaling.None;
+			tsbDown.ImageTransparentColor = Color.Magenta;
+			tsbDown.Name = "tsbDown";
+			tsbDown.Size = new Size(25, 25);
+//			tsbDown.Text = "Level Down";
+			tsbDown.ToolTipText = "Level Down";
+			tsbDown.Click += OnDownClick;
+			//
+			// tsbCut
+			//
+			tsbCut.AutoSize = false;
+			tsbCut.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			tsbCut.ImageScaling = ToolStripItemImageScaling.None;
+			tsbCut.ImageTransparentColor = Color.Magenta;
+			tsbCut.Name = "tsbCut";
+			tsbCut.Size = new Size(25, 25);
+//			tsbCut.Text = "Cut";
+			tsbCut.ToolTipText = "Cut";
+			tsbCut.Click += (sender, e) =>
+			{
+				EnablePasteButton();
+				_mainViewPanel.OnCut(sender, e);
+				Refresh();
+			};
+			//
+			// tsbCopy
+			//
+			tsbCopy.AutoSize = false;
+			tsbCopy.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			tsbCopy.ImageScaling = ToolStripItemImageScaling.None;
+			tsbCopy.ImageTransparentColor = Color.Magenta;
+			tsbCopy.Name = "tsbCopy";
+			tsbCopy.Size = new Size(25, 25);
+//			tsbCopy.Text = "Copy";
+			tsbCopy.ToolTipText = "Copy";
+			tsbCopy.Click += (sender, e) =>
+			{
+				EnablePasteButton();
+				_mainViewPanel.OnCopy(sender, e);
+			};
+			//
+			// tsbPaste
+			//
+			tsbPaste.AutoSize = false;
+			tsbPaste.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			tsbPaste.ImageScaling = ToolStripItemImageScaling.None;
+			tsbPaste.ImageTransparentColor = Color.Magenta;
+			tsbPaste.Name = "tsbPaste";
+			tsbPaste.Size = new Size(25, 25);
+//			tsbPaste.Text = "Paste";
+			tsbPaste.ToolTipText = "Paste";
+			tsbPaste.Click += (sender, e) =>
+			{
+				_mainViewPanel.OnPaste(sender, e);
+				Refresh();
+			};
+			tsbPaste.Enabled = false;
+			_pasteButton = tsbPaste;
+//			_pasteButtons.Add(tsbPaste);
+			//
+			// tsbFill
+			//
+			tsbFill.AutoSize = false;
+			tsbFill.DisplayStyle = ToolStripItemDisplayStyle.Text;
+			tsbFill.Name = "tsbFill";
+			tsbFill.Size = new Size(25, 25);
+			tsbFill.Text = "Fill";
+			tsbFill.ToolTipText = "Fill";
+			tsbFill.Click += (sender, e) =>
 			{
 				MainWindowsManager.TopView.Control.OnFillClick(sender, e);
 				Refresh();
 			};
-
-			//
-			// btnUp
-			//
-			btnUp.AutoSize = false;
-			btnUp.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			btnUp.ImageScaling = ToolStripItemImageScaling.None;
-			btnUp.ImageTransparentColor = Color.Magenta;
-			btnUp.Name = "btnUp";
-			btnUp.Size = new Size(25, 25);
-			btnUp.Text = "toolStripButton1";
-			btnUp.ToolTipText = "Level Up";
-			btnUp.Click += btnUp_Click;
-			//
-			// btnDown
-			//
-			btnDown.AutoSize = false;
-			btnDown.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			btnDown.ImageScaling = ToolStripItemImageScaling.None;
-			btnDown.ImageTransparentColor = Color.Magenta;
-			btnDown.Name = "btnDown";
-			btnDown.Size = new Size(25, 25);
-			btnDown.Text = "toolStripButton2";
-			btnDown.ToolTipText = "Level Down";
-			btnDown.Click += btnDown_Click;
-			//
-			// btnCut
-			//
-			btnCut.AutoSize = false;
-			btnCut.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			btnCut.ImageScaling = ToolStripItemImageScaling.None;
-			btnCut.ImageTransparentColor = Color.Magenta;
-			btnCut.Name = "btnCut";
-			btnCut.Size = new Size(25, 25);
-			btnCut.Text = "toolStripButton3";
-			btnCut.ToolTipText = "Cut";
-			btnCut.Click += (o, args) =>
-			{
-				EnablePasteButtons();
-				_mapViewPanel.OnCut(o, args);
-				Refresh();
-			};
-
-			//
-			// btnCopy
-			//
-			btnCopy.AutoSize = false;
-			btnCopy.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			btnCopy.ImageScaling = ToolStripItemImageScaling.None;
-			btnCopy.ImageTransparentColor = Color.Magenta;
-			btnCopy.Name = "btnCopy";
-			btnCopy.Size = new Size(25, 25);
-			btnCopy.Text = "toolStripButton4";
-			btnCopy.ToolTipText = "Copy";
-			btnCopy.Click += (o, args) =>
-			{
-				EnablePasteButtons();
-				_mapViewPanel.OnCopy(o, args);
-			};
-
-			//
-			// btnPaste
-			//
-			btnPaste.AutoSize = false;
-			btnPaste.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			btnPaste.ImageScaling = ToolStripItemImageScaling.None;
-			btnPaste.ImageTransparentColor = Color.Magenta;
-			btnPaste.Name = "btnPaste";
-			btnPaste.Size = new Size(25, 25);
-			btnPaste.Text = "toolStripButton5";
-			btnPaste.ToolTipText = "Paste";
-			btnPaste.Click += (sender, args) =>
-			{
-				_mapViewPanel.OnPaste(sender, args);
-				Refresh();
-			};
-			btnPaste.Enabled = false;
-			_pasteButtons.Add(btnPaste);
-
-			btnCut.Image   = Resources.cut;
-			btnPaste.Image = Resources.paste;
-			btnCopy.Image  = Resources.copy;
-			btnUp.Image    = Resources.up;
-			btnDown.Image  = Resources.down;
+			tsbUp.Image    = Resources.up;
+			tsbDown.Image  = Resources.down;
+			tsbCut.Image   = Resources.cut;
+			tsbCopy.Image  = Resources.copy;
+			tsbPaste.Image = Resources.paste;
+//			tsbFill.Image  = ; // TODO: embed a Fill image.
 		}
 
 		private static void Refresh()
@@ -159,19 +155,20 @@ namespace MapView.Forms.MainWindow
 			MainWindowsManager.RouteView.Refresh();
 		}
 
-		private void EnablePasteButtons()
+		private void EnablePasteButton()
 		{
-			foreach (var btn in _pasteButtons)
-				btn.Enabled = true;
+			_pasteButton.Enabled = true;
+//			foreach (var tsb in _pasteButtons)
+//				tsb.Enabled = true;
 		}
 
-		private void btnDown_Click(object sender, EventArgs e)
+		private void OnDownClick(object sender, EventArgs e)
 		{
 			if (MapViewPanel.Instance.MapView.Map != null)
 				MapViewPanel.Instance.MapView.Map.Down();
 		}
 
-		private void btnUp_Click(object sender, EventArgs e)
+		private void OnUpClick(object sender, EventArgs e)
 		{
 			if (MapViewPanel.Instance.MapView.Map != null)
 				MapViewPanel.Instance.MapView.Map.Up();

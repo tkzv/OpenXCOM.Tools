@@ -302,6 +302,7 @@ namespace MapView
 			// 
 			this.tsEdit.Dock = System.Windows.Forms.DockStyle.None;
 			this.tsEdit.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsEdit.GripMargin = new System.Windows.Forms.Padding(0);
 			this.tsEdit.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.tsbSelectionBox,
 			this.tsbZoomIn,
@@ -309,8 +310,10 @@ namespace MapView
 			this.tsbAutoZoom});
 			this.tsEdit.Location = new System.Drawing.Point(3, 0);
 			this.tsEdit.Name = "tsEdit";
-			this.tsEdit.Size = new System.Drawing.Size(81, 25);
-			this.tsEdit.TabIndex = 0;
+			this.tsEdit.Padding = new System.Windows.Forms.Padding(0);
+			this.tsEdit.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tsEdit.Size = new System.Drawing.Size(191, 25);
+			this.tsEdit.TabIndex = 4;
 			// 
 			// tsbSelectionBox
 			// 
