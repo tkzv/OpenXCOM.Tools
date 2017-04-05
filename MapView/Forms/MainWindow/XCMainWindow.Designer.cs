@@ -270,33 +270,29 @@ namespace MapView
 			// tscPanel
 			// 
 			// 
-			// tscPanel.BottomToolStripPanel
-			// 
-			this.tscPanel.BottomToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			// 
 			// tscPanel.ContentPanel
 			// 
 			this.tscPanel.ContentPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
 			this.tscPanel.ContentPanel.Size = new System.Drawing.Size(375, 407);
 			this.tscPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			// 
-			// tscPanel.LeftToolStripPanel
-			// 
-			this.tscPanel.LeftToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.tscPanel.Location = new System.Drawing.Point(257, 0);
-			this.tscPanel.Name = "tscPanel";
-			// 
-			// tscPanel.RightToolStripPanel
-			// 
-			this.tscPanel.RightToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.tscPanel.Size = new System.Drawing.Size(375, 432);
-			this.tscPanel.TabIndex = 3;
-			this.tscPanel.Text = "toolStripContainer1";
-			// 
 			// tscPanel.TopToolStripPanel
 			// 
 			this.tscPanel.TopToolStripPanel.Controls.Add(this.tsEdit);
 			this.tscPanel.TopToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tscPanel.TabIndex = 4;
+			// 
+			// tscPanel.BottomToolStripPanel
+			// 
+			this.tscPanel.BottomToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			// 
+			// tscPanel.LeftToolStripPanel
+			// 
+			this.tscPanel.LeftToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			// 
+			// tscPanel.RightToolStripPanel
+			// 
+			this.tscPanel.RightToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			// 
 			// tsEdit
 			// 
@@ -313,7 +309,7 @@ namespace MapView
 			this.tsEdit.Padding = new System.Windows.Forms.Padding(0);
 			this.tsEdit.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			this.tsEdit.Size = new System.Drawing.Size(191, 25);
-			this.tsEdit.TabIndex = 4;
+			this.tsEdit.TabIndex = 3;
 			// 
 			// tsbSelectionBox
 			// 

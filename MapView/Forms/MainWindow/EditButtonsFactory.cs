@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+//using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -32,22 +32,28 @@ namespace MapView.Forms.MainWindow
 			//
 			// toolStripButtons
 			//
-			var tsbUp    = new ToolStripButton();
-			var tsbDown  = new ToolStripButton();
-			var tsbCut   = new ToolStripButton();
-			var tsbCopy  = new ToolStripButton();
-			var tsbPaste = new ToolStripButton();
-			var tsbFill  = new ToolStripButton();
+			var tssDivider1 = new ToolStripSeparator();
+			var tsbUp       = new ToolStripButton();
+			var tsbDown     = new ToolStripButton();
+			var tssDivider2 = new ToolStripSeparator();
+			var tsbCut      = new ToolStripButton();
+			var tsbCopy     = new ToolStripButton();
+			var tsbPaste    = new ToolStripButton();
+			var tssDivider3 = new ToolStripSeparator();
+			var tsbFill     = new ToolStripButton();
 			//
 			// toolStrip
 			//
-			var tsItems = new ToolStripItem[]
+			var tsItems = new ToolStripItem[] // NOTE: c# cant figure out how to use 1 separator 3 times.
 			{
+				tssDivider1,
 				tsbUp,
 				tsbDown,
+				tssDivider2,
 				tsbCut,
 				tsbCopy,
 				tsbPaste,
+				tssDivider3,
 				tsbFill
 			};
 			toolStrip.Items.AddRange(tsItems);
