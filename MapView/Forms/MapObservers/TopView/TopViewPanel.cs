@@ -30,7 +30,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		public ToolStripMenuItem Content
 		{ get; set; }
 
-		public QuadrantPanel QuadrantPanel
+		public QuadrantPanel QuadrantsPanel
 		{ get; set; }
 
 
@@ -98,7 +98,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			OnMouseDrag();
 
 			if (e.Button == MouseButtons.Right)
-				QuadrantPanel.SetSelected(e.Button, 1);
+				QuadrantsPanel.SetSelected(e.Button, 1);
 		}
 	}
 }

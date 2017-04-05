@@ -142,7 +142,6 @@ namespace MapView.Forms.MainWindow
 			tsbFill.ToolTipText = "Fill";
 			tsbFill.Click += (sender, e) =>
 			{
-//				MainWindowsManager.TopView.Control.OnFillClick(sender, e);
 				_mainViewPanel.OnFill(sender, e);
 				Refresh();
 			};

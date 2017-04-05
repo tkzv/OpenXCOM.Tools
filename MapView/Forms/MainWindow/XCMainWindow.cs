@@ -371,6 +371,8 @@ namespace MapView
 				case "GridLineWidth":
 					MapViewPanel.Instance.MapView.GridLineWidth = (int)val;
 					break;
+
+				// NOTE: "GraySelection" is handled.
 			}
 		}
 
@@ -436,31 +438,20 @@ namespace MapView
 				var str = new YamlStream();
 				str.Load(sr);
 
-				var top = (YamlMappingNode)str.Documents[0].RootNode;
-				foreach (var entry in top.Children)
+				var nodeRoot = (YamlMappingNode)str.Documents[0].RootNode;
+				foreach (var node in nodeRoot.Children)
 				{
-					//LogFile.WriteLine("entry= " + entry);			// this can be stored/recreated and emitted.
-					//LogFile.WriteLine("key= " + entry.Key);		// NOTE: Key and Value are the same here.
-					string stEntry = ((YamlScalarNode)entry.Key).Value;
-					//LogFile.WriteLine("value= " + st);
-					LogFile.WriteLine("entry key/value= " + entry.Key + "/" + stEntry);
-
-					//int i = 0;
-					var pars = (YamlMappingNode)top.Children[new YamlScalarNode(stEntry)];
+					string viewer = ((YamlScalarNode)node.Key).Value;
+					var pars = (YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)];
 					foreach (var par in pars)
 					{
-						//LogFile.WriteLine(". " + i + " sub= " + sub); // this can be stored/recreated and emitted.
-						string stKey = par.Key.ToString();
-						LogFile.WriteLine(". " + stKey + "= " + (stKey.Length < 4 ? "\t" : "") + "\t" + par.Value);
-						//++i;
-
 						if (String.Compare(
-										stKey,
+										viewer,
 										"MainView",
 										System.Globalization.CultureInfo.InvariantCulture,
 										System.Globalization.CompareOptions.OrdinalIgnoreCase) == 0)
 						{
-							switch (((String)par.Value).ToUpperInvariant())
+							switch (par.Key.ToString().ToUpperInvariant())
 							{
 								case "LEFT":
 									Left = Int32.Parse(par.Value.ToString()); // TODO: Error handling. ->
