@@ -34,7 +34,7 @@ namespace MapView
 			Form
 	{
 		private readonly SettingsManager       _settingsManager;
-		private readonly MainViewPanel          _mainViewPanel;
+		private readonly MainViewPanel         _mainViewPanel;
 		private readonly LoadingForm           _loadingProgress;
 		private readonly ConsoleWarningHandler _warningHandler;
 		private readonly MainViewsManager      _mainViewsManager;

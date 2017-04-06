@@ -40,7 +40,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			pMain.AutoScroll = true;
 			pMain.Controls.Add(_topViewPanel);
 
-			pMain.Resize += (sender, e) => _topViewPanel.ParentSize(pMain.Width, pMain.Height);
+			pMain.Resize += (sender, e) => _topViewPanel.HandleParentResize(pMain.Width, pMain.Height);
 
 			_dictVisibleQuads = new Dictionary<ToolStripMenuItem, int>();
 

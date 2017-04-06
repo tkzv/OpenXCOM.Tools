@@ -11,7 +11,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 	/// <summary>
 	/// Draws floor- and wall- and content- blobs for TopView and RMP View.
 	/// </summary>
-	public class DrawContentService	// Warning CA1001: Implement IDisposable on 'DrawContentService' because
+	internal sealed class DrawContentService	// Warning CA1001: Implement IDisposable on 'DrawContentService' because
 	{								// it creates members of the following IDisposable types: 'GraphicsPath'.
 		private int _halfWidth = 8;
 		public int HalfWidth
@@ -51,6 +51,24 @@ namespace MapView.Forms.MapObservers.RouteViews
 			g.FillPath(brush, GetFloorPath(x, y));
 		}
 
+		private GraphicsPath GetFloorPath(int x, int y)
+		{
+			_floor.Reset();
+			_floor.AddLine(
+						x, y,
+						x + _halfWidth, y + _halfHeight);
+			_floor.AddLine(
+						x + _halfWidth, y + _halfHeight,
+						x, y + _halfHeight * 2);
+			_floor.AddLine(
+						x, y + _halfHeight * 2,
+						x - _halfWidth, y + _halfHeight);
+			_floor.CloseFigure();
+
+			return _floor;
+		}
+
+
 		private const int _pad = 4;
 
 		/// <summary>
@@ -62,16 +80,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 				int x, int y,
 				TileBase content)
 		{
-			var ptTop	= new Point(
+			var ptTop   = new Point(
 								x,
 								(y > int.MaxValue - _pad) ? int.MaxValue : y + _pad); // <- FxCop ...
-			var ptBot	= new Point(
+			var ptBot   = new Point(
 								x,
 								y + (_halfHeight * 2) - _pad);
-			var ptLeft	= new Point(
+			var ptLeft  = new Point(
 								x - _halfWidth + (_pad * 2),
 								y + _halfHeight);
-			var ptRight	= new Point(
+			var ptRight = new Point(
 								x + _halfWidth - (_pad * 2),
 								y + _halfHeight);
 
@@ -230,9 +248,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				SolidPenBrush color,
 				Point start, Point end)
 		{
-			var pt	= Point.Subtract(end, new Size(start));
-			var xy	= new Size(pt.X / 3, pt.Y / 3);
-			pt		= Point.Add(start, Size.Add(xy, xy));
+			var pt = Point.Subtract(end, new Size(start));
+			var xy = new Size(pt.X / 3, pt.Y / 3);
+			pt     = Point.Add(start, Size.Add(xy, xy));
 
 			g.DrawLine(
 					color.Pen,
@@ -246,23 +264,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 					color.Pen,
 					pt,
 					end);
-		}
-
-		private GraphicsPath GetFloorPath(int x, int y)
-		{
-			_floor.Reset();
-			_floor.AddLine(
-						x, y,
-						x + _halfWidth, y + _halfHeight);
-			_floor.AddLine(
-						x + _halfWidth, y + _halfHeight,
-						x, y + _halfHeight * 2);
-			_floor.AddLine(
-						x, y + _halfHeight * 2,
-						x - _halfWidth, y + _halfHeight);
-			_floor.CloseFigure();
-
-			return _floor;
 		}
 	}
 }

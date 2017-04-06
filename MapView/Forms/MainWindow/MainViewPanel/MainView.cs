@@ -53,8 +53,8 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		private const int HalfWidth  = 16;
 		private const int HalfHeight =  8;
 
-		private Point _dragStart;
-		private Point _dragEnd;
+		private Point _dragStart = new Point(-1, -1);
+		private Point _dragEnd   = new Point(-1, -1);
 
 		private GraphicsPath _gridUnder;
 		private Brush _brushTrans;
@@ -136,10 +136,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 
 		public MainView()
 		{
-			_baseMap = null;
-
-			_dragStart =
-			_dragEnd   = new Point(-1, -1); // NOTE: after class instantiation this value is no longer allowed.
+//			_baseMap = null;
 
 			SetStyle(
 					ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint,
@@ -251,10 +248,24 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			Refresh();
 		}
 
+		/// <summary>
+		/// Flag that tells TopViewPanelBase.DrawSelectedLozenge that it's okay
+		/// to draw a lozenge for a selected tile; ie, that an initial tile has
+		/// actually been selected. This prevents an off-border lozenge from
+		/// being drawn right after TopView initially appears.
+		/// </summary>
+		internal bool _isSelectedTileValid;
+		internal bool IsSelectedTileValid
+		{
+			get { return _isSelectedTileValid; }
+		}
+
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			if (_baseMap != null)
 			{
+				_isSelectedTileValid = true; // klugdge.
+
 				var dragStart = ConvertCoordsDiamond(
 												e.X, e.Y,
 												_baseMap.CurrentHeight);
@@ -264,8 +275,8 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 				SetDrag(dragStart, dragEnd);
 
 				_baseMap.SelectedTile = new MapLocation(
-												_dragEnd.Y, _dragEnd.X,
-												_baseMap.CurrentHeight);
+													_dragEnd.Y, _dragEnd.X,
+													_baseMap.CurrentHeight);
 
 				Select();
 				Refresh();
@@ -371,8 +382,8 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			if (_baseMap != null)
 			{
 				var size = GetMapSize(Globals.PckImageScale);
-				Width  = size.Width;
-				Height = size.Height;
+				Width    = size.Width;
+				Height   = size.Height;
 			}
 		}
 

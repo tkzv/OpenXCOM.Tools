@@ -23,12 +23,12 @@ namespace MapView.Forms.MapObservers.TopViews
 		private int _offX = 0;
 		private int _offY = 0;
 
-		private readonly GraphicsPath _lozCell;
-		private readonly GraphicsPath _lozSel;
-		private readonly GraphicsPath _lozCopy;
+		private readonly GraphicsPath _lozSelector;
+		private readonly GraphicsPath _lozSelected;
+//		private readonly GraphicsPath _lozSel;
 
-		private int _mR = -1;
-		private int _mC = -1;
+		private int _mouseRow = -1;
+		private int _mouseCol = -1;
 
 		private DrawContentService _drawService = new DrawContentService();
 		protected DrawContentService DrawService
@@ -43,20 +43,33 @@ namespace MapView.Forms.MapObservers.TopViews
 			set
 			{
 				_heightMin = value;
-				ParentSize(Width, Height);
+				HandleParentResize(Width, Height);
 			}
 		}
 
 
-		public TopViewPanelBase()
+		protected TopViewPanelBase()
 		{
-			_lozCell = new GraphicsPath();
-			_lozSel  = new GraphicsPath();
-			_lozCopy = new GraphicsPath();
+			_lozSelector = new GraphicsPath();
+			_lozSelected = new GraphicsPath();
+//			_lozSel = new GraphicsPath();
 		}
 
 
-		public void ParentSize(int width, int height)
+		[Browsable(false), DefaultValue(null)]
+		public override IMapBase Map
+		{
+			set
+			{
+				base.Map = value;
+				_drawService.HalfWidth = 7; // TODO: 7 ... inits to 8 in DrawContentService.
+				HandleParentResize(Parent.Width, Parent.Height);
+
+				Refresh();
+			}
+		}
+
+		public void HandleParentResize(int width, int height)
 		{
 			if (Map != null)
 			{
@@ -105,34 +118,25 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		[Browsable(false), DefaultValue(null)]
-		public override IMapBase Map
-		{
-			set
-			{
-				base.Map = value;
-				_drawService.HalfWidth = 7;
-				ParentSize(Parent.Width, Parent.Height);
-
-				Refresh();
-			}
-		}
-
 		protected override void OnResize(EventArgs e)
 		{
 			base.OnResize(e);
-			SetSelectionRect();
+			DrawSelectedLozenge();
 		}
 
 		protected void OnMouseDrag()
 		{
-			SetSelectionRect();
+			DrawSelectedLozenge();
 		}
 
-		private void SetSelectionRect()
+		/// <summary>
+		/// Draws a lozenge-border around all tiles that are selected or
+		/// being selected.
+		/// </summary>
+		private void DrawSelectedLozenge()
 		{
-			if (_mC != -1 || _mR != -1) // prevent an off-border selection lozenge drawn right after init.
-			{							// TODO: let things draw even if there has been no mouseover yet!
+			if (MainViewPanel.Instance.MainView.IsSelectedTileValid)
+			{
 				var start = GetDragStart();
 				var end   = GetDragEnd();
 	
@@ -152,11 +156,11 @@ namespace MapView.Forms.MapObservers.TopViews
 								_offX + (start.X - end.Y) * hWidth - hWidth,
 								_offY + (start.X + end.Y) * hHeight + hHeight);
 	
-				_lozCopy.Reset();
-				_lozCopy.AddLine(sel1, sel2);
-				_lozCopy.AddLine(sel2, sel3);
-				_lozCopy.AddLine(sel3, sel4);
-				_lozCopy.CloseFigure();
+				_lozSelected.Reset();
+				_lozSelected.AddLine(sel1, sel2);
+				_lozSelected.AddLine(sel2, sel3);
+				_lozSelected.AddLine(sel3, sel4);
+				_lozSelected.CloseFigure();
 	
 				Refresh();
 			}
@@ -196,7 +200,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
-			var pt = e.MapPosition;
+/*			var pt = e.MapPosition;
 //			Text = "c: " + pt.Col + " r: " + pt.Row; // I don't think this actually prints anywhere.
 
 			var hWidth  = _drawService.HalfWidth;
@@ -219,14 +223,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			OnMouseDrag();
 
-			Refresh();
+			Refresh(); */
 		}
-
-		protected virtual void RenderTile(
-				MapTileBase tile,
-				Graphics g,
-				int x, int y)
-		{}
 
 		protected override void Render(Graphics backBuffer)
 		{
@@ -269,44 +267,64 @@ namespace MapView.Forms.MapObservers.TopViews
 									i * hWidth  - Map.MapSize.Rows * hWidth  + _offX,
 									i * hHeight + Map.MapSize.Rows * hHeight + _offY);
 
-				if (_lozCopy != null)
-					backBuffer.DrawPath(Pens["SelectColor"], _lozCopy);
+				if (_lozSelected != null) // NOTE: '_lozCopy' will never be null. It's instantiated in the cTor.
+					backBuffer.DrawPath(Pens["SelectColor"], _lozSelected);
 
 //				if (selected != null) // clicked on
 //					backBuffer.DrawPath(new Pen(Brushes.Blue, 2), selected);
 
-				if (   _mC > -1
-					&& _mR > -1
-					&& _mC < Map.MapSize.Cols
-					&& _mR < Map.MapSize.Rows)
+				if (   _mouseCol > -1
+					&& _mouseRow > -1
+					&& _mouseCol < Map.MapSize.Cols
+					&& _mouseRow < Map.MapSize.Rows)
 				{
-					int x = (_mC - _mR) * hWidth  + _offX;
-					int y = (_mC + _mR) * hHeight + _offY;
+					int x = (_mouseCol - _mouseRow) * hWidth  + _offX;
+					int y = (_mouseCol + _mouseRow) * hHeight + _offY;
 
-					var sel = SelectorPath(x, y);
+					var sel = GetSelectorPath(x, y);
 					backBuffer.DrawPath(Pens["MouseColor"], sel);
 				}
 			}
 		}
 
-		private GraphicsPath SelectorPath(int x, int y)
+		/// <summary>
+		/// Forwards the call to TopViewPanel.RenderTile.
+		/// </summary>
+		/// <param name="tile"></param>
+		/// <param name="g"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		protected virtual void RenderTile(
+				MapTileBase tile,
+				Graphics g,
+				int x, int y)
+		{}
+
+
+		/// <summary>
+		/// Gets the GraphicsPath to draw for ... what.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		private GraphicsPath GetSelectorPath(int x, int y)
 		{
 			var hWidth  = _drawService.HalfWidth;
 			var hHeight = _drawService.HalfHeight;
 
-			_lozCell.Reset();
-			_lozCell.AddLine(
+			_lozSelector.Reset();
+			_lozSelector.AddLine(
 						x, y,
 						x + hWidth, y + hHeight);
-			_lozCell.AddLine(
+			_lozSelector.AddLine(
 						x + hWidth, y + hHeight,
 						x, y + 2 * hHeight);
-			_lozCell.AddLine(
+			_lozSelector.AddLine(
 						x, y + 2 * hHeight,
 						x - hWidth, y + hHeight);
-			_lozCell.CloseFigure();
+			_lozSelector.CloseFigure();
 
-			return _lozCell;
+			return _lozSelector;
 		}
 
 		private Point ConvertCoordsDiamond(int x, int y)
@@ -325,7 +343,8 @@ namespace MapView.Forms.MapObservers.TopViews
 						(int)Math.Floor(x2));
 		}
 
-		private bool _mDown;
+
+		private bool _isMouseDrag;
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
@@ -339,14 +358,14 @@ namespace MapView.Forms.MapObservers.TopViews
 												pt.X,
 												Map.CurrentHeight);
 
-				_mDown = true;
+				_isMouseDrag = true;
 				MainViewPanel.Instance.MainView.SetDrag(pt, pt);
 			}
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
-			_mDown = false;
+			_isMouseDrag = false;
 			MainViewPanel.Instance.MainView.Refresh();
 
 			Refresh();
@@ -357,15 +376,15 @@ namespace MapView.Forms.MapObservers.TopViews
 			var pt = ConvertCoordsDiamond(
 										e.X - _offX,
 										e.Y - _offY);
-			if (pt.X != _mC || pt.Y != _mR)
+			if (pt.X != _mouseCol || pt.Y != _mouseRow)
 			{
-				_mC = pt.X;
-				_mR = pt.Y;
+				_mouseCol = pt.X;
+				_mouseRow = pt.Y;
 
-				if (_mDown)
+				if (_isMouseDrag)
 					MainViewPanel.Instance.MainView.SetDrag(
-													MainViewPanel.Instance.MainView.DragStart,
-													pt);
+														MainViewPanel.Instance.MainView.DragStart,
+														pt);
 
 				Refresh(); // mouseover refresh for TopView.
 			}
