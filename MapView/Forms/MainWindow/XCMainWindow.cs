@@ -34,7 +34,7 @@ namespace MapView
 			Form
 	{
 		private readonly SettingsManager       _settingsManager;
-		private readonly MapViewPanel          _mainViewPanel;
+		private readonly MainViewPanel          _mainViewPanel;
 		private readonly LoadingForm           _loadingProgress;
 		private readonly ConsoleWarningHandler _warningHandler;
 		private readonly MainViewsManager      _mainViewsManager;
@@ -146,7 +146,7 @@ namespace MapView
 			LogFile.WriteLine("MainView Settings loaded.");
 
 
-			_mainViewPanel = MapViewPanel.Instance;
+			_mainViewPanel = MainViewPanel.Instance;
 			LogFile.WriteLine("MainView panel instantiated.");
 
 
@@ -189,7 +189,7 @@ namespace MapView
 
 			MainWindowsManager.TileView.Control.MapChangedEventHandler += OnMapChanged;
 
-			MapViewPanel.ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			MainViewPanel.ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			_mainViewPanel.Dock = DockStyle.Fill;
 
@@ -209,7 +209,7 @@ namespace MapView
 															String.Empty,
 															2,
 															Palette.UfoBattle);
-				_mainViewPanel.MapView.SetCursor(new CursorSprite(cursor));
+				_mainViewPanel.MainView.SetCursor(new CursorSprite(cursor));
 			}
 			catch
 			{
@@ -220,7 +220,7 @@ namespace MapView
 																String.Empty,
 																4,
 																Palette.TftdBattle);
-					_mainViewPanel.MapView.SetCursor(new CursorSprite(cursor));
+					_mainViewPanel.MainView.SetCursor(new CursorSprite(cursor));
 				}
 				catch
 				{
@@ -329,23 +329,23 @@ namespace MapView
 					miOff.Checked = !miOn.Checked;
 
 					if (miOn.Checked)
-						MapViewPanel.Start();
+						MainViewPanel.Start();
 					else
-						MapViewPanel.Stop();
+						MainViewPanel.Stop();
 					break;
 
 				case "Doors":
-					if (MapViewPanel.Instance.BaseMap != null)
+					if (MainViewPanel.Instance.BaseMap != null)
 					{
 						if ((bool)val)
 						{
-							foreach (XCTile tile in MapViewPanel.Instance.BaseMap.Tiles)
+							foreach (XCTile tile in MainViewPanel.Instance.BaseMap.Tiles)
 								if (tile.Info.UfoDoor || tile.Info.HumanDoor)
 									tile.MakeAnimate();
 						}
 						else
 						{
-							foreach (XCTile tile in MapViewPanel.Instance.BaseMap.Tiles)
+							foreach (XCTile tile in MainViewPanel.Instance.BaseMap.Tiles)
 								if (tile.Info.UfoDoor || tile.Info.HumanDoor)
 									tile.StopAnimate();
 						}
@@ -357,19 +357,19 @@ namespace MapView
 					break;
 
 				case "ShowGrid":
-					MapViewPanel.Instance.MapView.ShowGrid = (bool)val;
+					MainViewPanel.Instance.MainView.ShowGrid = (bool)val;
 					break;
 
 				case "GridColor":
-					MapViewPanel.Instance.MapView.GridColor = (Color)val;
+					MainViewPanel.Instance.MainView.GridColor = (Color)val;
 					break;
 
 				case "GridLineColor":
-					MapViewPanel.Instance.MapView.GridLineColor = (Color)val;
+					MainViewPanel.Instance.MainView.GridLineColor = (Color)val;
 					break;
 
 				case "GridLineWidth":
-					MapViewPanel.Instance.MapView.GridLineWidth = (int)val;
+					MainViewPanel.Instance.MainView.GridLineWidth = (int)val;
 					break;
 
 				// NOTE: "GraySelection" is handled.
@@ -443,25 +443,21 @@ namespace MapView
 					var pars = (YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)];
 					foreach (var par in pars)
 					{
-						if (String.Compare(
-										viewer,
-										"MainView",
-										System.Globalization.CultureInfo.InvariantCulture,
-										System.Globalization.CompareOptions.OrdinalIgnoreCase) == 0)
+						if (String.Equals(viewer, "MainView", StringComparison.OrdinalIgnoreCase))
 						{
 							switch (par.Key.ToString().ToUpperInvariant())
 							{
-								case "LEFT":
-									Left = Int32.Parse(par.Value.ToString()); // TODO: Error handling. ->
+								case "LEFT": // TODO: Error handling. ->
+									Left = Int32.Parse(par.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 								case "TOP":
-									Top = Int32.Parse(par.Value.ToString());
+									Top = Int32.Parse(par.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 								case "WIDTH":
-									Width = Int32.Parse(par.Value.ToString());
+									Width = Int32.Parse(par.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 								case "HEIGHT":
-									Height = Int32.Parse(par.Value.ToString());
+									Height = Int32.Parse(par.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 							}
 						}
@@ -492,7 +488,7 @@ namespace MapView
 
 			settings.AddSetting(
 							"Animation",
-							MapViewPanel.IsAnimated,
+							MainViewPanel.IsAnimated,
 							"If true the map will animate itself.",
 							"Main",
 							handler, false, null);
@@ -510,34 +506,34 @@ namespace MapView
 							handler, false, null);
 			settings.AddSetting(
 							"ShowGrid",
-							MapViewPanel.Instance.MapView.ShowGrid,
+							MainViewPanel.Instance.MainView.ShowGrid,
 							"If true a grid will show up at the current level of editing.",
 							"MapView",
-							null, true, MapViewPanel.Instance.MapView);
+							null, true, MainViewPanel.Instance.MainView);
 			settings.AddSetting(
 							"GridColor",
-							MapViewPanel.Instance.MapView.GridColor,
+							MainViewPanel.Instance.MainView.GridColor,
 							"Color of the grid in (a,r,g,b) format.",
 							"MapView",
-							null, true, MapViewPanel.Instance.MapView);
+							null, true, MainViewPanel.Instance.MainView);
 			settings.AddSetting(
 							"GridLineColor",
-							MapViewPanel.Instance.MapView.GridLineColor,
+							MainViewPanel.Instance.MainView.GridLineColor,
 							"Color of the lines that make up the grid.",
 							"MapView",
-							null, true, MapViewPanel.Instance.MapView);
+							null, true, MainViewPanel.Instance.MainView);
 			settings.AddSetting(
 							"GridLineWidth",
-							MapViewPanel.Instance.MapView.GridLineWidth,
+							MainViewPanel.Instance.MainView.GridLineWidth,
 							"Width of the grid lines in pixels.",
 							"MapView",
-							null, true, MapViewPanel.Instance.MapView);
+							null, true, MainViewPanel.Instance.MainView);
 			settings.AddSetting(
 							"GraySelection",
-							MapViewPanel.Instance.MapView.GraySelection,
+							MainViewPanel.Instance.MainView.GraySelection,
 							"If true the selection area will show up in gray.",
 							"MapView",
-							null, true, MapViewPanel.Instance.MapView);
+							null, true, MainViewPanel.Instance.MainView);
 //			settings.AddSetting(
 //							"SaveOnExit",
 //							true,
@@ -790,11 +786,11 @@ namespace MapView
 
 		private void OnResizeClick(object sender, EventArgs e)
 		{
-			if (_mainViewPanel.MapView.Map != null)
+			if (_mainViewPanel.MainView.Map != null)
 			{
 				using (var f = new ChangeMapSizeForm())
 				{
-					f.Map = _mainViewPanel.MapView.Map;
+					f.Map = _mainViewPanel.MainView.Map;
 					if (f.ShowDialog(this) == DialogResult.OK)
 					{
 						f.Map.ResizeTo(
@@ -820,7 +816,7 @@ namespace MapView
 					if (it.Checked)
 						((Form)it.Tag).BringToFront();
 
-				Focus();
+				Select();
 				BringToFront();
 
 				_windowFlag = false;
@@ -837,7 +833,7 @@ namespace MapView
 			}
 		}
 
-		private void OnExportClick(object sender, EventArgs e)
+		private void OnExportClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE.
 		{
 //			if (mapList.SelectedNode.Parent == null) // top level node - bad
 //				throw new Exception("miExport_Click: Should not be here");
@@ -868,8 +864,8 @@ namespace MapView
 
 		private void OnSelectionBoxClick(object sender, EventArgs e) // NOTE: is disabled w/ Visible=FALSE in designer.
 		{
-			_mainViewPanel.MapView.DrawSelectionBox = !_mainViewPanel.MapView.DrawSelectionBox;
-			tsbSelectionBox.Checked = !tsbSelectionBox.Checked;
+//			_mainViewPanel.MapView.DrawSelectionBox = !_mainViewPanel.MapView.DrawSelectionBox;
+//			tsbSelectionBox.Checked = !tsbSelectionBox.Checked;
 		}
 
 		private void OnZoomInClick(object sender, EventArgs e)

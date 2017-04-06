@@ -22,6 +22,7 @@ namespace XCom.Interfaces.Base
 		{
 			get { return _brief; }
 		}
+
 		/// <summary>
 		/// See: IDialogFilter.FileFilter
 		/// </summary>
@@ -36,23 +37,19 @@ namespace XCom.Interfaces.Base
 			}
 		}
 
-		private string _label;
 		public string Label
-		{
-			get { return _label; }
-			protected set { _label = value; }
-		}
+		{ get; protected set; }
 
 
 		public IMapDesc(string label)
 		{
-			_label = label;
+			Label = label;
 		}
 
 
 		public override string ToString() // isUsed yes/no
 		{
-			return _label;
+			return Label;
 		}
 
 		/// <summary>

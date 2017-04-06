@@ -10,11 +10,11 @@ namespace MapView.Forms.MapObservers.TopViews
 {
 	internal sealed class TopViewPanel
 		:
-			SimpleMapPanel
+			TopViewPanelBase
 	{
 		public TopViewPanel()
 		{
-			MapViewPanel.Instance.MapView.MouseDragEvent += OnMouseDrag;
+			MainViewPanel.Instance.MainView.MouseDragEvent += OnMouseDrag;
 		}
 
 
@@ -38,7 +38,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		private SolidPenBrush _colorNorth;
 		private SolidPenBrush _colorContent;
 
-		protected override void RenderCell(
+		protected override void RenderTile(
 				MapTileBase tile,
 				Graphics g,
 				int x, int y)

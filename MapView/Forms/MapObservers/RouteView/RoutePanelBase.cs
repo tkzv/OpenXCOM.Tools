@@ -8,11 +8,11 @@ using XCom;
 
 namespace MapView.Forms.MapObservers.RouteViews
 {
-	internal class MapPanel
+	internal class RoutePanelBase
 		:
 			UserControl
 	{
-		public event EventHandler<MapPanelClickEventArgs> MapPanelClicked;
+		public event EventHandler<RoutePanelClickEventArgs> RoutePanelClicked;
 
 
 		private XCMapFile _mapFile;
@@ -36,13 +36,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 		protected int DrawAreaWidth
 		{
 			get { return _drawAreaWidth; }
-			set { _drawAreaWidth = value; }
 		}
 		private int _drawAreaHeight = 4;
 		protected int DrawAreaHeight
 		{
 			get { return _drawAreaHeight; }
-			set { _drawAreaHeight = value; }
 		}
 
 		private readonly Dictionary<string, Pen> _mapPens;
@@ -57,7 +55,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
-		public MapPanel()
+		public RoutePanelBase()
 		{
 			_mapPens    = new Dictionary<string, Pen>();
 			_mapBrushes = new Dictionary<string, SolidBrush>();
@@ -106,7 +104,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (_mapFile != null)
 			{
-				if (MapPanelClicked != null)
+				if (RoutePanelClicked != null)
 				{
 					var pt = ConvertCoordsDiamond(e.X, e.Y);
 					if (   pt.Y >= 0 && pt.Y < _mapFile.MapSize.Rows
@@ -122,16 +120,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 															ClickPoint.X,
 															_mapFile.CurrentHeight);
 
-							MapViewPanel.Instance.MapView.SetDrag(pt, pt);
+							MainViewPanel.Instance.MainView.SetDrag(pt, pt);
 
-							var args = new MapPanelClickEventArgs();
+							var args = new RoutePanelClickEventArgs();
 							args.ClickTile = tile;
 							args.MouseEventArgs = e;
 							args.ClickLocation = new MapLocation(
 															ClickPoint.Y,
 															ClickPoint.X,
 															_mapFile.CurrentHeight);
-							MapPanelClicked(this, args);
+							RoutePanelClicked(this, args);
 
 							Refresh();
 						}
@@ -151,7 +149,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					_drawAreaWidth = Width / (_mapFile.MapSize.Rows + _mapFile.MapSize.Cols + 1);
 
 					if (_drawAreaWidth % 2 != 0)
-						_drawAreaWidth--;
+						--_drawAreaWidth;
 
 					_drawAreaHeight = _drawAreaWidth / 2;
 				}

@@ -16,7 +16,7 @@ namespace MapView.Forms.MapObservers.TopViews
 	/// <summary>
 	/// A base class for TopViewPanel.
 	/// </summary>
-	internal class SimpleMapPanel
+	internal class TopViewPanelBase
 		:
 			MapObserverControl1
 	{
@@ -48,7 +48,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 
-		public SimpleMapPanel()
+		public TopViewPanelBase()
 		{
 			_lozCell = new GraphicsPath();
 			_lozSel  = new GraphicsPath();
@@ -131,43 +131,46 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private void SetSelectionRect()
 		{
-			var start = GetDragStart();
-			var end   = GetDragEnd();
-
-			var hWidth  = _drawService.HalfWidth;
-			var hHeight = _drawService.HalfHeight;
-
-			var sel1 = new Point(
-							_offX + (start.X - start.Y) * hWidth,
-							_offY + (start.X + start.Y) * hHeight);
-			var sel2 = new Point(
-							_offX + (end.X - start.Y) * hWidth + hWidth,
-							_offY + (end.X + start.Y) * hHeight + hHeight);
-			var sel3 = new Point(
-							_offX + (end.X - end.Y) * hWidth,
-							_offY + (end.X + end.Y) * hHeight + hHeight + hHeight);
-			var sel4 = new Point(
-							_offX + (start.X - end.Y) * hWidth - hWidth,
-							_offY + (start.X + end.Y) * hHeight + hHeight);
-
-			_lozCopy.Reset();
-			_lozCopy.AddLine(sel1, sel2);
-			_lozCopy.AddLine(sel2, sel3);
-			_lozCopy.AddLine(sel3, sel4);
-			_lozCopy.CloseFigure();
-
-			Refresh();
+			if (_mC != -1 || _mR != -1) // prevent an off-border selection lozenge drawn right after init.
+			{							// TODO: let things draw even if there has been no mouseover yet!
+				var start = GetDragStart();
+				var end   = GetDragEnd();
+	
+				var hWidth  = _drawService.HalfWidth;
+				var hHeight = _drawService.HalfHeight;
+	
+				var sel1 = new Point(
+								_offX + (start.X - start.Y) * hWidth,
+								_offY + (start.X + start.Y) * hHeight);
+				var sel2 = new Point(
+								_offX + (end.X - start.Y) * hWidth + hWidth,
+								_offY + (end.X + start.Y) * hHeight + hHeight);
+				var sel3 = new Point(
+								_offX + (end.X - end.Y) * hWidth,
+								_offY + (end.X + end.Y) * hHeight + hHeight + hHeight);
+				var sel4 = new Point(
+								_offX + (start.X - end.Y) * hWidth - hWidth,
+								_offY + (start.X + end.Y) * hHeight + hHeight);
+	
+				_lozCopy.Reset();
+				_lozCopy.AddLine(sel1, sel2);
+				_lozCopy.AddLine(sel2, sel3);
+				_lozCopy.AddLine(sel3, sel4);
+				_lozCopy.CloseFigure();
+	
+				Refresh();
+			}
 		}
 
 		private static Point GetDragStart()
 		{
 			var start = new Point(0, 0);
 			start.X = Math.Min(
-							MapViewPanel.Instance.MapView.DragStart.X,
-							MapViewPanel.Instance.MapView.DragEnd.X);
+							MainViewPanel.Instance.MainView.DragStart.X,
+							MainViewPanel.Instance.MainView.DragEnd.X);
 			start.Y = Math.Min(
-							MapViewPanel.Instance.MapView.DragStart.Y,
-							MapViewPanel.Instance.MapView.DragEnd.Y);
+							MainViewPanel.Instance.MainView.DragStart.Y,
+							MainViewPanel.Instance.MainView.DragEnd.Y);
 			return start;
 		}
 
@@ -175,11 +178,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			var end = new Point(0, 0);
 			end.X = Math.Max(
-						MapViewPanel.Instance.MapView.DragStart.X,
-						MapViewPanel.Instance.MapView.DragEnd.X);
+						MainViewPanel.Instance.MainView.DragStart.X,
+						MainViewPanel.Instance.MainView.DragEnd.X);
 			end.Y = Math.Max(
-						MapViewPanel.Instance.MapView.DragStart.Y,
-						MapViewPanel.Instance.MapView.DragEnd.Y);
+						MainViewPanel.Instance.MainView.DragStart.Y,
+						MainViewPanel.Instance.MainView.DragEnd.Y);
 			return end;
 		}
 
@@ -219,7 +222,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh();
 		}
 
-		protected virtual void RenderCell(
+		protected virtual void RenderTile(
 				MapTileBase tile,
 				Graphics g,
 				int x, int y)
@@ -246,7 +249,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					{
 						var mapTile = Map[r, c] as MapTileBase;
 						if (mapTile != null)
-							RenderCell(mapTile, backBuffer, x, y);
+							RenderTile(mapTile, backBuffer, x, y);
 					}
 				}
 
@@ -272,24 +275,24 @@ namespace MapView.Forms.MapObservers.TopViews
 //				if (selected != null) // clicked on
 //					backBuffer.DrawPath(new Pen(Brushes.Blue, 2), selected);
 
-				if (   _mR > -1
-					&& _mC > -1
-					&& _mR < Map.MapSize.Rows
-					&& _mC < Map.MapSize.Cols)
+				if (   _mC > -1
+					&& _mR > -1
+					&& _mC < Map.MapSize.Cols
+					&& _mR < Map.MapSize.Rows)
 				{
 					int x = (_mC - _mR) * hWidth  + _offX;
 					int y = (_mC + _mR) * hHeight + _offY;
 
-					var selPath = CellPath(x, y);
-					backBuffer.DrawPath(Pens["MouseColor"], selPath);
+					var sel = SelectorPath(x, y);
+					backBuffer.DrawPath(Pens["MouseColor"], sel);
 				}
 			}
 		}
 
-		private GraphicsPath CellPath(int x, int y)
+		private GraphicsPath SelectorPath(int x, int y)
 		{
 			var hWidth  = _drawService.HalfWidth;
-			var hHeight = _drawService.HalfHeight ;
+			var hHeight = _drawService.HalfHeight;
 
 			_lozCell.Reset();
 			_lozCell.AddLine(
@@ -337,14 +340,14 @@ namespace MapView.Forms.MapObservers.TopViews
 												Map.CurrentHeight);
 
 				_mDown = true;
-				MapViewPanel.Instance.MapView.SetDrag(pt, pt);
+				MainViewPanel.Instance.MainView.SetDrag(pt, pt);
 			}
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			_mDown = false;
-			MapViewPanel.Instance.MapView.Refresh();
+			MainViewPanel.Instance.MainView.Refresh();
 
 			Refresh();
 		}
@@ -360,8 +363,8 @@ namespace MapView.Forms.MapObservers.TopViews
 				_mR = pt.Y;
 
 				if (_mDown)
-					MapViewPanel.Instance.MapView.SetDrag(
-													MapViewPanel.Instance.MapView.DragStart,
+					MainViewPanel.Instance.MainView.SetDrag(
+													MainViewPanel.Instance.MainView.DragStart,
 													pt);
 
 				Refresh(); // mouseover refresh for TopView.

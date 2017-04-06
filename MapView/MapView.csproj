@@ -146,8 +146,8 @@
     <Compile Include="Forms\MapObservers\IMapObserverFormProvider.cs" />
     <Compile Include="Forms\MapObservers\RouteView\ConnectNodeType.cs" />
     <Compile Include="Forms\MapObservers\RouteView\DrawContentService.cs" />
-    <Compile Include="Forms\MapObservers\RouteView\LinkComparisonResult.cs" />
-    <Compile Include="Forms\MapObservers\RouteView\MapPanelClickEventArgs.cs" />
+    <Compile Include="Forms\MapObservers\RouteView\LinkComparisonResult_.cs" />
+    <Compile Include="Forms\MapObservers\RouteView\RoutePanelClickEventArgs.cs" />
     <Compile Include="Forms\MapObservers\RouteView\RoutePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -225,7 +225,7 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Forms\MapObservers\RouteView\MapPanel.cs">
+    <Compile Include="Forms\MapObservers\RouteView\RoutePanelBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="SettingServices\SettingsService.cs" />
@@ -269,7 +269,7 @@
     <Compile Include="Forms\OtherForms\MapInfoForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MainWindow\MapViewPanel\MapViewPanel.cs">
+    <Compile Include="Forms\MainWindow\MainViewPanel\MainViewPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\OtherForms\NewMapForm.cs">
@@ -313,7 +313,7 @@
     <Compile Include="Forms\MapObservers\TileView\TileView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\MapObservers\TopView\SimpleMapPanel.cs">
+    <Compile Include="Forms\MapObservers\TopView\TopViewPanelBase.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\MapObservers\TopView\TopView.cs">
@@ -329,7 +329,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Updator_.cs" />
-    <Compile Include="Forms\MainWindow\MapViewPanel\MapView.cs">
+    <Compile Include="Forms\MainWindow\MainViewPanel\MainView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\MainWindow\XCMainWindow.cs">

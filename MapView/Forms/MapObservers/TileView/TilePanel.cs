@@ -76,7 +76,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
 
 			Controls.Add(_scrollBar);
-			MapViewPanel.ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			MainViewPanel.ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
 			_sel = 0;
@@ -251,7 +251,7 @@ namespace MapView.Forms.MapObservers.TileViews
 								g.FillRectangle((SolidBrush)_brushes[targetType], rect);
 
 							g.DrawImage(
-									tile[MapViewPanel.Current].Image,
+									tile[MainViewPanel.Current].Image,
 									left,
 									top - tile.Info.TileOffset);
 

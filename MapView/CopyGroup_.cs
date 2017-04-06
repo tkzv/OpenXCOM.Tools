@@ -394,12 +394,12 @@ namespace MapView
 
 		private void btnCopy_Click(object sender, System.EventArgs e)
 		{
-			MapViewPanel.Instance.View.Copy();
+			MainViewPanel.Instance.View.Copy();
 		}
 
 		private void btnPaste_Click(object sender, System.EventArgs e)
 		{
-			MapViewPanel.Instance.View.Paste();
+			MainViewPanel.Instance.View.Paste();
 		}
 	}
 }

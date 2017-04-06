@@ -4,7 +4,7 @@ using System;
 namespace XCom.Interfaces.Base
 {
 	/// <summary>
-	/// Objects of this class are drawn to the screen with the MapViewPanel.
+	/// Objects of this class are drawn to the screen with the MainViewPanel.
 	/// </summary>
 	public abstract class MapTileBase
 	{

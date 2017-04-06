@@ -8,26 +8,14 @@ namespace XCom.Interfaces
 		:
 			ICloneable
 	{
-		private byte[] _offsets;
 		public byte[] Offsets
-		{
-			get { return _offsets; }
-			protected set { _offsets = value; }
-		}
+		{ get; protected set; }
 
-		private int _fileId;
 		public int FileId
-		{
-			get { return _fileId; }
-			set { _fileId = value; }
-		}
+		{ get; set; }
 
-		private Bitmap _image;
 		public Bitmap Image
-		{
-			get { return _image; }
-			protected set { _image = value; }
-		}
+		{ get; protected set; }
 
 		public Bitmap Gray
 		{ get; protected set; }
@@ -40,8 +28,8 @@ namespace XCom.Interfaces
 			{
 				_palette = value;
 
-				if (_image != null)
-					_image.Palette = _palette.Colors;
+				if (Image != null)
+					Image.Palette = _palette.Colors;
 			}
 		}
 
@@ -61,12 +49,12 @@ namespace XCom.Interfaces
 				Palette pal,
 				int id)
 		{
-			_fileId = id;
-			_offsets = offsets;
+			FileId   = id;
+			Offsets  = offsets;
 			_palette = pal;
 
 			if (pal != null)
-				_image = Bmp.MakeBitmap8(
+				Image = Bmp.MakeBitmap8(
 									width,
 									height,
 									offsets,
@@ -82,37 +70,38 @@ namespace XCom.Interfaces
 		{} */
 		public XCImage(Bitmap image, int id)
 		{
-			_fileId = id;
-			_image = image;
-//			_offsets = null;
+			Image  = image;
+			FileId = id;
+
+//			Offsets  = null;
 //			_palette = null;
 		}
 
 
 		public object Clone()
 		{
-			if (_offsets != null)
+			if (Offsets != null)
 			{
-				var offsets = new byte[_offsets.Length];
+				var offsets = new byte[Offsets.Length];
 				for (int i = 0; i != offsets.Length; ++i)
-					offsets[i] = _offsets[i];
+					offsets[i] = Offsets[i];
 
 				return new XCImage(
 								offsets,
-								_image.Width,
-								_image.Height,
+								Image.Width,
+								Image.Height,
 								_palette,
-								_fileId);
+								FileId);
 			}
 
-			return (_image != null) ? new XCImage((Bitmap)_image.Clone(), _fileId)
-									: null;
+			return (Image != null) ? new XCImage((Bitmap)Image.Clone(), FileId)
+								   : null;
 
 		}
 
 		public void HQ2X()
 		{
-			_image = Bmp.HQ2X(/*_image*/);
+			Image = Bmp.HQ2X(/*Image*/);
 		}
 	}
 }

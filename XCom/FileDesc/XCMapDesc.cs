@@ -5,9 +5,9 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
-	public class XCMapDesc
+	public sealed class XCMapDesc
 		:
-		IMapDesc
+			IMapDesc
 	{
 		public XCMapDesc(
 				string label,
@@ -24,22 +24,22 @@ namespace XCom
 			RoutePath    = pathRoutes;
 			BlankPath    = pathBlanks;
 			Dependencies = deps;
-			IsStatic     = false;
+//			IsStatic     = false;
 		}
 
-		public Palette Palette
-		{ get; protected set; }
+		internal Palette Palette
+		{ get; set; }
 
-		public string MapPath
-		{ get; protected set; }
+		internal string MapPath
+		{ get; set; }
 
-		public string RoutePath
-		{ get; protected set; }
+		internal string RoutePath
+		{ get; set; }
 
-		public string BlankPath
-		{ get; protected set; }
+		internal string BlankPath
+		{ get; set; }
 
-		public string FilePath
+		internal string FilePath
 		{
 			get { return MapPath
 					   + Label
@@ -49,14 +49,14 @@ namespace XCom
 		public string[] Dependencies
 		{ get; set; }
 
-		public bool IsStatic
-		{ get; set; }
+/*		public bool IsStatic
+		{ get; set; } */
 
-		public int CompareTo(object other)
+/*		public int CompareTo(object other)
 		{
 			var desc = other as XCMapDesc;
 			return (desc != null) ? String.CompareOrdinal(Label, desc.Label)
 								  : 1;
-		}
+		} */
 	}
 }

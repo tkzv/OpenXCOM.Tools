@@ -77,7 +77,7 @@ namespace MapView.Forms.MainWindow
 				if (f != null)
 					SetMap(baseMap, f);
 
-			MapViewPanel.Instance.MapView.Refresh();
+			MainViewPanel.Instance.MainView.Refresh();
 
 //			TopView.Refresh(); // TODO: fix TopView selector when loading or changing Maps.
 //			TopRmpView.Refresh();

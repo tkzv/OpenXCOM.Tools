@@ -7,7 +7,7 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.RouteViews
 {
-	public class MapPanelClickEventArgs
+	internal sealed class RoutePanelClickEventArgs
 		:
 			EventArgs
 	{

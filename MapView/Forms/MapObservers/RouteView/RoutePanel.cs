@@ -12,12 +12,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 {
 	internal sealed class RoutePanel
 		:
-			MapPanel
+			RoutePanelBase
 	{
 		private Point _pos = new Point(-1, -1);
 		public Point Pos
 		{
-			get { return _pos; }
 			set { _pos = value; }
 		}
 

@@ -89,7 +89,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			if (mapTile != null && mapTile.Ground != null)
 			{
 				g.DrawImage(
-							mapTile.Ground[MapViewPanel.Current].Image,
+							mapTile.Ground[MainViewPanel.Current].Image,
 							startX,
 							startY - mapTile.Ground.Info.TileOffset);
 
@@ -118,7 +118,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			if (mapTile != null && mapTile.West != null)
 			{
 				g.DrawImage(
-							mapTile.West[MapViewPanel.Current].Image,
+							mapTile.West[MainViewPanel.Current].Image,
 							startX + QuadsWidthTotal,
 							startY - mapTile.West.Info.TileOffset);
 
@@ -147,7 +147,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			if (mapTile != null && mapTile.North != null)
 			{
 				g.DrawImage(
-							mapTile.North[MapViewPanel.Current].Image,
+							mapTile.North[MainViewPanel.Current].Image,
 							startX + QuadsWidthTotal * 2,
 							startY - mapTile.North.Info.TileOffset);
 
@@ -176,7 +176,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			if (mapTile != null && mapTile.Content != null)
 			{
 				g.DrawImage(
-							mapTile.Content[MapViewPanel.Current].Image,
+							mapTile.Content[MainViewPanel.Current].Image,
 							startX + QuadsWidthTotal * 3,
 							startY - mapTile.Content.Info.TileOffset);
 

@@ -100,7 +100,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			if (VisibleTileChangedEvent != null)
 				VisibleTileChangedEvent(this, new EventArgs());
 
-			MapViewPanel.Instance.Refresh();
+			MainViewPanel.Instance.Refresh();
 			Refresh();
 		}
 

@@ -7,23 +7,23 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	internal sealed class MapViewPanel
+	internal sealed class MainViewPanel
 		:
 			Panel
 	{
-		private MapView _mapView;
-		public MapView MapView
+		private MainView _mainView;
+		public MainView MainView
 		{
-			get { return _mapView; }
+			get { return _mainView; }
 		}
 
-		private static MapViewPanel _instance;
-		public static MapViewPanel Instance
+		private static MainViewPanel _instance;
+		public static MainViewPanel Instance
 		{
 			get
 			{
 				if (_instance == null)
-					_instance = new MapViewPanel();
+					_instance = new MainViewPanel();
 
 					return _instance;
 			}
@@ -33,7 +33,7 @@ namespace MapView
 		private readonly VScrollBar _scrollBarVert;
 
 
-		private MapViewPanel()
+		private MainViewPanel()
 		{
 			ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
@@ -48,55 +48,55 @@ namespace MapView
 
 			Controls.AddRange(new Control[]{ _scrollBarVert, _scrollBarHori });
 
-			var mapView = new MapView();
-			if (_mapView != null)
+			var mapView = new MainView();
+			if (_mainView != null)
 			{
-				mapView.Map = _mapView.Map;
-				Controls.Remove(_mapView);
+				mapView.Map = _mainView.Map;
+				Controls.Remove(_mainView);
 			}
-			_mapView = mapView;
+			_mainView = mapView;
 
-			_mapView.Location = new Point(0, 0);
-			_mapView.BorderStyle = BorderStyle.Fixed3D;
+			_mainView.Location = new Point(0, 0);
+			_mainView.BorderStyle = BorderStyle.Fixed3D;
 
 			_scrollBarVert.Minimum = 0;
 			_scrollBarVert.Value = _scrollBarVert.Minimum;
 
-			_mapView.Width = ClientSize.Width - _scrollBarVert.Width - 1;
+			_mainView.Width = ClientSize.Width - _scrollBarVert.Width - 1;
 
-			Controls.Add(_mapView);
+			Controls.Add(_mainView);
 		}
 
 
 		public void OnCut(object sender, EventArgs e)
 		{
-			_mapView.Copy();
-			_mapView.ClearSelection();
+			_mainView.Copy();
+			_mainView.ClearSelection();
 		}
 
 		public void OnCopy(object sender, EventArgs e)
 		{
-			_mapView.Copy();
+			_mainView.Copy();
 		}
 
 		public void OnPaste(object sender, EventArgs e)
 		{
-			_mapView.Paste();
+			_mainView.Paste();
 		}
 
 		public void OnFill(object sender, EventArgs e)
 		{
-			_mapView.Fill();
+			_mainView.Fill();
 		}
 
 		public IMapBase BaseMap
 		{
-			get { return _mapView.Map; }
+			get { return _mainView.Map; }
 		}
 
 		private void OnImageUpdate(object sender, EventArgs e)
 		{
-			_mapView.Refresh();
+			_mainView.Refresh();
 		}
 
 		public void OnResize()
@@ -120,20 +120,20 @@ namespace MapView
 //			int h = 0;
 //			int w = 0;
 
-			_scrollBarVert.Visible = (_mapView.Height > ClientSize.Height);
+			_scrollBarVert.Visible = (_mainView.Height > ClientSize.Height);
 			if (_scrollBarVert.Visible)
 			{
-				_scrollBarVert.Maximum = _mapView.Height - ClientSize.Height + _scrollBarHori.Height;
+				_scrollBarVert.Maximum = _mainView.Height - ClientSize.Height + _scrollBarHori.Height;
 //				w = _scrollBarVert.Width;
 			}
 			else
 				_scrollBarHori.Width = ClientSize.Width;
 
-			_scrollBarHori.Visible = (_mapView.Width > ClientSize.Width);
+			_scrollBarHori.Visible = (_mainView.Width > ClientSize.Width);
 			if (_scrollBarHori.Visible)
 			{
 				_scrollBarHori.Maximum = Math.Max(
-									_mapView.Width - ClientSize.Width + _scrollBarVert.Width,
+									_mainView.Width - ClientSize.Width + _scrollBarVert.Width,
 									_scrollBarHori.Minimum);
 //				h = _scrollBarHori.Height;
 			}
@@ -141,33 +141,33 @@ namespace MapView
 				_scrollBarVert.Height = ClientSize.Height;
 
 //			_mapView.Viewable = new Size(Width - w, Height - h);
-			_mapView.Refresh();
+			_mainView.Refresh();
 		}
 
 		private void OnVerticalScroll(object sender, ScrollEventArgs e)
 		{
-			_mapView.Location = new Point(
-										_mapView.Left,
+			_mainView.Location = new Point(
+										_mainView.Left,
 										-(_scrollBarVert.Value) + 1);
-			_mapView.Refresh();
+			_mainView.Refresh();
 		}
 
 		private void OnHorizontalScroll(object sender, ScrollEventArgs e)
 		{
-			_mapView.Location = new Point(
+			_mainView.Location = new Point(
 										-(_scrollBarHori.Value),
-										_mapView.Top);
-			_mapView.Refresh();
+										_mainView.Top);
+			_mainView.Refresh();
 		}
 
 		public void SetMap(IMapBase baseMap)
 		{
-			_mapView.Map = baseMap;
+			_mainView.Map = baseMap;
 //			_mapView.Select();				// TODO: Select the *panel*
 
 //			Select();						// doesn't work right.
-//			MapViewPanel.Instance.Select();	// doesn't work.
-//			MapViewPanel.Instance.Focus();	// doesn't work.
+//			MainViewPanel.Instance.Select();	// doesn't work.
+//			MainViewPanel.Instance.Focus();	// doesn't work.
 
 //			var controls = _mapView.Controls.Find("tscPanel", true);
 //			if (controls.GetLength(0) != 0)
@@ -186,7 +186,7 @@ namespace MapView
 		{
 			if (Globals.AutoPckImageScale)
 			{
-				var size = _mapView.GetMapSize(1);
+				var size = _mainView.GetMapSize(1);
 
 				var wP = Width  / (double)size.Width;
 				var hP = Height / (double)size.Height;
@@ -200,7 +200,7 @@ namespace MapView
 					Globals.PckImageScale = Globals.MinPckImageScale;
 			}
 
-			_mapView.SetupMapSize();
+			_mainView.SetupMapSize();
 		}
 
 		public void ForceResize()

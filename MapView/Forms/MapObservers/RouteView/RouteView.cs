@@ -42,7 +42,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			_routePanel = new RoutePanel();
 			pRoutes.Controls.Add(_routePanel);
-			_routePanel.MapPanelClicked += OnRoutePanelClick;
+			_routePanel.RoutePanelClicked += OnRoutePanelClick;
 			_routePanel.MouseMove += OnRoutePanelMouseMove;
 			_routePanel.Dock = DockStyle.Fill;
 
@@ -136,7 +136,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_routePanel.Refresh(); // mouseover refresh for RouteView.
 		}
 
-		private void OnRoutePanelClick(object sender, MapPanelClickEventArgs args)
+		private void OnRoutePanelClick(object sender, RoutePanelClickEventArgs args)
 		{
 			_routePanel.Focus();
 			labelSelectedPos.Text = Text;

@@ -14,7 +14,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 	public delegate void MouseDragEventHandler();
 
 
-	internal sealed class MapView
+	internal sealed class MainView
 		:
 			Panel
 	{
@@ -118,19 +118,23 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			}
 		}
 
-		private bool _drawSelectionBox;
-		public bool DrawSelectionBox
-		{
-			get { return _drawSelectionBox; }
-			set
-			{
-				_drawSelectionBox = value;
-				Refresh();
-			}
-		}
+		/// <summary>
+		/// If true draws a translucent red box around selected tiles ->
+		/// superceded by using GraySelection (false) property.
+		/// </summary>
+//		private bool _drawSelectionBox;
+//		public bool DrawSelectionBox
+//		{
+//			get { return _drawSelectionBox; }
+//			set
+//			{
+//				_drawSelectionBox = value;
+//				Refresh();
+//			}
+//		}
 
 
-		public MapView()
+		public MainView()
 		{
 			_baseMap = null;
 
@@ -236,7 +240,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 					for (int r = start.Y; r <= end.Y; ++r)
 						((XCMapTile)_baseMap[r, c])[quadType] = tileView.SelectedTile;
 
-//				MapViewPanel.Instance.Refresh();
+//				MainViewPanel.Instance.Refresh();
 //				Refresh(); // handled for all viewers by EditButtonsFactory.
 			}
 		}
@@ -263,7 +267,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 												_dragEnd.Y, _dragEnd.X,
 												_baseMap.CurrentHeight);
 
-				Focus();
+				Select();
 				Refresh();
 			}
 		}
@@ -280,8 +284,8 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
-			if		(e.Delta < 0) _baseMap.Up();
-			else if	(e.Delta > 0) _baseMap.Down();
+			if      (e.Delta < 0) _baseMap.Up();
+			else if (e.Delta > 0) _baseMap.Down();
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
@@ -309,11 +313,11 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			{
 				_dragStart = value;
 
-				if		(_dragStart.Y < 0) _dragStart.Y = 0;
-				else if	(_dragStart.Y >= _baseMap.MapSize.Rows) _dragStart.Y = _baseMap.MapSize.Rows - 1;
+				if      (_dragStart.Y < 0) _dragStart.Y = 0;
+				else if (_dragStart.Y >= _baseMap.MapSize.Rows) _dragStart.Y = _baseMap.MapSize.Rows - 1;
 
-				if		(_dragStart.X < 0) _dragStart.X = 0;
-				else if	(_dragStart.X >= _baseMap.MapSize.Cols) _dragStart.X = _baseMap.MapSize.Cols - 1;
+				if      (_dragStart.X < 0) _dragStart.X = 0;
+				else if (_dragStart.X >= _baseMap.MapSize.Cols) _dragStart.X = _baseMap.MapSize.Cols - 1;
 			}
 		}
 
@@ -324,11 +328,11 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			{
 				_dragEnd = value;
 
-				if		(_dragEnd.Y < 0) _dragEnd.Y = 0;
-				else if	(_dragEnd.Y >= _baseMap.MapSize.Rows) _dragEnd.Y = _baseMap.MapSize.Rows - 1;
+				if      (_dragEnd.Y < 0) _dragEnd.Y = 0;
+				else if (_dragEnd.Y >= _baseMap.MapSize.Rows) _dragEnd.Y = _baseMap.MapSize.Rows - 1;
 
-				if		(_dragEnd.X < 0) _dragEnd.X = 0;
-				else if	(_dragEnd.X >= _baseMap.MapSize.Cols) _dragEnd.X = _baseMap.MapSize.Cols - 1;
+				if      (_dragEnd.X < 0) _dragEnd.X = 0;
+				else if (_dragEnd.X >= _baseMap.MapSize.Cols) _dragEnd.X = _baseMap.MapSize.Cols - 1;
 			}
 		}
 
@@ -466,7 +470,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 									_cursor.DrawLow(
 												g,
 												x, y,
-												MapViewPanel.Current,
+												MainViewPanel.Current,
 												false,
 												_baseMap.CurrentHeight == h);
 							}
@@ -474,8 +478,9 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 					}
 				}
 
-				if (_drawSelectionBox)
-					DrawSelection(g, _baseMap.CurrentHeight, dragRect);
+//				if (_drawSelectionBox) // always false.
+				if (!_graySelection)
+					DrawLozengeSelected(g, _baseMap.CurrentHeight, dragRect);
 			}
 		}
 
@@ -497,7 +502,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 				var hHeight = (int)(HalfHeight * Globals.PckImageScale);
 
 				var x = hWidth + _origin.X;
-				var y = ((_baseMap.CurrentHeight + 1) * (hHeight * 3)) + _origin.Y;
+				var y = (_baseMap.CurrentHeight + 1) * (hHeight * 3) + _origin.Y;
 
 				var xMax = _baseMap.MapSize.Rows * hWidth;
 				var yMax = _baseMap.MapSize.Rows * hHeight;
@@ -541,46 +546,70 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		private static void DrawTile(Graphics g, XCMapTile tile, int x, int y)
 		{
 			var topView = MainWindowsManager.TopView.Control;
-			if (tile.Ground != null && topView.GroundVisible)
-				DrawTile(g, x, y, tile.Ground);
 
-			if (tile.North != null && topView.NorthVisible)
-				DrawTile(g, x, y, tile.North);
+			if (topView.GroundVisible)
+			{
+				var baseTile = tile.Ground;
+				if (baseTile != null)
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Image);
+			}
 
-			if (tile.West != null && topView.WestVisible)
-				DrawTile(g, x, y, tile.West);
+			if (topView.WestVisible)
+			{
+				var baseTile = tile.West;
+				if (baseTile != null)
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Image);
+			}
 
-			if (tile.Content != null && topView.ContentVisible)
-				DrawTile(g, x, y, tile.Content);
+			if (topView.NorthVisible)
+			{
+				var baseTile = tile.North;
+				if (baseTile != null)
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Image);
+			}
+
+			if (topView.ContentVisible)
+			{
+				var baseTile = tile.Content;
+				if (baseTile != null)
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Image);
+			}
 		}
 
 		private static void DrawTileGray(Graphics g, XCMapTile tile, int x, int y)
 		{
 			var topView = MainWindowsManager.TopView.Control;
-			if (tile.Ground != null && topView.GroundVisible)
-				DrawTileGray(g, x, y, tile.Ground);
 
-			if (tile.North != null && topView.NorthVisible)
-				DrawTileGray(g, x, y, tile.North);
+			if (topView.GroundVisible)
+			{
+				var baseTile = tile.Ground;
+				if (baseTile != null)
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Gray);
+			}
 
-			if (tile.West != null && topView.WestVisible)
-				DrawTileGray(g, x, y, tile.West);
+			if (topView.WestVisible)
+			{
+				var baseTile = tile.West;
+				if (baseTile != null)
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Gray);
+			}
 
-			if (tile.Content != null && topView.ContentVisible)
-				DrawTileGray(g, x, y, tile.Content);
+			if (topView.NorthVisible)
+			{
+				var baseTile = tile.North;
+				if (baseTile != null)
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Gray);
+			}
+
+			if (topView.ContentVisible)
+			{
+				var baseTile = tile.Content;
+				if (baseTile != null)
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Gray);
+			}
 		}
 
-		private static void DrawTile(Graphics g, int x, int y, TileBase tile)
-		{
-			DrawTile(g, x, y, tile, tile[MapViewPanel.Current].Image);
-		}
-
-		private static void DrawTileGray(Graphics g, int x, int y, TileBase tile)
-		{
-			DrawTile(g, x, y, tile, tile[MapViewPanel.Current].Gray);
-		}
-
-		private static void DrawTile(Graphics g, int x, int y, TileBase tile, Image image)
+		private static void DrawTileImage(Graphics g, int x, int y, TileBase tile, Image image)
 		{
 			g.DrawImage(
 					image,
@@ -590,7 +619,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 					(int)(image.Height * Globals.PckImageScale));
 		}
 
-		private void DrawSelection(Graphics g, int h, Rectangle dragRect)
+		private void DrawLozengeSelected(Graphics g, int h, Rectangle dragRect)
 		{
 			var hWidth = (int)(HalfWidth * Globals.PckImageScale);
 
@@ -607,10 +636,10 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			var pen = new Pen(Color.FromArgb(70, Color.Red));
 			pen.Width = 3;
 
-			g.DrawLine(pen, top, right);
-			g.DrawLine(pen, right, bottom);
+			g.DrawLine(pen, top,    right);
+			g.DrawLine(pen, right,  bottom);
 			g.DrawLine(pen, bottom, left);
-			g.DrawLine(pen, left, top);
+			g.DrawLine(pen, left,   top);
 		}
 
 		/// <summary>
