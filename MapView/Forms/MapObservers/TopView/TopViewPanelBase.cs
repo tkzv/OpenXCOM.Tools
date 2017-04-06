@@ -267,11 +267,8 @@ namespace MapView.Forms.MapObservers.TopViews
 									i * hWidth  - Map.MapSize.Rows * hWidth  + _offX,
 									i * hHeight + Map.MapSize.Rows * hHeight + _offY);
 
-				if (_lozSelected != null) // NOTE: '_lozCopy' will never be null. It's instantiated in the cTor.
+				if (MainViewPanel.Instance.MainView.IsSelectedTileValid)
 					backBuffer.DrawPath(Pens["SelectColor"], _lozSelected);
-
-//				if (selected != null) // clicked on
-//					backBuffer.DrawPath(new Pen(Brushes.Blue, 2), selected);
 
 				if (   _mouseCol > -1
 					&& _mouseRow > -1

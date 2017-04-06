@@ -12,7 +12,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 	/// Draws floor- and wall- and content- blobs for TopView and RMP View.
 	/// </summary>
 	internal sealed class DrawContentService	// Warning CA1001: Implement IDisposable on 'DrawContentService' because
-	{								// it creates members of the following IDisposable types: 'GraphicsPath'.
+	{											// it creates members of the following IDisposable types: 'GraphicsPath'.
 		private int _halfWidth = 8;
 		public int HalfWidth
 		{
