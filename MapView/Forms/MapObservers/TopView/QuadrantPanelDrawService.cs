@@ -37,9 +37,6 @@ namespace MapView.Forms.MapObservers.TopViews
 				XCMapTile mapTile,
 				QuadrantType selectedQuadrant)
 		{
-			LogFile.WriteLine("QuadrantPanelDrawService.Draw");
-			LogFile.WriteLine(". selectedQuadrant= " + selectedQuadrant);
-
 			switch (selectedQuadrant) // Fill background of selected quadrant type.
 			{
 				case QuadrantType.Ground:
