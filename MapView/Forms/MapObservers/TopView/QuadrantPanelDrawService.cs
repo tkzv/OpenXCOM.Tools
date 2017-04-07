@@ -8,18 +8,18 @@ using XCom;
 
 namespace MapView.Forms.MapObservers.TopViews
 {
-	internal class QuadrantPanelDrawService
+	internal sealed class QuadrantPanelDrawService
 	{
-		public SolidBrush Brush
+		internal SolidBrush Brush
 		{ get; set; }
 
-		public Dictionary<string, SolidBrush> Brushes
+		internal Dictionary<string, SolidBrush> Brushes
 		{ get; set; }
 
-		public Dictionary<string, Pen> Pens
+		internal Dictionary<string, Pen> Pens
 		{ get; set; }
 
-		public Font Font
+		internal Font Font
 		{ get; set; }
 
 		private const int _width  = 32;
@@ -27,17 +27,20 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private const int _pad    =  2;
 
-		public const int QuadsWidthTotal = _width + _pad * 2;
+		internal const int QuadsWidthTotal = _width + _pad * 2;
 
-		public const int startX = 5;
-		public const int startY = 0;
+		internal const int startX = 5;
+		private  const int startY = 0;
 
-		public void Draw(
+		internal void Draw(
 				Graphics g,
 				XCMapTile mapTile,
 				QuadrantType selectedQuadrant)
 		{
-			switch (selectedQuadrant) // Draw selection
+			LogFile.WriteLine("QuadrantPanelDrawService.Draw");
+			LogFile.WriteLine(". selectedQuadrant= " + selectedQuadrant);
+
+			switch (selectedQuadrant) // Fill background of selected quadrant type.
 			{
 				case QuadrantType.Ground:
 					g.FillRectangle(

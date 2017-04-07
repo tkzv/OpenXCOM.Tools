@@ -128,7 +128,7 @@ namespace MapView.Forms.MainWindow
 								if (fsender != null)
 									_settings[key].Value = fsender.Visible;
 							}
-//							if (_closed) return;
+//							if (_quitting) return;
 //							var fsender = sender as Form;
 //							if (fsender == null) return;
 //							_settings[key].Value = fsender.Visible;

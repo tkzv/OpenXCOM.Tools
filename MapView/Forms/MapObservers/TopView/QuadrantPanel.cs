@@ -20,11 +20,20 @@ namespace MapView.Forms.MapObservers.TopViews
 			MapObserverControl1
 	{
 		private XCMapTile _mapTile;
-		private MapLocation _location;
+		private MapLocation _mapLoc;
 
 		private readonly QuadrantPanelDrawService _drawService;
 
-		private QuadrantType _selQuadrant;
+		private QuadrantType _selType;
+		public QuadrantType SelectedQuadrant
+		{
+			get { return _selType; }
+			set
+			{
+				_selType = value;
+				Refresh();
+			}
+		}
 
 
 		public QuadrantPanel()
@@ -59,16 +68,6 @@ namespace MapView.Forms.MapObservers.TopViews
 			set
 			{
 				_drawService.Brush = value;
-				Refresh();
-			}
-		}
-
-		public QuadrantType SelectedQuadrant
-		{
-			get { return _selQuadrant; }
-			set
-			{
-				_selQuadrant = value;
 				Refresh();
 			}
 		}
@@ -118,14 +117,14 @@ namespace MapView.Forms.MapObservers.TopViews
 		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			_mapTile = (XCMapTile)e.SelectedTile;
-			_location = e.MapPosition;
+			_mapLoc = e.MapPosition;
 			Refresh();
 		}
 
 		public override void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
-			_location.Height = e.NewHeight;
-			_mapTile = Map[_location.Row, _location.Col] as XCMapTile;
+			_mapLoc.Height = e.NewHeight;
+			_mapTile = Map[_mapLoc.Row, _mapLoc.Col] as XCMapTile;
 			Refresh();
 		}
 
