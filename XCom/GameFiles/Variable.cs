@@ -7,52 +7,47 @@ namespace XCom
 {
 	internal sealed class Variable
 	{
+		private readonly ArrayList _list = new ArrayList();
+
 		private readonly string _name;
 		private readonly string _value;
 
-		private static int _count = 0;
-
-		private readonly ArrayList _list;
+		private static int _id;
 
 
-		public Variable(string prefix, string post)
+		internal Variable(string prefix, string post)
 		{
-			_name = "${var" + (_count++) + "}";
+			_name  = "${var" + (_id++) + "}";
 			_value = post;
-			_list = new ArrayList();
 			_list.Add(prefix);
 		}
 
-		public Variable(string baseVar, string prefix, string post)
+		internal Variable(string baseVar, string prefix, string post)
 		{
-			_name = "${var" + baseVar + (_count++) + "}";
+			_name  = "${var" + baseVar + (_id++) + "}";
 			_value = post;
-			_list = new ArrayList();
 			_list.Add(prefix);
 		}
 
 
-		public string Name
+		internal string Name
 		{
 			get { return _name; }
 		}
 
-		public string Value
+		internal string Value
 		{
 			get { return _value; }
 		}
 
-		public void Add(string prefix)
+		internal void Add(string prefix)
 		{
 			_list.Add(prefix);
 		}
 
-		public void Write(StreamWriter sw)
-		{
-			Write(sw, String.Empty);
-		}
+		private const string DefaultPrefix = ""; // NOTE: doesn't accept String.Empty.
 
-		public void Write(TextWriter sw, string prefix)
+		internal void Write(TextWriter sw, string prefix = DefaultPrefix)
 		{
 			if (_list.Count > 1)
 			{

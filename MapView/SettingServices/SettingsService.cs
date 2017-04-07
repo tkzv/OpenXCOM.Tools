@@ -11,13 +11,13 @@ namespace MapView.SettingServices
 {
 	internal static class SettingsService
 	{
-		public static void Save(Dictionary<string, Settings> dictSettings)
+		internal static void Save(IDictionary<string, Settings> settings)
 		{
 			using (var sw = new StreamWriter(((PathInfo)SharedSpace.Instance[PathInfo.SettingsFile]).FullPath))
 			{
-				foreach (string key in dictSettings.Keys)
-					if (dictSettings.ContainsKey(key))
-						dictSettings[key].Save(key, sw);
+				foreach (string key in settings.Keys)
+					if (settings.ContainsKey(key))
+						settings[key].Save(key, sw);
 			}
 		}
 	}

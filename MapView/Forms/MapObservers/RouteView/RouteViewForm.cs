@@ -6,7 +6,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 	internal sealed partial class RouteViewForm
 		:
 			Form,
-			IMapObserverFormProvider
+			IMapObserverProvider
 	{
 		public RouteViewForm()
 		{

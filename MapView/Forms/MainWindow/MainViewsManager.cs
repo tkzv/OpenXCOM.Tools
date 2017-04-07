@@ -11,23 +11,22 @@ namespace MapView.Forms.MainWindow
 {
 	internal sealed class MainViewsManager
 	{
+		private readonly Dictionary<string, Form> _viewersDictionary = new Dictionary<string, Form>();
+
 		private readonly SettingsManager    _settingsManager;
 		private readonly ConsoleSharedSpace _consoleShare;
 
-		private readonly Dictionary<string, Form> _dictForms;
 
-
-		public MainViewsManager(
+		internal MainViewsManager(
 				SettingsManager settingsManager,
 				ConsoleSharedSpace consoleShare)
 		{
 			_settingsManager = settingsManager;
 			_consoleShare = consoleShare;
-			_dictForms = new Dictionary<string, Form>();
 		}
 
 
-		public void ManageViews()
+		internal void ManageViewers()
 		{
 			MainWindowsManager.TopRouteView.TopViewControl.Settings =
 				MainWindowsManager.TopView.Control.Settings;
@@ -38,15 +37,15 @@ namespace MapView.Forms.MainWindow
 			MainWindowsManager.TopRouteView.TopViewControl.LoadDefaultSettings();
 			MainWindowsManager.TopRouteView.RouteViewControl.LoadDefaultSettings();
 
-			SetViewToObserver(MainWindowsManager.TopView,      "Top View",      "TopView");
-			SetViewToObserver(MainWindowsManager.RouteView,    "Route View",    "RouteView");
-			SetViewToObserver(MainWindowsManager.TopRouteView, "TopRoute View", "TopRouteView");
-			SetViewToObserver(MainWindowsManager.TileView,     "Tile View",     "TileView");
+			SetAsObserver(MainWindowsManager.TopView,      "Top View",      "TopView");
+			SetAsObserver(MainWindowsManager.RouteView,    "Route View",    "RouteView");
+			SetAsObserver(MainWindowsManager.TopRouteView, "TopRoute View", "TopRouteView");
+			SetAsObserver(MainWindowsManager.TileView,     "Tile View",     "TileView");
 
-			SetViewToObserver(_consoleShare.GetNewConsole(), "Console", "Console");
+			SetAsObserver(_consoleShare.GetNewConsole(), "Console", "Console");
 
-			SetViewToObserver(MainWindowsManager.HelpScreen,  "Quick Help");
-			SetViewToObserver(MainWindowsManager.AboutWindow, "About");
+			SetAsObserver(MainWindowsManager.HelpScreen,  "Quick Help");
+			SetAsObserver(MainWindowsManager.AboutWindow, "About");
 
 			MainWindowsManager.TopRouteView.TopViewControl.RegistryInfo =
 				MainWindowsManager.TopView.Control.RegistryInfo;
@@ -55,11 +54,11 @@ namespace MapView.Forms.MainWindow
 				MainWindowsManager.RouteView.Control.RegistryInfo;
 		}
 
-		private void SetViewToObserver(Form f, string caption, string regkey = null)
+		private void SetAsObserver(Form f, string caption, string regkey = null)
 		{
 			f.Text = caption;
 
-			var fObserver = f as IMapObserverFormProvider;
+			var fObserver = f as IMapObserverProvider;
 			if (fObserver != null)
 			{
 				var observerType0 = fObserver.MapObserver;
@@ -73,14 +72,14 @@ namespace MapView.Forms.MainWindow
 //			f.ShowInTaskbar = false;
 //			f.FormBorderStyle = FormBorderStyle.SizableToolWindow;
 
-			_dictForms.Add(caption, f);
+			_viewersDictionary.Add(caption, f);
 		}
 
-		public void CloseAllViews()
+		internal void CloseAllViewers()
 		{
-			foreach (string key in _dictForms.Keys)
+			foreach (string key in _viewersDictionary.Keys)
 			{
-				var f = _dictForms[key];
+				var f = _viewersDictionary[key];
 //				f.WindowState = FormWindowState.Normal;
 
 				f.Close();

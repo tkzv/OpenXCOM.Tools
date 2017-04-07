@@ -18,7 +18,7 @@ namespace MapView.Forms.MainWindow
 
 		private Settings _settings;
 
-		private bool _disposed;
+		private bool _quitting;
 
 		private const string Divider = "-";
 
@@ -121,14 +121,16 @@ namespace MapView.Forms.MainWindow
 					{
 						f.VisibleChanged += (sender, e) =>
 						{
-							if (_disposed)
-								return;
-
-							var fsender = sender as Form;
-							if (fsender == null)
-								return;
-
-							_settings[key].Value = fsender.Visible;
+							if (!_quitting)
+							{
+								var fsender = sender as Form;
+								if (fsender != null)
+									_settings[key].Value = fsender.Visible;
+							}
+//							if (_closed) return;
+//							var fsender = sender as Form;
+//							if (fsender == null) return;
+//							_settings[key].Value = fsender.Visible;
 						};
 					}
 				}
@@ -136,7 +138,8 @@ namespace MapView.Forms.MainWindow
 		}
 
 		/// <summary>
-		/// Opens the subsidiary viewers.
+		/// Opens the subsidiary viewers. All viewers will open and those that
+		/// the user has flagged closed (in Options) will be re-closed.
 		/// </summary>
 		public void StartViewers()
 		{
@@ -156,14 +159,13 @@ namespace MapView.Forms.MainWindow
 					}
 				}
 			}
-/*			foreach (MenuItem it in _show.MenuItems)	// NOTE: Don't do this. Go figure.
-			{											// All the Views will load ...
-				it.PerformClick();						// regardless of their saved settings.
-
-				var key = GetWindowSettingName(it);
-				if (!(_settings[key].IsTrue))
-					it.PerformClick();
-			} */
+//			foreach (MenuItem it in _show.MenuItems) // NOTE: Don't do this. Go figure.
+//			{
+//				it.PerformClick();
+//				var key = GetWindowSettingName(it);
+//				if (!(_settings[key].IsTrue))
+//					it.PerformClick();
+//			}
 			_viewsMenu.Enabled = true;
 		}
 
@@ -179,9 +181,9 @@ namespace MapView.Forms.MainWindow
 			return new MainShowAllManager(_allForms, _allItems);
 		}
 
-		public void Dispose()
+		public void HandleQuit()
 		{
-			_disposed = true;
+			_quitting = true;
 		}
 	}
 }

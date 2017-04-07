@@ -10,26 +10,24 @@ namespace MapView.Forms.MainWindow
 {
 	internal sealed class SettingsManager
 	{
-		private readonly Dictionary<string, Settings> _dictSettings;
+		private readonly Dictionary<string, Settings> _settingsDictionary = new Dictionary<string, Settings>();
 
 
-		public SettingsManager()
+		internal SettingsManager()
+		{}
+
+
+		internal void Add(string registryKey, Settings settings)
 		{
-			_dictSettings = new Dictionary<string, Settings>();
+			_settingsDictionary.Add(registryKey, settings);
 		}
 
-
-		public void Add(string registryKey, Settings settings)
+		internal void Save()
 		{
-			_dictSettings.Add(registryKey, settings);
+			SettingsService.Save(_settingsDictionary);
 		}
 
-		public void Save()
-		{
-			SettingsService.Save(_dictSettings);
-		}
-
-		public void Load(string file)
+		internal void Load(string file)
 		{
 			using (var sr = new StreamReader(file))
 			{
@@ -37,14 +35,14 @@ namespace MapView.Forms.MainWindow
 
 				KeyvalPair line;
 				while ((line = vars.ReadLine()) != null)
-					Settings.ReadSettings(vars, line, _dictSettings[line.Keyword]);
+					Settings.ReadSettings(vars, line, _settingsDictionary[line.Keyword]);
 			}
 		}
 
-		public Settings this[string key]
+		internal Settings this[string key]
 		{
-			get { return _dictSettings[key]; }
-			set { _dictSettings[key] = value; }
+			get { return _settingsDictionary[key]; }
+			set { _settingsDictionary[key] = value; }
 		}
 	}
 }

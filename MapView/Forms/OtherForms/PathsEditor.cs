@@ -22,7 +22,7 @@ namespace MapView
 			Form
 	{
 		private static bool _saveRegistry = true;
-		public static bool SaveRegistry
+		internal static bool SaveRegistry
 		{
 			get { return _saveRegistry; }
 			set { _saveRegistry = value; }
@@ -32,7 +32,7 @@ namespace MapView
 		private string[] _images;
 
 
-		public PathsEditor(string pathsPath)
+		internal PathsEditor(string pathsPath)
 		{
 			_paths = pathsPath;
 
@@ -134,26 +134,26 @@ namespace MapView
 		private void tvMaps_AfterSelect(object sender, TreeViewEventArgs e)
 		{
 			gbMapsTerrain.Enabled = true;
-			gbMapsBlock.Enabled =
-			delMap.Enabled      = false;
+			gbMapsBlock.Enabled   =
+			delMap.Enabled        = false;
 
 			IXCTileset tileset = null;
 
-			var tn = e.Node;
-			if (tn.Parent != null)
+			var node = e.Node;
+			if (node.Parent != null)
 			{
 				addMap.Enabled =
 				delSub.Enabled = true;
 
-				if (tn.Parent.Parent != null) // inner node
+				if (node.Parent.Parent != null) // inner node
 				{
 					gbMapsTerrain.Enabled = false;
-					gbMapsBlock.Enabled =
-					delMap.Enabled = true;
+					gbMapsBlock.Enabled   =
+					delMap.Enabled        = true;
 
-					tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Parent.Text];
+					tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[node.Parent.Parent.Text];
 
-					var desc = (XCMapDesc)tileset[tn.Text];
+					var desc = (XCMapDesc)tileset[node.Text];
 
 					lbMapsImagesUsed.Items.Clear();
 
@@ -166,22 +166,22 @@ namespace MapView
 					{
 						tileset.AddMap(
 									new XCMapDesc(
-												tn.Text,
+												node.Text,
 												tileset.MapPath,
 												tileset.BlankPath,
 												tileset.RoutePath, new string[]{},
 												tileset.Palette),
-									tn.Parent.Text);
+									node.Parent.Text);
 					}
 				}
 				else // subset node
 				{
-					tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Text];
+					tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[node.Parent.Text];
 				}
 			}
 			else // parent node
 			{
-				tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Text];
+				tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[node.Text];
 				addMap.Enabled =
 				delMap.Enabled =
 				delSub.Enabled = false;
@@ -1547,7 +1547,7 @@ namespace MapView
 		private TextBox tbMapsBlanks;
 		private Button btnMapsCopy;
 		private Button btnMapsPaste;
-		private System.Windows.Forms.Label lblPathsInstall;
-		private System.Windows.Forms.Label lblPathsClearRegistry;
+		private Label lblPathsInstall;
+		private Label lblPathsClearRegistry;
 	}
 }

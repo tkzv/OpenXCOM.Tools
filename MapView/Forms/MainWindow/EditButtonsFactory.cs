@@ -40,6 +40,7 @@ namespace MapView.Forms.MainWindow
 			var tsbPaste    = new ToolStripButton();
 			var tssDivider3 = new ToolStripSeparator();
 			var tsbFill     = new ToolStripButton();
+			var tssDivider4 = new ToolStripSeparator();
 			//
 			// toolStrip
 			//
@@ -53,7 +54,8 @@ namespace MapView.Forms.MainWindow
 				tsbCopy,
 				tsbPaste,
 				tssDivider3,
-				tsbFill
+				tsbFill,
+				tssDivider4
 			};
 			toolStrip.Items.AddRange(tsItems);
 			//

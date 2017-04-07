@@ -6,7 +6,7 @@ namespace MapView.Forms.MapObservers.TopViews
 	internal sealed partial class TopViewForm
 		:
 			Form,
-			IMapObserverFormProvider
+			IMapObserverProvider
 	{
 		public TopViewForm()
 		{

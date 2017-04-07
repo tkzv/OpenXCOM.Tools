@@ -143,7 +143,7 @@
   <ItemGroup>
     <Compile Include="Forms\MainWindow\SettingsManager.cs" />
     <Compile Include="Forms\MainWindow\MainMenusManager.cs" />
-    <Compile Include="Forms\MapObservers\IMapObserverFormProvider.cs" />
+    <Compile Include="Forms\MapObservers\IMapObserverProvider.cs" />
     <Compile Include="Forms\MapObservers\RouteView\ConnectNodeType.cs" />
     <Compile Include="Forms\MapObservers\RouteView\DrawContentService.cs" />
     <Compile Include="Forms\MapObservers\RouteView\LinkComparisonResult_.cs" />

@@ -20,7 +20,8 @@ using XCom.GameFiles.Map.RouteData;
 using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
-using YamlDotNet.RepresentationModel;
+using YamlDotNet.RepresentationModel;	// read values
+using YamlDotNet.Serialization;			// write values
 
 
 namespace MapView
@@ -59,7 +60,7 @@ namespace MapView
 
 			string dir = share.AllocateObject(
 										SharedSpace.SettingsDirectory,
-										Environment.CurrentDirectory + @"\settings")
+										Path.Combine(Environment.CurrentDirectory, "settings"))
 									.ToString();
 
 			// I think this is needed only for PckView. so I'll assume 'PckViewForm' can handle it.
@@ -135,7 +136,7 @@ namespace MapView
 			// jijack: These two events keep getting deleted in my designer:
 			tvMaps.BeforeSelect += OnMapSelect;
 			tvMaps.AfterSelect  += OnMapSelected;
-			// ... welcome to your new home
+			// welcome to your new home
 
 			_instance = this;
 
@@ -185,7 +186,7 @@ namespace MapView
 			LogFile.WriteLine("GameInfo initialized");
 
 
-			_mainViewsManager.ManageViews();
+			_mainViewsManager.ManageViewers();
 
 			MainWindowsManager.TileView.Control.MapChangedEventHandler += OnMapChanged;
 
@@ -199,7 +200,6 @@ namespace MapView
 
 			MainWindowsManager.EditFactory.BuildToolStrip(tsEdit);
 			tsEdit.Enabled = false;
-			tsEdit.Items.Add(new ToolStripSeparator());
 
 
 			try
@@ -325,13 +325,16 @@ namespace MapView
 			switch (key)
 			{
 				case "Animation":
-					miOn.Checked = (bool)val;
-					miOff.Checked = !miOn.Checked;
-
-					if (miOn.Checked)
+					if (miOn.Checked = (bool)val)
+					{
+						miOff.Checked = false;
 						MainViewPanel.Start();
+					}
 					else
+					{
+						miOff.Checked = true;
 						MainViewPanel.Stop();
+					}
 					break;
 
 				case "Doors":
@@ -430,7 +433,7 @@ namespace MapView
 
 		private void LoadDefaults()
 		{
-			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), "MapViewers.yml");
+			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
 			using (var sr = new StreamReader(File.OpenRead(file)))
 			{
 				var str = new YamlStream();
@@ -440,45 +443,43 @@ namespace MapView
 				foreach (var node in nodeRoot.Children)
 				{
 					string viewer = ((YamlScalarNode)node.Key).Value;
-					var pars = (YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)];
-					foreach (var par in pars)
+					var keyvals = (YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)];
+					foreach (var keyval in keyvals)
 					{
 						if (String.Equals(viewer, "MainView", StringComparison.OrdinalIgnoreCase))
 						{
-							switch (par.Key.ToString().ToUpperInvariant())
+							switch (keyval.Key.ToString().ToUpperInvariant())
 							{
 								case "LEFT": // TODO: Error handling. ->
-									Left = Int32.Parse(par.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+									Left = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 								case "TOP":
-									Top = Int32.Parse(par.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+									Top = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 								case "WIDTH":
-									Width = Int32.Parse(par.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+									Width = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 								case "HEIGHT":
-									Height = Int32.Parse(par.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+									Height = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 							}
 						}
 					}
 				}
 			}
+
+			// kL_note: This is for retrieving MainViewer size and position from
+			// the Windows Registry:
 //			using (var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry))
+//			using (var keyMapView = keySoftware.CreateSubKey(DSShared.Windows.RegistryInfo.MapViewRegistry))
+//			using (var keyMainView = keyMapView.CreateSubKey("MainView"))
 //			{
-//				using (var keyMapView = keySoftware.CreateSubKey(DSShared.Windows.RegistryInfo.MapViewRegistry))
-//				{
-//					using (var keyMainView = keyMapView.CreateSubKey("MainView"))
-//					{
-//						Left   = (int)keyMainView.GetValue("Left",   Left);
-//						Top    = (int)keyMainView.GetValue("Top",    Top);
-//						Width  = (int)keyMainView.GetValue("Width",  Width);
-//						Height = (int)keyMainView.GetValue("Height", Height);
-//
-//						keyMainView.Close();
-//					}
-//					keyMapView.Close();
-//				}
+//				Left   = (int)keyMainView.GetValue("Left",   Left);
+//				Top    = (int)keyMainView.GetValue("Top",    Top);
+//				Width  = (int)keyMainView.GetValue("Width",  Width);
+//				Height = (int)keyMainView.GetValue("Height", Height);
+//				keyMainView.Close();
+//				keyMapView.Close();
 //				keySoftware.Close();
 //			}
 
@@ -552,34 +553,79 @@ namespace MapView
 			}
 			else
 			{
-				_mainMenusManager.Dispose();
+				_mainMenusManager.HandleQuit();
 
 				if (PathsEditor.SaveRegistry)
 				{
-					using (var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry))
+					// Create MapViewers.yml, will overwrite the file if it exists.
+//					using (var fs = new FileStream(pfeViewers, FileMode.Create))
+//					{}
+
+					string path = SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory);
+					string src  = Path.Combine(path, PathInfo.YamlViewers);
+					string dst  = Path.Combine(path, PathInfo.YamlViewersOld);
+
+					File.Copy(src, dst, true);
+
+					using (var sr = new StreamReader(File.OpenRead(dst))) // but now use dst as src ->
+
+					using (var fs = new FileStream(src, FileMode.Create)) // overwrite previous config.
+					using (var sw = new StreamWriter(fs))
 					{
-						using (var keyMapView = keySoftware.CreateSubKey(DSShared.Windows.RegistryInfo.MapViewRegistry))
+						while (sr.Peek() != -1)
 						{
-							using (var keyMainView = keyMapView.CreateSubKey("MainView"))
+							string line = sr.ReadLine();
+
+							if (String.Equals(line, "MainView:", StringComparison.InvariantCultureIgnoreCase))
 							{
-								_mainViewsManager.CloseAllViews();
+								line = sr.ReadLine();
+								line = sr.ReadLine();
+								line = sr.ReadLine();
+								line = sr.ReadLine(); // heh
 
-								WindowState = FormWindowState.Normal;
-
-								keyMainView.SetValue("Left",   Left);
-								keyMainView.SetValue("Top",    Top);
-								keyMainView.SetValue("Width",  Width);
-								keyMainView.SetValue("Height", Height - SystemInformation.CaptionButtonSize.Height);
-
-								keyMainView.Close();
+								var output = new
+								{
+									MainView = new
+									{
+										left   = Left,
+										top    = Top,
+										width  = Width,
+										height = Height - SystemInformation.CaptionButtonSize.Height
+									},
+								};
+			
+								var ser = new Serializer();
+								ser.Serialize(sw, output);
 							}
-							keyMapView.Close();
+							else
+								sw.WriteLine(line);
 						}
-						keySoftware.Close();
 					}
+
+					File.Delete(dst);
 				}
 
-				_settingsManager.Save(); // save MV_SettingsFile // TODO: Save settings when closing the Options form(s).
+				_settingsManager.Save(); // save MV_SettingsFile // TODO: Save Settings when closing the Options form(s).
+
+				// kL_note: This is for storing MainViewer size and position in
+				// the Windows Registry:
+/*				if (PathsEditor.SaveRegistry)
+				{
+					using (var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry))
+					using (var keyMapView = keySoftware.CreateSubKey(DSShared.Windows.RegistryInfo.MapViewRegistry))
+					using (var keyMainView = keyMapView.CreateSubKey("MainView"))
+					{
+						_mainViewsManager.CloseAllViewers();
+						WindowState = FormWindowState.Normal;
+						keyMainView.SetValue("Left",   Left);
+						keyMainView.SetValue("Top",    Top);
+						keyMainView.SetValue("Width",  Width);
+						keyMainView.SetValue("Height", Height - SystemInformation.CaptionButtonSize.Height);
+						keyMainView.Close();
+						keyMapView.Close();
+						keySoftware.Close();
+					}
+				} */
 			}
 		}
 
@@ -688,7 +734,7 @@ namespace MapView
 				tsslMap.Text = desc.Label;
 
 				tsslDimensions.Text = (baseMap != null) ? baseMap.MapSize.ToString()
-											   : "size: n/a";
+														: "size: n/a";
 
 				if (miDoors.Checked) // turn off door animations
 				{

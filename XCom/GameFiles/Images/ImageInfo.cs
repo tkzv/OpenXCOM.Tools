@@ -5,18 +5,18 @@ using System.IO;
 
 namespace XCom
 {
-	public class ImageInfo
+	public sealed class ImageInfo
 		:
 			FileDesc
 	{
-		private readonly Dictionary<string, ImageDescriptor> _images;
+		private readonly Dictionary<string, ImageDescriptor> _imagesDictionary;
 
 
 		public ImageInfo(string inFile, Varidia vars)
 			:
 				base(inFile)
 		{
-			_images = new Dictionary<string, ImageDescriptor>();
+			_imagesDictionary = new Dictionary<string, ImageDescriptor>();
 			Load(inFile, vars);
 		}
 
@@ -26,10 +26,10 @@ namespace XCom
 			get
 			{
 				var key = name.ToUpperInvariant();
-				return (_images.ContainsKey(key)) ? _images[key]
-												  : null;
+				return (_imagesDictionary.ContainsKey(key)) ? _imagesDictionary[key]
+															: null;
 			}
-			set { _images[name.ToUpperInvariant()] = value; }
+			set { _imagesDictionary[name.ToUpperInvariant()] = value; }
 		}
 
 		public void Load(string inFile, Varidia vars)
@@ -42,7 +42,7 @@ namespace XCom
 				while ((keyVal = vars.ReadLine()) != null)
 				{
 					var img = new ImageDescriptor(keyVal.Keyword.ToUpperInvariant(), keyVal.Value);
-					_images[keyVal.Keyword.ToUpperInvariant()] = img;
+					_imagesDictionary[keyVal.Keyword.ToUpperInvariant()] = img;
 				}
 			}
 		}
@@ -51,15 +51,15 @@ namespace XCom
 		{
 			using (var sw = new StreamWriter(outFile))
 			{
-				var keys = new List<string>(_images.Keys);
+				var keys = new List<string>(_imagesDictionary.Keys);
 				keys.Sort();
 				var vars = new Dictionary<string, Variable>();
 
-				foreach (string st in keys)
+				foreach (string key in keys)
 				{
-					if (_images[st] != null)
+					if (_imagesDictionary[key] != null)
 					{
-						var image = _images[st];
+						var image = _imagesDictionary[key];
 						if (!vars.ContainsKey(image.BasePath))
 							vars[image.BasePath] = new Variable(image.BaseName + ":", image.BasePath);
 						else
@@ -74,11 +74,11 @@ namespace XCom
 
 		public ImagesAccessor Images
 		{
-			get { return new ImagesAccessor(_images); }
+			get { return new ImagesAccessor(_imagesDictionary); }
 		}
 
 		/// <summary>
-		/// Helps making sure images are accessed with upper case keys.
+		/// Ensures images are accessed with uppercase keys.
 		/// </summary>
 		public class ImagesAccessor
 		{
@@ -101,9 +101,9 @@ namespace XCom
 				get { return _images.Values; }
 			}
 
-			public void Remove(string st)
+			public void Remove(string key)
 			{
-				_images.Remove(st.ToUpperInvariant());
+				_images.Remove(key.ToUpperInvariant());
 			}
 
 			public ImageDescriptor this[string imageSet]

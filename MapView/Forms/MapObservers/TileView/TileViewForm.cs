@@ -6,7 +6,7 @@ namespace MapView.Forms.MapObservers.TileViews
 	internal sealed partial class TileViewForm
 		:
 			Form,
-			IMapObserverFormProvider
+			IMapObserverProvider
 	{
 		public TileViewForm()
 		{

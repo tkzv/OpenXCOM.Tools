@@ -17,6 +17,10 @@ namespace DSShared
 		public const string MapEditFile  = "MV_MapEditFile";
 		public const string ImagesFile   = "MV_ImagesFile";
 
+		public const string YamlViewers    = "MapViewers.yml";
+		public const string YamlViewersOld = "MapViewers_old.yml";
+
+
 		private readonly string _path = String.Empty;
 		private readonly string _file = String.Empty;
 		private readonly string _ext  = String.Empty;

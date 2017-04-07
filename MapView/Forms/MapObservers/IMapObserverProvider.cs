@@ -3,7 +3,7 @@
 
 namespace MapView.Forms.MapObservers
 {
-	internal interface IMapObserverFormProvider
+	internal interface IMapObserverProvider
 	{
 		MapObserverControl0 MapObserver
 		{ get; }
