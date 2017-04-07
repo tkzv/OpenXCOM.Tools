@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
 using Microsoft.Win32;
+
+using YamlDotNet.RepresentationModel;	// read values (deserialization)
+using YamlDotNet.Serialization;			// write values
 
 
 namespace DSShared.Windows
@@ -30,7 +34,7 @@ namespace DSShared.Windows
 		private readonly object _obj;
 		private readonly string _regkey;
 
-		private readonly Dictionary<string, PropertyInfo> _dictInfo;
+		private readonly Dictionary<string, PropertyInfo> _infoDictionary = new Dictionary<string, PropertyInfo>();
 
 //		private bool _saveOnClose = true;
 
@@ -39,7 +43,7 @@ namespace DSShared.Windows
 		/// after the values are read and set in the object.
 		/// </summary>
 //		public event EventHandler LoadingEvent;
-		public event RegistryEventHandler RegistryLoadEvent;
+		public event RegistryEventHandler RegistryLoadEvent; // yes it is used: CustomList.RegistryInfo property.
 
 		/// <summary>
 		/// Event fired when saving values to the registry. This happens after
@@ -58,8 +62,6 @@ namespace DSShared.Windows
 		{
 			_obj = obj;
 			_regkey = regkey;
-
-			_dictInfo = new Dictionary<string, PropertyInfo>();
 
 			var f = obj as Form;
 			if (f != null)
@@ -93,11 +95,11 @@ namespace DSShared.Windows
 			foreach (string key in keys)
 			{
 				if ((info = type.GetProperty(key)) != null)
-					_dictInfo[info.Name] = info;
+					_infoDictionary[info.Name] = info;
 			}
 		}
 
-		/// <summary>
+/*		/// <summary>
 		/// Loads the specified values from the registry. Parameters match those
 		/// needed for a Form.Load event.
 		/// </summary>
@@ -105,25 +107,82 @@ namespace DSShared.Windows
 		/// <param name="e"></param>
 		private void OnLoad(object sender, EventArgs e)
 		{
-			using (RegistryKey regkeySoftware = Registry.CurrentUser.CreateSubKey(SoftwareRegistry))
+//			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
+
+			string path = AppDomain.CurrentDomain.BaseDirectory;
+			const string file = @"settings\MapViewers.yml";
+			string pfe = Path.Combine(path, file);
+
+			using (var sr = new StreamReader(File.OpenRead(pfe)))
 			{
-				using (RegistryKey regkeyMapView = regkeySoftware.CreateSubKey(MapViewRegistry))
+				var str = new YamlStream();
+				str.Load(sr);
+
+				var nodeRoot = (YamlMappingNode)str.Documents[0].RootNode; // TODO: Error handling. ->
+				foreach (var node in nodeRoot.Children)
 				{
-					using (RegistryKey regkeyViewer = regkeyMapView.CreateSubKey(_regkey))
+					string viewer = ((YamlScalarNode)node.Key).Value;
+					if (String.Equals(viewer, _regkey, StringComparison.OrdinalIgnoreCase))
 					{
-						foreach (string key in _dictInfo.Keys)
-							_dictInfo[key].SetValue(
-												_obj,
-												regkeyViewer.GetValue(key, _dictInfo[key].GetValue(_obj, null)),
-												null);
-
-						if (RegistryLoadEvent != null)
-							RegistryLoadEvent(this, new RegistryEventArgs(regkeyViewer));
-
-						regkeyViewer.Close();
+						var keyvals = (YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)];
+						ImportValues(keyvals);
 					}
-					regkeyMapView.Close();
 				}
+			}
+		}
+
+		private void ImportValues(YamlMappingNode keyvals)
+		{
+			string key = String.Empty;
+			int val = 0;
+
+			foreach (var keyval in keyvals)
+			{
+				switch (keyval.Key.ToString().ToUpperInvariant())
+				{
+					case "LEFT":
+						key = "Left";
+						val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+						break;
+					case "TOP":
+						key = "Top";
+						val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+						break;
+					case "WIDTH":
+						key = "Width";
+						val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+						break;
+					case "HEIGHT":
+						key = "Height";
+						val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+						break;
+				}
+
+				if (!String.IsNullOrEmpty(key))
+					_infoDictionary[key].SetValue(
+												_obj,
+												val,
+												null);
+			}
+		} */
+
+		private void OnLoad(object sender, EventArgs e)
+		{
+			using (RegistryKey regkeySoftware = Registry.CurrentUser.CreateSubKey(SoftwareRegistry))
+			using (RegistryKey regkeyMapView  = regkeySoftware.CreateSubKey(MapViewRegistry))
+			using (RegistryKey regkeyViewer   = regkeyMapView.CreateSubKey(_regkey))
+			{
+				foreach (string key in _infoDictionary.Keys)
+					_infoDictionary[key].SetValue(
+										_obj,
+										regkeyViewer.GetValue(key, _infoDictionary[key].GetValue(_obj, null)),
+										null);
+
+				if (RegistryLoadEvent != null)
+					RegistryLoadEvent(this, new RegistryEventArgs(regkeyViewer));
+
+				regkeyViewer.Close();
+				regkeyMapView.Close();
 				regkeySoftware.Close();
 			}
 		}
@@ -143,23 +202,19 @@ namespace DSShared.Windows
 //				if (_saveOnClose)
 //				{
 				using (RegistryKey regkeySoftware = Registry.CurrentUser.CreateSubKey(SoftwareRegistry))
+				using (RegistryKey regkeyMapView = regkeySoftware.CreateSubKey(MapViewRegistry))
+				using (RegistryKey regkeyViewer = regkeyMapView.CreateSubKey(_regkey))
 				{
-					using (RegistryKey regkeyMapView = regkeySoftware.CreateSubKey(MapViewRegistry))
-					{
-						using (RegistryKey regkeyViewer = regkeyMapView.CreateSubKey(_regkey))
-						{
-							foreach (string key in _dictInfo.Keys)
-								regkeyViewer.SetValue(
-													key,
-													_dictInfo[key].GetValue(_obj, null));
+					foreach (string key in _infoDictionary.Keys)
+						regkeyViewer.SetValue(
+											key,
+											_infoDictionary[key].GetValue(_obj, null));
 
-							if (RegistrySaveEvent != null)
-								RegistrySaveEvent(this, new RegistryEventArgs(regkeyViewer));
+					if (RegistrySaveEvent != null)
+						RegistrySaveEvent(this, new RegistryEventArgs(regkeyViewer));
 
-							regkeyViewer.Close();
-						}
-						regkeyMapView.Close();
-					}
+					regkeyViewer.Close();
+					regkeyMapView.Close();
 					regkeySoftware.Close();
 				}
 //				}

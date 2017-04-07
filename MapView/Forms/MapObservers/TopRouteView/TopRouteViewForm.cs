@@ -12,7 +12,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		:
 			Form
 	{
-		public TopRouteViewForm()
+		internal TopRouteViewForm()
 		{
 			InitializeComponent();
 
@@ -20,12 +20,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 
-		public TopView TopViewControl
+		internal TopView ControlTop
 		{
 			get { return controlTopView; }
 		}
 
-		public RouteView RouteViewControl
+		internal RouteView ControlRoute
 		{
 			get { return controlRouteView; }
 		}

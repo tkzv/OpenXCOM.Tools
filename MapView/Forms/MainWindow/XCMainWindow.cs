@@ -10,14 +10,14 @@ using DSShared;
 
 using MapView.Forms.MainWindow;
 using MapView.Forms.XCError.WarningConsole;
-using MapView.SettingServices;
+//using MapView.SettingServices;
 
-using Microsoft.Win32;
+//using Microsoft.Win32;
 
 using XCom;
 using XCom.GameFiles.Map;
 using XCom.GameFiles.Map.RouteData;
-using XCom.Interfaces;
+//using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
 using YamlDotNet.RepresentationModel;	// read values (deserialization)
@@ -164,15 +164,14 @@ namespace MapView
 
 			_mainWindowsManager = new MainWindowsManager();
 			_mainViewsManager   = new MainViewsManager(_settingsManager, consoleShare);
+
 			_mainMenusManager   = new MainMenusManager(menuShow, menuHelp);
-
-
-
 			MainWindowsManager.ShowAllManager = _mainMenusManager.CreateShowAllManager();
+
+
 			MainWindowsManager.EditFactory = new EditButtonsFactory(_mainViewPanel);
 			MainWindowsManager.Initialize();
 			LogFile.WriteLine("MainWindowsManager initialized.");
-
 
 
 			_mainMenusManager.PopulateMenus(consoleShare.GetNewConsole(), Settings);
@@ -443,10 +442,10 @@ namespace MapView
 				foreach (var node in nodeRoot.Children)
 				{
 					string viewer = ((YamlScalarNode)node.Key).Value;
-					var keyvals = (YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)];
-					foreach (var keyval in keyvals)
+					if (String.Equals(viewer, "MainView", StringComparison.OrdinalIgnoreCase))
 					{
-						if (String.Equals(viewer, "MainView", StringComparison.OrdinalIgnoreCase))
+						var keyvals = (YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)];
+						foreach (var keyval in keyvals)
 						{
 							switch (keyval.Key.ToString().ToUpperInvariant())
 							{
@@ -560,12 +559,8 @@ namespace MapView
 
 				if (PathsEditor.SaveRegistry)
 				{
+					WindowState = FormWindowState.Normal;
 					_mainViewsManager.CloseSubsidiaryViewers();
-//					WindowState = FormWindowState.Normal;
-
-					// Create MapViewers.yml, will overwrite the file if it exists.
-//					using (var fs = new FileStream(pfeViewers, FileMode.Create))
-//					{}
 
 					string path = SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory);
 					string src  = Path.Combine(path, PathInfo.YamlViewers);
@@ -607,7 +602,6 @@ namespace MapView
 								sw.WriteLine(line);
 						}
 					}
-
 					File.Delete(dst);
 				}
 

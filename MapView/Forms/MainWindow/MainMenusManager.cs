@@ -109,7 +109,8 @@ namespace MapView.Forms.MainWindow
 				{
 					_settings.AddSetting(
 									key,
-									true, // !(it.Tag is TopViewForm) && !(it.Tag is RouteViewForm)
+//									true, // !(it.Tag is TopViewForm) && !(it.Tag is RouteViewForm)
+									!(it.Tag is Console),
 									"Default display window - " + it.Text,
 									"Windows",
 									null,

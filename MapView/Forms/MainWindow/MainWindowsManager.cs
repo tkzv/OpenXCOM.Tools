@@ -54,7 +54,7 @@ namespace MapView.Forms.MainWindow
 
 		public static void Initialize()
 		{
-			TopRouteView.TopViewControl.Initialize(EditFactory);
+			TopRouteView.ControlTop.Initialize(EditFactory);
 
 			TopView.Control.Initialize(EditFactory);
 
@@ -66,22 +66,18 @@ namespace MapView.Forms.MainWindow
 		{
 			var observers = new IMapObserver[]
 			{
-				TopRouteView.TopViewControl,
-				TopRouteView.RouteViewControl,
+				TopRouteView.ControlTop,
+				TopRouteView.ControlRoute,
 				TileView.Control,
 				RouteView.Control,
 				TopView.Control
 			};
 
-			foreach (var f in observers) // iterate all Forms/Views/Controls (take your pick.).
+			foreach (var f in observers)
 				if (f != null)
 					SetMap(baseMap, f);
 
 			MainViewPanel.Instance.MainView.Refresh();
-
-//			TopView.Refresh(); // TODO: fix TopView selector when loading or changing Maps.
-//			TopRmpView.Refresh();
-//			RmpView.Refresh();
 		}
 
 		private void SetMap(IMapBase baseMap, IMapObserver observer)

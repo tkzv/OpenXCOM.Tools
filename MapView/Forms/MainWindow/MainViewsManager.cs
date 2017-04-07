@@ -28,14 +28,14 @@ namespace MapView.Forms.MainWindow
 
 		internal void ManageViewers()
 		{
-			MainWindowsManager.TopRouteView.TopViewControl.Settings =
+			MainWindowsManager.TopRouteView.ControlTop.Settings =
 				MainWindowsManager.TopView.Control.Settings;
 
-			MainWindowsManager.TopRouteView.RouteViewControl.Settings =
+			MainWindowsManager.TopRouteView.ControlRoute.Settings =
 				MainWindowsManager.RouteView.Control.Settings;
 
-			MainWindowsManager.TopRouteView.TopViewControl.LoadDefaultSettings();
-			MainWindowsManager.TopRouteView.RouteViewControl.LoadDefaultSettings();
+			MainWindowsManager.TopRouteView.ControlTop.LoadDefaultSettings();
+			MainWindowsManager.TopRouteView.ControlRoute.LoadDefaultSettings();
 
 			SetAsObserver(MainWindowsManager.TopView,      "Top View",      "TopView");
 			SetAsObserver(MainWindowsManager.RouteView,    "Route View",    "RouteView");
@@ -47,10 +47,10 @@ namespace MapView.Forms.MainWindow
 			SetAsObserver(MainWindowsManager.HelpScreen,  "Quick Help");
 			SetAsObserver(MainWindowsManager.AboutWindow, "About");
 
-			MainWindowsManager.TopRouteView.TopViewControl.RegistryInfo =
+			MainWindowsManager.TopRouteView.ControlTop.RegistryInfo =
 				MainWindowsManager.TopView.Control.RegistryInfo;
 
-			MainWindowsManager.TopRouteView.RouteViewControl.RegistryInfo =
+			MainWindowsManager.TopRouteView.ControlRoute.RegistryInfo =
 				MainWindowsManager.RouteView.Control.RegistryInfo;
 		}
 
@@ -84,7 +84,7 @@ namespace MapView.Forms.MainWindow
 			foreach (string key in _viewersDictionary.Keys)
 			{
 				var f = _viewersDictionary[key];
-//				f.WindowState = FormWindowState.Normal;
+				f.WindowState = FormWindowState.Normal;
 
 				f.Close();
 			}

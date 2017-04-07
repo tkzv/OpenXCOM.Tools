@@ -10,19 +10,14 @@ namespace XCom
 		:
 			List<XCImage>
 	{
-		private string _name;
 		public string Name
-		{
-			get { return _name; }
-			set { _name = value; }
-		}
+		{ get; set; }
 
-		private string _path;
 		public string Path
-		{
-			get { return _path; }
-			set { _path = value; }
-		}
+		{ get; set; }
+
+		public IXCImageFile IXCFile
+		{ get; set; }
 
 		private Palette _pal;
 		public virtual Palette Pal
@@ -31,19 +26,13 @@ namespace XCom
 			set
 			{
 				_pal = value;
+
 				foreach (XCImage image in this)
-					image.Image.Palette = _pal.Colors;
+					image.Image.Palette = value.Colors;
 			}
 		}
 
 		private int _scale = 1;
-
-		private IXCImageFile _file;
-		public IXCImageFile IXCFile
-		{
-			get { return _file; }
-			set { _file = value; }
-		}
 
 		public void HQ2X()
 		{

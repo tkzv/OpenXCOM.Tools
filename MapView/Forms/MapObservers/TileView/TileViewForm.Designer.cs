@@ -36,14 +36,14 @@
 			this.TileViewControl.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TileViewControl.Location = new System.Drawing.Point(0, 0);
 			this.TileViewControl.Name = "TileViewControl";
-			this.TileViewControl.Size = new System.Drawing.Size(472, 334);
+			this.TileViewControl.Size = new System.Drawing.Size(632, 454);
 			this.TileViewControl.TabIndex = 0;
 			// 
 			// TileViewForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(472, 334);
+			this.ClientSize = new System.Drawing.Size(632, 454);
 			this.Controls.Add(this.TileViewControl);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MinimumSize = new System.Drawing.Size(480, 360);

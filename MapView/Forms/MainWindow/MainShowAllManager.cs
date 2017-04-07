@@ -13,7 +13,7 @@ namespace MapView.Forms.MainWindow
 		private List<MenuItem> _items;
 
 
-		public MainShowAllManager(
+		internal MainShowAllManager(
 				IEnumerable<Form> allForms,
 				IEnumerable<MenuItem> allItems)
 		{
@@ -22,7 +22,10 @@ namespace MapView.Forms.MainWindow
 		}
 
 
-		public void HideAll()
+		/// <summary>
+		/// Hides the viewers when opening the PckView in TileView.
+		/// </summary>
+		internal void HideAll()
 		{
 			_items = new List<MenuItem>();
 			foreach (var it in _allItems)
@@ -38,7 +41,10 @@ namespace MapView.Forms.MainWindow
 				}
 		}
 
-		public void RestoreAll()
+		/// <summary>
+		/// Shows the viewers when closing the PckView in TileView.
+		/// </summary>
+		internal void RestoreAll()
 		{
 			foreach (var f in _forms)
 			{

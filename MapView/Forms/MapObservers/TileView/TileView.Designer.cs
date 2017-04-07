@@ -41,14 +41,14 @@
 			this.tcTileTypes.Location = new System.Drawing.Point(0, 25);
 			this.tcTileTypes.Name = "tcTileTypes";
 			this.tcTileTypes.SelectedIndex = 0;
-			this.tcTileTypes.Size = new System.Drawing.Size(480, 335);
+			this.tcTileTypes.Size = new System.Drawing.Size(640, 455);
 			this.tcTileTypes.TabIndex = 0;
 			// 
 			// tpAll
 			// 
 			this.tpAll.Location = new System.Drawing.Point(4, 21);
 			this.tpAll.Name = "tpAll";
-			this.tpAll.Size = new System.Drawing.Size(472, 310);
+			this.tpAll.Size = new System.Drawing.Size(632, 430);
 			this.tpAll.TabIndex = 0;
 			this.tpAll.Text = "All";
 			// 
@@ -93,7 +93,7 @@
 			this.tsddbEdit});
 			this.tsMain.Location = new System.Drawing.Point(0, 0);
 			this.tsMain.Name = "tsMain";
-			this.tsMain.Size = new System.Drawing.Size(480, 25);
+			this.tsMain.Size = new System.Drawing.Size(640, 25);
 			this.tsMain.TabIndex = 1;
 			this.tsMain.Text = "toolStrip1";
 			// 
@@ -169,7 +169,7 @@
 			this.Controls.Add(this.tsMain);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "TileView";
-			this.Size = new System.Drawing.Size(480, 360);
+			this.Size = new System.Drawing.Size(640, 480);
 			this.tcTileTypes.ResumeLayout(false);
 			this.tsMain.ResumeLayout(false);
 			this.tsMain.PerformLayout();
