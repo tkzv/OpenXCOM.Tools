@@ -22,7 +22,7 @@ namespace MapView
 
 //		private string _runPath  = String.Empty;
 
-		private Varidia _vars;
+		private Varidia _vars = new Varidia();
 
 
 		public InstallWindow()
@@ -38,8 +38,6 @@ namespace MapView
 			MaximumSize = size; // fu.net
 			DialogResult = DialogResult.Cancel;
 
-
-			_vars = new Varidia();
 
 			// NOTE: Add your own personal XCOM resources-dir here if desired:
 			var dirsUfo = new List<string>();
@@ -134,13 +132,14 @@ namespace MapView
 				|| (File.Exists(tbTftd.Text + Pck) && File.Exists(tbTftd.Text + Tab)))
 			{
 				var info = (PathInfo)SharedSpace.Instance[PathInfo.PathsFile];
-				info.CreateDirectory();
+				info.CreateDirectory();			// create a dir for Paths.Cfg
 
 				var infoTerrains = (PathInfo)SharedSpace.Instance[PathInfo.MapEditFile];
 				var infoImages   = (PathInfo)SharedSpace.Instance[PathInfo.ImagesFile];
 
-				infoTerrains.CreateDirectory();
-				infoImages.CreateDirectory();
+				infoTerrains.CreateDirectory();	// create a dir for MapEdit.Cfg
+				infoImages.CreateDirectory();	// create a dir for Images.Cfg
+												// psst. All three dirs are going to be the same: appdir\"settings"
 
 				// 'pfe' = path+file+extension
 				string pfeTerrains = infoTerrains.FullPath;
@@ -195,10 +194,10 @@ namespace MapView
 
 				_vars["##RunPath##"] = SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory);
 
-				using (var fs = new FileStream(pfeTerrains, FileMode.Create))	// create MapEdit.Cfg
+				using (var fs = new FileStream(pfeTerrains, FileMode.Create))	// wipe/create MapEdit.Cfg
 				{}
 
-				using (var fs = new FileStream(pfeImages, FileMode.Create))		// create Images.Cfg
+				using (var fs = new FileStream(pfeImages, FileMode.Create))		// wipe/create Images.Cfg
 				{}
 
 				if (!String.IsNullOrEmpty(tbUfo.Text))

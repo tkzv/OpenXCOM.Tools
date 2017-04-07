@@ -23,7 +23,7 @@ namespace MapView.Forms.MainWindow
 		private const string Divider = "-";
 
 
-		public MainMenusManager(MenuItem show, MenuItem help)
+		internal MainMenusManager(MenuItem show, MenuItem help)
 		{
 			_viewsMenu = show; // why are these MenuItems
 			_helpMenu  = help;
@@ -35,7 +35,7 @@ namespace MapView.Forms.MainWindow
 		/// </summary>
 		/// <param name="console">pointer to the console-form</param>
 		/// <param name="settings">pointer to MV_SettingsFile options</param>
-		public void PopulateMenus(Form console, Settings settings)
+		internal void PopulateMenus(Form console, Settings settings)
 		{
 			_settings = settings;
 
@@ -141,7 +141,7 @@ namespace MapView.Forms.MainWindow
 		/// Opens the subsidiary viewers. All viewers will open and those that
 		/// the user has flagged closed (in Options) will be re-closed.
 		/// </summary>
-		public void StartViewers()
+		internal void StartViewers()
 		{
 			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
@@ -176,12 +176,16 @@ namespace MapView.Forms.MainWindow
 									   : null;
 		}
 
-		public MainShowAllManager CreateShowAllManager()
+		internal MainShowAllManager CreateShowAllManager()
 		{
 			return new MainShowAllManager(_allForms, _allItems);
 		}
 
-		public void HandleQuit()
+		/// <summary>
+		/// Effectively disables the VisibleChanged event for all subsidiary
+		/// viewers.
+		/// </summary>
+		internal void HandleQuit()
 		{
 			_quitting = true;
 		}

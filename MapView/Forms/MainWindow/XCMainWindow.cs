@@ -20,7 +20,7 @@ using XCom.GameFiles.Map.RouteData;
 using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
-using YamlDotNet.RepresentationModel;	// read values
+using YamlDotNet.RepresentationModel;	// read values (deserialization)
 using YamlDotNet.Serialization;			// write values
 
 
@@ -555,8 +555,14 @@ namespace MapView
 			{
 				_mainMenusManager.HandleQuit();
 
+				_settingsManager.Save(); // save MV_SettingsFile // TODO: Save Settings when closing the Options form(s).
+
+
 				if (PathsEditor.SaveRegistry)
 				{
+					_mainViewsManager.CloseSubsidiaryViewers();
+//					WindowState = FormWindowState.Normal;
+
 					// Create MapViewers.yml, will overwrite the file if it exists.
 //					using (var fs = new FileStream(pfeViewers, FileMode.Create))
 //					{}
@@ -576,14 +582,14 @@ namespace MapView
 						{
 							string line = sr.ReadLine();
 
-							if (String.Equals(line, "MainView:", StringComparison.InvariantCultureIgnoreCase))
+							if (String.Equals(line, "MainView:", StringComparison.OrdinalIgnoreCase))
 							{
 								line = sr.ReadLine();
 								line = sr.ReadLine();
 								line = sr.ReadLine();
 								line = sr.ReadLine(); // heh
 
-								var output = new
+								var node = new
 								{
 									MainView = new
 									{
@@ -593,9 +599,9 @@ namespace MapView
 										height = Height - SystemInformation.CaptionButtonSize.Height
 									},
 								};
-			
+
 								var ser = new Serializer();
-								ser.Serialize(sw, output);
+								ser.Serialize(sw, node);
 							}
 							else
 								sw.WriteLine(line);
@@ -604,8 +610,6 @@ namespace MapView
 
 					File.Delete(dst);
 				}
-
-				_settingsManager.Save(); // save MV_SettingsFile // TODO: Save Settings when closing the Options form(s).
 
 				// kL_note: This is for storing MainViewer size and position in
 				// the Windows Registry:
@@ -989,13 +993,9 @@ namespace MapView
 
 			string pfeViewers = info.FullPath;
 
-			// Create MapViewers.yml, will overwrite the file if it exists.
-			using (var fs = new FileStream(pfeViewers, FileMode.Create))
-			{}
-
 			using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
 													 .GetManifestResourceStream("MapView._Embedded.MapViewers.yml")))
-			using (var fs = new FileStream(pfeViewers, FileMode.Append))
+			using (var fs = new FileStream(pfeViewers, FileMode.Create))
 			using (var sw = new StreamWriter(fs))
 			{
 				while (sr.Peek() != -1)

@@ -9,26 +9,22 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
+	/// <summary>
+	/// Parent for TopViewPanelBase, TopViewPanel, QuadrantPanel.
+	/// </summary>
 	internal class MapObserverControl1
 		:
 			DoubleBufferControl,
 			IMapObserver
 	{
-		private IMapBase _baseMap;
-
-		private RegistryInfo _regInfo;
-
-		private readonly Dictionary<string, IMapObserver> _moreObservers;
-
-
-		public MapObserverControl1()
+		private readonly Dictionary<string, IMapObserver> _observersDictionary = new Dictionary<string, IMapObserver>();
+		[Browsable(false)]
+		public Dictionary<string, IMapObserver> MoreObservers
 		{
-			_moreObservers = new Dictionary<string, IMapObserver>();
+			get { return _observersDictionary; }
 		}
 
-
-		#region IMapObserver Members
-
+		private IMapBase _baseMap;
 		[Browsable(false), DefaultValue(null)]
 		public virtual IMapBase Map
 		{
@@ -40,6 +36,33 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// This is here only to satisfy IMapObserver requirements.
+		/// </summary>
+		public RegistryInfo RegistryInfo
+		{ get; set; }
+
+//		/// <summary>
+//		/// This is here only to satisfy IMapObserver requirements.
+//		/// </summary>
+//		private RegistryInfo _regInfo;
+//		/// <summary>
+//		/// This stuff is here only to satisfy IMapObserver requirements.
+//		/// </summary>
+//		[Browsable(false), DefaultValue(null)]
+//		public RegistryInfo RegistryInfo
+//		{
+//			get { return _regInfo; }
+//			set
+//			{
+//				_regInfo = value;
+//				value.RegistryLoadEvent += (sender, e) => OnRegistrySettingsLoad(e);
+//				value.RegistrySaveEvent += (sender, e) => OnRegistrySettingsSave(e);
+//			}
+//		}
+//		protected virtual void OnRegistrySettingsLoad(RegistryEventArgs e) {}
+//		protected virtual void OnRegistrySettingsSave(RegistryEventArgs e) {}
+
 		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			Refresh();
@@ -49,31 +72,5 @@ namespace MapView
 		{
 			Refresh();
 		}
-
-		[Browsable(false), DefaultValue(null)]
-		public RegistryInfo RegistryInfo
-		{
-			get { return _regInfo; }
-			set
-			{
-				_regInfo = value;
-				value.RegistryLoadEvent += (sender, e) => OnRegistrySettingsLoad(e);
-				value.RegistrySaveEvent += (sender, e) => OnRegistrySettingsSave(e);
-			}
-		}
-
-		protected virtual void OnRegistrySettingsLoad(RegistryEventArgs e)
-		{}
-
-		protected virtual void OnRegistrySettingsSave(RegistryEventArgs e)
-		{}
-
-		[Browsable(false)]
-		public Dictionary<string, IMapObserver> MoreObservers
-		{
-			get { return _moreObservers; }
-		}
-
-		#endregion
 	}
 }

@@ -16,7 +16,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		:
 			MapObserverControl0
 	{
-		private readonly Dictionary<ToolStripMenuItem, int> _dictVisibleQuads;
+		private readonly Dictionary<ToolStripMenuItem, int> _visQuadsDictionary = new Dictionary<ToolStripMenuItem, int>();
 
 		private Dictionary<string, Pen> _topPens;
 		private Dictionary<string, SolidBrush> _topBrushes;
@@ -42,36 +42,34 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			pMain.Resize += (sender, e) => _topViewPanel.HandleParentResize(pMain.Width, pMain.Height);
 
-			_dictVisibleQuads = new Dictionary<ToolStripMenuItem, int>();
-
 			var visQuads = tsddbVisibleQuads.DropDown.Items;
 
 			var itGround = new ToolStripMenuItem("Floor");
 			visQuads.Add(itGround);
 			_topViewPanel.Ground = itGround;
-			_dictVisibleQuads[_topViewPanel.Ground] = 0;
+			_visQuadsDictionary[_topViewPanel.Ground] = 0;
 			_topViewPanel.Ground.ShortcutKeys = Keys.F1;
 
 			var itWest = new ToolStripMenuItem("West");
 			visQuads.Add(itWest);
 			_topViewPanel.West = itWest;
-			_dictVisibleQuads[_topViewPanel.West] = 1;
+			_visQuadsDictionary[_topViewPanel.West] = 1;
 			_topViewPanel.West.ShortcutKeys = Keys.F2;
 
 			var itNorth = new ToolStripMenuItem("North");
 			visQuads.Add(itNorth);
 			_topViewPanel.North = itNorth;
-			_dictVisibleQuads[_topViewPanel.North] = 2;
+			_visQuadsDictionary[_topViewPanel.North] = 2;
 			_topViewPanel.West.ShortcutKeys = Keys.F3;
 
 			var itContent = new ToolStripMenuItem("Content");
 			visQuads.Add(itContent);
 			_topViewPanel.Content = itContent;
-			_dictVisibleQuads[_topViewPanel.Content] = 3;
+			_visQuadsDictionary[_topViewPanel.Content] = 3;
 			_topViewPanel.Content.ShortcutKeys = Keys.F4;
 
 			foreach (ToolStripMenuItem it in visQuads)
-				it.Click += OnShowQuadTypeClick;
+				it.Click += OnToggleQuadrantVisibilityClick;
 
 			_topViewPanel.QuadrantsPanel = QuadrantsPanel;
 
@@ -92,7 +90,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			get { return quadrants; }
 		}
 
-		private void OnShowQuadTypeClick(object sender, EventArgs e)
+		private void OnToggleQuadrantVisibilityClick(object sender, EventArgs e)
 		{
 			var it = sender as ToolStripMenuItem;
 			it.Checked = !it.Checked;
@@ -109,21 +107,29 @@ namespace MapView.Forms.MapObservers.TopViews
 			_topViewPanel.MinHeight = (int)val;
 		}
 
-		protected override void OnRegistrySettingsLoad(DSShared.Windows.RegistryEventArgs e)
+		/// <summary>
+		/// Loads the VisibleQuadrants flags for the menu.
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnExtraRegistrySettingsLoad(DSShared.Windows.RegistryEventArgs e)
 		{
 			QuadrantsPanel.Height = 74;
 			var regkey = e.OpenRegistryKey;
 
-			foreach (var it in _dictVisibleQuads.Keys)
-				it.Checked = bool.Parse((string)regkey.GetValue("vis" + _dictVisibleQuads[it], "true"));
+			foreach (var it in _visQuadsDictionary.Keys)
+				it.Checked = bool.Parse((string)regkey.GetValue("vis" + _visQuadsDictionary[it], "true"));
 		}
 
-		protected override void OnRegistrySettingsSave(DSShared.Windows.RegistryEventArgs e)
+		/// <summary>
+		/// Saves the VisibleQuadrants flags for the menu.
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnExtraRegistrySettingsSave(DSShared.Windows.RegistryEventArgs e)
 		{
 			var regkey = e.OpenRegistryKey;
 
-			foreach (var it in _dictVisibleQuads.Keys)
-				regkey.SetValue("vis" + _dictVisibleQuads[it], it.Checked);
+			foreach (var it in _visQuadsDictionary.Keys)
+				regkey.SetValue("vis" + _visQuadsDictionary[it], it.Checked);
 		}
 
 		private void OnOptionsClick(object sender, EventArgs e)

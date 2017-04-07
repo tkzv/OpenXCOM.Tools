@@ -543,7 +543,7 @@ namespace MapView
 										f.MapCols,
 										f.MapHeight);
 
-						using (var fs = File.OpenWrite(tbMapsRoutes.Text + f.MapName + RouteNodeCollection.RouteExt))
+						using (var fs = File.OpenWrite(tbMapsRoutes.Text + f.MapName + RouteNodeCollection.RouteExt)) // TODO: wtf.
 						{}
 
 						IXCTileset tileset;

@@ -17,7 +17,7 @@ namespace MapView
 		/// </summary>
 		/// <param name="notice">text that will be shown</param>
 		/// <param name="caption">caption for the titlebar</param>
-		public OutputBox(string notice, string caption)
+		internal OutputBox(string notice, string caption)
 		{
 			InitializeComponent();
 			
@@ -28,7 +28,7 @@ namespace MapView
 		/// Auxiliary constructor.
 		/// </summary>
 		/// <param name="notice"></param>
-		public OutputBox(string notice)
+		internal OutputBox(string notice)
 			:
 				this(notice, "Output")
 		{}

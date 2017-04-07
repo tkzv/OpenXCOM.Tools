@@ -75,7 +75,11 @@ namespace MapView.Forms.MainWindow
 			_viewersDictionary.Add(caption, f);
 		}
 
-		internal void CloseAllViewers()
+		/// <summary>
+		/// Closes the following viewers: Top View, Route View, TopRoute View,
+		/// Tile View, Console, Quick Help, About.
+		/// </summary>
+		internal void CloseSubsidiaryViewers()
 		{
 			foreach (string key in _viewersDictionary.Keys)
 			{

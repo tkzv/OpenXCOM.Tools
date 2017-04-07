@@ -10,7 +10,7 @@ namespace XCom
 		:
 			Form
 	{
-		public ConsoleForm()
+		internal ConsoleForm()
 		{
 			InitializeComponent();
 

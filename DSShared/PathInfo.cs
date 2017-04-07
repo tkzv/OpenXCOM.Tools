@@ -9,13 +9,13 @@ namespace DSShared
 	/// </summary>
 	public class PathInfo
 	{
-		public const string MapViewers   = "MV_ViewersFile";
+		public const string SettingsFile   = "MV_SettingsFile";
 
-		public const string SettingsFile = "MV_SettingsFile";
+		public const string PathsFile      = "MV_PathsFile";
+		public const string MapEditFile    = "MV_MapEditFile";
+		public const string ImagesFile     = "MV_ImagesFile";
 
-		public const string PathsFile    = "MV_PathsFile";
-		public const string MapEditFile  = "MV_MapEditFile";
-		public const string ImagesFile   = "MV_ImagesFile";
+		public const string MapViewers     = "MV_ViewersFile";
 
 		public const string YamlViewers    = "MapViewers.yml";
 		public const string YamlViewersOld = "MapViewers_old.yml";

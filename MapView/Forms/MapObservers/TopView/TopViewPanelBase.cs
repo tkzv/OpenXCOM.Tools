@@ -20,8 +20,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		:
 			MapObserverControl1
 	{
-		private int _offX = 0;
-		private int _offY = 0;
+		private int _offX;
+		private int _offY;
 
 		private readonly GraphicsPath _lozSelector;
 		private readonly GraphicsPath _lozSelected;

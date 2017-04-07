@@ -14,6 +14,12 @@ namespace MapView
 			UserControl,
 			IMapObserver
 	{
+		private readonly Dictionary<string, IMapObserver> _observersDictionary = new Dictionary<string, IMapObserver>();
+		public Dictionary<string, IMapObserver> MoreObservers
+		{
+			get { return _observersDictionary; }
+		}
+
 		private IMapBase _baseMap;
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public virtual IMapBase Map
@@ -34,24 +40,20 @@ namespace MapView
 			set
 			{
 				_regInfo = value;
-				value.RegistryLoadEvent += (sender, e) => OnRegistrySettingsLoad(e);
-				value.RegistrySaveEvent += (sender, e) => OnRegistrySettingsSave(e);
+				value.RegistryLoadEvent += (sender, e) => OnExtraRegistrySettingsLoad(e);
+				value.RegistrySaveEvent += (sender, e) => OnExtraRegistrySettingsSave(e);
 			}
 		}
 
-		private readonly Dictionary<string, IMapObserver> _moreObservers;
-		public Dictionary<string, IMapObserver> MoreObservers
-		{
-			get { return _moreObservers; }
-		}
-
-		public Settings Settings
+		internal Settings Settings
 		{ get; set; }
 
 
+		/// <summary>
+		/// Invoked by TopView, TileView, RouteView.
+		/// </summary>
 		public MapObserverControl0()
 		{
-			_moreObservers = new Dictionary<string, IMapObserver>();
 			Settings = new Settings();
 		}
 
@@ -59,22 +61,19 @@ namespace MapView
 		public virtual void LoadDefaultSettings()
 		{}
 
-		protected virtual void OnRegistrySettingsLoad(RegistryEventArgs e)
-		{}
-
-		protected virtual void OnRegistrySettingsSave(RegistryEventArgs e)
+		/// <summary>
+		/// Currently implemented only to load TopView's visible quadrants menu.
+		/// </summary>
+		/// <param name="e"></param>
+		protected virtual void OnExtraRegistrySettingsLoad(RegistryEventArgs e)
 		{}
 
 		/// <summary>
-		/// Scrolls the z-axis for TopView and RouteView.
+		/// Currently implemented only to save TopView's visible quadrants menu.
 		/// </summary>
 		/// <param name="e"></param>
-		protected override void OnMouseWheel(MouseEventArgs e)
-		{
-			base.OnMouseWheel(e);
-			if		(e.Delta < 0) _baseMap.Up();
-			else if (e.Delta > 0) _baseMap.Down();
-		}
+		protected virtual void OnExtraRegistrySettingsSave(RegistryEventArgs e)
+		{}
 
 		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
@@ -84,6 +83,17 @@ namespace MapView
 		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
 			Refresh();
+		}
+
+		/// <summary>
+		/// Scrolls the z-axis for TopView and RouteView.
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnMouseWheel(MouseEventArgs e)
+		{
+			base.OnMouseWheel(e);
+			if      (e.Delta < 0) _baseMap.Up();
+			else if (e.Delta > 0) _baseMap.Down();
 		}
 	}
 }

@@ -97,6 +97,7 @@ namespace DSShared.Windows
 		Collapsing
 	}
 
+
 	/// <summary>
 	/// A custom collapsible splitter that can resize, hide and show associated form controls.
 	/// </summary>
@@ -104,7 +105,7 @@ namespace DSShared.Windows
 	[DesignerAttribute(typeof(CollapsibleSplitterDesigner))]
 	public class CollapsibleSplitter
 		:
-		System.Windows.Forms.Splitter
+			Splitter
 	{
 		#region Private Properties
 
@@ -1231,21 +1232,21 @@ namespace DSShared.Windows
 			Color frontColor = Color.FromArgb(255, front);
 			Color backColor = Color.FromArgb(255, back);
 
-			float frontRed		= frontColor.R;
-			float frontGreen	= frontColor.G;
-			float frontBlue		= frontColor.B;
+			float frontRed   = frontColor.R;
+			float frontGreen = frontColor.G;
+			float frontBlue  = frontColor.B;
 
-			float backRed		= backColor.R;
-			float backGreen		= backColor.G;
-			float backBlue		= backColor.B;
+			float backRed   = backColor.R;
+			float backGreen = backColor.G;
+			float backBlue  = backColor.B;
 
-			float fRed		= frontRed   * alpha / 255 + backRed   * ((float)(255 - alpha) / 255);
-			float fGreen	= frontGreen * alpha / 255 + backGreen * ((float)(255 - alpha) / 255);
-			float fBlue		= frontBlue  * alpha / 255 + backBlue  * ((float)(255 - alpha) / 255);
+			float fRed   = frontRed   * alpha / 255 + backRed   * ((float)(255 - alpha) / 255);
+			float fGreen = frontGreen * alpha / 255 + backGreen * ((float)(255 - alpha) / 255);
+			float fBlue  = frontBlue  * alpha / 255 + backBlue  * ((float)(255 - alpha) / 255);
 
-			byte newRed		= (byte)fRed;
-			byte newGreen	= (byte)fGreen;
-			byte newBlue	= (byte)fBlue;
+			byte newRed   = (byte)fRed;
+			byte newGreen = (byte)fGreen;
+			byte newBlue  = (byte)fBlue;
 
 			return Color.FromArgb(newRed, newGreen, newBlue);
 		}
@@ -1253,19 +1254,15 @@ namespace DSShared.Windows
 		#endregion
 	}
 
+
 	/// <summary>
 	/// A simple designer class for the CollapsibleSplitter control to remove
 	/// unwanted properties at design time.
 	/// </summary>
-	public class CollapsibleSplitterDesigner
+	internal sealed class CollapsibleSplitterDesigner
 		:
-		System.Windows.Forms.Design.ControlDesigner
+			System.Windows.Forms.Design.ControlDesigner
 	{
-		/// <summary>
-		/// </summary>
-		public CollapsibleSplitterDesigner()
-		{}
-
 		/// <summary>
 		/// </summary>
 		/// <param name="properties"></param>

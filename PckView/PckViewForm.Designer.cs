@@ -215,7 +215,7 @@ namespace PckView
 			this.DrawPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.DrawPanel.Location = new System.Drawing.Point(0, 107);
 			this.DrawPanel.Name = "DrawPanel";
-			this.DrawPanel.Size = new System.Drawing.Size(494, 116);
+			this.DrawPanel.Size = new System.Drawing.Size(472, 507);
 			this.DrawPanel.TabIndex = 1;
 			// 
 			// MapViewIntegrationHelpPanel
@@ -225,7 +225,7 @@ namespace PckView
 			this.MapViewIntegrationHelpPanel.Dock = System.Windows.Forms.DockStyle.Top;
 			this.MapViewIntegrationHelpPanel.Location = new System.Drawing.Point(0, 0);
 			this.MapViewIntegrationHelpPanel.Name = "MapViewIntegrationHelpPanel";
-			this.MapViewIntegrationHelpPanel.Size = new System.Drawing.Size(494, 107);
+			this.MapViewIntegrationHelpPanel.Size = new System.Drawing.Size(472, 107);
 			this.MapViewIntegrationHelpPanel.TabIndex = 2;
 			this.MapViewIntegrationHelpPanel.Visible = false;
 			// 
@@ -245,14 +245,14 @@ namespace PckView
 			this.label1.Location = new System.Drawing.Point(0, 0);
 			this.label1.Name = "label1";
 			this.label1.Padding = new System.Windows.Forms.Padding(3);
-			this.label1.Size = new System.Drawing.Size(494, 64);
+			this.label1.Size = new System.Drawing.Size(472, 64);
 			this.label1.TabIndex = 1;
 			this.label1.Text = resources.GetString("label1.Text");
 			// 
 			// PckViewForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(494, 223);
+			this.ClientSize = new System.Drawing.Size(472, 614);
 			this.Controls.Add(this.DrawPanel);
 			this.Controls.Add(this.MapViewIntegrationHelpPanel);
 			this.Location = new System.Drawing.Point(50, 50);

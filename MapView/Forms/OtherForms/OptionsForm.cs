@@ -20,7 +20,7 @@ namespace MapView
 		private CustomPropertyGrid propertyGrid;
 
 
-		public OptionsForm(string typeLabel, Settings settings)
+		internal OptionsForm(string typeLabel, Settings settings)
 		{
 			InitializeComponent();
 
@@ -52,7 +52,6 @@ namespace MapView
 			this.propertyGrid.Name = "propertyGrid";
 			this.propertyGrid.Size = new System.Drawing.Size(592, 374);
 			this.propertyGrid.TabIndex = 0;
-			this.propertyGrid.TypeLabel = "DefaultType";
 			// 
 			// OptionsForm
 			// 
@@ -76,8 +75,8 @@ namespace MapView
 			PropertyGrid
 	{
 		private string _typeLabel = "DefaultType";
-//		[Description("Name of the type that will be internally created")]
-		public string TypeLabel
+		[Description("Name of the type that will be internally created.")]
+		internal string TypeLabel
 		{
 			set { _typeLabel = value; }
 		}
@@ -90,7 +89,7 @@ namespace MapView
 		private static Hashtable _hashTypes = new Hashtable();
 
 
-		public CustomPropertyGrid()
+		internal CustomPropertyGrid()
 		{
 			initTypes();
 		}
@@ -98,7 +97,7 @@ namespace MapView
 
 		/// <summary>
 		/// Initialize a private hashtable with type-opCode pairs so i dont have
-		/// to write a long if/else statement when outputting msil
+		/// to write a long if/else statement when outputting MSIL.
 		/// </summary>
 		private void initTypes()
 		{
@@ -118,8 +117,8 @@ namespace MapView
 			_typeHash[typeof(float)]  = OpCodes.Ldind_R4;
 		}
 
-/*		[DefaultValue(true)] // NOTE: This doesn't affect the default value; it is used only by the designer.
-		[Description("If true the Setting.Update() event will be called when a property changes")]
+/*		[DefaultValue(true)]
+		[Description("If true the Setting.Update() event will be called when a property changes.")]
 		public bool InstantUpdate
 		{
 			get { return _instantUpdate; }
@@ -144,7 +143,7 @@ namespace MapView
 		/// I always wanted a function like this.
 		/// </summary>
 		/// <param name="settings">the settings to set</param>
-		public void SetSettings(Settings settings)
+		internal void SetSettings(Settings settings)
 		{
 			_settings = settings;
 
@@ -255,7 +254,7 @@ namespace MapView
 
 		/// <summary>
 		/// Emits a generic get/set property in which the result returned resides
-		/// in a hashtable whose key is the name of the property
+		/// in a hashtable whose key is the name of the property.
 		/// </summary>
 		/// <param name="typeBuilder"></param>
 		/// <param name="fieldInfo"></param>
