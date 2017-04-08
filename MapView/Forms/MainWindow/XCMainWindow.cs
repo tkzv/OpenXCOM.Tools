@@ -164,20 +164,17 @@ namespace MapView
 
 			_mainWindowsManager = new MainWindowsManager();
 			_mainViewsManager   = new MainViewsManager(_settingsManager, consoleShare);
-
 			_mainMenusManager   = new MainMenusManager(menuShow, menuHelp);
+
+			_mainMenusManager.PopulateMenus(consoleShare.GetNewConsole(), Settings);
+			LogFile.WriteLine("MainView menus populated.");
 			MainWindowsManager.ShowAllManager = _mainMenusManager.CreateShowAllManager();
+			LogFile.WriteLine("ShowAllManager created.");
 
 
 			MainWindowsManager.EditFactory = new EditButtonsFactory(_mainViewPanel);
 			MainWindowsManager.Initialize();
 			LogFile.WriteLine("MainWindowsManager initialized.");
-
-
-			_mainMenusManager.PopulateMenus(consoleShare.GetNewConsole(), Settings);
-			LogFile.WriteLine("MainView menus populated.");
-
-
 
 
 			GameInfo.ParseLine += ParseLine; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
@@ -187,9 +184,11 @@ namespace MapView
 
 			_mainViewsManager.ManageViewers();
 
+
 			MainWindowsManager.TileView.Control.MapChangedEventHandler += OnMapChanged;
 
 			MainViewPanel.ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+
 
 			_mainViewPanel.Dock = DockStyle.Fill;
 

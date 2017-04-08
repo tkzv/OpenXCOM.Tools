@@ -11,6 +11,10 @@ TopView:
   top: 40
   width: 640
   height: 480
+  vis0: true
+  vis1: true
+  vis2: true
+  vis3: true
 RouteView:
   left: 90
   top: 60

@@ -99,9 +99,13 @@ namespace DSShared.Windows
 			}
 		}
 
-/*		/// <summary>
-		/// Loads the specified values from the registry. Parameters match those
-		/// needed for a Form.Load event.
+		/// <summary>
+		/// Loads values for the subsidiary viewers from "MapViewers.yml".
+		/// - TopView      (size and position, and perhaps the Quadrant visibilities)
+		/// - RouteView    (size and position)
+		/// - TopRouteView (size and position)
+		/// - TileView     (size and position)
+		/// - Console      (size and position)
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -109,8 +113,8 @@ namespace DSShared.Windows
 		{
 //			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
 
-			string path = AppDomain.CurrentDomain.BaseDirectory;
-			const string file = @"settings\MapViewers.yml";
+			string path = AppDomain.CurrentDomain.BaseDirectory;	// NOTE: this is probably where 'DSShared.dll' resides.
+			const string file = @"settings\MapViewers.yml";			// not necessarily where 'MapView.exe' is ....
 			string pfe = Path.Combine(path, file);
 
 			using (var sr = new StreamReader(File.OpenRead(pfe)))
@@ -131,13 +135,20 @@ namespace DSShared.Windows
 			}
 		}
 
+		/// <summary>
+		/// Helper for OnLoad().
+		/// </summary>
+		/// <param name="keyvals">yaml-mapped keyval pairs</param>
 		private void ImportValues(YamlMappingNode keyvals)
 		{
-			string key = String.Empty;
-			int val = 0;
+			string key;
+			object val;
 
 			foreach (var keyval in keyvals)
 			{
+//				key = String.Empty;
+//				val = null;
+
 				switch (keyval.Key.ToString().ToUpperInvariant())
 				{
 					case "LEFT":
@@ -156,17 +167,52 @@ namespace DSShared.Windows
 						key = "Height";
 						val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 						break;
+
+					case "VIS0":		// NOTE: vis# are for TopView's visible-quadrant-type MenuItem toggles ->
+						key = "vis0";	// ... these are currently handled by TopView.OnExtraRegistrySettingsLoad()
+						val = Boolean.Parse(keyval.Value.ToString());
+						break;
+
+					case "VIS1":
+						key = "vis1";
+						val = Boolean.Parse(keyval.Value.ToString());
+						break;
+
+					case "VIS2":
+						key = "vis2";
+						val = Boolean.Parse(keyval.Value.ToString());
+						break;
+
+					case "VIS3":
+						key = "vis3";
+						val = Boolean.Parse(keyval.Value.ToString());
+						break;
+
+					default: // TODO: ERROR.
+						key = String.Empty;
+						val = null;
+						break;
 				}
 
 				if (!String.IsNullOrEmpty(key))
-					_infoDictionary[key].SetValue(
-												_obj,
-												val,
-												null);
+				{
+					if (key.StartsWith("vis", StringComparison.Ordinal))
+					{
+						if (RegistryLoadEvent != null)
+							RegistryLoadEvent(this, new RegistryEventArgs(key, Convert.ToBoolean(val)));
+					}
+					else // if (_infoDictionary.ContainsKey(key)) // it'll be there, i trust.
+					{
+						_infoDictionary[key].SetValue(
+													_obj,
+													val,
+													null);
+					}
+				}
 			}
-		} */
+		}
 
-		private void OnLoad(object sender, EventArgs e)
+/*		private void OnLoad(object sender, EventArgs e)
 		{
 			using (RegistryKey regkeySoftware = Registry.CurrentUser.CreateSubKey(SoftwareRegistry))
 			using (RegistryKey regkeyMapView  = regkeySoftware.CreateSubKey(MapViewRegistry))
@@ -185,7 +231,7 @@ namespace DSShared.Windows
 				regkeyMapView.Close();
 				regkeySoftware.Close();
 			}
-		}
+		} */
 
 		/// <summary>
 		/// Saves values to the registry on the Closing events of various forms.
@@ -210,8 +256,8 @@ namespace DSShared.Windows
 											key,
 											_infoDictionary[key].GetValue(_obj, null));
 
-					if (RegistrySaveEvent != null)
-						RegistrySaveEvent(this, new RegistryEventArgs(regkeyViewer));
+//					if (RegistrySaveEvent != null)
+//						RegistrySaveEvent(this, new RegistryEventArgs(regkeyViewer));
 
 					regkeyViewer.Close();
 					regkeyMapView.Close();
@@ -292,31 +338,52 @@ namespace DSShared.Windows
 
 
 	/// <summary>
-	/// EventArgs for saving and loading events.
+	/// EventArgs for saving and loading events. Used only to load/save TopView's
+	/// visible-quadrant-types, to be specific.
 	/// </summary>
 	public class RegistryEventArgs
 		:
 			EventArgs
 	{
-		private readonly RegistryKey _regkey;
-		/// <summary>
-		/// The registry key that is now open for saving and loading to. Do not
-		/// close the key here.
-		/// </summary>
-		public RegistryKey OpenRegistryKey
+		private readonly string _key;
+		public string Key
 		{
-			get { return _regkey; }
+			get { return _key; }
+		}
+
+		private readonly bool _val;
+		public bool Value
+		{
+			get { return _val; }
+		}
+
+		internal RegistryEventArgs(string key, bool val)
+		{
+			_key = key;
+			_val = val;
 		}
 
 
-		/// <summary>
-		/// cTor
-		/// </summary>
-		/// <param name="regkey">registry key that has been opened for reading
-		/// and writing to</param>
-		internal RegistryEventArgs(RegistryKey regkey)
-		{
-			_regkey = regkey;
-		}
+
+//		private readonly RegistryKey _regkey;
+//		/// <summary>
+//		/// The registry key that is now open for saving and loading to. Do not
+//		/// close the key here.
+//		/// </summary>
+//		public RegistryKey OpenRegistryKey
+//		{
+//			get { return _regkey; }
+//		}
+//
+//
+//		/// <summary>
+//		/// cTor
+//		/// </summary>
+//		/// <param name="regkey">registry key that has been opened for reading
+//		/// and writing to</param>
+//		internal RegistryEventArgs(RegistryKey regkey)
+//		{
+//			_regkey = regkey;
+//		}
 	}
 }

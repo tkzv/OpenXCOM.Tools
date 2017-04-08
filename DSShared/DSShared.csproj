@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DB_\DBTableType_.cs" />
+    <Compile Include="DSLogFile.cs" />
     <Compile Include="FileSystems\FileBackupManager.cs" />
     <Compile Include="Interfaces\IUpdater_.cs" />
     <Compile Include="Interfaces\IDialogFilter.cs" />

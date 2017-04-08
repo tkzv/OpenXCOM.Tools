@@ -105,17 +105,14 @@ namespace MapView.Forms.MainWindow
 			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
 				string key = GetWindowSettingKey(it);
-				if (key != null)
+				if (!String.IsNullOrEmpty(key))
 				{
 					_settings.AddSetting(
 									key,
-//									true, // !(it.Tag is TopViewForm) && !(it.Tag is RouteViewForm)
-									!(it.Tag is Console),
+									!(it.Tag is XCom.ConsoleForm),
 									"Default display window - " + it.Text,
 									"Windows",
-									null,
-									false,
-									null);
+									null, false, null);
 
 					var f = it.Tag as Form;
 					if (f != null)
