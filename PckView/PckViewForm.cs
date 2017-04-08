@@ -115,8 +115,8 @@ namespace PckView
 				_editor.Palette = _palette;
 
 
-			var regInfo = new RegistryInfo(this, "PckView");
-			regInfo.AddProperty("FilterIndex");
+			var regInfo = new RegistryInfo(this, "PckView");	// subscribe to Load and Closing events.
+			regInfo.AddProperty("FilterIndex");					// TODO: these won't work until I implement them in RegistryInfo.
 			regInfo.AddProperty("SelectedPalette");
 
 			miHq2x.Visible &= File.Exists("hq2xa.dll");
@@ -131,7 +131,7 @@ namespace PckView
 			_loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(IXCImageFile)));
 
 			string dir = _share[SharedSpace.CustomDirectory].ToString();	// TODO: I don't trust that since changing SharedSpace.
-			if (Directory.Exists(dir))								// it may well need an explicit cast to (PathInfo)
+			if (Directory.Exists(dir))										// it may well need an explicit cast to (PathInfo)
 			{
 				XConsole.AdZerg("Custom directory exists: " + dir);
 				foreach (string st in Directory.GetFiles(dir))

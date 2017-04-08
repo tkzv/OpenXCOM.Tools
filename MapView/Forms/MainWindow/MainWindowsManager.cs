@@ -54,9 +54,9 @@ namespace MapView.Forms.MainWindow
 
 		public static void Initialize()
 		{
-			TopRouteView.ControlTop.Initialize(EditFactory);
+			TopRouteView.ControlTop.InitializeEditStrip(EditFactory);
 
-			TopView.Control.Initialize(EditFactory);
+			TopView.Control.InitializeEditStrip(EditFactory);
 
 			TileView.Control.Initialize(ShowAllManager);
 			TileView.Control.SelectedTileTypeChangedObserver += OnSelectedTileTypeChanged;

@@ -21,12 +21,12 @@ namespace MapView
 		:
 			Form
 	{
-		private static bool _saveRegistry = true;
+/*		private static bool _saveRegistry = true;
 		internal static bool SaveRegistry
 		{
 			get { return _saveRegistry; }
 			set { _saveRegistry = value; }
-		}
+		} */
 
 		private string _paths;
 		private string[] _images;
@@ -319,15 +319,15 @@ namespace MapView
 				}
 		}
 
-		private void btnPathsClearRegistry_Click(object sender, EventArgs e)
+		private void btnPathsClearRegistry_Click(object sender, EventArgs e) // NOTE: disabled w/ Visible=FALSE in the designer.
 		{
-			_saveRegistry = false;
+/*			_saveRegistry = false;
 
 			using (var keySoftware = Registry.CurrentUser.OpenSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry, true))
 			{
 				keySoftware.DeleteSubKeyTree(DSShared.Windows.RegistryInfo.MapViewRegistry);
 				keySoftware.Close();
-			}
+			} */
 		}
 
 		private void btnPathsMaps_Click(object sender, EventArgs e)
@@ -930,6 +930,7 @@ namespace MapView
 			this.lblPathsClearRegistry.TabIndex = 15;
 			this.lblPathsClearRegistry.Text = "Clear MapView from the Windows Registry and switch the option to save window posi" +
 	"tions and sizes off.";
+			this.lblPathsClearRegistry.Visible = false;
 			// 
 			// btnPathsSave
 			// 
@@ -995,6 +996,7 @@ namespace MapView
 			this.btnPathsClearRegistry.Size = new System.Drawing.Size(125, 35);
 			this.btnPathsClearRegistry.TabIndex = 7;
 			this.btnPathsClearRegistry.Text = "Clear Registry Settings";
+			this.btnPathsClearRegistry.Visible = false;
 			this.btnPathsClearRegistry.Click += new System.EventHandler(this.btnPathsClearRegistry_Click);
 			// 
 			// lblPathsSave
@@ -1063,9 +1065,9 @@ namespace MapView
 			this.tabMaps.Controls.Add(this.tvMaps);
 			this.tabMaps.Controls.Add(this.btnMapsSaveTree);
 			this.tabMaps.Controls.Add(this.btnMapsEditTree);
-			this.tabMaps.Location = new System.Drawing.Point(4, 21);
+			this.tabMaps.Location = new System.Drawing.Point(4, 22);
 			this.tabMaps.Name = "tabMaps";
-			this.tabMaps.Size = new System.Drawing.Size(624, 509);
+			this.tabMaps.Size = new System.Drawing.Size(624, 508);
 			this.tabMaps.TabIndex = 1;
 			this.tabMaps.Text = "Map Files";
 			// 
@@ -1086,7 +1088,7 @@ namespace MapView
 			this.gbMapsBlock.Enabled = false;
 			this.gbMapsBlock.Location = new System.Drawing.Point(240, 170);
 			this.gbMapsBlock.Name = "gbMapsBlock";
-			this.gbMapsBlock.Size = new System.Drawing.Size(385, 341);
+			this.gbMapsBlock.Size = new System.Drawing.Size(385, 340);
 			this.gbMapsBlock.TabIndex = 2;
 			this.gbMapsBlock.TabStop = false;
 			this.gbMapsBlock.Text = "MAP BLOCK";
@@ -1279,7 +1281,7 @@ namespace MapView
 			this.tvMaps.ContextMenu = this.cmMain;
 			this.tvMaps.Location = new System.Drawing.Point(0, 35);
 			this.tvMaps.Name = "tvMaps";
-			this.tvMaps.Size = new System.Drawing.Size(240, 473);
+			this.tvMaps.Size = new System.Drawing.Size(240, 472);
 			this.tvMaps.TabIndex = 0;
 			this.tvMaps.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvMaps_AfterSelect);
 			// 
@@ -1369,9 +1371,9 @@ namespace MapView
 			this.tabImages.Controls.Add(this.lblImagesTerrain);
 			this.tabImages.Controls.Add(this.tbImagesTerrain);
 			this.tabImages.Controls.Add(this.lbImages);
-			this.tabImages.Location = new System.Drawing.Point(4, 21);
+			this.tabImages.Location = new System.Drawing.Point(4, 22);
 			this.tabImages.Name = "tabImages";
-			this.tabImages.Size = new System.Drawing.Size(624, 509);
+			this.tabImages.Size = new System.Drawing.Size(624, 508);
 			this.tabImages.TabIndex = 2;
 			this.tabImages.Text = "Image Files";
 			// 
@@ -1428,7 +1430,7 @@ namespace MapView
 			this.lbImages.ItemHeight = 12;
 			this.lbImages.Location = new System.Drawing.Point(0, 0);
 			this.lbImages.Name = "lbImages";
-			this.lbImages.Size = new System.Drawing.Size(240, 509);
+			this.lbImages.Size = new System.Drawing.Size(240, 508);
 			this.lbImages.TabIndex = 0;
 			this.lbImages.SelectedIndexChanged += new System.EventHandler(this.lbImages_SelectedIndexChanged);
 			// 

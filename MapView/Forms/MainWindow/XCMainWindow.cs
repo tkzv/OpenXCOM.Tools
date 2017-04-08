@@ -196,7 +196,7 @@ namespace MapView
 
 			tscPanel.ContentPanel.Controls.Add(_mainViewPanel);
 
-			MainWindowsManager.EditFactory.BuildToolStrip(tsEdit);
+			MainWindowsManager.EditFactory.BuildEditStrip(tsEdit);
 			tsEdit.Enabled = false;
 
 
@@ -354,7 +354,7 @@ namespace MapView
 					break;
 
 				case "SaveWindowPositions":
-					PathsEditor.SaveRegistry = (bool)val;
+//					PathsEditor.SaveRegistry = (bool)val; // TODO: find a place to cache this value.
 					break;
 
 				case "ShowGrid":
@@ -431,6 +431,8 @@ namespace MapView
 
 		private void LoadDefaults()
 		{
+			//LogFile.WriteLine("LoadDefaults MainView");
+
 			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
 			using (var sr = new StreamReader(File.OpenRead(file)))
 			{
@@ -499,8 +501,8 @@ namespace MapView
 							handler, false, null);
 			settings.AddSetting(
 							"SaveWindowPositions",
-							PathsEditor.SaveRegistry,
-							"If true the window positions and sizes will be saved in the windows registry.",
+							true, //PathsEditor.SaveRegistry,
+							"If true the window positions and sizes will be saved to the MapViewers YAML file.",
 							"Main",
 							handler, false, null);
 			settings.AddSetting(
@@ -551,12 +553,13 @@ namespace MapView
 			}
 			else
 			{
+				//LogFile.WriteLine("OnCloseSaveRegistry MainView");
 				_mainMenusManager.HandleQuit();
 
 				_settingsManager.Save(); // save MV_SettingsFile // TODO: Save Settings when closing the Options form(s).
 
 
-				if (PathsEditor.SaveRegistry)
+//				if (PathsEditor.SaveRegistry) // TODO: re-implement.
 				{
 					WindowState = FormWindowState.Normal;
 					_mainViewsManager.CloseSubsidiaryViewers();
@@ -583,14 +586,14 @@ namespace MapView
 								line = sr.ReadLine();
 								line = sr.ReadLine(); // heh
 
-								var node = new
+								object node = new
 								{
 									MainView = new
 									{
-										left   = Left,
-										top    = Top,
-										width  = Width,
-										height = Height - SystemInformation.CaptionButtonSize.Height
+										Left   = Left,
+										Top    = Top,
+										Width  = Width,
+										Height = Height - SystemInformation.CaptionButtonSize.Height
 									},
 								};
 

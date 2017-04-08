@@ -16,7 +16,7 @@ namespace PckView
 		{
 			InitializeComponent();
 
-			var regInfo = new DSShared.Windows.RegistryInfo(this, "Mod");
+			var regInfo = new DSShared.Windows.RegistryInfo(this, "Mod"); // subscribe to Load and Closing events.
 		}
 
 		public XCom.SharedSpace SharedSpace

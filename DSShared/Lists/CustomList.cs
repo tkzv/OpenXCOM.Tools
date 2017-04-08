@@ -67,7 +67,23 @@ namespace DSShared.Lists
 
 		private CustomListColumn _colOver;
 
-		private RegistryInfo _regInfo;
+/*		private RegistryInfo _regInfo; // TODO: keep this for the Option viewer.
+		/// <summary>
+		/// Gets/Sets the registry info object.
+		/// </summary>
+		/// <value>the registry info</value>
+		[Browsable(false)]
+		[DefaultValue(null)]
+		public RegistryInfo RegistryInfo
+		{
+			get { return _regInfo; }
+			set
+			{
+				_regInfo = value;
+				_regInfo.RegistryLoadEvent += OnLoad;
+				_regInfo.RegistrySaveEvent += OnSave;
+			}
+		} */
 
 		private Type _rowType;
 /*		/// <summary>
@@ -130,26 +146,9 @@ namespace DSShared.Lists
 		}
 
 
-		/// <summary>
-		/// Gets/Sets the registry info object.
-		/// </summary>
-		/// <value>the registry info</value>
-		[Browsable(false)]
-		[DefaultValue(null)]
-		public RegistryInfo RegistryInfo
+/*		private void OnLoad(object sender, RegistryEventArgs e)
 		{
-			get { return _regInfo; }
-			set
-			{
-				_regInfo = value;
-				_regInfo.RegistryLoadEvent += OnLoad;
-				_regInfo.RegistrySaveEvent += OnSave;
-			}
-		}
-
-		private void OnLoad(object sender, RegistryEventArgs e)
-		{
-/*			var regkey = e.OpenRegistryKey;
+			var regkey = e.OpenRegistryKey;
 //			Graphics g = Graphics.FromHwnd(Handle);
 			foreach (CustomListColumn col in _columns)
 			{
@@ -162,15 +161,15 @@ namespace DSShared.Lists
 					// NOTE: was using g.MeasureString()
 					col.Width = TextRenderer.MeasureText(col.Title, Font).Width + 2;
 				}
-			} */
-		}
+			}
+		} */
 
-		private void OnSave(object sender, RegistryEventArgs e)
+/*		private void OnSave(object sender, RegistryEventArgs e)
 		{
-/*			RegistryKey regkey = e.OpenRegistryKey;
+			RegistryKey regkey = e.OpenRegistryKey;
 			foreach (CustomListColumn col in _columns)
-				regkey.SetValue("strLen" + _name + col.Index, col.Width); */
-		}
+				regkey.SetValue("strLen" + _name + col.Index, col.Width);
+		} */
 
 		private void OnRowClick(object sender, MouseEventArgs e)
 		{

@@ -17,7 +17,7 @@ namespace XCom
 			XConsole.Init(100);
 			XConsole.BufferChanged += OnBufferChanged; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
-			var regInfo = new RegistryInfo(this, "Console"); // <- looks like this writes some registry entries ....
+			var regInfo = new RegistryInfo(this, "Console"); // subscribe to Load and Closing events.
 
 			SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
 		}

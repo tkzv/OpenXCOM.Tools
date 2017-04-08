@@ -35,18 +35,21 @@ namespace MapView
 			}
 		}
 
-		private RegistryInfo _regInfo;
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public RegistryInfo RegistryInfo
+		{ get; set; }
+/*		private RegistryInfo _regInfo;
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public RegistryInfo RegistryInfo
 		{
-			get { return _regInfo; }
+			get { return _regInfo; } // NOTE: not used. Only satisfies IMapObserver requirement.
 			set
 			{
 				_regInfo = value;
-				value.RegistryLoadEvent += (sender, e) => OnExtraRegistrySettingsLoad(e);
-				value.RegistrySaveEvent += (sender, e) => OnExtraRegistrySettingsSave(e);
+//				value.RegistryLoadEvent += (sender, e) => OnExtraRegistrySettingsLoad(e);
+//				value.RegistrySaveEvent += (sender, e) => OnExtraRegistrySettingsSave(e);
 			}
-		}
+		} */
 
 		internal Settings Settings
 		{ get; set; }
@@ -64,19 +67,18 @@ namespace MapView
 		public virtual void LoadDefaultSettings()
 		{}
 
-		/// <summary>
+/*		/// <summary>
 		/// Currently implemented only to load TopView's visible quadrants menu.
 		/// </summary>
 		/// <param name="e"></param>
 		protected virtual void OnExtraRegistrySettingsLoad(RegistryEventArgs e)
 		{}
-
 		/// <summary>
 		/// Currently implemented only to save TopView's visible quadrants menu.
 		/// </summary>
 		/// <param name="e"></param>
 		protected virtual void OnExtraRegistrySettingsSave(RegistryEventArgs e)
-		{}
+		{} */
 
 		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{

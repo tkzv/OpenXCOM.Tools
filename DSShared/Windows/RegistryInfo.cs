@@ -4,7 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
-using Microsoft.Win32;
+//using Microsoft.Win32;
 
 using YamlDotNet.RepresentationModel;	// read values (deserialization)
 using YamlDotNet.Serialization;			// write values
@@ -28,8 +28,8 @@ namespace DSShared.Windows
 	/// </summary>
 	public class RegistryInfo
 	{
-		public const string SoftwareRegistry = "Software";
-		public const string MapViewRegistry  = "MapView";
+//		public const string SoftwareRegistry = "Software";
+//		public const string MapViewRegistry  = "MapView";
 
 		private readonly object _obj;
 		private readonly string _regkey;
@@ -38,7 +38,7 @@ namespace DSShared.Windows
 
 //		private bool _saveOnClose = true;
 
-		/// <summary>
+/*		/// <summary>
 		/// Event fired when retrieving values from the registry. This happens
 		/// after the values are read and set in the object.
 		/// </summary>
@@ -50,7 +50,7 @@ namespace DSShared.Windows
 		/// the values are saved.
 		/// </summary>
 //		public event EventHandler SavingEvent;
-		public event RegistryEventHandler RegistrySaveEvent;
+		public event RegistryEventHandler RegistrySaveEvent; */
 
 
 		/// <summary>
@@ -60,6 +60,8 @@ namespace DSShared.Windows
 		/// <param name="regkey">the name of the registry key to save/load</param>
 		public RegistryInfo(object obj, string regkey)
 		{
+			//DSLogFile.WriteLine("RegistryInfo regkey= " + regkey);
+
 			_obj = obj;
 			_regkey = regkey;
 
@@ -69,7 +71,7 @@ namespace DSShared.Windows
 				f.StartPosition = FormStartPosition.Manual;
 				f.Load    += OnLoad;
 				f.Closing += OnClose;
-				AddProperty("Width", "Height", "Left", "Top");
+				AddProperty("Left", "Top", "Width", "Height");
 			}
 		}
 /*		/// <summary>
@@ -86,7 +88,7 @@ namespace DSShared.Windows
 		/// <summary>
 		/// Adds properties to be saved/loaded.
 		/// </summary>
-		/// <param name="keys">the names of the properties to be saved/loaded</param>
+		/// <param name="keys">the keys of the properties to be saved/loaded</param>
 		public void AddProperty(params string[] keys)
 		{
 			var type = _obj.GetType();
@@ -95,13 +97,16 @@ namespace DSShared.Windows
 			foreach (string key in keys)
 			{
 				if ((info = type.GetProperty(key)) != null)
+				{
+					//DSLogFile.WriteLine(". AddProperty - " + key);
 					_infoDictionary[info.Name] = info;
+				}
 			}
 		}
 
 		/// <summary>
 		/// Loads values for the subsidiary viewers from "MapViewers.yml".
-		/// - TopView      (size and position, and perhaps the Quadrant visibilities)
+		/// - TopView      (size and position, plus the Quadrant visibilities)
 		/// - RouteView    (size and position)
 		/// - TopRouteView (size and position)
 		/// - TileView     (size and position)
@@ -111,6 +116,8 @@ namespace DSShared.Windows
 		/// <param name="e"></param>
 		private void OnLoad(object sender, EventArgs e)
 		{
+			//DSLogFile.WriteLine("OnLoad _regkey= " + _regkey);
+
 //			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
 
 			string path = AppDomain.CurrentDomain.BaseDirectory;	// NOTE: this is probably where 'DSShared.dll' resides.
@@ -148,22 +155,23 @@ namespace DSShared.Windows
 			{
 				key = keyval.Key.ToString();
 
-				if (key.StartsWith("vis", StringComparison.Ordinal))	// NOTE: vis# are for TopView's visible-quadrant-type MenuItem toggles
-				{														// ... these are currently handled by TopView.OnExtraRegistrySettingsLoad()
-					if (RegistryLoadEvent != null)
-					{
-						val = Boolean.Parse(keyval.Value.ToString());
-						RegistryLoadEvent(this, new RegistryEventArgs(key, Convert.ToBoolean(val)));
-					}
-				}
-				else if (_infoDictionary.ContainsKey(key)) // it'll be there, i trust. yeah right
-				{
-					val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
-					_infoDictionary[key].SetValue(
-												_obj,
-												val,
-												null);
-				}
+//				if (key.StartsWith("vis", StringComparison.Ordinal))	// NOTE: vis# are for TopView's visible-quadrant-type MenuItem toggles
+//				{														// ... these are currently handled by TopView.OnExtraRegistrySettingsLoad()
+//					if (RegistryLoadEvent != null)
+//					{
+//						val = Boolean.Parse(keyval.Value.ToString());
+//						RegistryLoadEvent(this, new RegistryEventArgs(key, Convert.ToBoolean(val)));
+//					}
+//				}
+//				else
+//				if (_infoDictionary.ContainsKey(key)) // it'll be there, i trust. yeah right
+//				{
+				val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+				_infoDictionary[key].SetValue(
+											_obj,
+											val,
+											null);
+//				}
 			}
 		}
 
@@ -189,6 +197,177 @@ namespace DSShared.Windows
 		} */
 
 		/// <summary>
+		/// Saves values for the subsidiary viewers to "MapViewers.yml".
+		/// - TopView      (size and position, plus the Quadrant visibilities)
+		/// - RouteView    (size and position)
+		/// - TopRouteView (size and position)
+		/// - TileView     (size and position)
+		/// - Console      (size and position)
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnClose(object sender, EventArgs e)
+		{
+			//DSLogFile.WriteLine("OnClose _regkey= " + _regkey);
+
+			var f = _obj as Form;
+			if (f != null)
+			{
+				f.WindowState = FormWindowState.Normal;
+
+//				if (_saveOnClose)
+//				{
+//				string path = SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory);
+
+				string path = AppDomain.CurrentDomain.BaseDirectory;	// NOTE: this is probably where 'DSShared.dll' resides.
+																		// not necessarily where 'MapView.exe' is ....
+				const string fileSrc = @"settings\MapViewers.yml";
+				string src = Path.Combine(path, fileSrc);
+
+				const string fileDst = @"settings\MapViewers_old.yml";
+				string dst = Path.Combine(path, fileDst);
+
+				File.Copy(src, dst, true);
+
+//				string test = Path.Combine(path, @"settings\MapViewers_test.yml");
+				using (var sr = new StreamReader(File.OpenRead(dst))) // but now use dst as src ->
+
+//				using (var fs = new FileStream(test, FileMode.Create))
+				using (var fs = new FileStream(src, FileMode.Create)) // overwrite previous config.
+				using (var sw = new StreamWriter(fs))
+				{
+					while (sr.Peek() != -1)
+					{
+						string line = sr.ReadLine();
+						//DSLogFile.WriteLine(". line= " + line);
+
+						if (String.Equals(line, _regkey + ":", StringComparison.OrdinalIgnoreCase))
+						{
+							//DSLogFile.WriteLine(". line IS _regkey");
+							line = sr.ReadLine();
+							line = sr.ReadLine();
+							line = sr.ReadLine();
+							line = sr.ReadLine(); // heh
+
+//							if (String.Equals(_regkey, "TopView", StringComparison.OrdinalIgnoreCase))
+//							{
+//								DSLogFile.WriteLine(". _regkey IS TopView");
+//								line = sr.ReadLine();
+//								line = sr.ReadLine();
+//								line = sr.ReadLine();
+//								line = sr.ReadLine(); // heheh
+//							}
+
+							object node = null;
+
+							switch (_regkey)
+							{
+								case "TopView":
+								{
+									//DSLogFile.WriteLine(". . _regkey IS TopView");
+									node = new
+									{
+										TopView = new
+										{
+											Left   = _infoDictionary["Left"].GetValue(_obj, null),
+											Top    = _infoDictionary["Top"].GetValue(_obj, null),
+											Width  = _infoDictionary["Width"].GetValue(_obj, null),
+											Height = _infoDictionary["Height"].GetValue(_obj, null)
+										},
+									};
+									break;
+								}
+								case "RouteView":
+								{
+									//DSLogFile.WriteLine(". . _regkey IS RouteView");
+									node = new
+									{
+										RouteView = new
+										{
+											Left   = _infoDictionary["Left"].GetValue(_obj, null),
+											Top    = _infoDictionary["Top"].GetValue(_obj, null),
+											Width  = _infoDictionary["Width"].GetValue(_obj, null),
+											Height = _infoDictionary["Height"].GetValue(_obj, null)
+										},
+									};
+									break;
+								}
+								case "TopRouteView":
+								{
+									//DSLogFile.WriteLine(". . _regkey IS TopRouteView");
+									node = new
+									{
+										TopRouteView = new
+										{
+											Left   = _infoDictionary["Left"].GetValue(_obj, null),
+											Top    = _infoDictionary["Top"].GetValue(_obj, null),
+											Width  = _infoDictionary["Width"].GetValue(_obj, null),
+											Height = _infoDictionary["Height"].GetValue(_obj, null)
+										},
+									};
+									break;
+								}
+								case "TileView":
+								{
+									//DSLogFile.WriteLine(". . _regkey IS TileView");
+									node = new
+									{
+										TileView = new
+										{
+											Left   = _infoDictionary["Left"].GetValue(_obj, null),
+											Top    = _infoDictionary["Top"].GetValue(_obj, null),
+											Width  = _infoDictionary["Width"].GetValue(_obj, null),
+											Height = _infoDictionary["Height"].GetValue(_obj, null)
+										},
+									};
+									break;
+								}
+								case "Console":
+								{
+									//DSLogFile.WriteLine(". . _regkey IS Console");
+									node = new
+									{
+										Console = new
+										{
+											Left   = _infoDictionary["Left"].GetValue(_obj, null),
+											Top    = _infoDictionary["Top"].GetValue(_obj, null),
+											Width  = _infoDictionary["Width"].GetValue(_obj, null),
+											Height = _infoDictionary["Height"].GetValue(_obj, null)
+										},
+									};
+									break;
+								}
+								case "Options":
+								{
+									//DSLogFile.WriteLine(". . _regkey IS Options");
+									sw.WriteLine(line);
+									break;
+								}
+								case "PckView":
+								{
+									//DSLogFile.WriteLine(". . _regkey IS PckView");
+									sw.WriteLine(line);
+									break;
+								}
+							}
+
+							if (node != null)
+							{
+								//DSLogFile.WriteLine(". node VALID -> serialize");
+								var ser = new Serializer();
+								ser.Serialize(sw, node);
+							}
+						}
+						else
+							sw.WriteLine(line);
+					}
+				}
+				File.Delete(dst);
+//			}
+			}
+		}
+
+/*		/// <summary>
 		/// Saves values to the registry on the Closing events of various forms.
 		/// </summary>
 		/// <param name="sender"></param>
@@ -220,7 +399,7 @@ namespace DSShared.Windows
 				}
 //				}
 			}
-		}
+		} */
 
 		// TODO: Vet the PathsEditor button that clears registry keys.
 

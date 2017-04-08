@@ -47,11 +47,10 @@ namespace MapView.Forms.MainWindow
 			SetAsObserver(MainWindowsManager.HelpScreen,  "Quick Help");
 			SetAsObserver(MainWindowsManager.AboutWindow, "About");
 
-			MainWindowsManager.TopRouteView.ControlTop.RegistryInfo =
-				MainWindowsManager.TopView.Control.RegistryInfo;
-
-			MainWindowsManager.TopRouteView.ControlRoute.RegistryInfo =
-				MainWindowsManager.RouteView.Control.RegistryInfo;
+//			MainWindowsManager.TopRouteView.ControlTop.RegistryInfo =
+//				MainWindowsManager.TopView.Control.RegistryInfo;
+//			MainWindowsManager.TopRouteView.ControlRoute.RegistryInfo =
+//				MainWindowsManager.RouteView.Control.RegistryInfo;
 		}
 
 		private void SetAsObserver(Form f, string caption, string regkey = null)

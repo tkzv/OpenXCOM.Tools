@@ -1,6 +1,8 @@
 # delete this file if things go wrong with your window positions and/or sizes.
 # It will be recreated from a hardcoded manifest the next time the program runs.
 #
+# NOTE: Do *not* add extra lines or anything to the format; it's not that robust.
+#
 MainView:
   Left: 50
   Top: 20
@@ -11,10 +13,6 @@ TopView:
   Top: 40
   Width: 640
   Height: 480
-  vis0: true
-  vis1: true
-  vis2: true
-  vis3: true
 RouteView:
   Left: 90
   Top: 60
@@ -30,16 +28,16 @@ TileView:
   Top: 100
   Width: 640
   Height: 480
-Options:
-  Left: 150
-  Top: 120
-  Width: 600
-  Height: 400
 Console:
   Left: 170
   Top: 140
   Width: 500
   Height: 300
+Options:
+  Left: 150
+  Top: 120
+  Width: 600
+  Height: 400
 PckView:
   Left: 190
   Top: 160

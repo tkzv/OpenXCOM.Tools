@@ -26,7 +26,7 @@ namespace MapView.Forms.MainWindow
 		/// toolstrip as well as sets some properties for the toolstrip.
 		/// </summary>
 		/// <param name="toolStrip"></param>
-		public void BuildToolStrip(ToolStrip toolStrip)
+		public void BuildEditStrip(ToolStrip toolStrip)
 		{
 			//
 			// toolStripButtons
