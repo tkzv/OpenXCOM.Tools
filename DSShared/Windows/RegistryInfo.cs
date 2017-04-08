@@ -43,7 +43,7 @@ namespace DSShared.Windows
 		/// after the values are read and set in the object.
 		/// </summary>
 //		public event EventHandler LoadingEvent;
-		public event RegistryEventHandler RegistryLoadEvent; // yes it is used: CustomList.RegistryInfo property.
+		public event RegistryEventHandler RegistryLoadEvent;
 
 		/// <summary>
 		/// Event fired when saving values to the registry. This happens after
@@ -146,68 +146,23 @@ namespace DSShared.Windows
 
 			foreach (var keyval in keyvals)
 			{
-//				key = String.Empty;
-//				val = null;
+				key = keyval.Key.ToString();
 
-				switch (keyval.Key.ToString().ToUpperInvariant())
-				{
-					case "LEFT":
-						key = "Left";
-						val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
-						break;
-					case "TOP":
-						key = "Top";
-						val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
-						break;
-					case "WIDTH":
-						key = "Width";
-						val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
-						break;
-					case "HEIGHT":
-						key = "Height";
-						val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
-						break;
-
-					case "VIS0":		// NOTE: vis# are for TopView's visible-quadrant-type MenuItem toggles ->
-						key = "vis0";	// ... these are currently handled by TopView.OnExtraRegistrySettingsLoad()
+				if (key.StartsWith("vis", StringComparison.Ordinal))	// NOTE: vis# are for TopView's visible-quadrant-type MenuItem toggles
+				{														// ... these are currently handled by TopView.OnExtraRegistrySettingsLoad()
+					if (RegistryLoadEvent != null)
+					{
 						val = Boolean.Parse(keyval.Value.ToString());
-						break;
-
-					case "VIS1":
-						key = "vis1";
-						val = Boolean.Parse(keyval.Value.ToString());
-						break;
-
-					case "VIS2":
-						key = "vis2";
-						val = Boolean.Parse(keyval.Value.ToString());
-						break;
-
-					case "VIS3":
-						key = "vis3";
-						val = Boolean.Parse(keyval.Value.ToString());
-						break;
-
-					default: // TODO: ERROR.
-						key = String.Empty;
-						val = null;
-						break;
+						RegistryLoadEvent(this, new RegistryEventArgs(key, Convert.ToBoolean(val)));
+					}
 				}
-
-				if (!String.IsNullOrEmpty(key))
+				else if (_infoDictionary.ContainsKey(key)) // it'll be there, i trust. yeah right
 				{
-					if (key.StartsWith("vis", StringComparison.Ordinal))
-					{
-						if (RegistryLoadEvent != null)
-							RegistryLoadEvent(this, new RegistryEventArgs(key, Convert.ToBoolean(val)));
-					}
-					else // if (_infoDictionary.ContainsKey(key)) // it'll be there, i trust.
-					{
-						_infoDictionary[key].SetValue(
-													_obj,
-													val,
-													null);
-					}
+					val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+					_infoDictionary[key].SetValue(
+												_obj,
+												val,
+												null);
 				}
 			}
 		}
@@ -248,8 +203,8 @@ namespace DSShared.Windows
 //				if (_saveOnClose)
 //				{
 				using (RegistryKey regkeySoftware = Registry.CurrentUser.CreateSubKey(SoftwareRegistry))
-				using (RegistryKey regkeyMapView = regkeySoftware.CreateSubKey(MapViewRegistry))
-				using (RegistryKey regkeyViewer = regkeyMapView.CreateSubKey(_regkey))
+				using (RegistryKey regkeyMapView  = regkeySoftware.CreateSubKey(MapViewRegistry))
+				using (RegistryKey regkeyViewer   = regkeyMapView.CreateSubKey(_regkey))
 				{
 					foreach (string key in _infoDictionary.Keys)
 						regkeyViewer.SetValue(
