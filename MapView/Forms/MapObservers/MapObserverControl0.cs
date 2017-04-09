@@ -35,9 +35,10 @@ namespace MapView
 			}
 		}
 
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public RegistryInfo RegistryInfo
-		{ get; set; }
+//		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+//		public RegistryInfo RegistryInfo
+//		{ get; set; }
+
 /*		private RegistryInfo _regInfo;
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public RegistryInfo RegistryInfo

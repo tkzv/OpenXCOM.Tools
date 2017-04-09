@@ -17,8 +17,8 @@ namespace XCom.Interfaces.Base
 		Dictionary<string, IMapObserver> MoreObservers
 		{ get; }
 
-		DSShared.Windows.RegistryInfo RegistryInfo
-		{ get; set; }
+//		DSShared.Windows.RegistryInfo RegistryInfo
+//		{ get; set; }
 	}
 
 
@@ -34,8 +34,6 @@ namespace XCom.Interfaces.Base
 		{
 			get { return _baseMap; }
 		}
-
-
 		internal SetMapEventArgs(IMapBase baseMap)
 		{
 			_baseMap = baseMap;

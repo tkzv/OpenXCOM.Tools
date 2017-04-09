@@ -63,7 +63,8 @@ namespace MapView.Forms.MainWindow
 				var observerType0 = fObserver.MapObserver;
 				observerType0.LoadDefaultSettings();
 
-				observerType0.RegistryInfo = new DSShared.Windows.RegistryInfo(f, regkey);
+//				observerType0.RegistryInfo = new DSShared.Windows.RegistryInfo(f, regkey); // subscribe to Load and Closing events.
+				var regInfo = new DSShared.Windows.RegistryInfo(f, regkey); // subscribe to Load and Closing events.
 
 				_settingsManager.Add(regkey, observerType0.Settings);
 			}

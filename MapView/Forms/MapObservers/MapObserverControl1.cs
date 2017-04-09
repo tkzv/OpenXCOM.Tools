@@ -36,11 +36,11 @@ namespace MapView
 			}
 		}
 
-		/// <summary>
-		/// This is here only to satisfy IMapObserver requirements.
-		/// </summary>
-		public RegistryInfo RegistryInfo
-		{ get; set; }
+//		/// <summary>
+//		/// This is here only to satisfy IMapObserver requirements.
+//		/// </summary>
+//		public RegistryInfo RegistryInfo
+//		{ get; set; }
 
 //		/// <summary>
 //		/// This is here only to satisfy IMapObserver requirements.
