@@ -155,7 +155,7 @@ namespace MapView
 			Palette.TftdBattle.SetTransparent(true);
 			Palette.UfoBattle.Grayscale.SetTransparent(true);
 			Palette.TftdBattle.Grayscale.SetTransparent(true);
-			LogFile.WriteLine("Palette transparencies set");
+			LogFile.WriteLine("Palette transparencies set.");
 
 
 			var consoleShare = new ConsoleSharedSpace(share);
@@ -179,7 +179,7 @@ namespace MapView
 
 			GameInfo.ParseLine += ParseLine; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 			InitGameInfo(infoPaths);
-			LogFile.WriteLine("GameInfo initialized");
+			LogFile.WriteLine("GameInfo initialized.");
 
 
 			_mainViewsManager.ManageViewers();
@@ -235,7 +235,7 @@ namespace MapView
 			if (infoSettings.FileExists())
 			{
 				_settingsManager.Load(infoSettings.FullPath);
-				LogFile.WriteLine("User settings loaded");
+				LogFile.WriteLine("User settings loaded.");
 			}
 			else
 				LogFile.WriteLine("User settings NOT loaded - no settings file to load.");

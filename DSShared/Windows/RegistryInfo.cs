@@ -340,7 +340,16 @@ namespace DSShared.Windows
 								case "Options":
 								{
 									//DSLogFile.WriteLine(". . _regkey IS Options");
-									sw.WriteLine(line);
+									node = new
+									{
+										Options = new
+										{
+											Left   = _infoDictionary["Left"].GetValue(_obj, null),
+											Top    = _infoDictionary["Top"].GetValue(_obj, null),
+											Width  = _infoDictionary["Width"].GetValue(_obj, null),
+											Height = _infoDictionary["Height"].GetValue(_obj, null)
+										},
+									};
 									break;
 								}
 								case "PckView":

@@ -152,7 +152,6 @@ namespace MapView.Forms.MapObservers.TopViews
 		private void OnOptionsClick(object sender, EventArgs e)
 		{
 			var f = new OptionsForm("TopViewOptions", Settings);
-
 			f.Text = "Top View Options";
 			f.Show();
 		}

@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -95,14 +96,14 @@ namespace DSShared.Lists
 			_id = _idCanonical++;
 		}
 
-/*		/// <summary>
-		/// Initializes a new instance of the <see cref="T:DSShared.Lists.RowObject"/> class.
-		/// </summary>
-		/// <param name="obj">the obj</param>
-		public RowObject(object obj)
-			:
-				this(obj, null)
-		{} */
+//		/// <summary>
+//		/// Initializes a new instance of the <see cref="T:DSShared.Lists.RowObject"/> class.
+//		/// </summary>
+//		/// <param name="obj">the obj</param>
+//		public RowObject(object obj)
+//			:
+//				this(obj, null)
+//		{}
 
 
 		// NOTE: not used but required by interface.
@@ -172,25 +173,25 @@ namespace DSShared.Lists
 				RefreshEvent();
 		}
 
-/*		private void startTimer()
-		{
-			if (!_caretTimer.Enabled)
-				_caretTimer.Start();
-		}
-		private void stopTimer()
-		{
-			_caretTimer.Stop();
-		} */
+//		private void startTimer()
+//		{
+//			if (!_caretTimer.Enabled)
+//				_caretTimer.Start();
+//		}
+//		private void stopTimer()
+//		{
+//			_caretTimer.Stop();
+//		}
 
-/*		/// <summary>
-		/// Sets the width of the row. This is used for the drawing function and
-		/// should not be changed by the user.
-		/// </summary>
-		/// <param name="width">the width</param>
-		public void SetWidth(int width)
-		{
-			_width = width; // never used.
-		} */
+//		/// <summary>
+//		/// Sets the width of the row. This is used for the drawing function and
+//		/// should not be changed by the user.
+//		/// </summary>
+//		/// <param name="width">the width</param>
+//		public void SetWidth(int width)
+//		{
+//			_width = width; // never used.
+//		}
 
 		/// <summary>
 		/// Gets/Sets the height of the row. This is used for the drawing
@@ -360,7 +361,8 @@ namespace DSShared.Lists
 		/// </summary>
 		/// <param name="e"></param>
 //		/// <param name="yOffset"></param>
-		public void Render(PaintEventArgs e/*, int yOffset*/)
+//		public void Render(PaintEventArgs e, int yOffset)
+		public void Render(PaintEventArgs e)
 		{
 //			base.OnPaint(e);
 
@@ -369,7 +371,8 @@ namespace DSShared.Lists
 				int startX = 0;
 				var rowRect = new System.Drawing.RectangleF(
 														_columns.OffX,
-														_top /*+ yOffset*/ + 1,
+//														_top + yOffset + 1,
+														_top + 1,
 														_columns.TableWidth - 1,
 														_columns.Font.Height + CustomListColumnCollection.PadY * 2 - 1);
 				if (_colSelected != null)
@@ -379,7 +382,8 @@ namespace DSShared.Lists
 				{
 					var rect = new System.Drawing.Rectangle(
 														_colClicked.Left,
-														_top /*+ yOffset*/ + 1,
+//														_top + yOffset + 1,
+														_top + 1,
 														_colClicked.Width,
 														_columns.Font.Height + CustomListColumnCollection.PadY + 1);
 					e.Graphics.FillRectangle(Brushes.LightSeaGreen, rowRect);
@@ -392,7 +396,8 @@ namespace DSShared.Lists
 
 					var rect = new System.Drawing.Rectangle(
 														startX + _columns.OffX,
-														_top /*+ yOffset*/ + CustomListColumnCollection.PadY,
+//														_top + yOffset + CustomListColumnCollection.PadY,
+														_top + CustomListColumnCollection.PadY,
 														col.Width - 4,
 														_columns.Font.Height);
 
@@ -434,23 +439,26 @@ namespace DSShared.Lists
 				e.Graphics.DrawLine(
 								Pens.Black,
 								_columns.OffX,
-								_top + _columns.Font.Height + CustomListColumnCollection.PadY * 2 /*+ yOffset*/,
+//								_top + _columns.Font.Height + CustomListColumnCollection.PadY * 2 + yOffset,
+								_top + _columns.Font.Height + CustomListColumnCollection.PadY * 2,
 								_columns.TableWidth - 1,
-								_top + _columns.Font.Height + CustomListColumnCollection.PadY * 2 /*+ yOffset*/);
+//								_top + _columns.Font.Height + CustomListColumnCollection.PadY * 2 + yOffset);
+								_top + _columns.Font.Height + CustomListColumnCollection.PadY * 2);
 			}
 		}
 
-/*		protected override void OnMouseDown(System.Windows.Forms.MouseEventArgs e)
-		{
-			base.OnMouseDown(e);
-		}
-		protected override void OnMouseEnter(EventArgs e)
-		{
-			base.OnMouseEnter(e);
-		}
-		protected override void OnMouseLeave(EventArgs e)
-		{
-			base.OnMouseLeave(e);
-		} */
+//		protected override void OnMouseDown(System.Windows.Forms.MouseEventArgs e)
+//		{
+//			base.OnMouseDown(e);
+//		}
+//		protected override void OnMouseEnter(EventArgs e)
+//		{
+//			base.OnMouseEnter(e);
+//		}
+//		protected override void OnMouseLeave(EventArgs e)
+//		{
+//			base.OnMouseLeave(e);
+//		}
 	}
 }
+*/

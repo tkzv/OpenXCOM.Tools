@@ -15,7 +15,7 @@ namespace MapView
 
 	/// <summary>
 	/// A wrapper around a Hashtable for Setting objects. Setting objects are
-	/// intended to use with the CustomPropertyGrid.
+	/// intended to use with the OptionsPropertyGrid.
 	/// </summary>
 	public sealed class Settings
 	{
@@ -209,7 +209,7 @@ namespace MapView
 
 
 	/// <summary>
-	/// Stores information to be used in the CustomPropertyGrid.
+	/// Stores information to be used in the OptionsPropertyGrid.
 	/// </summary>
 	public sealed class Setting
 	{

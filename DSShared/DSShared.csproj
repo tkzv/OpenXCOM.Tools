@@ -138,22 +138,22 @@
     <Compile Include="Exceptions_\ObjPropertyNullValueException_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lists\CustomList.cs">
+    <Compile Include="Lists_\CustomList_.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Lists\CustomListColumn.cs">
+    <Compile Include="Lists_\CustomListColumn_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lists\CustomListColumnCollection.cs">
+    <Compile Include="Lists_\CustomListColumnCollection_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lists\EditStrAttribute.cs">
+    <Compile Include="Lists_\EditStrAttribute_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lists\PropertyObject.cs">
+    <Compile Include="Lists_\PropertyObject_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Lists\RowObject.cs">
+    <Compile Include="Lists_\RowObject_.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\IAssemblyLoadable.cs" />

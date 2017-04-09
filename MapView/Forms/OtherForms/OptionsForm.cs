@@ -17,17 +17,17 @@ namespace MapView
 		:
 			Form
 	{
-		private CustomPropertyGrid propertyGrid;
+		private OptionsPropertyGrid _propertyGrid;
 
 
 		internal OptionsForm(string typeLabel, Settings settings)
 		{
 			InitializeComponent();
 
-			var regInfo = new RegistryInfo(this, "OptionsForm"); // subscribe to Load and Closing events.
+			var regInfo = new RegistryInfo(this, "Options"); // subscribe to Load and Closing events.
 
-			propertyGrid.TypeLabel = typeLabel;
-			propertyGrid.SetSettings(settings);
+			_propertyGrid.TypeLabel = typeLabel;
+			_propertyGrid.SetSettings(settings);
 		}
 
 
@@ -35,23 +35,23 @@ namespace MapView
 
 		private void InitializeComponent()
 		{
-			this.propertyGrid = new global::MapView.CustomPropertyGrid();
+			this._propertyGrid = new global::MapView.OptionsPropertyGrid();
 			this.SuspendLayout();
 			// 
 			// propertyGrid
 			// 
-			this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.propertyGrid.LineColor = System.Drawing.SystemColors.ScrollBar;
-			this.propertyGrid.Location = new System.Drawing.Point(0, 0);
-			this.propertyGrid.Name = "propertyGrid";
-			this.propertyGrid.Size = new System.Drawing.Size(592, 374);
-			this.propertyGrid.TabIndex = 0;
+			this._propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+			this._propertyGrid.LineColor = System.Drawing.SystemColors.ScrollBar;
+			this._propertyGrid.Location = new System.Drawing.Point(0, 0);
+			this._propertyGrid.Name = "propertyGrid";
+			this._propertyGrid.Size = new System.Drawing.Size(592, 374);
+			this._propertyGrid.TabIndex = 0;
 			// 
 			// OptionsForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(592, 374);
-			this.Controls.Add(this.propertyGrid);
+			this.Controls.Add(this._propertyGrid);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MinimumSize = new System.Drawing.Size(500, 300);
 			this.Name = "OptionsForm";
@@ -64,7 +64,7 @@ namespace MapView
 	}
 
 
-	internal sealed class CustomPropertyGrid
+	internal sealed class OptionsPropertyGrid
 		:
 			PropertyGrid
 	{
@@ -83,7 +83,7 @@ namespace MapView
 		private static Hashtable _hashTypes = new Hashtable();
 
 
-		internal CustomPropertyGrid()
+		internal OptionsPropertyGrid()
 		{
 			initTypes();
 		}
@@ -228,7 +228,7 @@ namespace MapView
 													"SetHash",
 													MethodAttributes.Public,
 													null,
-													new Type[]{ typeof(Hashtable) });
+													new []{ typeof(Hashtable) });
 
 			generator = methodSetter.GetILGenerator();
 			generator.Emit(OpCodes.Ldarg_0);
@@ -241,7 +241,7 @@ namespace MapView
 			propBuilder.SetSetMethod(methodSetter);
 
 			// add the [Browsable(false)] property to the Hash property so it doesn't show up on the property list
-			var ctorInfo = typeof(BrowsableAttribute).GetConstructor(new Type[]{ typeof(bool) });
+			var ctorInfo = typeof(BrowsableAttribute).GetConstructor(new []{ typeof(bool) });
 			var attributeBuilder = new CustomAttributeBuilder(ctorInfo, new object[]{ false });
 			propBuilder.SetCustomAttribute(attributeBuilder);
 		}
@@ -305,7 +305,7 @@ namespace MapView
 													"set_" + name,
 													MethodAttributes.Public,
 													null,
-													new Type[]{ objType });
+													new []{ objType });
 			generator = methodSetter.GetILGenerator();
 			generator.Emit(OpCodes.Ldarg_0);
 			generator.Emit(OpCodes.Ldfld, fieldInfo);
@@ -326,14 +326,14 @@ namespace MapView
 
 			if (setting.Description != null)
 			{
-				var ctorInfo = typeof(DescriptionAttribute).GetConstructor(new Type[]{ typeof(string) });
+				var ctorInfo = typeof(DescriptionAttribute).GetConstructor(new []{ typeof(string) });
 				var attributeBuilder = new CustomAttributeBuilder(ctorInfo, new object[]{ setting.Description });
 				propertyBuilder.SetCustomAttribute(attributeBuilder);
 			}
 
 			if (setting.Category != null)
 			{
-				var ctorInfo = typeof(CategoryAttribute).GetConstructor(new Type[]{ typeof(string) });
+				var ctorInfo = typeof(CategoryAttribute).GetConstructor(new []{ typeof(string) });
 				var attributeBuilder = new CustomAttributeBuilder(ctorInfo, new object[]{ setting.Category });
 				propertyBuilder.SetCustomAttribute(attributeBuilder);
 			}

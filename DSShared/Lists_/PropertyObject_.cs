@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Reflection;
 //using DSShared.Exceptions;
@@ -70,29 +71,29 @@ namespace DSShared.Lists
 				this(info, null, null)
 		{}
 
-/*		/// <summary>
-		/// Initializes a new instance of the <see cref="T:DSShared.Lists.PropertyObject"/> class.
-		/// </summary>
-		/// <param name="info">the PropertyInfo object that will reflect on
-		/// objects later on to display information with</param>
-		/// <param name="property">if the information required resides in a
-		/// property's property, this parameter represents that information</param>
-		public PropertyObject(PropertyInfo info, PropertyObject property)
-			:
-				this(info, null, property)
-		{} */
+//		/// <summary>
+//		/// Initializes a new instance of the <see cref="T:DSShared.Lists.PropertyObject"/> class.
+//		/// </summary>
+//		/// <param name="info">the PropertyInfo object that will reflect on
+//		/// objects later on to display information with</param>
+//		/// <param name="property">if the information required resides in a
+//		/// property's property, this parameter represents that information</param>
+//		public PropertyObject(PropertyInfo info, PropertyObject property)
+//			:
+//				this(info, null, property)
+//		{}
 
-/*		/// <summary>
-		/// Initializes a new instance of the <see cref="T:DSShared.Lists.PropertyObject"/> class.
-		/// </summary>
-		/// <param name="info">the PropertyInfo object that will reflect on
-		/// objects later on to display information with</param>
-		/// <param name="id">an array of index parameters if the property
-		/// parameter represents an indexex property</param>
-		public PropertyObject(PropertyInfo info, object[] id)
-			:
-				this(info, id, null)
-		{} */
+//		/// <summary>
+//		/// Initializes a new instance of the <see cref="T:DSShared.Lists.PropertyObject"/> class.
+//		/// </summary>
+//		/// <param name="info">the PropertyInfo object that will reflect on
+//		/// objects later on to display information with</param>
+//		/// <param name="id">an array of index parameters if the property
+//		/// parameter represents an indexex property</param>
+//		public PropertyObject(PropertyInfo info, object[] id)
+//			:
+//				this(info, id, null)
+//		{}
 
 
 		/// <summary>
@@ -159,3 +160,4 @@ namespace DSShared.Lists
 		}
 	}
 }
+*/

@@ -30,13 +30,13 @@ namespace MapView
 //			_runPath = Directory.GetCurrentDirectory();
 
 			InitializeComponent();
+			DialogResult = DialogResult.Cancel;
 
 			// WORKAROUND: See note in 'XCMainWindow' cTor.
 			var size = new System.Drawing.Size();
 			size.Width  =
 			size.Height = 0;
 			MaximumSize = size; // fu.net
-			DialogResult = DialogResult.Cancel;
 
 
 			// NOTE: Add your own personal XCOM resources-dir here if desired:

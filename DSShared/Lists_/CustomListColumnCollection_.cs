@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -311,7 +312,8 @@ namespace DSShared.Lists
 		/// <param name="e">the <see cref="T:System.Windows.Forms.PaintEventArgs"/> instance containing the event data</param>
 		/// <param name="rowHeight">the height of the row</param>
 //		/// <param name="yOffset">the y-offset</param>
-		public void Render(PaintEventArgs e, int rowHeight/*, int yOffset*/)
+//		public void Render(PaintEventArgs e, int rowHeight, int yOffset)
+		public void Render(PaintEventArgs e, int rowHeight)
 		{
 			e.Graphics.FillRectangle(
 								_brushHeader,
@@ -336,7 +338,8 @@ namespace DSShared.Lists
 								col.Width + startX - PadX + OffX,
 								OffY,
 								col.Width + startX - PadX + OffX,
-								HeaderHeight + rowHeight /*+ yOffset*/);
+//								HeaderHeight + rowHeight + yOffset);
+								HeaderHeight + rowHeight);
 				e.Graphics.DrawString(
 								col.Title,
 								Font,
@@ -466,3 +469,4 @@ namespace DSShared.Lists
 		}
 	}
 }
+*/
