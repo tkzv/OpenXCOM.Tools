@@ -421,7 +421,7 @@ namespace MapView
 
 		private void btnPathsInstall_Click(object sender, EventArgs e)
 		{
-			using (var install = new InstallWindow())
+			using (var install = new InstallationForm())
 				install.ShowDialog(this);
 		}
 

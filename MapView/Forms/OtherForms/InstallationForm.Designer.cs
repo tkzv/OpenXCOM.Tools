@@ -1,6 +1,6 @@
 namespace MapView
 {
-	partial class InstallWindow
+	partial class InstallationForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -167,7 +167,7 @@ namespace MapView
 			this.lblInfo.Text = "Enter the paths to either or both the UFO and TFTD resource folders. These are th" +
 	"e respective parent folder(s) of the MAPS, ROUTES, and TERRAIN folders.";
 			// 
-			// InstallWindow
+			// InstallationForm
 			// 
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
@@ -181,7 +181,7 @@ namespace MapView
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(480, 140);
 			this.MinimumSize = new System.Drawing.Size(480, 140);
-			this.Name = "InstallWindow";
+			this.Name = "InstallationForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "set Resource folder(s)";
 			this.pUfo.ResumeLayout(false);

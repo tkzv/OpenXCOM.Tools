@@ -1,10 +1,12 @@
 using System;
+using System.Windows.Forms;
+
 
 namespace MapView
 {
 	internal sealed class SubsetForm
 		:
-			System.Windows.Forms.Form
+			Form
 	{
 		private string _label;
 
@@ -44,9 +46,9 @@ namespace MapView
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.lblSubset = new System.Windows.Forms.Label();
-			this.tbLabel = new System.Windows.Forms.TextBox();
-			this.btnOk = new System.Windows.Forms.Button();
+			this.lblSubset = new Label();
+			this.tbLabel = new TextBox();
+			this.btnOk = new Button();
 			this.SuspendLayout();
 			// 
 			// lblSubset
@@ -81,11 +83,11 @@ namespace MapView
 			this.Controls.Add(this.tbLabel);
 			this.Controls.Add(this.lblSubset);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SubsetForm";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.StartPosition = FormStartPosition.CenterParent;
 			this.Text = "New Subset";
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -93,9 +95,10 @@ namespace MapView
 		}
 		#endregion
 
-		private System.Windows.Forms.Label lblSubset;
-		private System.Windows.Forms.TextBox tbLabel;
-		private System.Windows.Forms.Button btnOk;
 		private System.ComponentModel.Container components = null;
+
+		private Label lblSubset;
+		private TextBox tbLabel;
+		private Button btnOk;
 	}
 }

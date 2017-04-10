@@ -40,26 +40,26 @@ namespace MapView.Forms.MainWindow
 		{
 			_settings = settings;
 
-			CreateMenuItem(MainWindowsManager.TileView,     "Tile View",     _viewsMenu);
+			CreateMenuitem(MainWindowsManager.TileView,     "Tile View",     _viewsMenu);
 
 			_viewsMenu.MenuItems.Add(new MenuItem(Divider));
 
-			CreateMenuItem(MainWindowsManager.TopView,      "Top View",      _viewsMenu);
-			CreateMenuItem(MainWindowsManager.RouteView,    "Route View",    _viewsMenu);
-			CreateMenuItem(MainWindowsManager.TopRouteView, "TopRoute View", _viewsMenu);
+			CreateMenuitem(MainWindowsManager.TopView,      "Top View",      _viewsMenu);
+			CreateMenuitem(MainWindowsManager.RouteView,    "Route View",    _viewsMenu);
+			CreateMenuitem(MainWindowsManager.TopRouteView, "TopRoute View", _viewsMenu);
 
 			_viewsMenu.MenuItems.Add(new MenuItem(Divider));
 
-			CreateMenuItem(console,                         "Console",       _viewsMenu);
+			CreateMenuitem(console,                         "Console",       _viewsMenu);
 
 
-			CreateMenuItem(MainWindowsManager.HelpScreen,   "Quick Help",    _helpMenu);
-			CreateMenuItem(MainWindowsManager.AboutScreen,  "About",         _helpMenu);
+			CreateMenuitem(MainWindowsManager.HelpScreen,   "Quick Help",    _helpMenu);
+			CreateMenuitem(MainWindowsManager.AboutScreen,  "About",         _helpMenu);
 
-			AddMenuItemSettings();
+			AddMenuitemSettings();
 		}
 
-		private void CreateMenuItem(
+		private void CreateMenuitem(
 				Form f,
 				string text,
 				Menu parent)
@@ -71,7 +71,7 @@ namespace MapView.Forms.MainWindow
 
 			parent.MenuItems.Add(it);
 
-			it.Click += OnMenuItemClick;
+			it.Click += OnMenuitemClick;
 
 			f.Closing += (sender, e) =>
 			{
@@ -84,7 +84,7 @@ namespace MapView.Forms.MainWindow
 			_allForms.Add(f);
 		}
 
-		private static void OnMenuItemClick(object sender, EventArgs e)
+		private static void OnMenuitemClick(object sender, EventArgs e)
 		{
 			var it = (MenuItem)sender;
 
@@ -101,7 +101,7 @@ namespace MapView.Forms.MainWindow
 			}
 		}
 
-		private void AddMenuItemSettings()
+		private void AddMenuitemSettings()
 		{
 			//XCom.LogFile.WriteLine("AddMenuItemSettings");
 			foreach (MenuItem it in _viewsMenu.MenuItems)
@@ -117,9 +117,8 @@ namespace MapView.Forms.MainWindow
 									key,
 //									!(it.Tag is XCom.ConsoleForm) && !(it.Tag is MapView.Forms.MapObservers.TileViews.TopRouteViewForm),	// q. why is TopRouteViewForm under 'TileViews'
 									(it.Tag is TopViewForm) || (it.Tag is RouteViewForm) || (it.Tag is TileViewForm),						// a. why not.
-									"Default display window - " + it.Text,
-									"Windows",
-									null, false, null);
+									"Viewer - " + it.Text,	// NOTE: Console is not technically a viewer, but I don't see this being used anyway.
+									"Windows");				// nor do i see this used in any meaningful way yet.
 
 					var f = it.Tag as Form;
 					if (f != null)

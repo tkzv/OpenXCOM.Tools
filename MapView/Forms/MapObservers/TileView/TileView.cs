@@ -119,9 +119,7 @@ namespace MapView.Forms.MapObservers.TileViews
 								((SolidBrush)_brushes[type]).Color,
 								"Color of specified tile type",
 								"TileView",
-								OnBrushChanged,
-								false,
-								null);
+								OnBrushChanged);
 			}
 			VolutarSettingService.LoadDefaultSettings(Settings);
 

@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace MapView
 {
-	internal class TilesetForm
+	internal sealed class TilesetForm
 		:
 			Form
 	{

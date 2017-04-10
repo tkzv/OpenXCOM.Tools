@@ -107,24 +107,22 @@ namespace MapView
 		/// <summary>
 		/// Adds a Setting to a specified target.
 		/// </summary>
-		/// <param name="key">property name</param>
+		/// <param name="key">property key - any spaces will be removed</param>
 		/// <param name="value">start value of the property</param>
 		/// <param name="desc">property description</param>
 		/// <param name="category">property category</param>
 		/// <param name="valueChangedEvent">event handler to receive the
 		/// PropertyValueChanged event</param>
-		/// <param name="reflect">if true an internal event handler will be
-		/// created - the target must not be null and the name must be the name
-		/// of a property of the type that the target is</param>
 		/// <param name="target">the object that will receive the changed
-		/// property values</param>
+		/// property values: an internal event handler will be created and the
+		/// name must be the name of a property of the type that the target is
+		/// whatever that meant</param>
 		internal void AddSetting(
 				string key,
 				object value,
 				string desc,
 				string category,
 				ValueChangedEventHandler valueChangedEvent = null,
-				bool reflect = false,
 				object target = null)
 		{
 			key = key.Replace(" ", String.Empty);
@@ -143,9 +141,10 @@ namespace MapView
 			}
 
 			if (valueChangedEvent != null)
+			{
 				setting.ValueChangedEvent += valueChangedEvent;
-
-			if (reflect && target != null)
+			}
+			else if (target != null)
 			{
 				_dictPropObjects[key] = new Property(target, key);
 				this[key].ValueChangedEvent += OnValueChanged;

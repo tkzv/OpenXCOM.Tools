@@ -6,7 +6,7 @@ namespace MapView
 	/// <summary>
 	/// Options for the ChoiceDialog.
 	/// </summary>
-	public enum Choice
+	internal enum Choice
 	{
 		Overwrite,
 		UseExisting
@@ -15,6 +15,7 @@ namespace MapView
 
 	/// <summary>
 	/// This form is used only for adding a new Map with the PathsEditor.
+	/// TODO: replace ChoiceDialog with a standard .NET dialog.
 	/// </summary>
 	internal sealed class ChoiceDialog
 		:
@@ -23,7 +24,7 @@ namespace MapView
 		private Choice _choice;
 
 
-		public ChoiceDialog(string file)
+		internal ChoiceDialog(string file)
 		{
 			InitializeComponent();
 			txt.Text = string.Format(
@@ -34,7 +35,7 @@ namespace MapView
 		}
 
 
-		public Choice Choice // hello DialogResult hello.
+		internal Choice Choice // hello DialogResult hello.
 		{
 			get { return _choice; }
 		}

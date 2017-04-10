@@ -53,10 +53,7 @@ namespace MapView.SettingServices
 							VolutarMcdEditorPath,
 							String.Empty,
 							"Path to Volutar MCD Editor",
-							"TileView",
-							null,
-							false,
-							null);
+							"TileView");
 		}
 	}
 }

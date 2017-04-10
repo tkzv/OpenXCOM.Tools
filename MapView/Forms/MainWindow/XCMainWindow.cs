@@ -87,7 +87,7 @@ namespace MapView
 
 			if (!infoPaths.FileExists()) // check if Paths.cfg exists yet
 			{
-				using (var f = new InstallWindow())
+				using (var f = new InstallationForm())
 					if (f.ShowDialog(this) != DialogResult.OK)
 						Environment.Exit(-1); // wtf -1
 
@@ -317,66 +317,6 @@ namespace MapView
 			}
 		}
 
-		private void OnSettingChange(object sender, string key, object val)
-		{
-			Settings[key].Value = val;
-			switch (key)
-			{
-				case "Animation":
-					if (miOn.Checked = (bool)val)
-					{
-						miOff.Checked = false;
-						MainViewPanel.Start();
-					}
-					else
-					{
-						miOff.Checked = true;
-						MainViewPanel.Stop();
-					}
-					break;
-
-				case "Doors":
-					if (MainViewPanel.Instance.BaseMap != null)
-					{
-						if ((bool)val)
-						{
-							foreach (XCTile tile in MainViewPanel.Instance.BaseMap.Tiles)
-								if (tile.Info.UfoDoor || tile.Info.HumanDoor)
-									tile.MakeAnimate();
-						}
-						else
-						{
-							foreach (XCTile tile in MainViewPanel.Instance.BaseMap.Tiles)
-								if (tile.Info.UfoDoor || tile.Info.HumanDoor)
-									tile.StopAnimate();
-						}
-					}
-					break;
-
-				case "SaveWindowPositions":
-//					PathsEditor.SaveRegistry = (bool)val; // TODO: find a place to cache this value.
-					break;
-
-				case "ShowGrid":
-					MainViewPanel.Instance.MainView.ShowGrid = (bool)val;
-					break;
-
-				case "GridColor":
-					MainViewPanel.Instance.MainView.GridColor = (Color)val;
-					break;
-
-				case "GridLineColor":
-					MainViewPanel.Instance.MainView.GridLineColor = (Color)val;
-					break;
-
-				case "GridLineWidth":
-					MainViewPanel.Instance.MainView.GridLineWidth = (int)val;
-					break;
-
-				// NOTE: "GraySelection" is handled.
-			}
-		}
-
 		private sealed class SortableTreeNode
 			:
 				TreeNode,
@@ -492,57 +432,117 @@ namespace MapView
 							MainViewPanel.IsAnimated,
 							"If true the map will animate itself.",
 							"Main",
-							handler, false, null);
+							handler);
 			settings.AddSetting(
 							"Doors",
 							false,
 							"If true the door tiles will animate themselves.",
 							"Main",
-							handler, false, null);
+							handler);
 			settings.AddSetting(
 							"SaveWindowPositions",
 							true, //PathsEditor.SaveRegistry,
 							"If true the window positions and sizes will be saved to the MapViewers YAML file.",
 							"Main",
-							handler, false, null);
+							handler);
+
 			settings.AddSetting(
 							"ShowGrid",
 							MainViewPanel.Instance.MainView.ShowGrid,
 							"If true a grid will show up at the current level of editing.",
 							"MapView",
-							null, true, MainViewPanel.Instance.MainView);
+							null, MainViewPanel.Instance.MainView);
 			settings.AddSetting(
 							"GridColor",
 							MainViewPanel.Instance.MainView.GridColor,
 							"Color of the grid in (a,r,g,b) format.",
 							"MapView",
-							null, true, MainViewPanel.Instance.MainView);
+							null, MainViewPanel.Instance.MainView);
 			settings.AddSetting(
 							"GridLineColor",
 							MainViewPanel.Instance.MainView.GridLineColor,
 							"Color of the lines that make up the grid.",
 							"MapView",
-							null, true, MainViewPanel.Instance.MainView);
+							null, MainViewPanel.Instance.MainView);
 			settings.AddSetting(
 							"GridLineWidth",
 							MainViewPanel.Instance.MainView.GridLineWidth,
 							"Width of the grid lines in pixels.",
 							"MapView",
-							null, true, MainViewPanel.Instance.MainView);
+							null, MainViewPanel.Instance.MainView);
 			settings.AddSetting(
 							"GraySelection",
 							MainViewPanel.Instance.MainView.GraySelection,
 							"If true the selection area will show up in gray.",
 							"MapView",
-							null, true, MainViewPanel.Instance.MainView);
+							null, MainViewPanel.Instance.MainView);
 //			settings.AddSetting(
 //							"SaveOnExit",
 //							true,
 //							"If true these settings will be saved on program exit.",
-//							"Main",
-//							null, false, null);
+//							"Main");
 
 			Settings = settings;
+		}
+
+		private void OnSettingChange(object sender, string key, object val)
+		{
+			Settings[key].Value = val;
+			switch (key)
+			{
+				case "Animation":
+					if (miOn.Checked = (bool)val)
+					{
+						miOff.Checked = false;
+						MainViewPanel.Start();
+					}
+					else
+					{
+						miOff.Checked = true;
+						MainViewPanel.Stop();
+					}
+					break;
+
+				case "Doors":
+					if (MainViewPanel.Instance.BaseMap != null)
+					{
+						if ((bool)val)
+						{
+							foreach (XCTile tile in MainViewPanel.Instance.BaseMap.Tiles)
+								if (tile.Info.UfoDoor || tile.Info.HumanDoor)
+									tile.MakeAnimate();
+						}
+						else
+						{
+							foreach (XCTile tile in MainViewPanel.Instance.BaseMap.Tiles)
+								if (tile.Info.UfoDoor || tile.Info.HumanDoor)
+									tile.StopAnimate();
+						}
+					}
+					break;
+
+				case "SaveWindowPositions":
+//					PathsEditor.SaveRegistry = (bool)val; // TODO: find a place to cache this value.
+					break;
+
+				case "ShowGrid":
+					MainViewPanel.Instance.MainView.ShowGrid = (bool)val;
+					break;
+
+				case "GridColor":
+					MainViewPanel.Instance.MainView.GridColor = (Color)val;
+					break;
+
+				case "GridLineColor":
+					MainViewPanel.Instance.MainView.GridLineColor = (Color)val;
+					break;
+
+				case "GridLineWidth":
+					MainViewPanel.Instance.MainView.GridLineWidth = (int)val;
+					break;
+
+				// NOTE: "GraySelection" is handled.
+			}
 		}
 
 		private void OnCloseSaveRegistry(object sender, CancelEventArgs args)
@@ -977,7 +977,7 @@ namespace MapView
 		/// <summary>
 		/// Transposes all the default viewer sizes and positions from the
 		/// embedded MapViewers.yml manifest to a /settings/MapViewers.yml file.
-		/// Based on InstallWindow.
+		/// Based on InstallationForm.
 		/// </summary>
 		private void CreateIni()
 		{

@@ -257,11 +257,11 @@
     <Compile Include="Forms\OtherForms\Help.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\InstallWindow.cs">
+    <Compile Include="Forms\OtherForms\InstallationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\InstallWindow.Designer.cs">
-      <DependentUpon>InstallWindow.cs</DependentUpon>
+    <Compile Include="Forms\OtherForms\InstallationForm.Designer.cs">
+      <DependentUpon>InstallationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\OtherForms\LoadingForm.cs">
       <SubType>Form</SubType>
@@ -412,9 +412,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="_Embedded\ImagesTFTD.cfg" />
     <EmbeddedResource Include="_Embedded\ImagesUFO.cfg" />
-    <EmbeddedResource Include="Forms\OtherForms\InstallWindow.resx">
+    <EmbeddedResource Include="Forms\OtherForms\InstallationForm.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>InstallWindow.cs</DependentUpon>
+      <DependentUpon>InstallationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="_Embedded\MapEditTFTD.cfg" />
     <EmbeddedResource Include="_Embedded\MapEditUFO.cfg" />

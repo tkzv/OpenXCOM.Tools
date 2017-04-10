@@ -11,7 +11,7 @@ using XCom;
 
 namespace MapView
 {
-	internal sealed partial class InstallWindow
+	internal sealed partial class InstallationForm
 		:
 			Form
 	{
@@ -25,7 +25,7 @@ namespace MapView
 		private Varidia _vars = new Varidia();
 
 
-		public InstallWindow()
+		internal InstallationForm()
 		{
 //			_runPath = Directory.GetCurrentDirectory();
 

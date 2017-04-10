@@ -18,24 +18,24 @@ RouteView:
   Top: 60
   Width: 640
   Height: 480
-TopRouteView:
+TileView:
   Left: 110
   Top: 80
   Width: 640
   Height: 480
-TileView:
+TopRouteView:
   Left: 130
   Top: 100
   Width: 640
   Height: 480
 Console:
-  Left: 170
-  Top: 140
+  Left: 150
+  Top: 120
   Width: 500
   Height: 300
 Options:
-  Left: 150
-  Top: 120
+  Left: 170
+  Top: 140
   Width: 600
   Height: 400
 PckView:

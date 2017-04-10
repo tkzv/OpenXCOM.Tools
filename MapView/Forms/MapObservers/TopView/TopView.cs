@@ -267,20 +267,20 @@ namespace MapView.Forms.MapObservers.TopViews
 			ValueChangedEventHandler pw = OnPenWidthChanged;
 			ValueChangedEventHandler dh = OnDiamondHeight;
 
-			Settings.AddSetting("GroundColor",      Color.Orange,            "Color of the ground tile indicator",          "Tile",   bc, false, null);
-			Settings.AddSetting("NorthColor",       Color.Red,               "Color of the north tile indicator",           "Tile",   pc, false, null);
-			Settings.AddSetting("WestColor",        Color.Red,               "Color of the west tile indicator",            "Tile",   pc, false, null);
-			Settings.AddSetting("ContentColor",     Color.Green,             "Color of the content tile indicator",         "Tile",   bc, false, null);
-			Settings.AddSetting("NorthWidth",       4,                       "Width of the north tile indicator in pixels", "Tile",   pw, false, null);
-			Settings.AddSetting("WestWidth",        4,                       "Width of the west tile indicator in pixels",  "Tile",   pw, false, null);
-			Settings.AddSetting("SelectColor",      Color.Black,             "Color of the selection line",                 "Select", pc, false, null);
-			Settings.AddSetting("SelectWidth",      2,                       "Width of the selection line in pixels",       "Select", pw, false, null);
-			Settings.AddSetting("GridColor",        Color.Black,             "Color of the grid lines",                     "Grid",   pc, false, null);
-			Settings.AddSetting("GridWidth",        1,                       "Width of the grid lines",                     "Grid",   pw, false, null);
-			Settings.AddSetting("MouseWidth",       2,                       "Width of the mouse-over indicator",           "Grid",   pw, false, null);
-			Settings.AddSetting("MouseColor",       Color.Blue,              "Color of the mouse-over indicator",           "Grid",   pc, false, null);
-			Settings.AddSetting("SelectTileColor",  Color.LightBlue,         "Background color of the selected tile part",  "Other",  bc, false, null);
-			Settings.AddSetting("DiamondMinHeight", _topViewPanel.MinHeight, "Minimum height of the grid tiles",            "Tile",   dh, false, null);
+			Settings.AddSetting("GroundColor",      Color.Orange,            "Color of the ground tile indicator",          "Tile",   bc);
+			Settings.AddSetting("NorthColor",       Color.Red,               "Color of the north tile indicator",           "Tile",   pc);
+			Settings.AddSetting("WestColor",        Color.Red,               "Color of the west tile indicator",            "Tile",   pc);
+			Settings.AddSetting("ContentColor",     Color.Green,             "Color of the content tile indicator",         "Tile",   bc);
+			Settings.AddSetting("NorthWidth",       4,                       "Width of the north tile indicator in pixels", "Tile",   pw);
+			Settings.AddSetting("WestWidth",        4,                       "Width of the west tile indicator in pixels",  "Tile",   pw);
+			Settings.AddSetting("SelectColor",      Color.Black,             "Color of the selection line",                 "Select", pc);
+			Settings.AddSetting("SelectWidth",      2,                       "Width of the selection line in pixels",       "Select", pw);
+			Settings.AddSetting("GridColor",        Color.Black,             "Color of the grid lines",                     "Grid",   pc);
+			Settings.AddSetting("GridWidth",        1,                       "Width of the grid lines",                     "Grid",   pw);
+			Settings.AddSetting("MouseWidth",       2,                       "Width of the mouse-over indicator",           "Grid",   pw);
+			Settings.AddSetting("MouseColor",       Color.Blue,              "Color of the mouse-over indicator",           "Grid",   pc);
+			Settings.AddSetting("SelectTileColor",  Color.LightBlue,         "Background color of the selected tile part",  "Other",  bc);
+			Settings.AddSetting("DiamondMinHeight", _topViewPanel.MinHeight, "Minimum height of the grid tiles",            "Tile",   dh);
 
 			_topViewPanel.Brushes  =
 			QuadrantsPanel.Brushes = _topBrushes;

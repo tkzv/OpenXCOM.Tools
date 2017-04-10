@@ -977,13 +977,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 							redPen.Color,
 							"Color of unselected link lines",
 							"Links",
-							pc, false, null);
+							pc);
 			settings.AddSetting(
 							"UnselectedLinkWidth",
 							2,
 							"Width of unselected link lines",
 							"Links",
-							pw, false, null);
+							pw);
 
 			var bluePen = new Pen(new SolidBrush(Color.Blue), 2);
 			pens["SelectedLinkColor"] = bluePen;
@@ -993,13 +993,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 							bluePen.Color,
 							"Color of selected link lines",
 							"Links",
-							pc, false, null);
+							pc);
 			settings.AddSetting(
 							"SelectedLinkWidth",
 							2,
 							"Width of selected link lines",
 							"Links",
-							pw, false, null);
+							pw);
 
 			var wallPen = new Pen(new SolidBrush(Color.Black), 4);
 			pens["WallColor"] = wallPen;
@@ -1009,13 +1009,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 							wallPen.Color,
 							"Color of wall indicators",
 							"View",
-							pc, false, null);
+							pc);
 			settings.AddSetting(
 							"WallWidth",
 							4,
 							"Width of wall indicators",
 							"View",
-							pw, false, null);
+							pw);
 
 			var gridPen = new Pen(new SolidBrush(Color.Black), 1);
 			pens["GridLineColor"] = gridPen;
@@ -1025,13 +1025,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 							gridPen.Color,
 							"Color of grid lines",
 							"View",
-							pc, false, null);
+							pc);
 			settings.AddSetting(
 							"GridLineWidth",
 							1,
 							"Width of grid lines",
 							"View",
-							pw, false, null);
+							pw);
 
 			var selBrush = new SolidBrush(Color.Blue);
 			brushes["SelectedNodeColor"] = selBrush;
@@ -1040,7 +1040,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							selBrush.Color,
 							"Color of selected nodes",
 							"Nodes",
-							bc, false, null);
+							bc);
 
 			var spawnBrush = new SolidBrush(Color.GreenYellow);
 			brushes["SpawnNodeColor"] = spawnBrush;
@@ -1049,7 +1049,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							spawnBrush.Color,
 							"Color of spawn nodes",
 							"Nodes",
-							bc, false, null);
+							bc);
 
 			var nodeBrush = new SolidBrush(Color.Green);
 			brushes["UnselectedNodeColor"] = nodeBrush;
@@ -1058,7 +1058,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							nodeBrush.Color,
 							"Color of unselected nodes",
 							"Nodes",
-							bc, false, null);
+							bc);
 
 			var contentBrush = new SolidBrush(Color.DarkGray);
 			brushes["ContentTiles"] = contentBrush;
@@ -1067,7 +1067,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							contentBrush.Color,
 							"Color of map tiles with a content tile",
 							"Other",
-							bc, false, null);
+							bc);
 
 			tsmiConnectType.SelectedIndex = 0;
 		}
