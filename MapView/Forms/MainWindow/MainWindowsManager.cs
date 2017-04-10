@@ -80,13 +80,13 @@ namespace MapView.Forms.MainWindow
 
 		private void SetObserver(IMapBase baseMap, IMapObserver observer)
 		{
-			if (observer.Map != null)
+			if (observer.BaseMap != null)
 			{
-				observer.Map.HeightChanged -= observer.OnHeightChanged;
-				observer.Map.SelectedTileChanged -= observer.OnSelectedTileChanged;
+				observer.BaseMap.HeightChanged -= observer.OnHeightChanged;
+				observer.BaseMap.SelectedTileChanged -= observer.OnSelectedTileChanged;
 			}
 
-			if ((observer.Map = baseMap) != null)
+			if ((observer.BaseMap = baseMap) != null)
 			{
 				baseMap.HeightChanged += observer.OnHeightChanged;
 				baseMap.SelectedTileChanged += observer.OnSelectedTileChanged;

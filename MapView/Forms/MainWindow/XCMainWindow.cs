@@ -505,7 +505,7 @@ namespace MapView
 						bool animate = (bool)val;
 						foreach (XCTile tile in MainViewPanel.Instance.BaseMap.Tiles)
 							if (tile.Info.UfoDoor)// || tile.Info.HumanDoor)
-								tile.ToggleAnimation(animate);
+								tile.SetAnimationSprites(animate);
 					}
 					break;
 
@@ -813,7 +813,7 @@ namespace MapView
 			// human doors use their Alternate tile.
 			foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
 				if (tile.Info.UfoDoor)// || tile.Info.HumanDoor)
-					tile.ToggleAnimation(miDoors.Checked);
+					tile.SetAnimationSprites(miDoors.Checked);
 		}
 
 		private void OnResizeClick(object sender, EventArgs e)

@@ -105,7 +105,7 @@ namespace MapView.Forms.MapObservers.TopViews
 								break;
 						}
 
-						Map.MapChanged = true;
+						BaseMap.MapChanged = true;
 						Refresh();
 
 						break;
@@ -124,7 +124,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		public override void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
 			_mapLoc.Height = e.Height;
-			_mapTile = Map[_mapLoc.Row, _mapLoc.Col] as XCMapTile;
+			_mapTile = BaseMap[_mapLoc.Row, _mapLoc.Col] as XCMapTile;
 			Refresh();
 		}
 

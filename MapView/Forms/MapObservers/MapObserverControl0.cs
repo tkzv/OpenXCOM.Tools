@@ -27,7 +27,7 @@ namespace MapView
 
 		private IMapBase _baseMap;
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public virtual IMapBase Map
+		public virtual IMapBase BaseMap
 		{
 			get { return _baseMap; }
 			set

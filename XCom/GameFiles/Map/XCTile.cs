@@ -27,8 +27,8 @@ namespace XCom
 //			Tiles    = tiles; // NOTE: Tiles is not used.
 
 			Images = new XCImage[8]; // every tile-part contains refs to 8 sprites.
-			ToggleAnimation(!record.UfoDoor && !record.HumanDoor);
-
+			SetAnimationSprites(!record.UfoDoor);// && !record.HumanDoor);	// NOTE: Option to animate Ufo doors is different than
+																			// the Option for general animations.
 //			Dead      = null;
 //			Alternate = null;
 		}
@@ -51,7 +51,7 @@ namespace XCom
 			set { _tile = value; }
 		} */
 
-		public void ToggleAnimation(bool animate)
+		public void SetAnimationSprites(bool animate)
 		{
 			if (animate)
 			{

@@ -28,7 +28,7 @@ namespace MapView
 
 		private IMapBase _baseMap;
 		[Browsable(false), DefaultValue(null)]
-		public virtual IMapBase Map
+		public virtual IMapBase BaseMap
 		{
 			get { return _baseMap; }
 			set

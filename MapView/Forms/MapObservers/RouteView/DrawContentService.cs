@@ -14,13 +14,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 	internal sealed class DrawContentService	// Warning CA1001: Implement IDisposable on 'DrawContentService' because
 	{											// it creates members of the following IDisposable types: 'GraphicsPath'.
 		private int _halfWidth = 8;
-		public int HalfWidth
+		internal int HalfWidth
 		{
 			get { return _halfWidth; }
 			set { _halfWidth = value; }
 		}
 		private int _halfHeight = 4;
-		public int HalfHeight
+		internal int HalfHeight
 		{
 			get { return _halfHeight; }
 			set { _halfHeight = value; }
@@ -33,7 +33,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// cTor. Draws floor- and wall- and content- blobs for TopView and RMP View.
 		/// </summary>
-		public DrawContentService()
+		internal DrawContentService()
 		{
 			_floor   = new GraphicsPath();
 			_content = new GraphicsPath();
@@ -43,7 +43,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Draws floor-blobs for TopView.
 		/// </summary>
-		public void DrawFloor(
+		internal void DrawFloor(
 				Graphics g,
 				Brush brush,
 				int x, int y)
@@ -69,12 +69,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
-		private const int _pad = 4;
+		private const int Pad = 4;
 
 		/// <summary>
 		/// Draws wall- and content- blobs for TopView and RMP View.
 		/// </summary>
-		public void DrawContent(
+		internal void DrawContent(
 				Graphics g,
 				SolidPenBrush color,
 				int x, int y,
@@ -82,15 +82,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			var ptTop   = new Point(
 								x,
-								(y > int.MaxValue - _pad) ? int.MaxValue : y + _pad); // <- FxCop ...
+								(y > int.MaxValue - Pad) ? int.MaxValue : y + Pad); // <- FxCop ...
 			var ptBot   = new Point(
 								x,
-								y + (_halfHeight * 2) - _pad);
+								y + (_halfHeight * 2) - Pad);
 			var ptLeft  = new Point(
-								x - _halfWidth + (_pad * 2),
+								x - _halfWidth + (Pad * 2),
 								y + _halfHeight);
 			var ptRight = new Point(
-								x + _halfWidth - (_pad * 2),
+								x + _halfWidth - (Pad * 2),
 								y + _halfHeight);
 
 			switch (ContentTypeService.GetContentType(content))

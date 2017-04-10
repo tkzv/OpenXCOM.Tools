@@ -9,7 +9,7 @@ namespace XCom.Interfaces.Base
 	/// </summary>
 	public interface IMapObserver
 	{
-		IMapBase Map
+		IMapBase BaseMap
 		{ set; get;}
 
 		Dictionary<string, IMapObserver> MoreObservers

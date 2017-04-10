@@ -201,9 +201,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control && e.KeyCode == Keys.S
-				&& Map != null)
+				&& BaseMap != null)
 			{
-				Map.Save();
+				BaseMap.Save();
 				e.Handled = true;
 			}
 		}

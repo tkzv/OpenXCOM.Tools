@@ -12,25 +12,25 @@ namespace MapView.Forms.MapObservers.TopViews
 		:
 			TopViewPanelBase
 	{
-		public TopViewPanel()
+		internal TopViewPanel()
 		{
 			MainViewPanel.Instance.MainView.MouseDragEvent += OnMouseDrag;
 		}
 
 
-		public ToolStripMenuItem Ground
+		internal ToolStripMenuItem Ground
 		{ get; set; }
 
-		public ToolStripMenuItem North
+		internal ToolStripMenuItem North
 		{ get; set; }
 
-		public ToolStripMenuItem West
+		internal ToolStripMenuItem West
 		{ get; set; }
 
-		public ToolStripMenuItem Content
+		internal ToolStripMenuItem Content
 		{ get; set; }
 
-		public QuadrantPanel QuadrantsPanel
+		internal QuadrantPanel QuadrantsPanel
 		{ get; set; }
 
 
@@ -38,7 +38,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		private SolidPenBrush _colorNorth;
 		private SolidPenBrush _colorContent;
 
-		protected override void RenderTile(
+		internal protected override void RenderTile(
 				MapTileBase tile,
 				Graphics g,
 				int x, int y)

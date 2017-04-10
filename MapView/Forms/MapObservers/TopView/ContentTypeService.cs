@@ -6,9 +6,13 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TopViews
 {
-	public static class ContentTypeService
+	/// <summary>
+	/// Methods for determining how walls and objects are drawn for TopView and
+	/// RouteView.
+	/// </summary>
+	internal static class ContentTypeService
 	{
-		public static ContentType GetContentType(TileBase content)
+		internal static ContentType GetContentType(TileBase content)
 		{
 			var mcdEntry = content.Info as McdRecord;
 			if (mcdEntry != null)
@@ -28,13 +32,13 @@ namespace MapView.Forms.MapObservers.TopViews
 					return ContentType.SouthWall;
 
 				if (AllLoftWith(loftList, new[]{ 8, 10, 12, 14, 38 })
-					&& HasAnyLoftWith(loftList, new[]{ 38 }))
+					&& AnyLoftWith(loftList, new[]{ 38 }))
 				{
 					return ContentType.NorthWallWindow;
 				}
 
 				if (AllLoftWith(loftList, new[]{ 8, 10, 12, 14, 38, 0, 39, 77 })
-					&& HasAnyLoftWith(loftList, new[]{ 0 }))
+					&& AnyLoftWith(loftList, new[]{ 0 }))
 				{
 					return ContentType.NorthFence;
 				}
@@ -43,13 +47,13 @@ namespace MapView.Forms.MapObservers.TopViews
 					return ContentType.NorthWall;
 
 				if (AllLoftWith(loftList, new[]{ 7, 9, 11, 13, 37 })
-					&& HasAnyLoftWith(loftList, new[]{ 37 }))
+					&& AnyLoftWith(loftList, new[]{ 37 }))
 				{
 					return ContentType.WestWallWindow;
 				}
 
 				if (AllLoftWith(loftList, new[]{ 7, 9, 11, 13, 37,0, 39, 76 })
-					&& HasAnyLoftWith(loftList, new[]{ 0 }))
+					&& AnyLoftWith(loftList, new[]{ 0 }))
 				{
 					return ContentType.WestFence;
 				}
@@ -98,7 +102,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			return true;
 		}
 
-		private static bool HasAnyLoftWith(IEnumerable<byte> loftList, int[] numbers)
+		private static bool AnyLoftWith(IEnumerable<byte> loftList, int[] numbers)
 		{
 			foreach (var loft in loftList)
 				foreach (var number in numbers)
@@ -108,7 +112,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			return false;
 		}
 
-		public static bool IsDoor(TileBase content)
+		internal static bool IsDoor(TileBase content)
 		{
 			var mcdEntry = content.Info as McdRecord;
 			if (mcdEntry != null
@@ -120,7 +124,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 	}
 
-	public enum ContentType
+	internal enum ContentType
 	{
 		Content,
 		EastWall,

@@ -163,11 +163,11 @@ namespace MapView.Forms.MapObservers.TileViews
 			f.Show();
 		}
 
-		public override IMapBase Map
+		public override IMapBase BaseMap
 		{
 			set
 			{
-				base.Map = value;
+				base.BaseMap = value;
 				Tiles = (value != null) ? value.Tiles
 										: null;
 			}
@@ -229,7 +229,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private void OnVolutarMcdEditorClick(object sender, EventArgs e)
 		{
-			if ((Map as XCMapFile) != null)
+			if ((BaseMap as XCMapFile) != null)
 			{
 				var service = new VolutarSettingService(Settings);
 				var path = service.FullPath;	// this will invoke a box for the user to input the
@@ -257,7 +257,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			var tile = SelectedTile;
 			if (tile != null)
 			{
-				var file = Map as XCMapFile;
+				var file = BaseMap as XCMapFile;
 				if (file != null)
 					return file.GetDepLabel(tile);
 			}
