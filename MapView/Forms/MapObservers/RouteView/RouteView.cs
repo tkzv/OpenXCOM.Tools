@@ -428,7 +428,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			Text = String.Format(
 							System.Globalization.CultureInfo.InvariantCulture,
 							"Position{0}c:{1} r:{2}",
-							Environment.NewLine, e.MapPosition.Col, e.MapPosition.Row);
+							Environment.NewLine, e.Location.Col, e.Location.Row);
 		}
 
 		public override void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)

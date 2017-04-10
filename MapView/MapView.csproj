@@ -254,7 +254,7 @@
     <Compile Include="Globals.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\HelpScreen.cs">
+    <Compile Include="Forms\OtherForms\Help.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\OtherForms\InstallWindow.cs">
@@ -371,8 +371,8 @@
     <EmbeddedResource Include="Forms\OtherForms\Dialog_.resx">
       <DependentUpon>Dialog_.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\HelpScreen.resx">
-      <DependentUpon>HelpScreen.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\OtherForms\Help.resx">
+      <DependentUpon>Help.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\LoadingForm.resx">
       <DependentUpon>LoadingForm.cs</DependentUpon>

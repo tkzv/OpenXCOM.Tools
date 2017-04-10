@@ -11,11 +11,11 @@ namespace MapView
 	/// <summary>
 	/// General HelpScreen.
 	/// </summary>
-	internal sealed class HelpScreen
+	internal sealed class Help
 		:
 			Form
 	{
-		public HelpScreen()
+		internal Help()
 		{
 			InitializeComponent();
 

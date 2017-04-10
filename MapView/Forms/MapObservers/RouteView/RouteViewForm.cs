@@ -8,18 +8,21 @@ namespace MapView.Forms.MapObservers.RouteViews
 			Form,
 			IMapObserverProvider
 	{
-		public RouteViewForm()
+		internal RouteViewForm()
 		{
 			InitializeComponent();
 		}
 
 
-		public RouteView Control
+		internal RouteView Control
 		{
 			get { return RouteViewControl; }
 		}
 
-		public MapObserverControl0 MapObserver
+		/// <summary>
+		/// Satisfies IMapObserverProvider.
+		/// </summary>
+		public MapObserverControl0 ObserverControl0
 		{
 			get { return RouteViewControl; }
 		}

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-using DSShared.Windows;
+//using DSShared.Windows;
 
 using XCom.Interfaces.Base;
 
@@ -17,6 +17,8 @@ namespace MapView
 			UserControl,
 			IMapObserver
 	{
+		#region IMapObserver requirements
+
 		private readonly Dictionary<string, IMapObserver> _observersDictionary = new Dictionary<string, IMapObserver>();
 		public Dictionary<string, IMapObserver> MoreObservers
 		{
@@ -52,6 +54,19 @@ namespace MapView
 			}
 		} */
 
+		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
+		{
+			Refresh();
+		}
+
+		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
+		{
+			Refresh();
+		}
+
+		#endregion
+
+
 		internal Settings Settings
 		{ get; set; }
 
@@ -80,16 +95,6 @@ namespace MapView
 		/// <param name="e"></param>
 		protected virtual void OnExtraRegistrySettingsSave(RegistryEventArgs e)
 		{} */
-
-		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
-		{
-			Refresh();
-		}
-
-		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
-		{
-			Refresh();
-		}
 
 		/// <summary>
 		/// Scrolls the z-axis for TopView and RouteView.

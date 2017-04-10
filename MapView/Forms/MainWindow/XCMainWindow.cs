@@ -590,7 +590,7 @@ namespace MapView
 								{
 									MainView = new
 									{
-										Left   = Left,
+										Left   = Left, // relax, YamlDotNet figures it out.
 										Top    = Top,
 										Width  = Width,
 										Height = Height - SystemInformation.CaptionButtonSize.Height
@@ -745,7 +745,7 @@ namespace MapView
 				if (!menuShow.Enabled) // open all the forms in the show menu
 					_mainMenusManager.StartViewers();
 
-				_mainWindowsManager.SetMap(baseMap); // reset all observer events
+				_mainWindowsManager.SetObservers(baseMap); // reset all observer events
 			}
 //			else
 //				miExport.Enabled = false;

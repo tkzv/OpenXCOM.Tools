@@ -17,6 +17,8 @@ namespace MapView
 			DoubleBufferControl,
 			IMapObserver
 	{
+		#region IMapObserver requirements
+
 		private readonly Dictionary<string, IMapObserver> _observersDictionary = new Dictionary<string, IMapObserver>();
 		[Browsable(false)]
 		public Dictionary<string, IMapObserver> MoreObservers
@@ -34,6 +36,16 @@ namespace MapView
 				_baseMap = value;
 				Refresh();
 			}
+		}
+
+		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
+		{
+			Refresh();
+		}
+
+		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
+		{
+			Refresh();
 		}
 
 //		/// <summary>
@@ -60,17 +72,11 @@ namespace MapView
 //				value.RegistrySaveEvent += (sender, e) => OnRegistrySettingsSave(e);
 //			}
 //		}
+
+		#endregion
+
+
 //		protected virtual void OnRegistrySettingsLoad(RegistryEventArgs e) {}
 //		protected virtual void OnRegistrySettingsSave(RegistryEventArgs e) {}
-
-		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
-		{
-			Refresh();
-		}
-
-		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
-		{
-			Refresh();
-		}
 	}
 }

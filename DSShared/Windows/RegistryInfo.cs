@@ -71,6 +71,7 @@ namespace DSShared.Windows
 				f.StartPosition = FormStartPosition.Manual;
 				f.Load    += OnLoad;
 				f.Closing += OnClose;
+
 				AddProperty("Left", "Top", "Width", "Height");
 			}
 		}
@@ -106,7 +107,7 @@ namespace DSShared.Windows
 
 		/// <summary>
 		/// Loads values for the subsidiary viewers from "MapViewers.yml".
-		/// - TopView      (size and position, plus the Quadrant visibilities)
+		/// - TopView      (size and position, but not Quadrant visibilities)
 		/// - RouteView    (size and position)
 		/// - TopRouteView (size and position)
 		/// - TileView     (size and position)
@@ -167,10 +168,7 @@ namespace DSShared.Windows
 //				if (_infoDictionary.ContainsKey(key)) // it'll be there, i trust. yeah right
 //				{
 				val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
-				_infoDictionary[key].SetValue(
-											_obj,
-											val,
-											null);
+				_infoDictionary[key].SetValue(_obj, val, null);
 //				}
 			}
 		}
@@ -198,7 +196,7 @@ namespace DSShared.Windows
 
 		/// <summary>
 		/// Saves values for the subsidiary viewers to "MapViewers.yml".
-		/// - TopView      (size and position, plus the Quadrant visibilities)
+		/// - TopView      (size and position, but does not save Quadrant visibilities)
 		/// - RouteView    (size and position)
 		/// - TopRouteView (size and position)
 		/// - TileView     (size and position)

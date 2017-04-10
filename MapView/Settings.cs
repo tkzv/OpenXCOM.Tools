@@ -113,9 +113,9 @@ namespace MapView
 		/// <param name="category">property category</param>
 		/// <param name="valueChangedEvent">event handler to receive the
 		/// PropertyValueChanged event</param>
-		/// <param name="reflect">if true, an internal event handler will be
+		/// <param name="reflect">if true an internal event handler will be
 		/// created - the target must not be null and the name must be the name
-		/// of a property of the type that target is</param>
+		/// of a property of the type that the target is</param>
 		/// <param name="target">the object that will receive the changed
 		/// property values</param>
 		internal void AddSetting(
@@ -123,9 +123,9 @@ namespace MapView
 				object value,
 				string desc,
 				string category,
-				ValueChangedEventHandler valueChangedEvent,
-				bool reflect,
-				object target)
+				ValueChangedEventHandler valueChangedEvent = null,
+				bool reflect = false,
+				object target = null)
 		{
 			key = key.Replace(" ", String.Empty);
 

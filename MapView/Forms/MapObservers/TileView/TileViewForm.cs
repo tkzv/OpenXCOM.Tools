@@ -8,18 +8,21 @@ namespace MapView.Forms.MapObservers.TileViews
 			Form,
 			IMapObserverProvider
 	{
-		public TileViewForm()
+		internal TileViewForm()
 		{
 			InitializeComponent();
 		}
 
 
-		public TileView Control
+		internal TileView Control
 		{
 			get { return TileViewControl; }
 		}
 
-		public MapObserverControl0 MapObserver
+		/// <summary>
+		/// Satisfies IMapObserverProvider.
+		/// </summary>
+		public MapObserverControl0 ObserverControl0
 		{
 			get { return TileViewControl; }
 		}

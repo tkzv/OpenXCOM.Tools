@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 using MapView.Forms.MapObservers.RouteViews;
+using MapView.Forms.MapObservers.TileViews;
 using MapView.Forms.MapObservers.TopViews;
 
 
@@ -53,7 +54,7 @@ namespace MapView.Forms.MainWindow
 
 
 			CreateMenuItem(MainWindowsManager.HelpScreen,   "Quick Help",    _helpMenu);
-			CreateMenuItem(MainWindowsManager.AboutWindow,  "About",         _helpMenu);
+			CreateMenuItem(MainWindowsManager.AboutScreen,  "About",         _helpMenu);
 
 			AddMenuItemSettings();
 		}
@@ -102,14 +103,20 @@ namespace MapView.Forms.MainWindow
 
 		private void AddMenuItemSettings()
 		{
+			//XCom.LogFile.WriteLine("AddMenuItemSettings");
 			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
+				//if (it.Tag != null) XCom.LogFile.WriteLine(". it.Tag= " + it.Tag);
+				//else XCom.LogFile.WriteLine(". it.Tag is NULL");
+
 				string key = GetWindowSettingKey(it);
 				if (!String.IsNullOrEmpty(key))
 				{
+					//XCom.LogFile.WriteLine(". . is VALID");
 					_settings.AddSetting(
 									key,
-									!(it.Tag is XCom.ConsoleForm),
+//									!(it.Tag is XCom.ConsoleForm) && !(it.Tag is MapView.Forms.MapObservers.TileViews.TopRouteViewForm),	// q. why is TopRouteViewForm under 'TileViews'
+									(it.Tag is TopViewForm) || (it.Tag is RouteViewForm) || (it.Tag is TileViewForm),						// a. why not.
 									"Default display window - " + it.Text,
 									"Windows",
 									null, false, null);

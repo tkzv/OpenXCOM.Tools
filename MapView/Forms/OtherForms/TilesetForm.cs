@@ -4,35 +4,38 @@ using System.Windows.Forms;
 
 namespace MapView
 {
-	public class TilesetForm
+	internal class TilesetForm
 		:
 			Form
 	{
-		public TilesetForm()
+		internal TilesetForm()
 		{
 			InitializeComponent();
-			_label      =
-			_pathMaps   =
-			_pathRoutes = null;	// NOTE: whynot 'blanksPath' also
+//			_label      =
+//			_pathMaps   =
+//			_pathRoutes = null;	// NOTE: whynot 'blanksPath' also
 		}						// probably because they all default to null.
 
-		private string _label, _pathMaps, _pathRoutes, _pathBlanks;
-		public string TilesetLabel
+		private string _label;
+		internal string TilesetLabel
 		{
 			get { return _label; }
 		}
 
-		public string MapsPath
+		private string _pathMaps;
+		internal string MapsPath
 		{
 			get { return _pathMaps; }
 		}
 
-		public string RoutesPath
+		private string _pathRoutes;
+		internal string RoutesPath
 		{
 			get { return _pathRoutes; }
 		}
 
-		public string BlanksPath
+		private string _pathBlanks;
+		internal string BlanksPath
 		{
 			get { return _pathBlanks; }
 		}

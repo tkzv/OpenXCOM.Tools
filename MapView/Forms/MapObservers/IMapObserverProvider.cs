@@ -8,7 +8,7 @@ namespace MapView.Forms.MapObservers
 	/// </summary>
 	internal interface IMapObserverProvider
 	{
-		MapObserverControl0 MapObserver
+		MapObserverControl0 ObserverControl0
 		{ get; }
 	}
 }

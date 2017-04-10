@@ -4,13 +4,11 @@ using System.Collections.Generic;
 
 namespace XCom.Interfaces.Base
 {
+	/// <summary>
+	/// Parent of MapObserverControl0 and MapObserverControl1.
+	/// </summary>
 	public interface IMapObserver
 	{
-		void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e);
-
-		void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e);
-
-
 		IMapBase Map
 		{ set; get;}
 
@@ -19,6 +17,11 @@ namespace XCom.Interfaces.Base
 
 //		DSShared.Windows.RegistryInfo RegistryInfo
 //		{ get; set; }
+
+
+		void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e);
+
+		void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e);
 	}
 
 
@@ -48,23 +51,23 @@ namespace XCom.Interfaces.Base
 		:
 			EventArgs
 	{
-		private MapLocation _selLoc;
-		public MapLocation MapPosition
+		private MapLocation _location;
+		public MapLocation Location
 		{
-			get { return _selLoc; }
+			get { return _location; }
 		}
 
-		private readonly MapTileBase _selTile;
+		private readonly MapTileBase _baseTile;
 		public MapTileBase SelectedTile
 		{
-			get { return _selTile; }
+			get { return _baseTile; }
 		}
 
 
-		internal SelectedTileChangedEventArgs(MapLocation selLoc, MapTileBase selTile)
+		internal SelectedTileChangedEventArgs(MapLocation location, MapTileBase baseTile)
 		{
-			_selLoc  = selLoc;
-			_selTile = selTile;
+			_location = location;
+			_baseTile = baseTile;
 		}
 	}
 
@@ -75,10 +78,10 @@ namespace XCom.Interfaces.Base
 		:
 			EventArgs
 	{
-		private readonly int _heightNew;
-		public int NewHeight
+		private readonly int _height;
+		public int Height
 		{
-			get { return _heightNew; }
+			get { return _height; }
 		}
 
 /*		private readonly int _heightOld;
@@ -89,9 +92,9 @@ namespace XCom.Interfaces.Base
 
 
 //		public HeightChangedEventArgs(int heightOld, int heightNew)
-		internal HeightChangedEventArgs(int heightNew)
+		internal HeightChangedEventArgs(int height)
 		{
-			_heightNew = heightNew;
+			_height = height;
 //			_heightOld = heightOld;
 		}
 	}

@@ -6,6 +6,7 @@ using System.Windows.Forms;
 namespace DSShared.Windows
 {
 	/// <summary>
+	/// Parent class for MapObserverControl1 (TopView stuff).
 	/// </summary>
 	public class DoubleBufferControl
 		:
@@ -42,6 +43,7 @@ namespace DSShared.Windows
 		}
 
 		/// <summary>
+		/// Shunts rendering off to TopViewPanelBase and QuadrantPanel.
 		/// </summary>
 		protected virtual void Render(Graphics backBuffer)
 		{}
@@ -49,7 +51,7 @@ namespace DSShared.Windows
 
 /*	public class DoubleBufferControl
 		:
-		Control
+			Control
 	{
 		private BufferedGraphicsContext context;
 		private BufferedGraphics backBuffer;

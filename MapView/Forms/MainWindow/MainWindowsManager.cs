@@ -9,50 +9,48 @@ namespace MapView.Forms.MainWindow
 {
 	internal sealed class MainWindowsManager
 	{
-		public static MainShowAllManager ShowAllManager;
-		public static EditButtonsFactory EditFactory;
+		internal static MainShowAllManager ShowAllManager;
+		internal static EditButtonsFactory EditFactory;
 
 
-		private static TopViewForm      _topView;
-		private static RouteViewForm    _routeView;
-		private static TopRouteViewForm _topRouteView;
-		private static TileViewForm     _tileView;
-
-		private static HelpScreen       _helpScreen;
-		private static About            _aboutWindow;
-
-
-		public static TopViewForm TopView
+		private static TopViewForm _topView;
+		internal static TopViewForm TopView
 		{
 			get { return _topView ?? (_topView = new TopViewForm()); }
 		}
 
-		public static RouteViewForm RouteView
+		private static RouteViewForm _routeView;
+		internal static RouteViewForm RouteView
 		{
 			get { return _routeView ?? (_routeView = new RouteViewForm()); }
 		}
 
-		public static TopRouteViewForm TopRouteView
+		private static TopRouteViewForm _topRouteView;
+		internal static TopRouteViewForm TopRouteView
 		{
 			get { return _topRouteView ?? (_topRouteView = new TopRouteViewForm()); }
 		}
 
-		public static TileViewForm TileView
+		private static TileViewForm _tileView;
+		internal static TileViewForm TileView
 		{
 			get { return _tileView ?? (_tileView = new TileViewForm()); }
 		}
 
-		public static HelpScreen HelpScreen
+		private static Help _helpScreen;
+		internal static Help HelpScreen
 		{
-			get { return _helpScreen ?? (_helpScreen = new HelpScreen()); }
+			get { return _helpScreen ?? (_helpScreen = new Help()); }
 		}
 
-		public static About AboutWindow
+		private static About _aboutWindow;
+		internal static About AboutScreen
 		{
 			get { return _aboutWindow ?? (_aboutWindow = new About()); }
 		}
 
-		public static void Initialize()
+
+		internal static void Initialize()
 		{
 			TopRouteView.ControlTop.InitializeEditStrip(EditFactory);
 
@@ -62,7 +60,7 @@ namespace MapView.Forms.MainWindow
 			TileView.Control.SelectedTileTypeChangedObserver += OnSelectedTileTypeChanged;
 		}
 
-		public void SetMap(IMapBase baseMap)
+		internal void SetObservers(IMapBase baseMap)
 		{
 			var observers = new IMapObserver[]
 			{
@@ -75,12 +73,12 @@ namespace MapView.Forms.MainWindow
 
 			foreach (var f in observers)
 				if (f != null)
-					SetMap(baseMap, f);
+					SetObserver(baseMap, f);
 
 			MainViewPanel.Instance.MainView.Refresh();
 		}
 
-		private void SetMap(IMapBase baseMap, IMapObserver observer)
+		private void SetObserver(IMapBase baseMap, IMapObserver observer)
 		{
 			if (observer.Map != null)
 			{
@@ -94,8 +92,8 @@ namespace MapView.Forms.MainWindow
 				baseMap.SelectedTileChanged += observer.OnSelectedTileChanged;
 			}
 
-			foreach (string key in observer.MoreObservers.Keys)
-				SetMap(baseMap, observer.MoreObservers[key]);
+			foreach (string key in observer.MoreObservers.Keys) // ie. TopViewPanel and QuadrantsPanel
+				SetObserver(baseMap, observer.MoreObservers[key]);
 		}
 
 		/// <summary>

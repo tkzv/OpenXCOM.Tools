@@ -8,18 +8,21 @@ namespace MapView.Forms.MapObservers.TopViews
 			Form,
 			IMapObserverProvider
 	{
-		public TopViewForm()
+		internal TopViewForm()
 		{
 			InitializeComponent();
 		}
 
 
-		public TopView Control // TODO: Consolidate this w/ MapObserver.
+		internal TopView Control
 		{
 			get { return TopViewControl; }
 		}
 
-		public MapObserverControl0 MapObserver // TODO: Consolidate this w/ Control.
+		/// <summary>
+		/// Satisfies IMapObserverProvider.
+		/// </summary>
+		public MapObserverControl0 ObserverControl0
 		{
 			get { return TopViewControl; }
 		}

@@ -407,7 +407,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 
 		private void OnTileChange(IMapBase baseMap, SelectedTileChangedEventArgs e)
 		{
-			var loc = e.MapPosition;
+			var loc = e.Location;
 			var start = new Point(loc.Col, loc.Row);
 			SetDrag(start, _dragEnd);
 
