@@ -143,7 +143,7 @@ namespace MapView
 
 			_settingsManager = new SettingsManager(); // goes before LoadDefaults()
 
-			LoadDefaults();
+			LoadSettings();
 			LogFile.WriteLine("MainView Settings loaded.");
 
 
@@ -187,7 +187,7 @@ namespace MapView
 
 			MainWindowsManager.TileView.Control.MapChangedEventHandler += OnMapChanged;
 
-			MainViewPanel.ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			MainViewPanel.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 
 			_mainViewPanel.Dock = DockStyle.Fill;
@@ -369,9 +369,9 @@ namespace MapView
 				AddTileset(GameInfo.TilesetInfo.Tilesets[key]);
 		}
 
-		private void LoadDefaults()
+		private void LoadSettings()
 		{
-			//LogFile.WriteLine("LoadDefaults MainView");
+			//LogFile.WriteLine("LoadSettings MainView");
 
 			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
 			using (var sr = new StreamReader(File.OpenRead(file)))
@@ -491,33 +491,21 @@ namespace MapView
 			switch (key)
 			{
 				case "Animation":
-					if (miOn.Checked = (bool)val)
-					{
-						miOff.Checked = false;
-						MainViewPanel.Start();
-					}
-					else
-					{
-						miOff.Checked = true;
-						MainViewPanel.Stop();
-					}
+					miOn.Checked = (bool)val;
+					miOff.Checked = !miOn.Checked;
+					MainViewPanel.Animate(miOn.Checked);
 					break;
 
 				case "Doors":
+					// TODO: uhh, human doors don't animate
+					// only ufo doors animate
+					// human doors use their Alternate tile.
 					if (MainViewPanel.Instance.BaseMap != null)
 					{
-						if ((bool)val)
-						{
-							foreach (XCTile tile in MainViewPanel.Instance.BaseMap.Tiles)
-								if (tile.Info.UfoDoor || tile.Info.HumanDoor)
-									tile.MakeAnimate();
-						}
-						else
-						{
-							foreach (XCTile tile in MainViewPanel.Instance.BaseMap.Tiles)
-								if (tile.Info.UfoDoor || tile.Info.HumanDoor)
-									tile.StopAnimate();
-						}
+						bool animate = (bool)val;
+						foreach (XCTile tile in MainViewPanel.Instance.BaseMap.Tiles)
+							if (tile.Info.UfoDoor)// || tile.Info.HumanDoor)
+								tile.ToggleAnimation(animate);
 					}
 					break;
 
@@ -629,7 +617,7 @@ namespace MapView
 			}
 		}
 
-		private void OnImageUpdate(object sender, EventArgs e)
+		private void OnAnimationUpdate(object sender, EventArgs e)
 		{
 			MainWindowsManager.TopView.Control.QuadrantsPanel.Refresh();
 		}
@@ -820,14 +808,12 @@ namespace MapView
 		{
 			miDoors.Checked = !miDoors.Checked;
 
+			// TODO: uhh, human doors don't animate
+			// only ufo doors animate
+			// human doors use their Alternate tile.
 			foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
-				if (tile.Info.UfoDoor || tile.Info.HumanDoor)	// uhh, human doors don't animate
-				{												// only ufo doors animate
-					if (miDoors.Checked)						// human doors use their Alternate tile.
-						tile.MakeAnimate();
-					else
-						tile.StopAnimate();
-				}
+				if (tile.Info.UfoDoor)// || tile.Info.HumanDoor)
+					tile.ToggleAnimation(miDoors.Checked);
 		}
 
 		private void OnResizeClick(object sender, EventArgs e)

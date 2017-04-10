@@ -35,7 +35,7 @@ namespace MapView
 
 		private MainViewPanel()
 		{
-			ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			_scrollBarHori = new HScrollBar();
 			_scrollBarVert = new VScrollBar();
@@ -94,7 +94,7 @@ namespace MapView
 			get { return _mainView.Map; }
 		}
 
-		private void OnImageUpdate(object sender, EventArgs e)
+		private void OnAnimationUpdate(object sender, EventArgs e)
 		{
 			_mainView.Refresh();
 		}
@@ -209,8 +209,8 @@ namespace MapView
 		}
 
 
-		/*** Timer stuff ***/
-		public static event EventHandler ImageUpdateEvent;
+		/*** Animation+Timer stuff ***/
+		public static event EventHandler AnimationUpdateEvent;
 
 		private static Timer _timer;
 		private static int _current;
@@ -219,27 +219,30 @@ namespace MapView
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Mobility",
 		"CA1601:DoNotUseTimersThatPreventPowerStateChanges",
 		Justification = "Because animations at or greater than 1 second ain't gonna cut it.")]
-		public static void Start()
+		public static void Animate(bool animate)
 		{
-			if (_timer == null)
+			if (animate)
 			{
-				_timer = new Timer();
-				_timer.Interval = 250;
-				_timer.Tick += Animate;
-			}
+				if (_timer == null)
+				{
+					_timer = new Timer();
+					_timer.Interval = 250;
+					_timer.Tick += AnimateStep;
+				}
 
-			if (!_timer.Enabled)
-				_timer.Start();
+				if (!_timer.Enabled)
+					_timer.Start();
+			}
+			else if (_timer != null)
+				_timer.Stop();
 		}
 
-		// NOTE: Remove suppression for Release cfg.
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Mobility",
-		"CA1601:DoNotUseTimersThatPreventPowerStateChanges",
-		Justification = "Because animations at or greater than 1 second ain't gonna cut it.")]
-		public static void Stop()
+		private static void AnimateStep(object sender, EventArgs e)
 		{
-			if (_timer != null)
-				_timer.Stop();
+			_current = (_current + 1) % 8;
+
+			if (AnimationUpdateEvent != null)
+				AnimationUpdateEvent(null, null);
 		}
 
 		public static bool IsAnimated
@@ -252,14 +255,6 @@ namespace MapView
 			get { return _timer.Interval; }
 			set { _timer.Interval = value; }
 		} */
-
-		private static void Animate(object sender, EventArgs e)
-		{
-			_current = (_current + 1) % 8;
-
-			if (ImageUpdateEvent != null)
-				ImageUpdateEvent(null, null);
-		}
 
 		public static int Current
 		{

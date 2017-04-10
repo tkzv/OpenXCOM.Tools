@@ -32,8 +32,8 @@ namespace MapView.Forms.MainWindow
 			MainWindowsManager.TopRouteView.ControlTop.Settings   = MainWindowsManager.TopView.Control.Settings;
 			MainWindowsManager.TopRouteView.ControlRoute.Settings = MainWindowsManager.RouteView.Control.Settings;
 
-			MainWindowsManager.TopRouteView.ControlTop.LoadDefaultSettings();
-			MainWindowsManager.TopRouteView.ControlRoute.LoadDefaultSettings();
+			MainWindowsManager.TopRouteView.ControlTop.LoadControl0Settings();
+			MainWindowsManager.TopRouteView.ControlRoute.LoadControl0Settings();
 
 
 			AddViewer("Top View",    MainWindowsManager.TopView);
@@ -83,7 +83,7 @@ namespace MapView.Forms.MainWindow
 			{
 				//LogFile.WriteLine(". is IMapObserverProvider");
 				var fcontrol = fobserver.ObserverControl0;
-				fcontrol.LoadDefaultSettings();
+				fcontrol.LoadControl0Settings();
 
 				var regInfo = new DSShared.Windows.RegistryInfo(f, regkey); // subscribe to Load and Closing events.
 
@@ -97,7 +97,7 @@ namespace MapView.Forms.MainWindow
 			if (fObserver != null)
 			{
 				var observerType0 = fObserver.MapObserver;
-				observerType0.LoadDefaultSettings();
+				observerType0.LoadControl0Settings();
 //				observerType0.RegistryInfo = new DSShared.Windows.RegistryInfo(f, regkey); // subscribe to Load and Closing events.
 				var regInfo = new DSShared.Windows.RegistryInfo(f, regkey); // subscribe to Load and Closing events.
 				_settingsManager.Add(regkey, observerType0.Settings);

@@ -231,9 +231,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 		/// <summary>
-		/// Loads default settings for TopView in TopRouteView screen.
+		/// Loads default settings for TopView in TopRouteView screens.
 		/// </summary>
-		public override void LoadDefaultSettings()
+		public override void LoadControl0Settings()
 		{
 			_topBrushes = new Dictionary<string, SolidBrush>();
 			_topPens    = new Dictionary<string, Pen>();

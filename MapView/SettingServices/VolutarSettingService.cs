@@ -16,7 +16,7 @@ namespace MapView.SettingServices
 		private readonly Settings _settings;
 
 		private string _fullpath;
-		public string FullPath
+		internal string FullPath
 		{
 			get
 			{
@@ -41,13 +41,13 @@ namespace MapView.SettingServices
 		}
 
 
-		public VolutarSettingService(Settings settings)
+		internal VolutarSettingService(Settings settings)
 		{
 			_settings = settings;
 		}
 
 
-		public static void LoadDefaultSettings(Settings settings)
+		public static void LoadSettings(Settings settings)
 		{
 			settings.AddSetting(
 							VolutarMcdEditorPath,

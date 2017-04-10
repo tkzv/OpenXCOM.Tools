@@ -107,7 +107,10 @@ namespace MapView.Forms.MapObservers.TileViews
 			_showAllManager = showAllManager;
 		}
 
-		public override void LoadDefaultSettings()
+		/// <summary>
+		/// Loads default settings for TileView screen.
+		/// </summary>
+		public override void LoadControl0Settings()
 		{
 			_brushes = new Hashtable();
 
@@ -121,7 +124,7 @@ namespace MapView.Forms.MapObservers.TileViews
 								"TileView",
 								OnBrushChanged);
 			}
-			VolutarSettingService.LoadDefaultSettings(Settings);
+			VolutarSettingService.LoadSettings(Settings);
 
 			TilePanel.SetColors(_brushes);
 		}

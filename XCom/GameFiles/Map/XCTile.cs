@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 
 using XCom.Interfaces;
 
@@ -28,11 +27,7 @@ namespace XCom
 //			Tiles    = tiles; // NOTE: Tiles is not used.
 
 			Images = new XCImage[8]; // every tile-part contains refs to 8 sprites.
-
-			if (!record.UfoDoor && !record.HumanDoor)
-				MakeAnimate();
-			else
-				StopAnimate();
+			ToggleAnimation(!record.UfoDoor && !record.HumanDoor);
 
 //			Dead      = null;
 //			Alternate = null;
@@ -56,28 +51,24 @@ namespace XCom
 			set { _tile = value; }
 		} */
 
-		public void MakeAnimate()
+		public void ToggleAnimation(bool animate)
 		{
-			Images[0] = _pckPack[_record.Image1];
-			Images[1] = _pckPack[_record.Image2];
-			Images[2] = _pckPack[_record.Image3];
-			Images[3] = _pckPack[_record.Image4];
-			Images[4] = _pckPack[_record.Image5];
-			Images[5] = _pckPack[_record.Image6];
-			Images[6] = _pckPack[_record.Image7];
-			Images[7] = _pckPack[_record.Image8];
-		}
-
-		public void StopAnimate()
-		{
-			Images[0] = _pckPack[_record.Image1];
-			Images[1] = _pckPack[_record.Image1];
-			Images[2] = _pckPack[_record.Image1];
-			Images[3] = _pckPack[_record.Image1];
-			Images[4] = _pckPack[_record.Image1];
-			Images[5] = _pckPack[_record.Image1];
-			Images[6] = _pckPack[_record.Image1];
-			Images[7] = _pckPack[_record.Image1];
+			if (animate)
+			{
+				Images[0] = _pckPack[_record.Image1];
+				Images[1] = _pckPack[_record.Image2];
+				Images[2] = _pckPack[_record.Image3];
+				Images[3] = _pckPack[_record.Image4];
+				Images[4] = _pckPack[_record.Image5];
+				Images[5] = _pckPack[_record.Image6];
+				Images[6] = _pckPack[_record.Image7];
+				Images[7] = _pckPack[_record.Image8];
+			}
+			else
+			{
+				for (int i = 0; i != 8; ++i)
+					Images[i] = _pckPack[_record.Image1];
+			}
 		}
 	}
 }

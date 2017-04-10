@@ -957,9 +957,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		/// <summary>
-		/// Loads default settings for RouteView in TopRouteView screen.
+		/// Loads default settings for RouteView in TopRouteView screens.
 		/// </summary>
-		public override void LoadDefaultSettings()
+		public override void LoadControl0Settings()
 		{
 			var brushes = _routePanel.MapBrushes;
 			var pens    = _routePanel.MapPens;

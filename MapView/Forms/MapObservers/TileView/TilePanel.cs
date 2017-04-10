@@ -76,7 +76,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
 
 			Controls.Add(_scrollBar);
-			MainViewPanel.ImageUpdateEvent += OnImageUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			MainViewPanel.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
 			_sel = 0;
@@ -343,7 +343,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
-		private void OnImageUpdate(object sender, EventArgs e)
+		private void OnAnimationUpdate(object sender, EventArgs e)
 		{
 			Refresh();
 		}
