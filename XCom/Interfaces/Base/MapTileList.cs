@@ -1,12 +1,12 @@
 ﻿namespace XCom.Interfaces.Base
 {
-	public class MapTileList
+	public sealed class MapTileList
 	{
 		private readonly MapTileBase[] _mapData;
 		private readonly MapPosition _mapPos;
 
 
-		public MapTileList(int rows, int cols, int height)
+		internal MapTileList(int rows, int cols, int height)
 		{
 			_mapData = new MapTileBase[rows * cols * height];
 			_mapPos  = new MapPosition(rows,  cols,  height);

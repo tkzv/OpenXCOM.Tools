@@ -4,11 +4,11 @@ using System.Collections.ObjectModel;
 
 namespace XCom
 {
-	public class McdTileCollection
+	public class McdRecordCollection
 		:
 			ReadOnlyCollection<XCTile>
 	{
-		internal McdTileCollection(XCTile[] tiles)
+		internal McdRecordCollection(XCTile[] tiles)
 			:
 				base(tiles)
 		{}

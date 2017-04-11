@@ -160,21 +160,18 @@ namespace XCom
 		public string GetDepLabel(TileBase tile)
 		{
 			int id = -1;
-			foreach (var tile1 in Tiles)
-				if (tile1 == tile)
-					return _deps[++id];
-			// NOTE: Tiles and _deps had *better line up*.
 
-//			int id = -1;
-//			foreach (var tile1 in Tiles)
-//			{
-//				if (tile1.Id == 0)
-//					++id;
-//				if (tile1 == tile)
-//					break;
-//			}
-//			if (id != -1 && id < _deps.Length)
-//				return _deps[id];
+			foreach (var tile1 in Tiles)
+			{
+				if (tile1.Id == 0)
+					++id;
+
+				if (tile1 == tile)
+					break;
+			}
+
+			if (id != -1 && id < _deps.Length)
+				return _deps[id];
 
 			return null;
 		}

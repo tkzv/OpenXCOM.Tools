@@ -430,13 +430,13 @@ namespace MapView
 			settings.AddSetting(
 							"Animation",
 							MainViewPanel.IsAnimated,
-							"If true the map will animate itself.",
+							"If true the sprites will animate.",
 							"Main",
 							handler);
 			settings.AddSetting(
 							"Doors",
 							false,
-							"If true the door tiles will animate themselves.",
+							"If true the doors will animate.",
 							"Main",
 							handler);
 			settings.AddSetting(
@@ -504,8 +504,7 @@ namespace MapView
 					{
 						bool animate = (bool)val;
 						foreach (XCTile tile in MainViewPanel.Instance.BaseMap.Tiles)
-							if (tile.Info.UfoDoor)// || tile.Info.HumanDoor)
-								tile.SetAnimationSprites(animate);
+							tile.SetAnimationSprites(animate);
 					}
 					break;
 
@@ -708,7 +707,7 @@ namespace MapView
 //				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.
 
 				var tileFactory = new XCTileFactory();
-				tileFactory.HandleWarning += _warningHandler.HandleWarning;
+				tileFactory.WarningEvent += _warningHandler.HandleWarning;
 
 				var fileService = new XCMapFileService(tileFactory);
 
@@ -724,11 +723,14 @@ namespace MapView
 				tsslDimensions.Text = (baseMap != null) ? baseMap.MapSize.ToString()
 														: "size: n/a";
 
-				if (miDoors.Checked) // turn off door animations
-				{
-					miDoors.Checked = false;
-					OnDoorsClick(null, null);
-				}
+//				if (miDoors.Checked) // turn off door animations
+//				{
+//					miDoors.Checked = !miDoors.Checked;
+
+				miDoors.Checked = false;
+				foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
+					tile.SetAnimationSprites(false);
+//				}
 
 				if (!menuShow.Enabled) // open all the forms in the show menu
 					_mainMenusManager.StartViewers();
@@ -804,17 +806,13 @@ namespace MapView
 			}
 		}
 
-		private void OnDoorsClick(object sender, EventArgs e)
-		{
-			miDoors.Checked = !miDoors.Checked;
-
-			// TODO: uhh, human doors don't animate
-			// only ufo doors animate
-			// human doors use their Alternate tile.
-			foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
-				if (tile.Info.UfoDoor)// || tile.Info.HumanDoor)
-					tile.SetAnimationSprites(miDoors.Checked);
-		}
+//		private void OnDoorsClick(object sender, EventArgs e)
+//		{
+//			miDoors.Checked = !miDoors.Checked;
+//			foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
+//				if (tile.Info.UfoDoor || tile.Info.HumanDoor)
+//					tile.SetAnimationSprites(miDoors.Checked, tile.Info.UfoDoor);
+//		}
 
 		private void OnResizeClick(object sender, EventArgs e)
 		{

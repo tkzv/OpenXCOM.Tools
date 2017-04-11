@@ -37,16 +37,16 @@ namespace MapView.Forms.McdViewer
 
 				rtbInfo.SelectionColor = Color.Black;
 				rtbInfo.AppendText(string.Format(
-										System.Globalization.CultureInfo.InvariantCulture,
-										"Images: {0} {1} {2} {3} {4} {5} {6} {7}" + Environment.NewLine,
-										record.Image1,
-										record.Image2,
-										record.Image3,
-										record.Image4,
-										record.Image5,
-										record.Image6,
-										record.Image7,
-										record.Image8));
+											System.Globalization.CultureInfo.InvariantCulture,
+											"Images: {0} {1} {2} {3} {4} {5} {6} {7}" + Environment.NewLine,
+											record.Image1,
+											record.Image2,
+											record.Image3,
+											record.Image4,
+											record.Image5,
+											record.Image6,
+											record.Image7,
+											record.Image8));
 
 				rtbInfo.AppendText(record.LoftReference);
 
@@ -105,12 +105,12 @@ namespace MapView.Forms.McdViewer
 				rtbInfo.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "HE Block: {0}" + Environment.NewLine, record.HE_Block));
 //				unsigned char HE_Block; // How much of an explosion this tile will block
 
+				rtbInfo.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Flammable: {0}" + Environment.NewLine, record.Flammable));
+//				unsigned char Flammable; // How flammable it is (the higher the harder it is to set aflame)
+
 				rtbInfo.SelectionColor = Color.Crimson;
 				rtbInfo.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Death tile: {0}" + Environment.NewLine, record.DieTile));
 //				unsigned char Die_MCD; // If the terrain is destroyed, it is set to 0 and a tile of type Die_MCD is added
-
-				rtbInfo.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Flammable: {0}" + Environment.NewLine, record.Flammable));
-//				unsigned char Flammable; // How flammable it is (the higher the harder it is to set aflame)
 
 				rtbInfo.SelectionColor = Color.Crimson;
 				rtbInfo.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Door open tile: {0}" + Environment.NewLine, record.Alt_MCD));

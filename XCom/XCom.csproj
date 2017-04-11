@@ -176,7 +176,7 @@
     <Compile Include="GameFiles\Map\McdRecord.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Map\McdTileCollection.cs">
+    <Compile Include="GameFiles\Map\McdRecordCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Map\RouteData\RouteNodeCollection.cs">

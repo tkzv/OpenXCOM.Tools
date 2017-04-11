@@ -15,6 +15,12 @@ namespace XCom
 	{
 		private readonly Hashtable _mcdTable;
 
+		public string BaseName
+		{ get; private set; }
+
+		public string BasePath
+		{ get; set; }
+
 
 		public ImageDescriptor(string baseName, string basePath)
 		{
@@ -35,17 +41,17 @@ namespace XCom
 			return GetPckPack(GameInfo.DefaultPalette);
 		}
 
-		internal McdTileCollection GetMcdRecords(Palette pal, XCTileFactory tileFactory)
+		internal McdRecordCollection GetMcdRecords(Palette pal, XCTileFactory tileFactory)
 		{
 			if (_mcdTable[pal] == null)
 			{
 				var tiles = tileFactory.CreateTiles(BaseName, BasePath, GetPckPack(pal));
-				_mcdTable[pal] = new McdTileCollection(tiles);
+				_mcdTable[pal] = new McdRecordCollection(tiles);
 			}
-			return (McdTileCollection)_mcdTable[pal];
+			return (McdRecordCollection)_mcdTable[pal];
 		}
 
-		public McdTileCollection GetMcdRecords()
+		public McdRecordCollection GetMcdRecords()
 		{
 			return GetMcdRecords(GameInfo.DefaultPalette, new XCTileFactory());
 		}
@@ -59,12 +65,6 @@ namespace XCom
 		{
 			return String.CompareOrdinal(BaseName, obj.ToString());
 		}
-
-		public string BaseName
-		{ get; private set; }
-
-		public string BasePath
-		{ get; set; }
 
 		public void ClearMcdTable()
 		{

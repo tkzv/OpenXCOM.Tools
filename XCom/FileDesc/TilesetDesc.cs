@@ -12,6 +12,46 @@ namespace XCom
 		:
 			FileDesc
 	{
+		#region FileDesc requirements
+
+		/// <summary>
+		/// WARNING: This doesn't appear to be used but has to be here to
+		/// satisfy inheritance from FileDesc.Save() which is abstract.
+		/// </summary>
+		/// <param name="outFile"></param>
+		public override void Save(string outFile)
+		{
+			var vars = new Varidia("Path"); // iterate thru each tileset, call save on them
+
+			foreach (string key in _tilesets.Keys)
+			{
+				var tileset = (IXCTileset)_tilesets[key];
+				if (tileset != null)
+				{
+					vars.AddKeyvalPair("rootPath",  tileset.MapPath);
+					vars.AddKeyvalPair("rmpPath",   tileset.RoutePath);
+					vars.AddKeyvalPair("blankPath", tileset.BlankPath);
+				}
+			}
+
+			using (var sw = new StreamWriter(outFile))
+			{
+				foreach (string key in vars.Variables)
+				{
+					var val = (Variable)vars.Vars[key];
+					sw.WriteLine(string.Format(
+											System.Globalization.CultureInfo.InvariantCulture,
+											"{0}:{1}",
+											val.Name, val.Value));
+				}
+
+				foreach (string key in _tilesets.Keys)
+					if (_tilesets[key] != null)
+						((IXCTileset)_tilesets[key]).Save(sw, vars);
+			}
+		}
+		#endregion
+
 		private readonly Dictionary<string, ITileset> _tilesets;
 		public Dictionary<string, ITileset> Tilesets
 		{
@@ -123,43 +163,6 @@ namespace XCom
 			tileset.BlankPath = pathBlanks;
 
 			return (_tilesets[name] = tileset);
-		}
-
-		/// <summary>
-		/// WARNING: This doesn't appear to be used but has to be here to
-		/// satisfy inheritance from FileDesc.Save() which is abstract.
-		/// </summary>
-		/// <param name="outFile"></param>
-		public override void Save(string outFile)
-		{
-			var vars = new Varidia("Path"); // iterate thru each tileset, call save on them
-
-			foreach (string key in _tilesets.Keys)
-			{
-				var tileset = (IXCTileset)_tilesets[key];
-				if (tileset != null)
-				{
-					vars.AddKeyvalPair("rootPath",  tileset.MapPath);
-					vars.AddKeyvalPair("rmpPath",   tileset.RoutePath);
-					vars.AddKeyvalPair("blankPath", tileset.BlankPath);
-				}
-			}
-
-			using (var sw = new StreamWriter(outFile))
-			{
-				foreach (string key in vars.Variables)
-				{
-					var val = (Variable)vars.Vars[key];
-					sw.WriteLine(string.Format(
-											System.Globalization.CultureInfo.InvariantCulture,
-											"{0}:{1}",
-											val.Name, val.Value));
-				}
-
-				foreach (string key in _tilesets.Keys)
-					if (_tilesets[key] != null)
-						((IXCTileset)_tilesets[key]).Save(sw, vars);
-			}
 		}
 	}
 }

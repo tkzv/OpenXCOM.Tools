@@ -9,10 +9,39 @@ namespace XCom
 		:
 			FileDesc
 	{
+		#region FileDesc requirements
+
+		public override void Save(string outFile)
+		{
+			using (var sw = new StreamWriter(outFile))
+			{
+				var keys = new List<string>(_imagesDictionary.Keys);
+				keys.Sort();
+				var vars = new Dictionary<string, Variable>();
+
+				foreach (string key in keys)
+				{
+					if (_imagesDictionary[key] != null)
+					{
+						var image = _imagesDictionary[key];
+						if (!vars.ContainsKey(image.BasePath))
+							vars[image.BasePath] = new Variable(image.BaseName + ":", image.BasePath);
+						else
+							vars[image.BasePath].Add(image.BaseName + ":");
+					}
+				}
+
+				foreach (string basePath in vars.Keys)
+					vars[basePath].Write(sw);
+			}
+		}
+		#endregion
+
+
 		private readonly Dictionary<string, ImageDescriptor> _imagesDictionary;
 
 
-		public ImageInfo(string inFile, Varidia vars)
+		internal ImageInfo(string inFile, Varidia vars)
 			:
 				base(inFile)
 		{
@@ -47,31 +76,6 @@ namespace XCom
 			}
 		}
 
-		public override void Save(string outFile)
-		{
-			using (var sw = new StreamWriter(outFile))
-			{
-				var keys = new List<string>(_imagesDictionary.Keys);
-				keys.Sort();
-				var vars = new Dictionary<string, Variable>();
-
-				foreach (string key in keys)
-				{
-					if (_imagesDictionary[key] != null)
-					{
-						var image = _imagesDictionary[key];
-						if (!vars.ContainsKey(image.BasePath))
-							vars[image.BasePath] = new Variable(image.BaseName + ":", image.BasePath);
-						else
-							vars[image.BasePath].Add(image.BaseName + ":");
-					}
-				}
-
-				foreach (string basePath in vars.Keys)
-					vars[basePath].Write(sw);
-			}
-		}
-
 		public ImagesAccessor Images
 		{
 			get { return new ImagesAccessor(_imagesDictionary); }
@@ -82,14 +86,13 @@ namespace XCom
 		/// </summary>
 		public class ImagesAccessor
 		{
-			private readonly Dictionary<string, ImageDescriptor> _images;
-
-
 			public ImagesAccessor(Dictionary<string, ImageDescriptor> images)
 			{
 				_images = images;
 			}
 
+
+			private readonly Dictionary<string, ImageDescriptor> _images;
 
 			public IEnumerable<string> Keys
 			{
@@ -101,14 +104,14 @@ namespace XCom
 				get { return _images.Values; }
 			}
 
-			public void Remove(string key)
-			{
-				_images.Remove(key.ToUpperInvariant());
-			}
-
 			public ImageDescriptor this[string imageSet]
 			{
 				get { return _images[imageSet.ToUpperInvariant()]; }
+			}
+
+			public void Remove(string key)
+			{
+				_images.Remove(key.ToUpperInvariant());
 			}
 		}
 	}

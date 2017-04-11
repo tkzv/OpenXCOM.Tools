@@ -52,7 +52,7 @@ namespace XCom.Interfaces.Base
 		/// Instantiates a blank tile.
 		/// </summary>
 		/// <param name="id"></param>
-		public TileBase(int id)
+		internal TileBase(int id)
 		{
 			Id = id;
 			TileListId = -1;
