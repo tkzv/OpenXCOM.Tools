@@ -43,7 +43,7 @@ namespace MapView
 		private readonly MainMenusManager      _mainMenusManager;
 
 
-		public XCMainWindow()
+		internal XCMainWindow()
 		{
 			// TODO: further optimize this loading sequence ....
 
@@ -284,7 +284,7 @@ namespace MapView
 		}
 
 		private static XCMainWindow _instance;
-		public static XCMainWindow Instance
+		internal static XCMainWindow Instance
 		{
 			get { return _instance; }
 		}
@@ -903,14 +903,7 @@ namespace MapView
 			if (Globals.PckImageScale < Globals.MaxPckImageScale)
 			{
 				Globals.PckImageScale += 0.125;
-				Globals.AutoPckImageScale = false;
-				tsbAutoZoom.Checked = false;
-
-				_mainViewPanel.SetupMapSize();
-
-				Refresh();
-
-				_mainViewPanel.OnResize();
+				Zoom(false);
 			}
 		}
 
@@ -919,41 +912,42 @@ namespace MapView
 			if (Globals.PckImageScale > Globals.MinPckImageScale)
 			{
 				Globals.PckImageScale -= 0.125;
-				Globals.AutoPckImageScale = false;
-				tsbAutoZoom.Checked = false;
-
-				_mainViewPanel.SetupMapSize();
-
-				Refresh();
-
-				_mainViewPanel.OnResize();
+				Zoom(false);
 			}
 		}
 
 		private void OnAutoZoomClick(object sender, EventArgs e)
 		{
-			Globals.AutoPckImageScale = !Globals.AutoPckImageScale;
-
-			if (!Globals.AutoPckImageScale)
-				Globals.PckImageScale = 1;
+			if (!(Globals.AutoPckImageScale = !Globals.AutoPckImageScale))
+				Globals.PckImageScale = 1.0;
 
 			tsbAutoZoom.Checked = !tsbAutoZoom.Checked;
 
-			_mainViewPanel.SetupMapSize();
+			Zoom(true);
+		}
+
+		private void Zoom(bool auto)
+		{
+			if (!auto)
+			{
+				Globals.AutoPckImageScale =
+				tsbAutoZoom.Checked       = false;
+			}
+
+			_mainViewPanel.SetMapSize();
 
 			Refresh();
 
 			_mainViewPanel.OnResize();
 		}
 
-		public void StatusBarPrintPosition(int col, int row)
+		internal void StatusBarPrintPosition(int col, int row)
 		{
 			tsslPosition.Text = string.Format(
 											System.Globalization.CultureInfo.CurrentCulture,
 											"c:{0} r:{1}",
 											col, row);
 		}
-
 
 
 		private Varidia _vars;

@@ -3,7 +3,7 @@ using System;
 
 namespace MapView
 {
-	public static class Globals
+	internal static class Globals
 	{
 		public const double MinPckImageScale = 0.3;
 		public const double MaxPckImageScale = 2.0;
@@ -47,6 +47,31 @@ namespace MapView
 														XCom.Palette.UfoBattle);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Clamps a value between min and max inclusively. Note that no check
+		/// is done to ensure that min is less than max.
+		/// </summary>
+		/// <param name="val"></param>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
+		/// <returns>min if val is less than min; max if value is greater than
+		/// max; else the value itself</returns>
+		public static T Clamp<T>(
+				this T val,
+				T min,
+				T max) where T
+			:
+				IComparable<T>
+		{
+			if (val.CompareTo(min) < 0)
+				return min;
+
+			if (val.CompareTo(max) > 0)
+				return max;
+
+			return val;
 		}
 	}
 }

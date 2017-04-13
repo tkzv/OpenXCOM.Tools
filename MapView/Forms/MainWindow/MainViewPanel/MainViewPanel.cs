@@ -12,13 +12,13 @@ namespace MapView
 			Panel
 	{
 		private MainView _mainView;
-		public MainView MainView
+		internal MainView MainView
 		{
 			get { return _mainView; }
 		}
 
 		private static MainViewPanel _instance;
-		public static MainViewPanel Instance
+		internal static MainViewPanel Instance
 		{
 			get
 			{
@@ -68,28 +68,28 @@ namespace MapView
 		}
 
 
-		public void OnCut(object sender, EventArgs e)
+		internal void OnCut(object sender, EventArgs e)
 		{
 			_mainView.Copy();
 			_mainView.ClearSelection();
 		}
 
-		public void OnCopy(object sender, EventArgs e)
+		internal void OnCopy(object sender, EventArgs e)
 		{
 			_mainView.Copy();
 		}
 
-		public void OnPaste(object sender, EventArgs e)
+		internal void OnPaste(object sender, EventArgs e)
 		{
 			_mainView.Paste();
 		}
 
-		public void OnFill(object sender, EventArgs e)
+		internal void OnFill(object sender, EventArgs e)
 		{
 			_mainView.Fill();
 		}
 
-		public IMapBase BaseMap
+		internal IMapBase BaseMap
 		{
 			get { return _mainView.Map; }
 		}
@@ -99,7 +99,7 @@ namespace MapView
 			_mainView.Refresh();
 		}
 
-		public void OnResize()
+		internal void OnResize()
 		{
 			OnResize(EventArgs.Empty);
 		}
@@ -109,7 +109,7 @@ namespace MapView
 			base.OnResize(eventargs);
 
 			if (Globals.AutoPckImageScale)
-				SetupMapSize();
+				SetMapSize();
 
 			_scrollBarVert.Value  = _scrollBarVert.Minimum;
 			_scrollBarHori.Value = _scrollBarHori.Minimum;
@@ -160,21 +160,21 @@ namespace MapView
 			_mainView.Refresh();
 		}
 
-		public void SetMap(IMapBase baseMap)
+		internal void SetMap(IMapBase baseMap)
 		{
 			_mainView.Map = baseMap;
-//			_mapView.Select();				// TODO: Select the *panel*
+//			_mapView.Select();					// TODO: Select the *panel*
 
-//			Select();						// doesn't work right.
+//			Select();							// doesn't work right.
 //			MainViewPanel.Instance.Select();	// doesn't work.
-//			MainViewPanel.Instance.Focus();	// doesn't work.
+//			MainViewPanel.Instance.Focus();		// doesn't work.
 
 //			var controls = _mapView.Controls.Find("tscPanel", true);
 //			if (controls.GetLength(0) != 0)
-//				controls[0].Select();		// doesn't work.
+//				controls[0].Select();			// doesn't work.
 
 //			Focus();
-//			Select();						// doesn't work.
+//			Select();							// doesn't work.
 
 			//LeftToolStripPanel
 
@@ -182,35 +182,33 @@ namespace MapView
 			OnResize(null);
 		}
 
-		public void SetupMapSize()
+		internal void SetMapSize()
 		{
 			if (Globals.AutoPckImageScale)
 			{
-				var size = _mainView.GetMapSize(1);
+				var size = _mainView.GetMapSize(1.0);
 
-				var wP = Width  / (double)size.Width;
-				var hP = Height / (double)size.Height;
+				var width  = Width  / (double)size.Width;
+				var height = Height / (double)size.Height;
 
-				Globals.PckImageScale = (wP > hP) ? hP : wP;
-
-				if (Globals.PckImageScale > Globals.MaxPckImageScale)
-					Globals.PckImageScale = Globals.MaxPckImageScale;
-
-				if (Globals.PckImageScale < Globals.MinPckImageScale)
-					Globals.PckImageScale = Globals.MinPckImageScale;
+				Globals.PckImageScale = (width > height) ? height : width;
+				Globals.PckImageScale.Clamp(
+										Globals.MinPckImageScale,
+										Globals.MaxPckImageScale);
 			}
 
-			_mainView.SetupMapSize();
+			_mainView.SetMapSize();
 		}
 
-		public void ForceResize()
+		internal void ForceResize()
 		{
 			OnResize(null);
 		}
 
 
-		/*** Animation+Timer stuff ***/
-		public static event EventHandler AnimationUpdateEvent;
+		#region Timer stuff for Animations
+
+		internal static event EventHandler AnimationUpdateEvent;
 
 		private static Timer _timer;
 		private static int _current;
@@ -219,7 +217,7 @@ namespace MapView
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Mobility",
 		"CA1601:DoNotUseTimersThatPreventPowerStateChanges",
 		Justification = "Because animations at or greater than 1 second ain't gonna cut it.")]
-		public static void Animate(bool animate)
+		internal static void Animate(bool animate)
 		{
 			if (animate)
 			{
@@ -245,7 +243,7 @@ namespace MapView
 				AnimationUpdateEvent(null, null);
 		}
 
-		public static bool IsAnimated
+		internal static bool IsAnimated
 		{
 			get { return (_timer != null && _timer.Enabled); }
 		}
@@ -256,9 +254,10 @@ namespace MapView
 			set { _timer.Interval = value; }
 		} */
 
-		public static int Current
+		internal static int Current
 		{
 			get { return _current; }
 		}
+		#endregion
 	}
 }

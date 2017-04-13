@@ -22,7 +22,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 
 
 		private IMapBase _baseMap;
-		public IMapBase Map
+		internal IMapBase Map
 		{
 			get { return _baseMap; }
 			set
@@ -38,7 +38,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 					_baseMap.HeightChanged += OnHeightChanged;
 					_baseMap.SelectedTileChanged += OnTileChange;
 
-					SetupMapSize();
+					SetMapSize();
 
 //					DragStart = _dragStart;	// this might be how to give drags their legitimate values
 //					DragEnd   = _dragEnd;	// after initialization to Point(-1/-1).
@@ -60,7 +60,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		private Brush _brushTrans;
 
 		private Color _colorGrid;
-		public Color GridColor
+		internal Color GridColor
 		{
 			get { return _colorGrid; }
 			set
@@ -72,7 +72,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		}
 
 		private Pen _penDash;
-		public Color GridLineColor
+		internal Color GridLineColor
 		{
 			get { return _penDash.Color; }
 			set
@@ -81,7 +81,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 				Refresh();
 			}
 		}
-		public int GridLineWidth
+		internal int GridLineWidth
 		{
 			get { return (int)_penDash.Width; }
 			set
@@ -97,7 +97,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
 		"CA1811:AvoidUncalledPrivateCode",
 		Justification = "Because the setter is called dynamically w/ Reflection or other: it is used.")]
-		public bool GraySelection
+		internal bool GraySelection
 		{
 			get { return _graySelection; }
 			set
@@ -108,7 +108,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		}
 
 		private bool _showGrid = true;
-		public bool ShowGrid
+		internal bool ShowGrid
 		{
 			get { return _showGrid; }
 			set
@@ -134,7 +134,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 //		}
 
 
-		public MainView()
+		internal MainView()
 		{
 //			_baseMap = null;
 
@@ -148,7 +148,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		}
 
 
-		public void ClearSelection()
+		internal void ClearSelection()
 		{
 			if (_baseMap != null)
 			{
@@ -167,7 +167,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 
 		private MapTileBase[,] _copied;
 
-		public void Copy()
+		internal void Copy()
 		{
 			if (_baseMap != null)
 			{
@@ -182,7 +182,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			}
 		}
 
-		public void Paste()
+		internal void Paste()
 		{
 			if (_baseMap != null && _copied != null)
 			{
@@ -215,7 +215,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			}
 		}
 
-		public void Fill()
+		internal void Fill()
 		{
 			if (_baseMap != null)
 			{
@@ -317,7 +317,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			}
 		}
 
-		public Point DragStart
+		internal Point DragStart
 		{
 			get { return _dragStart; }
 			private set
@@ -332,7 +332,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			}
 		}
 
-		public Point DragEnd
+		internal Point DragEnd
 		{
 			get { return _dragEnd; }
 			private set
@@ -347,7 +347,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			}
 		}
 
-		public void SetDrag(Point dragStart, Point dragEnd)
+		internal void SetDrag(Point dragStart, Point dragEnd)
 		{
 			if (_dragStart != dragStart || _dragEnd != dragEnd)
 			{
@@ -377,7 +377,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			return end;
 		}
 
-		public void SetupMapSize()
+		internal void SetMapSize()
 		{
 			if (_baseMap != null)
 			{
@@ -387,7 +387,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			}
 		}
 
-		public Size GetMapSize(double pckImageScale)
+		internal Size GetMapSize(double pckImageScale)
 		{
 			if (_baseMap != null)
 			{
