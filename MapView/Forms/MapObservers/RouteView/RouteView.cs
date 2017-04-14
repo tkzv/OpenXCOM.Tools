@@ -97,11 +97,36 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
+		private Form _foptions;
+		private bool _closing;
+
 		private void OnOptionsClick(object sender, EventArgs e)
 		{
-			var f = new OptionsForm("RouteViewOptions", Settings);
-			f.Text = "Route View Options";
-			f.Show();
+			var it = (ToolStripMenuItem)sender;
+			if (!it.Checked)
+			{
+				it.Checked = true;
+
+				_foptions = new OptionsForm("RouteViewOptions", Settings);
+				_foptions.Text = "Route View Options";
+
+				_foptions.Show();
+
+				_foptions.Closing += (sender1, e1) =>
+				{
+					if (!_closing)
+						OnOptionsClick(sender, e);
+
+					_closing = false;
+				};
+			}
+			else
+			{
+				_closing = true;
+
+				it.Checked = false;
+				_foptions.Close();
+			}
 		}
 
 		private void OnBrushColorChanged(object sender, string key, object val)

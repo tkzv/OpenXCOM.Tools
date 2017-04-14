@@ -766,11 +766,36 @@ namespace MapView
 			return DialogResult.OK;
 		}
 
+		private Form _foptions;
+		private bool _closing;
+
 		private void OnOptionsClick(object sender, EventArgs e)
 		{
-			var f = new OptionsForm("MainViewOptions", Settings);
-			f.Text = "Main View Options";
-			f.Show();
+			var it = (MenuItem)sender;
+			if (!it.Checked)
+			{
+				it.Checked = true;
+
+				_foptions = new OptionsForm("MainViewOptions", Settings);
+				_foptions.Text = "Main View Options";
+
+				_foptions.Show();
+
+				_foptions.Closing += (sender1, e1) =>
+				{
+					if (!_closing)
+						OnOptionsClick(sender, e);
+
+					_closing = false;
+				};
+			}
+			else
+			{
+				_closing = true;
+
+				it.Checked = false;
+				_foptions.Close();
+			}
 		}
 
 		private void OnSaveImageClick(object sender, EventArgs e)

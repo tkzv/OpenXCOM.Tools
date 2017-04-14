@@ -156,11 +156,36 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
+		private Form _foptions;
+		private bool _closing;
+
 		private void OnOptionsClick(object sender, EventArgs e)
 		{
-			var f = new OptionsForm("TileViewOptions", Settings);
-			f.Text = "Tile View Options";
-			f.Show();
+			var it = (ToolStripMenuItem)sender;
+			if (!it.Checked)
+			{
+				it.Checked = true;
+
+				_foptions = new OptionsForm("TileViewOptions", Settings);
+				_foptions.Text = "Tile View Options";
+
+				_foptions.Show();
+
+				_foptions.Closing += (sender1, e1) =>
+				{
+					if (!_closing)
+						OnOptionsClick(sender, e);
+
+					_closing = false;
+				};
+			}
+			else
+			{
+				_closing = true;
+
+				it.Checked = false;
+				_foptions.Close();
+			}
 		}
 
 		public override IMapBase BaseMap

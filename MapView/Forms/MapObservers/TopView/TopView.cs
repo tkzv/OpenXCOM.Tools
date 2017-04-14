@@ -149,11 +149,36 @@ namespace MapView.Forms.MapObservers.TopViews
 //				regkey.SetValue("vis" + _visQuadsDictionary[it], it.Checked);
 		} */
 
+		private Form _foptions;
+		private bool _closing;
+
 		private void OnOptionsClick(object sender, EventArgs e)
 		{
-			var f = new OptionsForm("TopViewOptions", Settings);
-			f.Text = "Top View Options";
-			f.Show();
+			var it = (ToolStripMenuItem)sender;
+			if (!it.Checked)
+			{
+				it.Checked = true;
+
+				_foptions = new OptionsForm("TopViewOptions", Settings);
+				_foptions.Text = "Top View Options";
+
+				_foptions.Show();
+
+				_foptions.Closing += (sender1, e1) =>
+				{
+					if (!_closing)
+						OnOptionsClick(sender, e);
+
+					_closing = false;
+				};
+			}
+			else
+			{
+				_closing = true;
+
+				it.Checked = false;
+				_foptions.Close();
+			}
 		}
 
 		private void OnBrushChanged(object sender, string key, object val)

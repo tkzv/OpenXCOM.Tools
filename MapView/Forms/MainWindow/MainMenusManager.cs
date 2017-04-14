@@ -90,14 +90,14 @@ namespace MapView.Forms.MainWindow
 
 			if (!it.Checked)
 			{
+				it.Checked = true;
 				((Form)it.Tag).Show();
 				((Form)it.Tag).WindowState = FormWindowState.Normal;
-				it.Checked = true;
 			}
 			else
 			{
-				((Form)it.Tag).Close();
 				it.Checked = false;
+				((Form)it.Tag).Close();
 			}
 		}
 
