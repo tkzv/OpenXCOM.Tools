@@ -60,7 +60,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		private Brush _brushTrans;
 
 		private Color _colorGrid;
-		internal Color GridColor
+		public Color GridColor // public for Reflection.
 		{
 			get { return _colorGrid; }
 			set
@@ -72,7 +72,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		}
 
 		private Pen _penDash;
-		internal Color GridLineColor
+		public Color GridLineColor // public for Reflection.
 		{
 			get { return _penDash.Color; }
 			set
@@ -81,7 +81,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 				Refresh();
 			}
 		}
-		internal int GridLineWidth
+		public int GridLineWidth // public for Reflection.
 		{
 			get { return (int)_penDash.Width; }
 			set
@@ -96,8 +96,9 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		// NOTE: Remove suppression for Release cfg.
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
 		"CA1811:AvoidUncalledPrivateCode",
-		Justification = "Because the setter is called dynamically w/ Reflection or other: it is used.")]
-		internal bool GraySelection
+		Justification = "Because the setter is called dynamically w/ Reflection" +
+		"or other: not only is it used it needs to be public.")]
+		public bool GraySelection // public for Reflection.
 		{
 			get { return _graySelection; }
 			set
@@ -108,7 +109,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		}
 
 		private bool _showGrid = true;
-		internal bool ShowGrid
+		public bool ShowGrid // public for Reflection.
 		{
 			get { return _showGrid; }
 			set

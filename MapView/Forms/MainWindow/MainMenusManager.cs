@@ -103,16 +103,11 @@ namespace MapView.Forms.MainWindow
 
 		private void AddMenuitemSettings()
 		{
-			//XCom.LogFile.WriteLine("AddMenuItemSettings");
 			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
-				//if (it.Tag != null) XCom.LogFile.WriteLine(". it.Tag= " + it.Tag);
-				//else XCom.LogFile.WriteLine(". it.Tag is NULL");
-
 				string key = GetWindowSettingKey(it);
 				if (!String.IsNullOrEmpty(key))
 				{
-					//XCom.LogFile.WriteLine(". . is VALID");
 					_settings.AddSetting(
 									key,
 //									!(it.Tag is XCom.ConsoleForm) && !(it.Tag is MapView.Forms.MapObservers.TileViews.TopRouteViewForm),	// q. why is TopRouteViewForm under 'TileViews'

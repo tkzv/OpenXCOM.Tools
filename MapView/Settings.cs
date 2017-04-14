@@ -64,8 +64,6 @@ namespace MapView
 					default:
 						if (settings[keyval.Keyword] != null)
 						{
-							LogFile.WriteLine("\nReadSettings keyval= " + keyval);
-							LogFile.WriteLine(". settings[keval.Keyword]= " + settings[keyval.Keyword].Value);
 							settings[keyval.Keyword].Value = keyval.Value;
 							settings[keyval.Keyword].doUpdate(keyval.Keyword);
 						}
@@ -175,7 +173,6 @@ namespace MapView
 		private void OnValueChanged(object sender, string key, object val)
 		{
 //			System.Windows.Forms.PropertyValueChangedEventArgs pe = (System.Windows.Forms.PropertyValueChangedEventArgs)e;
-			LogFile.WriteLine("\nOnValueChanged key= " + key + " val= " + val);
 			_propertiesDictionary[key].SetValue(val);
 		}
 
@@ -325,7 +322,6 @@ namespace MapView
 
 		internal void doUpdate(string key) // FxCop CA1030:UseEventsWhereAppropriate
 		{
-			LogFile.WriteLine("\ndoUpdate key= " + key);
 			if (ValueChangedEvent != null)
 				ValueChangedEvent(this, key, _value);
 		}
@@ -343,20 +339,13 @@ namespace MapView
 
 		public Property(object obj, string property)
 		{
-			LogFile.WriteLine("\nProperty cTor _obj= " + obj);
-			LogFile.WriteLine(". property= " + property);
-			LogFile.WriteLine(". obj.GetType()= " + obj.GetType());
-			LogFile.WriteLine(". obj.GetType().GetProperty(property)= " + obj.GetType().GetProperty(property));
 			_obj  = obj;
 			_info = obj.GetType().GetProperty(property);
-			LogFile.WriteLine(". _info= " + _info);
 		}
 
 
 		public void SetValue(object obj)
 		{
-			LogFile.WriteLine("\nSetValue obj= " + obj);
-			LogFile.WriteLine(". _obj= " + _obj);
 			_info.SetValue(_obj, obj, new object[]{});
 		}
 	}

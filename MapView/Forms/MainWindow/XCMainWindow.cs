@@ -230,11 +230,10 @@ namespace MapView
 			LogFile.WriteLine("Cursor loaded.");
 
 			InitList();
-			LogFile.WriteLine("Tilesets created and loaded to Main window's tree panel.");
+			LogFile.WriteLine("Tilesets created and loaded to tree panel.");
 
 			if (infoSettings.FileExists())
 			{
-				LogFile.WriteLine("\nXCMainWindow cTor FullPath= " + infoSettings.FullPath);
 				_settingsManager.Load(infoSettings.FullPath);
 				LogFile.WriteLine("User settings loaded.");
 			}
@@ -372,8 +371,6 @@ namespace MapView
 
 		private void LoadSettings()
 		{
-			//LogFile.WriteLine("LoadSettings MainView");
-
 			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
 			using (var sr = new StreamReader(File.OpenRead(file)))
 			{
