@@ -99,7 +99,7 @@ namespace MapView
 
 			if (!infoViewers.FileExists())
 			{
-				CreateIni();
+				CreateViewersFile();
 				LogFile.WriteLine("Window configuration file created.");
 			}
 			else
@@ -948,26 +948,21 @@ namespace MapView
 		}
 
 
-		private Varidia _vars;
-
 		/// <summary>
-		/// Transposes all the default viewer sizes and positions from the
-		/// embedded MapViewers.yml manifest to a /settings/MapViewers.yml file.
+		/// Transposes all the default viewer positions and sizes from the
+		/// embedded MapViewers manifest to '/settings/MapViewers.yml'.
 		/// Based on InstallationForm.
 		/// </summary>
-		private void CreateIni()
+		private void CreateViewersFile()
 		{
-			_vars = new Varidia();
-			_vars["##RunPath##"] = SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory);
-
 			var info = (PathInfo)SharedSpace.Instance[PathInfo.MapViewers];
 			info.CreateDirectory();
 
-			string pfeViewers = info.FullPath;
+			string pfe = info.FullPath;
 
 			using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
 													 .GetManifestResourceStream("MapView._Embedded.MapViewers.yml")))
-			using (var fs = new FileStream(pfeViewers, FileMode.Create))
+			using (var fs = new FileStream(pfe, FileMode.Create))
 			using (var sw = new StreamWriter(fs))
 			{
 				while (sr.Peek() != -1)
