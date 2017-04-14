@@ -29,13 +29,19 @@ namespace MapView.Forms.MainWindow
 
 		internal void Load(string file)
 		{
+			LogFile.WriteLine("\nLoad file= " + file);
 			using (var sr = new StreamReader(file))
 			{
 				var vars = new Varidia(sr);
 
 				KeyvalPair line;
 				while ((line = vars.ReadLine()) != null)
+				{
+					LogFile.WriteLine(". line= " + line);
+					LogFile.WriteLine(". vars= " + vars);
+					LogFile.WriteLine(". _settingsDictionary[line.Keyword]= " + _settingsDictionary[line.Keyword]);
 					Settings.ReadSettings(vars, line, _settingsDictionary[line.Keyword]);
+				}
 			}
 		}
 

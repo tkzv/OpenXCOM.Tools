@@ -19,8 +19,8 @@ namespace MapView
 	/// </summary>
 	public sealed class Settings
 	{
-		private Dictionary<string, Setting> _dictSettings;
-		private Dictionary<string, Property> _dictPropObjects;
+		private Dictionary<string, Setting> _settingsDictionary;
+		private Dictionary<string, Property> _propertiesDictionary;
 
 		private static Dictionary<Type, ConvertObjectHandler> _converters;
 
@@ -35,8 +35,8 @@ namespace MapView
 
 		internal Settings()
 		{
-			_dictSettings = new Dictionary<string, Setting>();
-			_dictPropObjects = new Dictionary<string, Property>();
+			_settingsDictionary   = new Dictionary<string, Setting>();
+			_propertiesDictionary = new Dictionary<string, Property>();
 
 			if (_converters == null)
 			{
@@ -64,6 +64,8 @@ namespace MapView
 					default:
 						if (settings[keyval.Keyword] != null)
 						{
+							LogFile.WriteLine("\nReadSettings keyval= " + keyval);
+							LogFile.WriteLine(". settings[keval.Keyword]= " + settings[keyval.Keyword].Value);
 							settings[keyval.Keyword].Value = keyval.Value;
 							settings[keyval.Keyword].doUpdate(keyval.Keyword);
 						}
@@ -77,7 +79,7 @@ namespace MapView
 		/// </summary>
 		internal Dictionary<string, Setting>.KeyCollection Keys
 		{
-			get { return _dictSettings.Keys; }
+			get { return _settingsDictionary.Keys; }
 		}
 
 		/// <summary>
@@ -88,8 +90,8 @@ namespace MapView
 			get
 			{
 				key = key.Replace(" ", String.Empty);
-				return (_dictSettings.ContainsKey(key)) ? _dictSettings[key]
-														: null;
+				return (_settingsDictionary.ContainsKey(key)) ? _settingsDictionary[key]
+															  : null;
 			}
 /*			set
 			{
@@ -128,14 +130,14 @@ namespace MapView
 			key = key.Replace(" ", String.Empty);
 
 			Setting setting;
-			if (!_dictSettings.ContainsKey(key))
+			if (!_settingsDictionary.ContainsKey(key))
 			{
 				setting = new Setting(value, desc, category);
-				_dictSettings[key] = setting;
+				_settingsDictionary[key] = setting;
 			}
 			else
 			{
-				setting = _dictSettings[key];
+				setting = _settingsDictionary[key];
 				setting.Value = value;
 				setting.Description = desc;
 			}
@@ -146,7 +148,7 @@ namespace MapView
 			}
 			else if (target != null)
 			{
-				_dictPropObjects[key] = new Property(target, key);
+				_propertiesDictionary[key] = new Property(target, key);
 				this[key].ValueChangedEvent += OnValueChanged;
 			}
 		}
@@ -161,19 +163,20 @@ namespace MapView
 		/// <returns>the Setting object tied to the string</returns>
 		internal Setting GetSetting(string key, object value)
 		{
-			if (!_dictSettings.ContainsKey(key))
+			if (!_settingsDictionary.ContainsKey(key))
 			{
 				var setting = new Setting(value, null, null);
-				_dictSettings.Add(key, setting);
+				_settingsDictionary.Add(key, setting);
 //				setting.Key = key;
 			}
-			return _dictSettings[key];
+			return _settingsDictionary[key];
 		}
 
 		private void OnValueChanged(object sender, string key, object val)
 		{
 //			System.Windows.Forms.PropertyValueChangedEventArgs pe = (System.Windows.Forms.PropertyValueChangedEventArgs)e;
-			_dictPropObjects[key].SetValue(val);
+			LogFile.WriteLine("\nOnValueChanged key= " + key + " val= " + val);
+			_propertiesDictionary[key].SetValue(val);
 		}
 
 		internal void Save(string line, System.IO.TextWriter sw)
@@ -181,7 +184,7 @@ namespace MapView
 			sw.WriteLine(line);
 			sw.WriteLine("{");
 
-			foreach (string key in _dictSettings.Keys)
+			foreach (string key in _settingsDictionary.Keys)
 				sw.WriteLine("\t" + key + ":" + Convert(this[key].Value));
 
 			sw.WriteLine("}");
@@ -322,6 +325,7 @@ namespace MapView
 
 		internal void doUpdate(string key) // FxCop CA1030:UseEventsWhereAppropriate
 		{
+			LogFile.WriteLine("\ndoUpdate key= " + key);
 			if (ValueChangedEvent != null)
 				ValueChangedEvent(this, key, _value);
 		}
@@ -329,7 +333,7 @@ namespace MapView
 
 
 	/// <summary>
-	/// struct Property
+	/// Property struct.
 	/// </summary>
 	internal struct Property
 	{
@@ -339,13 +343,20 @@ namespace MapView
 
 		public Property(object obj, string property)
 		{
+			LogFile.WriteLine("\nProperty cTor _obj= " + obj);
+			LogFile.WriteLine(". property= " + property);
+			LogFile.WriteLine(". obj.GetType()= " + obj.GetType());
+			LogFile.WriteLine(". obj.GetType().GetProperty(property)= " + obj.GetType().GetProperty(property));
 			_obj  = obj;
 			_info = obj.GetType().GetProperty(property);
+			LogFile.WriteLine(". _info= " + _info);
 		}
 
 
 		public void SetValue(object obj)
 		{
+			LogFile.WriteLine("\nSetValue obj= " + obj);
+			LogFile.WriteLine(". _obj= " + _obj);
 			_info.SetValue(_obj, obj, new object[]{});
 		}
 	}

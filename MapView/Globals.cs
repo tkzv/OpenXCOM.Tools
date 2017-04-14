@@ -5,18 +5,18 @@ namespace MapView
 {
 	internal static class Globals
 	{
-		public const double MinPckImageScale = 0.3;
-		public const double MaxPckImageScale = 2.0;
+		internal const double MinPckImageScale = 0.3;
+		internal const double MaxPckImageScale = 2.0;
 
 		private static double _pckImageScale = 1.0;
-		public static double PckImageScale
+		internal static double PckImageScale
 		{
 			get { return _pckImageScale; }
 			set { _pckImageScale = value; }
 		}
 
 		private static bool _autoPckImageScale = true;
-		public static bool AutoPckImageScale
+		internal static bool AutoPckImageScale
 		{
 			get { return _autoPckImageScale; }
 			set { _autoPckImageScale = value; }
@@ -26,12 +26,12 @@ namespace MapView
 
 
 		private static XCom.PckSpriteCollection _extraTiles;
-		public static XCom.PckSpriteCollection ExtraTiles
+		internal static XCom.PckSpriteCollection ExtraTiles
 		{
 			get { return _extraTiles; }
 		}
 
-		public static void LoadExtras()
+		internal static void LoadExtras()
 		{
 			if (_extraTiles == null)
 			{
@@ -58,7 +58,7 @@ namespace MapView
 		/// <param name="max"></param>
 		/// <returns>min if val is less than min; max if value is greater than
 		/// max; else the value itself</returns>
-		public static T Clamp<T>(
+		internal static T Clamp<T>(
 				this T val,
 				T min,
 				T max) where T

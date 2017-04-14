@@ -234,6 +234,7 @@ namespace MapView
 
 			if (infoSettings.FileExists())
 			{
+				LogFile.WriteLine("\nXCMainWindow cTor FullPath= " + infoSettings.FullPath);
 				_settingsManager.Load(infoSettings.FullPath);
 				LogFile.WriteLine("User settings loaded.");
 			}
