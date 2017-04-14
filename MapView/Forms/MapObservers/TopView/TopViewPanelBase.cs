@@ -135,7 +135,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		private void DrawSelectedLozenge()
 		{
-			if (MainViewPanel.Instance.MainView.IsSelectedTileValid)
+			if (MainViewPanel.Instance.MainView.FirstClick)
 			{
 				var start = GetDragStart();
 				var end   = GetDragEnd();
@@ -267,7 +267,7 @@ namespace MapView.Forms.MapObservers.TopViews
 									i * hWidth  - BaseMap.MapSize.Rows * hWidth  + _offX,
 									i * hHeight + BaseMap.MapSize.Rows * hHeight + _offY);
 
-				if (MainViewPanel.Instance.MainView.IsSelectedTileValid)
+				if (MainViewPanel.Instance.MainView.FirstClick)
 					backBuffer.DrawPath(Pens["SelectColor"], _lozSelected);
 
 				if (   _mouseCol > -1

@@ -253,19 +253,20 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		/// Flag that tells TopViewPanelBase.DrawSelectedLozenge that it's okay
 		/// to draw a lozenge for a selected tile; ie, that an initial tile has
 		/// actually been selected. This prevents an off-border lozenge from
-		/// being drawn right after TopView initially appears.
+		/// being drawn right after TopView initially appears. This can also
+		/// happen on MainView when GraySelected is false.
 		/// </summary>
-		internal bool _isSelectedTileValid;
-		internal bool IsSelectedTileValid
+		internal bool _firstClick;
+		internal bool FirstClick
 		{
-			get { return _isSelectedTileValid; }
+			get { return _firstClick; }
 		}
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			if (_baseMap != null)
 			{
-				_isSelectedTileValid = true; // klugdge.
+				_firstClick = true; // klugdge.
 
 				var dragStart = ConvertCoordsDiamond(
 												e.X, e.Y,
@@ -491,7 +492,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 				}
 
 //				if (_drawSelectionBox) // always false.
-				if (!_graySelection)
+				if (_firstClick && !_graySelection)
 					DrawLozengeSelected(g, _baseMap.CurrentHeight, dragRect);
 			}
 		}
