@@ -6,18 +6,38 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TopViews
 {
+	internal enum ContentType
+	{
+		Content,
+		EastWall,
+		SouthWall,
+		NorthWall,
+		WestWall,
+		NorthwestSoutheast,
+		NortheastSouthwest,
+		NorthWallWindow,
+		WestWallWindow,
+		Ground,
+		NorthFence,
+		WestFence,
+		NorthwestCorner,
+		NortheastCorner,
+		SouthwestCorner,
+		SoutheastCorner
+	}
+
 	/// <summary>
 	/// Methods for determining how walls and objects are drawn for TopView and
 	/// RouteView.
 	/// </summary>
 	internal static class ContentTypeService
 	{
-		internal static ContentType GetContentType(TileBase content)
+		internal static ContentType GetContentType(TileBase tile)
 		{
-			var mcdEntry = content.Record as McdRecord;
-			if (mcdEntry != null)
+			var record = tile.Record;
+			if (record != null)
 			{
-				var loftList = mcdEntry.GetLoftList();
+				var loftList = record.GetLoftList();
 
 				var allButGround = new List<byte>(loftList);
 				allButGround.RemoveAt(0);
@@ -82,65 +102,45 @@ namespace MapView.Forms.MapObservers.TopViews
 			return ContentType.Content;
 		}
 
-		private static bool AllLoftWith(IEnumerable<byte> loftList, int[] numbers)
+		private static bool AllLoftWith(IEnumerable<byte> loftList, int[] templates)
 		{
 			foreach (var loft in loftList)
 			{
-				var hasIt = false;
-				foreach (var number in numbers)
+				var valid = false;
+				foreach (var template in templates)
 				{
-					if (loft == number)
+					if (loft == template)
 					{
-						hasIt = true;
+						valid = true;
 						break;
 					}
 				}
 
-				if (!hasIt)
+				if (!valid)
 					return false;
 			}
 			return true;
 		}
 
-		private static bool AnyLoftWith(IEnumerable<byte> loftList, int[] numbers)
+		private static bool AnyLoftWith(IEnumerable<byte> loftList, int[] templates)
 		{
 			foreach (var loft in loftList)
-				foreach (var number in numbers)
-					if (loft == number)
-						return  true;
+				foreach (var template in templates)
+					if (loft == template)
+						return true;
 
 			return false;
 		}
 
-		internal static bool IsDoor(TileBase content)
+		internal static bool IsDoor(TileBase tile)
 		{
-			var mcdEntry = content.Record as McdRecord;
-			if (mcdEntry != null
-				&& (mcdEntry.HumanDoor || mcdEntry.UfoDoor))
+			var record = tile.Record;
+			if (record != null
+				&& (record.HumanDoor || record.UfoDoor))
 			{
 				return true;
 			}
 			return false;
 		}
-	}
-
-	internal enum ContentType
-	{
-		Content,
-		EastWall,
-		SouthWall,
-		NorthWall,
-		WestWall,
-		NorthwestSoutheast,
-		NortheastSouthwest,
-		NorthWallWindow,
-		WestWallWindow,
-		Ground,
-		NorthFence,
-		WestFence,
-		NorthwestCorner,
-		NortheastCorner,
-		SouthwestCorner,
-		SoutheastCorner
 	}
 }

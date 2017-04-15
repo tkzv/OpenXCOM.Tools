@@ -85,7 +85,7 @@ namespace MapView
 
 		internal OptionsPropertyGrid()
 		{
-			initTypes();
+			InitTypes();
 		}
 
 
@@ -93,7 +93,7 @@ namespace MapView
 		/// Initialize a private hashtable with type-opCode pairs so i dont have
 		/// to write a long if/else statement when outputting MSIL.
 		/// </summary>
-		private void initTypes()
+		private void InitTypes()
 		{
 			_typeHash = new Hashtable();
 

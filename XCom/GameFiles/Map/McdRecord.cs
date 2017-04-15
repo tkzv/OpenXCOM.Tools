@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+//using System.Drawing;
 
 
 #region About the mcdEntry
@@ -67,8 +67,6 @@ namespace XCom
 
 
 	public sealed class McdRecord
-//		:
-//			XCom.Interfaces.Base.IMcdRecord
 	{
 		private static int _idCanonical = 0;
 

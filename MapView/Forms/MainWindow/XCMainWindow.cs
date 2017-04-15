@@ -489,15 +489,20 @@ namespace MapView
 			switch (key)
 			{
 				case "Animation":
-					miOn.Checked = (bool)val;
-					miOff.Checked = !miOn.Checked;
-					MainViewPanel.Animate(miOn.Checked);
+					if (miOn.Checked = (bool)val)	// NOTE: 'miOn.Checked' and 'miOff.Checked' are used
+					{								// by the F1 and F2 keys to switch animations on/off.
+						miOff.Checked = false;
+						MainViewPanel.Animate(true);
+					}
+					else
+					{
+						miOff.Checked = true;
+						MainViewPanel.Animate(false);
+						StopDoorAnimations();
+					}
 					break;
 
 				case "Doors":
-					// TODO: uhh, human doors don't animate
-					// only ufo doors animate
-					// human doors use their Alternate tile.
 					if (MainViewPanel.Instance.BaseMap != null)
 					{
 						bool animate = (bool)val;
@@ -526,7 +531,7 @@ namespace MapView
 					MainViewPanel.Instance.MainView.GridLineWidth = (int)val;
 					break;
 
-				// NOTE: "GraySelection" is handled.
+				// NOTE: "GraySelection" is handled. reasons ...
 			}
 		}
 
@@ -625,11 +630,21 @@ namespace MapView
 				Environment.Exit(0);
 		} */
 
+		/// <summary>
+		/// Fired by the F1 key to turn animations On.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnOnClick(object sender, EventArgs e)
 		{
 			OnSettingChange(this, "Animation", true);
 		}
 
+		/// <summary>
+		/// Fired by the F2 key to turn animations Off.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnOffClick(object sender, EventArgs e)
 		{
 			OnSettingChange(this, "Animation", false);
@@ -721,14 +736,7 @@ namespace MapView
 				tsslDimensions.Text = (baseMap != null) ? baseMap.MapSize.ToString()
 														: "size: n/a";
 
-//				if (miDoors.Checked) // turn off door animations
-//				{
-//					miDoors.Checked = !miDoors.Checked;
-
-				miDoors.Checked = false;
-				foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
-					tile.SetAnimationSprites(false);
-//				}
+				StopDoorAnimations();
 
 				if (!menuShow.Enabled) // open all the forms in the show menu
 					_mainMenusManager.StartViewers();
@@ -738,6 +746,20 @@ namespace MapView
 //			else
 //				miExport.Enabled = false;
 		}
+
+		private void StopDoorAnimations()
+		{
+			miDoors.Checked = false;
+
+			if (_mainViewPanel.BaseMap != null) // NOTE: BaseMap is null on MapView load.
+			{
+				foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
+					tile.SetAnimationSprites(false);
+
+				Refresh();
+			}
+		}
+
 
 		private DialogResult NotifySave()
 		{

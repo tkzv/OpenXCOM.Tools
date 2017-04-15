@@ -78,7 +78,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				Graphics g,
 				SolidPenBrush color,
 				int x, int y,
-				TileBase content)
+				TileBase tile)
 		{
 			var ptTop   = new Point(
 								x,
@@ -93,7 +93,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 								x + _halfWidth - (Pad * 2),
 								y + _halfHeight);
 
-			switch (ContentTypeService.GetContentType(content))
+			switch (ContentTypeService.GetContentType(tile))
 			{
 				case ContentType.Content:
 					SetGroundPath(x, y);
@@ -122,7 +122,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							ptTop,
 							ptRight);
 
-					if (ContentTypeService.IsDoor(content))
+					if (ContentTypeService.IsDoor(tile))
 						g.DrawLine(
 								color.Pen,
 								ptTop,
@@ -142,7 +142,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							ptTop,
 							ptLeft);
 
-					if (ContentTypeService.IsDoor(content))
+					if (ContentTypeService.IsDoor(tile))
 						g.DrawLine(
 								color.Pen,
 								Point.Add(ptTop, new Size(6, 8)),

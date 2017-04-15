@@ -40,7 +40,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		private TilePanel _allTiles;
 		private TilePanel[] _panels;
 
-		private McdViewerForm _mcdInfo;
+		private McdViewerForm _mcdInfoForm;
 
 		private Hashtable _brushes;
 
@@ -84,19 +84,19 @@ namespace MapView.Forms.MapObservers.TileViews
 		private void OnTileChanged(TileBase tile)
 		{
 			var f = FindForm();
-			if (tile != null && tile.Record is McdRecord)
+			if (tile != null)
 			{
 				f.Text = BuildTitleString(tile.TileListId, tile.Id);
 
-				if (_mcdInfo != null)
-					_mcdInfo.UpdateData((McdRecord)tile.Record);
+				if (_mcdInfoForm != null)
+					_mcdInfoForm.UpdateData(tile.Record);
 			}
 			else
 			{
 				f.Text = "Tile View";
 
-				if (_mcdInfo != null)
-					_mcdInfo.UpdateData(null);
+				if (_mcdInfoForm != null)
+					_mcdInfoForm.UpdateData(null);
 			}
 
 			OnSelectedTileTypeChanged(tile);
@@ -140,19 +140,19 @@ namespace MapView.Forms.MapObservers.TileViews
 			var f = FindForm();
 
 			var tile = SelectedTile;
-			if (tile != null && tile.Record is McdRecord)
+			if (tile != null)
 			{
 				f.Text = BuildTitleString(tile.TileListId, tile.Id);
 
-				if (_mcdInfo != null)
-					_mcdInfo.UpdateData((McdRecord)tile.Record);
+				if (_mcdInfoForm != null)
+					_mcdInfoForm.UpdateData(tile.Record);
 			}
 			else
 			{
 				f.Text = "Tile View";
 
-				if (_mcdInfo != null)
-					_mcdInfo.UpdateData(null);
+				if (_mcdInfoForm != null)
+					_mcdInfoForm.UpdateData(null);
 			}
 		}
 
@@ -224,32 +224,32 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private void OnMcdInfoClick(object sender, EventArgs e)
 		{
-			if (_mcdInfo == null)
+			if (_mcdInfoForm == null)
 			{
-				_mcdInfo = new McdViewerForm();
-				_mcdInfo.Closing += OnMcdInfoClosing;
+				_mcdInfoForm = new McdViewerForm();
+				_mcdInfoForm.Closing += OnMcdInfoClosing;
 
 				var f = FindForm();
 
 				var tile = SelectedTile;
-				if (tile != null && tile.Record is McdRecord)
+				if (tile != null)
 				{
 					f.Text = BuildTitleString(tile.TileListId, tile.Id);
-					_mcdInfo.UpdateData((McdRecord)tile.Record);
+					_mcdInfoForm.UpdateData(tile.Record);
 				}
 				else
 				{
 					f.Text = "Tile View";
-					_mcdInfo.UpdateData(null);
+					_mcdInfoForm.UpdateData(null);
 				}
 			}
-			_mcdInfo.Show();
+			_mcdInfoForm.Show();
 		}
 
 		private void OnMcdInfoClosing(object sender, CancelEventArgs e)
 		{
 			e.Cancel = true;
-			_mcdInfo.Hide();
+			_mcdInfoForm.Hide();
 		}
 
 		private void OnVolutarMcdEditorClick(object sender, EventArgs e)
