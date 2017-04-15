@@ -27,7 +27,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.TopViewControl = new global::MapView.Forms.MapObservers.TopViews.TopView();
+			this.TopViewControl = new MapView.Forms.MapObservers.TopViews.TopView();
 			this.SuspendLayout();
 			// 
 			// TopViewControl

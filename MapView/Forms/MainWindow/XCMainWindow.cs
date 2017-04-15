@@ -513,7 +513,7 @@ namespace MapView
 					{
 						ToggleDoorSprites(miDoors.Checked);
 					}
-					else if (miDoors.Checked) // switch doors to Image1.
+					else if (miDoors.Checked) // switch to the doors' alt-tile (whether ufo-door or wood-door)
 					{
 						if (_mainViewPanel.BaseMap != null) // NOTE: BaseMap is null on MapView load.
 						{
@@ -523,7 +523,7 @@ namespace MapView
 							Refresh();
 						}
 					}
-					else // switch to the doors' alt-tile (whether ufo-door or wood-door)
+					else // switch doors to Image1.
 						ToggleDoorSprites(false);
 					break;
 

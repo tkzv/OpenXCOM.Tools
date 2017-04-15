@@ -31,8 +31,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.controlTopView = new global::MapView.Forms.MapObservers.TopViews.TopView();
-			this.controlRouteView = new global::MapView.Forms.MapObservers.RouteViews.RouteView();
+			this.controlTopView = new MapView.Forms.MapObservers.TopViews.TopView();
+			this.controlRouteView = new MapView.Forms.MapObservers.RouteViews.RouteView();
 			this.tabControl = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.tabPage2 = new System.Windows.Forms.TabPage();

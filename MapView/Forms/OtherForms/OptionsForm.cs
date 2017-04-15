@@ -35,7 +35,7 @@ namespace MapView
 
 		private void InitializeComponent()
 		{
-			this._propertyGrid = new global::MapView.OptionsPropertyGrid();
+			this._propertyGrid = new MapView.OptionsPropertyGrid();
 			this.SuspendLayout();
 			// 
 			// propertyGrid

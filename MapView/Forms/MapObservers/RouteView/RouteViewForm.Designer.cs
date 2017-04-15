@@ -27,7 +27,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.RouteViewControl = new global::MapView.Forms.MapObservers.RouteViews.RouteView();
+			this.RouteViewControl = new MapView.Forms.MapObservers.RouteViews.RouteView();
 			this.SuspendLayout();
 			// 
 			// RouteViewControl
