@@ -85,7 +85,7 @@ namespace MapView.Forms.MapObservers.TopViews
 								break;
 
 							case 2:
-								var tileView = MainWindowsManager.TileView.Control;
+								var tileView = ViewerFormsManager.TileView.Control;
 								tileView.SelectedTile = _mapTile[SelectedQuadrant];
 								break;
 						}
@@ -96,7 +96,7 @@ namespace MapView.Forms.MapObservers.TopViews
 						switch (clicks)
 						{
 							case 1:
-								var tileView = MainWindowsManager.TileView.Control;
+								var tileView = ViewerFormsManager.TileView.Control;
 								_mapTile[SelectedQuadrant] = tileView.SelectedTile;
 								break;
 
@@ -144,9 +144,9 @@ namespace MapView.Forms.MapObservers.TopViews
 					if (e.Button == MouseButtons.Right) // see SetSelected() above^
 					{
 						MainViewPanel.Instance.MainView.Refresh();
-						MainWindowsManager.TopView.Refresh();
-						MainWindowsManager.TopRouteView.Refresh();
-						MainWindowsManager.RouteView.Refresh();
+						ViewerFormsManager.TopView.Refresh();
+						ViewerFormsManager.TopRouteView.Refresh();
+						ViewerFormsManager.RouteView.Refresh();
 					}
 					Refresh();
 					break;

@@ -7,9 +7,9 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MainWindow
 {
-	internal sealed class MainWindowsManager
+	internal sealed class ViewerFormsManager
 	{
-		internal static MainShowAllManager ShowAllManager;
+		internal static ShowHideManager ShowAllManager;
 		internal static EditButtonsFactory EditFactory;
 
 

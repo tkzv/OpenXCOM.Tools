@@ -160,8 +160,8 @@ namespace MapView.Forms.MainWindow
 //			MainViewPanel.Instance.Refresh();			// either this
 			MainViewPanel.Instance.MainView.Refresh();	// or this, both works
 
-			MainWindowsManager.TopView.Refresh();
-			MainWindowsManager.RouteView.Refresh();
+			ViewerFormsManager.TopView.Refresh();
+			ViewerFormsManager.RouteView.Refresh();
 
 			// TODO: refresh TopRouteView (both Top & Route panels) also.
 		}

@@ -33,7 +33,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		public event MethodInvoker MapChangedEventHandler;
 
 
-		private MainShowAllManager _showAllManager;
+		private ShowHideManager _showAllManager;
 
 		private IContainer components = null; // quahhaha
 
@@ -102,7 +102,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			OnSelectedTileTypeChanged(tile);
 		}
 
-		public void Initialize(MainShowAllManager showAllManager)
+		public void Initialize(ShowHideManager showAllManager)
 		{
 			_showAllManager = showAllManager;
 		}

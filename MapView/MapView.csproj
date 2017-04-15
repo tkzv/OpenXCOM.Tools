@@ -200,9 +200,9 @@
     <Compile Include="Forms\Error\IErrorHandler.cs" />
     <Compile Include="Forms\Error\WarningConsole\ConsoleWarningHandler.cs" />
     <Compile Include="Forms\MainWindow\EditButtonsFactory.cs" />
-    <Compile Include="Forms\MainWindow\MainWindowsManager.cs" />
-    <Compile Include="Forms\MainWindow\MainViewsManager.cs" />
-    <Compile Include="Forms\MainWindow\MainShowAllManager.cs" />
+    <Compile Include="Forms\MainWindow\ViewerFormsManager.cs" />
+    <Compile Include="Forms\MainWindow\ViewersManager.cs" />
+    <Compile Include="Forms\MainWindow\ShowHideManager.cs" />
     <Compile Include="Forms\MapObservers\MapObserverControl1.cs">
       <SubType>Component</SubType>
     </Compile>

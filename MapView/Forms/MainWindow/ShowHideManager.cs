@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace MapView.Forms.MainWindow
 {
-	internal sealed class MainShowAllManager
+	internal sealed class ShowHideManager
 	{
 		private readonly IEnumerable<Form> _allForms;
 		private readonly IEnumerable<MenuItem> _allItems;
@@ -13,7 +13,7 @@ namespace MapView.Forms.MainWindow
 		private List<MenuItem> _items;
 
 
-		internal MainShowAllManager(
+		internal ShowHideManager(
 				IEnumerable<Form> allForms,
 				IEnumerable<MenuItem> allItems)
 		{

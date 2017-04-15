@@ -222,7 +222,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			{
 				_baseMap.MapChanged = true;
 
-				var quadType = MainWindowsManager.TopView.Control.QuadrantsPanel.SelectedQuadrant;
+				var quadType = ViewerFormsManager.TopView.Control.QuadrantsPanel.SelectedQuadrant;
 
 				var start = new Point(0, 0);
 				var end   = new Point(0, 0);
@@ -233,7 +233,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 				end.X = Math.Max(DragStart.X, DragEnd.X);
 				end.Y = Math.Max(DragStart.Y, DragEnd.Y);
 
-				var tileView = MainWindowsManager.TileView.Control;
+				var tileView = ViewerFormsManager.TileView.Control;
 				for (int c = start.X; c <= end.X; ++c)
 					for (int r = start.Y; r <= end.Y; ++r)
 						((XCMapTile)_baseMap[r, c])[quadType] = tileView.SelectedTile;
@@ -558,7 +558,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 
 		private static void DrawTile(Graphics g, XCMapTile tile, int x, int y)
 		{
-			var topView = MainWindowsManager.TopView.Control;
+			var topView = ViewerFormsManager.TopView.Control;
 
 			if (topView.GroundVisible)
 			{
@@ -591,7 +591,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 
 		private static void DrawTileGray(Graphics g, XCMapTile tile, int x, int y)
 		{
-			var topView = MainWindowsManager.TopView.Control;
+			var topView = ViewerFormsManager.TopView.Control;
 
 			if (topView.GroundVisible)
 			{

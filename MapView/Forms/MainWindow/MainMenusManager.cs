@@ -40,21 +40,21 @@ namespace MapView.Forms.MainWindow
 		{
 			_settings = settings;
 
-			CreateMenuitem(MainWindowsManager.TileView,     "Tile View",     _viewsMenu);
+			CreateMenuitem(ViewerFormsManager.TileView,     "Tile View",     _viewsMenu);
 
 			_viewsMenu.MenuItems.Add(new MenuItem(Divider));
 
-			CreateMenuitem(MainWindowsManager.TopView,      "Top View",      _viewsMenu);
-			CreateMenuitem(MainWindowsManager.RouteView,    "Route View",    _viewsMenu);
-			CreateMenuitem(MainWindowsManager.TopRouteView, "TopRoute View", _viewsMenu);
+			CreateMenuitem(ViewerFormsManager.TopView,      "Top View",      _viewsMenu);
+			CreateMenuitem(ViewerFormsManager.RouteView,    "Route View",    _viewsMenu);
+			CreateMenuitem(ViewerFormsManager.TopRouteView, "TopRoute View", _viewsMenu);
 
 			_viewsMenu.MenuItems.Add(new MenuItem(Divider));
 
 			CreateMenuitem(console,                         "Console",       _viewsMenu);
 
 
-			CreateMenuitem(MainWindowsManager.HelpScreen,   "Quick Help",    _helpMenu);
-			CreateMenuitem(MainWindowsManager.AboutScreen,  "About",         _helpMenu);
+			CreateMenuitem(ViewerFormsManager.HelpScreen,   "Quick Help",    _helpMenu);
+			CreateMenuitem(ViewerFormsManager.AboutScreen,  "About",         _helpMenu);
 
 			AddMenuitemSettings();
 		}
@@ -175,9 +175,9 @@ namespace MapView.Forms.MainWindow
 									   : null;
 		}
 
-		internal MainShowAllManager CreateShowAllManager()
+		internal ShowHideManager CreateShowAllManager()
 		{
-			return new MainShowAllManager(_allForms, _allItems);
+			return new ShowHideManager(_allForms, _allItems);
 		}
 
 		/// <summary>

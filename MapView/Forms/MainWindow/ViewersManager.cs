@@ -9,7 +9,7 @@ using XCom;
 
 namespace MapView.Forms.MainWindow
 {
-	internal sealed class MainViewsManager
+	internal sealed class ViewersManager
 	{
 		private readonly Dictionary<string, Form> _viewersDictionary = new Dictionary<string, Form>();
 
@@ -17,7 +17,7 @@ namespace MapView.Forms.MainWindow
 		private readonly ConsoleSharedSpace _consoleShare;
 
 
-		internal MainViewsManager(
+		internal ViewersManager(
 				SettingsManager settingsManager,
 				ConsoleSharedSpace consoleShare)
 		{
@@ -29,28 +29,28 @@ namespace MapView.Forms.MainWindow
 		internal void ManageViewers()
 		{
 			//LogFile.WriteLine("ManageViewers");
-			MainWindowsManager.TopRouteView.ControlTop.Settings   = MainWindowsManager.TopView.Control.Settings;
-			MainWindowsManager.TopRouteView.ControlRoute.Settings = MainWindowsManager.RouteView.Control.Settings;
+			ViewerFormsManager.TopRouteView.ControlTop.Settings   = ViewerFormsManager.TopView.Control.Settings;
+			ViewerFormsManager.TopRouteView.ControlRoute.Settings = ViewerFormsManager.RouteView.Control.Settings;
 
-			MainWindowsManager.TopRouteView.ControlTop.LoadControl0Settings();
-			MainWindowsManager.TopRouteView.ControlRoute.LoadControl0Settings();
+			ViewerFormsManager.TopRouteView.ControlTop.LoadControl0Settings();
+			ViewerFormsManager.TopRouteView.ControlRoute.LoadControl0Settings();
 
 
-			AddViewer("Top View",    MainWindowsManager.TopView);
-			SetAsObserver("TopView", MainWindowsManager.TopView);
+			AddViewer("Top View",    ViewerFormsManager.TopView);
+			SetAsObserver("TopView", ViewerFormsManager.TopView);
 
-			AddViewer("Route View",    MainWindowsManager.RouteView);
-			SetAsObserver("RouteView", MainWindowsManager.RouteView);
+			AddViewer("Route View",    ViewerFormsManager.RouteView);
+			SetAsObserver("RouteView", ViewerFormsManager.RouteView);
 
-			AddViewer("Tile View",    MainWindowsManager.TileView);
-			SetAsObserver("TileView", MainWindowsManager.TileView);
+			AddViewer("Tile View",    ViewerFormsManager.TileView);
+			SetAsObserver("TileView", ViewerFormsManager.TileView);
 
-			AddViewer("TopRoute View", MainWindowsManager.TopRouteView);
+			AddViewer("TopRoute View", ViewerFormsManager.TopRouteView);
 
 			AddViewer("Console", _consoleShare.GetNewConsole());
 
-			AddViewer("Quick Help", MainWindowsManager.HelpScreen);
-			AddViewer("About",      MainWindowsManager.AboutScreen);
+			AddViewer("Quick Help", ViewerFormsManager.HelpScreen);
+			AddViewer("About",      ViewerFormsManager.AboutScreen);
 
 
 //			SetAsObserver(MainWindowsManager.TopView,      "Top View",      "TopView");

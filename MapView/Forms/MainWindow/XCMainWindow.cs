@@ -38,8 +38,8 @@ namespace MapView
 		private readonly MainViewPanel         _mainViewPanel;
 		private readonly LoadingForm           _loadingProgress;
 		private readonly ConsoleWarningHandler _warningHandler;
-		private readonly MainViewsManager      _mainViewsManager;
-		private readonly MainWindowsManager    _mainWindowsManager;
+		private readonly ViewersManager        _viewersManager;
+		private readonly ViewerFormsManager    _viewerFormsManager;
 		private readonly MainMenusManager      _mainMenusManager;
 
 		private Settings Settings
@@ -147,7 +147,7 @@ namespace MapView
 			_instance = this;
 
 
-			_settingsManager = new SettingsManager(); // goes before LoadDefaults()
+			_settingsManager = new SettingsManager(); // goes before LoadSettings()
 
 			LoadSettings();
 			LogFile.WriteLine("MainView Settings loaded.");
@@ -168,18 +168,18 @@ namespace MapView
 			_warningHandler  = new ConsoleWarningHandler(consoleShare);
 
 
-			_mainWindowsManager = new MainWindowsManager();
-			_mainViewsManager   = new MainViewsManager(_settingsManager, consoleShare);
+			_viewerFormsManager = new ViewerFormsManager();
+			_viewersManager     = new ViewersManager(_settingsManager, consoleShare);
 			_mainMenusManager   = new MainMenusManager(menuShow, menuHelp);
 
 			_mainMenusManager.PopulateMenus(consoleShare.GetNewConsole(), Settings);
 			LogFile.WriteLine("MainView menus populated.");
-			MainWindowsManager.ShowAllManager = _mainMenusManager.CreateShowAllManager();
+			ViewerFormsManager.ShowAllManager = _mainMenusManager.CreateShowAllManager();
 			LogFile.WriteLine("ShowAllManager created.");
 
 
-			MainWindowsManager.EditFactory = new EditButtonsFactory(_mainViewPanel);
-			MainWindowsManager.Initialize();
+			ViewerFormsManager.EditFactory = new EditButtonsFactory(_mainViewPanel);
+			ViewerFormsManager.Initialize();
 			LogFile.WriteLine("MainWindowsManager initialized.");
 
 
@@ -188,10 +188,10 @@ namespace MapView
 			LogFile.WriteLine("GameInfo initialized.");
 
 
-			_mainViewsManager.ManageViewers();
+			_viewersManager.ManageViewers();
 
 
-			MainWindowsManager.TileView.Control.MapChangedEventHandler += OnMapChanged;
+			ViewerFormsManager.TileView.Control.MapChangedEventHandler += OnMapChanged;
 
 			MainViewPanel.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
@@ -202,7 +202,7 @@ namespace MapView
 
 			tscPanel.ContentPanel.Controls.Add(_mainViewPanel);
 
-			MainWindowsManager.EditFactory.BuildEditStrip(tsEdit);
+			ViewerFormsManager.EditFactory.BuildEditStrip(tsEdit);
 			tsEdit.Enabled = false;
 
 
@@ -499,11 +499,18 @@ namespace MapView
 					miOff.Checked = !miOn.Checked;	// by the F1 and F2 keys to switch animations on/off.
 					MainViewPanel.Animate(miOn.Checked);
 
-					if (!miOn.Checked && miDoors.Checked) // toggle off doors if general animations stop.
+					if (!miOn.Checked) // show the doorsprites closed in TileView and QuadrantPanel.
 					{
-						miDoors.Checked = false;
-						ToggleDoorSprites(false);
+						if (miDoors.Checked) // toggle off doors if general animations stop.
+						{
+							miDoors.Checked = false;
+							ToggleDoorSprites(false);
+						}
+						ViewerFormsManager.TileView.Refresh();
+						ViewerFormsManager.TopView.Control.QuadrantsPanel.Refresh();
 					}
+					else if (miOn.Checked && miDoors.Checked) // doors need to animate if they were already toggled on.
+						ToggleDoorSprites(true);
 					break;
 
 				case "Doors":
@@ -568,7 +575,7 @@ namespace MapView
 //				if (PathsEditor.SaveRegistry) // TODO: re-implement.
 				{
 					WindowState = FormWindowState.Normal;
-					_mainViewsManager.CloseSubsidiaryViewers();
+					_viewersManager.CloseSubsidiaryViewers();
 
 					string path = SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory);
 					string src  = Path.Combine(path, PathInfo.YamlViewers);
@@ -637,7 +644,7 @@ namespace MapView
 
 		private void OnAnimationUpdate(object sender, EventArgs e)
 		{
-			MainWindowsManager.TopView.Control.QuadrantsPanel.Refresh();
+			ViewerFormsManager.TopView.Control.QuadrantsPanel.Refresh();
 		}
 
 /*		private static void myQuit(object sender, string command)
@@ -769,7 +776,7 @@ namespace MapView
 				if (!menuShow.Enabled) // open all the forms in the show menu
 					_mainMenusManager.StartViewers();
 
-				_mainWindowsManager.SetObservers(baseMap); // reset all observer events
+				_viewerFormsManager.SetObservers(baseMap); // reset all observer events
 			}
 //			else
 //				miExport.Enabled = false;
