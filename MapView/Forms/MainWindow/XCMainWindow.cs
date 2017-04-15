@@ -42,6 +42,12 @@ namespace MapView
 		private readonly MainWindowsManager    _mainWindowsManager;
 		private readonly MainMenusManager      _mainMenusManager;
 
+		private Settings Settings
+		{
+			get { return _settingsManager["MainWindow"]; }
+			set { _settingsManager["MainWindow"] = value; }
+		}
+
 
 		internal XCMainWindow()
 		{
@@ -489,26 +495,36 @@ namespace MapView
 			switch (key)
 			{
 				case "Animation":
-					if (miOn.Checked = (bool)val)	// NOTE: 'miOn.Checked' and 'miOff.Checked' are used
-					{								// by the F1 and F2 keys to switch animations on/off.
-						miOff.Checked = false;
-						MainViewPanel.Animate(true);
-					}
-					else
+					miOn.Checked = (bool)val;		// NOTE: 'miOn.Checked' and 'miOff.Checked' are used
+					miOff.Checked = !miOn.Checked;	// by the F1 and F2 keys to switch animations on/off.
+					MainViewPanel.Animate(miOn.Checked);
+
+					if (!miOn.Checked && miDoors.Checked) // toggle off doors if general animations stop.
 					{
-						miOff.Checked = true;
-						MainViewPanel.Animate(false);
-						StopDoorAnimations();
+						miDoors.Checked = false;
+						ToggleDoorSprites(false);
 					}
 					break;
 
 				case "Doors":
-					if (MainViewPanel.Instance.BaseMap != null)
+					miDoors.Checked = (bool)val; // NOTE: 'miDoors.Checked' is used by the F3 key to toggle door animations.
+
+					if (miOn.Checked)
 					{
-						bool animate = (bool)val;
-						foreach (XCTile tile in MainViewPanel.Instance.BaseMap.Tiles)
-							tile.SetAnimationSprites(animate);
+						ToggleDoorSprites(miDoors.Checked);
 					}
+					else if (miDoors.Checked) // switch doors to Image1.
+					{
+						if (_mainViewPanel.BaseMap != null) // NOTE: BaseMap is null on MapView load.
+						{
+							foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
+								tile.SetDoorToAlternateSprite();
+
+							Refresh();
+						}
+					}
+					else // switch to the doors' alt-tile (whether ufo-door or wood-door)
+						ToggleDoorSprites(false);
 					break;
 
 				case "SaveWindowPositions":
@@ -650,6 +666,16 @@ namespace MapView
 			OnSettingChange(this, "Animation", false);
 		}
 
+		/// <summary>
+		/// Fired by the F3 key to toggle door animations.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnToggleDoorsClick(object sender, EventArgs e)
+		{
+			OnSettingChange(this, "Doors", !miDoors.Checked);
+		}
+
 		private void OnSaveClick(object sender, EventArgs e)
 		{
 			if (_mainViewPanel.BaseMap != null)
@@ -736,7 +762,9 @@ namespace MapView
 				tsslDimensions.Text = (baseMap != null) ? baseMap.MapSize.ToString()
 														: "size: n/a";
 
-				StopDoorAnimations();
+				Settings["Doors"].Value = false; // toggle off door-animations; not sure that this is necessary to do.
+				miDoors.Checked = false;
+				ToggleDoorSprites(false);
 
 				if (!menuShow.Enabled) // open all the forms in the show menu
 					_mainMenusManager.StartViewers();
@@ -747,14 +775,12 @@ namespace MapView
 //				miExport.Enabled = false;
 		}
 
-		private void StopDoorAnimations()
+		private void ToggleDoorSprites(bool animate)
 		{
-			miDoors.Checked = false;
-
 			if (_mainViewPanel.BaseMap != null) // NOTE: BaseMap is null on MapView load.
 			{
 				foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
-					tile.SetAnimationSprites(false);
+					tile.SetDoorSprites(animate);
 
 				Refresh();
 			}
@@ -930,12 +956,6 @@ namespace MapView
 
 		private void OnOpenClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE.
 		{}
-
-		private Settings Settings
-		{
-			get { return _settingsManager["MainWindow"]; }
-			set { _settingsManager["MainWindow"] = value; }
-		}
 
 		private void OnSelectionBoxClick(object sender, EventArgs e) // NOTE: is disabled w/ Visible=FALSE in designer.
 		{

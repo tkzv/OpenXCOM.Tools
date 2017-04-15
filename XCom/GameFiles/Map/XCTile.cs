@@ -82,7 +82,7 @@ namespace XCom
 		/// Toggles this tilepart's array of sprites if it's a door-part.
 		/// </summary>
 		/// <param name="animate">true to animate</param>
-		public void SetAnimationSprites(bool animate)
+		public void SetDoorSprites(bool animate)
 		{
 			if (Record.UfoDoor || Record.HumanDoor)
 			{
@@ -101,15 +101,9 @@ namespace XCom
 					}
 					else
 					{
-						byte altImage = _alternate.Record.Image1;
-//						Images[0] = _pckPack[Record.Image1];
-//						Images[1] = _pckPack[Record.Image1];
-//						Images[2] = _pckPack[Record.Image1];
-//						Images[3] = _pckPack[Record.Image1];
-						Images[4] = _pckPack[altImage];
-						Images[5] = _pckPack[altImage];
-						Images[6] = _pckPack[altImage];
-						Images[7] = _pckPack[altImage];
+						byte alt = _alternate.Record.Image1;
+						for (int i = 4; i != 8; ++i)
+							Images[i] = _pckPack[alt];
 					}
 				}
 				else
@@ -117,6 +111,16 @@ namespace XCom
 					for (int i = 0; i != 8; ++i)
 						Images[i] = _pckPack[Record.Image1];
 				}
+			}
+		}
+
+		public void SetDoorToAlternateSprite()
+		{
+			if (Record.UfoDoor || Record.HumanDoor)
+			{
+				byte alt = _alternate.Record.Image1;
+				for (int i = 0; i != 8; ++i)
+					Images[i] = _pckPack[alt];
 			}
 		}
 	}

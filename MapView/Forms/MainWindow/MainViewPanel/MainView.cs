@@ -483,7 +483,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 									_cursor.DrawLow(
 												g,
 												x, y,
-												MainViewPanel.Current,
+												MainViewPanel.AniStep,
 												false,
 												_baseMap.CurrentHeight == h);
 							}
@@ -564,28 +564,28 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			{
 				var baseTile = tile.Ground;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Image);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Image);
 			}
 
 			if (topView.WestVisible)
 			{
 				var baseTile = tile.West;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Image);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Image);
 			}
 
 			if (topView.NorthVisible)
 			{
 				var baseTile = tile.North;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Image);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Image);
 			}
 
 			if (topView.ContentVisible)
 			{
 				var baseTile = tile.Content;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Image);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Image);
 			}
 		}
 
@@ -597,28 +597,28 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			{
 				var baseTile = tile.Ground;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Gray);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Gray);
 			}
 
 			if (topView.WestVisible)
 			{
 				var baseTile = tile.West;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Gray);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Gray);
 			}
 
 			if (topView.NorthVisible)
 			{
 				var baseTile = tile.North;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Gray);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Gray);
 			}
 
 			if (topView.ContentVisible)
 			{
 				var baseTile = tile.Content;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.Current].Gray);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Gray);
 			}
 		}
 

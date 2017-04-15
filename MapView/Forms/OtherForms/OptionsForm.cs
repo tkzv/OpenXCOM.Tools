@@ -58,7 +58,6 @@ namespace MapView
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Custom PropertyGrid";
 			this.ResumeLayout(false);
-
 		}
 		#endregion
 	}
@@ -173,7 +172,7 @@ namespace MapView
 																"table",
 																typeof(Hashtable),
 																FieldAttributes.Private);
-				createHashMethod(
+				CreateHashMethod(
 							typeBuilder.DefineProperty(
 													"Hash",
 													PropertyAttributes.None,
@@ -183,7 +182,7 @@ namespace MapView
 							fieldBuilder);
 
 				foreach (string key in _settings.Keys)
-					emitProperty(
+					EmitProperty(
 							typeBuilder,
 							fieldBuilder,
 							_settings[key],
@@ -209,7 +208,7 @@ namespace MapView
 			SelectedObject = obj;
 		}
 
-		private static void createHashMethod(
+		private static void CreateHashMethod(
 				PropertyBuilder propBuilder,
 				TypeBuilder typeBuilder,
 				FieldInfo fieldInfo)
@@ -254,7 +253,7 @@ namespace MapView
 		/// <param name="fieldInfo"></param>
 		/// <param name="setting"></param>
 		/// <param name="name"></param>
-		private void emitProperty(
+		private void EmitProperty(
 				TypeBuilder typeBuilder,
 				FieldInfo fieldInfo,
 				Setting setting,

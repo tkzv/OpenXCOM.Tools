@@ -211,7 +211,7 @@ namespace MapView
 		internal static event EventHandler AnimationUpdateEvent;
 
 		private static Timer _timer;
-		private static int _current;
+		private static int _anistep;
 
 		// NOTE: Remove suppression for Release cfg.
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Mobility",
@@ -232,12 +232,15 @@ namespace MapView
 					_timer.Start();
 			}
 			else if (_timer != null)
+			{
 				_timer.Stop();
+				_anistep = 0;
+			}
 		}
 
 		private static void AnimateStep(object sender, EventArgs e)
 		{
-			_current = (_current + 1) % 8;
+			_anistep = ++_anistep % 8;
 
 			if (AnimationUpdateEvent != null)
 				AnimationUpdateEvent(null, null);
@@ -254,9 +257,9 @@ namespace MapView
 			set { _timer.Interval = value; }
 		} */
 
-		internal static int Current
+		internal static int AniStep
 		{
-			get { return _current; }
+			get { return _anistep; }
 		}
 		#endregion
 	}

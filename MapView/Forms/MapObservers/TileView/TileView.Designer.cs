@@ -56,7 +56,7 @@
 			// 
 			this.tpFloors.Location = new System.Drawing.Point(4, 21);
 			this.tpFloors.Name = "tpFloors";
-			this.tpFloors.Size = new System.Drawing.Size(472, 310);
+			this.tpFloors.Size = new System.Drawing.Size(632, 430);
 			this.tpFloors.TabIndex = 1;
 			this.tpFloors.Text = "Floors";
 			// 
@@ -64,7 +64,7 @@
 			// 
 			this.tpWestwalls.Location = new System.Drawing.Point(4, 21);
 			this.tpWestwalls.Name = "tpWestwalls";
-			this.tpWestwalls.Size = new System.Drawing.Size(472, 310);
+			this.tpWestwalls.Size = new System.Drawing.Size(632, 430);
 			this.tpWestwalls.TabIndex = 2;
 			this.tpWestwalls.Text = "West Walls";
 			// 
@@ -72,7 +72,7 @@
 			// 
 			this.tpNorthwalls.Location = new System.Drawing.Point(4, 21);
 			this.tpNorthwalls.Name = "tpNorthwalls";
-			this.tpNorthwalls.Size = new System.Drawing.Size(472, 310);
+			this.tpNorthwalls.Size = new System.Drawing.Size(632, 430);
 			this.tpNorthwalls.TabIndex = 4;
 			this.tpNorthwalls.Text = "North Walls";
 			// 
@@ -80,7 +80,7 @@
 			// 
 			this.tpObjects.Location = new System.Drawing.Point(4, 21);
 			this.tpObjects.Name = "tpObjects";
-			this.tpObjects.Size = new System.Drawing.Size(472, 310);
+			this.tpObjects.Size = new System.Drawing.Size(632, 430);
 			this.tpObjects.TabIndex = 3;
 			this.tpObjects.Text = "Objects";
 			// 
@@ -99,6 +99,7 @@
 			// 
 			// tsddbMcd
 			// 
+			this.tsddbMcd.AutoToolTip = false;
 			this.tsddbMcd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.tsddbMcd.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.tsmiMcdInfo,
@@ -126,6 +127,7 @@
 			// 
 			// tsddbPck
 			// 
+			this.tsddbPck.AutoToolTip = false;
 			this.tsddbPck.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.tsddbPck.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.tsmiEditPck});
@@ -140,12 +142,13 @@
 			// tsmiEditPck
 			// 
 			this.tsmiEditPck.Name = "tsmiEditPck";
-			this.tsmiEditPck.Size = new System.Drawing.Size(116, 22);
+			this.tsmiEditPck.Size = new System.Drawing.Size(152, 22);
 			this.tsmiEditPck.Text = "Edit PCK";
 			this.tsmiEditPck.Click += new System.EventHandler(this.OnEditPckClick);
 			// 
 			// tsddbEdit
 			// 
+			this.tsddbEdit.AutoToolTip = false;
 			this.tsddbEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.tsddbEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.tsmiOptions});
@@ -159,7 +162,7 @@
 			// tsmiOptions
 			// 
 			this.tsmiOptions.Name = "tsmiOptions";
-			this.tsmiOptions.Size = new System.Drawing.Size(113, 22);
+			this.tsmiOptions.Size = new System.Drawing.Size(152, 22);
 			this.tsmiOptions.Text = "Options";
 			this.tsmiOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 

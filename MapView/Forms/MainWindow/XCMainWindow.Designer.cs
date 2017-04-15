@@ -197,7 +197,9 @@ namespace MapView
 			// miDoors
 			// 
 			this.miDoors.Index = 2;
+			this.miDoors.Shortcut = System.Windows.Forms.Shortcut.F3;
 			this.miDoors.Text = "Doors";
+			this.miDoors.Click += new System.EventHandler(this.OnToggleDoorsClick);
 			// 
 			// menuShow
 			// 

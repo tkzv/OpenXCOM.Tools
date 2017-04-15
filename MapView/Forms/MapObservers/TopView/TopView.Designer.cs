@@ -30,7 +30,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.tscMain = new System.Windows.Forms.ToolStripContainer();
 			this.pMain = new System.Windows.Forms.Panel();
 			this.tsEdit = new System.Windows.Forms.ToolStrip();
-			this.quadrants = new global::MapView.Forms.MapObservers.TopViews.QuadrantPanel();
+			this.quadrants = new MapView.Forms.MapObservers.TopViews.QuadrantPanel();
 			this.tsMain = new System.Windows.Forms.ToolStrip();
 			this.tsddbVisibleQuads = new System.Windows.Forms.ToolStripDropDownButton();
 			this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
@@ -119,6 +119,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			// 
 			// tsddbVisibleQuads
 			// 
+			this.tsddbVisibleQuads.AutoToolTip = false;
 			this.tsddbVisibleQuads.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.tsddbVisibleQuads.Image = ((System.Drawing.Image)(resources.GetObject("tsddbVisibleQuads.Image")));
 			this.tsddbVisibleQuads.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -128,6 +129,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			// 
 			// toolStripDropDownButton1
 			// 
+			this.toolStripDropDownButton1.AutoToolTip = false;
 			this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.tsmiOptions});

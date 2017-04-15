@@ -251,7 +251,7 @@ namespace MapView.Forms.MapObservers.TileViews
 								g.FillRectangle((SolidBrush)_brushes[targetType], rect);
 
 							g.DrawImage(
-									tile[MainViewPanel.Current].Image,
+									tile[MainViewPanel.AniStep].Image,
 									left,
 									top - tile.Record.TileOffset);
 
