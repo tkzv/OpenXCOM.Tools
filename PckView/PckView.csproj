@@ -242,6 +242,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>BmpForm_.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\HelpForm.resx">
+      <DependentUpon>HelpForm.Designer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ModForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ModForm.cs</DependentUpon>

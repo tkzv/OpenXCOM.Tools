@@ -58,11 +58,18 @@ namespace PckView
 		{
 			InitializeComponent();
 
-			#region shared space information
+			// WORKAROUND: See note in 'XCMainWindow' cTor.
+			var size = new Size();
+			size.Width  =
+			size.Height = 0;
+			MaximumSize = size; // fu.net
+
+
+			#region SharedSpace information
 
 			var consoleShare = new ConsoleSharedSpace(new SharedSpace());
 			console = consoleShare.GetNewConsole();
-			console.FormClosing += delegate(object sender, FormClosingEventArgs e)
+			console.FormClosing += (sender, e) =>
 			{
 				e.Cancel = true;
 				console.Hide();
@@ -70,14 +77,17 @@ namespace PckView
 			FormClosed += (sender, e) => console.Close();
 
 			_share = SharedSpace.Instance;
-			_share.AllocateObject("PckView", this);
-			_share.AllocateObject(SharedSpace.ApplicationDirectory,      Environment.CurrentDirectory);
-			_share.AllocateObject(SharedSpace.SettingsDirectory, Environment.CurrentDirectory + @"\settings");
-			_share.AllocateObject(SharedSpace.CustomDirectory,   Environment.CurrentDirectory + @"\custom");
+			_share.SetShare("PckView", this);
+
+//			_share.AllocateObject(PathInfo.MapViewers, infoViewers);
+
+			_share.SetShare(SharedSpace.ApplicationDirectory, Environment.CurrentDirectory);
+			_share.SetShare(SharedSpace.SettingsDirectory,    Environment.CurrentDirectory + @"\settings");
+			_share.SetShare(SharedSpace.CustomDirectory,      Environment.CurrentDirectory + @"\custom");
 		
-			XConsole.AdZerg("Current directory: "  + _share[SharedSpace.ApplicationDirectory]);					// TODO: I don't trust that since changing SharedSpace.
-			XConsole.AdZerg("Settings directory: " + _share[SharedSpace.SettingsDirectory].ToString());	// it may well need an explicit cast to (PathInfo)
-			XConsole.AdZerg("Custom directory: "   + _share[SharedSpace.CustomDirectory].ToString());
+			XConsole.AdZerg("Application directory: "  + _share[SharedSpace.ApplicationDirectory]);			// TODO: I don't trust that since changing SharedSpace.
+			XConsole.AdZerg("Settings directory: "     + _share[SharedSpace.SettingsDirectory].ToString());	// it may well need an explicit cast to (PathInfo)
+			XConsole.AdZerg("Custom directory: "       + _share[SharedSpace.CustomDirectory].ToString());
 			#endregion
 
 			_totalViewPck = new TotalViewPck();
@@ -89,7 +99,7 @@ namespace PckView
 			_totalViewPck.XCImageCollectionSet += OnXCImageCollectionSet;
 			_totalViewPck.ContextMenu = BuildContextMenu();
 
-			SaveMenuItem.Visible = false ;
+			SaveMenuItem.Visible = false;
 
 			_share[SharedSpace.Palettes] = new Dictionary<string, Palette>();
 			_dictPalettes = new Dictionary<Palette, MenuItem>();
@@ -116,8 +126,8 @@ namespace PckView
 
 
 			var regInfo = new RegistryInfo(this, "PckView");	// subscribe to Load and Closing events.
-			regInfo.AddProperty("FilterIndex");					// TODO: these won't work until I implement them in RegistryInfo.
-			regInfo.AddProperty("SelectedPalette");
+//			regInfo.AddProperty("FilterIndex");					// TODO: these won't work until I implement them in RegistryInfo.
+//			regInfo.AddProperty("SelectedPalette");
 
 			miHq2x.Visible &= File.Exists("hq2xa.dll");
 

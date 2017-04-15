@@ -287,12 +287,12 @@ namespace XCom.Interfaces
 			set { _bpp = value; }
 		}
 
-		private int _pad = 1;
+/*		private int _pad = 1;
 		public int Pad
 		{
 			get { return _pad; }
 			set { _pad = value; }
-		}
+		} */
 
 		public bool this[IXCImageFile.Filter filter]
 		{
@@ -300,12 +300,12 @@ namespace XCom.Interfaces
 		}
 
 
-		public XCFileOptions()
+		internal XCFileOptions()
 			:
 				this(true, true, true, true)
 		{}
 
-		public XCFileOptions(
+		internal XCFileOptions(
 				bool save,
 				bool bmp,
 				bool open,

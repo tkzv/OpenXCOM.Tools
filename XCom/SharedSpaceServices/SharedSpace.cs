@@ -39,10 +39,6 @@ namespace XCom
 			}
 		}
 
-		internal object AllocateObject(string key)
-		{
-			return AllocateObject(key, null);
-		}
 		/// <summary>
 		/// Allocates a key-val pair in the SharedSpace and returns the value
 		/// that is assigned. This does not change the value of an existing key
@@ -52,7 +48,7 @@ namespace XCom
 		/// <param name="value">the object to add if the current value doesn't
 		/// exist or is null</param>
 		/// <returns>the value associated with the key as an object</returns>
-		public object AllocateObject(string key, object value)
+		public object SetShare(string key, object value = null)
 		{
 			if (!_share.ContainsKey(key))
 			{

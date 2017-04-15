@@ -353,7 +353,16 @@ namespace DSShared.Windows
 								case "PckView":
 								{
 									//DSLogFile.WriteLine(". . _regkey IS PckView");
-									sw.WriteLine(line);
+									node = new
+									{
+										PckView = new
+										{
+											Left   = _infoDictionary["Left"].GetValue(_obj, null),
+											Top    = _infoDictionary["Top"].GetValue(_obj, null),
+											Width  = _infoDictionary["Width"].GetValue(_obj, null),
+											Height = _infoDictionary["Height"].GetValue(_obj, null)
+										},
+									};
 									break;
 								}
 							}

@@ -184,7 +184,7 @@ namespace MapView.Forms.MainWindow
 		/// Effectively disables the VisibleChanged event for all subsidiary
 		/// viewers.
 		/// </summary>
-		internal void HandleQuit()
+		internal void IsQuitting()
 		{
 			_quitting = true;
 		}

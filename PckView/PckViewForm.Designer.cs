@@ -213,9 +213,9 @@ namespace PckView
 			// DrawPanel
 			// 
 			this.DrawPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.DrawPanel.Location = new System.Drawing.Point(0, 107);
+			this.DrawPanel.Location = new System.Drawing.Point(0, 100);
 			this.DrawPanel.Name = "DrawPanel";
-			this.DrawPanel.Size = new System.Drawing.Size(472, 507);
+			this.DrawPanel.Size = new System.Drawing.Size(472, 514);
 			this.DrawPanel.TabIndex = 1;
 			// 
 			// MapViewIntegrationHelpPanel
@@ -225,13 +225,14 @@ namespace PckView
 			this.MapViewIntegrationHelpPanel.Dock = System.Windows.Forms.DockStyle.Top;
 			this.MapViewIntegrationHelpPanel.Location = new System.Drawing.Point(0, 0);
 			this.MapViewIntegrationHelpPanel.Name = "MapViewIntegrationHelpPanel";
-			this.MapViewIntegrationHelpPanel.Size = new System.Drawing.Size(472, 107);
+			this.MapViewIntegrationHelpPanel.Size = new System.Drawing.Size(472, 100);
 			this.MapViewIntegrationHelpPanel.TabIndex = 2;
 			this.MapViewIntegrationHelpPanel.Visible = false;
 			// 
 			// GotItMapViewButton
 			// 
-			this.GotItMapViewButton.Location = new System.Drawing.Point(23, 67);
+			this.GotItMapViewButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.GotItMapViewButton.Location = new System.Drawing.Point(370, 60);
 			this.GotItMapViewButton.Name = "GotItMapViewButton";
 			this.GotItMapViewButton.Size = new System.Drawing.Size(97, 34);
 			this.GotItMapViewButton.TabIndex = 2;
@@ -245,17 +246,19 @@ namespace PckView
 			this.label1.Location = new System.Drawing.Point(0, 0);
 			this.label1.Name = "label1";
 			this.label1.Padding = new System.Windows.Forms.Padding(3);
-			this.label1.Size = new System.Drawing.Size(472, 64);
+			this.label1.Size = new System.Drawing.Size(472, 55);
 			this.label1.TabIndex = 1;
 			this.label1.Text = resources.GetString("label1.Text");
 			// 
 			// PckViewForm
 			// 
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(472, 614);
 			this.Controls.Add(this.DrawPanel);
 			this.Controls.Add(this.MapViewIntegrationHelpPanel);
+			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Location = new System.Drawing.Point(50, 50);
+			this.MaximumSize = new System.Drawing.Size(480, 640);
 			this.Menu = this.mainMenu;
 			this.Name = "PckViewForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

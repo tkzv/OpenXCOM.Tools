@@ -53,15 +53,15 @@ namespace MapView
 
 			var share = SharedSpace.Instance;
 
-			share.AllocateObject("MapView", this);
-			share.AllocateObject(
-							SharedSpace.ApplicationDirectory,
-							Environment.CurrentDirectory);
+			share.SetShare("MapView", this);
+			share.SetShare(
+						SharedSpace.ApplicationDirectory,
+						Environment.CurrentDirectory);
 
-			string dir = share.AllocateObject(
-										SharedSpace.SettingsDirectory,
-										Path.Combine(Environment.CurrentDirectory, "settings"))
-									.ToString();
+			string dir = share.SetShare(
+									SharedSpace.SettingsDirectory,
+									Path.Combine(Environment.CurrentDirectory, "settings"))
+							  .ToString();
 
 			// I think this is needed only for PckView. so I'll assume 'PckViewForm' can handle it.
 //			share.AllocateObject(SharedSpace.CustomDirectory, Environment.CurrentDirectory + @"\custom");
@@ -76,12 +76,12 @@ namespace MapView
 			var infoMapEdit  = new PathInfo(dir, "MapEdit",    "cfg");
 			var infoImages   = new PathInfo(dir, "Images",     "cfg");
 
-			share.AllocateObject(PathInfo.MapViewers, infoViewers);
+			share.SetShare(PathInfo.MapViewers, infoViewers);
 
-			share.AllocateObject(PathInfo.SettingsFile, infoSettings);
-			share.AllocateObject(PathInfo.PathsFile,    infoPaths);
-			share.AllocateObject(PathInfo.MapEditFile,  infoMapEdit);
-			share.AllocateObject(PathInfo.ImagesFile,   infoImages);
+			share.SetShare(PathInfo.SettingsFile, infoSettings);
+			share.SetShare(PathInfo.PathsFile,    infoPaths);
+			share.SetShare(PathInfo.MapEditFile,  infoMapEdit);
+			share.SetShare(PathInfo.ImagesFile,   infoImages);
 			LogFile.WriteLine("PathInfo cached.");
 
 
@@ -295,13 +295,13 @@ namespace MapView
 			{
 				case "CURSOR":
 					if (line.Value.EndsWith(@"\", StringComparison.Ordinal))
-						SharedSpace.Instance.AllocateObject(
-														SharedSpace.CursorFile,
-														line.Value + SharedSpace.Cursor);
+						SharedSpace.Instance.SetShare(
+													SharedSpace.CursorFile,
+													line.Value + SharedSpace.Cursor);
 					else
-						SharedSpace.Instance.AllocateObject(
-														SharedSpace.CursorFile,
-														line.Value + @"\" + SharedSpace.Cursor);
+						SharedSpace.Instance.SetShare(
+													SharedSpace.CursorFile,
+													line.Value + @"\" + SharedSpace.Cursor);
 					break;
 
 //				case "LOGFILE":
@@ -539,7 +539,7 @@ namespace MapView
 			else
 			{
 				//LogFile.WriteLine("OnCloseSaveRegistry MainView");
-				_mainMenusManager.HandleQuit();
+				_mainMenusManager.IsQuitting();
 
 				_settingsManager.Save(); // save MV_SettingsFile // TODO: Save Settings when closing the Options form(s).
 
