@@ -16,12 +16,12 @@ namespace PckView
 
 		public class CbxItem
 		{
-			public XCom.Interfaces.IXCImageFile _imageFile;
+			public XCom.Interfaces.XCImageFile _imageFile;
 
 			public string _text;
 
 
-			public CbxItem(XCom.Interfaces.IXCImageFile imageFile, string text)
+			public CbxItem(XCom.Interfaces.XCImageFile imageFile, string text)
 			{
 				_imageFile = imageFile;
 				_text = text;
@@ -46,8 +46,8 @@ namespace PckView
 
 			DialogResult = DialogResult.Cancel;
 
-			foreach (XCom.Interfaces.IXCImageFile xcf in XCom.SharedSpace.Instance.GetImageModList())
-				if (xcf.FileOptions[XCom.Interfaces.IXCImageFile.Filter.Bmp])
+			foreach (XCom.Interfaces.XCImageFile xcf in XCom.SharedSpace.Instance.GetImageModList())
+				if (xcf.FileOptions[XCom.Interfaces.XCImageFile.Filter.Bmp])
 					cbTypes.Items.Add(new CbxItem(xcf, xcf.Brief));
 
 			if (cbTypes.Items.Count > 0)
@@ -94,7 +94,7 @@ namespace PckView
 			{
 				foreach (CbxItem cb in cbTypes.Items)
 				{
-					XCom.Interfaces.IXCImageFile imageFile = cb._imageFile;
+					XCom.Interfaces.XCImageFile imageFile = cb._imageFile;
 					if (   (_bmp.Width  + 1) % (imageFile.ImageSize.Width  + 1) == 0
 						&& (_bmp.Height + 1) % (imageFile.ImageSize.Height + 1) == 0)
 					{

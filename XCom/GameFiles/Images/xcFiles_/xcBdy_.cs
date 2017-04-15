@@ -9,7 +9,7 @@ namespace XCom.GameFiles.Images.XCFiles
 {
 	public class xcBdy
 		:
-		IXCImageFile
+		XCImageFile
 	{
 		public xcBdy()
 			:

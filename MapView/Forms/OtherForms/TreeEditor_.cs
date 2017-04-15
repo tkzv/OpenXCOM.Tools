@@ -44,7 +44,7 @@ namespace MapView
 			ArrayList al2 = new ArrayList();
 			foreach (string o in al) //tileset
 			{
-				IXCTileset it = (IXCTileset)GameInfo.GetTileInfo().Tilesets[o];
+				Tileset it = (Tileset)GameInfo.GetTileInfo().Tilesets[o];
 				if (it != null)
 				{
 					TreeNode t = treeRight.Nodes.Add(o); // make the node for the tileset
@@ -76,7 +76,7 @@ namespace MapView
 			ArrayList al2 = new ArrayList();
 			foreach (string o in al) // tileset
 			{
-				IXCTileset it = (IXCTileset)GameInfo.GetTileInfo().Tilesets[o];
+				Tileset it = (Tileset)GameInfo.GetTileInfo().Tilesets[o];
 				if (it != null)
 				{
 					TreeNode t = treeLeft.Nodes.Add(o); //make the node for the tileset
@@ -238,7 +238,7 @@ namespace MapView
 //
 //			if (sel.Parent == null) // top node
 //			{
-//				IXCTileset tSet = getCurrset();
+//				Tileset tSet = getCurrset();
 //				GameInfo.GetTileInfo()[sel.Text] = null;
 //
 //				sel.Text = txtName.Text;
@@ -247,7 +247,7 @@ namespace MapView
 //			}
 //			else if (sel.Parent.Parent == null)
 //			{
-//				IXCTileset tSet = getCurrset();
+//				Tileset tSet = getCurrset();
 //				Hashtable subset = (Hashtable)tSet.Subsets[sel.Text];
 //				tSet.Subsets[sel.Text] = null;
 //
@@ -259,17 +259,17 @@ namespace MapView
 //			populateRight();
 		}
 
-		private IXCTileset getCurrset()
+		private Tileset getCurrset()
 		{
 			TreeNode t = treeLeft.SelectedNode;
 			if (t.Parent != null)
 			{
 				if (t.Parent.Parent != null) // inner node
-					return (IXCTileset)GameInfo.GetTileInfo().Tilesets[t.Parent.Parent.Text];
+					return (Tileset)GameInfo.GetTileInfo().Tilesets[t.Parent.Parent.Text];
 
-				return (IXCTileset)GameInfo.GetTileInfo().Tilesets[t.Parent.Text];
+				return (Tileset)GameInfo.GetTileInfo().Tilesets[t.Parent.Text];
 			}
-			return (IXCTileset)GameInfo.GetTileInfo().Tilesets[t.Text];  // parent node
+			return (Tileset)GameInfo.GetTileInfo().Tilesets[t.Text];  // parent node
 		}
 
 		private void treeLeft_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
@@ -310,8 +310,8 @@ namespace MapView
 						TreeNode map = sub.Nodes[k];
 						if (map.Checked)
 						{
-							IXCMapData imd = ((IXCTileset)GameInfo.GetTileInfo().Tilesets[top.Text]).RemoveMap(map.Text, sub.Text);
-							((IXCTileset)GameInfo.GetTileInfo().Tilesets[destSet.Parent.Text]).AddMap(imd, destSet.Text);
+							IXCMapData imd = ((Tileset)GameInfo.GetTileInfo().Tilesets[top.Text]).RemoveMap(map.Text, sub.Text);
+							((Tileset)GameInfo.GetTileInfo().Tilesets[destSet.Parent.Text]).AddMap(imd, destSet.Text);
 						}
 					}
 				}

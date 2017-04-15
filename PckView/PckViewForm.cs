@@ -31,7 +31,7 @@ namespace PckView
 		private Palette _palette;
 		private Editor _editor;
 		private SharedSpace _share;
-		private LoadOfType<IXCImageFile> _loadedTypes;
+		private LoadOfType<XCImageFile> _loadedTypes;
 
 		private ConsoleForm console;
 		private TabControl tabs;
@@ -42,8 +42,8 @@ namespace PckView
 
 		private Dictionary<Palette, MenuItem> _dictPalettes;
 
-		private Dictionary<int, IXCImageFile> _dictOpenFiles;
-		private Dictionary<int, IXCImageFile> _dictSaveFiles;
+		private Dictionary<int, XCImageFile> _dictOpenFiles;
+		private Dictionary<int, XCImageFile> _dictSaveFiles;
 
 		private string _path;
 		private int _depth;
@@ -131,14 +131,14 @@ namespace PckView
 
 			miHq2x.Visible &= File.Exists("hq2xa.dll");
 
-			_loadedTypes = new LoadOfType<IXCImageFile>();
+			_loadedTypes = new LoadOfType<XCImageFile>();
 			_loadedTypes.OnLoad += OnTypesLoaded;
 			_share[SharedSpace.ImageTypes] = _loadedTypes.AllLoaded;
 
 //			loadedTypes.OnLoad += sortLoaded;
 
 			_loadedTypes.LoadFrom(Assembly.GetExecutingAssembly());
-			_loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(IXCImageFile)));
+			_loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(XCImageFile)));
 
 			string dir = _share[SharedSpace.CustomDirectory].ToString();	// TODO: I don't trust that since changing SharedSpace.
 			if (Directory.Exists(dir))										// it may well need an explicit cast to (PathInfo)
@@ -160,12 +160,12 @@ namespace PckView
 			}
 
 			_dialogFilter = new OpenSaveFilter();
-			_dialogFilter.SetFilter(IXCImageFile.Filter.Open);
+			_dialogFilter.SetFilter(XCImageFile.Filter.Open);
 
-			_dictOpenFiles = new Dictionary<int, IXCImageFile>();
-			_dictSaveFiles = new Dictionary<int, IXCImageFile>();
+			_dictOpenFiles = new Dictionary<int, XCImageFile>();
+			_dictSaveFiles = new Dictionary<int, XCImageFile>();
 
-			_dialogFilter.SetFilter(IXCImageFile.Filter.Open);
+			_dialogFilter.SetFilter(XCImageFile.Filter.Open);
 			string filter = _loadedTypes.CreateFilter(_dialogFilter, _dictOpenFiles);
 			openFile.Filter = filter;
 		}
@@ -190,7 +190,7 @@ namespace PckView
 			}
 		}
 
-		private void OnTypesLoaded(object sender, LoadOfType<IXCImageFile>.TypeLoadArgs e)
+		private void OnTypesLoaded(object sender, LoadOfType<XCImageFile>.TypeLoadArgs e)
 		{
 			var obj = e.LoadedObj as xcCustom;
 			if (obj != null)
@@ -202,7 +202,7 @@ namespace PckView
 			foreach (XCProfile ip in ImageProfile.LoadFile(file))
 				_loadedTypes.Add(ip);
 
-			_dialogFilter.SetFilter(IXCImageFile.Filter.Open);
+			_dialogFilter.SetFilter(XCImageFile.Filter.Open);
 			_dictOpenFiles.Clear();
 			openFile.Filter = _loadedTypes.CreateFilter(_dialogFilter, _dictOpenFiles);
 		}
@@ -413,7 +413,7 @@ namespace PckView
 				try
 				{
 //#endif
-					IXCImageFile filterType = _dictOpenFiles[openFile.FilterIndex]; //filterIndex[openFile.FilterIndex];
+					XCImageFile filterType = _dictOpenFiles[openFile.FilterIndex]; //filterIndex[openFile.FilterIndex];
 					if (filterType is xcForceCustom) // special case
 					{
 						load = filterType.LoadFile(path, file);
@@ -422,7 +422,7 @@ namespace PckView
 					else if (filterType.GetType() == typeof(xcCustom)) // for *.* files, try singles and then extensions
 					{
 						// try singles
-						foreach (IXCImageFile fileType in _loadedTypes.AllLoaded)
+						foreach (XCImageFile fileType in _loadedTypes.AllLoaded)
 							if (fileType.SingleFile != null && fileType.SingleFile.ToUpperInvariant() == file)
 							{
 								try
@@ -435,7 +435,7 @@ namespace PckView
 
 						if (load == null) // singles not loaded, try non singles
 						{
-							foreach (IXCImageFile fileType in _loadedTypes.AllLoaded)
+							foreach (XCImageFile fileType in _loadedTypes.AllLoaded)
 								if (fileType.SingleFile == null && fileType.FileExtension.ToUpperInvariant() == ext)
 								{
 									try
@@ -510,7 +510,7 @@ namespace PckView
 		}
 
 		private static XCImageCollection LoadImageCollection(
-				IXCImageFile filterId,
+				XCImageFile filterId,
 				string path,
 				string file)
 		{
@@ -536,7 +536,7 @@ namespace PckView
 		{
 			var saveFile = new SaveFileDialog();
 
-			_dialogFilter.SetFilter(IXCImageFile.Filter.Save);
+			_dialogFilter.SetFilter(XCImageFile.Filter.Save);
 			_dictSaveFiles.Clear();
 			saveFile.Filter = _loadedTypes.CreateFilter(_dialogFilter, _dictSaveFiles);
 
@@ -823,7 +823,7 @@ namespace PckView
 
 		private void OnSaveClick(object sender, EventArgs e)
 		{
-			_dialogFilter.SetFilter(IXCImageFile.Filter.Save);
+			_dialogFilter.SetFilter(XCImageFile.Filter.Save);
 			_dictSaveFiles.Clear();
 			_loadedTypes.CreateFilter(_dialogFilter, _dictSaveFiles);
 			var dir = Path.GetDirectoryName(_path);

@@ -8,7 +8,7 @@ namespace XCom.GameFiles.Images.XCFiles
 {
 	public class xcUncompressed
 		:
-		IXCImageFile
+		XCImageFile
 	{
 		public xcUncompressed()
 			:

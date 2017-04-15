@@ -137,7 +137,7 @@ namespace MapView
 			gbMapsBlock.Enabled   =
 			delMap.Enabled        = false;
 
-			IXCTileset tileset = null;
+			Tileset tileset = null;
 
 			var node = e.Node;
 			if (node.Parent != null)
@@ -151,7 +151,7 @@ namespace MapView
 					gbMapsBlock.Enabled   =
 					delMap.Enabled        = true;
 
-					tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[node.Parent.Parent.Text];
+					tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[node.Parent.Parent.Text];
 
 					var desc = (XCMapDesc)tileset[node.Text];
 
@@ -176,12 +176,12 @@ namespace MapView
 				}
 				else // subset node
 				{
-					tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[node.Parent.Text];
+					tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[node.Parent.Text];
 				}
 			}
 			else // parent node
 			{
-				tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[node.Text];
+				tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[node.Text];
 				addMap.Enabled =
 				delMap.Enabled =
 				delSub.Enabled = false;
@@ -455,7 +455,7 @@ namespace MapView
 
 				if (f.TilesetLabel != null)
 				{
-					var tileset = (IXCTileset)GameInfo.TilesetInfo.AddTileset(
+					var tileset = (Tileset)GameInfo.TilesetInfo.AddTileset(
 																		f.TilesetLabel,
 																		f.MapsPath,
 																		f.RoutesPath,
@@ -498,16 +498,16 @@ namespace MapView
 			}
 		}
 
-		private IXCTileset getCurrentTileset()
+		private Tileset getCurrentTileset()
 		{
 			var tn = tvMaps.SelectedNode;
 			if (tn.Parent == null)
-				return (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Text];
+				return (Tileset)GameInfo.TilesetInfo.Tilesets[tn.Text];
 
 			if (tn.Parent.Parent == null)
-				return (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Text];
+				return (Tileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Text];
 
-			return (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Parent.Text];
+			return (Tileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Parent.Text];
 		}
 
 //		private void btnSave2_Click(object sender, System.EventArgs e)
@@ -546,18 +546,18 @@ namespace MapView
 						using (var fs = File.OpenWrite(tbMapsRoutes.Text + f.MapName + RouteNodeCollection.RouteExt)) // TODO: wtf.
 						{}
 
-						IXCTileset tileset;
+						Tileset tileset;
 						string label;
 
 						if (tvMaps.SelectedNode.Parent.Parent == null)
 						{
-							tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tvMaps.SelectedNode.Parent.Text];
+							tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[tvMaps.SelectedNode.Parent.Text];
 							tvMaps.SelectedNode.Nodes.Add(f.MapName);
 							label = tvMaps.SelectedNode.Text;
 						}
 						else
 						{
-							tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tvMaps.SelectedNode.Parent.Parent.Text];
+							tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[tvMaps.SelectedNode.Parent.Parent.Text];
 							tvMaps.SelectedNode.Parent.Nodes.Add(f.MapName);
 							label = tvMaps.SelectedNode.Parent.Text;
 						}
@@ -591,7 +591,7 @@ namespace MapView
 						var tn = (tvMaps.SelectedNode.Parent.Parent == null) ? tvMaps.SelectedNode
 																			 : tvMaps.SelectedNode.Parent;
 
-						var tileset = (IXCTileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Text];
+						var tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Text];
 						foreach (string file in f.FileNames)
 						{
 							int start = file.LastIndexOf(@"\", StringComparison.Ordinal) + 1;

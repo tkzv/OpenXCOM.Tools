@@ -12,7 +12,7 @@ namespace XCom.Interfaces
 	/// collections. This class should not be instantiated directly. Objects
 	/// from derived classes will be created and tracked on startup.
 	/// </summary>
-	public class IXCImageFile// psst. This isn't an interface.
+	public class XCImageFile
 		:
 			IAssemblyLoadable,
 			IDialogFilter
@@ -129,10 +129,10 @@ namespace XCom.Interfaces
 										System.Globalization.CultureInfo.InvariantCulture,
 										"{0} registered: {1}",
 										GetType(),
-										GetType() != typeof(IXCImageFile)));
+										GetType() != typeof(XCImageFile)));
 
-			return (GetType() != typeof(IXCImageFile));
-//			return !(this is IXCImageFile);
+			return (GetType() != typeof(XCImageFile));
+//			return !(this is XCImageFile);
 //			return (this == null); // but how could this be null
 //			return false;
 		}
@@ -152,7 +152,7 @@ namespace XCom.Interfaces
 		/// </summary>
 		/// <param name="width">default width</param>
 		/// <param name="height">default height</param>
-		public IXCImageFile(int width, int height)
+		public XCImageFile(int width, int height)
 		{
 			ImageSize = new System.Drawing.Size(width, height);
 			_brief = this.GetType().ToString();
@@ -160,7 +160,7 @@ namespace XCom.Interfaces
 		/// <summary>
 		/// Creates an object of this class with width and height of 0.
 		/// </summary>
-		public IXCImageFile()
+		public XCImageFile()
 			:
 				this(0, 0)
 		{}
@@ -257,7 +257,7 @@ namespace XCom.Interfaces
 				int height,
 				Palette pal)
 		{
-			throw new Exception("muahahahha IXCImageFile.LoadFileOverride DOES NOTHING (except clock a few more CPU cycles)!");
+			throw new Exception("muahahahha XCImageFile.LoadFileOverride DOES NOTHING (except clock a few more CPU cycles)!");
 		}
 
 		/// <summary>
@@ -268,7 +268,7 @@ namespace XCom.Interfaces
 		/// <param name="images">images to save in this format</param>
 		public void SaveCollection(string dir, string file, XCImageCollection images)
 		{
-			throw new Exception("muahahahha IXCImageFile.SaveCollection DOES NOTHING (except clock a few more CPU cycles)!");
+			throw new Exception("muahahahha XCImageFile.SaveCollection DOES NOTHING (except clock a few more CPU cycles)!");
 		}
 	}
 
@@ -278,7 +278,7 @@ namespace XCom.Interfaces
 	/// </summary>
 	public sealed class XCFileOptions
 	{
-		private readonly Dictionary<IXCImageFile.Filter, bool> _filters;
+		private readonly Dictionary<XCImageFile.Filter, bool> _filters;
 
 		private int _bpp = 8;
 		public int BitDepth
@@ -294,7 +294,7 @@ namespace XCom.Interfaces
 			set { _pad = value; }
 		} */
 
-		public bool this[IXCImageFile.Filter filter]
+		public bool this[XCImageFile.Filter filter]
 		{
 			get { return _filters[filter]; }
 		}
@@ -311,7 +311,7 @@ namespace XCom.Interfaces
 				bool open,
 				bool custom)
 		{
-			_filters = new Dictionary<IXCImageFile.Filter, bool>();
+			_filters = new Dictionary<XCImageFile.Filter, bool>();
 
 			Init(
 				save,
@@ -327,10 +327,10 @@ namespace XCom.Interfaces
 				bool open,
 				bool custom)
 		{
-			_filters[IXCImageFile.Filter.Save]   = save;
-			_filters[IXCImageFile.Filter.Bmp]    = bmp;
-			_filters[IXCImageFile.Filter.Open]   = open;
-			_filters[IXCImageFile.Filter.Custom] = custom;
+			_filters[XCImageFile.Filter.Save]   = save;
+			_filters[XCImageFile.Filter.Bmp]    = bmp;
+			_filters[XCImageFile.Filter.Open]   = open;
+			_filters[XCImageFile.Filter.Custom] = custom;
 		}
 	}
 }

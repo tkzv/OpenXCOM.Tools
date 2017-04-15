@@ -16,7 +16,7 @@ namespace PckView
 		private int _width;
 		private int _height;
 
-		private IXCImageFile _imageType;
+		private XCImageFile _imageType;
 
 		private string _desc   = String.Empty;
 		private string _pal    = String.Empty;
@@ -46,7 +46,7 @@ namespace PckView
 					if (info.ContainsKey("openSingle") && info["openSingle"] != null)
 						profile._single = info["openSingle"].Value + info["open"].Value;
 
-					foreach (IXCImageFile file in SharedSpace.Instance.GetImageModList())
+					foreach (XCImageFile file in SharedSpace.Instance.GetImageModList())
 						if (file.Brief == info["codec"].Value)
 						{
 							profile._imageType = file;
@@ -90,7 +90,7 @@ namespace PckView
 			set { _height = value; }
 		}
 
-		public IXCImageFile ImageType
+		public XCImageFile ImageType
 		{
 			get { return _imageType; }
 			set { _imageType = value; }

@@ -16,7 +16,7 @@ namespace XCom
 		public string Path
 		{ get; set; }
 
-		public IXCImageFile IXCFile
+		public XCImageFile IXCFile
 		{ get; set; }
 
 		private Palette _pal;

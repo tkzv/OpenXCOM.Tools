@@ -7,7 +7,7 @@ namespace PckView
 {
 	internal class xcCustom
 		:
-			IXCImageFile
+			XCImageFile
 	{
 		public xcCustom()
 			:

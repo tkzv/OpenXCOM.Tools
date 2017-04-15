@@ -83,9 +83,9 @@ namespace XCom
 			return (double)_share[key];
 		}
 
-		public List<IXCImageFile> GetImageModList()
+		public List<XCImageFile> GetImageModList()
 		{
-			return (List<IXCImageFile>)_share[ImageTypes];
+			return (List<XCImageFile>)_share[ImageTypes];
 		}
 
 		public Dictionary<string, Palette> GetPaletteTable()

@@ -10,7 +10,7 @@ namespace PckView
 {
 	public class xcDotNet
 		:
-		IXCImageFile
+		XCImageFile
 	{
 		public xcDotNet()
 			:

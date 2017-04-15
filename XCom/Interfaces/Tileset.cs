@@ -6,9 +6,9 @@ using XCom.Interfaces.Base;
 
 namespace XCom.Interfaces
 {
-	public class IXCTileset	// psst. This isn't an interface.
+	public class Tileset	// psst. This isn't an interface.
 		:					// TODO: cTor has inheritors and calls a virtual function.
-			ITileset
+			TilesetBase
 	{
 		public Palette Palette
 		{ get; set; }
@@ -46,35 +46,35 @@ namespace XCom.Interfaces
 //			get { return _mapDepth; }
 //		}
 
-		private MapSize _mapSize;
+/*		private MapSize _mapSize;
 		public MapSize Size
 		{
 			get { return _mapSize; }
-		}
+		} */
 
 //		private string scanFile;
 //		private string loftFile;
 
 
 
-		protected IXCTileset(string name)
+		protected Tileset(string name)
 			:
 				base(name)
 		{
 			Palette = GameInfo.DefaultPalette;
-			_mapSize = new MapSize(60, 60, 4);
+//			_mapSize = new MapSize(60, 60, 4);
 
 //			_mapDepth = 0;
 //			_underwater = true;
 //			_baseStyle = false;
 		}
 
-		protected IXCTileset(string name, StreamReader sr, Varidia vars)
+		protected Tileset(string name, StreamReader sr, Varidia vars)
 			:
 				this(name)
 		{
 			//LogFile.WriteLine("");
-			//LogFile.WriteLine("[7]IXCTileset cTor");
+			//LogFile.WriteLine("[7]Tileset cTor");
 			while (sr.Peek() != -1)
 			{
 				string line = Varidia.ReadLine(sr, vars);

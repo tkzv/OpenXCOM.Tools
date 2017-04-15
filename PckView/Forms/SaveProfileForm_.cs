@@ -72,7 +72,7 @@ namespace PckView
 			set { _profile.Height = value; restring(); }
 		}
 
-		public IXCImageFile ImageType
+		public XCImageFile ImageType
 		{
 			get { return _profile.ImageType; }
 			set { _profile.ImageType = value; restring(); }

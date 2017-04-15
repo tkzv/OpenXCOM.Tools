@@ -11,7 +11,7 @@ namespace XCom.Interfaces.Base
 			IAssemblyLoadable,
 			IDialogFilter
 	{
-		// TODO: Dialog Filters do not appear to be implemented. cf, IXCImageFile.
+		// TODO: Dialog Filters do not appear to be implemented. cf, XCImageFile.
 		private const string _ext = ".default";
 
 		private const string _brief = "Default Brief";

@@ -25,7 +25,7 @@ namespace PckView
 			{
 				_share = value;
 
-				foreach (XCom.Interfaces.IXCImageFile xcf in _share.GetImageModList())
+				foreach (XCom.Interfaces.XCImageFile xcf in _share.GetImageModList())
 				{
 					if (   xcf.FileExtension == ".bad"
 						&& xcf.Author        == "Author"

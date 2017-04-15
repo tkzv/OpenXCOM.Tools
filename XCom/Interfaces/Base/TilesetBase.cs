@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace XCom.Interfaces.Base
 {
-	public class ITileset // psst. This isn't an interface.
+	public class TilesetBase
 	{
 		private readonly string _name;
 		public string Name
@@ -14,7 +14,7 @@ namespace XCom.Interfaces.Base
 		}
 
 		private readonly Dictionary<string, IMapDesc> _mapDescs;
-		protected Dictionary<string, IMapDesc> MapDescs
+		internal protected Dictionary<string, IMapDesc> MapDescs
 		{
 			get { return _mapDescs; }
 		}
@@ -26,7 +26,7 @@ namespace XCom.Interfaces.Base
 		}
 
 
-		protected ITileset(string name)
+		internal protected TilesetBase(string name)
 		{
 			_name = name;
 			_mapDescs = new Dictionary<string, IMapDesc>();

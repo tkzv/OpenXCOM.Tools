@@ -10,7 +10,7 @@ namespace XCom
 {
 	internal sealed class XCTileset
 		:
-			IXCTileset
+			Tileset
 	{
 //		private string[] _mapOrder;
 //		private MapLocation[] _startLoc;
@@ -20,12 +20,12 @@ namespace XCom
 		private const string Tab = "\t";
 
 
-		public XCTileset(string name)
+		internal XCTileset(string name)
 			:
 				base(name)
 		{}
 
-		public XCTileset(string name, StreamReader sr, Varidia vars)
+		internal XCTileset(string name, StreamReader sr, Varidia vars)
 			:
 				base(name, sr, vars)
 		{}

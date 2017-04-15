@@ -9,7 +9,7 @@ namespace XCom.GameFiles.Images.XCFiles
 {
 	public class xcPck
 		:
-		IXCImageFile
+		XCImageFile
 	{
 		private const string TabExt = ".tab";
 

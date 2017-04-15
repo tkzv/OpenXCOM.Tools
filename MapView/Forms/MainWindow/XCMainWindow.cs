@@ -345,7 +345,7 @@ namespace MapView
 			}
 		}
 
-		private void AddTileset(ITileset tileset)
+		private void AddTileset(TilesetBase tileset)
 		{
 			var node = new SortableTreeNode(tileset.Name);
 			node.Tag = tileset;

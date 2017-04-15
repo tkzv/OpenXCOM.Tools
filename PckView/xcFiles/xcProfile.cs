@@ -8,11 +8,11 @@ namespace PckView
 {
 	internal sealed class XCProfile
 		:
-			IXCImageFile
+			XCImageFile
 	{
 		public const string ProfileExt = ".pvp";
 
-//		private readonly IXCImageFile _codec;
+//		private readonly XCImageFile _codec;
 
 
 		public XCProfile(ImageProfile profile)
@@ -57,7 +57,7 @@ namespace PckView
 		} */
 
 
-/*		public IXCImageFile Codec
+/*		public XCImageFile Codec
 		{
 			get { return _codec; }
 			set { _codec = value; }

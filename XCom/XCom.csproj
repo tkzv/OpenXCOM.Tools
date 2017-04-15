@@ -206,19 +206,19 @@
     <Compile Include="Globals.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\Base\IMcdInfo.cs" />
+    <Compile Include="Interfaces\Base\IMcdRecord.cs" />
     <Compile Include="Interfaces\Base\IMapDesc.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\Base\TileBase.cs" />
-    <Compile Include="Interfaces\Base\ITileset.cs">
+    <Compile Include="Interfaces\Base\TilesetBase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\IXCImageFile.cs">
+    <Compile Include="Interfaces\XCImageFile.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FileDesc\XCMapDesc.cs" />
-    <Compile Include="Interfaces\IXCTileset.cs" />
+    <Compile Include="Interfaces\Tileset.cs" />
     <Compile Include="LogFile.cs">
       <SubType>Code</SubType>
     </Compile>

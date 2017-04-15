@@ -29,8 +29,8 @@ namespace PckView
 
 			var sharedSpace = XCom.SharedSpace.Instance;
 
-			foreach (XCom.Interfaces.IXCImageFile imageFile in sharedSpace.GetImageModList())
-				if (imageFile.FileOptions[XCom.Interfaces.IXCImageFile.Filter.Custom])
+			foreach (XCom.Interfaces.XCImageFile imageFile in sharedSpace.GetImageModList())
+				if (imageFile.FileOptions[XCom.Interfaces.XCImageFile.Filter.Custom])
 					cbTypes.Items.Add(new BmpForm.CbxItem(imageFile, imageFile.Brief));
 
 			if (cbTypes.Items.Count > 0)
@@ -156,8 +156,8 @@ namespace PckView
 			get { return _dir; }
 		}
 
-		private readonly XCom.Interfaces.IXCImageFile _imageFile;
-		public XCom.Interfaces.IXCImageFile XCFile
+		private readonly XCom.Interfaces.XCImageFile _imageFile;
+		public XCom.Interfaces.XCImageFile XCFile
 		{
 			get { return _imageFile; }
 		}
@@ -168,7 +168,7 @@ namespace PckView
 				int height,
 				string dir,
 				string file,
-				XCom.Interfaces.IXCImageFile imageFile)
+				XCom.Interfaces.XCImageFile imageFile)
 		{
 			_imageFile = imageFile;
 			_file   = file;

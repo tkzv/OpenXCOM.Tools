@@ -9,9 +9,9 @@ namespace XCom.Interfaces.Base
 	public class TileBase
 	{
 		/// <summary>
-		/// The Info object that has additional flags and information about this tile.
+		/// The object that has information about the IG mechanics of this tile.
 		/// </summary>
-		public IMcdInfo Info
+		public IMcdRecord Info
 		{ get; protected set; }
 
 		private XCImage[] _images;

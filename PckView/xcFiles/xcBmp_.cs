@@ -8,7 +8,7 @@ namespace PckView
 {
 	public class xcBmp
 		:
-		IXCImageFile
+		XCImageFile
 	{
 		public xcBmp()
 			:

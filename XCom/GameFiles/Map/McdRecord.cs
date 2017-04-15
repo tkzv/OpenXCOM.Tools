@@ -68,7 +68,7 @@ namespace XCom
 
 	public sealed class McdRecord
 		:
-			XCom.Interfaces.Base.IMcdInfo
+			XCom.Interfaces.Base.IMcdRecord
 	{
 		private static int _idCanonical = 0;
 

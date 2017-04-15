@@ -9,7 +9,7 @@ namespace XCom.GameFiles.Images.XCFiles
 {
 	public class xcSpk
 		:
-		IXCImageFile
+		XCImageFile
 	{
 		public xcSpk()
 			:

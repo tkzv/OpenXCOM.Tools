@@ -25,7 +25,7 @@ namespace XCom
 
 			foreach (string key in _tilesets.Keys)
 			{
-				var tileset = (IXCTileset)_tilesets[key];
+				var tileset = (Tileset)_tilesets[key];
 				if (tileset != null)
 				{
 					vars.AddKeyvalPair("rootPath",  tileset.MapPath);
@@ -47,13 +47,13 @@ namespace XCom
 
 				foreach (string key in _tilesets.Keys)
 					if (_tilesets[key] != null)
-						((IXCTileset)_tilesets[key]).Save(sw, vars);
+						((Tileset)_tilesets[key]).Save(sw, vars);
 			}
 		}
 		#endregion
 
-		private readonly Dictionary<string, ITileset> _tilesets;
-		public Dictionary<string, ITileset> Tilesets
+		private readonly Dictionary<string, TilesetBase> _tilesets;
+		public Dictionary<string, TilesetBase> Tilesets
 		{
 			get { return _tilesets; }
 		}
@@ -65,7 +65,7 @@ namespace XCom
 			:
 				base(String.Empty)
 		{
-			_tilesets = new Dictionary<string, ITileset>();
+			_tilesets = new Dictionary<string, TilesetBase>();
 		} */
 		internal TilesetDesc(string inFile, Varidia vars)
 			:
@@ -73,7 +73,7 @@ namespace XCom
 		{
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("[4]TilesetDesc cTor file= " + inFile);
-			_tilesets = new Dictionary<string, ITileset>();
+			_tilesets = new Dictionary<string, TilesetBase>();
 			//LogFile.WriteLine(". [4]instantiate _tilesets Dictionary");
 
 			using (var sr = new StreamReader(File.OpenRead(inFile)))
@@ -150,7 +150,7 @@ namespace XCom
 			}
 		}
 
-		public ITileset AddTileset(
+		public TilesetBase AddTileset(
 								string name,
 								string pathMaps,
 								string pathRoutes,

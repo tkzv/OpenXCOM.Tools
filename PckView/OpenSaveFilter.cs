@@ -7,23 +7,23 @@ namespace PckView
 {
 	internal sealed class OpenSaveFilter
 		:
-			IFilter<XCom.Interfaces.IXCImageFile>
+			IFilter<XCom.Interfaces.XCImageFile>
 	{
-		private XCom.Interfaces.IXCImageFile.Filter _filter;
+		private XCom.Interfaces.XCImageFile.Filter _filter;
 
 
 		public OpenSaveFilter()
 		{
-			_filter = XCom.Interfaces.IXCImageFile.Filter.Open;
+			_filter = XCom.Interfaces.XCImageFile.Filter.Open;
 		}
 
 
-		public void SetFilter(XCom.Interfaces.IXCImageFile.Filter filter)
+		public void SetFilter(XCom.Interfaces.XCImageFile.Filter filter)
 		{
 			_filter = filter;
 		}
 
-		public bool FilterObj(XCom.Interfaces.IXCImageFile obj)
+		public bool FilterObj(XCom.Interfaces.XCImageFile obj)
 		{
 			//Console.WriteLine("Filter: {0} -> {1}", filterBy, obj.FileOptions[filterBy]);
 			return obj.FileOptions[_filter];
