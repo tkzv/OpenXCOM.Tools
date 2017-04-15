@@ -11,19 +11,16 @@ namespace XCom.Interfaces.Base
 		/// <summary>
 		/// The object that has information about the IG mechanics of this tile.
 		/// </summary>
-		public IMcdRecord Info
+		public McdRecord Record
 		{ get; protected set; }
 
-		private XCImage[] _images;
 		/// <summary>
 		/// Gets the image-array used to animate this tile.
 		/// </summary>
 //		public System.Collections.ObjectModel.Collection<XCImage> Images
 		public XCImage[] Images
-		{
-			get { return _images; }
-			protected set { _images = value; }
-		}
+		{ get; set; }
+
 		/// <summary>
 		/// Gets an image at the specified animation frame.
 		/// </summary>
@@ -31,8 +28,7 @@ namespace XCom.Interfaces.Base
 		/// <returns></returns>
 		public XCImage this[int i]
 		{
-			get { return _images[i]; }
-//			set { _images[i] = value; }
+			get { return Images[i]; }
 		}
 
 		/// <summary>
@@ -56,7 +52,6 @@ namespace XCom.Interfaces.Base
 		{
 			Id = id;
 			TileListId = -1;
-//			_info = null;
 		}
 	}
 }

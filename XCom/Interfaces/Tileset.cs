@@ -6,8 +6,8 @@ using XCom.Interfaces.Base;
 
 namespace XCom.Interfaces
 {
-	public class Tileset	// psst. This isn't an interface.
-		:					// TODO: cTor has inheritors and calls a virtual function.
+	public class Tileset // TODO: cTor has inheritors and calls a virtual function.
+		:
 			TilesetBase
 	{
 		public Palette Palette

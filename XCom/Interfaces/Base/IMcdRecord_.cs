@@ -1,3 +1,4 @@
+/*
 using System;
 
 
@@ -24,3 +25,4 @@ namespace XCom.Interfaces.Base
 		{ get; }
 	}
 }
+*/

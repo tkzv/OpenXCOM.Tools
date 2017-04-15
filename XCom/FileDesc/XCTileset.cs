@@ -31,8 +31,7 @@ namespace XCom
 		{}
 
 
-/*
-		public MapLocation[] StartLocations // fix: return a collection or make it a method
+/*		public MapLocation[] StartLocations // fix: return a collection or make it a method
 		{
 			get { return _startLoc; }
 		}
@@ -51,8 +50,7 @@ namespace XCom
 		public string[] Order // fix: return a collection or make it a method
 		{
 			get { return _mapOrder; }
-		}
-*/
+		} */
 
 //		public override IMap GetMap(ShipDescriptor xCom, ShipDescriptor alien)
 //		{ return new Type1Map(this, xCom, alien); }

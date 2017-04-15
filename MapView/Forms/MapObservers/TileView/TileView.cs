@@ -84,12 +84,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		private void OnTileChanged(TileBase tile)
 		{
 			var f = FindForm();
-			if (tile != null && tile.Info is McdRecord)
+			if (tile != null && tile.Record is McdRecord)
 			{
 				f.Text = BuildTitleString(tile.TileListId, tile.Id);
 
 				if (_mcdInfo != null)
-					_mcdInfo.UpdateData((McdRecord)tile.Info);
+					_mcdInfo.UpdateData((McdRecord)tile.Record);
 			}
 			else
 			{
@@ -140,12 +140,12 @@ namespace MapView.Forms.MapObservers.TileViews
 			var f = FindForm();
 
 			var tile = SelectedTile;
-			if (tile != null && tile.Info is McdRecord)
+			if (tile != null && tile.Record is McdRecord)
 			{
 				f.Text = BuildTitleString(tile.TileListId, tile.Id);
 
 				if (_mcdInfo != null)
-					_mcdInfo.UpdateData((McdRecord)tile.Info);
+					_mcdInfo.UpdateData((McdRecord)tile.Record);
 			}
 			else
 			{
@@ -232,10 +232,10 @@ namespace MapView.Forms.MapObservers.TileViews
 				var f = FindForm();
 
 				var tile = SelectedTile;
-				if (tile != null && tile.Info is McdRecord)
+				if (tile != null && tile.Record is McdRecord)
 				{
 					f.Text = BuildTitleString(tile.TileListId, tile.Id);
-					_mcdInfo.UpdateData((McdRecord)tile.Info);
+					_mcdInfo.UpdateData((McdRecord)tile.Record);
 				}
 				else
 				{

@@ -144,14 +144,14 @@ namespace MapView.Forms.MapObservers.TileViews
 					int qtyTiles = 0;
 
 					for (int i = 0; i != tiles.Count; ++i)
-						if (tiles[i].Info.TileType == _type)
+						if (tiles[i].Record.TileType == _type)
 							++qtyTiles;
 
 					_tiles = new TileBase[qtyTiles + 1];
 					_tiles[0] = null;
 
 					for (int i = 0, j = 1; i != tiles.Count; ++i)
-						if (tiles[i].Info.TileType == _type)
+						if (tiles[i].Record.TileType == _type)
 							_tiles[j++] = tiles[i];
 				}
 
@@ -244,18 +244,18 @@ namespace MapView.Forms.MapObservers.TileViews
 
 					if (tile != null)
 					{
-						if (_type == TileType.All || _type == tile.Info.TileType)
+						if (_type == TileType.All || _type == tile.Record.TileType)
 						{
-							var targetType = tile.Info.TargetType.ToString();
+							var targetType = tile.Record.TargetType.ToString();
 							if (_brushes.ContainsKey(targetType))
 								g.FillRectangle((SolidBrush)_brushes[targetType], rect);
 
 							g.DrawImage(
 									tile[MainViewPanel.Current].Image,
 									left,
-									top - tile.Info.TileOffset);
+									top - tile.Record.TileOffset);
 
-							if (tile.Info.HumanDoor || tile.Info.UfoDoor)
+							if (tile.Record.HumanDoor || tile.Record.UfoDoor)
 								g.DrawString(
 										"Door",
 										Font,

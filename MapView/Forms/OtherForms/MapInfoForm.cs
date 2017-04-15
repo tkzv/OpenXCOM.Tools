@@ -147,7 +147,7 @@ namespace MapView
 		{
 			if (tile != null)
 			{
-				recordsTable[tile.Info.Id] = true;
+				recordsTable[tile.Record.Id] = true;
 
 				var images = tile.Images;
 				foreach (PckImage image in images)

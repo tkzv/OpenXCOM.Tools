@@ -240,7 +240,7 @@ namespace XCom.Interfaces.Base
 							foreach (var tileBase in tiles)
 							{
 								var tile = (XCTile)tileBase;
-								Bmp.Draw(tile[0].Image, b, x, y - tile.Info.TileOffset);
+								Bmp.Draw(tile[0].Image, b, x, y - tile.Record.TileOffset);
 							}
 
 							Bmp.FireLoadingEvent(i, (MapSize.Height - _height) * MapSize.Rows * MapSize.Cols);

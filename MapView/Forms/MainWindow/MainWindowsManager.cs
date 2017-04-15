@@ -103,8 +103,8 @@ namespace MapView.Forms.MainWindow
 		/// <param name="tile"></param>
 		private static void OnSelectedTileTypeChanged(TileBase tile)
 		{
-			if (tile != null && tile.Info != null)
-				TopView.Control.SelectQuadrant(tile.Info.TileType);
+			if (tile != null && tile.Record != null)
+				TopView.Control.SelectQuadrant(tile.Record.TileType);
 		}
 	}
 }

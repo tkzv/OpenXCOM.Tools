@@ -12,10 +12,10 @@ namespace XCom
 		private readonly PckSpriteCollection _pckPack;
 
 		private readonly McdRecord _record;
-		internal McdRecord Record
+/*		internal McdRecord Record
 		{
 			get { return _record; }
-		}
+		} */
 
 		public XCTile Dead
 		{ get; set; }
@@ -37,7 +37,7 @@ namespace XCom
 		{
 			_pckPack = pckPack;
 			_record  = record;
-			Info     = record;
+			Record     = record;
 //			Tiles    = tiles; // NOTE: Tiles is not used.
 
 			Images = new XCImage[8]; // every tile-part contains refs to 8 sprites.

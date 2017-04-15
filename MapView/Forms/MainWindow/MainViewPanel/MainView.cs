@@ -627,7 +627,7 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			g.DrawImage(
 					image,
 					x,
-					(int)(y - tile.Info.TileOffset * Globals.PckImageScale),
+					(int)(y - tile.Record.TileOffset * Globals.PckImageScale),
 					(int)(image.Width  * Globals.PckImageScale),
 					(int)(image.Height * Globals.PckImageScale));
 		}

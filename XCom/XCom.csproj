@@ -206,7 +206,7 @@
     <Compile Include="Globals.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\Base\IMcdRecord.cs" />
+    <Compile Include="Interfaces\Base\IMcdRecord_.cs" />
     <Compile Include="Interfaces\Base\IMapDesc.cs">
       <SubType>Code</SubType>
     </Compile>

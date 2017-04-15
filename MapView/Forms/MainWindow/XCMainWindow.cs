@@ -833,8 +833,8 @@ namespace MapView
 //		{
 //			miDoors.Checked = !miDoors.Checked;
 //			foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
-//				if (tile.Info.UfoDoor || tile.Info.HumanDoor)
-//					tile.SetAnimationSprites(miDoors.Checked, tile.Info.UfoDoor);
+//				if (tile.Record.UfoDoor || tile.Record.HumanDoor)
+//					tile.SetAnimationSprites(miDoors.Checked, tile.Record.UfoDoor);
 //		}
 
 		private void OnResizeClick(object sender, EventArgs e)
