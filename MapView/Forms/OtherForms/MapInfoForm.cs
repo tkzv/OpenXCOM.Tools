@@ -46,7 +46,7 @@ namespace MapView
 
 					lbl2Tilesets.Text += dep;
 
-					recordsTotal += GameInfo.ImageInfo[dep].GetMcdRecords().Count;
+					recordsTotal += GameInfo.ImageInfo[dep].GetRecords().Count;
 					spritesTotal += GameInfo.ImageInfo[dep].GetPckPack().Count;
 				}
 			}

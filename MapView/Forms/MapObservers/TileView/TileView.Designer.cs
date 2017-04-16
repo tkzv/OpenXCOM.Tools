@@ -144,7 +144,7 @@
 			this.tsmiEditPck.Name = "tsmiEditPck";
 			this.tsmiEditPck.Size = new System.Drawing.Size(152, 22);
 			this.tsmiEditPck.Text = "Edit PCK";
-			this.tsmiEditPck.Click += new System.EventHandler(this.OnEditPckClick);
+			this.tsmiEditPck.Click += new System.EventHandler(this.OnPckEditorClick);
 			// 
 			// tsddbEdit
 			// 

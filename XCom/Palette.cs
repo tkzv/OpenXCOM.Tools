@@ -14,7 +14,7 @@ namespace XCom
 	//see http://support.microsoft.com/default.aspx?scid=kb%3Ben-us%3B319061
 	public class Palette
 	{
-		public const byte TransparentId = 0xFE;
+		internal const byte TransparentId = 0xFE;
 
 		private readonly string _label;
 		/// <summary>
@@ -39,7 +39,7 @@ namespace XCom
 			set { _colors.Entries[i] = value; }
 		}
 
-		private static Hashtable _palHash = new Hashtable();
+		private static readonly Hashtable _palHash = new Hashtable();
 
 		private const string EmbedPath = "XCom._Embedded.";
 
@@ -153,7 +153,8 @@ namespace XCom
 			}
 		}
 
-		public Palette(string name)
+
+		private Palette(string name)
 		{
 			var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed);
 			_colors = b.Palette;
@@ -161,7 +162,7 @@ namespace XCom
 			this._label = name;
 		}
 
-		public Palette(Stream str)
+		private Palette(Stream str)
 		{
 			var input = new StreamReader(str);
 			var line = new string[0];
@@ -170,12 +171,12 @@ namespace XCom
 			var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed);
 			_colors = b.Palette;
 
-			for (byte i = 0; i < 0xFF; i++)
+			for (byte i = 0; i != 0xFF; ++i)
 			{
 				string allLine = input.ReadLine().Trim();
 				if (allLine[0] == '#')
 				{
-					i--;
+					--i;
 					continue;
 				}
 				line = allLine.Split(',');
@@ -244,12 +245,12 @@ namespace XCom
 			{
 				if (_palHash[_label + "#gray"] == null)
 				{
-					var palette = new Palette(_label + "#gray");
-					_palHash[palette._label] = palette;
+					var pal = new Palette(_label + "#gray");
+					_palHash[pal._label] = pal;
 					for (int i = 0; i != _colors.Entries.Length; ++i)
 					{
 						int st = (int)(this[i].R * 0.1 + this[i].G * 0.5 + this[i].B * 0.25);
-						palette[i] = Color.FromArgb(st, st, st);
+						pal[i] = Color.FromArgb(st, st, st);
 					}
 				}
 				return (Palette)_palHash[_label + "#gray"];
@@ -264,6 +265,11 @@ namespace XCom
 		{
 			_colors.Entries[TransparentId] = (zero) ? Color.FromArgb(  0, _colors.Entries[TransparentId])
 													: Color.FromArgb(255, _colors.Entries[TransparentId]);
+		}
+
+		public override string ToString()
+		{
+			return _label;
 		}
 
 		/// <summary>
@@ -282,7 +288,7 @@ namespace XCom
 			return _colors.GetHashCode(); // FIX: "Non-readonly field referenced in GetHashCode()."
 		}
 
-		public static Palette GetPalette(string label)
+		internal static Palette GetPalette(string label)
 		{
 			if (_palHash[label] == null)
 			{
@@ -298,11 +304,6 @@ namespace XCom
 				}
 			}
 			return (Palette)_palHash[label];
-		}
-
-		public override string ToString()
-		{
-			return _label;
 		}
 	}
 }

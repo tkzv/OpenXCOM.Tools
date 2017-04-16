@@ -13,27 +13,27 @@ namespace XCom
 		:
 			IComparable // TODO: should override Equals, ==, !=, <, >
 	{
-		private readonly Hashtable _mcdTable;
+		private readonly Hashtable _mcdHash;
 
-		public string BaseName
+		public string Label
 		{ get; private set; }
 
-		public string BasePath
+		public string Path
 		{ get; set; }
 
 
-		public ImageDescriptor(string baseName, string basePath)
+		public ImageDescriptor(string label, string path)
 		{
-			BaseName = baseName;
-			BasePath = basePath;
+			Label = label;
+			Path  = path;
 
-			_mcdTable = new Hashtable(3);
+			_mcdHash = new Hashtable(3);
 		}
 
 
 		internal PckSpriteCollection GetPckPack(Palette pal)
 		{
-			return GameInfo.CachePckPack(BasePath, BaseName, 2, pal);
+			return GameInfo.CachePckPack(Path, Label, 2, pal);
 		}
 
 		public PckSpriteCollection GetPckPack()
@@ -41,34 +41,34 @@ namespace XCom
 			return GetPckPack(GameInfo.DefaultPalette);
 		}
 
-		internal McdRecordCollection GetMcdRecords(Palette pal, XCTileFactory tileFactory)
+		internal McdRecordCollection GetRecordsByPalette(Palette pal, XCTileFactory tileFactory)
 		{
-			if (_mcdTable[pal] == null)
+			if (_mcdHash[pal] == null)
 			{
-				var tiles = tileFactory.CreateTiles(BaseName, BasePath, GetPckPack(pal));
-				_mcdTable[pal] = new McdRecordCollection(tiles);
+				var tiles = tileFactory.CreateTiles(Label, Path, GetPckPack(pal));
+				_mcdHash[pal] = new McdRecordCollection(tiles);
 			}
-			return (McdRecordCollection)_mcdTable[pal];
+			return (McdRecordCollection)_mcdHash[pal];
 		}
 
-		public McdRecordCollection GetMcdRecords()
+		public McdRecordCollection GetRecords()
 		{
-			return GetMcdRecords(GameInfo.DefaultPalette, new XCTileFactory());
+			return GetRecordsByPalette(GameInfo.DefaultPalette, new XCTileFactory());
 		}
 
 		public override string ToString()
 		{
-			return BaseName;
+			return Label;
 		}
 
 		public int CompareTo(object obj)
 		{
-			return String.CompareOrdinal(BaseName, obj.ToString());
+			return String.CompareOrdinal(Label, obj.ToString());
 		}
 
 		public void ClearMcdTable()
 		{
-			_mcdTable.Clear();
+			_mcdHash.Clear();
 		}
 	}
 }

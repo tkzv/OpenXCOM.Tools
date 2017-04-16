@@ -25,7 +25,7 @@ namespace MapView
 				if (_instance == null)
 					_instance = new MainViewPanel();
 
-					return _instance;
+				return _instance;
 			}
 		}
 

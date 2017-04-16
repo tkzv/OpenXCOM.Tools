@@ -34,14 +34,16 @@ namespace MapView
 		:
 			Form
 	{
-		private readonly SettingsManager       _settingsManager;
-		private readonly MainViewPanel         _mainViewPanel;
-		private readonly LoadingForm           _loadingProgress;
-		private readonly ConsoleWarningHandler _warningHandler;
+		private readonly MainViewPanel         _mainViewPanel; // has static functs.
+
 		private readonly ViewersManager        _viewersManager;
-		private readonly ViewerFormsManager    _viewerFormsManager;
+		private readonly ViewerFormsManager    _viewerFormsManager; // has static functs.
 		private readonly MainMenusManager      _mainMenusManager;
 
+		private readonly LoadingForm           _loadingProgress;
+		private readonly ConsoleWarningHandler _warningHandler;
+
+		private readonly SettingsManager _settingsManager;
 		private Settings Settings
 		{
 			get { return _settingsManager["MainWindow"]; }
@@ -149,9 +151,9 @@ namespace MapView
 
 			_settingsManager = new SettingsManager(); // goes before LoadSettings()
 
-			LoadSettings();
-			LogFile.WriteLine("MainView Settings loaded.");
-
+			LoadSettings();									// TODO: check if this should go after the managers load
+			LogFile.WriteLine("MainView Settings loaded.");	// since managers might be re-instantiating needlessly
+															// when OnSettingsChange() runs ....
 
 			_mainViewPanel = MainViewPanel.Instance;
 			LogFile.WriteLine("MainView panel instantiated.");

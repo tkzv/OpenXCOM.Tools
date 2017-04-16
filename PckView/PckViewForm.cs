@@ -184,9 +184,9 @@ namespace PckView
 			{
 				bytesMenu.Enabled =
 				miPalette.Enabled =
-				transItem.Enabled = (e.Collection.IXCFile.FileOptions.BitDepth == 8);
+				transItem.Enabled = (e.Collection.ImageFile.FileOptions.BitDepth == 8);
 
-				XConsole.AdZerg("bpp is: " + e.Collection.IXCFile.FileOptions.BitDepth);
+				XConsole.AdZerg("bpp is: " + e.Collection.ImageFile.FileOptions.BitDepth);
 			}
 		}
 
@@ -303,8 +303,8 @@ namespace PckView
 															0,
 															_totalViewPck.Pal,
 															0, 0,
-															_totalViewPck.Collection.IXCFile.ImageSize.Width,
-															_totalViewPck.Collection.IXCFile.ImageSize.Height));
+															_totalViewPck.Collection.ImageFile.ImageSize.Width,
+															_totalViewPck.Collection.ImageFile.ImageSize.Height));
 					}
 					Refresh();
 				}
@@ -523,7 +523,7 @@ namespace PckView
 
 		private void SetImages(XCImageCollection toLoad)
 		{
-			OnPaletteClick(((MenuItem)_dictPalettes[toLoad.IXCFile.DefaultPalette]), null);
+			OnPaletteClick(((MenuItem)_dictPalettes[toLoad.ImageFile.DefaultPalette]), null);
 			_totalViewPck.Collection = toLoad;
 		}
 
@@ -556,14 +556,14 @@ namespace PckView
 			var selected = _totalViewPck.SelectedItems[_totalViewPck.SelectedItems.Count - 1];
 			if (_totalViewPck.Collection != null)
 			{
-				if (_totalViewPck.Collection.IXCFile.SingleFile != null)
+				if (_totalViewPck.Collection.ImageFile.SingleFile != null)
 				{
-					string file = _totalViewPck.Collection.Name.Substring(0, _totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal));
+					string file = _totalViewPck.Collection.Label.Substring(0, _totalViewPck.Collection.Label.IndexOf(".", StringComparison.Ordinal));
 //					string ext  = _totalViewPck.Collection.Name.Substring(_totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal) + 1);
 					saveBmpSingle.FileName = file + selected.Image.FileId;
 				}
 				else
-					saveBmpSingle.FileName = _totalViewPck.Collection.Name + selected.Image.FileId;
+					saveBmpSingle.FileName = _totalViewPck.Collection.Label + selected.Image.FileId;
 
 				if (saveBmpSingle.ShowDialog() == DialogResult.OK)
 					Bmp.Save(saveBmpSingle.FileName, selected.Image.Image);
@@ -601,8 +601,8 @@ namespace PckView
 					var image = Bmp.Load(
 										b,
 										_totalViewPck.Pal,
-										_totalViewPck.Collection.IXCFile.ImageSize.Width,
-										_totalViewPck.Collection.IXCFile.ImageSize.Height,
+										_totalViewPck.Collection.ImageFile.ImageSize.Width,
+										_totalViewPck.Collection.ImageFile.ImageSize.Height,
 										1)[0];
 					_totalViewPck.ChangeItem(_totalViewPck.SelectedItems[0].Item.Index, image);
 					Refresh();
@@ -613,7 +613,7 @@ namespace PckView
 
 		private void UpdateText()
 		{
-			Text = _totalViewPck.Collection.Name + ":" + _totalViewPck.Collection.Count;
+			Text = _totalViewPck.Collection.Label + ":" + _totalViewPck.Collection.Count;
 		}
 
 		private void OnRemoveClick(object sender, EventArgs e)
@@ -718,9 +718,9 @@ namespace PckView
 				string fileStart = String.Empty;
 //				string extStart  = String.Empty;
 
-				if (_totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal) > 0)
+				if (_totalViewPck.Collection.Label.IndexOf(".", StringComparison.Ordinal) > 0)
 				{
-					fileStart = _totalViewPck.Collection.Name.Substring(0, _totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal));
+					fileStart = _totalViewPck.Collection.Label.Substring(0, _totalViewPck.Collection.Label.IndexOf(".", StringComparison.Ordinal));
 //					extStart  = _totalViewPck.Collection.Name.Substring(_totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal) + 1);
 				}
 

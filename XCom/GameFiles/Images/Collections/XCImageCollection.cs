@@ -10,17 +10,17 @@ namespace XCom
 		:
 			List<XCImage>
 	{
-		public string Name
-		{ get; set; }
+		public string Label
+		{ get; internal set; }
 
-		public string Path
-		{ get; set; }
+//		public string Path
+//		{ get; set; }
 
-		public XCImageFile IXCFile
+		public XCImageFile ImageFile
 		{ get; set; }
 
 		private Palette _pal;
-		public virtual Palette Pal
+		public Palette Pal
 		{
 			get { return _pal; }
 			set

@@ -230,9 +230,9 @@ namespace XCom.Interfaces
 
 			if (collection != null)
 			{
-				collection.IXCFile = this;
-				collection.Path = dir;
-				collection.Name = file;
+				collection.ImageFile = this;
+//				collection.Path = dir;
+				collection.Label = file;
 
 				if (collection.Pal == null)
 					collection.Pal = _palDefault;
@@ -257,7 +257,7 @@ namespace XCom.Interfaces
 				int height,
 				Palette pal)
 		{
-			throw new Exception("muahahahha XCImageFile.LoadFileOverride DOES NOTHING (except clock a few more CPU cycles)!");
+			throw new Exception("muahahahha XCImageFile.LoadFileOverride DOES NOTHING (except clock CPU cycles)!");
 		}
 
 		/// <summary>
@@ -268,7 +268,7 @@ namespace XCom.Interfaces
 		/// <param name="images">images to save in this format</param>
 		public void SaveCollection(string dir, string file, XCImageCollection images)
 		{
-			throw new Exception("muahahahha XCImageFile.SaveCollection DOES NOTHING (except clock a few more CPU cycles)!");
+			throw new Exception("muahahahha XCImageFile.SaveCollection DOES NOTHING (except clock CPU cycles)!");
 		}
 	}
 

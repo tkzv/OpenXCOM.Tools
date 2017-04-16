@@ -289,7 +289,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			return null;
 		}
 
-		private void OnEditPckClick(object sender, EventArgs e) // NOTE: The dropdown button has been disabled (Visible=FALSE).
+		private void OnPckEditorClick(object sender, EventArgs e) // NOTE: The dropdown button has been disabled (Visible=FALSE).
 		{
 			var dep = GetDepLabel();
 			if (dep != null)
@@ -297,7 +297,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				var imageInfo = GameInfo.ImageInfo[dep];
 				if (imageInfo != null)
 				{
-					var pfe = imageInfo.BasePath + imageInfo.BaseName + ".PCK"; // pfe=PathFileExt
+					var pfe = imageInfo.Path + imageInfo.Label + ".PCK";
 
 					if (!File.Exists(pfe))
 					{
@@ -316,9 +316,9 @@ namespace MapView.Forms.MapObservers.TileViews
 
 						using (var editor = new PckViewForm())
 						{
-							var pckFile = imageInfo.GetPckPack();
-							editor.SelectedPalette = pckFile.Pal.Label;
-							editor.LoadPckFile(pfe, pckFile.Bpp);
+							var pckPack = imageInfo.GetPckPack();
+							editor.SelectedPalette = pckPack.Pal.Label;
+							editor.LoadPckFile(pfe, pckPack.Bpp);
 
 							var parent = FindForm();
 
@@ -333,7 +333,7 @@ namespace MapView.Forms.MapObservers.TileViews
 							if (editor.SavedFile)
 							{
 								GameInfo.ImageInfo.Images[dep].ClearMcdTable();
-								GameInfo.ClearPckCache(imageInfo.BasePath, imageInfo.BaseName);
+								GameInfo.ClearPckCache(imageInfo.Path, imageInfo.Label);
 
 								HandleMapChanged();
 							}

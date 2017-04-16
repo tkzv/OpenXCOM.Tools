@@ -128,7 +128,7 @@ namespace MapView
 
 		private void lbImages_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			tbImagesTerrain.Text = GameInfo.ImageInfo[(string)lbImages.SelectedItem].BasePath;
+			tbImagesTerrain.Text = GameInfo.ImageInfo[(string)lbImages.SelectedItem].Path;
 		}
 
 		private void tvMaps_AfterSelect(object sender, TreeViewEventArgs e)
@@ -379,7 +379,7 @@ namespace MapView
 
 		private void tbImagesTerrain_TextChanged(object sender, EventArgs e)
 		{
-			GameInfo.ImageInfo[(string)lbImages.SelectedItem].BasePath = tbImagesTerrain.Text;
+			GameInfo.ImageInfo[(string)lbImages.SelectedItem].Path = tbImagesTerrain.Text;
 		}
 
 		private void cmImagesAddImageset_Click(object sender, EventArgs e)

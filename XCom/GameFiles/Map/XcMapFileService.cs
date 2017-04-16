@@ -30,7 +30,7 @@ namespace XCom
 					var tileInfo = info[dep];
 					if (tileInfo != null)
 					{
-						var MCD = tileInfo.GetMcdRecords(desc.Palette, _tileFactory);
+						var MCD = tileInfo.GetRecordsByPalette(desc.Palette, _tileFactory);
 						foreach (XCTile tile in MCD)
 							tiles.Add(tile);
 					}

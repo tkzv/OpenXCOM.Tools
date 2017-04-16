@@ -15,7 +15,7 @@ namespace XCom
 		private static ImageInfo _imageInfo;
 		private static TilesetDesc _tilesetDesc;
 
-		private static Dictionary<Palette, Dictionary<string, PckSpriteCollection>> _pckDict;
+		private static Dictionary<Palette, Dictionary<string, PckSpriteCollection>> _pckDictionary;
 
 		public static event ParseLineEventHandler ParseLine;
 
@@ -26,7 +26,7 @@ namespace XCom
 			XConsole.Init(20);							// note that prints LogFile to settings dir also
 
 			_palette = pal;
-			_pckDict = new Dictionary<Palette, Dictionary<string, PckSpriteCollection>>();
+			_pckDictionary = new Dictionary<Palette, Dictionary<string, PckSpriteCollection>>();
 
 			using (var sr = new StreamReader(File.OpenRead(info.FullPath))) // open Paths.Cfg
 			{
@@ -87,27 +87,27 @@ namespace XCom
 		}
 
 		public static PckSpriteCollection CachePckPack(
-				string basePath,
-				string baseName,
+				string path,
+				string file,
 				int bpp,
 				Palette pal)
 		{
-			if (_pckDict == null)
-				_pckDict = new Dictionary<Palette, Dictionary<string, PckSpriteCollection>>();
+			if (_pckDictionary == null)
+				_pckDictionary = new Dictionary<Palette, Dictionary<string, PckSpriteCollection>>();
 
-			if (!_pckDict.ContainsKey(pal))
-				_pckDict.Add(pal, new Dictionary<string, PckSpriteCollection>());
+			if (!_pckDictionary.ContainsKey(pal))
+				_pckDictionary.Add(pal, new Dictionary<string, PckSpriteCollection>());
 
 //			if (_pckHash[pal][basePath + baseName] == null)
-			var pathfile = basePath + baseName;
+			var pf = path + file;
 
-			var palHash = _pckDict[pal];
-			if (!palHash.ContainsKey(pathfile))
+			var palHash = _pckDictionary[pal];
+			if (!palHash.ContainsKey(pf))
 			{
-				using (var pckStream = File.OpenRead(pathfile + ".PCK")) // TODO: check if these catch lowercase extensions.
-				using (var tabStream = File.OpenRead(pathfile + ".TAB")) // they should, it's for Windows.
+				using (var pckStream = File.OpenRead(pf + ".PCK")) // TODO: check if these catch lowercase extensions.
+				using (var tabStream = File.OpenRead(pf + ".TAB")) // they should, it's for Windows.
 				{
-					palHash.Add(pathfile, new PckSpriteCollection(
+					palHash.Add(pf, new PckSpriteCollection(
 															pckStream,
 															tabStream,
 															bpp,
@@ -115,15 +115,15 @@ namespace XCom
 				}
 			}
 
-			return _pckDict[pal][pathfile];
+			return _pckDictionary[pal][pf];
 		}
 
-		public static void ClearPckCache(string basePath, string baseName)
+		public static void ClearPckCache(string path, string file)
 		{
-			var path = basePath + baseName;
+			var pf = path + file;
 
-			foreach (var palHash in _pckDict.Values)
-				palHash.Remove(path);
+			foreach (var val in _pckDictionary.Values)
+				val.Remove(pf);
 		}
 	}
 }

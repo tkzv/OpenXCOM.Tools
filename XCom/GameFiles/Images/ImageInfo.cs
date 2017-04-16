@@ -24,10 +24,10 @@ namespace XCom
 					if (_imagesDictionary[key] != null)
 					{
 						var image = _imagesDictionary[key];
-						if (!vars.ContainsKey(image.BasePath))
-							vars[image.BasePath] = new Variable(image.BaseName + ":", image.BasePath);
+						if (!vars.ContainsKey(image.Path))
+							vars[image.Path] = new Variable(image.Label + ":", image.Path);
 						else
-							vars[image.BasePath].Add(image.BaseName + ":");
+							vars[image.Path].Add(image.Label + ":");
 					}
 				}
 
