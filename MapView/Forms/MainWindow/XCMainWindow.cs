@@ -174,7 +174,7 @@ namespace MapView
 			_viewersManager     = new ViewersManager(_settingsManager, consoleShare);
 			_mainMenusManager   = new MainMenusManager(menuShow, menuHelp);
 
-			_mainMenusManager.PopulateMenus(consoleShare.GetNewConsole(), Settings);
+			_mainMenusManager.PopulateMenus(consoleShare.GetConsole(), Settings);
 			LogFile.WriteLine("MainView menus populated.");
 			ViewerFormsManager.ShowAllManager = _mainMenusManager.CreateShowAllManager();
 			LogFile.WriteLine("ShowAllManager created.");

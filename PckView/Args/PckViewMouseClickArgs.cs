@@ -8,11 +8,11 @@ namespace PckView.Args
 		:
 			MouseEventArgs
 	{
-		public int Clicked
+		internal int Clicked
 		{ get; private set; }
 
 
-		public PckViewMouseEventArgs(MouseEventArgs args, int clicked)
+		internal PckViewMouseEventArgs(MouseEventArgs args, int clicked)
 			:
 				base(
 					args.Button,

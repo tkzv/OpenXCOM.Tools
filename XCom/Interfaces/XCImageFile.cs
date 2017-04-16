@@ -125,11 +125,11 @@ namespace XCom.Interfaces
 		public bool RegisterFile()
 		{
 //			Console.WriteLine("{0} registered: {1}", this.GetType(), GetType() != typeof(IXCFile));
-			XConsole.AdZerg(string.Format(
-										System.Globalization.CultureInfo.InvariantCulture,
-										"{0} registered: {1}",
-										GetType(),
-										GetType() != typeof(XCImageFile)));
+//			XConsole.AdZerg(string.Format(
+//										System.Globalization.CultureInfo.InvariantCulture,
+//										"{0} registered: {1}",
+//										GetType(),
+//										GetType() != typeof(XCImageFile)));
 
 			return (GetType() != typeof(XCImageFile));
 //			return !(this is XCImageFile);
@@ -242,7 +242,7 @@ namespace XCom.Interfaces
 		}
 
 		/// <summary>
-		/// Loads a file and return a collection of images.
+		/// Loads a file and returns a collection of images.
 		/// </summary>
 		/// <param name="dir"></param>
 		/// <param name="file"></param>
@@ -261,7 +261,7 @@ namespace XCom.Interfaces
 		}
 
 		/// <summary>
-		/// Saves a collection
+		/// Saves a collection.
 		/// </summary>
 		/// <param name="dir">directory to save to</param>
 		/// <param name="file">file</param>

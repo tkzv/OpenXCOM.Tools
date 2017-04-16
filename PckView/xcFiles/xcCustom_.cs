@@ -1,3 +1,4 @@
+/*
 using System;
 
 using XCom.Interfaces;
@@ -14,7 +15,7 @@ namespace PckView
 				this(0, 0)
 		{}
 
-		public xcCustom(int width, int height)
+		private xcCustom(int width, int height)
 			:
 				base(width, height)
 		{
@@ -28,13 +29,13 @@ namespace PckView
 			DefaultPalette = XCom.Palette.UfoBattle;
 		}
 
-/*		public override int FilterIndex
+		public override int FilterIndex
 		{
 			get { return base.FilterIndex; }
 			set { base.FilterIndex = value; FIDX = value; }
-		} */
+		}
 
-/*		protected override XCom.XCImageCollection LoadFileOverride(
+		protected override XCom.XCImageCollection LoadFileOverride(
 				string directory,
 				string file,
 				int width,
@@ -46,9 +47,9 @@ namespace PckView
 			f.Show();
 
 			return null;
-		} */
+		}
 
-/*		private void tryIt(object sender, TryDecodeEventArgs tde)
+		private void tryIt(object sender, TryDecodeEventArgs tde)
 		{
 			var pvf = (PckViewForm)XCom.SharedSpace.Instance["PckView"];
 
@@ -61,6 +62,7 @@ namespace PckView
 			_imageSize = new System.Drawing.Size(tde.TryWidth, tde.TryHeight);
 
 			pvf.SetImages(ixc);
-		} */
+		}
 	}
 }
+*/

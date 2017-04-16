@@ -47,7 +47,7 @@ namespace MapView.Forms.MainWindow
 
 			AddViewer("TopRoute View", ViewerFormsManager.TopRouteView);
 
-			AddViewer("Console", _consoleShare.GetNewConsole());
+			AddViewer("Console", _consoleShare.GetConsole());
 
 			AddViewer("Quick Help", ViewerFormsManager.HelpScreen);
 			AddViewer("About",      ViewerFormsManager.AboutScreen);

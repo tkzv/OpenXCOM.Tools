@@ -13,7 +13,7 @@ namespace XCom
 		:
 			XCImageCollection
 	{
-		public static readonly string PckExt = ".pck";
+		internal static readonly string PckExt = ".pck";
 		public static readonly string TabExt = ".tab";
 
 		private int _bpp;
@@ -27,22 +27,9 @@ namespace XCom
 				Stream strPck,
 				Stream strTab,
 				int bpp,
-				Palette pal)
-			:
-				this(
-					strPck,
-					strTab,
-					bpp,
-					pal,
-					32, 40)
-		{}
-		private PckSpriteCollection(
-				Stream strPck,
-				Stream strTab,
-				int bpp,
 				Palette pal,
-				int width,
-				int height)
+				int width  = 32,
+				int height = 40)
 		{
 			_bpp = bpp;
 			Pal = pal;
@@ -84,14 +71,14 @@ namespace XCom
 
 			offsets[offsets.Length - 1] = (uint)info.Length;
 
-			for (int i = 0; i != offsets.Length - 1; ++i)
+			for (int id = 0; id != offsets.Length - 1; ++id)
 			{
-				var binData = new byte[offsets[i + 1] - offsets[i]];
+				var binData = new byte[offsets[id + 1] - offsets[id]];
 				for (int j = 0; j != binData.Length; ++j)
-					binData[j] = info[offsets[i] + j];
+					binData[j] = info[offsets[id] + j];
 
 				Add(new PckImage(
-								i,
+								id,
 								binData,
 								pal,
 								this,

@@ -36,12 +36,12 @@ namespace PckView
 
 		private SelectMode _mode;
 
-		public const int Across = 16;
+		internal const int Across = 16;
 
-		public event PaletteClickEventHandler PaletteIndexChanged;
+		internal event PaletteClickEventHandler PaletteIndexChanged;
 
 
-		public PalPanel()
+		internal PalPanel()
 		{
 			this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 			_palette = null;
@@ -101,7 +101,7 @@ namespace PckView
 
 		[DefaultValue(SelectMode.Single)]
 		[Category("Behavior")]
-		public SelectMode Mode
+		internal SelectMode Mode
 		{
 			get { return _mode; }
 //			set { mode = value; }
@@ -109,7 +109,7 @@ namespace PckView
 
 		[DefaultValue(null)]
 		[Browsable(false)]
-		public Palette Palette
+		internal Palette Palette
 		{
 			get { return _palette; }
 			set

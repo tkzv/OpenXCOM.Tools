@@ -13,14 +13,14 @@ namespace PckView
 		:
 			System.Windows.Forms.Form
 	{
-		public event PaletteClickEventHandler PaletteIndexChanged;
+		internal event PaletteClickEventHandler PaletteIndexChanged;
 
 
 		private PalPanel _palPanel;
 		private System.Windows.Forms.Label _status;
 
 
-		public PalView()
+		internal PalView()
 		{
 			InitializeComponent();
 			OnResize(null); // TODO: Fix "Virtual member call in a constructor."
@@ -56,7 +56,7 @@ namespace PckView
 				PaletteIndexChanged(id);
 		}
 
-		public Palette Palette
+		internal Palette Palette
 		{
 //			get { return _palPanel.Palette; }
 			set { _palPanel.Palette = value; }
@@ -121,7 +121,7 @@ namespace PckView
 			this._palPanel.Name = "palPanel";
 			this._palPanel.Size = new System.Drawing.Size(292, 237);
 			this._palPanel.TabIndex = 0;
-			this._palPanel.PaletteIndexChanged += new PckView.PaletteClickEventHandler(this.palClick);
+			this._palPanel.PaletteIndexChanged += this.palClick;
 			//
 			// PalView
 			//

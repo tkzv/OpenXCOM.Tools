@@ -19,7 +19,7 @@ namespace PckView
 		private readonly EditorPanel _editPanel;
 
 
-		public Editor(PckImage image)
+		internal Editor(PckImage image)
 		{
 			_editPanel    = new EditorPanel(image);
 			_buttonsPanel = new ButtonPanel();
@@ -30,6 +30,13 @@ namespace PckView
 			_trackBar.Maximum = 10;
 
 			InitializeComponent();
+
+			// WORKAROUND: See note in 'XCMainWindow' cTor.
+			var size = new Size();
+			size.Width  =
+			size.Height = 0;
+			MaximumSize = size; // fu.net
+
 
 			Controls.Add(_editPanel);
 			Controls.Add(_buttonsPanel);
@@ -51,17 +58,17 @@ namespace PckView
 			_palView = new PalView();
 			_palView.Closing += OnPaletteClosing;
 
-			_palView.PaletteIndexChanged += _editPanel.Editor.SelectColor;
+//			_palView.PaletteIndexChanged += _editPanel.Editor.SelectColor; // does nothing.
 
-			_trackBar.Scroll += sizeScroll;
+			_trackBar.Scroll += OnScroll;
 		}
 
-		private void sizeScroll(object sender, EventArgs e)
+		private void OnScroll(object sender, EventArgs e)
 		{
-			_editPanel.Editor.ScaleVal=_trackBar.Value;
+			_editPanel.Editor.ScaleDontHide =_trackBar.Value;
 		}
 
-		public Palette Palette
+		internal Palette Palette
 		{
 //			get { return _editPanel.Editor.Palette; }
 			set
@@ -72,7 +79,7 @@ namespace PckView
 			}
 		}
 
-		public void ShowPalView()
+		private void ShowPaletteView()
 		{
 			if (_palView.Visible)
 				_palView.BringToFront();
@@ -107,7 +114,7 @@ namespace PckView
 			_trackBar.Left = _editPanel.Left;
 		}
 
-		public XCImage Image
+		internal XCImage Image
 		{
 //			get { return _editPanel.Editor.Image; }
 			set
@@ -119,15 +126,15 @@ namespace PckView
 		}
 
 
-		private void showPalette_Click(object sender, EventArgs e)
+		private void OnShowPaletteClick(object sender, EventArgs e)
 		{
 			if (showPalette.Checked)
 				_palView.Close();
 			else
-				ShowPalView();
+				ShowPaletteView();
 		}
 
-		private void showLines_Click(object sender, EventArgs e)
+		private void OnShowLinesClick(object sender, EventArgs e)
 		{
 			showLines.Checked =! showLines.Checked;
 			_editPanel.Editor.Lines = showLines.Checked;
@@ -153,55 +160,62 @@ namespace PckView
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.menu = new System.Windows.Forms.MainMenu();
+			this.components = new System.ComponentModel.Container();
+			this.menu = new System.Windows.Forms.MainMenu(this.components);
 			this.paletteMain = new System.Windows.Forms.MenuItem();
 			this.showPalette = new System.Windows.Forms.MenuItem();
 			this.linesItem = new System.Windows.Forms.MenuItem();
 			this.showLines = new System.Windows.Forms.MenuItem();
-			//
+			this.SuspendLayout();
+			// 
 			// menu
-			//
-			this.menu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[]{
-																		this.paletteMain,
-																		this.linesItem });
-			//
+			// 
+			this.menu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.paletteMain,
+			this.linesItem});
+			// 
 			// paletteMain
-			//
+			// 
 			this.paletteMain.Index = 0;
-			this.paletteMain.MenuItems.AddRange(new System.Windows.Forms.MenuItem[]{ this.showPalette });
+			this.paletteMain.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.showPalette});
 			this.paletteMain.Text = "Palette";
-			//
+			// 
 			// showPalette
-			//
+			// 
 			this.showPalette.Index = 0;
 			this.showPalette.Text = "Show";
-			this.showPalette.Click += new System.EventHandler(this.showPalette_Click);
-			//
+			this.showPalette.Click += new System.EventHandler(this.OnShowPaletteClick);
+			// 
 			// linesItem
-			//
+			// 
 			this.linesItem.Index = 1;
-			this.linesItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[]{ this.showLines });
+			this.linesItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.showLines});
 			this.linesItem.Text = "Lines";
-			//
+			// 
 			// showLines
-			//
+			// 
 			this.showLines.Index = 0;
 			this.showLines.Text = "Show";
-			this.showLines.Click += new System.EventHandler(this.showLines_Click);
-			//
+			this.showLines.Click += new System.EventHandler(this.OnShowLinesClick);
+			// 
 			// Editor
-			//
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(292, 273);
+			// 
+			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
+			this.ClientSize = new System.Drawing.Size(292, 274);
+			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.MaximumSize = new System.Drawing.Size(300, 300);
 			this.Menu = this.menu;
 			this.Name = "Editor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Editor";
+			this.ResumeLayout(false);
 
 		}
 		#endregion
 
-		private Container components = null;
+		private System.ComponentModel.IContainer components;
 		private PalView _palView;
 		private MainMenu menu;
 		private MenuItem paletteMain;

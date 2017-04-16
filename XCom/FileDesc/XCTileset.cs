@@ -203,10 +203,10 @@ namespace XCom
 //					break;
 
 				default:
-					XConsole.AdZerg(string.Format(
-												System.Globalization.CultureInfo.CurrentCulture,
-												"Unknown line in tileset {0}-> {1}:{2}",
-												Name, key, line));
+//					XConsole.AdZerg(string.Format(
+//												System.Globalization.CultureInfo.CurrentCulture,
+//												"Unknown line in tileset {0}-> {1}:{2}",
+//												Name, key, line));
 					break;
 			}
 		}

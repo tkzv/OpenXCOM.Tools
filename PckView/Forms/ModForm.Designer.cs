@@ -1,3 +1,5 @@
+/* disabled w/ Visible=FALSE in PckViewForm designer.
+
 namespace PckView
 {
 	partial class ModForm
@@ -86,3 +88,4 @@ namespace PckView
 		private System.Windows.Forms.ListView modList;
 	}
 }
+*/

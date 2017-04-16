@@ -186,6 +186,7 @@ namespace PckView
 			// 
 			this.miModList.Index = 2;
 			this.miModList.Text = "Mod List";
+			this.miModList.Visible = false;
 			this.miModList.Click += new System.EventHandler(this.OnModListClick);
 			// 
 			// miConsole

@@ -1,3 +1,4 @@
+/*
 using System;
 
 
@@ -7,7 +8,7 @@ namespace PckView
 		:
 			xcCustom
 	{
-/*		public xcForceCustom()
+		public xcForceCustom()
 			:
 				base(0, 0)
 		{
@@ -22,12 +23,13 @@ namespace PckView
 			_desc       = "Forces the Custom File Dialog box to be shown.";
 			_ext        = ".*";
 			_author     = "Ben Ratzlaff";
-		} */
+		}
 
 
-/*		public override string SingleFile
+		public override string SingleFile
 		{
 			get { return "*.*"; }
-		} */
+		}
 	}
 }
+*/

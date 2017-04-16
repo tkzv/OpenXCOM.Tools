@@ -16,7 +16,7 @@ namespace PckView
 			Panel
 	{
 		private XCImage _image;
-		public XCImage Image
+		internal XCImage Image
 		{
 //			get { return _image; }
 			set
@@ -27,7 +27,7 @@ namespace PckView
 		}
 
 		private Palette _palette;
-		public Palette Palette
+		internal Palette Palette
 		{
 //			get { return _palette; }
 			set
@@ -42,7 +42,7 @@ namespace PckView
 		}
 
 		private bool _lines;
-		public bool Lines
+		internal bool Lines
 		{
 //			get { return _lines; }
 			set
@@ -58,7 +58,7 @@ namespace PckView
 //		private int _height;
 
 		private double _scale = 1.0;
-		public double ScaleVal
+		internal double ScaleDontHide
 		{
 			get { return _scale; }
 			set
@@ -69,7 +69,7 @@ namespace PckView
 		}
 
 
-		public EditorPane(XCImage image)
+		internal EditorPane(XCImage image)
 		{
 			SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 
@@ -82,12 +82,12 @@ namespace PckView
 		}
 
 
-		public static int PreferredWidth
+		internal static int PreferredWidth
 		{
 			get { return PckImage.Width * 10; }
 		}
 
-		public static int PreferredHeight
+		internal static int PreferredHeight
 		{
 			get { return PckImage.Height * 10; }
 		}
@@ -127,7 +127,6 @@ namespace PckView
 			}
 		}
 
-		public void SelectColor(int index)
-		{}
+//		public void SelectColor(int index) {}
 	}
 }

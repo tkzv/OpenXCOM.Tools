@@ -13,8 +13,8 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	internal delegate void PckViewMouseClicked(object sender, PckViewMouseEventArgs e);
-	internal delegate void PckViewMouseMoved(int pixels);
+	internal delegate void MouseClickedEventHandler(object sender, PckViewMouseEventArgs e);
+	internal delegate void MouseMovedEventHandler(int pixels);
 
 
 	internal sealed class ViewPck
@@ -34,13 +34,12 @@ namespace PckView
 
 		private readonly List<ViewPckItem> _selectedItems;
 
-		internal event PckViewMouseClicked ViewClicked;
-		internal event PckViewMouseMoved ViewMoved;
+		internal event MouseClickedEventHandler MouseClickedEvent;
+		internal event MouseMovedEventHandler MouseMovedEvent;
 
 
 		internal ViewPck()
 		{
-//			pckFile = null;
 			Paint += OnPaint;
 			SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 			MouseDown += OnMouseDown;
@@ -99,7 +98,7 @@ namespace PckView
 				if ((_collection = value) != null)
 					Height = CalculateHeight();
 
-				OnMouseDown( null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+				OnMouseDown(null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 				OnMouseMove(null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 
 				Refresh();
@@ -136,7 +135,7 @@ namespace PckView
 			if (_collection != null)
 			{
 				int x =  e.X / GetSpecialWidth(_collection.ImageFile.ImageSize.Width);
-				int y = (e.Y - _startY) / (_collection.ImageFile.ImageSize.Height + 2 * Pad);
+				int y = (e.Y - _startY) / (_collection.ImageFile.ImageSize.Height + Pad * 2);
 
 				if (x != _moveX || y != _moveY)
 				{
@@ -146,8 +145,8 @@ namespace PckView
 					if (_moveX >= PixelsAcross())
 						_moveX  = PixelsAcross() - 1;
 
-					if (ViewMoved != null)
-						ViewMoved(_moveY * PixelsAcross() + _moveX);
+					if (MouseMovedEvent != null)
+						MouseMovedEvent(_moveY * PixelsAcross() + _moveX);
 				}
 			}
 		}
@@ -157,19 +156,19 @@ namespace PckView
 			if (_collection != null)
 			{
 				var x =  e.X / GetSpecialWidth(_collection.ImageFile.ImageSize.Width);
-				var y = (e.Y - _startY) / (_collection.ImageFile.ImageSize.Height + 2 * Pad);
+				var y = (e.Y - _startY) / (_collection.ImageFile.ImageSize.Height + Pad * 2);
 
 				if (x >= PixelsAcross())
 					x = PixelsAcross() - 1;
 
-				var index = y * PixelsAcross() + x;
+				var id = y * PixelsAcross() + x;
 
 				var selected = new ViewPckItem();
 				selected.X = x;
 				selected.Y = y;
-				selected.Index = index;
+				selected.Index = id;
 
-				if (index < Collection.Count)
+				if (id < Collection.Count)
 				{
 					if (ModifierKeys == Keys.Control)
 					{
@@ -195,10 +194,10 @@ namespace PckView
 
 					Refresh();
 
-					if (ViewClicked != null)
+					if (MouseClickedEvent != null)
 					{
-						var args = new PckViewMouseEventArgs(e, index);
-						ViewClicked(this, args);
+						var args = new PckViewMouseEventArgs(e, id);
+						MouseClickedEvent(this, args);
 					}
 				}
 			}
@@ -219,18 +218,18 @@ namespace PckView
 						g.FillRectangle(
 									goodBrush,
 									selectedItem.X * specialWidth - Pad,
-									_startY + selectedItem.Y * (_collection.ImageFile.ImageSize.Height + 2 * Pad) - Pad,
+									_startY + selectedItem.Y * (_collection.ImageFile.ImageSize.Height + Pad * 2) - Pad,
 									specialWidth,
-									_collection.ImageFile.ImageSize.Height + 2 * Pad);
+									_collection.ImageFile.ImageSize.Height + Pad * 2);
 					}
 					else
 					{
 						g.FillRectangle(
 									Brushes.Red,
 									selectedItem.X * specialWidth - Pad,
-									_startY + selectedItem.Y * (_collection.ImageFile.ImageSize.Height + 2 * Pad) - Pad,
+									_startY + selectedItem.Y * (_collection.ImageFile.ImageSize.Height + Pad * 2) - Pad,
 									specialWidth,
-									_collection.ImageFile.ImageSize.Height + 2 * Pad);
+									_collection.ImageFile.ImageSize.Height + Pad * 2);
 					}
 				}
 
@@ -243,8 +242,8 @@ namespace PckView
 				for (int i = 0; i < _collection.Count / PixelsAcross() + 1; ++i)
 					g.DrawLine(
 							Pens.Black,
-							new Point(0,     _startY + i * (_collection.ImageFile.ImageSize.Height + 2 * Pad) - Pad),
-							new Point(Width, _startY + i * (_collection.ImageFile.ImageSize.Height + 2 * Pad) - Pad));
+							new Point(0,     _startY + i * (_collection.ImageFile.ImageSize.Height + Pad * 2) - Pad),
+							new Point(Width, _startY + i * (_collection.ImageFile.ImageSize.Height + Pad * 2) - Pad));
 
 				for (int i = 0; i < _collection.Count; ++i)
 				{
@@ -254,7 +253,7 @@ namespace PckView
 					{
 						g.DrawImage(
 								_collection[i].Image, x * specialWidth,
-								_startY + y * (_collection.ImageFile.ImageSize.Height + 2 * Pad));
+								_startY + y * (_collection.ImageFile.ImageSize.Height + Pad * 2));
 					}
 					catch {} // TODO: that.
 				}
@@ -308,12 +307,12 @@ namespace PckView
 		{
 			return Math.Max(
 						1,
-						(Width - 8) / (_collection.ImageFile.ImageSize.Width + 2 * Pad));
+						(Width - 8) / (_collection.ImageFile.ImageSize.Width + Pad * 2));
 		}
 
 		private int CalculateHeight()
 		{
-			return (_collection.Count / PixelsAcross()) * (_collection.ImageFile.ImageSize.Height + 2 * Pad) + 60;
+			return (_collection.Count / PixelsAcross()) * (_collection.ImageFile.ImageSize.Height + Pad * 2) + 60;
 		}
 
 		private int GetId(ViewPckItem selectedItem)
@@ -323,7 +322,7 @@ namespace PckView
 
 		private static int GetSpecialWidth(int width)
 		{
-			return width + 2 * Pad;
+			return width + Pad * 2;
 		}
 	}
 }

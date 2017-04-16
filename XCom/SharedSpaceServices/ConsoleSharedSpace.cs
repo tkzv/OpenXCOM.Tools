@@ -15,13 +15,9 @@ namespace XCom
 
 		public ConsoleForm GetConsole()
 		{
-			return _share.SetShare(xConsole) as ConsoleForm;
-		}
-
-		public ConsoleForm GetNewConsole()
-		{
-			var console = GetConsole();
-			return console ?? (ConsoleForm)_share.SetShare(xConsole, new ConsoleForm());
+			var console = _share.SetShare(xConsole);
+			return (console != null) ? console as ConsoleForm
+									 : (ConsoleForm)_share.SetShare(xConsole, new ConsoleForm());
 		}
 	}
 }

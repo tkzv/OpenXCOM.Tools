@@ -1,3 +1,5 @@
+/* disabled w/ Visible=FALSE in PckViewForm designer.
+
 using System;
 using System.Windows.Forms;
 
@@ -12,14 +14,16 @@ namespace PckView
 	{
 		private XCom.SharedSpace _share;
 
-		public ModForm()
+
+		internal ModForm()
 		{
 			InitializeComponent();
 
 			var regInfo = new DSShared.Windows.RegistryInfo(this, "Mod"); // subscribe to Load and Closing events.
 		}
 
-		public XCom.SharedSpace SharedSpace
+
+		internal XCom.SharedSpace SharedSpace
 		{
 			set
 			{
@@ -54,3 +58,4 @@ namespace PckView
 		}
 	}
 }
+*/

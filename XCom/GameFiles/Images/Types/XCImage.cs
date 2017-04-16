@@ -42,7 +42,7 @@ namespace XCom.Interfaces
 		/// <param name="height"></param>
 		/// <param name="pal"></param>
 		/// <param name="id"></param>
-		public XCImage(
+		internal XCImage(
 				byte[] offsets,
 				int width,
 				int height,
@@ -68,13 +68,10 @@ namespace XCom.Interfaces
 					null,
 					-1)
 		{} */
-		public XCImage(Bitmap image, int id)
+		private XCImage(Bitmap image, int id)
 		{
 			Image  = image;
 			FileId = id;
-
-//			Offsets  = null;
-//			_palette = null;
 		}
 
 
@@ -99,7 +96,7 @@ namespace XCom.Interfaces
 
 		}
 
-		public void HQ2X()
+		internal void HQ2X()
 		{
 			Image = Bmp.HQ2X(/*Image*/);
 		}

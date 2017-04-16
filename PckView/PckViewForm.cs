@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Reflection;
+//using System.Reflection;
 using System.Windows.Forms;
 
-using DSShared.FileSystems;
-using DSShared.Loadable;
+//using DSShared.FileSystems;
+//using DSShared.Loadable;
 using DSShared.Windows;
 
 using PckView.Args;
@@ -31,22 +31,22 @@ namespace PckView
 		private Palette _palette;
 		private Editor _editor;
 		private SharedSpace _share;
-		private LoadOfType<XCImageFile> _loadedTypes;
+//		private LoadOfType<XCImageFile> _loadedTypes;
 
-		private ConsoleForm console;
+		private ConsoleForm _console;
 		private TabControl tabs;
 		private MenuItem editImage, replaceImage, saveImage, deleteImage, addMany;
 
-		private OpenSaveFilter _dialogFilter;
-		private xcCustom _xcCustom;
+//		private OpenSaveFilter _dialogFilter;
+//		private xcCustom _xcCustom;
 
-		private Dictionary<Palette, MenuItem> _dictPalettes;
+		private Dictionary<Palette, MenuItem> _paletteDictionary;
 
 		private Dictionary<int, XCImageFile> _dictOpenFiles;
 		private Dictionary<int, XCImageFile> _dictSaveFiles;
 
-		private string _path;
-		private int _depth;
+//		private string _path;
+//		private int _depth;
 
 //		private readonly FileBackupManager _fileBackupManager = new FileBackupManager();
 
@@ -68,26 +68,26 @@ namespace PckView
 			#region SharedSpace information
 
 			var consoleShare = new ConsoleSharedSpace(new SharedSpace());
-			console = consoleShare.GetNewConsole();
-			console.FormClosing += (sender, e) =>
+			_console = consoleShare.GetConsole();
+			_console.FormClosing += (sender, e) =>
 			{
 				e.Cancel = true;
-				console.Hide();
+				_console.Hide();
 			};
-			FormClosed += (sender, e) => console.Close();
+			FormClosed += (sender, e) => _console.Close();
 
 			_share = SharedSpace.Instance;
 			_share.SetShare("PckView", this);
 
-//			_share.AllocateObject(PathInfo.MapViewers, infoViewers);
+//			_share.SetShare(PathInfo.MapViewers, infoViewers);
 
 			_share.SetShare(SharedSpace.ApplicationDirectory, Environment.CurrentDirectory);
 			_share.SetShare(SharedSpace.SettingsDirectory,    Environment.CurrentDirectory + @"\settings");
-			_share.SetShare(SharedSpace.CustomDirectory,      Environment.CurrentDirectory + @"\custom");
+//			_share.SetShare(SharedSpace.CustomDirectory,      Environment.CurrentDirectory + @"\custom");
 		
-			XConsole.AdZerg("Application directory: "  + _share[SharedSpace.ApplicationDirectory]);			// TODO: I don't trust that since changing SharedSpace.
-			XConsole.AdZerg("Settings directory: "     + _share[SharedSpace.SettingsDirectory].ToString());	// it may well need an explicit cast to (PathInfo)
-			XConsole.AdZerg("Custom directory: "       + _share[SharedSpace.CustomDirectory].ToString());
+//			XConsole.AdZerg("Application directory: "  + _share[SharedSpace.ApplicationDirectory]);			// TODO: I don't trust that since changing SharedSpace.
+//			XConsole.AdZerg("Settings directory: "     + _share[SharedSpace.SettingsDirectory].ToString());	// it may well need an explicit cast to (PathInfo)
+//			XConsole.AdZerg("Custom directory: "       + _share[SharedSpace.CustomDirectory].ToString());
 			#endregion
 
 			_totalViewPck = new TotalViewPck();
@@ -95,14 +95,14 @@ namespace PckView
 			DrawPanel.Controls.Add(_totalViewPck);
 
 			_totalViewPck.ViewPanel.DoubleClick += OnDoubleClick;
-			_totalViewPck.ViewClicked += OnViewClick;
-			_totalViewPck.XCImageCollectionSet += OnXCImageCollectionSet;
+			_totalViewPck.MouseClickedEvent += OnViewClick;
+			_totalViewPck.ImageCollectionSetEvent += OnImageCollectionSet;
 			_totalViewPck.ContextMenu = BuildContextMenu();
 
 			SaveMenuItem.Visible = false;
 
 			_share[SharedSpace.Palettes] = new Dictionary<string, Palette>();
-			_dictPalettes = new Dictionary<Palette, MenuItem>();
+			_paletteDictionary = new Dictionary<Palette, MenuItem>();
 
 			AddPalette(Palette.UfoBattle,    miPalette);
 			AddPalette(Palette.UfoGeo,       miPalette);
@@ -114,8 +114,7 @@ namespace PckView
 			AddPalette(Palette.TftdResearch, miPalette);
 
 			_palette = Palette.UfoBattle;
-
-			_dictPalettes[_palette].Checked = true;
+			_paletteDictionary[_palette].Checked = true;
 			_totalViewPck.Pal = _palette;
 
 			_editor = new Editor(null);
@@ -129,49 +128,49 @@ namespace PckView
 //			regInfo.AddProperty("FilterIndex");					// TODO: these won't work until I implement them in RegistryInfo.
 //			regInfo.AddProperty("SelectedPalette");
 
-			miHq2x.Visible &= File.Exists("hq2xa.dll");
+//			miHq2x.Visible &= File.Exists("hq2xa.dll");
 
-			_loadedTypes = new LoadOfType<XCImageFile>();
-			_loadedTypes.OnLoad += OnTypesLoaded;
-			_share[SharedSpace.ImageTypes] = _loadedTypes.AllLoaded;
+//			_loadedTypes = new LoadOfType<XCImageFile>();
+//			_loadedTypes.OnLoad += OnTypesLoaded;
+//			_share[SharedSpace.ImageTypes] = _loadedTypes.AllLoaded;
 
-//			loadedTypes.OnLoad += sortLoaded;
+//			_loadedTypes.OnLoad += sortLoaded;
 
-			_loadedTypes.LoadFrom(Assembly.GetExecutingAssembly());
-			_loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(XCImageFile)));
+//			_loadedTypes.LoadFrom(Assembly.GetExecutingAssembly());
+//			_loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(XCImageFile)));
 
-			string dir = _share[SharedSpace.CustomDirectory].ToString();	// TODO: I don't trust that since changing SharedSpace.
-			if (Directory.Exists(dir))										// it may well need an explicit cast to (PathInfo)
-			{
-				XConsole.AdZerg("Custom directory exists: " + dir);
-				foreach (string st in Directory.GetFiles(dir))
-				{
-					if (st.EndsWith(".dll", StringComparison.Ordinal))
-					{
-						XConsole.AdZerg("Loading dll: " + st);
-						_loadedTypes.LoadFrom(Assembly.LoadFrom(st));
-					}
-					else if (st.EndsWith(XCProfile.ProfileExt, StringComparison.Ordinal))
-					{
-						foreach (XCProfile ip in ImageProfile.LoadFile(st))
-							_loadedTypes.Add(ip);
-					}
-				}
-			}
+//			string dir = _share[SharedSpace.CustomDirectory].ToString();	// TODO: I don't trust that since changing SharedSpace.
+//			if (Directory.Exists(dir))										// it may well need an explicit cast to (PathInfo)
+//			{
+//				XConsole.AdZerg("Custom directory exists: " + dir);
+//				foreach (string st in Directory.GetFiles(dir))
+//				{
+//					if (st.EndsWith(".dll", StringComparison.Ordinal))
+//					{
+//						XConsole.AdZerg("Loading dll: " + st);
+//						_loadedTypes.LoadFrom(Assembly.LoadFrom(st));
+//					}
+//					else if (st.EndsWith(XCProfile.ProfileExt, StringComparison.Ordinal))
+//					{
+//						foreach (XCProfile ip in ImageProfile.LoadFile(st))
+//							_loadedTypes.Add(ip);
+//					}
+//				}
+//			}
 
-			_dialogFilter = new OpenSaveFilter();
-			_dialogFilter.SetFilter(XCImageFile.Filter.Open);
+//			_dialogFilter = new OpenSaveFilter();
+//			_dialogFilter.SetFilter(XCImageFile.Filter.Open);
 
 			_dictOpenFiles = new Dictionary<int, XCImageFile>();
 			_dictSaveFiles = new Dictionary<int, XCImageFile>();
 
-			_dialogFilter.SetFilter(XCImageFile.Filter.Open);
-			string filter = _loadedTypes.CreateFilter(_dialogFilter, _dictOpenFiles);
-			openFile.Filter = filter;
+//			_dialogFilter.SetFilter(XCImageFile.Filter.Open);
+//			string filter = _loadedTypes.CreateFilter(_dialogFilter, _dictOpenFiles);
+//			openFile.Filter = filter;
 		}
 
 
-		private void OnXCImageCollectionSet(object sender, XCImageCollectionSetEventArgs e)
+		private void OnImageCollectionSet(object sender, ImageCollectionSetEventArgs e)
 		{
 			bool enabled = (e.Collection != null);
 
@@ -186,18 +185,18 @@ namespace PckView
 				miPalette.Enabled =
 				transItem.Enabled = (e.Collection.ImageFile.FileOptions.BitDepth == 8);
 
-				XConsole.AdZerg("bpp is: " + e.Collection.ImageFile.FileOptions.BitDepth);
+//				XConsole.AdZerg("bpp is: " + e.Collection.ImageFile.FileOptions.BitDepth);
 			}
 		}
 
-		private void OnTypesLoaded(object sender, LoadOfType<XCImageFile>.TypeLoadArgs e)
+/*		private void OnTypesLoaded(object sender, LoadOfType<XCImageFile>.TypeLoadArgs e)
 		{
 			var obj = e.LoadedObj as xcCustom;
 			if (obj != null)
 				_xcCustom = obj;
-		}
+		} */
 
-		internal void LoadProfile(string file)
+/*		internal void LoadProfile(string file)
 		{
 			foreach (XCProfile ip in ImageProfile.LoadFile(file))
 				_loadedTypes.Add(ip);
@@ -205,7 +204,7 @@ namespace PckView
 			_dialogFilter.SetFilter(XCImageFile.Filter.Open);
 			_dictOpenFiles.Clear();
 			openFile.Filter = _loadedTypes.CreateFilter(_dialogFilter, _dictOpenFiles);
-		}
+		} */
 
 		private ContextMenu BuildContextMenu()
 		{
@@ -317,9 +316,9 @@ namespace PckView
 			get { return _palette.Label; }
 			set
 			{
-				foreach (Palette pal in _dictPalettes.Keys)
+				foreach (Palette pal in _paletteDictionary.Keys)
 					if (pal.Label.Equals(value))
-						OnPaletteClick(_dictPalettes[pal], null);
+						OnPaletteClick(_paletteDictionary[pal], null);
 			}
 		}
 
@@ -342,7 +341,7 @@ namespace PckView
 			it.MenuItems.Add(it0);
 
 			it0.Click += OnPaletteClick;
-			_dictPalettes[pal] = it0;
+			_paletteDictionary[pal] = it0;
 
 			((Dictionary<string, Palette>)_share[SharedSpace.Palettes])[pal.Label] = pal;
 			return it0;
@@ -351,10 +350,10 @@ namespace PckView
 		private void OnPaletteClick(object sender, EventArgs e)
 		{
 			if (_palette != null)
-				_dictPalettes[_palette].Checked = false;
+				_paletteDictionary[_palette].Checked = false;
 
 			_palette = (Palette)((MenuItem)sender).Tag;
-			_dictPalettes[_palette].Checked = true;
+			_paletteDictionary[_palette].Checked = true;
 
 			_totalViewPck.Pal = _palette;
 
@@ -391,7 +390,43 @@ namespace PckView
 
 		private void OnOpenClick(object sender, EventArgs e)
 		{
-			if (openFile.ShowDialog() == DialogResult.OK)
+			using (var ofd = new OpenFileDialog())
+			{
+				ofd.Filter = "Pck Files (*.pck)|*.pck|All Files (*.*)|*.*";
+				ofd.Title = "Select a Pck File";
+//				ofd.InitialDirectory = _share.GetString(SharedSpace.ApplicationDirectory);
+
+				if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				{
+					XConsole.AdZerg("file exists: " + ofd.FileName);
+					string pfePck = ofd.FileName;
+					string pfeTab = pfePck.Substring(0, pfePck.Length - 4);
+					pfeTab += PckSpriteCollection.TabExt;
+
+					if (File.Exists(pfeTab))
+					{
+						using (var srPck = new StreamReader(pfePck))
+						using (var srTab = new StreamReader(pfeTab))
+						{
+							var pckPack = new PckSpriteCollection(
+																srPck.BaseStream,
+																srTab.BaseStream,
+																2, Palette.UfoBattle);
+
+							SetImages(pckPack);
+
+						}
+					}
+					else
+						XConsole.AdZerg("ERROR: tab file does not exist: " + pfeTab);
+
+					// Assign the cursor in the Stream to the Form's Cursor property.
+//					this.Cursor = new Cursor(ofd.OpenFile());
+				}
+			}
+		}
+
+/*			if (openFile.ShowDialog() == DialogResult.OK)
 			{
 				OnResize(null);
 
@@ -479,26 +514,36 @@ namespace PckView
 					SetImages(load);
 					UpdateText();
 				}
-			}
-		}
+			} */
 
-		public void LoadPckFile(string filePath, int bpp)
+		/// <summary>
+		/// Loads a file from MapView.Forms.MapObservers.TileViews.TileView.OnPckEditorClick()
+		/// NOTE: with a string like that you'd think this was .NET itself.
+		/// </summary>
+		/// <param name="pfe"></param>
+		/// <param name="bpp"></param>
+		public void LoadPckFile(string pfe, int bpp)
 		{
-			_path = filePath;
-			_depth = bpp;
+			if (File.Exists(pfe))
+			{
+			}
+
+/*
+//			_path  = pfe;
+//			_depth = bpp;
 
 			SaveMenuItem.Visible = true;
 
-			var file = Path.GetFileName(filePath);
+			var file = Path.GetFileName(pfe);
 			if (file != null)
 			{
-				LogFile.WriteLine("LoadPckFile filePath= " + filePath + " bpp= " + bpp);
-				XConsole.AdZerg("LoadPckFile filePath= " + filePath + " bpp= " + bpp);
-				LogFile.WriteLine("_dictOpenFiles.Count= " + _dictOpenFiles.Count);
-				XConsole.AdZerg("_dictOpenFiles.Count= " + _dictOpenFiles.Count);
+//				LogFile.WriteLine("LoadPckFile filePath= " + filePath + " bpp= " + bpp);
+//				XConsole.AdZerg("LoadPckFile filePath= " + filePath + " bpp= " + bpp);
+//				LogFile.WriteLine("_dictOpenFiles.Count= " + _dictOpenFiles.Count);
+//				XConsole.AdZerg("_dictOpenFiles.Count= " + _dictOpenFiles.Count);
 
 				var filterId = _dictOpenFiles[7];
-				var path = Path.GetDirectoryName(filePath);
+				var path = Path.GetDirectoryName(pfe);
 				var images = LoadImageCollection(filterId, path, file.ToLower(System.Globalization.CultureInfo.InvariantCulture));
 				SetImages(images);
 
@@ -506,7 +551,7 @@ namespace PckView
 
 				MapViewIntegrationMenuItem.Visible = true;
 				MapViewIntegrationHelpPanel.Visible |= (Settings.Default.MapViewIntegrationHelpShown < 2);
-			}
+			} */
 		}
 
 		private static XCImageCollection LoadImageCollection(
@@ -521,10 +566,10 @@ namespace PckView
 								filterId.ImageSize.Height);
 		}
 
-		private void SetImages(XCImageCollection toLoad)
+		private void SetImages(XCImageCollection imagePack)
 		{
-			OnPaletteClick(((MenuItem)_dictPalettes[toLoad.ImageFile.DefaultPalette]), null);
-			_totalViewPck.Collection = toLoad;
+//			OnPaletteClick(((MenuItem)_paletteDictionary[imagePack.ImageFile.DefaultPalette]), null);
+			_totalViewPck.Collection = imagePack;
 		}
 
 /*		public TotalViewPck MainPanel
@@ -534,11 +579,11 @@ namespace PckView
 
 		private void OnSaveAsClick(object sender, EventArgs e)
 		{
-			var saveFile = new SaveFileDialog();
+/*			var saveFile = new SaveFileDialog();
 
 			_dialogFilter.SetFilter(XCImageFile.Filter.Save);
 			_dictSaveFiles.Clear();
-			saveFile.Filter = _loadedTypes.CreateFilter(_dialogFilter, _dictSaveFiles);
+//			saveFile.Filter = _loadedTypes.CreateFilter(_dialogFilter, _dictSaveFiles);
 
 			if (saveFile.ShowDialog() == DialogResult.OK)
 			{
@@ -547,26 +592,28 @@ namespace PckView
 																dir,
 																Path.GetFileNameWithoutExtension(saveFile.FileName),
 																_totalViewPck.Collection);
-			}
+			} */
 		}
 
 		private void OnViewClick(object sender, EventArgs e)
 		{
-			if (_totalViewPck.SelectedItems.Count == 0) return;
-			var selected = _totalViewPck.SelectedItems[_totalViewPck.SelectedItems.Count - 1];
-			if (_totalViewPck.Collection != null)
+			if (_totalViewPck.SelectedItems.Count != 0)
 			{
-				if (_totalViewPck.Collection.ImageFile.SingleFile != null)
+				var selected = _totalViewPck.SelectedItems[_totalViewPck.SelectedItems.Count - 1];
+				if (_totalViewPck.Collection != null)
 				{
-					string file = _totalViewPck.Collection.Label.Substring(0, _totalViewPck.Collection.Label.IndexOf(".", StringComparison.Ordinal));
-//					string ext  = _totalViewPck.Collection.Name.Substring(_totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal) + 1);
-					saveBmpSingle.FileName = file + selected.Image.FileId;
+					if (_totalViewPck.Collection.ImageFile.SingleFile != null)
+					{
+						string file = _totalViewPck.Collection.Label.Substring(0, _totalViewPck.Collection.Label.IndexOf(".", StringComparison.Ordinal));
+//						string ext  = _totalViewPck.Collection.Name.Substring(_totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal) + 1);
+						saveBmpSingle.FileName = file + selected.Image.FileId;
+					}
+					else
+						saveBmpSingle.FileName = _totalViewPck.Collection.Label + selected.Image.FileId;
+	
+					if (saveBmpSingle.ShowDialog() == DialogResult.OK)
+						Bmp.Save(saveBmpSingle.FileName, selected.Image.Image);
 				}
-				else
-					saveBmpSingle.FileName = _totalViewPck.Collection.Label + selected.Image.FileId;
-
-				if (saveBmpSingle.ShowDialog() == DialogResult.OK)
-					Bmp.Save(saveBmpSingle.FileName, selected.Image.Image);
 			}
 		}
 
@@ -702,13 +749,13 @@ namespace PckView
 				OnRemoveClick(null, null);
 		}
 
-		private void OnModListClick(object sender, EventArgs e)
+		private void OnModListClick(object sender, EventArgs e) // disabled w/ Visible=FALSE in designer.
 		{
-			using (var f = new ModForm())
-			{
-				f.SharedSpace = _share;
-				f.ShowDialog();
-			}
+//			using (var f = new ModForm())
+//			{
+//				f.SharedSpace = _share;
+//				f.ShowDialog();
+//			}
 		}
 
 		private void OnSaveDirectoryClick(object sender, EventArgs e)
@@ -781,10 +828,10 @@ namespace PckView
 
 		private void OnConsoleClick(object sender, EventArgs e)
 		{
-			if (console.Visible)
-				console.BringToFront();
+			if (_console.Visible)
+				_console.BringToFront();
 			else
-				console.Show();
+				_console.Show();
 		}
 
 		private void OnCompareClick(object sender, EventArgs e)
@@ -823,9 +870,9 @@ namespace PckView
 
 		private void OnSaveClick(object sender, EventArgs e)
 		{
-			_dialogFilter.SetFilter(XCImageFile.Filter.Save);
+/*			_dialogFilter.SetFilter(XCImageFile.Filter.Save);
 			_dictSaveFiles.Clear();
-			_loadedTypes.CreateFilter(_dialogFilter, _dictSaveFiles);
+//			_loadedTypes.CreateFilter(_dialogFilter, _dictSaveFiles);
 			var dir = Path.GetDirectoryName(_path);
 			var fileWithoutExt = Path.GetFileNameWithoutExtension(_path);
 
@@ -838,7 +885,7 @@ namespace PckView
 								fileWithoutExt,
 								_totalViewPck.Collection,
 								_depth);
-			SavedFile = true;
+			SavedFile = true; */
 		}
 
 		private void OnMapViewIntegrationClick(object sender, EventArgs e)
@@ -857,7 +904,7 @@ namespace PckView
 
 		private void OnShown(object sender, EventArgs e)
 		{
-			console.Show();
+			_console.Show();
 		}
 	}
 }

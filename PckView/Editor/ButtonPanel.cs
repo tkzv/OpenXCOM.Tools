@@ -1,8 +1,8 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+
 using XCom;
-using XCom.Interfaces;
 
 
 namespace PckView
@@ -29,7 +29,7 @@ namespace PckView
 
 		private readonly SinglePanel _topPanel;
 
-		public ButtonPanel()
+		internal ButtonPanel()
 		{
 			_topPanel = new SinglePanel();
 
@@ -38,7 +38,7 @@ namespace PckView
 			_topPanel.Location = new Point(0, 0);
 		}
 
-		public int PreferredWidth
+		internal int PreferredWidth
 		{
 			get { return _topPanel.Width; }
 		}
@@ -47,12 +47,11 @@ namespace PckView
 		{
 			get
 			{
-				return (Parent != null) ? Parent.Height
-										: _topPanel.Height;
+				return (Parent != null) ? Parent.Height : _topPanel.Height;
 			}
 		} */
 
-		public Palette Palette
+		internal Palette Palette
 		{
 			set { _topPanel.SetPalette(value); }
 		}

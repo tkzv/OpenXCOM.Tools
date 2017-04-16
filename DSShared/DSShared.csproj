@@ -157,7 +157,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\IAssemblyLoadable.cs" />
-    <Compile Include="Loadable\LoadOfType.cs" />
+    <Compile Include="Loadable_\LoadOfType_.cs" />
     <Compile Include="Parser\old_VarCollection_.cs">
       <SubType>Code</SubType>
     </Compile>

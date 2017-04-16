@@ -137,7 +137,7 @@
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ImageBytes\BytesFormHelper.cs" />
-    <Compile Include="OpenSaveFilter.cs" />
+    <Compile Include="OpenSaveFilter_.cs" />
     <Compile Include="Panels\ViewPckItem.cs" />
     <Compile Include="Panels\ViewPckItemImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -149,7 +149,7 @@
     <Compile Include="Forms\BmpForm_.Designer.cs">
       <DependentUpon>BmpForm_.cs</DependentUpon>
     </Compile>
-    <Compile Include="ImageProfile.cs" />
+    <Compile Include="ImageProfile_.cs" />
     <Compile Include="Editor\ButtonPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -217,13 +217,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="xcFiles\xcBmp32_.cs" />
-    <Compile Include="xcFiles\xcCustom.cs">
+    <Compile Include="xcFiles\xcCustom_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="xcFiles\xcForceCustom.cs">
+    <Compile Include="xcFiles\xcForceCustom_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="xcFiles\XCProfile.cs">
+    <Compile Include="xcFiles\XCProfile_.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PckViewForm.cs">
@@ -235,6 +235,9 @@
     <Content Include="App.ico" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Editor\Editor.resx">
+      <DependentUpon>Editor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\About.resx">
       <DependentUpon>About.Designer.cs</DependentUpon>
     </EmbeddedResource>

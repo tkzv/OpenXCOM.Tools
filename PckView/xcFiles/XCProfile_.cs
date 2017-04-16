@@ -1,3 +1,4 @@
+/*
 using System;
 
 using XCom;
@@ -45,7 +46,7 @@ namespace PckView
 			}
 		}
 
-/*		public XCProfile()
+		public XCProfile()
 			:
 				base(0, 0)
 		{
@@ -54,16 +55,16 @@ namespace PckView
 			ext    = ProfileExt;
 			desc   = "Provides profile support";
 			author = "Ben Ratzlaff";
-		} */
+		}
 
 
-/*		public XCImageFile Codec
+		public XCImageFile Codec
 		{
 			get { return _codec; }
 			set { _codec = value; }
-		} */
+		}
 
-/*		protected override XCImageCollection LoadFileOverride(
+		protected override XCImageCollection LoadFileOverride(
 				string dir,
 				string file,
 				int width,
@@ -76,9 +77,9 @@ namespace PckView
 								width,
 								height,
 								pal);
-		} */
+		}
 
-/*		public override void SaveCollection(
+		public override void SaveCollection(
 				string dir,
 				string file,
 				XCom.XCImageCollection images)
@@ -87,6 +88,7 @@ namespace PckView
 							dir,
 							file,
 							images);
-		} */
+		}
 	}
 }
+*/

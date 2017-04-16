@@ -6,7 +6,7 @@ using XCom.Interfaces;
 
 namespace XCom
 {
-	public class PckImage // [xImage(32,40)]
+	public sealed class PckImage // [xImage(32,40)]
 		:
 			XCImage
 	{
@@ -19,7 +19,7 @@ namespace XCom
 		private int _moveId = -1;
 //		private byte _moveVal = 0;
 
-		private static int _idCanonical = 0;
+		private static int _idCanonical;
 		private int _id;
 
 		public static int Width  = 32;

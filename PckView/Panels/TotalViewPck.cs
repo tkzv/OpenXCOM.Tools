@@ -30,8 +30,8 @@ namespace PckView
 		private int _click;
 		private int _move;
 
-		internal event PckViewMouseClicked ViewClicked;
-		internal event XCImageCollectionHandler XCImageCollectionSet;
+		internal event MouseClickedEventHandler MouseClickedEvent;
+		internal event ImageCollectionSetHandler ImageCollectionSetEvent;
 
 
 		internal TotalViewPck()
@@ -57,9 +57,9 @@ namespace PckView
 
 			_viewPanel = new ViewPck();
 			_viewPanel.Location = new Point(0, 0);
-			_viewPanel.ViewClicked += OnViewClick0;
-			_viewPanel.ViewClicked += OnViewClick1;
-			_viewPanel.ViewMoved += OnViewMoved;
+			_viewPanel.MouseClickedEvent += OnViewClick0;
+			_viewPanel.MouseClickedEvent += OnViewClick1;
+			_viewPanel.MouseMovedEvent += OnViewMoved;
 			_viewPanel.Dock = DockStyle.Fill;
 			_scrollBar.Minimum = 0;
 
@@ -110,26 +110,37 @@ namespace PckView
 			get { return _viewPanel.Collection; }
 			set
 			{
-				try
-				{
-					_viewPanel.Collection = value;
-					if (value is PckSpriteCollection)
-					{
-						_statusBPP.Text = "Bpp: " + ((PckSpriteCollection)_viewPanel.Collection).Bpp + "  ";
-					}
-					else
-						_statusBPP.Text = String.Empty;
+				_viewPanel.Collection = value;
+				if (_viewPanel.Collection is PckSpriteCollection)
+					XConsole.AdZerg("is PckSpriteCollection");
+				else
+					XConsole.AdZerg("is NOT PckSpriteCollection");
 
-					if (XCImageCollectionSet != null)
-						XCImageCollectionSet(this, new XCImageCollectionSetEventArgs(value));
-				}
-				catch (Exception ex)
-				{
-					if (XCImageCollectionSet != null)
-						XCImageCollectionSet(this, new XCImageCollectionSetEventArgs(null));
+				if (_viewPanel.Collection is XCImageCollection)
+					XConsole.AdZerg("is XCImageCollection");
+				else
+					XConsole.AdZerg("is NOT XCImageCollection");
 
-					throw ex;
-				}
+//				try
+//				{
+//					_viewPanel.Collection = value;
+//					if (value is PckSpriteCollection)
+//					{
+//						_statusBPP.Text = "Bpp: " + ((PckSpriteCollection)_viewPanel.Collection).Bpp + "  ";
+//					}
+//					else
+//						_statusBPP.Text = String.Empty;
+//
+//					if (ImageCollectionSetEvent != null)
+//						ImageCollectionSetEvent(this, new ImageCollectionSetEventArgs(value));
+//				}
+//				catch (Exception ex)
+//				{
+//					if (ImageCollectionSetEvent != null)
+//						ImageCollectionSetEvent(this, new ImageCollectionSetEventArgs(null));
+//
+//					throw ex;
+//				}
 			}
 		}
 
@@ -169,8 +180,8 @@ namespace PckView
 
 		private void OnViewClick1(object sender, PckViewMouseEventArgs e)
 		{
-			if (ViewClicked != null)
-				ViewClicked(sender, e);
+			if (MouseClickedEvent != null)
+				MouseClickedEvent(sender, e);
 		}
 
 		private void OnViewMoved(int x)
@@ -192,13 +203,13 @@ namespace PckView
 
 
 	/// <summary>
-	/// EventArgs for XCImageCollectionSet.
+	/// EventArgs for ImageCollectionSet.
 	/// </summary>
-	internal sealed class XCImageCollectionSetEventArgs
+	internal sealed class ImageCollectionSetEventArgs
 	{
 		private readonly XCImageCollection _collection;
 
-		internal XCImageCollectionSetEventArgs(XCImageCollection collection)
+		internal ImageCollectionSetEventArgs(XCImageCollection collection)
 		{
 			_collection = collection;
 		}
@@ -209,5 +220,5 @@ namespace PckView
 		}
 	}
 
-	internal delegate void XCImageCollectionHandler(object sender, XCImageCollectionSetEventArgs e);
+	internal delegate void ImageCollectionSetHandler(object sender, ImageCollectionSetEventArgs e);
 }
