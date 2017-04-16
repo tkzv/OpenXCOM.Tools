@@ -16,10 +16,10 @@ namespace PckView
 		:
 			Panel
 	{
-		private readonly ViewPck view;
-		public ViewPck View
+		private readonly ViewPck _viewPanel;
+		internal ViewPck ViewPanel
 		{
-			get { return view; }
+			get { return _viewPanel; }
 		}
 
 		private VScrollBar _scrollBar;
@@ -27,14 +27,14 @@ namespace PckView
 		private StatusBarPanel _statusOverTile;
 		private StatusBarPanel _statusBPP;
 
-		private int click;
-		private int move;
+		private int _click;
+		private int _move;
 
-		public event PckViewMouseClicked ViewClicked;
-		public event XCImageCollectionHandler XCImageCollectionSet;
+		internal event PckViewMouseClicked ViewClicked;
+		internal event XCImageCollectionHandler XCImageCollectionSet;
 
 
-		public TotalViewPck()
+		internal TotalViewPck()
 		{
 			_scrollBar = new VScrollBar();
 
@@ -51,38 +51,32 @@ namespace PckView
 			_statusBPP.Alignment = HorizontalAlignment.Right;
 			_statusBar.Panels.Add(_statusBPP);
 
-			_scrollBar.Dock = System.Windows.Forms.DockStyle.Right;
+			_scrollBar.Dock = DockStyle.Right;
 			_scrollBar.Maximum = 5000;
-			_scrollBar.Scroll += this.scroll_Scroll;
+			_scrollBar.Scroll += this.OnScroll;
 
-			view = new ViewPck();
-			view.Location = new Point(0, 0);
-			view.ViewClicked += new PckViewMouseClicked(viewClicked);
-			view.ViewMoved += new PckViewMouseMoved(viewMoved);
-			view.Dock = DockStyle.Fill;
-			view.ViewClicked += new PckViewMouseClicked(viewClik);
+			_viewPanel = new ViewPck();
+			_viewPanel.Location = new Point(0, 0);
+			_viewPanel.ViewClicked += OnViewClick0;
+			_viewPanel.ViewClicked += OnViewClick1;
+			_viewPanel.ViewMoved += OnViewMoved;
+			_viewPanel.Dock = DockStyle.Fill;
 			_scrollBar.Minimum = 0;
 
-			this.Controls.AddRange(new Control[] { _statusBar, _scrollBar, view });
+			this.Controls.AddRange(new Control[] { _statusBar, _scrollBar, _viewPanel });
 
-			view.SizeChanged += new EventHandler(viewSizeChange);
+			_viewPanel.SizeChanged += OnSizeChanged;
 			OnResize(null); // FIX: "Virtual member call in constructor."
 		}
 
-		private void viewClik(object sender, PckViewMouseEventArgs e)
+		internal Palette Pal
 		{
-			if (ViewClicked != null)
-				ViewClicked(sender, e);
-		}
-
-		public Palette Pal
-		{
-			get { return view != null ? view.Pal : null; }
+			get { return _viewPanel != null ? _viewPanel.Pal : null; }
 			set
 			{
-				if (view != null)
+				if (_viewPanel != null)
 				{
-					view.Pal = value;
+					_viewPanel.Pal = value;
 					Console.WriteLine("Pal set: " + value.ToString());
 				}
 			}
@@ -92,36 +86,36 @@ namespace PckView
 		{
 			base.OnResize(eventargs);
 
-			if (view.PreferredHeight >= Height)
+			if (_viewPanel.PreferredHeight >= Height)
 			{
 				_scrollBar.Visible = true;
-				_scrollBar.Maximum = view.PreferredHeight - Height + 50;
+				_scrollBar.Maximum = _viewPanel.PreferredHeight - Height + 50;
 			}
 			else
 				_scrollBar.Visible = false;
 		}
 
-		public ReadOnlyCollection<ViewPckItemImage> SelectedItems
+		internal ReadOnlyCollection<ViewPckItemImage> SelectedItems
 		{
-			get { return view.SelectedItems; }
+			get { return _viewPanel.SelectedItems; }
 		}
 
-		public void ChangeItem(int index, XCImage image)
+		internal void ChangeItem(int index, XCImage image)
 		{
-			view.ChangeItem(index, image);
+			_viewPanel.ChangeItem(index, image);
 		}
 
-		public XCImageCollection Collection
+		internal XCImageCollection Collection
 		{
-			get { return view.Collection; }
+			get { return _viewPanel.Collection; }
 			set
 			{
 				try
 				{
-					view.Collection = value;
+					_viewPanel.Collection = value;
 					if (value is PckSpriteCollection)
 					{
-						_statusBPP.Text = "Bpp: " + ((PckSpriteCollection)view.Collection).Bpp + "  ";
+						_statusBPP.Text = "Bpp: " + ((PckSpriteCollection)_viewPanel.Collection).Bpp + "  ";
 					}
 					else
 						_statusBPP.Text = String.Empty;
@@ -139,14 +133,14 @@ namespace PckView
 			}
 		}
 
-		private void viewSizeChange(object sender, EventArgs e)
+		private void OnSizeChanged(object sender, EventArgs e)
 		{
 			_scrollBar.Value = _scrollBar.Minimum;
-			view.StartY = -_scrollBar.Value;
-			if (view.PreferredHeight >= Height)
+			_viewPanel.StartY = -_scrollBar.Value;
+			if (_viewPanel.PreferredHeight >= Height)
 			{
 				_scrollBar.Visible = true;
-				_scrollBar.Maximum = view.PreferredHeight - Height;
+				_scrollBar.Maximum = _viewPanel.PreferredHeight - Height;
 			}
 			else
 				_scrollBar.Visible = false;
@@ -161,32 +155,38 @@ namespace PckView
 			scroll_Scroll(null, null);
 		} */
 
-		private void scroll_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e)
+		private void OnScroll(object sender, ScrollEventArgs e)
 		{
-			view.StartY = -_scrollBar.Value;
-			view.Refresh();
+			_viewPanel.StartY = -_scrollBar.Value;
+			_viewPanel.Refresh();
 		}
 
-		private void viewClicked(object sender, PckViewMouseEventArgs e)
+		private void OnViewClick0(object sender, PckViewMouseEventArgs e)
 		{
-			click = e.Clicked;
-			_statusOverTile.Text = "Selected: " + click + " Over: " + move;
+			_click = e.Clicked;
+			_statusOverTile.Text = "Selected: " + _click + " Over: " + _move;
 		}
 
-		private void viewMoved(int x)
+		private void OnViewClick1(object sender, PckViewMouseEventArgs e)
 		{
-			move = x;
-			_statusOverTile.Text = "Selected: " + click + " Over: " + move;
+			if (ViewClicked != null)
+				ViewClicked(sender, e);
 		}
 
-		public void Hq2x()
+		private void OnViewMoved(int x)
 		{
-			view.Hq2x();
+			_move = x;
+			_statusOverTile.Text = "Selected: " + _click + " Over: " + _move;
 		}
 
-		public void RemoveSelected()
+		internal void Hq2x()
 		{
-			view.RemoveSelected();
+			_viewPanel.Hq2x();
+		}
+
+		internal void RemoveSelected()
+		{
+			_viewPanel.RemoveSelected();
 		}
 	}
 
@@ -198,12 +198,12 @@ namespace PckView
 	{
 		private readonly XCImageCollection _collection;
 
-		public XCImageCollectionSetEventArgs(XCImageCollection collection)
+		internal XCImageCollectionSetEventArgs(XCImageCollection collection)
 		{
 			_collection = collection;
 		}
 
-		public XCImageCollection Collection
+		internal XCImageCollection Collection
 		{
 			get { return _collection; }
 		}

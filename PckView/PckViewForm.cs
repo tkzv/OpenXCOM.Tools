@@ -94,7 +94,7 @@ namespace PckView
 			_totalViewPck.Dock = DockStyle.Fill;
 			DrawPanel.Controls.Add(_totalViewPck);
 
-			_totalViewPck.View.DoubleClick += OnDoubleClick;
+			_totalViewPck.ViewPanel.DoubleClick += OnDoubleClick;
 			_totalViewPck.ViewClicked += OnViewClick;
 			_totalViewPck.XCImageCollectionSet += OnXCImageCollectionSet;
 			_totalViewPck.ContextMenu = BuildContextMenu();

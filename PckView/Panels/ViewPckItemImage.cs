@@ -5,10 +5,10 @@ namespace PckView.Panels
 {
 	internal sealed class ViewPckItemImage
 	{
-		public ViewPckItem Item
+		internal ViewPckItem Item
 		{ get; set; }
 
-		public XCImage Image
+		internal XCImage Image
 		{ get; set; }
 	}
 }

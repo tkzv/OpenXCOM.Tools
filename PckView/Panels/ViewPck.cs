@@ -13,8 +13,8 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	public delegate void PckViewMouseClicked(object sender, PckViewMouseEventArgs e);
-	public delegate void PckViewMouseMoved(int pixels);
+	internal delegate void PckViewMouseClicked(object sender, PckViewMouseEventArgs e);
+	internal delegate void PckViewMouseMoved(int pixels);
 
 
 	internal sealed class ViewPck
@@ -34,17 +34,17 @@ namespace PckView
 
 		private readonly List<ViewPckItem> _selectedItems;
 
-		public event PckViewMouseClicked ViewClicked;
-		public event PckViewMouseMoved ViewMoved;
+		internal event PckViewMouseClicked ViewClicked;
+		internal event PckViewMouseMoved ViewMoved;
 
 
-		public ViewPck()
+		internal ViewPck()
 		{
 //			pckFile = null;
-			Paint += paint;
+			Paint += OnPaint;
 			SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
-			MouseDown += click;
-			MouseMove += moving;
+			MouseDown += OnMouseDown;
+			MouseMove += OnMouseMove;
 			_startY = 0;
 
 			_selectedItems = new List<ViewPckItem>();
@@ -61,12 +61,12 @@ namespace PckView
 			Bmp.SendToSaver(file, _collection, pal, numAcross(), 1);
 		} */
 
-		public void Hq2x()
+		internal void Hq2x()
 		{
 			_collection.HQ2X();
 		}
 
-		public Palette Pal
+		internal Palette Pal
 		{
 			get { return _collection.Pal; }
 			set
@@ -76,7 +76,7 @@ namespace PckView
 			}
 		}
 
-		public int StartY
+		internal int StartY
 		{
 			set
 			{
@@ -85,13 +85,13 @@ namespace PckView
 			}
 		}
 
-		public int PreferredHeight
+		internal int PreferredHeight
 		{
 			get { return (_collection != null) ? CalculateHeight()
 											   : 0; }
 		}
 
-		public XCImageCollection Collection
+		internal XCImageCollection Collection
 		{
 			get { return _collection; }
 			set
@@ -99,14 +99,14 @@ namespace PckView
 				if ((_collection = value) != null)
 					Height = CalculateHeight();
 
-				click( null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
-				moving(null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+				OnMouseDown( null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+				OnMouseMove(null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 
 				Refresh();
 			}
 		}
 
-		public ReadOnlyCollection<ViewPckItemImage> SelectedItems
+		internal ReadOnlyCollection<ViewPckItemImage> SelectedItems
 		{
 			get
 			{
@@ -126,12 +126,12 @@ namespace PckView
 			}
 		}
 
-		public void ChangeItem(int index, XCImage image)
+		internal void ChangeItem(int id, XCImage image)
 		{
-			_collection[index] = image;
+			_collection[id] = image;
 		}
 
-		private void moving(object sender, MouseEventArgs e)
+		private void OnMouseMove(object sender, MouseEventArgs e)
 		{
 			if (_collection != null)
 			{
@@ -144,7 +144,7 @@ namespace PckView
 					_moveY = y;
 
 					if (_moveX >= PixelsAcross())
-						_moveX = PixelsAcross() - 1;
+						_moveX  = PixelsAcross() - 1;
 
 					if (ViewMoved != null)
 						ViewMoved(_moveY * PixelsAcross() + _moveX);
@@ -152,7 +152,7 @@ namespace PckView
 			}
 		}
 
-		private void click(object sender, MouseEventArgs e)
+		private void OnMouseDown(object sender, MouseEventArgs e)
 		{
 			if (_collection != null)
 			{
@@ -161,7 +161,7 @@ namespace PckView
 
 				if (x >= PixelsAcross())
 					x = PixelsAcross() - 1;
-	
+
 				var index = y * PixelsAcross() + x;
 
 				var selected = new ViewPckItem();
@@ -204,7 +204,7 @@ namespace PckView
 			}
 		}
 
-		private void paint(object sender, PaintEventArgs e)
+		private void OnPaint(object sender, PaintEventArgs e)
 		{
 			if (_collection != null && _collection.Count != 0)
 			{
@@ -234,19 +234,19 @@ namespace PckView
 					}
 				}
 
-				for (int i = 0; i < PixelsAcross() + 1; i++)
+				for (int i = 0; i < PixelsAcross() + 1; ++i)
 					g.DrawLine(
 							Pens.Black,
 							new Point(i * specialWidth - Pad,          _startY),
 							new Point(i * specialWidth - Pad, Height - _startY));
 
-				for (int i = 0; i < _collection.Count / PixelsAcross() + 1; i++)
+				for (int i = 0; i < _collection.Count / PixelsAcross() + 1; ++i)
 					g.DrawLine(
 							Pens.Black,
 							new Point(0,     _startY + i * (_collection.ImageFile.ImageSize.Height + 2 * Pad) - Pad),
 							new Point(Width, _startY + i * (_collection.ImageFile.ImageSize.Height + 2 * Pad) - Pad));
 
-				for (int i = 0; i < _collection.Count; i++)
+				for (int i = 0; i < _collection.Count; ++i)
 				{
 					int x = i % PixelsAcross();
 					int y = i / PixelsAcross();
@@ -261,7 +261,7 @@ namespace PckView
 			}
 		}
 
-		public void RemoveSelected()
+		internal void RemoveSelected()
 		{
 			if (SelectedItems.Count != 0)
 			{

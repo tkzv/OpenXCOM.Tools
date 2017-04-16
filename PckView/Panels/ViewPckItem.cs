@@ -5,13 +5,13 @@ namespace PckView.Panels
 {
 	internal sealed class ViewPckItem
 	{
-		public int X
+		internal int X
 		{ get; set; }
 
-		public int Y
+		internal int Y
 		{ get; set; }
 
-		public int Index
+		internal int Index
 		{ get; set; }
 	}
 }

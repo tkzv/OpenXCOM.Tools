@@ -60,8 +60,6 @@ namespace DSShared.Windows
 		/// <param name="regkey">the name of the registry key to save/load</param>
 		public RegistryInfo(object obj, string regkey)
 		{
-			//DSLogFile.WriteLine("RegistryInfo regkey= " + regkey);
-
 			_obj = obj;
 			_regkey = regkey;
 
@@ -96,13 +94,8 @@ namespace DSShared.Windows
 
 			PropertyInfo info;
 			foreach (string key in keys)
-			{
 				if ((info = type.GetProperty(key)) != null)
-				{
-					//DSLogFile.WriteLine(". AddProperty - " + key);
 					_infoDictionary[info.Name] = info;
-				}
-			}
 		}
 
 		/// <summary>
@@ -117,8 +110,6 @@ namespace DSShared.Windows
 		/// <param name="e"></param>
 		private void OnLoad(object sender, EventArgs e)
 		{
-			//DSLogFile.WriteLine("OnLoad _regkey= " + _regkey);
-
 //			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
 
 			string path = AppDomain.CurrentDomain.BaseDirectory;	// NOTE: this is probably where 'DSShared.dll' resides.
@@ -156,8 +147,8 @@ namespace DSShared.Windows
 			{
 				key = keyval.Key.ToString();
 
-//				if (key.StartsWith("vis", StringComparison.Ordinal))	// NOTE: vis# are for TopView's visible-quadrant-type MenuItem toggles
-//				{														// ... these are currently handled by TopView.OnExtraRegistrySettingsLoad()
+//				if (key.StartsWith("vis", StringComparison.Ordinal))	// NOTE: vis# are for TopView's visible-quadrant-type MenuItem toggles;
+//				{														// these were handled by TopView.OnExtraRegistrySettingsLoad()
 //					if (RegistryLoadEvent != null)
 //					{
 //						val = Boolean.Parse(keyval.Value.ToString());
@@ -227,10 +218,7 @@ namespace DSShared.Windows
 
 				File.Copy(src, dst, true);
 
-//				string test = Path.Combine(path, @"settings\MapViewers_test.yml");
 				using (var sr = new StreamReader(File.OpenRead(dst))) // but now use dst as src ->
-
-//				using (var fs = new FileStream(test, FileMode.Create))
 				using (var fs = new FileStream(src, FileMode.Create)) // overwrite previous config.
 				using (var sw = new StreamWriter(fs))
 				{
@@ -249,7 +237,7 @@ namespace DSShared.Windows
 
 //							if (String.Equals(_regkey, "TopView", StringComparison.OrdinalIgnoreCase))
 //							{
-//								DSLogFile.WriteLine(". _regkey IS TopView");
+//								DSLogFile.WriteLine(". _regkey IS TopView"); // these were to leave space for visible quadrants
 //								line = sr.ReadLine();
 //								line = sr.ReadLine();
 //								line = sr.ReadLine();

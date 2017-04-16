@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace PckView.Args
 {
-	public class PckViewMouseEventArgs
+	internal sealed class PckViewMouseEventArgs
 		:
 			MouseEventArgs
 	{
