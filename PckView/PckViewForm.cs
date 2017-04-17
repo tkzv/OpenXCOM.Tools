@@ -405,16 +405,60 @@ namespace PckView
 
 					if (File.Exists(pfeTab))
 					{
-						using (var srPck = new StreamReader(pfePck))
-						using (var srTab = new StreamReader(pfeTab))
+						var fileType = new XCImageFile(32, 40);
+
+
+						using (var strPck = File.OpenRead(pfePck))
+						using (var strTab = File.OpenRead(pfeTab))
+//						using (var srPck = new StreamReader(pfePck))
+//						using (var srTab = new StreamReader(pfeTab))
 						{
-							var pckPack = new PckSpriteCollection(
-																srPck.BaseStream,
-																srTab.BaseStream,
-																2, Palette.UfoBattle);
+							XCImageCollection pckPack = null;
+							try
+							{
+								pckPack = new PckSpriteCollection(
+																strPck,
+																strTab,
+																2,
+																Palette.UfoBattle);
+							}
+							catch (Exception)
+							{
+								pckPack = new PckSpriteCollection(
+																strPck,
+																strTab,
+																4,
+																Palette.UfoBattle);
+							}
+//							var pckPack = new PckSpriteCollection(
+//																strPck, //srPck.BaseStream,
+//																strTab, //srTab.BaseStream,
+//																2, Palette.UfoBattle);
 
-							SetImages(pckPack);
+							if (pckPack != null)
+							{
+								pckPack.ImageFile = fileType;
+//								pckPack.Path = dir;
+								pckPack.Label = Path.GetFileNameWithoutExtension(pfePck);
+				
+								if (pckPack.Pal == null)
+									pckPack.Pal = Palette.UfoBattle;
+							}
 
+
+//							SetImages(pckPack);
+							if (pckPack == null)
+								XConsole.AdZerg("pckPack NULL");
+							if (pckPack.ImageFile == null)
+								XConsole.AdZerg("pckPack.ImageFile NULL");
+
+							XConsole.AdZerg("pckPack.ImageFile.DefaultPalette= " + pckPack.ImageFile.DefaultPalette.ToString());
+
+
+							OnPaletteClick((MenuItem)_paletteDictionary[pckPack.ImageFile.DefaultPalette], null);
+							_totalViewPck.Collection = pckPack;
+
+							UpdateText();
 						}
 					}
 					else
@@ -568,7 +612,7 @@ namespace PckView
 
 		private void SetImages(XCImageCollection imagePack)
 		{
-//			OnPaletteClick(((MenuItem)_paletteDictionary[imagePack.ImageFile.DefaultPalette]), null);
+//			OnPaletteClick((MenuItem)_paletteDictionary[imagePack.ImageFile.DefaultPalette], null);
 			_totalViewPck.Collection = imagePack;
 		}
 

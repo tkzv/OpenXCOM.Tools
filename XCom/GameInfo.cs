@@ -104,12 +104,12 @@ namespace XCom
 			var palHash = _pckDictionary[pal];
 			if (!palHash.ContainsKey(pf))
 			{
-				using (var pckStream = File.OpenRead(pf + PckSpriteCollection.PckExt))
-				using (var tabStream = File.OpenRead(pf + PckSpriteCollection.TabExt))
+				using (var strPck = File.OpenRead(pf + PckSpriteCollection.PckExt))
+				using (var strTab = File.OpenRead(pf + PckSpriteCollection.TabExt))
 				{
 					palHash.Add(pf, new PckSpriteCollection(
-														pckStream,
-														tabStream,
+														strPck,
+														strTab,
 														bpp,
 														pal));
 				}

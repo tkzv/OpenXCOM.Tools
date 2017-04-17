@@ -11,7 +11,8 @@ namespace XCom
 			List<XCImage>
 	{
 		public string Label
-		{ get; internal set; }
+		{ get; set; }
+//		{ get; internal set; }
 
 //		public string Path
 //		{ get; set; }

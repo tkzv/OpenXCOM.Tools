@@ -111,36 +111,36 @@ namespace PckView
 			set
 			{
 				_viewPanel.Collection = value;
-				if (_viewPanel.Collection is PckSpriteCollection)
-					XConsole.AdZerg("is PckSpriteCollection");
-				else
-					XConsole.AdZerg("is NOT PckSpriteCollection");
-
-				if (_viewPanel.Collection is XCImageCollection)
-					XConsole.AdZerg("is XCImageCollection");
-				else
-					XConsole.AdZerg("is NOT XCImageCollection");
-
-//				try
-//				{
-//					_viewPanel.Collection = value;
-//					if (value is PckSpriteCollection)
-//					{
-//						_statusBPP.Text = "Bpp: " + ((PckSpriteCollection)_viewPanel.Collection).Bpp + "  ";
-//					}
-//					else
-//						_statusBPP.Text = String.Empty;
+//				if (_viewPanel.Collection is PckSpriteCollection)
+//					XConsole.AdZerg("is PckSpriteCollection");
+//				else
+//					XConsole.AdZerg("is NOT PckSpriteCollection");
 //
-//					if (ImageCollectionSetEvent != null)
-//						ImageCollectionSetEvent(this, new ImageCollectionSetEventArgs(value));
-//				}
-//				catch (Exception ex)
-//				{
-//					if (ImageCollectionSetEvent != null)
-//						ImageCollectionSetEvent(this, new ImageCollectionSetEventArgs(null));
-//
-//					throw ex;
-//				}
+//				if (_viewPanel.Collection is XCImageCollection)
+//					XConsole.AdZerg("is XCImageCollection");
+//				else
+//					XConsole.AdZerg("is NOT XCImageCollection");
+
+				try
+				{
+					_viewPanel.Collection = value;
+					if (value is PckSpriteCollection)
+					{
+						_statusBPP.Text = "Bpp: " + ((PckSpriteCollection)_viewPanel.Collection).Bpp + "  ";
+					}
+					else
+						_statusBPP.Text = String.Empty;
+
+					if (ImageCollectionSetEvent != null)
+						ImageCollectionSetEvent(this, new ImageCollectionSetEventArgs(value));
+				}
+				catch (Exception ex)
+				{
+					if (ImageCollectionSetEvent != null)
+						ImageCollectionSetEvent(this, new ImageCollectionSetEventArgs(null));
+
+					throw ex;
+				}
 			}
 		}
 
