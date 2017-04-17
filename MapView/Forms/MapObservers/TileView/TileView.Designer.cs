@@ -137,7 +137,6 @@
 			this.tsddbPck.Name = "tsddbPck";
 			this.tsddbPck.Size = new System.Drawing.Size(110, 22);
 			this.tsddbPck.Text = "PCK - Tile Group";
-			this.tsddbPck.Visible = false;
 			// 
 			// tsmiEditPck
 			// 

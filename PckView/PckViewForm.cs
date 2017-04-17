@@ -42,8 +42,8 @@ namespace PckView
 
 		private Dictionary<Palette, MenuItem> _paletteDictionary;
 
-		private Dictionary<int, XCImageFile> _dictOpenFiles;
-		private Dictionary<int, XCImageFile> _dictSaveFiles;
+//		private Dictionary<int, XCImageFile> _dictOpenFiles;
+//		private Dictionary<int, XCImageFile> _dictSaveFiles;
 
 //		private string _path;
 //		private int _depth;
@@ -161,8 +161,8 @@ namespace PckView
 //			_dialogFilter = new OpenSaveFilter();
 //			_dialogFilter.SetFilter(XCImageFile.Filter.Open);
 
-			_dictOpenFiles = new Dictionary<int, XCImageFile>();
-			_dictSaveFiles = new Dictionary<int, XCImageFile>();
+//			_dictOpenFiles = new Dictionary<int, XCImageFile>();
+//			_dictSaveFiles = new Dictionary<int, XCImageFile>();
 
 //			_dialogFilter.SetFilter(XCImageFile.Filter.Open);
 //			string filter = _loadedTypes.CreateFilter(_dialogFilter, _dictOpenFiles);
@@ -398,7 +398,7 @@ namespace PckView
 
 				if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 				{
-					XConsole.AdZerg("file exists: " + ofd.FileName);
+//					XConsole.AdZerg("file exists: " + ofd.FileName);
 					string pfePck = ofd.FileName;
 					string pfeTab = pfePck.Substring(0, pfePck.Length - 4);
 					pfeTab += PckSpriteCollection.TabExt;
@@ -407,11 +407,8 @@ namespace PckView
 					{
 						var fileType = new XCImageFile(32, 40);
 
-
 						using (var strPck = File.OpenRead(pfePck))
 						using (var strTab = File.OpenRead(pfeTab))
-//						using (var srPck = new StreamReader(pfePck))
-//						using (var srTab = new StreamReader(pfeTab))
 						{
 							XCImageCollection pckPack = null;
 							try
@@ -430,10 +427,6 @@ namespace PckView
 																4,
 																Palette.UfoBattle);
 							}
-//							var pckPack = new PckSpriteCollection(
-//																strPck, //srPck.BaseStream,
-//																strTab, //srTab.BaseStream,
-//																2, Palette.UfoBattle);
 
 							if (pckPack != null)
 							{
@@ -447,14 +440,6 @@ namespace PckView
 
 
 //							SetImages(pckPack);
-							if (pckPack == null)
-								XConsole.AdZerg("pckPack NULL");
-							if (pckPack.ImageFile == null)
-								XConsole.AdZerg("pckPack.ImageFile NULL");
-
-							XConsole.AdZerg("pckPack.ImageFile.DefaultPalette= " + pckPack.ImageFile.DefaultPalette.ToString());
-
-
 							OnPaletteClick((MenuItem)_paletteDictionary[pckPack.ImageFile.DefaultPalette], null);
 							_totalViewPck.Collection = pckPack;
 
@@ -564,14 +549,64 @@ namespace PckView
 		/// Loads a file from MapView.Forms.MapObservers.TileViews.TileView.OnPckEditorClick()
 		/// NOTE: with a string like that you'd think this was .NET itself.
 		/// </summary>
-		/// <param name="pfe"></param>
-		/// <param name="bpp"></param>
-		public void LoadPckFile(string pfe, int bpp)
+		/// <param name="pfePck"></param>
+//		/// <param name="bpp"></param>
+		public void LoadPckFile(string pfePck) //, int bpp)
 		{
-			if (File.Exists(pfe))
-			{
-			}
+//			if (File.Exists(pfe)) // is checked in TileView.OnPckEditorClick()
+//			{
+			// start_duplicated:
+			string pfeTab = pfePck.Substring(0, pfePck.Length - 4);
+			pfeTab += PckSpriteCollection.TabExt;
 
+			if (File.Exists(pfeTab))
+			{
+				var fileType = new XCImageFile(32, 40);
+
+				using (var strPck = File.OpenRead(pfePck))
+				using (var strTab = File.OpenRead(pfeTab))
+				{
+					XCImageCollection pckPack = null;
+					try
+					{
+						pckPack = new PckSpriteCollection(
+														strPck,
+														strTab,
+														2,
+														Palette.UfoBattle);
+					}
+					catch (Exception)
+					{
+						pckPack = new PckSpriteCollection(
+														strPck,
+														strTab,
+														4,
+														Palette.UfoBattle);
+					}
+
+					if (pckPack != null)
+					{
+						pckPack.ImageFile = fileType;
+	//					pckPack.Path = dir;
+						pckPack.Label = Path.GetFileNameWithoutExtension(pfePck);
+
+						if (pckPack.Pal == null)
+							pckPack.Pal = Palette.UfoBattle;
+					}
+
+
+	//				SetImages(pckPack);
+					OnPaletteClick((MenuItem)_paletteDictionary[pckPack.ImageFile.DefaultPalette], null);
+					_totalViewPck.Collection = pckPack;
+
+					UpdateText();
+					// duplicated_end.
+
+					MapViewIntegrationMenuItem.Visible = true;
+					MapViewIntegrationHelpPanel.Visible |= (Settings.Default.MapViewIntegrationHelpShown < 2);
+				}
+			}
+//			}
 /*
 //			_path  = pfe;
 //			_depth = bpp;
@@ -598,7 +633,7 @@ namespace PckView
 			} */
 		}
 
-		private static XCImageCollection LoadImageCollection(
+/*		private static XCImageCollection LoadImageCollection(
 				XCImageFile filterId,
 				string path,
 				string file)
@@ -608,13 +643,13 @@ namespace PckView
 								file,
 								filterId.ImageSize.Width,
 								filterId.ImageSize.Height);
-		}
+		} */
 
-		private void SetImages(XCImageCollection imagePack)
+/*		private void SetImages(XCImageCollection imagePack)
 		{
-//			OnPaletteClick((MenuItem)_paletteDictionary[imagePack.ImageFile.DefaultPalette], null);
+			OnPaletteClick((MenuItem)_paletteDictionary[imagePack.ImageFile.DefaultPalette], null);
 			_totalViewPck.Collection = imagePack;
-		}
+		} */
 
 /*		public TotalViewPck MainPanel
 		{
@@ -942,7 +977,7 @@ namespace PckView
 		{
 			MapViewIntegrationHelpPanel.Visible = false;
 			MapViewIntegrationMenuItem.Checked = false;
-			Settings.Default.MapViewIntegrationHelpShown++;
+			Settings.Default.MapViewIntegrationHelpShown++; // what.
 			Settings.Default.Save();
 		}
 

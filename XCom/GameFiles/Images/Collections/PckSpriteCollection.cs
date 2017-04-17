@@ -13,7 +13,7 @@ namespace XCom
 		:
 			XCImageCollection
 	{
-		internal static readonly string PckExt = ".pck";
+		public static readonly string PckExt = ".pck";
 		public static readonly string TabExt = ".tab";
 
 		private int _bpp;

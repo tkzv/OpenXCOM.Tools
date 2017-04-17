@@ -297,13 +297,26 @@ namespace MapView.Forms.MapObservers.TileViews
 				var imageInfo = GameInfo.ImageInfo[dep];
 				if (imageInfo != null)
 				{
-					var pfe = imageInfo.Path + imageInfo.Label + ".PCK";
+					string pfePck = imageInfo.Path + imageInfo.Label + PckSpriteCollection.PckExt;
+					string pfeTab = pfePck.Substring(0, pfePck.Length - 4);
+					pfeTab += PckSpriteCollection.TabExt;
 
-					if (!File.Exists(pfe))
+					if (!File.Exists(pfePck))
 					{
 						MessageBox.Show(
 									this,
-									"File does not exist: " + pfe,
+									"File does not exist: " + pfePck,
+									"Error",
+									MessageBoxButtons.OK,
+									MessageBoxIcon.Exclamation,
+									MessageBoxDefaultButton.Button1,
+									0);
+					}
+					else if (!File.Exists(pfeTab))
+					{
+						MessageBox.Show(
+									this,
+									"File does not exist: " + pfeTab,
 									"Error",
 									MessageBoxButtons.OK,
 									MessageBoxIcon.Exclamation,
@@ -318,7 +331,7 @@ namespace MapView.Forms.MapObservers.TileViews
 						{
 							var pckPack = imageInfo.GetPckPack();
 							editor.SelectedPalette = pckPack.Pal.Label;
-							editor.LoadPckFile(pfe, pckPack.Bpp);
+							editor.LoadPckFile(pfePck); //, pckPack.Bpp);
 
 							var parent = FindForm();
 
@@ -343,6 +356,7 @@ namespace MapView.Forms.MapObservers.TileViews
 					}
 				}
 			}
+			//else "Select a tile."
 		}
 
 		private void HandleMapChanged()
