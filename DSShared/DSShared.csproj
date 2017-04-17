@@ -108,8 +108,8 @@
     <Compile Include="DB_\DBTableType_.cs" />
     <Compile Include="DSLogFile.cs" />
     <Compile Include="FileSystems\FileBackupManager.cs" />
-    <Compile Include="Interfaces\IUpdater_.cs" />
-    <Compile Include="Interfaces\IDialogFilter.cs" />
+    <Compile Include="Interfaces_\IUpdater_.cs" />
+    <Compile Include="Interfaces_\IDialogFilter_.cs" />
     <Compile Include="FilterBy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -156,7 +156,7 @@
     <Compile Include="Lists_\RowObject_.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\IAssemblyLoadable.cs" />
+    <Compile Include="Interfaces_\IAssemblyLoadable_.cs" />
     <Compile Include="Loadable_\LoadOfType_.cs" />
     <Compile Include="Parser\old_VarCollection_.cs">
       <SubType>Code</SubType>

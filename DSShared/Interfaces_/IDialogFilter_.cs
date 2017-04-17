@@ -1,3 +1,4 @@
+/*
 using System;
 
 
@@ -23,3 +24,4 @@ namespace DSShared.Interfaces
 		{ get; }
 	}
 }
+*/

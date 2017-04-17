@@ -25,8 +25,8 @@ namespace PckView
 
 		private const int Pad = 2;
 
-//		private Color goodColor = Color.FromArgb(204, 204, 255);
-		private SolidBrush goodBrush = new SolidBrush(Color.FromArgb(204, 204, 255));
+//		private Color _goodColor = Color.FromArgb(204, 204, 255);
+		private SolidBrush _goodBrush = new SolidBrush(Color.FromArgb(204, 204, 255));
 
 		private int _moveX;
 		private int _moveY;
@@ -213,33 +213,35 @@ namespace PckView
 
 				foreach (var selectedItem in _selectedItems)
 				{
-					if (_collection.ImageFile.FileOptions.BitDepth == 8 && _collection[0].Palette.Transparent.A == 0)
-					{
-						g.FillRectangle(
-									goodBrush,
-									selectedItem.X * specialWidth - Pad,
-									_startY + selectedItem.Y * (_collection.ImageFile.ImageSize.Height + Pad * 2) - Pad,
-									specialWidth,
-									_collection.ImageFile.ImageSize.Height + Pad * 2);
-					}
-					else
-					{
-						g.FillRectangle(
-									Brushes.Red,
-									selectedItem.X * specialWidth - Pad,
-									_startY + selectedItem.Y * (_collection.ImageFile.ImageSize.Height + Pad * 2) - Pad,
-									specialWidth,
-									_collection.ImageFile.ImageSize.Height + Pad * 2);
-					}
+//					if (_collection.ImageFile.FileOptions.BitDepth == 8 && _collection[0].Palette.Transparent.A == 0)
+//					{
+//						g.FillRectangle(
+//									_goodBrush,
+//									selectedItem.X * specialWidth - Pad,
+//									_startY + selectedItem.Y * (_collection.ImageFile.ImageSize.Height + Pad * 2) - Pad,
+//									specialWidth,
+//									_collection.ImageFile.ImageSize.Height + Pad * 2);
+//					}
+//					else
+//					{
+					g.FillRectangle(
+								Brushes.Red,
+								selectedItem.X * specialWidth - Pad,
+								_startY + selectedItem.Y * (_collection.ImageFile.ImageSize.Height + Pad * 2) - Pad,
+								specialWidth,
+								_collection.ImageFile.ImageSize.Height + Pad * 2);
+//					}
 				}
 
-				for (int i = 0; i < PixelsAcross() + 1; ++i)
+				int across = PixelsAcross();
+
+				for (int i = 0; i < across + 1; ++i)
 					g.DrawLine(
 							Pens.Black,
 							new Point(i * specialWidth - Pad,          _startY),
 							new Point(i * specialWidth - Pad, Height - _startY));
 
-				for (int i = 0; i < _collection.Count / PixelsAcross() + 1; ++i)
+				for (int i = 0; i < _collection.Count / across + 1; ++i)
 					g.DrawLine(
 							Pens.Black,
 							new Point(0,     _startY + i * (_collection.ImageFile.ImageSize.Height + Pad * 2) - Pad),
@@ -247,8 +249,8 @@ namespace PckView
 
 				for (int i = 0; i < _collection.Count; ++i)
 				{
-					int x = i % PixelsAcross();
-					int y = i / PixelsAcross();
+					int x = i % across;
+					int y = i / across;
 					try
 					{
 						g.DrawImage(

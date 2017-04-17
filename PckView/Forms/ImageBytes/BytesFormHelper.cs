@@ -8,72 +8,123 @@ using PckView.Panels;
 
 namespace PckView.Forms.ImageBytes
 {
-	internal sealed class BytesFormHelper
+	/// <summary>
+	/// Creates a form that shows all the bytes in a sprite.
+	/// TODO: allow this to be editable and saveable.
+	/// </summary>
+	internal static class BytesFormHelper
 	{
-		private static readonly BytesFormHelper _instance = new BytesFormHelper();
+		private static ViewPckItemImage _selected;
 
-		private Form bytesFrame;
-		private RichTextBox bytesText;
+		private static Form fBytes;
+		private static RichTextBox rtbBytes;
 
-		public static void ShowBytes(ViewPckItemImage selected, MethodInvoker closedCallBack, Point location)
+		internal static void ShowBytes(
+				ViewPckItemImage selected,
+				MethodInvoker closedCallBack,
+				Point location)
 		{
-			_instance.ShowBytesCore(selected, closedCallBack, location);
+			_selected = selected;
+			ShowBytesCore(closedCallBack, location);
 		}
 
-		public static void ReloadBytes(ViewPckItemImage selected)
+		internal static void ReloadBytes(ViewPckItemImage selected)
 		{
-			_instance.ReloadBytesCore(selected);
+			_selected = selected;
+			ReloadBytesCore();
 		}
 
-		private void ShowBytesCore(ViewPckItemImage selected, MethodInvoker closedCallBack, Point location)
+		private static void ShowBytesCore(
+				MethodInvoker closedCallBack,
+				Point location)
 		{
-			if (bytesFrame != null)
+			if (fBytes != null)
 			{
-				bytesFrame.BringToFront();
+				fBytes.BringToFront();
 			}
-			else if (selected != null)
+			else if (_selected != null)
 			{
-				bytesFrame = new Form();
-				bytesText = new RichTextBox();
-				bytesText.Dock = DockStyle.Fill;
-				bytesFrame.Controls.Add(bytesText);
+				fBytes = new Form();
+				fBytes.Size = new Size(640, 480);
+				fBytes.Font = new Font("Verdana", 7);
 
-				foreach (byte b in selected.Image.Offsets)
-					bytesText.Text += b + " ";
+				rtbBytes = new RichTextBox();
+				rtbBytes.Dock = DockStyle.Fill;
+				rtbBytes.Font = new Font("Courier New", 8);
+				rtbBytes.WordWrap = false;
+				rtbBytes.ReadOnly = true;
 
-				bytesFrame.Closing += OnClosing;
-				bytesFrame.Closing += (s, e) => closedCallBack();
-				bytesFrame.Location = location;
-				bytesFrame.Text = "Length: " + selected.Image.Offsets.Length;
-				bytesFrame.Show();
+				fBytes.Controls.Add(rtbBytes);
+
+				LoadBytes();
+
+				fBytes.Closing += OnClosing;
+				fBytes.Closing += (sender, e) => closedCallBack();
+				fBytes.Location = location;
+				fBytes.Text = "Total Bytes - " + _selected.Image.Offsets.Length;
+				fBytes.Show();
 			}
 		}
 
-		private void OnClosing(object sender, CancelEventArgs e)
+		private static void ReloadBytesCore()
 		{
-			bytesFrame = null;
-		}
-
-		public void ReloadBytesCore(ViewPckItemImage selected)
-		{
-			if (bytesFrame != null)
+			if (fBytes != null)
 			{
-				if (selected != null && selected.Image != null)
+				if (_selected != null && _selected.Image != null)
 				{
-					bytesFrame.Text = "Length: " + selected.Image.Offsets.Length;
-					bytesText.Clear();
-	
-					var text = string.Empty;
-					foreach (byte b in selected.Image.Offsets)
-						text += b + " ";
-	
-					bytesText.Text = text;
+					rtbBytes.Clear();
+					LoadBytes();
 				}
 				else
 				{
-					bytesFrame.Text = String.Empty;
-					bytesText.Text  = String.Empty;
+					fBytes.Text   = String.Empty;
+					rtbBytes.Text = String.Empty;
 				}
+			}
+		}
+
+		private static void LoadBytes()
+		{
+			string text = String.Empty;
+
+			const int wrap = 32;	// width of a typical sprite.
+			int wrapCount = 0;		// typical sprites have only 40 rows.
+			int row = 0;
+
+			foreach (byte b in _selected.Image.Offsets)
+			{
+				if (wrapCount % wrap == 0)
+				{
+					if (++row < 10)
+						text += " ";
+
+					text += row + ": ";
+				}
+
+				if (b < 10)
+					text += "  ";
+				else if (b < 100)
+					text += " ";
+
+				text += " " + b;
+				text += (++wrapCount % wrap == 0) ? Environment.NewLine
+												  : " ";
+			}
+
+			rtbBytes.Text = text;
+		}
+
+		private static void OnClosing(object sender, CancelEventArgs e)
+		{
+			fBytes = null;
+		}
+
+		internal static void CloseBytes()
+		{
+			if (fBytes != null)
+			{
+				fBytes.Close();
+				fBytes = null;
 			}
 		}
 	}

@@ -79,7 +79,7 @@ namespace XCom
 
 			foreach (string keySubsets in Subsets.Keys)
 			{
-				Dictionary<string, IMapDesc> valDesc = Subsets[keySubsets];
+				Dictionary<string, MapDesc> valDesc = Subsets[keySubsets];
 				if (valDesc != null)
 				{
 					var deps = new Varidia("Deps");
@@ -150,7 +150,7 @@ namespace XCom
 			{
 				case "FILES":
 				{
-					var dictDescs = new Dictionary<string, IMapDesc>();
+					var dictDescs = new Dictionary<string, MapDesc>();
 					Subsets[line] = dictDescs;
 					string lineVars = Varidia.ReadLine(sr, vars);
 					while (lineVars.ToUpperInvariant() != "END")

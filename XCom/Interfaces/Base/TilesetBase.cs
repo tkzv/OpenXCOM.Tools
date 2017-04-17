@@ -13,14 +13,14 @@ namespace XCom.Interfaces.Base
 			get { return _name; }
 		}
 
-		private readonly Dictionary<string, IMapDesc> _mapDescs;
-		internal protected Dictionary<string, IMapDesc> MapDescs
+		private readonly Dictionary<string, MapDesc> _mapDescs;
+		internal protected Dictionary<string, MapDesc> MapDescs
 		{
 			get { return _mapDescs; }
 		}
 
-		private readonly Dictionary<string, Dictionary<string, IMapDesc>> _subsets;
-		public Dictionary<string, Dictionary<string, IMapDesc>> Subsets
+		private readonly Dictionary<string, Dictionary<string, MapDesc>> _subsets;
+		public Dictionary<string, Dictionary<string, MapDesc>> Subsets
 		{
 			get { return _subsets; }
 		}
@@ -29,12 +29,12 @@ namespace XCom.Interfaces.Base
 		internal protected TilesetBase(string name)
 		{
 			_name = name;
-			_mapDescs = new Dictionary<string, IMapDesc>();
-			_subsets = new Dictionary<string, Dictionary<string, IMapDesc>>();
+			_mapDescs = new Dictionary<string, MapDesc>();
+			_subsets = new Dictionary<string, Dictionary<string, MapDesc>>();
 		}
 
 
-		public IMapDesc this[string name]
+		public MapDesc this[string name]
 		{
 			get { return _mapDescs[name]; }
 			set

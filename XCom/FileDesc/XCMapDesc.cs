@@ -7,25 +7,9 @@ namespace XCom
 {
 	public sealed class XCMapDesc
 		:
-			IMapDesc
+			MapDesc
 	{
-		public XCMapDesc(
-				string label,
-				string pathMaps,
-				string pathBlanks,
-				string pathRoutes,
-				string[] deps,
-				Palette pal)
-			:
-				base(label)
-		{
-			Palette      = pal;
-			MapPath      = pathMaps;
-			RoutePath    = pathRoutes;
-			BlankPath    = pathBlanks;
-			Dependencies = deps;
-//			IsStatic     = false;
-		}
+		#region Properties
 
 		internal Palette Palette
 		{ get; set; }
@@ -48,6 +32,32 @@ namespace XCom
 
 		public string[] Dependencies
 		{ get; set; }
+
+		#endregion
+
+
+		#region cTor
+
+		public XCMapDesc(
+				string label,
+				string pathMaps,
+				string pathBlanks,
+				string pathRoutes,
+				string[] deps,
+				Palette pal)
+			:
+				base(label)
+		{
+			Palette      = pal;
+			MapPath      = pathMaps;
+			RoutePath    = pathRoutes;
+			BlankPath    = pathBlanks;
+			Dependencies = deps;
+//			IsStatic     = false;
+		}
+
+		#endregion
+
 
 /*		public bool IsStatic
 		{ get; set; } */

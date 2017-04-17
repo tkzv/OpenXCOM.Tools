@@ -30,82 +30,82 @@ namespace PckView
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PckViewForm));
-			this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
-			this.menuItem1 = new System.Windows.Forms.MenuItem();
-			this.openItem = new System.Windows.Forms.MenuItem();
+			this.mmMainMenu = new System.Windows.Forms.MainMenu(this.components);
+			this.miFileMenu = new System.Windows.Forms.MenuItem();
+			this.miOpen = new System.Windows.Forms.MenuItem();
 			this.miCompare = new System.Windows.Forms.MenuItem();
-			this.SaveMenuItem = new System.Windows.Forms.MenuItem();
-			this.saveitem = new System.Windows.Forms.MenuItem();
+			this.miSave = new System.Windows.Forms.MenuItem();
+			this.miSaveAs = new System.Windows.Forms.MenuItem();
 			this.miSaveDir = new System.Windows.Forms.MenuItem();
 			this.miHq2x = new System.Windows.Forms.MenuItem();
-			this.quitItem = new System.Windows.Forms.MenuItem();
-			this.miPalette = new System.Windows.Forms.MenuItem();
-			this.bytesMenu = new System.Windows.Forms.MenuItem();
-			this.showBytes = new System.Windows.Forms.MenuItem();
-			this.transItem = new System.Windows.Forms.MenuItem();
-			this.transOn = new System.Windows.Forms.MenuItem();
-			this.menuItem4 = new System.Windows.Forms.MenuItem();
-			this.aboutItem = new System.Windows.Forms.MenuItem();
-			this.helpItem = new System.Windows.Forms.MenuItem();
+			this.miQuit = new System.Windows.Forms.MenuItem();
+			this.miPaletteMenu = new System.Windows.Forms.MenuItem();
+			this.miBytesMenu = new System.Windows.Forms.MenuItem();
+			this.miBytes = new System.Windows.Forms.MenuItem();
+			this.miTransparentMenu = new System.Windows.Forms.MenuItem();
+			this.miTransparent = new System.Windows.Forms.MenuItem();
+			this.miHelpMenu = new System.Windows.Forms.MenuItem();
+			this.miAbout = new System.Windows.Forms.MenuItem();
+			this.miHelp = new System.Windows.Forms.MenuItem();
 			this.miModList = new System.Windows.Forms.MenuItem();
 			this.miConsole = new System.Windows.Forms.MenuItem();
-			this.MapViewIntegrationMenuItem = new System.Windows.Forms.MenuItem();
-			this.openFile = new System.Windows.Forms.OpenFileDialog();
-			this.saveBmpSingle = new System.Windows.Forms.SaveFileDialog();
-			this.openBMP = new System.Windows.Forms.OpenFileDialog();
-			this.DrawPanel = new System.Windows.Forms.Panel();
-			this.MapViewIntegrationHelpPanel = new System.Windows.Forms.Panel();
-			this.GotItMapViewButton = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.MapViewIntegrationHelpPanel.SuspendLayout();
+			this.miMapViewHelp = new System.Windows.Forms.MenuItem();
+			this.ofdOpen = new System.Windows.Forms.OpenFileDialog();
+			this.sfdBmpSingle = new System.Windows.Forms.SaveFileDialog();
+			this.ofdBmp = new System.Windows.Forms.OpenFileDialog();
+			this.pViewer = new System.Windows.Forms.Panel();
+			this.pMapViewHelp = new System.Windows.Forms.Panel();
+			this.btnMapViewHelpOk = new System.Windows.Forms.Button();
+			this.lblMapViewHelp = new System.Windows.Forms.Label();
+			this.pMapViewHelp.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// mainMenu
+			// mmMainMenu
 			// 
-			this.mainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.menuItem1,
-			this.miPalette,
-			this.bytesMenu,
-			this.transItem,
-			this.menuItem4});
+			this.mmMainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miFileMenu,
+			this.miPaletteMenu,
+			this.miBytesMenu,
+			this.miTransparentMenu,
+			this.miHelpMenu});
 			// 
-			// menuItem1
+			// miFileMenu
 			// 
-			this.menuItem1.Index = 0;
-			this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.openItem,
+			this.miFileMenu.Index = 0;
+			this.miFileMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miOpen,
 			this.miCompare,
-			this.SaveMenuItem,
-			this.saveitem,
+			this.miSave,
+			this.miSaveAs,
 			this.miSaveDir,
 			this.miHq2x,
-			this.quitItem});
-			this.menuItem1.Text = "&File";
+			this.miQuit});
+			this.miFileMenu.Text = "&File";
 			// 
-			// openItem
+			// miOpen
 			// 
-			this.openItem.Index = 0;
-			this.openItem.Text = "&Open";
-			this.openItem.Click += new System.EventHandler(this.OnOpenClick);
+			this.miOpen.Index = 0;
+			this.miOpen.Text = "&Open";
+			this.miOpen.Click += new System.EventHandler(this.OnOpenClick);
 			// 
 			// miCompare
 			// 
 			this.miCompare.Index = 1;
-			this.miCompare.Text = "Compare";
+			this.miCompare.Text = "&Compare";
 			this.miCompare.Click += new System.EventHandler(this.OnCompareClick);
 			// 
-			// SaveMenuItem
+			// miSave
 			// 
-			this.SaveMenuItem.Index = 2;
-			this.SaveMenuItem.Text = "Save";
-			this.SaveMenuItem.Click += new System.EventHandler(this.OnSaveClick);
+			this.miSave.Index = 2;
+			this.miSave.Text = "&Save";
+			this.miSave.Click += new System.EventHandler(this.OnSaveClick);
 			// 
-			// saveitem
+			// miSaveAs
 			// 
-			this.saveitem.Enabled = false;
-			this.saveitem.Index = 3;
-			this.saveitem.Text = "&Save To FIle";
-			this.saveitem.Click += new System.EventHandler(this.OnSaveAsClick);
+			this.miSaveAs.Enabled = false;
+			this.miSaveAs.Index = 3;
+			this.miSaveAs.Text = "Save &As ...";
+			this.miSaveAs.Click += new System.EventHandler(this.OnSaveAsClick);
 			// 
 			// miSaveDir
 			// 
@@ -116,71 +116,71 @@ namespace PckView
 			// miHq2x
 			// 
 			this.miHq2x.Index = 5;
-			this.miHq2x.Text = "&Hq2x";
+			this.miHq2x.Text = "Hq&2x";
 			this.miHq2x.Visible = false;
 			this.miHq2x.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
-			// quitItem
+			// miQuit
 			// 
-			this.quitItem.Index = 6;
-			this.quitItem.Text = "&Quit";
-			this.quitItem.Click += new System.EventHandler(this.OnQuitClick);
+			this.miQuit.Index = 6;
+			this.miQuit.Text = "&Quit";
+			this.miQuit.Click += new System.EventHandler(this.OnQuitClick);
 			// 
-			// miPalette
+			// miPaletteMenu
 			// 
-			this.miPalette.Index = 1;
-			this.miPalette.Text = "&Palette";
+			this.miPaletteMenu.Index = 1;
+			this.miPaletteMenu.Text = "&Palette";
 			// 
-			// bytesMenu
+			// miBytesMenu
 			// 
-			this.bytesMenu.Enabled = false;
-			this.bytesMenu.Index = 2;
-			this.bytesMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.showBytes});
-			this.bytesMenu.Text = "&Bytes";
+			this.miBytesMenu.Enabled = false;
+			this.miBytesMenu.Index = 2;
+			this.miBytesMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miBytes});
+			this.miBytesMenu.Text = "&Bytes";
 			// 
-			// showBytes
+			// miBytes
 			// 
-			this.showBytes.Index = 0;
-			this.showBytes.Text = "&Show";
-			this.showBytes.Click += new System.EventHandler(this.OnShowBytesClick);
+			this.miBytes.Index = 0;
+			this.miBytes.Text = "S&how";
+			this.miBytes.Click += new System.EventHandler(this.OnShowBytesClick);
 			// 
-			// transItem
+			// miTransparentMenu
 			// 
-			this.transItem.Enabled = false;
-			this.transItem.Index = 3;
-			this.transItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.transOn});
-			this.transItem.Text = "Transparency";
+			this.miTransparentMenu.Enabled = false;
+			this.miTransparentMenu.Index = 3;
+			this.miTransparentMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miTransparent});
+			this.miTransparentMenu.Text = "&Transparency";
 			// 
-			// transOn
+			// miTransparent
 			// 
-			this.transOn.Index = 0;
-			this.transOn.Text = "On";
-			this.transOn.Click += new System.EventHandler(this.OnTransparencyClick);
+			this.miTransparent.Index = 0;
+			this.miTransparent.Text = "&On";
+			this.miTransparent.Click += new System.EventHandler(this.OnTransparencyClick);
 			// 
-			// menuItem4
+			// miHelpMenu
 			// 
-			this.menuItem4.Index = 4;
-			this.menuItem4.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.aboutItem,
-			this.helpItem,
+			this.miHelpMenu.Index = 4;
+			this.miHelpMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miAbout,
+			this.miHelp,
 			this.miModList,
 			this.miConsole,
-			this.MapViewIntegrationMenuItem});
-			this.menuItem4.Text = "Help";
+			this.miMapViewHelp});
+			this.miHelpMenu.Text = "Help";
 			// 
-			// aboutItem
+			// miAbout
 			// 
-			this.aboutItem.Index = 0;
-			this.aboutItem.Text = "About";
-			this.aboutItem.Click += new System.EventHandler(this.OnAboutClick);
+			this.miAbout.Index = 0;
+			this.miAbout.Text = "About";
+			this.miAbout.Click += new System.EventHandler(this.OnAboutClick);
 			// 
-			// helpItem
+			// miHelp
 			// 
-			this.helpItem.Index = 1;
-			this.helpItem.Text = "Basic Help";
-			this.helpItem.Click += new System.EventHandler(this.OnHelpClick);
+			this.miHelp.Index = 1;
+			this.miHelp.Text = "Help";
+			this.miHelp.Click += new System.EventHandler(this.OnHelpClick);
 			// 
 			// miModList
 			// 
@@ -195,109 +195,110 @@ namespace PckView
 			this.miConsole.Text = "Console";
 			this.miConsole.Click += new System.EventHandler(this.OnConsoleClick);
 			// 
-			// MapViewIntegrationMenuItem
+			// miMapViewHelp
 			// 
-			this.MapViewIntegrationMenuItem.Index = 4;
-			this.MapViewIntegrationMenuItem.Text = "MapView Integration";
-			this.MapViewIntegrationMenuItem.Visible = false;
-			this.MapViewIntegrationMenuItem.Click += new System.EventHandler(this.OnMapViewIntegrationClick);
+			this.miMapViewHelp.Index = 4;
+			this.miMapViewHelp.Text = "MapView Help";
+			this.miMapViewHelp.Visible = false;
+			this.miMapViewHelp.Click += new System.EventHandler(this.OnMapViewHelpClick);
 			// 
-			// saveBmpSingle
+			// sfdBmpSingle
 			// 
-			this.saveBmpSingle.DefaultExt = "*.bmp";
-			this.saveBmpSingle.Filter = "BMP Files|*.bmp";
+			this.sfdBmpSingle.DefaultExt = "*.bmp";
+			this.sfdBmpSingle.Filter = "BMP Files (*.bmp)|*.bmp";
 			// 
-			// openBMP
+			// ofdBmp
 			// 
-			this.openBMP.Filter = "8-bit 32x40 bmp|*.bmp";
+			this.ofdBmp.Filter = "8-bit 32x40 bmp (*.bmp)|*.bmp";
 			// 
-			// DrawPanel
+			// pViewer
 			// 
-			this.DrawPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.DrawPanel.Location = new System.Drawing.Point(0, 100);
-			this.DrawPanel.Name = "DrawPanel";
-			this.DrawPanel.Size = new System.Drawing.Size(472, 514);
-			this.DrawPanel.TabIndex = 1;
+			this.pViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pViewer.Location = new System.Drawing.Point(0, 100);
+			this.pViewer.Name = "pViewer";
+			this.pViewer.Size = new System.Drawing.Size(472, 514);
+			this.pViewer.TabIndex = 1;
 			// 
-			// MapViewIntegrationHelpPanel
+			// pMapViewHelp
 			// 
-			this.MapViewIntegrationHelpPanel.Controls.Add(this.GotItMapViewButton);
-			this.MapViewIntegrationHelpPanel.Controls.Add(this.label1);
-			this.MapViewIntegrationHelpPanel.Dock = System.Windows.Forms.DockStyle.Top;
-			this.MapViewIntegrationHelpPanel.Location = new System.Drawing.Point(0, 0);
-			this.MapViewIntegrationHelpPanel.Name = "MapViewIntegrationHelpPanel";
-			this.MapViewIntegrationHelpPanel.Size = new System.Drawing.Size(472, 100);
-			this.MapViewIntegrationHelpPanel.TabIndex = 2;
-			this.MapViewIntegrationHelpPanel.Visible = false;
+			this.pMapViewHelp.Controls.Add(this.btnMapViewHelpOk);
+			this.pMapViewHelp.Controls.Add(this.lblMapViewHelp);
+			this.pMapViewHelp.Dock = System.Windows.Forms.DockStyle.Top;
+			this.pMapViewHelp.Location = new System.Drawing.Point(0, 0);
+			this.pMapViewHelp.Name = "pMapViewHelp";
+			this.pMapViewHelp.Size = new System.Drawing.Size(472, 100);
+			this.pMapViewHelp.TabIndex = 2;
+			this.pMapViewHelp.Visible = false;
 			// 
-			// GotItMapViewButton
+			// btnMapViewHelpOk
 			// 
-			this.GotItMapViewButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.GotItMapViewButton.Location = new System.Drawing.Point(370, 60);
-			this.GotItMapViewButton.Name = "GotItMapViewButton";
-			this.GotItMapViewButton.Size = new System.Drawing.Size(97, 34);
-			this.GotItMapViewButton.TabIndex = 2;
-			this.GotItMapViewButton.Text = "Got it";
-			this.GotItMapViewButton.UseVisualStyleBackColor = true;
-			this.GotItMapViewButton.Click += new System.EventHandler(this.OnGotItClick);
+			this.btnMapViewHelpOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnMapViewHelpOk.Location = new System.Drawing.Point(370, 60);
+			this.btnMapViewHelpOk.Name = "btnMapViewHelpOk";
+			this.btnMapViewHelpOk.Size = new System.Drawing.Size(97, 34);
+			this.btnMapViewHelpOk.TabIndex = 2;
+			this.btnMapViewHelpOk.Text = "Got it";
+			this.btnMapViewHelpOk.UseVisualStyleBackColor = true;
+			this.btnMapViewHelpOk.Click += new System.EventHandler(this.OnMapViewGotItClick);
 			// 
-			// label1
+			// lblMapViewHelp
 			// 
-			this.label1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.label1.Location = new System.Drawing.Point(0, 0);
-			this.label1.Name = "label1";
-			this.label1.Padding = new System.Windows.Forms.Padding(3);
-			this.label1.Size = new System.Drawing.Size(472, 55);
-			this.label1.TabIndex = 1;
-			this.label1.Text = resources.GetString("label1.Text");
+			this.lblMapViewHelp.Dock = System.Windows.Forms.DockStyle.Top;
+			this.lblMapViewHelp.Location = new System.Drawing.Point(0, 0);
+			this.lblMapViewHelp.Name = "lblMapViewHelp";
+			this.lblMapViewHelp.Padding = new System.Windows.Forms.Padding(3);
+			this.lblMapViewHelp.Size = new System.Drawing.Size(472, 55);
+			this.lblMapViewHelp.TabIndex = 1;
+			this.lblMapViewHelp.Text = resources.GetString("lblMapViewHelp.Text");
 			// 
 			// PckViewForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(472, 614);
-			this.Controls.Add(this.DrawPanel);
-			this.Controls.Add(this.MapViewIntegrationHelpPanel);
+			this.Controls.Add(this.pViewer);
+			this.Controls.Add(this.pMapViewHelp);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Location = new System.Drawing.Point(50, 50);
 			this.MaximumSize = new System.Drawing.Size(480, 640);
-			this.Menu = this.mainMenu;
+			this.Menu = this.mmMainMenu;
 			this.Name = "PckViewForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "PckView";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnPckViewFormClosing);
 			this.Shown += new System.EventHandler(this.OnShown);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
-			this.MapViewIntegrationHelpPanel.ResumeLayout(false);
+			this.pMapViewHelp.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
 		#endregion
 
-		private System.Windows.Forms.MainMenu mainMenu;
-		private System.Windows.Forms.MenuItem menuItem1;
-		private System.Windows.Forms.MenuItem openItem;
-		private System.Windows.Forms.MenuItem quitItem;
-		private System.Windows.Forms.OpenFileDialog openFile;
-		private System.Windows.Forms.SaveFileDialog saveBmpSingle;
-		private System.Windows.Forms.MenuItem showBytes;
-		private System.Windows.Forms.MenuItem bytesMenu;
-		private System.Windows.Forms.MenuItem transOn;
-		private System.Windows.Forms.OpenFileDialog openBMP;
-		private System.Windows.Forms.MenuItem menuItem4;
-		private System.Windows.Forms.MenuItem aboutItem;
-		private System.Windows.Forms.MenuItem saveitem;
-		private System.Windows.Forms.MenuItem transItem;
-		private System.Windows.Forms.MenuItem helpItem;
-		private System.Windows.Forms.MenuItem miPalette;
+		private System.Windows.Forms.MainMenu mmMainMenu;
+		private System.Windows.Forms.MenuItem miFileMenu;
+		private System.Windows.Forms.MenuItem miOpen;
+		private System.Windows.Forms.MenuItem miQuit;
+		private System.Windows.Forms.OpenFileDialog ofdOpen;
+		private System.Windows.Forms.SaveFileDialog sfdBmpSingle;
+		private System.Windows.Forms.MenuItem miBytes;
+		private System.Windows.Forms.MenuItem miBytesMenu;
+		private System.Windows.Forms.MenuItem miTransparent;
+		private System.Windows.Forms.OpenFileDialog ofdBmp;
+		private System.Windows.Forms.MenuItem miHelpMenu;
+		private System.Windows.Forms.MenuItem miAbout;
+		private System.Windows.Forms.MenuItem miSaveAs;
+		private System.Windows.Forms.MenuItem miTransparentMenu;
+		private System.Windows.Forms.MenuItem miHelp;
+		private System.Windows.Forms.MenuItem miPaletteMenu;
 		private System.Windows.Forms.MenuItem miHq2x;
 		private System.Windows.Forms.MenuItem miModList;
 		private System.Windows.Forms.MenuItem miSaveDir;
 		private System.Windows.Forms.MenuItem miConsole;
 		private System.Windows.Forms.MenuItem miCompare;
-		private System.Windows.Forms.MenuItem SaveMenuItem;
-		private System.Windows.Forms.Panel DrawPanel;
-		private System.Windows.Forms.Panel MapViewIntegrationHelpPanel;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.MenuItem MapViewIntegrationMenuItem;
-		private System.Windows.Forms.Button GotItMapViewButton;
+		private System.Windows.Forms.MenuItem miSave;
+		private System.Windows.Forms.Panel pViewer;
+		private System.Windows.Forms.Panel pMapViewHelp;
+		private System.Windows.Forms.Label lblMapViewHelp;
+		private System.Windows.Forms.MenuItem miMapViewHelp;
+		private System.Windows.Forms.Button btnMapViewHelpOk;
 	}
 }

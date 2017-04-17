@@ -50,9 +50,6 @@ namespace DSShared.Windows
 			using (var f = openFileDialog)
 			{
 				f.Title = "Find MCDEdit.exe";
-				f.Multiselect = false;
-				f.FilterIndex = 1; // *.exe
-
 				if (f.ShowDialog() == DialogResult.OK)
 					tbInput.Text = f.FileName;
 			}

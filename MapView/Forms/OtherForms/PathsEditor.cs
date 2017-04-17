@@ -421,8 +421,8 @@ namespace MapView
 
 		private void btnPathsInstall_Click(object sender, EventArgs e)
 		{
-			using (var install = new InstallationForm())
-				install.ShowDialog(this);
+			using (var f = new InstallationForm())
+				f.ShowDialog(this);
 		}
 
 		private void btnPathsSave_Click(object sender, EventArgs e)
@@ -488,7 +488,7 @@ namespace MapView
 
 //					TreeNode tn = treeMaps.SelectedNode; // TODO: Check if not used.
 
-					tileset.Subsets[f.SubsetLabel] = new Dictionary<string, IMapDesc>();
+					tileset.Subsets[f.SubsetLabel] = new Dictionary<string, MapDesc>();
 
 //					tileset.NewSubset(f.SubsetName);
 //					saveMapedit();
@@ -528,11 +528,11 @@ namespace MapView
 						string path = tbMapsMaps.Text + f.MapName + XCMapFile.MapExt;
 						if (File.Exists(path))
 						{
-							using (var dialog = new ChoiceDialog(path))
+							using (var fdialog = new ChoiceDialog(path))
 							{
-								dialog.ShowDialog(this);
+								fdialog.ShowDialog(this);
 	
-								if (dialog.Choice == Choice.UseExisting)
+								if (fdialog.Choice == Choice.UseExisting)
 									return;
 							}
 						}

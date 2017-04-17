@@ -207,7 +207,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\Base\IMcdRecord_.cs" />
-    <Compile Include="Interfaces\Base\IMapDesc.cs">
+    <Compile Include="Interfaces\Base\MapDesc.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\Base\TileBase.cs" />

@@ -137,19 +137,11 @@
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ImageBytes\BytesFormHelper.cs" />
-    <Compile Include="OpenSaveFilter_.cs" />
     <Compile Include="Panels\ViewPckItem.cs" />
     <Compile Include="Panels\ViewPckItemImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Forms\BmpForm_.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\BmpForm_.Designer.cs">
-      <DependentUpon>BmpForm_.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ImageProfile_.cs" />
     <Compile Include="Editor\ButtonPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -165,23 +157,11 @@
     <Compile Include="Editor\SinglePanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\HelpForm.cs">
+    <Compile Include="Forms\Help.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\HelpForm.Designer.cs">
-      <DependentUpon>HelpForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ModForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ModForm.Designer.cs">
-      <DependentUpon>ModForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\OpenCustomForm_.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\OpenCustomForm_.Designer.cs">
-      <DependentUpon>OpenCustomForm_.cs</DependentUpon>
+    <Compile Include="Forms\Help.Designer.cs">
+      <DependentUpon>Help.cs</DependentUpon>
     </Compile>
     <Compile Include="Palette\PalPanel.cs">
       <SubType>Component</SubType>
@@ -190,12 +170,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="Forms\SaveProfileForm_.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SaveProfileForm_.Designer.cs">
-      <DependentUpon>SaveProfileForm_.cs</DependentUpon>
-    </Compile>
     <Compile Include="Panels\TotalViewPck.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -209,22 +183,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Updator_.cs" />
     <Compile Include="Panels\ViewPck.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="xcFiles\xcBmp_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="xcFiles\xcBmp32_.cs" />
-    <Compile Include="xcFiles\xcCustom_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="xcFiles\xcForceCustom_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="xcFiles\XCProfile_.cs">
-      <SubType>Code</SubType>
     </Compile>
     <Compile Include="PckViewForm.cs">
       <SubType>Form</SubType>
@@ -241,24 +201,8 @@
     <EmbeddedResource Include="Forms\About.resx">
       <DependentUpon>About.Designer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\BmpForm_.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>BmpForm_.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\HelpForm.resx">
-      <DependentUpon>HelpForm.Designer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ModForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ModForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OpenCustomForm_.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>OpenCustomForm_.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SaveProfileForm_.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>SaveProfileForm_.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Help.resx">
+      <DependentUpon>Help.Designer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>

@@ -289,7 +289,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			return null;
 		}
 
-		private void OnPckEditorClick(object sender, EventArgs e) // NOTE: The dropdown button has been disabled (Visible=FALSE).
+		private void OnPckEditorClick(object sender, EventArgs e)
 		{
 			var dep = GetDepLabel();
 			if (dep != null)
@@ -308,7 +308,7 @@ namespace MapView.Forms.MapObservers.TileViews
 									"File does not exist: " + pfePck,
 									"Error",
 									MessageBoxButtons.OK,
-									MessageBoxIcon.Exclamation,
+									MessageBoxIcon.Error,
 									MessageBoxDefaultButton.Button1,
 									0);
 					}
@@ -319,7 +319,7 @@ namespace MapView.Forms.MapObservers.TileViews
 									"File does not exist: " + pfeTab,
 									"Error",
 									MessageBoxButtons.OK,
-									MessageBoxIcon.Exclamation,
+									MessageBoxIcon.Error,
 									MessageBoxDefaultButton.Button1,
 									0);
 					}
@@ -327,11 +327,11 @@ namespace MapView.Forms.MapObservers.TileViews
 					{
 						_showAllManager.HideAll();
 
-						using (var editor = new PckViewForm())
+						using (var f = new PckViewForm())
 						{
 							var pckPack = imageInfo.GetPckPack();
-							editor.SelectedPalette = pckPack.Pal.Label;
-							editor.LoadPckFile(pfePck); //, pckPack.Bpp);
+							f.SelectedPalette = pckPack.Pal.Label;
+							f.LoadPckFile(pfePck); //, pckPack.Bpp);
 
 							var parent = FindForm();
 
@@ -342,8 +342,8 @@ namespace MapView.Forms.MapObservers.TileViews
 							if (owner == null)
 								owner = parent;
 
-							editor.ShowDialog(owner);
-							if (editor.SavedFile)
+							f.ShowDialog(owner);
+							if (f.SavedFile)
 							{
 								GameInfo.ImageInfo.Images[dep].ClearMcdTable();
 								GameInfo.ClearPckCache(imageInfo.Path, imageInfo.Label);
@@ -356,7 +356,17 @@ namespace MapView.Forms.MapObservers.TileViews
 					}
 				}
 			}
-			//else "Select a tile."
+			else
+			{
+				MessageBox.Show(
+							this,
+							"Select a Tile.",
+							"Notice",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Asterisk,
+							MessageBoxDefaultButton.Button1,
+							0);
+			}
 		}
 
 		private void HandleMapChanged()

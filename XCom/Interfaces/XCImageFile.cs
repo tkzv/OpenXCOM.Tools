@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 
-using DSShared.Interfaces;
-using DSShared.Loadable;
+//using DSShared.Interfaces;
+//using DSShared.Loadable;
 
 
 namespace XCom.Interfaces
@@ -13,9 +13,7 @@ namespace XCom.Interfaces
 	/// from derived classes will be created and tracked on startup.
 	/// </summary>
 	public class XCImageFile
-		:
-			IAssemblyLoadable,
-			IDialogFilter
+//		: IAssemblyLoadable, IDialogFilter
 	{
 		private Palette _palDefault = Palette.UfoBattle;
 		/// <summary>
@@ -33,14 +31,14 @@ namespace XCom.Interfaces
 		public System.Drawing.Size ImageSize
 		{ get; protected set; }
 
-		private XCFileOptions _fileOptions = new XCFileOptions();
+/*		private XCFileOptions _fileOptions = new XCFileOptions();
 		/// <summary>
 		/// Flags that tell the OS where each filetype should be displayed.
 		/// </summary>
 		public XCFileOptions FileOptions
 		{
 			get { return _fileOptions; }
-		}
+		} */
 
 		private string _ext = ".default";
 		/// <summary>
@@ -87,7 +85,7 @@ namespace XCom.Interfaces
 			Bmp
 		};
 
-		#region IDialogFilter implementation
+/*		#region IDialogFilter implementation
 		private string _brief = "Default Brief";
 		/// <summary>
 		/// See: IDialogFilter.Brief
@@ -115,9 +113,9 @@ namespace XCom.Interfaces
 														_ext, _brief);
 			}
 		}
-		#endregion
+		#endregion */
 
-		#region AssemblyLoadable implementation
+/*		#region AssemblyLoadable implementation
 		/// <summary>
 		/// See: AssemblyLoadable.RegisterFile
 		/// </summary>
@@ -142,7 +140,7 @@ namespace XCom.Interfaces
 		/// </summary>
 		public void Unload()
 		{}
-		#endregion
+		#endregion */
 
 
 		/// <summary>
@@ -155,7 +153,7 @@ namespace XCom.Interfaces
 		public XCImageFile(int width, int height)
 		{
 			ImageSize = new System.Drawing.Size(width, height);
-			_brief = this.GetType().ToString();
+//			_brief = this.GetType().ToString();
 		}
 		/// <summary>
 		/// Creates an object of this class with width and height of 0.
@@ -273,8 +271,8 @@ namespace XCom.Interfaces
 	}
 
 
-	/// <summary>
-	/// class XCFileOptions
+/*	/// <summary>
+	/// XCFileOptions class.
 	/// </summary>
 	public sealed class XCFileOptions
 	{
@@ -287,12 +285,12 @@ namespace XCom.Interfaces
 			set { _bpp = value; }
 		}
 
-/*		private int _pad = 1;
-		public int Pad
-		{
-			get { return _pad; }
-			set { _pad = value; }
-		} */
+//		private int _pad = 1;
+//		public int Pad
+//		{
+//			get { return _pad; }
+//			set { _pad = value; }
+//		}
 
 		public bool this[XCImageFile.Filter filter]
 		{
@@ -332,5 +330,5 @@ namespace XCom.Interfaces
 			_filters[XCImageFile.Filter.Open]   = open;
 			_filters[XCImageFile.Filter.Custom] = custom;
 		}
-	}
+	} */
 }

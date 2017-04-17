@@ -1,20 +1,45 @@
 using System;
 
-using DSShared.Interfaces;
-using DSShared.Loadable;
+//using DSShared.Interfaces;
+//using DSShared.Loadable;
 
 
 namespace XCom.Interfaces.Base
 {
-	public class IMapDesc // psst. This isn't an interface.
-		:
-			IAssemblyLoadable,
-			IDialogFilter
+	public class MapDesc
+//		: IAssemblyLoadable, IDialogFilter
 	{
-		// TODO: Dialog Filters do not appear to be implemented. cf, XCImageFile.
-		private const string _ext = ".default";
+		#region Properties
 
-		private const string _brief = "Default Brief";
+		public string Label
+		{ get; protected set; }
+
+		#endregion
+
+
+		#region cTor
+
+		public MapDesc(string label)
+		{
+			Label = label;
+		}
+
+		#endregion
+
+
+		#region Methods
+
+		public override string ToString() // isUsed yes/no
+		{
+			return Label;
+		}
+
+		#endregion
+
+
+//		private const string _ext = ".default";
+
+/*		private const string _brief = "Default Brief";
 		/// <summary>
 		/// See: IDialogFilter.Brief
 		/// </summary>
@@ -35,36 +60,21 @@ namespace XCom.Interfaces.Base
 								"*{0} - {1}|*{0}",
 								_ext, _brief);
 			}
-		}
+		} */
 
-		public string Label
-		{ get; protected set; }
-
-
-		public IMapDesc(string label)
-		{
-			Label = label;
-		}
-
-
-		public override string ToString() // isUsed yes/no
-		{
-			return Label;
-		}
-
-		/// <summary>
+/*		/// <summary>
 		/// See: AssemblyLoadable.RegisterFile
 		/// </summary>
 		/// <returns></returns>
 		public virtual bool RegisterFile()
 		{
-			return (GetType() != typeof(IMapDesc));
+			return (GetType() != typeof(MapDesc));
 		}
 
 		/// <summary>
 		/// See: AssemblyLoadable.Unload
 		/// </summary>
 		public virtual void Unload()
-		{}
+		{} */
 	}
 }

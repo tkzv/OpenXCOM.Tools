@@ -263,11 +263,11 @@ namespace MapView
 
 			/****************************************/
 			// Copied from PckView
-//			loadedTypes = new LoadOfType<IMapDesc>();
+//			loadedTypes = new LoadOfType<MapDesc>();
 //			sharedSpace["MapMods"] = loadedTypes.AllLoaded;
 
 			// There are no currently loadable maps in this assembly so this is more for future use
-//			loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(XCom.Interfaces.Base.IMapDesc)));
+//			loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(XCom.Interfaces.Base.MapDesc)));
 
 //			if (Directory.Exists(sharedSpace[SharedSpace.CustomDirectory].ToString()))
 //			{
@@ -343,7 +343,7 @@ namespace MapView
 			}
 		}
 
-		private static void AddMaps(TreeNode tn, IDictionary<string, IMapDesc> maps)
+		private static void AddMaps(TreeNode tn, IDictionary<string, MapDesc> maps)
 		{
 			foreach (string key in maps.Keys)
 			{
@@ -704,8 +704,8 @@ namespace MapView
 		{
 			var share = SharedSpace.Instance[PathInfo.PathsFile];
 
-			using (var paths = new PathsEditor(share.ToString()))
-				paths.ShowDialog();
+			using (var f = new PathsEditor(share.ToString()))
+				f.ShowDialog();
 
 			var pathInfo = (PathInfo)share;
 			InitGameInfo(pathInfo);
@@ -749,7 +749,7 @@ namespace MapView
 
 		private void LoadSelectedMap()
 		{
-			var desc = tvMaps.SelectedNode.Tag as IMapDesc;
+			var desc = tvMaps.SelectedNode.Tag as MapDesc;
 			if (desc != null)
 			{
 //				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.
