@@ -105,67 +105,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DB_\DBTableType_.cs" />
     <Compile Include="DSLogFile.cs" />
     <Compile Include="FileSystems\FileBackupManager.cs" />
-    <Compile Include="Interfaces_\IUpdater_.cs" />
-    <Compile Include="Interfaces_\IDialogFilter_.cs" />
     <Compile Include="FilterBy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DB_\Access_\Access_DBInterface_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DB_\Access_\Access_DBTable_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DB_\DBColumnAttribute_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DB_\DBTableTypeCache_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DB_\MySql_\MySQL_DBInterface_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DB_\MySql_\MySQL_DBTable_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DB_\WhereCol_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Exceptions_\ObjPropertyNullValueException_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Lists_\CustomList_.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Lists_\CustomListColumn_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Lists_\CustomListColumnCollection_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Lists_\EditStrAttribute_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Lists_\PropertyObject_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Lists_\RowObject_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Interfaces_\IAssemblyLoadable_.cs" />
-    <Compile Include="Loadable_\LoadOfType_.cs" />
-    <Compile Include="Parser\old_VarCollection_.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Parser\DSVaridia.cs" />
     <Compile Include="Parser\DSVaridiaStructured.cs" />
-    <Compile Include="Parser\old_Variable_.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Parser\DSVariable.cs" />
     <Compile Include="PathInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -178,10 +125,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="StrInt_.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Updator_.cs" />
     <Compile Include="Windows\CollapsibleSplitter.cs">
       <SubType>Component</SubType>
     </Compile>
