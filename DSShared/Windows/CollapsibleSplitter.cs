@@ -138,13 +138,13 @@ namespace DSShared.Windows
 		private Brush backBrush;
 		private Pen backPen;
 
-		private static Brush hotBrush	= new SolidBrush(hotColor);
-		private static Pen hotPen		= new Pen(hotColor, 1);
-		private static Brush controlDarkBrush	= new SolidBrush(SystemColors.ControlDark);
-		private static Pen controlDarkPen		= new Pen(SystemColors.ControlDark, 1);
-		private static Pen controlDarkDarkPen	= new Pen(SystemColors.ControlDarkDark, 1);
-		private static Pen controlLightLightPen	= new Pen(SystemColors.ControlLightLight, 1);
-		private static Pen controlLightPen		= new Pen(SystemColors.ControlLight);
+		private static Pen hotPen               = new Pen(hotColor, 1);
+		private static Brush hotBrush           = new SolidBrush(hotColor);
+		private static Brush controlDarkBrush   = new SolidBrush(SystemColors.ControlDark);
+		private static Pen controlDarkPen       = new Pen(SystemColors.ControlDark, 1);
+		private static Pen controlDarkDarkPen   = new Pen(SystemColors.ControlDarkDark, 1);
+		private static Pen controlLightLightPen = new Pen(SystemColors.ControlLightLight, 1);
+		private static Pen controlLightPen      = new Pen(SystemColors.ControlLight);
 
 		#endregion
 
@@ -158,7 +158,7 @@ namespace DSShared.Windows
 			// Setup the animation timer control
 			this.animationTimer = new System.Windows.Forms.Timer();
 			this.animationTimer.Interval = animationDelay;
-			this.animationTimer.Tick += new System.EventHandler(this.animationTimerTick);
+			this.animationTimer.Tick += new System.EventHandler(this.OnAnimationTimerTick);
 
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
 				   | ControlStyles.AllPaintingInWmPaint
@@ -572,7 +572,7 @@ namespace DSShared.Windows
 		#region Implementation
 
 		#region Animation Timer Tick
-		private void animationTimerTick(object sender, System.EventArgs e)
+		private void OnAnimationTimerTick(object sender, EventArgs e)
 		{
 			switch (currentState)
 			{

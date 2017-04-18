@@ -3,9 +3,9 @@
 
 namespace PckView.Panels
 {
-	internal sealed class ViewPckItemImage
+	internal sealed class PckViewSprite1
 	{
-		internal ViewPckItem Item
+		internal PckViewSprite0 Item
 		{ get; set; }
 
 		internal XCImage Image

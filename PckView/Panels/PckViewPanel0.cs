@@ -12,7 +12,7 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	internal sealed class TotalViewPck
+	internal sealed class PckViewPanel0
 		:
 			Panel
 	{
@@ -20,8 +20,8 @@ namespace PckView
 		internal event ImageCollectionSetHandler ImageCollectionChangedEvent;
 
 
-		private readonly ViewPck _viewPanel;
-		internal ViewPck ViewPanel
+		private readonly PckViewPanel1 _viewPanel;
+		internal PckViewPanel1 ViewPanel
 		{
 			get { return _viewPanel; }
 		}
@@ -48,7 +48,7 @@ namespace PckView
 		}
 
 
-		internal TotalViewPck()
+		internal PckViewPanel0()
 		{
 			_scrollBar = new VScrollBar();
 
@@ -69,7 +69,7 @@ namespace PckView
 			_scrollBar.Maximum = 5000;
 			_scrollBar.Scroll += this.OnScroll;
 
-			_viewPanel = new ViewPck();
+			_viewPanel = new PckViewPanel1();
 			_viewPanel.Location = new Point(0, 0);
 			_viewPanel.MouseClickedEvent += OnViewClick0;
 			_viewPanel.MouseClickedEvent += OnViewClick1;
@@ -97,7 +97,7 @@ namespace PckView
 				_scrollBar.Visible = false;
 		}
 
-		internal ReadOnlyCollection<ViewPckItemImage> SelectedItems
+		internal ReadOnlyCollection<PckViewSprite1> SelectedItems
 		{
 			get { return _viewPanel.SelectedItems; }
 		}
@@ -109,16 +109,16 @@ namespace PckView
 
 		internal XCImageCollection Collection
 		{
-			get { return _viewPanel.Collection; }
+			get { return _viewPanel.SpritePack; }
 			set
 			{
-				_viewPanel.Collection = value;
+				_viewPanel.SpritePack = value;
 				try
 				{
-					_viewPanel.Collection = value;
+					_viewPanel.SpritePack = value;
 					if (value is PckSpriteCollection)
 					{
-						_statusBPP.Text = "Bpp: " + ((PckSpriteCollection)_viewPanel.Collection).Bpp;
+						_statusBPP.Text = "Bpp: " + ((PckSpriteCollection)_viewPanel.SpritePack).Bpp;
 					}
 					else
 						_statusBPP.Text = String.Empty;

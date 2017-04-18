@@ -12,7 +12,7 @@ using DSShared.Windows;
 
 using PckView.Args;
 using PckView.Forms.ImageBytes;
-using PckView.Properties;
+//using PckView.Properties;
 
 using XCom;
 using XCom.Interfaces;
@@ -27,7 +27,7 @@ namespace PckView
 		:
 			Form
 	{
-		private TotalViewPck _totalViewPck;
+		private PckViewPanel0 _totalViewPck;
 		private Palette _palette;
 		private Editor _editor;
 		private SharedSpace _share;
@@ -78,7 +78,7 @@ namespace PckView
 //			XConsole.AdZerg("Custom directory: "       + _share[SharedSpace.CustomDirectory].ToString());
 			#endregion
 
-			_totalViewPck = new TotalViewPck();
+			_totalViewPck = new PckViewPanel0();
 			_totalViewPck.Dock = DockStyle.Fill;
 			pViewer.Controls.Add(_totalViewPck);
 
@@ -696,7 +696,7 @@ namespace PckView
 				tabs.TabPages.Add(tp);
 
 				tp = new TabPage();
-				var tvNew = new TotalViewPck();
+				var tvNew = new PckViewPanel0();
 				tvNew.ContextMenu = BuildContextMenu();
 				tvNew.Dock = DockStyle.Fill;
 				tvNew.Collection = newCollection;

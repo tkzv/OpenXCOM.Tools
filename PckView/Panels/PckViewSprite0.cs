@@ -3,7 +3,7 @@
 
 namespace PckView.Panels
 {
-	internal sealed class ViewPckItem
+	internal sealed class PckViewSprite0
 	{
 		internal int X
 		{ get; set; }
