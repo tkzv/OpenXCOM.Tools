@@ -32,7 +32,7 @@ namespace PckView
 		private int _moveY;
 		private int _startY;
 
-		private readonly List<PckViewSprite0> _selectedItems;
+		private readonly List<PckViewSprite0> _sprites;
 
 		internal event MouseClickedEventHandler MouseClickedEvent;
 		internal event MouseMovedEventHandler MouseMovedEvent;
@@ -52,7 +52,7 @@ namespace PckView
 
 			_startY = 0;
 
-			_selectedItems = new List<PckViewSprite0>();
+			_sprites = new List<PckViewSprite0>();
 		}
 
 
@@ -92,7 +92,7 @@ namespace PckView
 
 		internal int PreferredHeight
 		{
-			get { return (_spritepack != null) ? CountPixelsVertical()
+			get { return (_spritepack != null) ? CountTilesVertical()
 											   : 0; }
 		}
 
@@ -102,7 +102,7 @@ namespace PckView
 			set
 			{
 				if ((_spritepack = value) != null)
-					Height = CountPixelsVertical();
+					Height = CountTilesVertical();
 
 				OnMouseDown(null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 				OnMouseMove(null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
@@ -111,21 +111,21 @@ namespace PckView
 			}
 		}
 
-		internal ReadOnlyCollection<PckViewSprite1> SelectedItems
+		internal ReadOnlyCollection<PckViewSprite1> Sprites
 		{
 			get
 			{
 				if (_spritepack != null)
 				{
-					var list = new List<PckViewSprite1>();
-					foreach (var selectedItem in _selectedItems)
+					var sprites = new List<PckViewSprite1>();
+					foreach (var sprite0 in _sprites)
 					{
-						var item = new PckViewSprite1();
-						item.Item = selectedItem;
-						item.Image = _spritepack[GetId(selectedItem)];
-						list.Add(item);
+						var sprite1 = new PckViewSprite1();
+						sprite1.Item = sprite0;
+						sprite1.Image = _spritepack[GetId(sprite0)];
+						sprites.Add(sprite1);
 					}
-					return list.AsReadOnly();
+					return sprites.AsReadOnly();
 				}
 				return null;
 			}
@@ -148,11 +148,11 @@ namespace PckView
 					_moveX = x;
 					_moveY = y;
 
-					if (_moveX >= CountPixelsHorizontal())
-						_moveX  = CountPixelsHorizontal() - 1;
+					if (_moveX >= CountTilesHorizontal())
+						_moveX  = CountTilesHorizontal() - 1;
 
 					if (MouseMovedEvent != null)
-						MouseMovedEvent(_moveY * CountPixelsHorizontal() + _moveX);
+						MouseMovedEvent(_moveX + _moveY * CountTilesHorizontal());
 				}
 			}
 		}
@@ -164,10 +164,10 @@ namespace PckView
 				var x =  e.X / GetSpecialWidth(_spritepack.ImageFile.ImageSize.Width);
 				var y = (e.Y - _startY) / (_spritepack.ImageFile.ImageSize.Height + Pad * 2);
 
-				if (x >= CountPixelsHorizontal())
-					x = CountPixelsHorizontal() - 1;
+				if (x >= CountTilesHorizontal())
+					x =  CountTilesHorizontal() - 1;
 
-				var id = y * CountPixelsHorizontal() + x;
+				var id = x + y * CountTilesHorizontal();
 
 				var selected = new PckViewSprite0();
 				selected.X = x;
@@ -179,7 +179,7 @@ namespace PckView
 					if (ModifierKeys == Keys.Control)
 					{
 						PckViewSprite0 existingItem = null;
-						foreach (var item in _selectedItems)
+						foreach (var item in _sprites)
 						{
 							if (item.X == x && item.Y == y)
 								existingItem = item;
@@ -187,15 +187,15 @@ namespace PckView
 
 						if (existingItem != null)
 						{
-							_selectedItems.Remove(existingItem);
+							_sprites.Remove(existingItem);
 						}
 						else
-							_selectedItems.Add(selected);
+							_sprites.Add(selected);
 					}
 					else
 					{
-						_selectedItems.Clear();
-						_selectedItems.Add(selected);
+						_sprites.Clear();
+						_sprites.Add(selected);
 					}
 
 					Refresh();
@@ -217,7 +217,7 @@ namespace PckView
 
 				var specialWidth = GetSpecialWidth(_spritepack.ImageFile.ImageSize.Width);
 
-				foreach (var selectedItem in _selectedItems)
+				foreach (var selectedItem in _sprites)
 				{
 //					if (_collection.ImageFile.FileOptions.BitDepth == 8 && _collection[0].Palette.Transparent.A == 0)
 //					{
@@ -239,7 +239,7 @@ namespace PckView
 //					}
 				}
 
-				int across = CountPixelsHorizontal();
+				int across = CountTilesHorizontal();
 
 				for (int i = 0; i < across + 1; ++i)
 					g.DrawLine(
@@ -270,62 +270,65 @@ namespace PckView
 
 		internal void RemoveSelected()
 		{
-			if (SelectedItems.Count != 0)
+			if (Sprites.Count != 0)
 			{
-				var lowestIndex = int.MaxValue;
+				var lowestId = int.MaxValue;
 
-				var indexList = new List<int>();
-				foreach (var item in SelectedItems)
-					indexList.Add(item.Item.Index);
+				var idList = new List<int>();
+				foreach (var sprite in Sprites)
+					idList.Add(sprite.Item.Index);
 
-				indexList.Sort();
-				indexList.Reverse();
+				idList.Sort();
+				idList.Reverse();
 
-				foreach (var index in indexList)
+				foreach (var id in idList)
 				{
-					if (index < lowestIndex)
-						lowestIndex = index;
+					if (id < lowestId)
+						lowestId = id;
 
-					SpritePack.Remove(index);
+					SpritePack.Remove(id);
 				}
 
-				if (lowestIndex > 0 && lowestIndex == SpritePack.Count)
-					lowestIndex = SpritePack.Count - 1;
+				if (lowestId > 0 && lowestId == SpritePack.Count)
+					lowestId = SpritePack.Count - 1;
 
-				ClearSelection(lowestIndex);
+				ClearSelection(lowestId);
 			}
 		}
 
-		private void ClearSelection(int lowestIndex)
+		private void ClearSelection(int lowestId)
 		{
-			_selectedItems.Clear();
+			_sprites.Clear();
 
 			if (SpritePack.Count != 0)
 			{
-				var selected = new PckViewSprite0();
-				selected.Y = lowestIndex / CountPixelsHorizontal();
-				selected.X = lowestIndex - selected.Y;
-				selected.Index = selected.Y * CountPixelsHorizontal() + selected.X;
+				int tilesHori = CountTilesHorizontal();
 
-				_selectedItems.Add(selected);
+				var sprite0 = new PckViewSprite0();
+				sprite0.Y = lowestId / tilesHori;
+				sprite0.X = lowestId - sprite0.Y;
+				sprite0.Index = sprite0.X + sprite0.Y * tilesHori;
+
+				_sprites.Add(sprite0);
 			}
 		}
 
-		private int CountPixelsHorizontal()
+		private int CountTilesHorizontal()
 		{
 			return Math.Max(
 						1,
 						(Width - 8) / (_spritepack.ImageFile.ImageSize.Width + Pad * 2));
 		}
 
-		private int CountPixelsVertical()
+		private int CountTilesVertical()
 		{
-			return (_spritepack.Count / CountPixelsHorizontal()) * (_spritepack.ImageFile.ImageSize.Height + Pad * 2) + 60;
+			return _spritepack.Count * (_spritepack.ImageFile.ImageSize.Height + Pad * 2)
+				 / CountTilesHorizontal() + 60;
 		}
 
-		private int GetId(PckViewSprite0 selectedItem)
+		private int GetId(PckViewSprite0 sprite0)
 		{
-			return selectedItem.X + selectedItem.Y * CountPixelsHorizontal();
+			return sprite0.X + sprite0.Y * CountTilesHorizontal();
 		}
 
 		private static int GetSpecialWidth(int width)

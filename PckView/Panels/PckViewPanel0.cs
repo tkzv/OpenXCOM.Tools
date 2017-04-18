@@ -99,7 +99,7 @@ namespace PckView
 
 		internal ReadOnlyCollection<PckViewSprite1> SelectedItems
 		{
-			get { return _viewPanel.SelectedItems; }
+			get { return _viewPanel.Sprites; }
 		}
 
 		internal void ChangeItem(int index, XCImage image)
