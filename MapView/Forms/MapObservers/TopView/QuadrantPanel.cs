@@ -39,7 +39,10 @@ namespace MapView.Forms.MapObservers.TopViews
 		public QuadrantPanel()
 		{
 			_mapTile = null;
-			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer
+				   | ControlStyles.AllPaintingInWmPaint
+				   | ControlStyles.UserPaint
+				   | ControlStyles.ResizeRedraw, true);
 
 			Globals.LoadExtras();
 

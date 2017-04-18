@@ -8,13 +8,13 @@ using XCom;
 
 namespace PckView
 {
-	internal delegate void PaletteClickEventHandler(int selectedId);
+	internal delegate void PaletteIndexChangedEventHandler(int selectedId);
 
-	internal enum SelectMode
-	{
-		Bar,
-		Single
-	};
+//	internal enum SelectMode
+//	{
+//		Bar,
+//		Single
+//	};
 
 
 	internal sealed class PalettePanel
@@ -34,23 +34,23 @@ namespace PckView
 		private int _clickX;
 		private int _clickY;
 
-		private SelectMode _mode = SelectMode.Single; // TODO: this never changes <-
+//		private SelectMode _mode = SelectMode.Single; // TODO: this never changes <-
 
 		internal const int Across = 16;
 
-		internal event PaletteClickEventHandler PaletteIndexChanged;
+		internal event PaletteIndexChangedEventHandler PaletteIndexChangedEvent;
 
 
 		internal PalettePanel()
 		{
-			SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer
+				   | ControlStyles.AllPaintingInWmPaint
+				   | ControlStyles.UserPaint
+				   | ControlStyles.ResizeRedraw, true);
 
 			_palette = null;
 
 			MouseDown += OnMouseDown;
-
-//			Width  = (width  + 2 * space) * NumAcross;
-//			Height = (height + 2 * space) * NumAcross;
 
 			_clickX = -100;
 			_clickY = -100;
@@ -64,7 +64,7 @@ namespace PckView
 			_width  = (Width  / Across) - 2 * Pad;
 			_height = (Height / Across) - 2 * Pad;
 
-			switch (_mode)
+/*			switch (_mode)
 			{
 				case SelectMode.Single:
 					_clickX = (_id % Across) * (_width + 2 * Pad);
@@ -73,7 +73,8 @@ namespace PckView
 				case SelectMode.Bar:
 					_clickX = 0;
 					break;
-			}
+			} */
+			_clickX = (_id % Across) * (_width  + 2 * Pad);
 			_clickY = (_id / Across) * (_height + 2 * Pad);
 
 			Refresh();
@@ -81,7 +82,7 @@ namespace PckView
 
 		private void OnMouseDown(object sender, MouseEventArgs e)
 		{
-			switch (_mode)
+/*			switch (_mode)
 			{
 				case SelectMode.Single:
 					_clickX = (e.X / (_width + 2 * Pad)) * (_width + 2 * Pad);
@@ -92,23 +93,25 @@ namespace PckView
 					_clickX = 0;
 					_id = (e.Y / (_height + 2 * Pad)) * Across;
 					break;
-			}
+			} */
+			_clickX = (e.X / (_width + 2 * Pad)) * (_width + 2 * Pad);
+			_id = (e.X / (_width + 2 * Pad)) + (e.Y / (_height + 2 * Pad)) * Across;
 
 			_clickY = (e.Y / (_height + 2 * Pad)) * (_height + 2 * Pad);
 
-			if (PaletteIndexChanged != null && _id < 256)
+			if (PaletteIndexChangedEvent != null && _id < 256)
 			{
-				PaletteIndexChanged(_id);
+				PaletteIndexChangedEvent(_id);
 				Refresh();
 			}
 		}
 
-		[DefaultValue(SelectMode.Single)]
-		[Category("Behavior")]
-		internal SelectMode Mode
-		{
-			get { return _mode; }
-		}
+//		[DefaultValue(SelectMode.Single)]
+//		[Category("Behavior")]
+//		internal SelectMode Mode
+//		{
+//			get { return _mode; }
+//		}
 
 		[DefaultValue(null)]
 		[Browsable(false)]
@@ -145,7 +148,7 @@ namespace PckView
 													_width, _height);
 					}
 
-				switch (_mode)
+/*				switch (_mode)
 				{
 					case SelectMode.Single:
 						g.DrawRectangle(
@@ -160,7 +163,11 @@ namespace PckView
 									_clickX, _clickY,
 									(_width + Pad * 2) * Across - 1, _height + Pad * 2 - 1);
 						break;
-				}
+				} */
+				g.DrawRectangle(
+							Pens.Red,
+							_clickX, _clickY,
+							_width + Pad * 2 - 1, _height + Pad * 2 - 1);
 			}
 		}
 	}

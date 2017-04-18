@@ -60,7 +60,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_mapPens    = new Dictionary<string, Pen>();
 			_mapBrushes = new Dictionary<string, SolidBrush>();
 
-			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer
+				   | ControlStyles.AllPaintingInWmPaint
+				   | ControlStyles.UserPaint
+				   | ControlStyles.ResizeRedraw, true);
 		}
 
 

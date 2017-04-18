@@ -16,9 +16,10 @@ namespace DSShared.Windows
 		/// </summary>
 		public DoubleBufferControl()
 		{
-			SetStyle(
-					ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer,
-					true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer
+				   | ControlStyles.AllPaintingInWmPaint
+				   | ControlStyles.UserPaint
+				   | ControlStyles.ResizeRedraw, true);
 		}
 
 
@@ -30,7 +31,7 @@ namespace DSShared.Windows
 			{
 				base.OnPaint(e);
 
-				e.Graphics.DrawLine(Pens.Black, 0, 0, Width, Height);
+				e.Graphics.DrawLine(Pens.Black, 0, 0,      Width, Height);
 				e.Graphics.DrawLine(Pens.Black, 0, Height, Width, 0);
 
 				ControlPaint.DrawBorder3D(

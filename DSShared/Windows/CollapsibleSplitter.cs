@@ -160,7 +160,10 @@ namespace DSShared.Windows
 			this.animationTimer.Interval = animationDelay;
 			this.animationTimer.Tick += new System.EventHandler(this.animationTimerTick);
 
-			SetStyle(ControlStyles.AllPaintingInWmPaint|ControlStyles.UserPaint|ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer
+				   | ControlStyles.AllPaintingInWmPaint
+				   | ControlStyles.UserPaint
+				   | ControlStyles.ResizeRedraw, true);
 
 			backBrush = new SolidBrush(BackColor);
 			backPen = new Pen(BackColor, 1);

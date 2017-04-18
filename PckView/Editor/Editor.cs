@@ -57,8 +57,8 @@ namespace PckView
 			_editorPanel.Left = 0; //_buttonsPanel.Right;
 
 			ClientSize = new Size(
-								EditorPane.PreferredWidth,//  + _buttonsPanel.PreferredWidth,
-								EditorPane.PreferredHeight + _trackBar.Height);
+								EditorPanel.PreferredWidth,//  + _buttonsPanel.PreferredWidth,
+								EditorPanel.PreferredHeight + _trackBar.Height);
 
 			_palView = new PaletteView();
 			_palView.Closing += OnPaletteClosing;
@@ -70,7 +70,7 @@ namespace PckView
 
 		private void OnScroll(object sender, EventArgs e)
 		{
-			_editorPanel.EditorPane.ScaleFactor =_trackBar.Value;
+			_editorPanel.ScaleFactor =_trackBar.Value;
 		}
 
 		internal Palette Palette
@@ -80,21 +80,7 @@ namespace PckView
 			{
 				_palView.Palette            =
 //				_buttonsPanel.Palette       =
-				_editorPanel.EditorPane.Palette = value;
-			}
-		}
-
-		private void ShowPaletteView()
-		{
-			miPalette.Checked = true;
-
-			if (_palView.Visible)
-				_palView.BringToFront();
-			else
-			{
-				_palView.Left = Right;
-				_palView.Top = Top;
-				_palView.Show();
+				_editorPanel.Palette = value;
 			}
 		}
 
@@ -127,7 +113,7 @@ namespace PckView
 			set
 			{
 //				_buttonsPanel.Image = value;
-				_editorPanel.EditorPane.Image = value;
+				_editorPanel.Image = value;
 				OnResize(null);
 			}
 		}
@@ -135,16 +121,27 @@ namespace PckView
 
 		private void OnShowPaletteClick(object sender, EventArgs e)
 		{
-			if (miPalette.Checked)
-				_palView.Close();
+			if (!miPalette.Checked)
+			{
+				miPalette.Checked = true;
+
+				if (!_palView.Visible)
+				{
+					_palView.Left = Right;
+					_palView.Top = Top;
+					_palView.Show();
+				}
+				else
+					_palView.BringToFront(); // NOTE: this doesn't actually make sense under '!miPalette.Checked'
+			}
 			else
-				ShowPaletteView();
+				_palView.Close(); // see OnPaletteClosing()
 		}
 
 		private void OnShowGridClick(object sender, EventArgs e)
 		{
 			miGrid.Checked = !miGrid.Checked;
-			_editorPanel.EditorPane.Grid = miGrid.Checked;
+			_editorPanel.Grid = miGrid.Checked;
 		}
 
 

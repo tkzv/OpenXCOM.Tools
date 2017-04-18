@@ -139,9 +139,10 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 		{
 //			_baseMap = null;
 
-			SetStyle(
-					ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint,
-					true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer
+				   | ControlStyles.AllPaintingInWmPaint
+				   | ControlStyles.UserPaint
+				   | ControlStyles.ResizeRedraw, true);
 
 			_colorGrid  = Color.FromArgb(175, 69, 100, 129);
 			_brushTrans = new SolidBrush(_colorGrid);

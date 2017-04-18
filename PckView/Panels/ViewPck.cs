@@ -41,9 +41,15 @@ namespace PckView
 		internal ViewPck()
 		{
 			Paint += OnPaint;
-			SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+
+			SetStyle(ControlStyles.OptimizedDoubleBuffer
+				   | ControlStyles.AllPaintingInWmPaint
+				   | ControlStyles.UserPaint
+				   | ControlStyles.ResizeRedraw, true);
+
 			MouseDown += OnMouseDown;
 			MouseMove += OnMouseMove;
+
 			_startY = 0;
 
 			_selectedItems = new List<ViewPckItem>();
