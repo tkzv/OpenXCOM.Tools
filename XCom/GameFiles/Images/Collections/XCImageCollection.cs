@@ -33,15 +33,14 @@ namespace XCom
 			}
 		}
 
-		private int _scale = 1;
-
-		public void HQ2X()
+//		private int _scale = 1;
+/*		public void HQ2X()
 		{
 			foreach (XCImage image in this)
 				image.HQ2X();
 
 			_scale *= 2;
-		}
+		} */
 
 		public new XCImage this[int id]
 		{

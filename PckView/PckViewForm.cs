@@ -84,8 +84,10 @@ namespace PckView
 
 			_totalViewPck.ViewPanel.DoubleClick += OnDoubleClick;
 			_totalViewPck.MouseClickedEvent += OnViewClick;
-			_totalViewPck.ImageCollectionSetEvent += OnImageCollectionSet;
+			_totalViewPck.ImageCollectionChangedEvent += OnImageCollectionChanged;
+
 			_totalViewPck.ContextMenu = BuildContextMenu();
+
 
 			miSave.Visible = false;
 
@@ -102,14 +104,15 @@ namespace PckView
 			AddPalette(Palette.TftdResearch, miPaletteMenu);
 
 			_palette = Palette.UfoBattle;
+			_palette.EnableTransparency(true);
+
 			_paletteDictionary[_palette].Checked = true;
+
 			_totalViewPck.Pal = _palette;
 
 			_editor = new Editor(null);
 			_editor.Closing += OnEditorClosing;
-
-			if (_editor != null)
-				_editor.Palette = _palette;
+			_editor.Palette = _palette;
 
 
 			var regInfo = new RegistryInfo(this, "PckView");	// subscribe to Load and Closing events.
@@ -158,7 +161,7 @@ namespace PckView
 		}
 
 
-		private void OnImageCollectionSet(object sender, ImageCollectionSetEventArgs e)
+		private void OnImageCollectionChanged(object sender, ImageCollectionChangedEventArgs e)
 		{
 			bool enabled = (e.Collection != null);
 
@@ -337,7 +340,7 @@ namespace PckView
 				if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 				{
 					string pfePck = ofd.FileName;
-					LoadPckFile(pfePck);
+					LoadPckFile(pfePck, false);
 				}
 			}
 		}
@@ -349,7 +352,7 @@ namespace PckView
 		/// <param name="pfePck">fullpath of a PCK file; check existence of file
 		/// before call</param>
 		/// <param name="help">true to show help-splash for a call from MapView</param>
-		public void LoadPckFile(string pfePck, bool help = false)
+		public void LoadPckFile(string pfePck, bool help)
 		{
 			string pfeTab = pfePck.Substring(0, pfePck.Length - 4);
 			pfeTab += PckSpriteCollection.TabExt;
@@ -523,10 +526,10 @@ namespace PckView
 
 		private void OnTransparencyClick(object sender, EventArgs e)
 		{
-			_palette.SetTransparent(miTransparent.Checked = !miTransparent.Checked);
-
+			_palette.EnableTransparency(miTransparent.Checked = !miTransparent.Checked);
 			_totalViewPck.Collection.Pal = _palette;
-			Refresh();
+
+			_totalViewPck.Refresh();
 		}
 
 		private void OnAboutClick(object sender, EventArgs e)

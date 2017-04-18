@@ -9,7 +9,7 @@ using XCom.Interfaces;
 namespace PckView
 {
 	/// <summary>
-	/// Summary description for EditorPane.
+	/// EditorPane class.
 	/// </summary>
 	internal sealed class EditorPane
 		:
@@ -18,7 +18,6 @@ namespace PckView
 		private XCImage _image;
 		internal XCImage Image
 		{
-//			get { return _image; }
 			set
 			{
 				_image = value;
@@ -29,11 +28,10 @@ namespace PckView
 		private Palette _palette;
 		internal Palette Palette
 		{
-//			get { return _palette; }
 			set
 			{
 				_palette = value;
-				if (_image!=null)
+				if (_image != null)
 				{
 					_image.Image.Palette = _palette.Colors;
 					Refresh();
@@ -41,29 +39,12 @@ namespace PckView
 			}
 		}
 
-		private bool _lines;
-		internal bool Lines
+		private bool _grid;
+		internal bool Grid
 		{
-//			get { return _lines; }
 			set
 			{
-				_lines = value;
-				Refresh();
-			}
-		}
-
-		private const int Square = 1;
-
-//		private int _width;
-//		private int _height;
-
-		private double _scale = 1.0;
-		internal double ScaleDontHide
-		{
-			get { return _scale; }
-			set
-			{
-				_scale = value;
+				_grid = value;
 				Refresh();
 			}
 		}
@@ -74,11 +55,6 @@ namespace PckView
 			SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 
 			_image = image;
-//			pal = null;
-//			lines = false;
-
-//			_width  = PckImage.Width  * Square;
-//			_height = PckImage.Height * Square;
 		}
 
 
@@ -92,41 +68,53 @@ namespace PckView
 			get { return PckImage.Height * 10; }
 		}
 
+		private const int Square = 1;
+
+		private int _scale = 10;
+		internal int ScaleFactor
+		{
+			set
+			{
+				_scale = value;
+				Refresh();
+			}
+		}
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			Graphics g = e.Graphics;
 			int width  = _image.Image.Width;
 			int height = _image.Image.Height;
 
+			int factor = Square * _scale;
+
 			for (int y = 0; y != height; ++y)
 				for (int x = 0; x != width; ++x)
 					g.FillRectangle(
 								new SolidBrush(_image.Image.GetPixel(x, y)),
-								x * (int)(Square * _scale),
-								y * (int)(Square * _scale),
-								(int)(Square * _scale),
-								(int)(Square * _scale));
+								x * factor,
+								y * factor,
+								    factor,
+								    factor);
 
-			if (_lines)
+			if (_grid)
 			{
 				for (int x = 0; x != width + 1; ++x)
 					g.DrawLine(
 							Pens.Black,
-							x * (int)(Square * _scale),
+							x      * factor,
 							0,
-							x * (int)(Square * _scale),
-							height * (int)(Square * _scale));
+							x      * factor,
+							height * factor);
 
 				for (int y = 0; y != height + 1; ++y)
 					g.DrawLine(
 							Pens.Black,
 							0,
-							y * (int)(Square * _scale),
-							width * (int)(Square * _scale),
-							y * (int)(Square * _scale));
+							y     * factor,
+							width * factor,
+							y     * factor);
 			}
 		}
-
-//		public void SelectColor(int index) {}
 	}
 }

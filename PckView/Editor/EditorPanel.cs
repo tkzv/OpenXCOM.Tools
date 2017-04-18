@@ -11,24 +11,24 @@ namespace PckView
 		:
 			Panel
 	{
-		private readonly EditorPane _editPane;
-		internal EditorPane Editor
+		private readonly EditorPane _editorPane;
+		internal EditorPane EditorPane
 		{
-			get { return _editPane; }
+			get { return _editorPane; }
 		}
 
 
-		internal EditorPanel(XCImage img)
+		internal EditorPanel(XCImage image)
 		{
-			_editPane = new EditorPane(img);
-			_editPane.Location = new Point(0, 0);
-			Controls.Add(_editPane);
+			_editorPane = new EditorPane(image);
+			_editorPane.Location = new Point(0, 0);
+			Controls.Add(_editorPane);
 		}
 
 
 		protected override void OnResize(EventArgs eventargs)
 		{
-			_editPane.Size = ClientSize;
+			_editorPane.Size = ClientSize;
 		}
 	}
 }

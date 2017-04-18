@@ -16,6 +16,10 @@ namespace PckView
 		:
 			Panel
 	{
+		internal event MouseClickedEventHandler MouseClickedEvent;
+		internal event ImageCollectionSetHandler ImageCollectionChangedEvent;
+
+
 		private readonly ViewPck _viewPanel;
 		internal ViewPck ViewPanel
 		{
@@ -30,8 +34,18 @@ namespace PckView
 		private int _click;
 		private int _move;
 
-		internal event MouseClickedEventHandler MouseClickedEvent;
-		internal event ImageCollectionSetHandler ImageCollectionSetEvent;
+		internal Palette Pal
+		{
+			get { return _viewPanel != null ? _viewPanel.Pal : null; }
+			set
+			{
+				if (_viewPanel != null)
+				{
+					_viewPanel.Pal = value;
+					Console.WriteLine("Pal set: " + value.ToString());
+				}
+			}
+		}
 
 
 		internal TotalViewPck()
@@ -66,21 +80,9 @@ namespace PckView
 			this.Controls.AddRange(new Control[] { _statusBar, _scrollBar, _viewPanel });
 
 			_viewPanel.SizeChanged += OnSizeChanged;
-			OnResize(null); // FIX: "Virtual member call in constructor."
+			OnResize(null);
 		}
 
-		internal Palette Pal
-		{
-			get { return _viewPanel != null ? _viewPanel.Pal : null; }
-			set
-			{
-				if (_viewPanel != null)
-				{
-					_viewPanel.Pal = value;
-					Console.WriteLine("Pal set: " + value.ToString());
-				}
-			}
-		}
 
 		protected override void OnResize(EventArgs eventargs)
 		{
@@ -121,13 +123,13 @@ namespace PckView
 					else
 						_statusBPP.Text = String.Empty;
 
-					if (ImageCollectionSetEvent != null)
-						ImageCollectionSetEvent(this, new ImageCollectionSetEventArgs(value));
+					if (ImageCollectionChangedEvent != null)
+						ImageCollectionChangedEvent(this, new ImageCollectionChangedEventArgs(value));
 				}
 				catch (Exception ex)
 				{
-					if (ImageCollectionSetEvent != null)
-						ImageCollectionSetEvent(this, new ImageCollectionSetEventArgs(null));
+					if (ImageCollectionChangedEvent != null)
+						ImageCollectionChangedEvent(this, new ImageCollectionChangedEventArgs(null));
 
 					throw ex;
 				}
@@ -180,10 +182,10 @@ namespace PckView
 			_statusOverTile.Text = "Selected: " + _click + " Over: " + _move;
 		}
 
-		internal void Hq2x()
+/*		internal void Hq2x()
 		{
 			_viewPanel.Hq2x();
-		}
+		} */
 
 		internal void RemoveSelected()
 		{
@@ -193,13 +195,13 @@ namespace PckView
 
 
 	/// <summary>
-	/// EventArgs for ImageCollectionSet.
+	/// EventArgs for ImageCollectionChanged.
 	/// </summary>
-	internal sealed class ImageCollectionSetEventArgs
+	internal sealed class ImageCollectionChangedEventArgs
 	{
 		private readonly XCImageCollection _collection;
 
-		internal ImageCollectionSetEventArgs(XCImageCollection collection)
+		internal ImageCollectionChangedEventArgs(XCImageCollection collection)
 		{
 			_collection = collection;
 		}
@@ -210,5 +212,5 @@ namespace PckView
 		}
 	}
 
-	internal delegate void ImageCollectionSetHandler(object sender, ImageCollectionSetEventArgs e);
+	internal delegate void ImageCollectionSetHandler(object sender, ImageCollectionChangedEventArgs e);
 }

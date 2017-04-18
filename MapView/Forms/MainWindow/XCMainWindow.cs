@@ -159,10 +159,10 @@ namespace MapView
 			LogFile.WriteLine("MainView panel instantiated.");
 
 
-			Palette.UfoBattle.SetTransparent(true);
-			Palette.TftdBattle.SetTransparent(true);
-			Palette.UfoBattle.Grayscale.SetTransparent(true);
-			Palette.TftdBattle.Grayscale.SetTransparent(true);
+			Palette.UfoBattle.EnableTransparency(true);
+			Palette.TftdBattle.EnableTransparency(true);
+			Palette.UfoBattle.Grayscale.EnableTransparency(true);
+			Palette.TftdBattle.Grayscale.EnableTransparency(true);
 			LogFile.WriteLine("Palette transparencies set.");
 
 

@@ -17,7 +17,7 @@ namespace PckView
 	};
 
 
-	internal sealed class PalPanel
+	internal sealed class PalettePanel
 		:
 			Panel
 	{
@@ -34,24 +34,28 @@ namespace PckView
 		private int _clickX;
 		private int _clickY;
 
-		private SelectMode _mode;
+		private SelectMode _mode = SelectMode.Single; // TODO: this never changes <-
 
 		internal const int Across = 16;
 
 		internal event PaletteClickEventHandler PaletteIndexChanged;
 
 
-		internal PalPanel()
+		internal PalettePanel()
 		{
-			this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+
 			_palette = null;
-			this.MouseDown += mouseDown;
+
+			MouseDown += OnMouseDown;
+
 //			Width  = (width  + 2 * space) * NumAcross;
 //			Height = (height + 2 * space) * NumAcross;
+
 			_clickX = -100;
 			_clickY = -100;
+
 			_id = -1;
-			_mode = SelectMode.Single;
 		}
 
 
@@ -75,7 +79,7 @@ namespace PckView
 			Refresh();
 		}
 
-		private void mouseDown(object sender, MouseEventArgs e)
+		private void OnMouseDown(object sender, MouseEventArgs e)
 		{
 			switch (_mode)
 			{
@@ -104,7 +108,6 @@ namespace PckView
 		internal SelectMode Mode
 		{
 			get { return _mode; }
-//			set { mode = value; }
 		}
 
 		[DefaultValue(null)]
@@ -122,6 +125,7 @@ namespace PckView
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
+
 			if (_palette != null)
 			{
 				Graphics g = e.Graphics;
@@ -129,11 +133,11 @@ namespace PckView
 				for (int
 						i = 0, y = Pad;
 						i < Across;
-						i++, y += _height + 2 * Pad)
+						++i, y += _height + Pad * 2)
 					for (int
 							j = 0, x = Pad;
 							j < Across;
-							j++, x += _width + 2 * Pad)
+							++j, x += _width + Pad * 2)
 					{
 						g.FillRectangle(new SolidBrush(
 													_palette[i * Across + j]),
@@ -147,14 +151,14 @@ namespace PckView
 						g.DrawRectangle(
 									Pens.Red, // _brush
 									_clickX, _clickY,
-									_width + 2 * Pad - 1, _height + 2 * Pad - 1);
+									_width + Pad * 2 - 1, _height + Pad * 2 - 1);
 						break;
 
 					case SelectMode.Bar:
 						g.DrawRectangle(
 									Pens.Red, // _brush
 									_clickX, _clickY,
-									(_width + 2 * Pad) * Across - 1, _height + 2 * Pad - 1);
+									(_width + Pad * 2) * Across - 1, _height + Pad * 2 - 1);
 						break;
 				}
 			}

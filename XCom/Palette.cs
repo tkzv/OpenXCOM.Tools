@@ -258,13 +258,13 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// Sets the palette-id that will be used for transparency.
+		/// Enables or disables transparency for the TransparentId palette-id.
 		/// </summary>
-		/// <param name="zero">true to use #0 palette id; else use #255</param>
-		public void SetTransparent(bool zero)
+		/// <param name="transparent">true to enable the transparent-id</param>
+		public void EnableTransparency(bool transparent)
 		{
-			_colors.Entries[TransparentId] = (zero) ? Color.FromArgb(  0, _colors.Entries[TransparentId])
-													: Color.FromArgb(255, _colors.Entries[TransparentId]);
+			_colors.Entries[TransparentId] = (transparent) ? Color.FromArgb(  0, _colors.Entries[TransparentId])
+														   : Color.FromArgb(255, _colors.Entries[TransparentId]);
 		}
 
 		public override string ToString()

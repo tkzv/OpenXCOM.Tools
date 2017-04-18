@@ -14,7 +14,7 @@ namespace PckView
 			lblHelp.Text = GetHelpText();
 		}
 
-		private string GetHelpText()
+		private static string GetHelpText()
 		{
 			return
 				"Right-click an image to save/replace/delete/etc individual images."
@@ -27,7 +27,7 @@ namespace PckView
 					"have been encoded into each BMP that gets saved, so use only " +
 					"those colors." + Environment.NewLine + Environment.NewLine
 				+ "If you find a bug in the program, and can reproduce it reliably, " +
-					"clone the repo at GitHub and fix it. Let others know about it.";
+					"clone the repo at GitHub and fix it.";
 		}
 	}
 }

@@ -16,18 +16,23 @@ namespace PckView
 //		public event EventHandler PalViewClosing;
 
 
-		private readonly EditorPanel _editPanel;
+		private readonly EditorPanel _editorPanel;
+		private PaletteView _palView;
+		private TrackBar _trackBar;
+//		private ButtonPanel _buttonsPanel;
 
 
 		internal Editor(PckImage image)
 		{
-			_editPanel    = new EditorPanel(image);
-			_buttonsPanel = new ButtonPanel();
+			_editorPanel  = new EditorPanel(image);
+//			_buttonsPanel = new ButtonPanel();
 			_trackBar     = new TrackBar();
-
 
 			_trackBar.Minimum = 1;
 			_trackBar.Maximum = 10;
+
+			_trackBar.Value = _trackBar.Maximum;
+
 
 			InitializeComponent();
 
@@ -38,24 +43,24 @@ namespace PckView
 			MaximumSize = size; // fu.net
 
 
-			Controls.Add(_editPanel);
-			Controls.Add(_buttonsPanel);
+			Controls.Add(_editorPanel);
+//			Controls.Add(_buttonsPanel);
 			Controls.Add(_trackBar);
 
-			_buttonsPanel.Location = new Point(0, 0);
-			_buttonsPanel.Width = _buttonsPanel.PreferredWidth;
+//			_buttonsPanel.Location = new Point(0, 0);
+//			_buttonsPanel.Width = _buttonsPanel.PreferredWidth;
 
-			_trackBar.Left = _buttonsPanel.Right;
-			_trackBar.Top  = _buttonsPanel.Top;
+			_trackBar.Left = 10; //_buttonsPanel.Right;
+			_trackBar.Top  = 5;  //_buttonsPanel.Top;
 
-			_editPanel.Top  = _trackBar.Bottom;
-			_editPanel.Left = _buttonsPanel.Right;
+			_editorPanel.Top  = _trackBar.Bottom;
+			_editorPanel.Left = 0; //_buttonsPanel.Right;
 
 			ClientSize = new Size(
-								EditorPane.PreferredWidth  + _buttonsPanel.PreferredWidth,
+								EditorPane.PreferredWidth,//  + _buttonsPanel.PreferredWidth,
 								EditorPane.PreferredHeight + _trackBar.Height);
 
-			_palView = new PalView();
+			_palView = new PaletteView();
 			_palView.Closing += OnPaletteClosing;
 
 //			_palView.PaletteIndexChanged += _editPanel.Editor.SelectColor; // does nothing.
@@ -65,7 +70,7 @@ namespace PckView
 
 		private void OnScroll(object sender, EventArgs e)
 		{
-			_editPanel.Editor.ScaleDontHide =_trackBar.Value;
+			_editorPanel.EditorPane.ScaleFactor =_trackBar.Value;
 		}
 
 		internal Palette Palette
@@ -73,14 +78,16 @@ namespace PckView
 //			get { return _editPanel.Editor.Palette; }
 			set
 			{
-				_palView.Palette          =
-				_buttonsPanel.Palette     =
-				_editPanel.Editor.Palette = value;
+				_palView.Palette            =
+//				_buttonsPanel.Palette       =
+				_editorPanel.EditorPane.Palette = value;
 			}
 		}
 
 		private void ShowPaletteView()
 		{
+			miPalette.Checked = true;
+
 			if (_palView.Visible)
 				_palView.BringToFront();
 			else
@@ -89,14 +96,14 @@ namespace PckView
 				_palView.Top = Top;
 				_palView.Show();
 			}
-			showPalette.Checked = true;
 		}
 
 		private void OnPaletteClosing(object sender, CancelEventArgs e)
 		{
+			miPalette.Checked = false;
+
 			e.Cancel = true;
 			_palView.Hide();
-			showPalette.Checked = false;
 
 //			if (PalViewClosing != null)
 //				PalViewClosing(this, new EventArgs());
@@ -104,14 +111,14 @@ namespace PckView
 
 		protected override void OnResize(EventArgs e)
 		{
-			_editPanel.Width  = ClientSize.Width  - _buttonsPanel.PreferredWidth;
-			_editPanel.Height = ClientSize.Height - _trackBar.Height;
+			_editorPanel.Width  = ClientSize.Width;//  - _buttonsPanel.PreferredWidth;
+			_editorPanel.Height = ClientSize.Height - _trackBar.Height;
 
-			_buttonsPanel.Height = ClientSize.Height;
-			_trackBar.Width = _editPanel.Width;
+//			_buttonsPanel.Height = ClientSize.Height;
+			_trackBar.Width = _editorPanel.Width;
 
-			_editPanel.Left = _buttonsPanel.Right;
-			_trackBar.Left = _editPanel.Left;
+			_editorPanel.Left = 0;// _buttonsPanel.Right;
+			_trackBar.Left = _editorPanel.Left;
 		}
 
 		internal XCImage Image
@@ -120,7 +127,7 @@ namespace PckView
 			set
 			{
 //				_buttonsPanel.Image = value;
-				_editPanel.Editor.Image = value;
+				_editorPanel.EditorPane.Image = value;
 				OnResize(null);
 			}
 		}
@@ -128,16 +135,16 @@ namespace PckView
 
 		private void OnShowPaletteClick(object sender, EventArgs e)
 		{
-			if (showPalette.Checked)
+			if (miPalette.Checked)
 				_palView.Close();
 			else
 				ShowPaletteView();
 		}
 
-		private void OnShowLinesClick(object sender, EventArgs e)
+		private void OnShowGridClick(object sender, EventArgs e)
 		{
-			showLines.Checked =! showLines.Checked;
-			_editPanel.Editor.Lines = showLines.Checked;
+			miGrid.Checked = !miGrid.Checked;
+			_editorPanel.EditorPane.Grid = miGrid.Checked;
 		}
 
 
@@ -161,44 +168,44 @@ namespace PckView
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.menu = new System.Windows.Forms.MainMenu(this.components);
-			this.paletteMain = new System.Windows.Forms.MenuItem();
-			this.showPalette = new System.Windows.Forms.MenuItem();
-			this.linesItem = new System.Windows.Forms.MenuItem();
-			this.showLines = new System.Windows.Forms.MenuItem();
+			this.mmMainMenu = new System.Windows.Forms.MainMenu(this.components);
+			this.miPaletteMenu = new System.Windows.Forms.MenuItem();
+			this.miPalette = new System.Windows.Forms.MenuItem();
+			this.miGridMenu = new System.Windows.Forms.MenuItem();
+			this.miGrid = new System.Windows.Forms.MenuItem();
 			this.SuspendLayout();
 			// 
-			// menu
+			// mmMainMenu
 			// 
-			this.menu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.paletteMain,
-			this.linesItem});
+			this.mmMainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miPaletteMenu,
+			this.miGridMenu});
 			// 
-			// paletteMain
+			// miPaletteMenu
 			// 
-			this.paletteMain.Index = 0;
-			this.paletteMain.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.showPalette});
-			this.paletteMain.Text = "Palette";
+			this.miPaletteMenu.Index = 0;
+			this.miPaletteMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miPalette});
+			this.miPaletteMenu.Text = "Palette";
 			// 
-			// showPalette
+			// miPalette
 			// 
-			this.showPalette.Index = 0;
-			this.showPalette.Text = "Show";
-			this.showPalette.Click += new System.EventHandler(this.OnShowPaletteClick);
+			this.miPalette.Index = 0;
+			this.miPalette.Text = "Show";
+			this.miPalette.Click += new System.EventHandler(this.OnShowPaletteClick);
 			// 
-			// linesItem
+			// miGridMenu
 			// 
-			this.linesItem.Index = 1;
-			this.linesItem.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.showLines});
-			this.linesItem.Text = "Lines";
+			this.miGridMenu.Index = 1;
+			this.miGridMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miGrid});
+			this.miGridMenu.Text = "Lines";
 			// 
-			// showLines
+			// miGrid
 			// 
-			this.showLines.Index = 0;
-			this.showLines.Text = "Show";
-			this.showLines.Click += new System.EventHandler(this.OnShowLinesClick);
+			this.miGrid.Index = 0;
+			this.miGrid.Text = "Show";
+			this.miGrid.Click += new System.EventHandler(this.OnShowGridClick);
 			// 
 			// Editor
 			// 
@@ -206,7 +213,7 @@ namespace PckView
 			this.ClientSize = new System.Drawing.Size(292, 274);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(300, 300);
-			this.Menu = this.menu;
+			this.Menu = this.mmMainMenu;
 			this.Name = "Editor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Editor";
@@ -216,13 +223,10 @@ namespace PckView
 		#endregion
 
 		private System.ComponentModel.IContainer components;
-		private PalView _palView;
-		private MainMenu menu;
-		private MenuItem paletteMain;
-		private MenuItem showPalette;
-		private ButtonPanel _buttonsPanel;
-		private MenuItem linesItem;
-		private MenuItem showLines;
-		private TrackBar _trackBar;
+		private MainMenu mmMainMenu;
+		private MenuItem miPaletteMenu;
+		private MenuItem miPalette;
+		private MenuItem miGridMenu;
+		private MenuItem miGrid;
 	}
 }

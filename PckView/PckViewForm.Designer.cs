@@ -50,7 +50,6 @@ namespace PckView
 			this.miModList = new System.Windows.Forms.MenuItem();
 			this.miConsole = new System.Windows.Forms.MenuItem();
 			this.miMapViewHelp = new System.Windows.Forms.MenuItem();
-			this.ofdOpen = new System.Windows.Forms.OpenFileDialog();
 			this.sfdBmpSingle = new System.Windows.Forms.SaveFileDialog();
 			this.ofdBmp = new System.Windows.Forms.OpenFileDialog();
 			this.pViewer = new System.Windows.Forms.Panel();
@@ -155,6 +154,7 @@ namespace PckView
 			// 
 			// miTransparent
 			// 
+			this.miTransparent.Checked = true;
 			this.miTransparent.Index = 0;
 			this.miTransparent.Text = "&On";
 			this.miTransparent.Click += new System.EventHandler(this.OnTransparencyClick);
@@ -277,7 +277,6 @@ namespace PckView
 		private System.Windows.Forms.MenuItem miFileMenu;
 		private System.Windows.Forms.MenuItem miOpen;
 		private System.Windows.Forms.MenuItem miQuit;
-		private System.Windows.Forms.OpenFileDialog ofdOpen;
 		private System.Windows.Forms.SaveFileDialog sfdBmpSingle;
 		private System.Windows.Forms.MenuItem miBytes;
 		private System.Windows.Forms.MenuItem miBytesMenu;

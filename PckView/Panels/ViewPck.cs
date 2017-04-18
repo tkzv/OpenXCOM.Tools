@@ -26,7 +26,7 @@ namespace PckView
 		private const int Pad = 2;
 
 //		private Color _goodColor = Color.FromArgb(204, 204, 255);
-		private SolidBrush _goodBrush = new SolidBrush(Color.FromArgb(204, 204, 255));
+//		private SolidBrush _goodBrush = new SolidBrush(Color.FromArgb(204, 204, 255));
 
 		private int _moveX;
 		private int _moveY;
@@ -60,10 +60,10 @@ namespace PckView
 			Bmp.SendToSaver(file, _collection, pal, numAcross(), 1);
 		} */
 
-		internal void Hq2x()
+/*		internal void Hq2x()
 		{
 			_collection.HQ2X();
-		}
+		} */
 
 		internal Palette Pal
 		{

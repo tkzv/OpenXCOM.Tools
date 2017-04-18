@@ -162,10 +162,11 @@ namespace XCom.Interfaces
 			:
 				this(0, 0)
 		{}
+	}
 
 
 		// From HERE TO THE END OF THIS CLASS will Crash and Burn.
-
+/*
 		/// <summary>
 		/// Calls LoadFile with ImageSize.Width and ImageSize.Height.
 		/// </summary>
@@ -268,7 +269,7 @@ namespace XCom.Interfaces
 		{
 			throw new Exception("muahahahha XCImageFile.SaveCollection DOES NOTHING (except clock CPU cycles)!");
 		}
-	}
+*/
 
 
 /*	/// <summary>

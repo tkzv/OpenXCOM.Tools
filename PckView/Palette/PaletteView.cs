@@ -7,23 +7,24 @@ using XCom;
 namespace PckView
 {
 	/// <summary>
-	/// Summary description for PalView.
+	/// PalView form.
 	/// </summary>
-	internal sealed class PalView
+	internal sealed class PaletteView
 		:
 			System.Windows.Forms.Form
 	{
 		internal event PaletteClickEventHandler PaletteIndexChanged;
 
 
-		private PalPanel _palPanel;
+		private PalettePanel _palPanel;
 		private System.Windows.Forms.Label _status;
 
 
-		internal PalView()
+		internal PaletteView()
 		{
 			InitializeComponent();
-			OnResize(null); // TODO: Fix "Virtual member call in a constructor."
+
+			OnResize(null);
 		}
 
 
@@ -39,7 +40,7 @@ namespace PckView
 					break;
 
 				case SelectMode.Bar:
-					_status.Text = "Clicked range: " + id + " - " + (id + PalPanel.Across - 1);
+					_status.Text = "Clicked range: " + id + " - " + (id + PalettePanel.Across - 1);
 					break;
 			}
 
@@ -103,7 +104,7 @@ namespace PckView
 		private void InitializeComponent()
 		{
 			this._status = new System.Windows.Forms.Label();
-			this._palPanel = new PckView.PalPanel();
+			this._palPanel = new PckView.PalettePanel();
 			this.SuspendLayout();
 			//
 			// status

@@ -34,9 +34,11 @@ namespace PckView
 			// 
 			// lblHelp
 			// 
-			this.lblHelp.Location = new System.Drawing.Point(5, 0);
+			this.lblHelp.Location = new System.Drawing.Point(0, 0);
+			this.lblHelp.Margin = new System.Windows.Forms.Padding(0);
 			this.lblHelp.Name = "lblHelp";
-			this.lblHelp.Size = new System.Drawing.Size(345, 175);
+			this.lblHelp.Padding = new System.Windows.Forms.Padding(3, 3, 3, 0);
+			this.lblHelp.Size = new System.Drawing.Size(355, 175);
 			this.lblHelp.TabIndex = 0;
 			// 
 			// Help
