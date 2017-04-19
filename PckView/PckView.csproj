@@ -137,8 +137,7 @@
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ImageBytes\BytesFormHelper.cs" />
-    <Compile Include="Panels\PckViewSprite0.cs" />
-    <Compile Include="Panels\PckViewSprite1.cs" />
+    <Compile Include="Panels\SpriteSelected.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

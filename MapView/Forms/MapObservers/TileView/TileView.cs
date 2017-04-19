@@ -331,7 +331,7 @@ namespace MapView.Forms.MapObservers.TileViews
 						{
 							var pckPack = imageInfo.GetPckPack();
 							f.SelectedPalette = pckPack.Pal.Label;
-							f.LoadPckFile(pfePck, true);
+							f.LoadSpriteCollectionFile(pfePck, true);
 
 							var parent = FindForm();
 

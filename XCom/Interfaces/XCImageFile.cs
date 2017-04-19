@@ -31,6 +31,27 @@ namespace XCom.Interfaces
 		public System.Drawing.Size ImageSize
 		{ get; protected set; }
 
+		/// <summary>
+		/// It is not recommended to instantiate objects of this type directly.
+		/// See PckView.XCProfile for a generic implementation that does not
+		/// throw runtime exceptions
+		/// </summary>
+		/// <param name="width">default width</param>
+		/// <param name="height">default height</param>
+		public XCImageFile(int width, int height)
+		{
+			ImageSize = new System.Drawing.Size(width, height);
+//			_brief = this.GetType().ToString();
+		}
+		/// <summary>
+		/// Creates an object of this class with width and height of 0.
+		/// </summary>
+		public XCImageFile()
+			:
+				this(0, 0)
+		{}
+	}
+
 /*		private XCFileOptions _fileOptions = new XCFileOptions();
 		/// <summary>
 		/// Flags that tell the OS where each filetype should be displayed.
@@ -40,50 +61,50 @@ namespace XCom.Interfaces
 			get { return _fileOptions; }
 		} */
 
-		private string _ext = ".default";
-		/// <summary>
-		/// Gets/Sets the file-extension.
-		/// </summary>
-		public string FileExtension
-		{
-			get { return _ext; }
-			protected set { _ext = value; }
-		}
+//		private string _ext = ".def";
+//		/// <summary>
+//		/// Gets/Sets the file-extension.
+//		/// </summary>
+//		public string FileExtension
+//		{
+//			get { return _ext; }
+//			protected set { _ext = value; }
+//		}
 
-		private string _desc = "Default Description";
-		/// <summary>
-		/// Gets/Sets a description of this filetype.
-		/// </summary>
-		public string Description
-		{
-			get { return _desc; }
-			protected set { _desc = value; }
-		}
+//		private string _desc = "Default Description";
+//		/// <summary>
+//		/// Gets/Sets a description of this filetype.
+//		/// </summary>
+//		public string Description
+//		{
+//			get { return _desc; }
+//			protected set { _desc = value; }
+//		}
 
-		private string _author = "Default Author";
-		/// <summary>
-		/// Gets/Sets who wrote this filetype.
-		/// </summary>
-		public string Author
-		{
-			get { return _author; }
-			protected set { _author = value; }
-		}
+//		private string _author = "Default Author";
+//		/// <summary>
+//		/// Gets/Sets who wrote this filetype.
+//		/// </summary>
+//		public string Author
+//		{
+//			get { return _author; }
+//			protected set { _author = value; }
+//		}
 
-		/// <summary>
-		/// The complete file.extension that this object will open. If null,
-		/// then this object will open files based on the FileExtension property.
-		/// </summary>
-		public string SingleFile
-		{ get; protected set; }
+//		/// <summary>
+//		/// The complete file.extension that this object will open. If null,
+//		/// then this object will open files based on the FileExtension property.
+//		/// </summary>
+//		public string SingleFile
+//		{ get; protected set; }
 
-		public enum Filter
-		{
-			Save,
-			Open,
-			Custom,
-			Bmp
-		};
+//		public enum Filter
+//		{
+//			Save,
+//			Open,
+//			Custom,
+//			Bmp
+//		};
 
 /*		#region IDialogFilter implementation
 		private string _brief = "Default Brief";
@@ -141,28 +162,6 @@ namespace XCom.Interfaces
 		public void Unload()
 		{}
 		#endregion */
-
-
-		/// <summary>
-		/// It is not recommended to instantiate objects of this type directly.
-		/// See PckView.XCProfile for a generic implementation that does not
-		/// throw runtime exceptions
-		/// </summary>
-		/// <param name="width">default width</param>
-		/// <param name="height">default height</param>
-		public XCImageFile(int width, int height)
-		{
-			ImageSize = new System.Drawing.Size(width, height);
-//			_brief = this.GetType().ToString();
-		}
-		/// <summary>
-		/// Creates an object of this class with width and height of 0.
-		/// </summary>
-		public XCImageFile()
-			:
-				this(0, 0)
-		{}
-	}
 
 
 		// From HERE TO THE END OF THIS CLASS will Crash and Burn.

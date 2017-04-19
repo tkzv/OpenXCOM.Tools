@@ -127,8 +127,8 @@ namespace PckView
 
 				if (!_palView.Visible)
 				{
-					_palView.Left = Right;
-					_palView.Top = Top;
+					_palView.Left = Left + 20;
+					_palView.Top  = Top  + 20;
 					_palView.Show();
 				}
 				else

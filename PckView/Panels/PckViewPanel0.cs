@@ -20,10 +20,10 @@ namespace PckView
 		internal event ImageCollectionSetHandler ImageCollectionChangedEvent;
 
 
-		private readonly PckViewPanel1 _viewPanel;
+		private readonly PckViewPanel1 _viewPanel_1;
 		internal PckViewPanel1 ViewPanel
 		{
-			get { return _viewPanel; }
+			get { return _viewPanel_1; }
 		}
 
 		private VScrollBar _scrollBar;
@@ -36,14 +36,12 @@ namespace PckView
 
 		internal Palette Pal
 		{
-			get { return _viewPanel != null ? _viewPanel.Pal : null; }
+			get { return _viewPanel_1 != null ? _viewPanel_1.Pal
+											  : null; }
 			set
 			{
-				if (_viewPanel != null)
-				{
-					_viewPanel.Pal = value;
-					Console.WriteLine("Pal set: " + value.ToString());
-				}
+				if (_viewPanel_1 != null)
+					_viewPanel_1.Pal = value;
 			}
 		}
 
@@ -66,20 +64,20 @@ namespace PckView
 			_statusBar.Panels.Add(_statusBPP);
 
 			_scrollBar.Dock = DockStyle.Right;
+			_scrollBar.Minimum = 0;
 			_scrollBar.Maximum = 5000;
 			_scrollBar.Scroll += this.OnScroll;
 
-			_viewPanel = new PckViewPanel1();
-			_viewPanel.Location = new Point(0, 0);
-			_viewPanel.MouseClickedEvent += OnViewClick0;
-			_viewPanel.MouseClickedEvent += OnViewClick1;
-			_viewPanel.MouseMovedEvent += OnViewMoved;
-			_viewPanel.Dock = DockStyle.Fill;
-			_scrollBar.Minimum = 0;
+			_viewPanel_1 = new PckViewPanel1();
+			_viewPanel_1.Location = new Point(0, 0);
+			_viewPanel_1.MouseClickedEvent += OnViewClick0;
+			_viewPanel_1.MouseClickedEvent += OnViewClick1;
+			_viewPanel_1.MouseMovedEvent += OnViewMoved;
+			_viewPanel_1.Dock = DockStyle.Fill;
 
-			this.Controls.AddRange(new Control[] { _statusBar, _scrollBar, _viewPanel });
+			this.Controls.AddRange(new Control[] { _statusBar, _scrollBar, _viewPanel_1 });
 
-			_viewPanel.SizeChanged += OnSizeChanged;
+			_viewPanel_1.SizeChanged += OnSizeChanged;
 			OnResize(null);
 		}
 
@@ -88,37 +86,36 @@ namespace PckView
 		{
 			base.OnResize(eventargs);
 
-			if (_viewPanel.PreferredHeight >= Height)
+			if (_viewPanel_1.PreferredHeight >= Height)
 			{
 				_scrollBar.Visible = true;
-				_scrollBar.Maximum = _viewPanel.PreferredHeight - Height + 50;
+				_scrollBar.Maximum = _viewPanel_1.PreferredHeight - Height + 50;
 			}
 			else
 				_scrollBar.Visible = false;
 		}
 
-		internal ReadOnlyCollection<PckViewSprite1> SelectedItems
+		internal ReadOnlyCollection<SpriteSelected> Sprites
 		{
-			get { return _viewPanel.Sprites; }
+			get { return _viewPanel_1.Sprites; }
 		}
 
-		internal void ChangeItem(int index, XCImage image)
+		internal void ChangeSprite(int index, XCImage image)
 		{
-			_viewPanel.ChangeItem(index, image);
+			_viewPanel_1.ChangeSprite(index, image);
 		}
 
-		internal XCImageCollection Collection
+		internal XCImageCollection SpritePack
 		{
-			get { return _viewPanel.SpritePack; }
+			get { return _viewPanel_1.SpritePack; }
 			set
 			{
-				_viewPanel.SpritePack = value;
+				_viewPanel_1.SpritePack = value;
 				try
 				{
-					_viewPanel.SpritePack = value;
 					if (value is PckSpriteCollection)
 					{
-						_statusBPP.Text = "Bpp: " + ((PckSpriteCollection)_viewPanel.SpritePack).Bpp;
+						_statusBPP.Text = "Bpp: " + ((PckSpriteCollection)_viewPanel_1.SpritePack).Bpp;
 					}
 					else
 						_statusBPP.Text = String.Empty;
@@ -139,11 +136,11 @@ namespace PckView
 		private void OnSizeChanged(object sender, EventArgs e)
 		{
 			_scrollBar.Value = _scrollBar.Minimum;
-			_viewPanel.StartY = -_scrollBar.Value;
-			if (_viewPanel.PreferredHeight >= Height)
+			_viewPanel_1.StartY = -_scrollBar.Value;
+			if (_viewPanel_1.PreferredHeight >= Height)
 			{
 				_scrollBar.Visible = true;
-				_scrollBar.Maximum = _viewPanel.PreferredHeight - Height;
+				_scrollBar.Maximum = _viewPanel_1.PreferredHeight - Height;
 			}
 			else
 				_scrollBar.Visible = false;
@@ -160,8 +157,8 @@ namespace PckView
 
 		private void OnScroll(object sender, ScrollEventArgs e)
 		{
-			_viewPanel.StartY = -_scrollBar.Value;
-			_viewPanel.Refresh();
+			_viewPanel_1.StartY = -_scrollBar.Value;
+			_viewPanel_1.Refresh();
 		}
 
 		private void OnViewClick0(object sender, PckViewMouseEventArgs e)
@@ -189,7 +186,7 @@ namespace PckView
 
 		internal void RemoveSelected()
 		{
-			_viewPanel.RemoveSelected();
+			_viewPanel_1.RemoveSelected();
 		}
 	}
 

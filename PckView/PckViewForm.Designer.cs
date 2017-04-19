@@ -47,7 +47,6 @@ namespace PckView
 			this.miHelpMenu = new System.Windows.Forms.MenuItem();
 			this.miAbout = new System.Windows.Forms.MenuItem();
 			this.miHelp = new System.Windows.Forms.MenuItem();
-			this.miModList = new System.Windows.Forms.MenuItem();
 			this.miConsole = new System.Windows.Forms.MenuItem();
 			this.miMapViewHelp = new System.Windows.Forms.MenuItem();
 			this.sfdBmpSingle = new System.Windows.Forms.SaveFileDialog();
@@ -97,7 +96,7 @@ namespace PckView
 			// 
 			this.miSave.Index = 2;
 			this.miSave.Text = "&Save";
-			this.miSave.Click += new System.EventHandler(this.OnSaveClick);
+			this.miSave.Click += new System.EventHandler(this.OnSaveCollectionClick);
 			// 
 			// miSaveAs
 			// 
@@ -165,7 +164,6 @@ namespace PckView
 			this.miHelpMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miAbout,
 			this.miHelp,
-			this.miModList,
 			this.miConsole,
 			this.miMapViewHelp});
 			this.miHelpMenu.Text = "Help";
@@ -182,22 +180,15 @@ namespace PckView
 			this.miHelp.Text = "Help";
 			this.miHelp.Click += new System.EventHandler(this.OnHelpClick);
 			// 
-			// miModList
-			// 
-			this.miModList.Index = 2;
-			this.miModList.Text = "Mod List";
-			this.miModList.Visible = false;
-			this.miModList.Click += new System.EventHandler(this.OnModListClick);
-			// 
 			// miConsole
 			// 
-			this.miConsole.Index = 3;
+			this.miConsole.Index = 2;
 			this.miConsole.Text = "Console";
 			this.miConsole.Click += new System.EventHandler(this.OnConsoleClick);
 			// 
 			// miMapViewHelp
 			// 
-			this.miMapViewHelp.Index = 4;
+			this.miMapViewHelp.Index = 3;
 			this.miMapViewHelp.Text = "MapView Help";
 			this.miMapViewHelp.Visible = false;
 			this.miMapViewHelp.Click += new System.EventHandler(this.OnMapViewHelpClick);
@@ -289,7 +280,6 @@ namespace PckView
 		private System.Windows.Forms.MenuItem miHelp;
 		private System.Windows.Forms.MenuItem miPaletteMenu;
 		private System.Windows.Forms.MenuItem miHq2x;
-		private System.Windows.Forms.MenuItem miModList;
 		private System.Windows.Forms.MenuItem miSaveDir;
 		private System.Windows.Forms.MenuItem miConsole;
 		private System.Windows.Forms.MenuItem miCompare;
