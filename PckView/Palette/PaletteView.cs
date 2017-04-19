@@ -29,25 +29,10 @@ namespace PckView
 
 		private void OnPaletteIndexChanged(int id)
 		{
-			string text = String.Empty;
-
-/*			switch (_pPalette.Mode)
-			{
-				case SelectMode.Single:
-					text = string.Format(
+			string text = string.Format(
 									System.Globalization.CultureInfo.CurrentCulture,
 									"id:{0} (0x{0:X2})",
 									id);
-					break;
-
-				case SelectMode.Bar:
-					text = "range: " + id + " - " + (id + PalettePanel.Across - 1);
-					break;
-			} */
-			text = string.Format(
-							System.Globalization.CultureInfo.CurrentCulture,
-							"id:{0} (0x{0:X2})",
-							id);
 
 			Color color = _pPalette.Palette[id];
 			text += string.Format(

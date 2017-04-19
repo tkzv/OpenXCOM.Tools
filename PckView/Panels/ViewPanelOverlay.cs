@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-using PckView.Args;
 using PckView.Panels;
 
 using XCom;
@@ -13,16 +12,16 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	internal delegate void MouseClickedEventHandler(object sender, PckViewMouseEventArgs e);
-	internal delegate void MouseMovedEventHandler(int pixels);
+	internal delegate void SpriteClickEventHandler(int spriteId);
+	internal delegate void SpriteOverEventHandler(int spriteId);
 
 
-	internal sealed class PckViewPanel1
+	internal sealed class ViewPanelOverlay
 		:
 			Panel
 	{
-		internal event MouseClickedEventHandler MouseClickedEvent;
-		internal event MouseMovedEventHandler MouseMovedEvent;
+		internal event SpriteClickEventHandler SpriteClickEvent;
+		internal event SpriteOverEventHandler SpriteOverEvent;
 
 
 		#region Fields & Properties
@@ -53,6 +52,7 @@ namespace PckView
 
 		internal int StartY
 		{
+			get { return _startY; }
 			set
 			{
 				_startY = value;
@@ -73,13 +73,11 @@ namespace PckView
 			{
 				_spritePack = value;
 
-				if (_spritePack != null)
-					Height = CountTilesVertical();
-				else
-					Height = 0;
+				Height = (_spritePack != null) ? CountTilesVertical()
+											   : 0;
 
-				OnMouseDown(null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
-				OnMouseMove(null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+				OnMouseDown(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+				OnMouseMove(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 
 				Refresh();
 			}
@@ -89,21 +87,8 @@ namespace PckView
 		{
 			get
 			{
-				if (_spritePack != null)
-				{
-					return _sprites.AsReadOnly();
-
-//					var sprites = new List<SpriteSelected>();
-//					foreach (var sprite0 in _sprites)
-//					{
-//						var sprite1 = new SpriteSelected();
-//						sprite1.Item = sprite0;
-//						sprite1.Image = _spritePack[GetId(sprite0)];
-//						sprites.Add(sprite1);
-//					}
-//					return sprites.AsReadOnly();
-				}
-				return null;
+				return (_spritePack != null) ? _sprites.AsReadOnly()
+											 : null;
 			}
 		}
 		#endregion
@@ -113,25 +98,23 @@ namespace PckView
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		internal PckViewPanel1()
+		internal ViewPanelOverlay()
 		{
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
 				   | ControlStyles.AllPaintingInWmPaint
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
-
-			MouseDown += OnMouseDown;
-			MouseMove += OnMouseMove;
-
-			Paint += OnPaint;
 		}
 		#endregion
 
 
 
 		#region EventCalls
-		private void OnMouseDown(object sender, MouseEventArgs e)
+
+		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			base.OnMouseDown(e);
+
 			if (_spritePack != null)
 			{
 				int tileX =  e.X / GetPaddedWidth(_spritePack.ImageFile.ImageSize.Width);
@@ -141,15 +124,15 @@ namespace PckView
 				if (tileX >= tilesHori)
 					tileX =  tilesHori - 1;
 
-				int id = tileX + tileY * tilesHori;
+				int spriteId = tileX + tileY * tilesHori;
 
 				var selected = new SpriteSelected();
 				selected.X = tileX;
 				selected.Y = tileY;
-				selected.Index = id;
-				selected.Image = _spritePack[id];
+				selected.Index = spriteId;
+				selected.Image = _spritePack[spriteId];
 
-				if (id < SpritePack.Count)
+				if (spriteId < SpritePack.Count)
 				{
 					if (ModifierKeys == Keys.Control)
 					{
@@ -176,17 +159,16 @@ namespace PckView
 
 					Refresh();
 
-					if (MouseClickedEvent != null)
-					{
-						var args = new PckViewMouseEventArgs(e, id);
-						MouseClickedEvent(this, args);
-					}
+					if (SpriteClickEvent != null)
+						SpriteClickEvent(spriteId);
 				}
 			}
 		}
 
-		private void OnMouseMove(object sender, MouseEventArgs e)
+		protected override void OnMouseMove(MouseEventArgs e)
 		{
+			base.OnMouseMove(e);
+
 			if (_spritePack != null)
 			{
 				int tileX =  e.X / GetPaddedWidth(_spritePack.ImageFile.ImageSize.Width);
@@ -201,14 +183,16 @@ namespace PckView
 					if (_tileX >= tilesHori)
 						_tileX  = tilesHori - 1;
 
-					if (MouseMovedEvent != null)
-						MouseMovedEvent(_tileX + _tileY * tilesHori);
+					if (SpriteOverEvent != null)
+						SpriteOverEvent(_tileX + _tileY * tilesHori);
 				}
 			}
 		}
 
-		private void OnPaint(object sender, PaintEventArgs e)
+		protected override void OnPaint(PaintEventArgs e)
 		{
+			base.OnPaint(e);
+
 			if (_spritePack != null && _spritePack.Count != 0)
 			{
 				var g = e.Graphics;
@@ -332,15 +316,15 @@ namespace PckView
 				 / CountTilesHorizontal() + 60;
 		}
 
-		private int GetId(SpriteSelected sprite0)
-		{
-			return sprite0.X + sprite0.Y * CountTilesHorizontal();
-		}
-
 		private static int GetPaddedWidth(int width)
 		{
 			return width + Pad * 2;
 		}
+
+//		private int GetId(SpriteSelected sprite0)
+//		{
+//			return sprite0.X + sprite0.Y * CountTilesHorizontal();
+//		}
 		#endregion
 	}
 }

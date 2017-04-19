@@ -3,22 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-//using System.Reflection;
 using System.Windows.Forms;
 
-//using DSShared.FileSystems;
-//using DSShared.Loadable;
 using DSShared.Windows;
 
-using PckView.Args;
 using PckView.Forms.ImageBytes;
-//using PckView.Properties;
 
 using XCom;
 using XCom.Interfaces;
-
-//.net file security
-// http://www.c-sharpcorner.com/Code/2002/April/DotNetSecurity.asp
 
 
 namespace PckView
@@ -27,7 +19,7 @@ namespace PckView
 		:
 			Form
 	{
-		private PckViewPanel0 _viewPanel_0;
+		private ViewPanelBase _viewPanelBase;
 
 		private Editor        _editor;
 		private ConsoleForm   _console;
@@ -87,15 +79,15 @@ namespace PckView
 //			XConsole.AdZerg("Custom directory: "       + _share[SharedSpace.CustomDirectory].ToString());
 			#endregion
 
-			_viewPanel_0 = new PckViewPanel0();
-			_viewPanel_0.Dock = DockStyle.Fill;
-			pViewer.Controls.Add(_viewPanel_0);
+			_viewPanelBase = new ViewPanelBase();
+			_viewPanelBase.Dock = DockStyle.Fill;
+			pViewer.Controls.Add(_viewPanelBase);
 
-			_viewPanel_0.ImageCollectionChangedEvent += OnImageCollectionChanged;
-			_viewPanel_0.MouseClickedEvent += OnViewClick;
-			_viewPanel_0.ViewPanel.DoubleClick += OnDoubleClick;
+			_viewPanelBase.SpritePackChangedEvent += OnSpritePackChanged;
+			_viewPanelBase.SpriteClickEvent += OnSpriteClick;
+			_viewPanelBase.Overlay.DoubleClick += OnDoubleClick;
 
-			_viewPanel_0.ContextMenu = BuildContextMenu();
+			_viewPanelBase.ContextMenu = BuildContextMenu();
 
 
 			miSave.Visible = false;
@@ -117,7 +109,7 @@ namespace PckView
 
 			_paletteDictionary[_palette].Checked = true;
 
-			_viewPanel_0.Pal = _palette;
+			_viewPanelBase.Pal = _palette;
 
 			_editor = new Editor(null);
 			_editor.Closing += OnEditorClosing;
@@ -129,9 +121,11 @@ namespace PckView
 		}
 
 
-		private void OnImageCollectionChanged(object sender, ImageCollectionChangedEventArgs e)
+		private void OnSpritePackChanged(SpritePackChangedEventArgs e)
 		{
-			bool enabled = (e.Collection != null);
+			_viewPanelBase.UpdateScrollbar();
+
+			bool enabled = (e.Sprites != null);
 
 			miSaveAs.Enabled          =
 			miTransparentMenu.Enabled =
@@ -139,23 +133,24 @@ namespace PckView
 			miPaletteMenu.Enabled     = enabled;
 		}
 
-		private void OnViewClick(object sender, PckViewMouseEventArgs e)
+		private void OnSpriteClick(int spriteId)
 		{
-			if (_viewPanel_0.Sprites.Count > 0) // isSelected
+			if (_viewPanelBase.Sprites.Count > 0) // isSelected
 			{
 				_miEdit.Enabled   =
 				_miSave.Enabled   =
 				_miDelete.Enabled = true;
-				var selected = _viewPanel_0.Sprites[_viewPanel_0.Sprites.Count - 1];
+
+				var selected = _viewPanelBase.Sprites[_viewPanelBase.Sprites.Count - 1];
 				BytesFormHelper.ReloadBytes(selected);
 			}
 			else // selected is null
 			{
-				BytesFormHelper.ReloadBytes(null);
-
 				_miEdit.Enabled   =
 				_miSave.Enabled   =
 				_miDelete.Enabled = false;
+
+				BytesFormHelper.ReloadBytes(null);
 			}
 		}
 
@@ -195,19 +190,12 @@ namespace PckView
 
 		private void OnSaveSpriteClick(object sender, EventArgs e)
 		{
-			if (_viewPanel_0.Sprites.Count != 0)
+			if (_viewPanelBase.Sprites.Count != 0)
 			{
-				var selected = _viewPanel_0.Sprites[_viewPanel_0.Sprites.Count - 1];
-				if (_viewPanel_0.SpritePack != null)
+				var selected = _viewPanelBase.Sprites[_viewPanelBase.Sprites.Count - 1];
+				if (_viewPanelBase.SpritePack != null)
 				{
-//					if (_spritesPanel.SpritePack.ImageFile.SingleFile != null)
-//					{
-//						string file = _spritesPanel.SpritePack.Label.Substring(0, _spritesPanel.SpritePack.Label.IndexOf(".", StringComparison.Ordinal));
-//						string file = Path.GetFileNameWithoutExtension(_spritesPanel.SpritePack.Label);
-//						sfdBmpSingle.FileName = file + selected.Image.FileId;
-//					}
-//					else
-					sfdBmpSingle.FileName = _viewPanel_0.SpritePack.Label + selected.Image.FileId;
+					sfdBmpSingle.FileName = _viewPanelBase.SpritePack.Label + selected.Image.FileId;
 
 					if (sfdBmpSingle.ShowDialog() == DialogResult.OK)
 						Bmp.Save(sfdBmpSingle.FileName, selected.Image.Image);
@@ -217,7 +205,7 @@ namespace PckView
 
 		private void OnReplaceSpriteClick(object sender, EventArgs e)
 		{
-			if (_viewPanel_0.Sprites.Count != 1)
+			if (_viewPanelBase.Sprites.Count != 1)
 			{
 				MessageBox.Show(
 							"Must select 1 item only.",
@@ -227,10 +215,10 @@ namespace PckView
 							MessageBoxDefaultButton.Button1,
 							0);
 			}
-			else if (_viewPanel_0.SpritePack != null )
+			else if (_viewPanelBase.SpritePack != null )
 			{
 				var title = String.Empty;
-				foreach (var sprite in _viewPanel_0.Sprites)
+				foreach (var sprite in _viewPanelBase.Sprites)
 				{
 					if (!String.IsNullOrEmpty(title))
 						title += ", ";
@@ -245,11 +233,11 @@ namespace PckView
 					var b = new Bitmap(ofdBmp.FileName);
 					var image = Bmp.Load(
 										b,
-										_viewPanel_0.Pal,
-										_viewPanel_0.SpritePack.ImageFile.ImageSize.Width,
-										_viewPanel_0.SpritePack.ImageFile.ImageSize.Height,
+										_viewPanelBase.Pal,
+										_viewPanelBase.SpritePack.ImageFile.ImageSize.Width,
+										_viewPanelBase.SpritePack.ImageFile.ImageSize.Height,
 										1)[0];
-					_viewPanel_0.ChangeSprite(_viewPanel_0.Sprites[0].Index, image);
+					_viewPanelBase.ChangeSprite(_viewPanelBase.Sprites[0].Index, image);
 					Refresh();
 				}
 				UpdateCaption();
@@ -258,7 +246,7 @@ namespace PckView
 
 		private void OnAddSpriteClick(object sender, EventArgs e)
 		{
-			if (_viewPanel_0.SpritePack != null)
+			if (_viewPanelBase.SpritePack != null)
 			{
 				ofdBmp.Title = "Hold shift to select multiple files.";
 				ofdBmp.Multiselect = true;
@@ -268,13 +256,13 @@ namespace PckView
 					foreach (string file in ofdBmp.FileNames)
 					{
 						var b = new Bitmap(file);
-						_viewPanel_0.SpritePack.Add(Bmp.LoadTile(
+						_viewPanelBase.SpritePack.Add(Bmp.LoadTile(
 															b,
 															0,
-															_viewPanel_0.Pal,
+															_viewPanelBase.Pal,
 															0, 0,
-															_viewPanel_0.SpritePack.ImageFile.ImageSize.Width,
-															_viewPanel_0.SpritePack.ImageFile.ImageSize.Height));
+															_viewPanelBase.SpritePack.ImageFile.ImageSize.Width,
+															_viewPanelBase.SpritePack.ImageFile.ImageSize.Height));
 					}
 					Refresh();
 				}
@@ -284,16 +272,16 @@ namespace PckView
 
 		private void OnRemoveSpriteClick(object sender, EventArgs e)
 		{
-			_viewPanel_0.RemoveSelected();
+			_viewPanelBase.RemoveSelected();
 			UpdateCaption();
 			Refresh();
 		}
 
 		private void OnEditSpriteClick(object sender, EventArgs e)
 		{
-			if (_viewPanel_0.Sprites.Count != 0)
+			if (_viewPanelBase.Sprites.Count != 0)
 			{
-				var selected = _viewPanel_0.Sprites[_viewPanel_0.Sprites.Count - 1];
+				var selected = _viewPanelBase.Sprites[_viewPanelBase.Sprites.Count - 1];
 				if (selected != null)
 				{
 					_editor.Image = (XCImage)selected.Image.Clone();
@@ -346,12 +334,12 @@ namespace PckView
 				_palette = pal;
 				_paletteDictionary[_palette].Checked = true;
 
-				_viewPanel_0.Pal = _palette;
+				_viewPanelBase.Pal = _palette;
 
 				if (_editor != null)
 					_editor.Palette = _palette;
 
-				_viewPanel_0.Refresh();
+				_viewPanelBase.Refresh();
 			}
 		}
 
@@ -424,7 +412,7 @@ namespace PckView
 
 					OnPaletteClick((MenuItem)_paletteDictionary[pckPack.ImageFile.DefaultPalette], null);
 
-					_viewPanel_0.SpritePack = pckPack;
+					_viewPanelBase.SpritePack = pckPack;
 
 					UpdateCaption();
 
@@ -441,7 +429,7 @@ namespace PckView
 
 		private void UpdateCaption()
 		{
-			Text = "Pck View - " + _viewPanel_0.SpritePack.Label + " [" + _viewPanel_0.SpritePack.Count + "] total";
+			Text = "Pck View - " + _viewPanelBase.SpritePack.Label + " [" + _viewPanelBase.SpritePack.Count + "] total";
 		}
 
 		private void OnSaveAsClick(object sender, EventArgs e)
@@ -466,11 +454,11 @@ namespace PckView
 		{
 			if (!miBytes.Checked)
 			{
-				if (_viewPanel_0.Sprites.Count != 0)
+				if (_viewPanelBase.Sprites.Count != 0)
 				{
 					miBytes.Checked = true;
 
-					var selected = _viewPanel_0.Sprites[_viewPanel_0.Sprites.Count - 1];
+					var selected = _viewPanelBase.Sprites[_viewPanelBase.Sprites.Count - 1];
 					BytesFormHelper.ShowBytes(selected, CallbackShowBytesClosing, new Point(Right, Top));
 				}
 			}
@@ -489,9 +477,9 @@ namespace PckView
 		private void OnTransparencyClick(object sender, EventArgs e)
 		{
 			_palette.EnableTransparency(miTransparent.Checked = !miTransparent.Checked);
-			_viewPanel_0.SpritePack.Pal = _palette;
+			_viewPanelBase.SpritePack.Pal = _palette;
 
-			_viewPanel_0.Refresh();
+			_viewPanelBase.Refresh();
 		}
 
 		private void OnAboutClick(object sender, EventArgs e)
@@ -529,14 +517,14 @@ namespace PckView
 
 		private void OnSaveDirectoryClick(object sender, EventArgs e)
 		{
-			if (_viewPanel_0.SpritePack != null)
+			if (_viewPanelBase.SpritePack != null)
 			{
 				string fileStart = String.Empty;
 //				string extStart  = String.Empty;
 
-				if (_viewPanel_0.SpritePack.Label.IndexOf(".", StringComparison.Ordinal) > 0)
+				if (_viewPanelBase.SpritePack.Label.IndexOf(".", StringComparison.Ordinal) > 0)
 				{
-					fileStart = _viewPanel_0.SpritePack.Label.Substring(0, _viewPanel_0.SpritePack.Label.IndexOf(".", StringComparison.Ordinal));
+					fileStart = _viewPanelBase.SpritePack.Label.Substring(0, _viewPanelBase.SpritePack.Label.IndexOf(".", StringComparison.Ordinal));
 //					extStart  = _totalViewPck.Collection.Name.Substring(_totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal) + 1);
 				}
 
@@ -563,7 +551,7 @@ namespace PckView
 //					}
 
 					string zeros = String.Empty;
-					int tens = _viewPanel_0.SpritePack.Count;
+					int tens = _viewPanelBase.SpritePack.Count;
 					while (tens > 0)
 					{
 						zeros += "0";
@@ -572,12 +560,12 @@ namespace PckView
 
 					var progress = new ProgressWindow(this);
 					progress.Minimum = 0;
-					progress.Maximum = _viewPanel_0.SpritePack.Count;
+					progress.Maximum = _viewPanelBase.SpritePack.Count;
 					progress.Width = 300;
 					progress.Height = 50;
 
 					progress.Show();
-					foreach (XCImage xc in _viewPanel_0.SpritePack)
+					foreach (XCImage xc in _viewPanelBase.SpritePack)
 					{
 						//Console.WriteLine("Save to: " + path + @"\" + fName + (xc.FileNum + countNum) + "." + ext);
 						//Console.WriteLine("Save: " + path + @"\" + fName + string.Format("{0:" + zeros + "}", xc.FileNum) + "." + ext);
@@ -605,29 +593,29 @@ namespace PckView
 
 		private void OnCompareClick(object sender, EventArgs e)
 		{
-			var original = _viewPanel_0.SpritePack;
+			var original = _viewPanelBase.SpritePack;
 
 			OnOpenClick(null, null);
 
-			var newCollection = _viewPanel_0.SpritePack;
+			var newCollection = _viewPanelBase.SpritePack;
 
-			_viewPanel_0.SpritePack = original;
+			_viewPanelBase.SpritePack = original;
 
-			if (Controls.Contains(_viewPanel_0))
+			if (Controls.Contains(_viewPanelBase))
 			{
-				Controls.Remove(_viewPanel_0);
+				Controls.Remove(_viewPanelBase);
 
 				_tabs = new TabControl();
 				_tabs.Dock = DockStyle.Fill;
 				pViewer.Controls.Add(_tabs);
 
 				var tab = new TabPage();
-				tab.Controls.Add(_viewPanel_0);
+				tab.Controls.Add(_viewPanelBase);
 				tab.Text = "Original";
 				_tabs.TabPages.Add(tab);
 
 				tab = new TabPage();
-				var panel = new PckViewPanel0();
+				var panel = new ViewPanelBase();
 				panel.ContextMenu = BuildContextMenu();
 				panel.Dock = DockStyle.Fill;
 				panel.SpritePack = newCollection;

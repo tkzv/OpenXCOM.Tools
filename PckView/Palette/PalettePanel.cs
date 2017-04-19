@@ -10,12 +10,6 @@ namespace PckView
 {
 	internal delegate void PaletteIndexChangedEventHandler(int selectedId);
 
-//	internal enum SelectMode
-//	{
-//		Bar,
-//		Single
-//	};
-
 
 	internal sealed class PalettePanel
 		:
@@ -33,8 +27,6 @@ namespace PckView
 		private int _id;
 		private int _clickX;
 		private int _clickY;
-
-//		private SelectMode _mode = SelectMode.Single; // TODO: this never changes <-
 
 		internal const int Across = 16;
 
@@ -64,16 +56,6 @@ namespace PckView
 			_width  = (Width  / Across) - 2 * Pad;
 			_height = (Height / Across) - 2 * Pad;
 
-/*			switch (_mode)
-			{
-				case SelectMode.Single:
-					_clickX = (_id % Across) * (_width + 2 * Pad);
-					break;
-
-				case SelectMode.Bar:
-					_clickX = 0;
-					break;
-			} */
 			_clickX = (_id % Across) * (_width  + 2 * Pad);
 			_clickY = (_id / Across) * (_height + 2 * Pad);
 
@@ -82,22 +64,10 @@ namespace PckView
 
 		private void OnMouseDown(object sender, MouseEventArgs e)
 		{
-/*			switch (_mode)
-			{
-				case SelectMode.Single:
-					_clickX = (e.X / (_width + 2 * Pad)) * (_width + 2 * Pad);
-					_id = (e.X / (_width + 2 * Pad)) + (e.Y / (_height + 2 * Pad)) * Across;
-					break;
-
-				case SelectMode.Bar:
-					_clickX = 0;
-					_id = (e.Y / (_height + 2 * Pad)) * Across;
-					break;
-			} */
-			_clickX = (e.X / (_width + 2 * Pad)) * (_width + 2 * Pad);
-			_id = (e.X / (_width + 2 * Pad)) + (e.Y / (_height + 2 * Pad)) * Across;
-
+			_clickX = (e.X / (_width  + 2 * Pad)) * (_width  + 2 * Pad);
 			_clickY = (e.Y / (_height + 2 * Pad)) * (_height + 2 * Pad);
+
+			_id = (e.X / (_width + 2 * Pad)) + (e.Y / (_height + 2 * Pad)) * Across;
 
 			if (PaletteIndexChangedEvent != null && _id < 256)
 			{
@@ -105,13 +75,6 @@ namespace PckView
 				Refresh();
 			}
 		}
-
-//		[DefaultValue(SelectMode.Single)]
-//		[Category("Behavior")]
-//		internal SelectMode Mode
-//		{
-//			get { return _mode; }
-//		}
 
 		[DefaultValue(null)]
 		[Browsable(false)]
@@ -148,22 +111,6 @@ namespace PckView
 													_width, _height);
 					}
 
-/*				switch (_mode)
-				{
-					case SelectMode.Single:
-						g.DrawRectangle(
-									Pens.Red, // _brush
-									_clickX, _clickY,
-									_width + Pad * 2 - 1, _height + Pad * 2 - 1);
-						break;
-
-					case SelectMode.Bar:
-						g.DrawRectangle(
-									Pens.Red, // _brush
-									_clickX, _clickY,
-									(_width + Pad * 2) * Across - 1, _height + Pad * 2 - 1);
-						break;
-				} */
 				g.DrawRectangle(
 							Pens.Red,
 							_clickX, _clickY,

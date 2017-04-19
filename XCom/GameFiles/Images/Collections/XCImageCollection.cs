@@ -10,6 +10,8 @@ namespace XCom
 		:
 			List<XCImage>
 	{
+		#region Fields and Properties
+
 		public string Label
 		{ get; set; }
 //		{ get; internal set; }
@@ -33,15 +35,6 @@ namespace XCom
 			}
 		}
 
-//		private int _scale = 1;
-/*		public void HQ2X()
-		{
-			foreach (XCImage image in this)
-				image.HQ2X();
-
-			_scale *= 2;
-		} */
-
 		public new XCImage this[int id]
 		{
 			get { return (id > -1 && id < Count) ? base[id]
@@ -57,10 +50,24 @@ namespace XCom
 				}
 			}
 		}
+		#endregion
+
+
+		#region Methods
 
 		public void Remove(int id)
 		{
 			RemoveAt(id);
 		}
+		#endregion
 	}
 }
+
+//		private int _scale = 1;
+/*		public void HQ2X()
+		{
+			foreach (XCImage image in this)
+				image.HQ2X();
+
+			_scale *= 2;
+		} */
