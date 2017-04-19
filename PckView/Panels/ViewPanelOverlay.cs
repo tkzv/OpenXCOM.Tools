@@ -33,12 +33,21 @@ namespace PckView
 //		private Color _goodColor = Color.FromArgb(204, 204, 255);
 //		private SolidBrush _goodBrush = new SolidBrush(Color.FromArgb(204, 204, 255));
 
+		private const int Pad = 2;
+
 		private int _tileX;
 		private int _tileY;
 
 		private int _startY;
-
-		private const int Pad = 2;
+		internal int StartY
+		{
+			get { return _startY; }
+			set
+			{
+				_startY = value;
+				Refresh();
+			}
+		}
 
 		internal Palette Pal
 		{
@@ -47,16 +56,6 @@ namespace PckView
 			{
 				if (_spritePack != null)
 					_spritePack.Pal = value;
-			}
-		}
-
-		internal int StartY
-		{
-			get { return _startY; }
-			set
-			{
-				_startY = value;
-				Refresh();
 			}
 		}
 
@@ -113,23 +112,23 @@ namespace PckView
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			base.OnMouseDown(e);
+//			base.OnMouseDown(e);
 
 			if (_spritePack != null)
 			{
 				int tileX =  e.X / GetPaddedWidth(_spritePack.ImageFile.ImageSize.Width);
 				int tileY = (e.Y - _startY) / (_spritePack.ImageFile.ImageSize.Height + Pad * 2);
 
-				int tilesHori = CountTilesHorizontal();
-				if (tileX >= tilesHori)
-					tileX =  tilesHori - 1;
+				int tilesX = CountTilesHorizontal();
+				if (tileX >= tilesX)
+					tileX =  tilesX - 1;
 
-				int spriteId = tileX + tileY * tilesHori;
+				int spriteId = tileX + tileY * tilesX;
 
 				var selected = new SpriteSelected();
 				selected.X = tileX;
 				selected.Y = tileY;
-				selected.Index = spriteId;
+				selected.Id = spriteId;
 				selected.Image = _spritePack[spriteId];
 
 				if (spriteId < SpritePack.Count)
@@ -167,7 +166,7 @@ namespace PckView
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			base.OnMouseMove(e);
+//			base.OnMouseMove(e);
 
 			if (_spritePack != null)
 			{
@@ -191,61 +190,54 @@ namespace PckView
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			base.OnPaint(e);
+			XConsole.AdZerg("OnPaint");
+//			base.OnPaint(e);
 
 			if (_spritePack != null && _spritePack.Count != 0)
 			{
 				var g = e.Graphics;
 
-				var widthPadded = GetPaddedWidth(_spritePack.ImageFile.ImageSize.Width);
-
-				foreach (var sprite in _sprites)
-				{
-//					if (_collection.ImageFile.FileOptions.BitDepth == 8 && _collection[0].Palette.Transparent.A == 0)
-//					{
-//						g.FillRectangle(
-//									_goodBrush,
-//									selectedItem.X * specialWidth - Pad,
-//									_startY + selectedItem.Y * (_collection.ImageFile.ImageSize.Height + Pad * 2) - Pad,
-//									specialWidth,
-//									_collection.ImageFile.ImageSize.Height + Pad * 2);
-//					}
-//					else
-//					{
-					g.FillRectangle(
-								Brushes.Red,
-								sprite.X * widthPadded - Pad,
-								_startY + sprite.Y * (_spritePack.ImageFile.ImageSize.Height + Pad * 2) - Pad,
-								widthPadded,
-								_spritePack.ImageFile.ImageSize.Height + Pad * 2);
-//					}
-				}
+				int width  = GetPaddedWidth(_spritePack.ImageFile.ImageSize.Width);
+				int height = _spritePack.ImageFile.ImageSize.Height + Pad * 2;
 
 				int across = CountTilesHorizontal();
 
-				for (int i = 0; i < across + 1; ++i)
+				int tilesX = across + 1;
+				for (int tileX = 0; tileX != tilesX; ++tileX)
 					g.DrawLine(
 							Pens.Black,
-							new Point(i * widthPadded - Pad,          _startY),
-							new Point(i * widthPadded - Pad, Height - _startY));
+							new Point(tileX * width,          _startY),
+							new Point(tileX * width, Height - _startY));
 
-				for (int i = 0; i < _spritePack.Count / across + 1; ++i)
+				int tilesY = _spritePack.Count / across + 1;
+				for (int tileY = 0; tileY <= tilesY; ++tileY)
 					g.DrawLine(
 							Pens.Black,
-							new Point(0,     _startY + i * (_spritePack.ImageFile.ImageSize.Height + Pad * 2) - Pad),
-							new Point(Width, _startY + i * (_spritePack.ImageFile.ImageSize.Height + Pad * 2) - Pad));
+							new Point(0,     tileY * height + _startY),
+							new Point(Width, tileY * height + _startY));
 
-				for (int i = 0; i < _spritePack.Count; ++i)
+
+				var selected = new List<int>();
+				foreach (var sprite in _sprites)
+					selected.Add(sprite.Id);
+
+				for (int id = 0; id != _spritePack.Count; ++id)
 				{
-					int x = i % across;
-					int y = i / across;
-					try
-					{
-						g.DrawImage(
-								_spritePack[i].Image, x * widthPadded,
-								_startY + y * (_spritePack.ImageFile.ImageSize.Height + Pad * 2));
-					}
-					catch {} // TODO: that.
+					int tileX = id % across;
+					int tileY = id / across;
+
+					if (selected.Contains(id))
+						g.FillRectangle(
+									Brushes.Red, // _goodBrush
+									tileX * width  + 1,
+									tileY * height + 1 + _startY,
+									width  - 1,
+									height - 1);
+
+					g.DrawImage(
+							_spritePack[id].Image,
+							tileX * width  + Pad,
+							tileY * height + Pad + _startY);
 				}
 			}
 		}
@@ -266,7 +258,7 @@ namespace PckView
 
 				var idList = new List<int>();
 				foreach (var sprite in Sprites)
-					idList.Add(sprite.Index);
+					idList.Add(sprite.Id);
 
 				idList.Sort();
 				idList.Reverse();
@@ -297,7 +289,7 @@ namespace PckView
 				var selected = new SpriteSelected();
 				selected.Y = lowestId / tilesHori;
 				selected.X = lowestId - selected.Y;
-				selected.Index = selected.X + selected.Y * tilesHori;
+				selected.Id = selected.X + selected.Y * tilesHori;
 
 				_sprites.Add(selected);
 			}

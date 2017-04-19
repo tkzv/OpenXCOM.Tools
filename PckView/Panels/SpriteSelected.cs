@@ -13,7 +13,7 @@ namespace PckView.Panels // NOTE: this isn't a panel.
 		internal int Y
 		{ get; set; }
 
-		internal int Index
+		internal int Id
 		{ get; set; }
 
 		internal XCImage Image

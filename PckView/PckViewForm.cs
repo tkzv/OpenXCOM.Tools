@@ -85,7 +85,7 @@ namespace PckView
 
 			_viewPanelBase.SpritePackChangedEvent += OnSpritePackChanged;
 			_viewPanelBase.SpriteClickEvent += OnSpriteClick;
-			_viewPanelBase.Overlay.DoubleClick += OnDoubleClick;
+			_viewPanelBase.Overlay.DoubleClick += OnEditSpriteClick;
 
 			_viewPanelBase.ContextMenu = BuildContextMenu();
 
@@ -116,7 +116,7 @@ namespace PckView
 			_editor.Palette = _palette;
 
 
-			var regInfo = new RegistryInfo(this, "PckView");	// subscribe to Load and Closing events.
+			var regInfo = new RegistryInfo(this, "PckView"); // subscribe to Load and Closing events.
 //			regInfo.AddProperty("SelectedPalette");
 		}
 
@@ -152,11 +152,6 @@ namespace PckView
 
 				BytesFormHelper.ReloadBytes(null);
 			}
-		}
-
-		private void OnDoubleClick(object sender, EventArgs e)
-		{
-			OnEditSpriteClick(sender, e);
 		}
 
 		private ContextMenu BuildContextMenu()
@@ -223,7 +218,7 @@ namespace PckView
 					if (!String.IsNullOrEmpty(title))
 						title += ", ";
 
-					title += sprite.Index;
+					title += sprite.Id;
 				}
 
 				ofdBmp.Title = "Selected: " + title;
@@ -237,7 +232,7 @@ namespace PckView
 										_viewPanelBase.SpritePack.ImageFile.ImageSize.Width,
 										_viewPanelBase.SpritePack.ImageFile.ImageSize.Height,
 										1)[0];
-					_viewPanelBase.ChangeSprite(_viewPanelBase.Sprites[0].Index, image);
+					_viewPanelBase.ChangeSprite(_viewPanelBase.Sprites[0].Id, image);
 					Refresh();
 				}
 				UpdateCaption();

@@ -70,6 +70,8 @@ namespace PckView
 		/// </summary>
 		internal ViewPanelBase()
 		{
+//			this.Layout;
+
 			_viewPanelOverlay = new ViewPanelOverlay();
 			_viewPanelOverlay.Dock = DockStyle.Fill;
 			_viewPanelOverlay.SpriteClickEvent += OnSpriteClick;
@@ -102,19 +104,12 @@ namespace PckView
 
 		#region EventCalls
 
-		protected override void OnResize(EventArgs eventargs)
-		{
-			base.OnResize(eventargs);
-
-			UpdateScrollbar();
-		}
-
 		protected override void OnSizeChanged(EventArgs e)
 		{
 			base.OnSizeChanged(e);
 
-			_scrollBar.Value = _scrollBar.Minimum;
-			OnSpritesScroll(null, null);
+			_scrollBar.Value         =
+			_viewPanelOverlay.StartY = 0;
 
 			UpdateScrollbar();
 		}
@@ -142,16 +137,17 @@ namespace PckView
 			if (_scrollBar.Visible)
 			{
 				const int delta = 18;
+
 				if (e.Delta > 0)
 				{
 					if (_scrollBar.Value < delta)
 					{
-						_scrollBar.Value = 0;
+						_scrollBar.Value         =
 						_viewPanelOverlay.StartY = 0;
 					}
 					else
 					{
-						_scrollBar.Value -= delta;
+						_scrollBar.Value         -= delta;
 						_viewPanelOverlay.StartY += delta;
 					}
 				}
@@ -159,12 +155,12 @@ namespace PckView
 				{
 					if (_scrollBar.Maximum - _scrollBar.Value < delta)
 					{
-						_scrollBar.Value = _scrollBar.Maximum;
-						_viewPanelOverlay.StartY = -_scrollBar.Value;
+						_scrollBar.Value         =  _scrollBar.Maximum;
+						_viewPanelOverlay.StartY = -_scrollBar.Maximum;
 					}
 					else
 					{
-						_scrollBar.Value += delta;
+						_scrollBar.Value         += delta;
 						_viewPanelOverlay.StartY -= delta;
 					}
 				}
@@ -197,7 +193,7 @@ namespace PckView
 			if (_viewPanelOverlay.PreferredHeight >= Height)
 			{
 				_scrollBar.Visible = true;
-				_scrollBar.Maximum = _viewPanelOverlay.PreferredHeight - Height; // +50 for OnResize event.
+				_scrollBar.Maximum = _viewPanelOverlay.PreferredHeight - Height;
 			}
 			else
 				_scrollBar.Visible = false;
@@ -237,16 +233,13 @@ namespace PckView
 	/// </summary>
 	internal sealed class SpritePackChangedEventArgs
 	{
-		private readonly XCImageCollection _sprites;
+		internal XCImageCollection Sprites
+		{ get; private set; }
+
 
 		internal SpritePackChangedEventArgs(XCImageCollection sprites)
 		{
-			_sprites = sprites;
-		}
-
-		internal XCImageCollection Sprites
-		{
-			get { return _sprites; }
+			Sprites = sprites;
 		}
 	}
 }

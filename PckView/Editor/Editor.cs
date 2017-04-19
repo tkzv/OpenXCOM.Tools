@@ -51,7 +51,7 @@ namespace PckView
 			_trackBar.Value = 9;
 			_trackBar.LargeChange = 1;
 			_trackBar.BackColor = Color.Silver;
-			_trackBar.Scroll += OnScroll;
+			_trackBar.Scroll += OnTrackScroll;
 
 			_editorPanel = new EditorPanel(image);
 			_editorPanel.Top = _trackBar.Bottom;
@@ -76,20 +76,22 @@ namespace PckView
 			_palView = new PaletteView();
 			_palView.Closing += OnPaletteClosing;
 
-			OnScroll(null, null);
+			OnTrackScroll(null, null);
 		}
 		#endregion
 
 
 		#region EventCalls
 
-		private void OnScroll(object sender, EventArgs e)
+		private void OnTrackScroll(object sender, EventArgs e)
 		{
 			_editorPanel.ScaleFactor =_trackBar.Value;
 		}
 
 		protected override void OnResize(EventArgs e)
 		{
+//			base.OnResize(e);
+
 			_editorPanel.Width  = ClientSize.Width;
 			_editorPanel.Height = ClientSize.Height - _trackBar.Height;
 
