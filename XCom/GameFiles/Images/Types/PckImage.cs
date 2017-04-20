@@ -99,14 +99,14 @@ namespace XCom
 						break;
 				}
 			}
-			Offsets = _expanded;
+			Bindata = _expanded;
 		
-			Image = Bmp.MakeBitmap8(
+			Image = XCBitmap.MakeBitmap8(
 								Width,
 								Height,
 								_expanded,
 								pal.Colors);
-			Gray = Bmp.MakeBitmap8(
+			Gray = XCBitmap.MakeBitmap8(
 								Width,
 								Height,
 								_expanded,
@@ -119,7 +119,7 @@ namespace XCom
 			int count = 0;
 			bool flag = true;
 
-			byte[] input = image.Offsets;
+			byte[] input = image.Bindata;
 
 			var binData = new List<byte>();
 

@@ -212,7 +212,7 @@ namespace XCom.Interfaces.Base
 				throw new ArgumentNullException("file", "IMapBase: At least 1 ground tile is required.");
 
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
-			var b = Bmp.MakeBitmap(
+			var b = XCBitmap.MakeBitmap(
 								rowPlusCols * (PckImage.Width / 2),
 								(MapSize.Height - _height) * 24 + rowPlusCols * 8,
 								palette.Colors);
@@ -240,18 +240,18 @@ namespace XCom.Interfaces.Base
 							foreach (var tileBase in tiles)
 							{
 								var tile = (XCTile)tileBase;
-								Bmp.Draw(tile[0].Image, b, x, y - tile.Record.TileOffset);
+								XCBitmap.Draw(tile[0].Image, b, x, y - tile.Record.TileOffset);
 							}
 
-							Bmp.FireLoadingEvent(i, (MapSize.Height - _height) * MapSize.Rows * MapSize.Cols);
+							XCBitmap.FireLoadingEvent(i, (MapSize.Height - _height) * MapSize.Rows * MapSize.Cols);
 						}
 					}
 				}
 			}
 			try
 			{
-				var rect = Bmp.GetBoundsRect(b, Palette.TransparentId);
-				b = Bmp.Crop(b, rect);
+				var rect = XCBitmap.GetBoundsRect(b, Palette.TransparentId);
+				b = XCBitmap.Crop(b, rect);
 				b.Save(file, ImageFormat.Gif);
 			}
 			catch

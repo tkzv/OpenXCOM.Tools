@@ -19,7 +19,7 @@ using XCom.Interfaces;
 
 namespace XCom
 {
-	public static class Bmp
+	public static class XCBitmap
 	{
 		public static event LoadingEventHandler LoadingEvent;
 
@@ -29,7 +29,6 @@ namespace XCom
 
 		public static void Save(string path, Bitmap image)
 		{
-			//Console.WriteLine("Start");
 			using (var bw = new BinaryWriter(new FileStream(path, FileMode.Create)))
 			{
 				int pad = 0;
@@ -57,10 +56,6 @@ namespace XCom
 				bw.Write((int)0);
 				bw.Write((int)0);
 
-				//Console.WriteLine("Colors");
-
-				//Console.WriteLine("File size should be: " + (1078 + len + more));
-
 //				byte[] bArr = new byte[256 * 4];
 				Color[] entries = image.Palette.Entries;
 
@@ -84,7 +79,6 @@ namespace XCom
 //					bw.Write((byte)0);
 				}
 //				bw.Write(bArr);
-				//Console.WriteLine("Table");
 
 				var colorTable = new Dictionary<Color, byte>();
 
@@ -92,12 +86,8 @@ namespace XCom
 				foreach(Color color in image.Palette.Entries)
 					colorTable[color] = (byte)id++;
 
-//				Console.WriteLine("Colors: "+idx);
-
 				// the blank color between each individual image
 				colorTable[Color.FromArgb(0, 0, 0, 0)] = (byte)255;
-
-				//Console.WriteLine("image data");
 
 				for (int i = image.Height - 1; i > -1; --i)
 				{
@@ -108,7 +98,6 @@ namespace XCom
 						bw.Write((byte)0x00);
 				}
 			}
-			//Console.WriteLine("Done");
 		}
 
 /*		public static void Save24(string path, Bitmap image)
@@ -163,7 +152,7 @@ namespace XCom
 		} */
 
 		/// <summary>
-		/// Creates a TRUE 8-bit indexed bitmap from the specified byte array
+		/// Creates a TRUE 8-bit indexed bitmap from the specified byte-array.
 		/// </summary>
 		/// <param name="width">width of final bitmap</param>
 		/// <param name="height">height of final bitmap</param>
@@ -187,8 +176,6 @@ namespace XCom
 									rect,
 									ImageLockMode.WriteOnly,
 									PixelFormat.Format8bppIndexed);
-
-			//Console.WriteLine("Bitmap created: {0},{1}", width, height);
 
 			// Write to the temporary buffer that is provided by LockBits.
 			// Copy the pixels from the source image in this loop.
@@ -232,8 +219,15 @@ namespace XCom
 			image.Palette = palette;
 			return image;
 		}
-		
-		public static Bitmap MakeBitmap(int width, int height, ColorPalette pal)
+
+		/// <summary>
+		/// MakeBitmap funct.
+		/// </summary>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="pal"></param>
+		/// <returns>pointer to Bitmap</returns>
+		internal static Bitmap MakeBitmap(int width, int height, ColorPalette pal)
 		{
 			var image = new Bitmap(
 								width, height,
@@ -288,7 +282,7 @@ namespace XCom
 			return image;
 		}
 
-		public static void Draw(
+		internal static void Draw(
 				Bitmap src,
 				Bitmap dst,
 				int x,
@@ -348,7 +342,7 @@ namespace XCom
 			dst.UnlockBits(destData);
 		}
 
-		public static Rectangle GetBoundsRect(Bitmap src, int transparent)
+		internal static Rectangle GetBoundsRect(Bitmap src, int transparent)
 		{
 			var srcRect = new Rectangle(
 									0, 0,
@@ -417,7 +411,7 @@ namespace XCom
 							cMax - cMin + 3, rMax - rMin + 3);
 		}
 
-		public static Bitmap Crop(Bitmap src, Rectangle bounds)
+		internal static Bitmap Crop(Bitmap src, Rectangle bounds)
 		{
 			//Console.WriteLine(
 			//				"Old size: {0},{1} New Size: {2},{3}",
@@ -479,82 +473,82 @@ namespace XCom
 			return dst;
 		}
 
-		public static void FireLoadingEvent(int cur, int total)
+		internal static void FireLoadingEvent(int cur, int total)
 		{
 			if (LoadingEvent != null)
 				LoadingEvent(cur, total);
 		}
 
-		public static unsafe Bitmap HQ2X(/*Bitmap image*/)
-		{
-#if hq2xWorks
-			CImage in24 = new CImage();
-			in24.Init(image.Width, image.Height, 24);
-
-			for (int row = 0; row < image.Height; row++)
-				for (int col = 0; col < image.Width; col++)
-				{
-					Color c = image.GetPixel(col,row);
-					*(in24.m_pBitmap + (row * in24.m_Xres * 3) + (col * 3 + 0)) = c.B;
-					*(in24.m_pBitmap + (row * in24.m_Xres * 3) + (col * 3 + 1)) = c.G;
-					*(in24.m_pBitmap + (row * in24.m_Xres * 3) + (col * 3 + 2)) = c.R;
-				}
-
-			in24.ConvertTo16();
-
-			CImage out32 = new CImage();
-			out32.Init(in24.m_Xres * 2, in24.m_Yres * 2, 32);
-
-			CImage.InitLUTs();
-			CImage.hq2x_32(
-						in24.m_pBitmap,
-						out32.m_pBitmap,
-						in24.m_Xres,
-						in24.m_Yres,
-						out32.m_Xres * 4);
-
-			out32.ConvertTo24();
-
-			Bitmap b = new Bitmap(
-								out32.m_Xres, out32.m_Yres,
-								PixelFormat.Format24bppRgb);
-
-//			Rectangle rect = new Rectangle(0, 0, b.Width, b.Height);
-			BitmapData bitmapData = b.LockBits(
-											new Rectangle(
-														0, 0,
-														b.Width, b.Height),
-											ImageLockMode.WriteOnly,
-											b.PixelFormat);
-
-			IntPtr pixels = bitmapData.Scan0;
-
-			byte* pBits;
-			if (bitmapData.Stride > 0)
-				pBits = (byte*)pixels.ToPointer();
-			else
-				pBits = (byte*)pixels.ToPointer() + bitmapData.Stride * (b.Height - 1);
-
-			byte* srcBits = out32.m_pBitmap;
-
-			for (int i = 0; i < b.Width * b.Height; i++)
-			{
-				*(pBits++) = *(srcBits++);
-				*(pBits++) = *(srcBits++);
-				*(pBits++) = *(srcBits++);
-			}
-
-			b.UnlockBits(bitmapData);
-
-			image.Dispose();
-			in24.__dtor();
-			out32.__dtor();
-
-			return b;
-#else
-			return null;
-#endif
-		}
+//		public static unsafe Bitmap HQ2X(/*Bitmap image*/)
+//		{
+//#if hq2xWorks
+//			CImage in24 = new CImage();
+//			in24.Init(image.Width, image.Height, 24);
+//
+//			for (int row = 0; row < image.Height; row++)
+//				for (int col = 0; col < image.Width; col++)
+//				{
+//					Color c = image.GetPixel(col,row);
+//					*(in24.m_pBitmap + (row * in24.m_Xres * 3) + (col * 3 + 0)) = c.B;
+//					*(in24.m_pBitmap + (row * in24.m_Xres * 3) + (col * 3 + 1)) = c.G;
+//					*(in24.m_pBitmap + (row * in24.m_Xres * 3) + (col * 3 + 2)) = c.R;
+//				}
+//
+//			in24.ConvertTo16();
+//
+//			CImage out32 = new CImage();
+//			out32.Init(in24.m_Xres * 2, in24.m_Yres * 2, 32);
+//
+//			CImage.InitLUTs();
+//			CImage.hq2x_32(
+//						in24.m_pBitmap,
+//						out32.m_pBitmap,
+//						in24.m_Xres,
+//						in24.m_Yres,
+//						out32.m_Xres * 4);
+//
+//			out32.ConvertTo24();
+//
+//			Bitmap b = new Bitmap(
+//								out32.m_Xres, out32.m_Yres,
+//								PixelFormat.Format24bppRgb);
+//
+////			Rectangle rect = new Rectangle(0, 0, b.Width, b.Height);
+//			BitmapData bitmapData = b.LockBits(
+//											new Rectangle(
+//														0, 0,
+//														b.Width, b.Height),
+//											ImageLockMode.WriteOnly,
+//											b.PixelFormat);
+//
+//			IntPtr pixels = bitmapData.Scan0;
+//
+//			byte* pBits;
+//			if (bitmapData.Stride > 0)
+//				pBits = (byte*)pixels.ToPointer();
+//			else
+//				pBits = (byte*)pixels.ToPointer() + bitmapData.Stride * (b.Height - 1);
+//
+//			byte* srcBits = out32.m_pBitmap;
+//
+//			for (int i = 0; i < b.Width * b.Height; i++)
+//			{
+//				*(pBits++) = *(srcBits++);
+//				*(pBits++) = *(srcBits++);
+//				*(pBits++) = *(srcBits++);
+//			}
+//
+//			b.UnlockBits(bitmapData);
+//
+//			image.Dispose();
+//			in24.__dtor();
+//			out32.__dtor();
+//
+//			return b;
+//#else
+//			return null;
+//#endif
+//		}
 
 /*		/// <summary>
 		/// Saves an image collection as a bmp sprite sheet
@@ -591,7 +585,8 @@ namespace XCom
 		} */
 
 		/// <summary>
-		/// Loads a previously saved sprite sheet as a generic collection to be saved later
+		/// Loads a previously saved sprite-sheet as a generic collection to be
+		/// saved later.
 		/// </summary>
 		/// <param name="bmp">bitmap containing sprites</param>
 		/// <param name="pal"></param>
@@ -613,12 +608,10 @@ namespace XCom
 
 			int aniSprite = 0;
 
-			//Console.WriteLine("Image: {0},{1} -> {2},{3}", bmp.Width, bmp.Height, cols, rows);
 			for (int i = 0; i != cols * rows; ++i)
 			{
 				int x = (i % cols) * (width  + pad);
 				int y = (i / cols) * (height + pad);
-				//Console.WriteLine("{0}: {1},{2} -> {3}", frame, x, y, PckImage.Width);
 				list.Add(LoadTile(
 								bmp,
 								aniSprite++,

@@ -45,9 +45,9 @@ namespace PckView
 			}
 		}
 
-		internal ReadOnlyCollection<SpriteSelected> Sprites
+		internal ReadOnlyCollection<SpriteSelected> SelectedSprites
 		{
-			get { return _viewPanelOverlay.Sprites; }
+			get { return _viewPanelOverlay.SelectedSprites; }
 		}
 
 		internal XCImageCollection SpritePack
@@ -70,8 +70,6 @@ namespace PckView
 		/// </summary>
 		internal ViewPanelBase()
 		{
-//			this.Layout;
-
 			_viewPanelOverlay = new ViewPanelOverlay();
 			_viewPanelOverlay.Dock = DockStyle.Fill;
 			_viewPanelOverlay.SpriteClickEvent += OnSpriteClick;
@@ -79,6 +77,8 @@ namespace PckView
 
 			_scrollBar = new VScrollBar();
 			_scrollBar.Dock = DockStyle.Right;
+			_scrollBar.LargeChange = 40;
+			_scrollBar.SmallChange = 1;
 			_scrollBar.Scroll += OnSpritesScroll;
 
 			_statusBar = new StatusBar();
@@ -167,33 +167,66 @@ namespace PckView
 			}
 		}
 
-		private void OnSpriteClick(int spriteId)
-		{
-			_viewPanelOverlay.Focus();
-
-			_selectedId = spriteId;
-			_statusOverTile.Text = "Selected: " + _selectedId + " Over: " + _overId;
-
-			if (SpriteClickEvent != null)
-				SpriteClickEvent(spriteId);
-		}
-
 		private void OnSpriteOver(int spriteId)
 		{
 			_overId = spriteId;
-			_statusOverTile.Text = "Selected: " + _selectedId + " Over: " + _overId;
+
+			string selected = (_selectedId != -1) ? _selectedId.ToString(System.Globalization.CultureInfo.InvariantCulture)
+												  : "-";
+			string over = (_overId != -1) ? _overId.ToString(System.Globalization.CultureInfo.InvariantCulture)
+										  : "-";
+
+			_statusOverTile.Text = String.Format(
+											System.Globalization.CultureInfo.InvariantCulture,
+											"Selected {0}  Over {1}",
+											selected, over);
+			Refresh();
 		}
+
+		private void OnSpriteClick(int spriteId)
+		{
+			_selectedId = spriteId;
+
+			string selected = (_selectedId != -1) ? _selectedId.ToString(System.Globalization.CultureInfo.InvariantCulture)
+												  : "-";
+			string over = (_overId != -1) ? _overId.ToString(System.Globalization.CultureInfo.InvariantCulture)
+										  : "-";
+
+			_statusOverTile.Text = String.Format(
+											System.Globalization.CultureInfo.InvariantCulture,
+											"Selected {0}  Over {1}",
+											selected, over);
+
+			if (spriteId != -1)
+			{
+				_viewPanelOverlay.Focus();
+
+				if (SpriteClickEvent != null)
+					SpriteClickEvent(spriteId);
+			}
+		}
+
+		internal void ClearSpriteStatus()
+		{
+			OnSpriteOver(-1);
+			OnSpriteClick(-1);
+		}
+
 		#endregion
 
 
 		#region Methods
 
+		/// <summary>
+		/// Updates the scrollbar after a resize event or a sprite-pack changed
+		/// event.
+		/// </summary>
 		internal void UpdateScrollbar()
 		{
-			if (_viewPanelOverlay.PreferredHeight >= Height)
+			if (_viewPanelOverlay.AbstractHeight > Height)
 			{
 				_scrollBar.Visible = true;
-				_scrollBar.Maximum = _viewPanelOverlay.PreferredHeight - Height;
+				_scrollBar.Maximum = _viewPanelOverlay.AbstractHeight - Height + _scrollBar.LargeChange - 1;
 			}
 			else
 				_scrollBar.Visible = false;

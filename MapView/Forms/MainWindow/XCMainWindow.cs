@@ -193,7 +193,7 @@ namespace MapView
 			_viewersManager.ManageViewers();
 
 
-			ViewerFormsManager.TileView.Control.MapChangedEventHandler += OnMapChanged;
+			ViewerFormsManager.TileView.Control.MapChangedEvent += OnMapChanged;
 
 			MainViewPanel.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
@@ -253,7 +253,7 @@ namespace MapView
 			Closing += OnCloseSaveRegistry;
 
 			_loadingProgress = new LoadingForm();
-			Bmp.LoadingEvent += _loadingProgress.HandleProgress;
+			XCBitmap.LoadingEvent += _loadingProgress.HandleProgress;
 
 			// I should rewrite the hq2x wrapper for .NET sometime -- not the code it's pretty insane
 //			if (!File.Exists("hq2xa.dll"))
@@ -876,14 +876,14 @@ namespace MapView
 			}
 		}
 
-		private void OnHq2xClick(object sender, EventArgs e)
+		private void OnHq2xClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE.
 		{
-			var map = _mainViewPanel.BaseMap as XCMapFile;
-			if (map != null)
-			{
-				map.HQ2X();
-				_mainViewPanel.OnResize();
-			}
+//			var map = _mainViewPanel.BaseMap as XCMapFile;
+//			if (map != null)
+//			{
+//				map.HQ2X();
+//				_mainViewPanel.OnResize();
+//			}
 		}
 
 //		private void OnDoorsClick(object sender, EventArgs e)

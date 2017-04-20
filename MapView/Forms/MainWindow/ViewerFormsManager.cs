@@ -57,7 +57,7 @@ namespace MapView.Forms.MainWindow
 			TopView.Control.InitializeEditStrip(EditFactory);
 
 			TileView.Control.Initialize(ShowAllManager);
-			TileView.Control.SelectedTileTypeChangedObserver += OnSelectedTileTypeChanged;
+			TileView.Control.Observer0SelectedTileChanged += OnSelectedTileChanged;
 		}
 
 		internal void SetObservers(IMapBase baseMap)
@@ -101,7 +101,7 @@ namespace MapView.Forms.MainWindow
 		/// in TileView.
 		/// </summary>
 		/// <param name="tile"></param>
-		private static void OnSelectedTileTypeChanged(TileBase tile)
+		private static void OnSelectedTileChanged(TileBase tile)
 		{
 			if (tile != null && tile.Record != null)
 				TopView.Control.SelectQuadrant(tile.Record.TileType);

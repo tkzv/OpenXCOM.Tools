@@ -98,6 +98,9 @@ namespace PckView
 			_trackBar.Width = _editorPanel.Width;
 		}
 
+
+		bool _paletteInitDone;
+
 		private void OnShowPaletteClick(object sender, EventArgs e)
 		{
 			if (!miPalette.Checked)
@@ -106,8 +109,12 @@ namespace PckView
 
 				if (!_palView.Visible)
 				{
-					_palView.Left = Left + 20;
-					_palView.Top  = Top  + 20;
+					if (!_paletteInitDone)
+					{
+						_paletteInitDone = true;
+						_palView.Left = Left + 20;
+						_palView.Top  = Top  + 20;
+					}
 					_palView.Show();
 				}
 				else

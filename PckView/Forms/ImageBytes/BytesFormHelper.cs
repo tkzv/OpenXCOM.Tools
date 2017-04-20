@@ -61,7 +61,7 @@ namespace PckView.Forms.ImageBytes
 				fBytes.Closing += OnClosing;
 				fBytes.Closing += (sender, e) => closedCallBack();
 				fBytes.Location = location;
-				fBytes.Text = "Total Bytes - " + _selected.Image.Offsets.Length;
+				fBytes.Text = "Total Bytes - " + _selected.Image.Bindata.Length;
 				fBytes.Show();
 			}
 		}
@@ -91,7 +91,7 @@ namespace PckView.Forms.ImageBytes
 			int wrapCount = 0;		// typical sprites have only 40 rows.
 			int row = 0;
 
-			foreach (byte b in _selected.Image.Offsets)
+			foreach (byte b in _selected.Image.Bindata)
 			{
 				if (wrapCount % wrap == 0)
 				{

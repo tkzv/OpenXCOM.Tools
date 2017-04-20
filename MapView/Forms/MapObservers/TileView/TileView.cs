@@ -22,15 +22,24 @@ namespace MapView.Forms.MapObservers.TileViews
 		:
 			MapObserverControl0
 	{
-		public event SelectedTileTypeChangedEventHandler SelectedTileTypeChangedObserver;
-		private void OnSelectedTileTypeChanged(TileBase tile)
+		public event SelectedTileChangedEventHandler Observer0SelectedTileChanged;
+		private void OnSelectedTileChanged(TileBase tile)
 		{
-			var handler = SelectedTileTypeChangedObserver;
+			var handler = Observer0SelectedTileChanged;
 			if (handler != null)
 				handler(tile);
 		}
 
-		public event MethodInvoker MapChangedEventHandler;
+		/// <summary>
+		/// Raised when a save is done in PckView.
+		/// </summary>
+		public event MethodInvoker MapChangedEvent;
+		private void OnMapChanged()
+		{
+			var handler = MapChangedEvent;
+			if (handler != null)
+				handler();
+		}
 
 
 		private ShowHideManager _showAllManager;
@@ -43,6 +52,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		private McdViewerForm _mcdInfoForm;
 
 		private Hashtable _brushes;
+
 
 		public TileView()
 		{
@@ -77,11 +87,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		private void AddPanel(TilePanel panel, Control page)
 		{
 			panel.Dock = DockStyle.Fill;
+			panel.PanelSelectedTileChanged += OnPanelTileChanged;
+
 			page.Controls.Add(panel);
-			panel.SelectedTileTypeChangedPanel += OnTileChanged;
 		}
 
-		private void OnTileChanged(TileBase tile)
+		private void OnPanelTileChanged(TileBase tile)
 		{
 			var f = FindForm();
 			if (tile != null)
@@ -99,7 +110,7 @@ namespace MapView.Forms.MapObservers.TileViews
 					_mcdInfoForm.UpdateData(null);
 			}
 
-			OnSelectedTileTypeChanged(tile);
+			OnSelectedTileChanged(tile);
 		}
 
 		public void Initialize(ShowHideManager showAllManager)
@@ -348,7 +359,7 @@ namespace MapView.Forms.MapObservers.TileViews
 								GameInfo.ImageInfo.Images[dep].ClearMcdTable();
 								GameInfo.ClearPckCache(imageInfo.Path, imageInfo.Label);
 
-								HandleMapChanged();
+								OnMapChanged();
 							}
 						}
 
@@ -368,14 +379,5 @@ namespace MapView.Forms.MapObservers.TileViews
 							0);
 			}
 		}
-
-		private void HandleMapChanged()
-		{
-			MethodInvoker handler = MapChangedEventHandler;
-			if (handler != null)
-				handler();
-		}
 	}
-
-	internal delegate void SelectedTileTypeChangedEventHandler(TileBase tile);
 }

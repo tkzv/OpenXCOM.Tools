@@ -10,25 +10,30 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TileViews
 {
-	internal class TilePanel
+	internal delegate void SelectedTileChangedEventHandler(TileBase tile);
+
+
+	internal sealed class TilePanel
 		:
 			Panel
 	{
+		public event SelectedTileChangedEventHandler PanelSelectedTileChanged;
+
+
 		private TileBase[] _tiles;
 
-		private const int _width  = 32;
-		private const int _height = 40;
-
-		private const int Pad     =  4; // NOTE: includes the margin for both sides of '_width'.
+		private const int SpriteMargin = 2;
+		private const int TileX = 32 + SpriteMargin * 2;
+		private const int TileY = 40 + SpriteMargin * 2;
 
 //		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
 		private Pen _pen = new Pen(Brushes.Red, 2);
 
 		private static Hashtable _brushes;
 
-		private int _startY = 0;
-		private int _sel;
-		private int _across = 1;
+		private int _tilesX = 1;
+		private int _startY;
+		private int _id;
 
 		private VScrollBar _scrollBar;
 
@@ -53,8 +58,6 @@ namespace MapView.Forms.MapObservers.TileViews
 			Color.Blue
 		};
 
-		public event SelectedTileTypeChangedEventHandler SelectedTileTypeChangedPanel;
-
 //		private static PckSpriteCollection extraFile;
 //		public static PckSpriteCollection ExtraFile
 //		{
@@ -71,9 +74,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		public TilePanel(TileType type)
 		{
 			_type = type;
+
 			_scrollBar = new VScrollBar();
-			_scrollBar.ValueChanged += OnValueChange;
 			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
+			_scrollBar.LargeChange = TileY;
+			_scrollBar.SmallChange = 1;
+			_scrollBar.ValueChanged += OnScrollBarValueChanged;
 
 			Controls.Add(_scrollBar);
 			MainViewPanel.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
@@ -83,27 +89,34 @@ namespace MapView.Forms.MapObservers.TileViews
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 
-			_sel = 0;
-
 			Globals.LoadExtras();
 		}
 
 
-		private void OnValueChange(object sender, EventArgs e)
+		private void OnScrollBarValueChanged(object sender, EventArgs e)
 		{
 			_startY = -_scrollBar.Value;
 			Refresh();
 		}
 
+		//int i;
 		protected override void OnResize(EventArgs eventargs)
 		{
-			_across = (Width - (_scrollBar.Visible ? _scrollBar.Width : 0)) / (_width + Pad);
+			//XConsole.AdZerg("OnResize " + (++i));
+
+			_tilesX = (Width - (_scrollBar.Visible ? _scrollBar.Width : 0)) / (TileX);
+
 			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
 			_scrollBar.Height = Height;
-			_scrollBar.Maximum = Math.Max((PreferredHeight - Height) + 10, _scrollBar.Minimum);
-			_scrollBar.Visible = (_scrollBar.Maximum != _scrollBar.Minimum);
 
-			Refresh();
+//			_scrollBar.Maximum = Math.Max(AbstractHeight - Height + 10, 0);
+			_scrollBar.Maximum = Math.Max(AbstractHeight - Height + _scrollBar.LargeChange, 0);
+//			_scrollBar.Maximum = Math.Max(AbstractHeight - Height, 0);
+//			_scrollBar.Maximum = Math.Max(AbstractHeight - Height + _scrollBar.LargeChange / 2, 0);
+
+			_scrollBar.Visible = (_scrollBar.Maximum != 0);
+
+//			Refresh();
 		}
 
 /*		public int StartY
@@ -116,16 +129,16 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		} */
 
-		private int PreferredHeight
+		private int AbstractHeight
 		{
 			get
 			{
-				if (_tiles != null && _across > 0)
+				if (_tiles != null && _tilesX > 0)
 				{
-					if (_tiles.Length % _across == 0)
-						return (_tiles.Length / _across) * (_height + Pad);
+					if (_tiles.Length % _tilesX == 0)
+						return (_tiles.Length / _tilesX) * (TileY);
 
-					return (1 + _tiles.Length / _across) * (_height + Pad);
+					return (_tiles.Length / _tilesX + 1) * (TileY);
 				}
 				return 0;
 			}
@@ -159,19 +172,17 @@ namespace MapView.Forms.MapObservers.TileViews
 							_tiles[j++] = tiles[i];
 				}
 
-				if (_sel >= _tiles.Length)
-					_sel = 0;
+				if (_id >= _tiles.Length)
+					_id = 0;
 			}
 			else
 			{
 				_tiles = null;
-				_sel = 0;
+				_id = 0;
 			}
 
 			OnResize(null);
 		}
-
-		private const int SCROLL = 20;
 
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
@@ -181,39 +192,39 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (e.Delta < 0)
 			{
-				if (_scrollBar.Value + SCROLL < _scrollBar.Maximum)
-					_scrollBar.Value += SCROLL;
+				if (_scrollBar.Value  + _scrollBar.LargeChange < _scrollBar.Maximum)
+					_scrollBar.Value += _scrollBar.LargeChange;
 				else
 					_scrollBar.Value = _scrollBar.Maximum;
 			}
 			else if (e.Delta > 0)
 			{
-				if (_scrollBar.Value - SCROLL > _scrollBar.Minimum)
-					_scrollBar.Value -= SCROLL;
+				if (_scrollBar.Value  - _scrollBar.LargeChange > 0)
+					_scrollBar.Value -= _scrollBar.LargeChange;
 				else
-					_scrollBar.Value = _scrollBar.Minimum;
+					_scrollBar.Value = 0;
 			}
 		}
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			this.Focus();
+			Focus();
 
 			if (_tiles != null)
 			{
-				int x =  e.X / (_width + Pad);
-				int y = (e.Y - _startY) / (_height + Pad);
+				int x =  e.X            / (TileX);
+				int y = (e.Y - _startY) / (TileY);
 
-				if (x >= _across)
-					x = _across - 1;
+				if (x >= _tilesX)
+					x  = _tilesX - 1;
 
-				int tileTest = y * _across + x;
-				if (tileTest < _tiles.Length)
+				int tile = x + y * _tilesX;
+				if (tile < _tiles.Length)
 				{
-					_sel = tileTest;
+					_id = tile;
 
-					if (SelectedTileTypeChangedPanel != null)
-						SelectedTileTypeChangedPanel(SelectedTile);
+					if (PanelSelectedTileChanged != null)
+						PanelSelectedTileChanged(SelectedTile);
 
 					Refresh();
 				}
@@ -222,29 +233,23 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			PaintTiles(e);
-		}
-
-		private void PaintTiles(PaintEventArgs e)
-		{
 			if (_tiles != null)
 			{
 				Graphics g = e.Graphics;
 
 				int x = 0;
 				int y = 0;
-				const int width  = _width  + Pad;
-				const int height = _height + Pad;
-				int top, left;
+				int top;
+				int left;
 
 				foreach (var tile in _tiles)
 				{
-					top  = y * height + _startY;
-					left = x * width;
+					top  = y * TileY + _startY;
+					left = x * TileX;
 
 					var rect = new Rectangle(
 										left,  top,
-										width, height);
+										TileX, TileY);
 
 					if (tile != null)
 					{
@@ -267,7 +272,7 @@ namespace MapView.Forms.MapObservers.TileViews
 										left,
 										top + PckImage.Height - Font.Height);
 
-							x = (x + 1) % _across;
+							x = (x + 1) % _tilesX;
 							if (x == 0)
 								y++;
 						}
@@ -281,7 +286,7 @@ namespace MapView.Forms.MapObservers.TileViews
 									Globals.ExtraTiles[0].Image,
 									left, top);
 
-						x = (x + 1) % _across;
+						x = (x + 1) % _tilesX;
 						if (x == 0)
 							y++;
 					}
@@ -294,22 +299,23 @@ namespace MapView.Forms.MapObservers.TileViews
 //							_width  + _space,
 //							_height + _space)
 
-				for (int i = 0; i <= _across; ++i)
+				for (int i = 0; i <= _tilesX; ++i)
 					g.DrawLine(
 							Pens.Black,
-							i * width, _startY,
-							i * width, _startY + PreferredHeight);
+							i * TileX, _startY,
+							i * TileX, _startY + AbstractHeight);
 
-				for (int i = 0; i <= PreferredHeight; i += height)
+				for (int i = 0; i <= AbstractHeight; i += TileY)
 					g.DrawLine(
 							Pens.Black,
 							0,               _startY + i,
-							_across * width, _startY + i);
+							_tilesX * TileX, _startY + i);
 
 				g.DrawRectangle(
 							_pen,
-							(_sel % _across) * width, _startY + (_sel / _across) * height,
-							width, height);
+							_id % _tilesX * TileX,
+							_startY + _id / _tilesX * TileY,
+							TileX, TileY);
 			}
 		}
 
@@ -317,8 +323,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			get
 			{
-				if (_sel > -1 && _sel < _tiles.Length)
-					return _tiles[_sel];
+				if (_id > -1 && _id < _tiles.Length)
+					return _tiles[_id];
 
 				return null;
 			}
@@ -327,23 +333,24 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				if (value != null)
 				{
-					_sel = value.TileListId + 1;
+					_id = value.TileListId + 1;
 
-					if (SelectedTileTypeChangedPanel != null)
-						SelectedTileTypeChangedPanel(SelectedTile);
+					if (PanelSelectedTileChanged != null)
+						PanelSelectedTileChanged(SelectedTile);
 
-					int y = _startY + (_sel / _across) * (_height + Pad);
+					int y   =     _startY + (_id / _tilesX) * (TileY);
 					int val = y - _startY;
 
-					if (val > _scrollBar.Minimum)
+					if (val > 0)
 					{
-						_scrollBar.Value = (val < _scrollBar.Maximum) ? val : _scrollBar.Maximum;
+						_scrollBar.Value = (val < _scrollBar.Maximum) ? val
+																	  : _scrollBar.Maximum;
 					}
 					else
-						_scrollBar.Value = _scrollBar.Minimum;
+						_scrollBar.Value = 0;
 				}
 				else
-					_sel = 0;
+					_id = 0;
 			}
 		}
 

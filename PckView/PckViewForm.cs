@@ -19,6 +19,7 @@ namespace PckView
 		:
 			Form
 	{
+		#region Fields & Properties
 		private ViewPanelBase _viewPanelBase;
 
 		private Editor        _editor;
@@ -42,7 +43,13 @@ namespace PckView
 		public bool SavedFile
 		{ get; private set; }
 
+		#endregion
 
+
+		#region cTor
+		/// <summary>
+		/// Creates the PckView window.
+		/// </summary>
 		public PckViewForm()
 		{
 			InitializeComponent();
@@ -119,11 +126,13 @@ namespace PckView
 			var regInfo = new RegistryInfo(this, "PckView"); // subscribe to Load and Closing events.
 //			regInfo.AddProperty("SelectedPalette");
 		}
+		#endregion
 
 
 		private void OnSpritePackChanged(SpritePackChangedEventArgs e)
 		{
 			_viewPanelBase.UpdateScrollbar();
+			_viewPanelBase.ClearSpriteStatus();
 
 			bool enabled = (e.Sprites != null);
 
@@ -135,13 +144,13 @@ namespace PckView
 
 		private void OnSpriteClick(int spriteId)
 		{
-			if (_viewPanelBase.Sprites.Count > 0) // isSelected
+			if (_viewPanelBase.SelectedSprites.Count > 0) // isSelected
 			{
 				_miEdit.Enabled   =
 				_miSave.Enabled   =
 				_miDelete.Enabled = true;
 
-				var selected = _viewPanelBase.Sprites[_viewPanelBase.Sprites.Count - 1];
+				var selected = _viewPanelBase.SelectedSprites[_viewPanelBase.SelectedSprites.Count - 1];
 				BytesFormHelper.ReloadBytes(selected);
 			}
 			else // selected is null
@@ -157,6 +166,12 @@ namespace PckView
 		private ContextMenu BuildContextMenu()
 		{
 			var menu = new ContextMenu();
+
+			_miEdit = new MenuItem("Edit");
+			_miEdit.Click += OnEditSpriteClick;
+			menu.MenuItems.Add(_miEdit);
+
+			menu.MenuItems.Add(new MenuItem("-"));
 
 			_miSave = new MenuItem("Save");
 			_miSave.Click += OnSaveSpriteClick;
@@ -174,10 +189,6 @@ namespace PckView
 			_miDelete.Click += OnRemoveSpriteClick;
 			menu.MenuItems.Add(_miDelete);
 
-			_miEdit = new MenuItem("Edit");
-			_miEdit.Click += OnEditSpriteClick;
-			menu.MenuItems.Add(_miEdit);
-
 			_miEdit.Enabled = false;
 
 			return menu;
@@ -185,22 +196,22 @@ namespace PckView
 
 		private void OnSaveSpriteClick(object sender, EventArgs e)
 		{
-			if (_viewPanelBase.Sprites.Count != 0)
+			if (_viewPanelBase.SelectedSprites.Count != 0)
 			{
-				var selected = _viewPanelBase.Sprites[_viewPanelBase.Sprites.Count - 1];
+				var selected = _viewPanelBase.SelectedSprites[_viewPanelBase.SelectedSprites.Count - 1];
 				if (_viewPanelBase.SpritePack != null)
 				{
 					sfdBmpSingle.FileName = _viewPanelBase.SpritePack.Label + selected.Image.FileId;
 
 					if (sfdBmpSingle.ShowDialog() == DialogResult.OK)
-						Bmp.Save(sfdBmpSingle.FileName, selected.Image.Image);
+						XCBitmap.Save(sfdBmpSingle.FileName, selected.Image.Image);
 				}
 			}
 		}
 
 		private void OnReplaceSpriteClick(object sender, EventArgs e)
 		{
-			if (_viewPanelBase.Sprites.Count != 1)
+			if (_viewPanelBase.SelectedSprites.Count != 1)
 			{
 				MessageBox.Show(
 							"Must select 1 item only.",
@@ -213,7 +224,7 @@ namespace PckView
 			else if (_viewPanelBase.SpritePack != null )
 			{
 				var title = String.Empty;
-				foreach (var sprite in _viewPanelBase.Sprites)
+				foreach (var sprite in _viewPanelBase.SelectedSprites)
 				{
 					if (!String.IsNullOrEmpty(title))
 						title += ", ";
@@ -226,13 +237,13 @@ namespace PckView
 				if (ofdBmp.ShowDialog() == DialogResult.OK)
 				{
 					var b = new Bitmap(ofdBmp.FileName);
-					var image = Bmp.Load(
-										b,
-										_viewPanelBase.Pal,
-										_viewPanelBase.SpritePack.ImageFile.ImageSize.Width,
-										_viewPanelBase.SpritePack.ImageFile.ImageSize.Height,
-										1)[0];
-					_viewPanelBase.ChangeSprite(_viewPanelBase.Sprites[0].Id, image);
+					var image = XCBitmap.Load(
+											b,
+											_viewPanelBase.Pal,
+											_viewPanelBase.SpritePack.ImageFile.ImageSize.Width,
+											_viewPanelBase.SpritePack.ImageFile.ImageSize.Height,
+											1)[0];
+					_viewPanelBase.ChangeSprite(_viewPanelBase.SelectedSprites[0].Id, image);
 					Refresh();
 				}
 				UpdateCaption();
@@ -251,13 +262,13 @@ namespace PckView
 					foreach (string file in ofdBmp.FileNames)
 					{
 						var b = new Bitmap(file);
-						_viewPanelBase.SpritePack.Add(Bmp.LoadTile(
-															b,
-															0,
-															_viewPanelBase.Pal,
-															0, 0,
-															_viewPanelBase.SpritePack.ImageFile.ImageSize.Width,
-															_viewPanelBase.SpritePack.ImageFile.ImageSize.Height));
+						_viewPanelBase.SpritePack.Add(XCBitmap.LoadTile(
+																	b,
+																	0,
+																	_viewPanelBase.Pal,
+																	0, 0,
+																	_viewPanelBase.SpritePack.ImageFile.ImageSize.Width,
+																	_viewPanelBase.SpritePack.ImageFile.ImageSize.Height));
 					}
 					Refresh();
 				}
@@ -272,26 +283,43 @@ namespace PckView
 			Refresh();
 		}
 
+
+		bool _editorInitDone;
+
 		private void OnEditSpriteClick(object sender, EventArgs e)
 		{
-			if (_viewPanelBase.Sprites.Count != 0)
+			if (_viewPanelBase.SelectedSprites.Count != 0)
 			{
-				var selected = _viewPanelBase.Sprites[_viewPanelBase.Sprites.Count - 1];
+				var selected = _viewPanelBase.SelectedSprites[_viewPanelBase.SelectedSprites.Count - 1];
 				if (selected != null)
 				{
-					_editor.Image = (XCImage)selected.Image.Clone();
+					_editor.Image = selected.Image.Clone();
 
-					if (_editor.Visible)
-						_editor.BringToFront();
-					else
+					if (!_editor.Visible)
 					{
-						_editor.Left = Left + 20;
-						_editor.Top  = Top  + 20;
+						_miEdit.Checked = true;	// TODO: show as Checked only if currently selected
+												// sprite is actually open in the Editor.
+						if (!_editorInitDone)
+						{
+							_editorInitDone = true;
+							_editor.Left = Left + 20;
+							_editor.Top  = Top  + 20;
+						}
 						_editor.Palette = _palette;
 						_editor.Show();
 					}
+					else
+						_editor.BringToFront();
 				}
 			}
+		}
+
+		private void OnEditorClosing(object sender, CancelEventArgs e)
+		{
+			_miEdit.Checked = false;
+
+			e.Cancel = true;
+			_editor.Hide();
 		}
 
 		public string SelectedPalette
@@ -449,11 +477,11 @@ namespace PckView
 		{
 			if (!miBytes.Checked)
 			{
-				if (_viewPanelBase.Sprites.Count != 0)
+				if (_viewPanelBase.SelectedSprites.Count != 0)
 				{
 					miBytes.Checked = true;
 
-					var selected = _viewPanelBase.Sprites[_viewPanelBase.Sprites.Count - 1];
+					var selected = _viewPanelBase.SelectedSprites[_viewPanelBase.SelectedSprites.Count - 1];
 					BytesFormHelper.ShowBytes(selected, CallbackShowBytesClosing, new Point(Right, Top));
 				}
 			}
@@ -485,12 +513,6 @@ namespace PckView
 		private void OnHelpClick(object sender, EventArgs e)
 		{
 			new Help().ShowDialog(this);
-		}
-
-		private void OnEditorClosing(object sender, CancelEventArgs e)
-		{
-			e.Cancel = true;
-			_editor.Hide();
 		}
 
 		private void OnHq2xClick(object sender, EventArgs e) // disabled w/ Visible=FALSE in the designer.
@@ -564,7 +586,7 @@ namespace PckView
 					{
 						//Console.WriteLine("Save to: " + path + @"\" + fName + (xc.FileNum + countNum) + "." + ext);
 						//Console.WriteLine("Save: " + path + @"\" + fName + string.Format("{0:" + zeros + "}", xc.FileNum) + "." + ext);
-						Bmp.Save(
+						XCBitmap.Save(
 								path + @"\" + fName + string.Format(
 																System.Globalization.CultureInfo.InvariantCulture,
 																"{0:" + zeros + "}",

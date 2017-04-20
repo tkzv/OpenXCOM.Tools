@@ -5,10 +5,8 @@ using System.Drawing;
 namespace XCom.Interfaces
 {
 	public class XCImage
-		:
-			ICloneable
 	{
-		public byte[] Offsets
+		public byte[] Bindata
 		{ get; protected set; }
 
 		public int FileId
@@ -35,30 +33,31 @@ namespace XCom.Interfaces
 
 
 		/// <summary>
-		/// Entries must not be compressed.
+		/// Creates an XCImage.
+		/// NOTE: Entries must not be compressed.
 		/// </summary>
-		/// <param name="offsets"></param>
+		/// <param name="bindata"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="pal"></param>
 		/// <param name="id"></param>
 		internal XCImage(
-				byte[] offsets,
+				byte[] bindata,
 				int width,
 				int height,
 				Palette pal,
 				int id)
 		{
 			FileId   = id;
-			Offsets  = offsets;
+			Bindata  = bindata;
 			_palette = pal;
 
 			if (pal != null)
-				Image = Bmp.MakeBitmap8(
-									width,
-									height,
-									offsets,
-									pal.Colors);
+				Image = XCBitmap.MakeBitmap8(
+										width,
+										height,
+										bindata,
+										pal.Colors);
 		}
 /*		public XCImage()
 			:
@@ -75,30 +74,35 @@ namespace XCom.Interfaces
 		}
 
 
-		public object Clone()
+		/// <summary>
+		/// Clones this image for use by PckView.
+		/// </summary>
+		/// <returns>pointer to a new XCImage or null</returns>
+		public XCImage Clone()
 		{
-			if (Offsets != null)
+			if (Bindata != null)
 			{
-				var offsets = new byte[Offsets.Length];
-				for (int i = 0; i != offsets.Length; ++i)
-					offsets[i] = Offsets[i];
+				var bindata = new byte[Bindata.Length];
+				for (int i = 0; i != bindata.Length; ++i)
+					bindata[i] = Bindata[i];
 
 				return new XCImage(
-								offsets,
+								bindata,
 								Image.Width,
 								Image.Height,
 								_palette,
 								FileId);
 			}
 
+			// TODO: this arbitrary Clone() method should probably be disallowed:
 			return (Image != null) ? new XCImage((Bitmap)Image.Clone(), FileId)
 								   : null;
 
 		}
 
-		internal void HQ2X()
-		{
-			Image = Bmp.HQ2X(/*Image*/);
-		}
+//		internal void HQ2X()
+//		{
+//			Image = Bmp.HQ2X(/*Image*/);
+//		}
 	}
 }

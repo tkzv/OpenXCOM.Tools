@@ -134,7 +134,7 @@
     <Compile Include="GameFiles\Images\ImageInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\Types\Bmp.cs">
+    <Compile Include="GameFiles\Images\Types\XCBitmap.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Images\Types\PckImage.cs">
