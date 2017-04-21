@@ -56,7 +56,7 @@ namespace MapView.Forms.MainWindow
 
 			TopView.Control.InitializeEditStrip(EditFactory);
 
-			TileView.Control.Initialize(ShowAllManager);
+			TileView.Control.SetShowAllManager(ShowAllManager);
 			TileView.Control.Observer0SelectedTileChanged += OnSelectedTileChanged;
 		}
 

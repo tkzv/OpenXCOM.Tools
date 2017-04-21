@@ -17,7 +17,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		:
 			Panel
 	{
-		public event SelectedTileChangedEventHandler PanelSelectedTileChanged;
+		internal event SelectedTileChangedEventHandler PanelSelectedTileChanged;
 
 
 		private TileBase[] _tiles;
@@ -65,13 +65,13 @@ namespace MapView.Forms.MapObservers.TileViews
 //			set { extraFile = value; }
 //		}
 
-		public static void SetColors(Hashtable table)
+		internal static void SetColors(Hashtable table)
 		{
 			_brushes = table;
 		}
 
 
-		public TilePanel(TileType type)
+		internal TilePanel(TileType type)
 		{
 			_type = type;
 
@@ -93,41 +93,43 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 
+		/// <summary>
+		/// Fires when anything changes the Value of the scroll-bar.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnScrollBarValueChanged(object sender, EventArgs e)
 		{
+			_scrollBar.Maximum = Math.Max(AbstractHeight - Height + _scrollBar.LargeChange, 0);
+
+			LogFile.WriteLine("");
+			LogFile.WriteLine("OnScrollBarValueChanged");
+			LogFile.WriteLine(". startY= " + _startY);
+			LogFile.WriteLine(". value= " + _scrollBar.Value);
+			LogFile.WriteLine(". large= " + _scrollBar.LargeChange);
+			LogFile.WriteLine(". max= " + _scrollBar.Maximum);
+
 			_startY = -_scrollBar.Value;
 			Refresh();
 		}
 
-		//int i;
 		protected override void OnResize(EventArgs eventargs)
 		{
-			//XConsole.AdZerg("OnResize " + (++i));
+			LogFile.WriteLine("");
+			LogFile.WriteLine("OnResize");
 
-			_tilesX = (Width - (_scrollBar.Visible ? _scrollBar.Width : 0)) / (TileX);
+			_tilesX = (Width - (_scrollBar.Visible ? _scrollBar.Width : 0)) / TileX;
 
 			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
 			_scrollBar.Height = Height;
 
-//			_scrollBar.Maximum = Math.Max(AbstractHeight - Height + 10, 0);
 			_scrollBar.Maximum = Math.Max(AbstractHeight - Height + _scrollBar.LargeChange, 0);
-//			_scrollBar.Maximum = Math.Max(AbstractHeight - Height, 0);
-//			_scrollBar.Maximum = Math.Max(AbstractHeight - Height + _scrollBar.LargeChange / 2, 0);
+			LogFile.WriteLine(". _scrollBar.Maximum= " + _scrollBar.Maximum);
 
 			_scrollBar.Visible = (_scrollBar.Maximum != 0);
 
-//			Refresh();
+//			Refresh(); // ... curious
 		}
-
-/*		public int StartY
-		{
-			get { return _startY; }
-			set
-			{
-				_startY = value;
-				Refresh();
-			}
-		} */
 
 		private int AbstractHeight
 		{
@@ -136,9 +138,9 @@ namespace MapView.Forms.MapObservers.TileViews
 				if (_tiles != null && _tilesX > 0)
 				{
 					if (_tiles.Length % _tilesX == 0)
-						return (_tiles.Length / _tilesX) * (TileY);
+						return (_tiles.Length / _tilesX) * TileY;
 
-					return (_tiles.Length / _tilesX + 1) * (TileY);
+					return (_tiles.Length / _tilesX + 1) * TileY;
 				}
 				return 0;
 			}
@@ -186,24 +188,38 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("OnMouseWheel");
+			LogFile.WriteLine(". startY= " + _startY);
+			LogFile.WriteLine(". value= " + _scrollBar.Value);
+			LogFile.WriteLine(". large= " + _scrollBar.LargeChange);
+			LogFile.WriteLine(". max= " + _scrollBar.Maximum);
+
 			var handledMouseEventArgs = e as HandledMouseEventArgs;
 			if (handledMouseEventArgs != null)
 				handledMouseEventArgs.Handled = true;
 
-			if (e.Delta < 0)
+			if (e.Delta > 0)
 			{
-				if (_scrollBar.Value  + _scrollBar.LargeChange < _scrollBar.Maximum)
-					_scrollBar.Value += _scrollBar.LargeChange;
-				else
-					_scrollBar.Value = _scrollBar.Maximum;
-			}
-			else if (e.Delta > 0)
-			{
+				LogFile.WriteLine(". . up");
+
 				if (_scrollBar.Value  - _scrollBar.LargeChange > 0)
 					_scrollBar.Value -= _scrollBar.LargeChange;
 				else
 					_scrollBar.Value = 0;
 			}
+			else if (e.Delta < 0)
+			{
+				LogFile.WriteLine(". . down");
+
+				if (_scrollBar.Value + (_scrollBar.LargeChange - 1) + _scrollBar.LargeChange < _scrollBar.Maximum)
+					_scrollBar.Value += _scrollBar.LargeChange;
+				else
+					_scrollBar.Value = _scrollBar.Maximum - (_scrollBar.LargeChange - 1);
+			}
+
+			LogFile.WriteLine(". . . value= " + _scrollBar.Value);
+			LogFile.WriteLine(". . . startY= " + _startY);
 		}
 
 		protected override void OnMouseDown(MouseEventArgs e)
@@ -235,7 +251,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			if (_tiles != null)
 			{
-				Graphics g = e.Graphics;
+				var g = e.Graphics;
 
 				int x = 0;
 				int y = 0;
@@ -319,7 +335,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
-		public TileBase SelectedTile
+		internal TileBase SelectedTile
 		{
 			get
 			{

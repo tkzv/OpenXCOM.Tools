@@ -22,7 +22,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		:
 			MapObserverControl0
 	{
-		public event SelectedTileChangedEventHandler Observer0SelectedTileChanged;
+		internal event SelectedTileChangedEventHandler Observer0SelectedTileChanged;
 		private void OnSelectedTileChanged(TileBase tile)
 		{
 			var handler = Observer0SelectedTileChanged;
@@ -33,7 +33,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <summary>
 		/// Raised when a save is done in PckView.
 		/// </summary>
-		public event MethodInvoker MapChangedEvent;
+		internal event MethodInvoker MapChangedEvent;
 		private void OnMapChanged()
 		{
 			var handler = MapChangedEvent;
@@ -54,11 +54,11 @@ namespace MapView.Forms.MapObservers.TileViews
 		private Hashtable _brushes;
 
 
-		public TileView()
+		internal TileView()
 		{
 			InitializeComponent();
 
-			tcTileTypes.Selected += OnTabSelected;
+			tcTileTypes.Selected += OnPageSelected;
 
 			_allTiles   = new TilePanel(TileType.All);
 			var ground  = new TilePanel(TileType.Ground);
@@ -95,25 +95,43 @@ namespace MapView.Forms.MapObservers.TileViews
 		private void OnPanelTileChanged(TileBase tile)
 		{
 			var f = FindForm();
+
+			McdRecord record = null;
+
 			if (tile != null)
 			{
 				f.Text = BuildTitleString(tile.TileListId, tile.Id);
-
-				if (_mcdInfoForm != null)
-					_mcdInfoForm.UpdateData(tile.Record);
+				record = tile.Record;
 			}
 			else
-			{
 				f.Text = "Tile View";
 
-				if (_mcdInfoForm != null)
-					_mcdInfoForm.UpdateData(null);
-			}
+			if (_mcdInfoForm != null)
+				_mcdInfoForm.UpdateData(record);
 
 			OnSelectedTileChanged(tile);
 		}
 
-		public void Initialize(ShowHideManager showAllManager)
+		private void OnPageSelected(object sender, TabControlEventArgs e)
+		{
+			var f = FindForm();
+
+			McdRecord record = null;
+
+			var tile = SelectedTile;
+			if (tile != null)
+			{
+				f.Text = BuildTitleString(tile.TileListId, tile.Id);
+				record = tile.Record;
+			}
+			else
+				f.Text = "Tile View";
+
+			if (_mcdInfoForm != null)
+				_mcdInfoForm.UpdateData(record);
+		}
+
+		internal void SetShowAllManager(ShowHideManager showAllManager)
 		{
 			_showAllManager = showAllManager;
 		}
@@ -121,7 +139,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <summary>
 		/// Loads default settings for TileView screen.
 		/// </summary>
-		public override void LoadControl0Settings()
+		public override void LoadControl0Settings() // TODO: access that internal
 		{
 			_brushes = new Hashtable();
 
@@ -146,26 +164,6 @@ namespace MapView.Forms.MapObservers.TileViews
 			Refresh();
 		}
 
-		private void OnTabSelected(object sender, TabControlEventArgs e)
-		{
-			var f = FindForm();
-
-			var tile = SelectedTile;
-			if (tile != null)
-			{
-				f.Text = BuildTitleString(tile.TileListId, tile.Id);
-
-				if (_mcdInfoForm != null)
-					_mcdInfoForm.UpdateData(tile.Record);
-			}
-			else
-			{
-				f.Text = "Tile View";
-
-				if (_mcdInfoForm != null)
-					_mcdInfoForm.UpdateData(null);
-			}
-		}
 
 		private Form _foptions;
 		private bool _closing;
@@ -221,7 +219,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public TileBase SelectedTile
+		internal TileBase SelectedTile
 		{
 			get { return _panels[tcTileTypes.SelectedIndex].SelectedTile; }
 			set
@@ -242,17 +240,18 @@ namespace MapView.Forms.MapObservers.TileViews
 
 				var f = FindForm();
 
+				McdRecord record = null;
+
 				var tile = SelectedTile;
 				if (tile != null)
 				{
 					f.Text = BuildTitleString(tile.TileListId, tile.Id);
-					_mcdInfoForm.UpdateData(tile.Record);
+					record = tile.Record;
 				}
 				else
-				{
 					f.Text = "Tile View";
-					_mcdInfoForm.UpdateData(null);
-				}
+
+				_mcdInfoForm.UpdateData(record);
 			}
 			_mcdInfoForm.Show();
 		}
