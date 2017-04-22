@@ -194,30 +194,13 @@ namespace PckView
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("Base.OnScrollBarValueChanged");
 
-//			_scrollBar.Maximum = Math.Max(_viewPanelOverlay.AbstractHeight + _scrollBar.LargeChange - Height, 0); // TODO: might not be needed.
-
-			// That is needed only for initialization.
-			// OnResize, which also sets '_scrollBar.Maximum', fires a dozen
-			// times during init, but it gets the value right only once (else
-			// '0') and not on the last call either. So just do it here and
-			// marvel at the wonders of c#/.NET
+//			_scrollBar.Maximum = Math.Max(_viewPanelOverlay.AbstractHeight + _scrollBar.LargeChange - Height, 0);
 
 			_overlay.StartY = -_scrollBar.Value;
 			//LogFile.WriteLine(". startY= " + _overlay.StartY);
 
 			Refresh(); // TODO: might not be needed.
 		}
-
-//		/// <summary>
-//		/// Scrolls the sprites.
-//		/// NOTE: The .NET OnScroll() method doesn't work too well here.
-//		/// </summary>
-//		/// <param name="sender"></param>
-//		/// <param name="e"></param>
-//		private void OnSpritesScroll(object sender, ScrollEventArgs e)
-//		{
-//			_viewPanelOverlay.StartY = -_scrollBar.Value;
-//		}
 
 		/// <summary>
 		/// Scrolls the Overlay-panel with the mousewheel after OnSpriteClick

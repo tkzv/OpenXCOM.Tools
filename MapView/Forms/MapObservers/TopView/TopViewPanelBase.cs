@@ -55,7 +55,6 @@ namespace MapView.Forms.MapObservers.TopViews
 //			_lozSel = new GraphicsPath();
 		}
 
-
 		[Browsable(false), DefaultValue(null)]
 		public override IMapBase BaseMap
 		{
@@ -351,9 +350,9 @@ namespace MapView.Forms.MapObservers.TopViews
 											e.X - _offX,
 											e.Y - _offY);
 				BaseMap.SelectedTile = new MapLocation(
-												pt.Y,
-												pt.X,
-												BaseMap.CurrentHeight);
+													pt.Y,
+													pt.X,
+													BaseMap.CurrentHeight);
 
 				_isMouseDrag = true;
 				MainViewPanel.Instance.MainView.SetDrag(pt, pt);

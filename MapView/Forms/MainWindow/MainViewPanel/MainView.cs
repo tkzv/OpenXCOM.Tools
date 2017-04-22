@@ -147,8 +147,32 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			_colorGrid  = Color.FromArgb(175, 69, 100, 129);
 			_brushTrans = new SolidBrush(_colorGrid);
 			_penDash    = new Pen(Brushes.Black, 1);
+
+			KeyDown += OnEditKeyDown;
 		}
 
+
+		private void OnEditKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Control)
+			{
+				switch (e.KeyCode)
+				{
+					case Keys.X:
+						Copy();
+						ClearSelection();
+						break;
+
+					case Keys.C:
+						Copy();
+						break;
+
+					case Keys.V:
+						Paste();
+						break;
+				}
+			}
+		}
 
 		internal void ClearSelection()
 		{

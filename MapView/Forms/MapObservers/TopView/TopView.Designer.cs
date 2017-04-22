@@ -142,7 +142,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			// tsmiOptions
 			// 
 			this.tsmiOptions.Name = "tsmiOptions";
-			this.tsmiOptions.Size = new System.Drawing.Size(152, 22);
+			this.tsmiOptions.Size = new System.Drawing.Size(113, 22);
 			this.tsmiOptions.Text = "Options";
 			this.tsmiOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 

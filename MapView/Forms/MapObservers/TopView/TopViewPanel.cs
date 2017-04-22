@@ -12,11 +12,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		:
 			TopViewPanelBase
 	{
-		internal TopViewPanel()
-		{
-			MainViewPanel.Instance.MainView.MouseDragEvent += OnMouseDrag;
-		}
+		#region Fields & Properties
 
+		private SolidPenBrush _colorWest;
+		private SolidPenBrush _colorNorth;
+		private SolidPenBrush _colorContent;
 
 		internal ToolStripMenuItem Ground
 		{ get; set; }
@@ -33,11 +33,66 @@ namespace MapView.Forms.MapObservers.TopViews
 		internal QuadrantPanel QuadrantsPanel
 		{ get; set; }
 
+		#endregion
 
-		private SolidPenBrush _colorWest;
-		private SolidPenBrush _colorNorth;
-		private SolidPenBrush _colorContent;
 
+		#region cTor
+		/// <summary>
+		/// TopViewPanel cTor.
+		/// </summary>
+		internal TopViewPanel()
+		{
+			MainViewPanel.Instance.MainView.MouseDragEvent += OnMouseDrag;
+
+			(this as Control).KeyDown += OnEditKeyDown;
+		}
+		#endregion
+
+
+		#region EventCalls
+		private void OnEditKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Control)
+			{
+				switch (e.KeyCode)
+				{
+					case Keys.X:
+						MainViewPanel.Instance.MainView.Copy();
+						MainViewPanel.Instance.MainView.ClearSelection();
+						break;
+
+					case Keys.C:
+						MainViewPanel.Instance.MainView.Copy();
+						break;
+
+					case Keys.V:
+						MainViewPanel.Instance.MainView.Paste();
+						break;
+				}
+			}
+		}
+
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			base.OnPaint(e);
+			ControlPaint.DrawBorder3D(e.Graphics, ClientRectangle, Border3DStyle.Etched);
+		}
+
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			base.OnMouseDown(e);
+
+			Focus(); // needed for KeyDown events.
+
+			OnMouseDrag();
+
+			if (e.Button == MouseButtons.Right)
+				QuadrantsPanel.SetSelected(e.Button, 1);
+		}
+		#endregion
+
+
+		#region Methods
 		internal protected override void RenderTile(
 				MapTileBase tile,
 				Graphics g,
@@ -84,21 +139,6 @@ namespace MapView.Forms.MapObservers.TopViews
 								x, y,
 								mapTile.Content);
 		}
-
-		protected override void OnPaint(PaintEventArgs e)
-		{
-			base.OnPaint(e);
-			ControlPaint.DrawBorder3D(e.Graphics, ClientRectangle, Border3DStyle.Etched);
-		}
-
-		protected override void OnMouseDown(MouseEventArgs e)
-		{
-			base.OnMouseDown(e);
-
-			OnMouseDrag();
-
-			if (e.Button == MouseButtons.Right)
-				QuadrantsPanel.SetSelected(e.Button, 1);
-		}
+		#endregion
 	}
 }

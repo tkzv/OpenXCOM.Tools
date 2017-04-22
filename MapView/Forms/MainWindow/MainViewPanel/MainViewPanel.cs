@@ -48,13 +48,13 @@ namespace MapView
 
 			Controls.AddRange(new Control[]{ _scrollBarVert, _scrollBarHori });
 
-			var mapView = new MainView();
+			var mainView = new MainView();
 			if (_mainView != null)
 			{
-				mapView.Map = _mainView.Map;
+				mainView.Map = _mainView.Map;
 				Controls.Remove(_mainView);
 			}
-			_mainView = mapView;
+			_mainView = mainView;
 
 			_mainView.Location = new Point(0, 0);
 			_mainView.BorderStyle = BorderStyle.Fixed3D;
