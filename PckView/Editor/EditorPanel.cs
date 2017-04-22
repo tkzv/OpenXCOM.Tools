@@ -134,7 +134,8 @@ namespace PckView
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			Graphics g = e.Graphics;
+			var g = e.Graphics;
+
 			int width  = _image.Image.Width;
 			int height = _image.Image.Height;
 

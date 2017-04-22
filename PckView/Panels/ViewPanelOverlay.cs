@@ -30,7 +30,9 @@ namespace PckView
 
 		private XCImageCollection _spritePack;
 
-		private const int Pad = 2;
+		public static int SpriteMargin = 2;
+		private int _spriteWidth;
+		private int _spriteHeight;
 
 		private int _tileX = -1;
 		private int _tileY = -1;
@@ -58,8 +60,22 @@ namespace PckView
 
 		internal int AbstractHeight
 		{
-			get { return (_spritePack != null) ? _spritePack.Count * GetSpritePaddedHeight(_spritePack.ImageFile.ImageSize.Height) / FindTilesX()
-											   : 0; }
+			get // TODO: calculate and cache this value in the OnResize and loading events.
+			{
+				if (_spritePack != null)// && _tilesX > 0) // NOTE '_tilesX' shall always be > 0.
+				{
+					int tilesX = GetTilesX();
+					int extra = (_spritePack.Count % tilesX == 0) ? 2
+																  : 3;
+					int height = (_spritePack.Count / tilesX + extra) * _spriteHeight;
+					//LogFile.WriteLine("Overlay.AbstractHeight= " + height);
+
+//					Height = height;
+
+					return height;
+				}
+				return 0;
+			}
 		}
 
 		internal XCImageCollection SpritePack
@@ -69,7 +85,10 @@ namespace PckView
 			{
 				_spritePack = value;
 
-				Height = AbstractHeight;
+				_spriteWidth  = _spritePack.ImageFile.ImageSize.Width  + SpriteMargin * 2;
+				_spriteHeight = _spritePack.ImageFile.ImageSize.Height + SpriteMargin * 2;
+
+//				Height = AbstractHeight;
 
 //				OnMouseDown(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 //				OnMouseMove(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
@@ -114,19 +133,19 @@ namespace PckView
 
 			if (_spritePack != null)
 			{
-				int tileX =  e.X / GetSpritePaddedWidth(_spritePack.ImageFile.ImageSize.Width);
-				int tileY = (e.Y - _startY) / (_spritePack.ImageFile.ImageSize.Height + Pad * 2);
+				int tileX =  e.X            / _spriteWidth;
+				int tileY = (e.Y - _startY) / _spriteHeight;
 
-				int tilesX = FindTilesX();
+				int tilesX = GetTilesX();
 				if (tileX >= tilesX)
 					tileX =  tilesX - 1;
 
 				int spriteId = tileX + tileY * tilesX;
 
-				var selected = new SpriteSelected();
-				selected.X = tileX;
-				selected.Y = tileY;
-				selected.Id = spriteId;
+				var selected   = new SpriteSelected();
+				selected.X     = tileX;
+				selected.Y     = tileY;
+				selected.Id    = spriteId;
 				selected.Image = _spritePack[spriteId];
 
 				if (spriteId < SpritePack.Count)
@@ -168,15 +187,15 @@ namespace PckView
 
 			if (_spritePack != null)
 			{
-				int tileX =  e.X            / GetSpritePaddedWidth (_spritePack.ImageFile.ImageSize.Width);
-				int tileY = (e.Y - _startY) / GetSpritePaddedHeight(_spritePack.ImageFile.ImageSize.Height);
+				int tileX =  e.X            / _spriteWidth;
+				int tileY = (e.Y - _startY) / _spriteHeight;
 
 				if (tileX != _tileX || tileY != _tileY)
 				{
 					_tileX = tileX;
 					_tileY = tileY;
 
-					int tilesX = FindTilesX();
+					int tilesX = GetTilesX();
 					if (_tileX >= tilesX)
 						_tileX  = tilesX - 1;
 
@@ -194,18 +213,15 @@ namespace PckView
 			{
 				var g = e.Graphics;
 
-				int width  = GetSpritePaddedWidth(_spritePack.ImageFile.ImageSize.Width);
-				int height = _spritePack.ImageFile.ImageSize.Height + Pad * 2;
-
-				int tilesX = FindTilesX();
+				int tilesX = GetTilesX();
 
 				if (_spritePack.Count < tilesX) tilesX = _spritePack.Count;
 
 				for (int tileX = 0; tileX <= tilesX; ++tileX) // draw vertical lines
 					g.DrawLine(
 							Pens.Black,
-							new Point(tileX * width,          _startY),
-							new Point(tileX * width, Height - _startY));
+							new Point(tileX * _spriteWidth,          _startY),
+							new Point(tileX * _spriteWidth, Height - _startY));
 
 				int tilesY = _spritePack.Count / tilesX;
 				if (_spritePack.Count % tilesX != 0) ++tilesY;
@@ -213,8 +229,8 @@ namespace PckView
 				for (int tileY = 0; tileY <= tilesY; ++tileY) // draw horizontal lines
 					g.DrawLine(
 							Pens.Black,
-							new Point(0,              tileY * height + _startY),
-							new Point(width * tilesX, tileY * height + _startY));
+							new Point(0,                     tileY * _spriteHeight + _startY),
+							new Point(_spriteWidth * tilesX, tileY * _spriteHeight + _startY));
 
 
 				var selected = new List<int>();
@@ -229,15 +245,15 @@ namespace PckView
 					if (selected.Contains(id))
 						g.FillRectangle(
 									Brushes.Crimson,
-									tileX * width  + 1,
-									tileY * height + 1 + _startY,
-									width  - 1,
-									height - 1);
+									tileX * _spriteWidth  + 1,
+									tileY * _spriteHeight + 1 + _startY,
+									_spriteWidth  - 1,
+									_spriteHeight - 1);
 
 					g.DrawImage(
 							_spritePack[id].Image,
-							tileX * width  + Pad,
-							tileY * height + Pad + _startY);
+							tileX * _spriteWidth  + SpriteMargin,
+							tileY * _spriteHeight + SpriteMargin + _startY);
 				}
 			}
 		}
@@ -250,14 +266,17 @@ namespace PckView
 			_spritePack[id] = image;
 		}
 
+		/// <summary>
+		/// Removes the currently selected sprite.
+		/// </summary>
 		internal void RemoveSelected()
 		{
-			if (SelectedSprites.Count != 0)
+			if (_spritesSelected.Count != 0)
 			{
 				var lowestId = int.MaxValue;
 
 				var idList = new List<int>();
-				foreach (var sprite in SelectedSprites)
+				foreach (var sprite in _spritesSelected)
 					idList.Add(sprite.Id);
 
 				idList.Sort();
@@ -274,42 +293,25 @@ namespace PckView
 				if (lowestId > 0 && lowestId == SpritePack.Count)
 					lowestId = SpritePack.Count - 1;
 
-				SetSelected(lowestId);
+				_spritesSelected.Clear();
+	
+				if (SpritePack.Count != 0)
+				{
+					int tilesX = GetTilesX();
+	
+					var selected = new SpriteSelected();
+					selected.Y   = lowestId / tilesX;
+					selected.X   = lowestId - selected.Y;
+					selected.Id  = selected.X + selected.Y * tilesX;
+	
+					_spritesSelected.Add(selected);
+				}
 			}
 		}
 
-		private void SetSelected(int lowestId)
+		private int GetTilesX() // TODO: calculate and cache this value in the OnResize and loading events.
 		{
-			_spritesSelected.Clear();
-
-			if (SpritePack.Count != 0)
-			{
-				int tilesX = FindTilesX();
-
-				var selected = new SpriteSelected();
-				selected.Y = lowestId / tilesX;
-				selected.X = lowestId - selected.Y;
-				selected.Id = selected.X + selected.Y * tilesX;
-
-				_spritesSelected.Add(selected);
-			}
-		}
-
-		private int FindTilesX()
-		{
-			int tiles = (Width - 1) / GetSpritePaddedWidth(_spritePack.ImageFile.ImageSize.Width);
-			return (tiles > 0) ? tiles
-							   : 1;
-		}
-
-		private static int GetSpritePaddedWidth(int width)
-		{
-			return width + Pad * 2;
-		}
-
-		private static int GetSpritePaddedHeight(int height)
-		{
-			return height + Pad * 2;
+			return Math.Max((Width - 1) / _spriteWidth, 1);
 		}
 		#endregion
 	}

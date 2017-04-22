@@ -159,7 +159,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="Panels\ViewPanelBase.cs">
+    <Compile Include="Panels\ViewPanelUnderlay.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">

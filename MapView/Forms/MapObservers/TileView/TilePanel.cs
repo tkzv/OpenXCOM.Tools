@@ -27,7 +27,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		private const int SpriteHeight = 40 + SpriteMargin * 2;
 
 //		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
-		private Pen _pen = new Pen(Brushes.AntiqueWhite, 3);
+		private Pen _pen = new Pen(Brushes.Red, 3); // TODO: find some happy colors
 
 		private static Hashtable _brushes;
 
@@ -76,7 +76,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			_type = type;
 
 			_scrollBar = new VScrollBar();
-			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
+			_scrollBar.Dock = DockStyle.Right;
 			_scrollBar.LargeChange = SpriteHeight;
 			_scrollBar.SmallChange = 1;
 			_scrollBar.ValueChanged += OnScrollBarValueChanged;
@@ -114,21 +114,20 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		protected override void OnResize(EventArgs eventargs)
 		{
-			_tilesX = (Width - 1 - (_scrollBar.Visible ? _scrollBar.Width : 0)) / SpriteWidth;
+			_tilesX = Math.Max((Width - 1 - (_scrollBar.Visible ? _scrollBar.Width : 0)) / SpriteWidth, 1);
 
-			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
-			_scrollBar.Height = Height;
+//			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
+//			_scrollBar.Height = Height;
 
 			_scrollBar.Maximum = Math.Max(AbstractHeight + _scrollBar.LargeChange - Height, 0);
-
 			_scrollBar.Visible = (_scrollBar.Maximum != 0);
 		}
 
 		private int AbstractHeight
 		{
-			get
+			get // TODO: calculate and cache this value in the OnResize and loading events.
 			{
-				if (_tiles != null && _tilesX > 0)
+				if (_tiles != null)// && _tilesX > 0) // NOTE '_tilesX' shall always be > 0.
 				{
 					if (_tiles.Length % _tilesX == 0)
 						return (_tiles.Length / _tilesX) * SpriteHeight;
@@ -187,7 +186,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (e.Delta > 0)
 			{
-				if (_scrollBar.Value  - _scrollBar.LargeChange < 0)
+				if (_scrollBar.Value - _scrollBar.LargeChange < 0)
 					_scrollBar.Value = 0;
 				else
 					_scrollBar.Value -= _scrollBar.LargeChange;
@@ -207,8 +206,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (_tiles != null)
 			{
-				int x =  e.X            / (SpriteWidth);
-				int y = (e.Y - _startY) / (SpriteHeight);
+				int x =  e.X            / SpriteWidth;
+				int y = (e.Y - _startY) / SpriteHeight;
 
 				if (x >= _tilesX)
 					x  = _tilesX - 1;
@@ -227,6 +226,10 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
+		/// <summary>
+		/// g.Fill(black)
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			if (_tiles != null)
@@ -350,11 +353,11 @@ namespace MapView.Forms.MapObservers.TileViews
 			int tileY = _id / _tilesX;
 
 			int cutoff = tileY * SpriteHeight;
-			if (cutoff < -_startY) // check cutoff high
+			if (cutoff < -_startY)		// <- check cutoff high
 			{
 				_scrollBar.Value = cutoff;
 			}
-			else // check cutoff low
+			else						// <- check cutoff low
 			{
 				cutoff = (tileY + 1) * SpriteHeight - ClientSize.Height;
 				if (cutoff > -_startY)

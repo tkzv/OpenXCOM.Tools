@@ -60,6 +60,17 @@ namespace MapView.Forms.MainWindow
 			TileView.Control.Observer0SelectedTileChanged += OnSelectedTileChanged;
 		}
 
+		/// <summary>
+		/// Changes the selected quadrant in TopView when a tilepart is selected
+		/// in TileView.
+		/// </summary>
+		/// <param name="tile"></param>
+		private static void OnSelectedTileChanged(TileBase tile)
+		{
+			if (tile != null && tile.Record != null)
+				TopView.Control.SelectQuadrant(tile.Record.TileType);
+		}
+
 		internal void SetObservers(IMapBase baseMap)
 		{
 			var observers = new IMapObserver[]
@@ -94,17 +105,6 @@ namespace MapView.Forms.MainWindow
 
 			foreach (string key in observer.MoreObservers.Keys) // ie. TopViewPanel and QuadrantsPanel
 				SetObserver(baseMap, observer.MoreObservers[key]);
-		}
-
-		/// <summary>
-		/// Changes the selected quadrant in TopView when a tilepart is selected
-		/// in TileView.
-		/// </summary>
-		/// <param name="tile"></param>
-		private static void OnSelectedTileChanged(TileBase tile)
-		{
-			if (tile != null && tile.Record != null)
-				TopView.Control.SelectQuadrant(tile.Record.TileType);
 		}
 	}
 }
