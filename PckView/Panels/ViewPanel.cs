@@ -52,7 +52,7 @@ namespace PckView
 				LogFile.WriteLine(". spriteWidth= " + _spriteWidth);
 				LogFile.WriteLine(". spriteHeight= " + _spriteHeight);
 
-//				Height = AbstractHeight; ... nobody cares about the Height of Overlay. Let .NET deal with it.
+//				Height = AbstractHeight; ... nobody cares about the Height. Let .NET deal with it.
 
 //				OnMouseDown(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 //				OnMouseMove(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
@@ -100,11 +100,11 @@ namespace PckView
 		/// <summary>
 		/// Used by UpdateScrollBar() to determine its Maximum value.
 		/// </summary>
-		internal int AbstractHeight
+		internal int TableHeight
 		{
 			get // TODO: calculate and cache this value in the OnResize and loading events.
 			{
-				LogFile.WriteLine("AbstractHeight");
+				LogFile.WriteLine("TableHeight");
 
 				SetTilesX();
 				LogFile.WriteLine(". Count= " + SpritePack.Count);
@@ -114,8 +114,8 @@ namespace PckView
 				if (SpritePack != null)
 					height = (SpritePack.Count / _tilesX + 2) * _spriteHeight;
 
-				LogFile.WriteLine(". height= " + height);
-				LogFile.WriteLine(". ClientHeight= " + FindForm().ClientSize.Height);
+				LogFile.WriteLine(". TableHeight= " + height);
+				LogFile.WriteLine(". this Height= " + Height);
 				return height;
 			}
 		}
@@ -162,7 +162,8 @@ namespace PckView
 				_statusBar
 			});
 
-//			OnResize(null);
+			SpriteClickEvent += OnSpriteClick;
+			SpriteOverEvent  += OnSpriteOver;
 		}
 		#endregion
 
@@ -216,20 +217,18 @@ namespace PckView
 				if (resetTrack)
 					_scrollBar.Value = 0;
 
-				int heightClient = FindForm().ClientSize.Height;
-
-				_scrollBar.Maximum = Math.Max(AbstractHeight
+				_scrollBar.Maximum = Math.Max(TableHeight
 											+ _largeChange
-											- heightClient
+											- Height
 											- _statusBar.Height, 0);
 
-//				if (_scrollBar.Maximum >= Height)
-//					_scrollBar.Maximum = 0;
+				if (_scrollBar.Maximum < _largeChange)
+					_scrollBar.Maximum = 0;
 			}
 			else
 				_scrollBar.Maximum = 0;
 
-			//LogFile.WriteLine(". Maximum= " + _scrollBar.Maximum);
+			LogFile.WriteLine(". Maximum= " + _scrollBar.Maximum);
 
 			_scrollBar.Visible = (_scrollBar.Maximum != 0);
 		}
@@ -378,25 +377,17 @@ namespace PckView
 		private void OnSpriteOver(int spriteId)
 		{
 			_idOver = spriteId;
-
-			string selected = (_idSelected != -1) ? _idSelected.ToString(System.Globalization.CultureInfo.InvariantCulture)
-												  : "-";
-			string over     = (_idOver != -1)     ? _idOver.ToString(System.Globalization.CultureInfo.InvariantCulture)
-												  : "-";
-
-			_statusTileSelected.Text = String.Format(
-												System.Globalization.CultureInfo.InvariantCulture,
-												"Selected {0}  Over {1}",
-												selected, over);
-			// TODO: _statusTileOver =
-
-			Refresh();
+			PrintStatus();
 		}
 
 		private void OnSpriteClick(int spriteId)
 		{
 			_idSelected = spriteId;
+			PrintStatus();
+		}
 
+		private void PrintStatus()
+		{
 			string selected = (_idSelected != -1) ? _idSelected.ToString(System.Globalization.CultureInfo.InvariantCulture)
 												  : "-";
 			string over     = (_idOver != -1)     ? _idOver.ToString(System.Globalization.CultureInfo.InvariantCulture)
@@ -404,17 +395,10 @@ namespace PckView
 
 			_statusTileSelected.Text = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
-												"Selected {0}  Over {1}",
-												selected, over);
-			// TODO: _statusTileOver =
-
-			if (spriteId != -1)
-			{
-				Focus();
-
-				if (SpriteClickEvent != null)
-					SpriteClickEvent(spriteId);
-			}
+												"Selected {0}", selected);
+			_statusTileOver.Text     = String.Format(
+												System.Globalization.CultureInfo.InvariantCulture,
+												"Over {0}", over);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -469,7 +453,7 @@ namespace PckView
 
 
 		#region Methods
-		internal void SpriteReplace(int id, XCImage image)
+		internal void SpriteReplace(int id, XCImage image) // currently disabled in PckViewForm
 		{
 			SpritePack[id] = image;
 		}
@@ -477,7 +461,7 @@ namespace PckView
 		/// <summary>
 		/// Deletes the currently selected sprite.
 		/// </summary>
-		internal void SpriteDelete()
+		internal void SpriteDelete() // currently disabled in PckViewForm
 		{
 			if (_selectedSprites.Count != 0)
 			{

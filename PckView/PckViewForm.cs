@@ -131,8 +131,6 @@ namespace PckView
 
 		private void OnSpritePackChanged(SpritePackChangedEventArgs e)
 		{
-			//LogFile.WriteLine("OnSpritePackChanged");
-
 			bool enabled = (e.Sprites != null);
 			miSaveAs.Enabled          =
 			miTransparentMenu.Enabled =
