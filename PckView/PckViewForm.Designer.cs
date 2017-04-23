@@ -90,12 +90,14 @@ namespace PckView
 			// 
 			this.miCompare.Index = 1;
 			this.miCompare.Text = "&Compare";
+			this.miCompare.Visible = false;
 			this.miCompare.Click += new System.EventHandler(this.OnCompareClick);
 			// 
 			// miSave
 			// 
 			this.miSave.Index = 2;
 			this.miSave.Text = "&Save";
+			this.miSave.Visible = false;
 			this.miSave.Click += new System.EventHandler(this.OnSaveCollectionClick);
 			// 
 			// miSaveAs
@@ -103,12 +105,14 @@ namespace PckView
 			this.miSaveAs.Enabled = false;
 			this.miSaveAs.Index = 3;
 			this.miSaveAs.Text = "Save &As ...";
+			this.miSaveAs.Visible = false;
 			this.miSaveAs.Click += new System.EventHandler(this.OnSaveAsClick);
 			// 
 			// miSaveDir
 			// 
 			this.miSaveDir.Index = 4;
 			this.miSaveDir.Text = "Save &Image";
+			this.miSaveDir.Visible = false;
 			this.miSaveDir.Click += new System.EventHandler(this.OnSaveDirectoryClick);
 			// 
 			// miHq2x

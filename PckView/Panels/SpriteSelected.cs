@@ -3,7 +3,7 @@
 using XCom.Interfaces;
 
 
-namespace PckView.Panels // NOTE: this isn't a panel.
+namespace PckView
 {
 	internal sealed class SpriteSelected
 	{

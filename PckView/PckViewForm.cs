@@ -20,7 +20,8 @@ namespace PckView
 			Form
 	{
 		#region Fields & Properties
-		private ViewPanelUnderlay _underlay;
+
+		private ViewPanel _viewPanel;
 
 		private Editor        _editor;
 		private ConsoleForm   _console;
@@ -28,10 +29,10 @@ namespace PckView
 		private TabControl _tabs;
 
 		private MenuItem _miEdit;
-		private MenuItem _miReplace;
-		private MenuItem _miSave;
-		private MenuItem _miDelete;
-		private MenuItem _miAdd;
+//		private MenuItem _miReplace;
+//		private MenuItem _miSave;
+//		private MenuItem _miDelete;
+//		private MenuItem _miAdd;
 
 		private Palette _palette;
 
@@ -86,13 +87,14 @@ namespace PckView
 			#endregion
 
 
-			_underlay = new ViewPanelUnderlay();
-			_underlay.Dock = DockStyle.Fill;
-			_underlay.SpritePackChangedEvent += OnSpritePackChanged;
-			_underlay.SpriteClickEvent       += OnSpriteClick;
-			_underlay.Overlay.DoubleClick    += OnEditSpriteClick;
-			_underlay.ContextMenu = BuildContextMenu();
-			pViewer.Controls.Add(_underlay);
+			_viewPanel = new ViewPanel();
+			_viewPanel.Dock = DockStyle.Fill;
+			_viewPanel.ContextMenu = BuildViewerContextMenu();
+			_viewPanel.SpritePackChangedEvent += OnSpritePackChanged;
+			_viewPanel.SpriteClickEvent       += OnSpriteClick;
+			_viewPanel.DoubleClick            += OnSpriteEditClick;
+
+			pViewer.Controls.Add(_viewPanel);
 
 
 			miSave.Visible = false;
@@ -114,7 +116,7 @@ namespace PckView
 
 			_paletteDictionary[_palette].Checked = true;
 
-			_underlay.Pal = _palette;
+			_viewPanel.Pal = _palette;
 
 			_editor = new Editor(null);
 			_editor.Closing += OnEditorClosing;
@@ -140,64 +142,64 @@ namespace PckView
 
 		private void OnSpriteClick(int spriteId)
 		{
-			if (_underlay.SelectedSprites.Count > 0) // isSelected
+			if (_viewPanel.SelectedSprites.Count > 0) // isSelected
 			{
-				_miEdit.Enabled   =
-				_miSave.Enabled   =
-				_miDelete.Enabled = true;
+				_miEdit.Enabled   = true;
+//				_miSave.Enabled   =
+//				_miDelete.Enabled = true;
 
-				var selected = _underlay.SelectedSprites[_underlay.SelectedSprites.Count - 1];
+				var selected = _viewPanel.SelectedSprites[_viewPanel.SelectedSprites.Count - 1];
 				BytesFormHelper.ReloadBytes(selected);
 			}
 			else // selected is null
 			{
-				_miEdit.Enabled   =
-				_miSave.Enabled   =
-				_miDelete.Enabled = false;
+				_miEdit.Enabled   = false;
+//				_miSave.Enabled   =
+//				_miDelete.Enabled = false;
 
 				BytesFormHelper.ReloadBytes(null);
 			}
 		}
 
-		private ContextMenu BuildContextMenu()
+		private ContextMenu BuildViewerContextMenu()
 		{
 			var menu = new ContextMenu();
 
 			_miEdit = new MenuItem("Edit");
-			_miEdit.Click += OnEditSpriteClick;
+			_miEdit.Click += OnSpriteEditClick;
 			menu.MenuItems.Add(_miEdit);
 
 			menu.MenuItems.Add(new MenuItem("-"));
 
-			_miSave = new MenuItem("Save");
-			_miSave.Click += OnSaveSpriteClick;
-			menu.MenuItems.Add(_miSave);
+//			_miSave = new MenuItem("Save");
+//			_miSave.Click += OnSpriteSaveClick;
+//			menu.MenuItems.Add(_miSave);
 
-			_miReplace = new MenuItem("Replace");
-			_miReplace.Click += OnReplaceSpriteClick;
-			menu.MenuItems.Add(_miReplace);
+//			_miReplace = new MenuItem("Replace");
+//			_miReplace.Click += OnSpriteReplaceClick;
+//			menu.MenuItems.Add(_miReplace);
 
-			_miAdd = new MenuItem("Add");
-			_miAdd.Click += OnAddSpriteClick;
-			menu.MenuItems.Add(_miAdd);
+//			_miAdd = new MenuItem("Add");
+//			_miAdd.Click += OnSpriteAddClick;
+//			menu.MenuItems.Add(_miAdd);
 
-			_miDelete = new MenuItem("Delete\tDel");
-			_miDelete.Click += OnRemoveSpriteClick;
-			menu.MenuItems.Add(_miDelete);
+//			_miDelete = new MenuItem("Delete\tDel");
+//			_miDelete.Click += OnSpriteDeleteClick;
+//			menu.MenuItems.Add(_miDelete);
 
 			_miEdit.Enabled = false;
 
 			return menu;
 		}
 
-		private void OnSaveSpriteClick(object sender, EventArgs e)
+		private void OnSpriteSaveClick(object sender, EventArgs e) // disabled in BuildViewerContextMenu()
 		{
-			if (_underlay.SelectedSprites.Count != 0)
+			if (_viewPanel.SelectedSprites.Count != 0)
 			{
-				var selected = _underlay.SelectedSprites[_underlay.SelectedSprites.Count - 1];
-				if (_underlay.SpritePack != null)
+				var selected = _viewPanel.SelectedSprites[_viewPanel.SelectedSprites.Count - 1];
+				if (_viewPanel.SpritePack != null)
 				{
-					sfdBmpSingle.FileName = _underlay.SpritePack.Label + selected.Image.FileId;
+					sfdBmpSingle.FileName = _viewPanel.SpritePack.Label + selected.Image.FileId;
 
 					if (sfdBmpSingle.ShowDialog() == DialogResult.OK)
 						XCBitmap.Save(sfdBmpSingle.FileName, selected.Image.Image);
@@ -205,9 +207,9 @@ namespace PckView
 			}
 		}
 
-		private void OnReplaceSpriteClick(object sender, EventArgs e)
+		private void OnSpriteReplaceClick(object sender, EventArgs e) // disabled in BuildViewerContextMenu()
 		{
-			if (_underlay.SelectedSprites.Count != 1)
+			if (_viewPanel.SelectedSprites.Count != 1)
 			{
 				MessageBox.Show(
 							"Must select 1 item only.",
@@ -217,10 +219,10 @@ namespace PckView
 							MessageBoxDefaultButton.Button1,
 							0);
 			}
-			else if (_underlay.SpritePack != null )
+			else if (_viewPanel.SpritePack != null )
 			{
 				var title = String.Empty;
-				foreach (var sprite in _underlay.SelectedSprites)
+				foreach (var sprite in _viewPanel.SelectedSprites)
 				{
 					if (!String.IsNullOrEmpty(title))
 						title += ", ";
@@ -235,20 +237,20 @@ namespace PckView
 					var b = new Bitmap(ofdBmp.FileName);
 					var image = XCBitmap.Load(
 											b,
-											_underlay.Pal,
-											_underlay.SpritePack.ImageFile.ImageSize.Width,
-											_underlay.SpritePack.ImageFile.ImageSize.Height,
+											_viewPanel.Pal,
+											_viewPanel.SpritePack.ImageFile.ImageSize.Width,
+											_viewPanel.SpritePack.ImageFile.ImageSize.Height,
 											1)[0];
-					_underlay.ChangeSprite(_underlay.SelectedSprites[0].Id, image);
+					_viewPanel.SpriteReplace(_viewPanel.SelectedSprites[0].Id, image);
 					Refresh();
 				}
 				UpdateCaption();
 			}
 		}
 
-		private void OnAddSpriteClick(object sender, EventArgs e)
+		private void OnSpriteAddClick(object sender, EventArgs e) // disabled in BuildViewerContextMenu()
 		{
-			if (_underlay.SpritePack != null)
+			if (_viewPanel.SpritePack != null)
 			{
 				ofdBmp.Title = "Hold shift to select multiple files.";
 				ofdBmp.Multiselect = true;
@@ -258,13 +260,13 @@ namespace PckView
 					foreach (string file in ofdBmp.FileNames)
 					{
 						var b = new Bitmap(file);
-						_underlay.SpritePack.Add(XCBitmap.LoadTile(
+						_viewPanel.SpritePack.Add(XCBitmap.LoadTile(
 																b,
 																0,
-																_underlay.Pal,
+																_viewPanel.Pal,
 																0, 0,
-																_underlay.SpritePack.ImageFile.ImageSize.Width,
-																_underlay.SpritePack.ImageFile.ImageSize.Height));
+																_viewPanel.SpritePack.ImageFile.ImageSize.Width,
+																_viewPanel.SpritePack.ImageFile.ImageSize.Height));
 					}
 					Refresh();
 				}
@@ -272,9 +274,9 @@ namespace PckView
 			}
 		}
 
-		private void OnRemoveSpriteClick(object sender, EventArgs e)
+		private void OnSpriteDeleteClick(object sender, EventArgs e) // disabled in BuildViewerContextMenu()
 		{
-			_underlay.RemoveSelected();
+			_viewPanel.SpriteDelete();
 			UpdateCaption();
 			Refresh();
 		}
@@ -282,11 +284,11 @@ namespace PckView
 
 		bool _editorInitDone;
 
-		private void OnEditSpriteClick(object sender, EventArgs e)
+		private void OnSpriteEditClick(object sender, EventArgs e)
 		{
-			if (_underlay.SelectedSprites.Count != 0)
+			if (_viewPanel.SelectedSprites.Count != 0)
 			{
-				var selected = _underlay.SelectedSprites[_underlay.SelectedSprites.Count - 1];
+				var selected = _viewPanel.SelectedSprites[_viewPanel.SelectedSprites.Count - 1];
 				if (selected != null)
 				{
 					_editor.Image = selected.Image.Clone();
@@ -353,12 +355,12 @@ namespace PckView
 				_palette = pal;
 				_paletteDictionary[_palette].Checked = true;
 
-				_underlay.Pal = _palette;
+				_viewPanel.Pal = _palette;
 
 				if (_editor != null)
 					_editor.Palette = _palette;
 
-				_underlay.Refresh();
+				_viewPanel.Refresh();
 			}
 		}
 
@@ -431,7 +433,7 @@ namespace PckView
 
 					OnPaletteClick((MenuItem)_paletteDictionary[pckPack.ImageFile.DefaultPalette], null);
 
-					_underlay.SpritePack = pckPack;
+					_viewPanel.SpritePack = pckPack;
 
 
 					UpdateCaption();
@@ -449,10 +451,10 @@ namespace PckView
 
 		private void UpdateCaption()
 		{
-			Text = "Pck View - " + _underlay.SpritePack.Label + " [" + _underlay.SpritePack.Count + "] total";
+			Text = "Pck View - " + _viewPanel.SpritePack.Label + " [" + _viewPanel.SpritePack.Count + "] total";
 		}
 
-		private void OnSaveAsClick(object sender, EventArgs e)
+		private void OnSaveAsClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
 		{
 /*			var saveFile = new SaveFileDialog();
 
@@ -474,11 +476,11 @@ namespace PckView
 		{
 			if (!miBytes.Checked)
 			{
-				if (_underlay.SelectedSprites.Count != 0)
+				if (_viewPanel.SelectedSprites.Count != 0)
 				{
 					miBytes.Checked = true;
 
-					var selected = _underlay.SelectedSprites[_underlay.SelectedSprites.Count - 1];
+					var selected = _viewPanel.SelectedSprites[_viewPanel.SelectedSprites.Count - 1];
 					BytesFormHelper.ShowBytes(selected, CallbackShowBytesClosing, new Point(Right, Top));
 				}
 			}
@@ -497,9 +499,9 @@ namespace PckView
 		private void OnTransparencyClick(object sender, EventArgs e)
 		{
 			_palette.EnableTransparency(miTransparent.Checked = !miTransparent.Checked);
-			_underlay.SpritePack.Pal = _palette;
+			_viewPanel.SpritePack.Pal = _palette;
 
-			_underlay.Refresh();
+			_viewPanel.Refresh();
 		}
 
 		private void OnAboutClick(object sender, EventArgs e)
@@ -523,22 +525,22 @@ namespace PckView
 //			Refresh();
 		}
 
-		private void OnKeyDown(object sender, KeyEventArgs e)
+		private void OnKeyDown(object sender, KeyEventArgs e) // disabled in BuildViewersContextMenu()
 		{
-			if (_miDelete.Enabled && e.KeyCode == Keys.Delete)
-				OnRemoveSpriteClick(null, null);
+//			if (_miDelete.Enabled && e.KeyCode == Keys.Delete)
+//				OnSpriteDeleteClick(null, null);
 		}
 
-		private void OnSaveDirectoryClick(object sender, EventArgs e)
+		private void OnSaveDirectoryClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
 		{
-			if (_underlay.SpritePack != null)
+			if (_viewPanel.SpritePack != null)
 			{
 				string fileStart = String.Empty;
 //				string extStart  = String.Empty;
 
-				if (_underlay.SpritePack.Label.IndexOf(".", StringComparison.Ordinal) > 0)
+				if (_viewPanel.SpritePack.Label.IndexOf(".", StringComparison.Ordinal) > 0)
 				{
-					fileStart = _underlay.SpritePack.Label.Substring(0, _underlay.SpritePack.Label.IndexOf(".", StringComparison.Ordinal));
+					fileStart = _viewPanel.SpritePack.Label.Substring(0, _viewPanel.SpritePack.Label.IndexOf(".", StringComparison.Ordinal));
 //					extStart  = _totalViewPck.Collection.Name.Substring(_totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal) + 1);
 				}
 
@@ -565,7 +567,7 @@ namespace PckView
 //					}
 
 					string zeros = String.Empty;
-					int tens = _underlay.SpritePack.Count;
+					int tens = _viewPanel.SpritePack.Count;
 					while (tens > 0)
 					{
 						zeros += "0";
@@ -574,12 +576,12 @@ namespace PckView
 
 					var progress = new ProgressWindow(this);
 					progress.Minimum = 0;
-					progress.Maximum = _underlay.SpritePack.Count;
+					progress.Maximum = _viewPanel.SpritePack.Count;
 					progress.Width = 300;
 					progress.Height = 50;
 
 					progress.Show();
-					foreach (XCImage xc in _underlay.SpritePack)
+					foreach (XCImage xc in _viewPanel.SpritePack)
 					{
 						//Console.WriteLine("Save to: " + path + @"\" + fName + (xc.FileNum + countNum) + "." + ext);
 						//Console.WriteLine("Save: " + path + @"\" + fName + string.Format("{0:" + zeros + "}", xc.FileNum) + "." + ext);
@@ -605,32 +607,32 @@ namespace PckView
 				_console.Show();
 		}
 
-		private void OnCompareClick(object sender, EventArgs e)
+		private void OnCompareClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
 		{
-			var original = _underlay.SpritePack;
+			var original = _viewPanel.SpritePack;
 
 			OnOpenClick(null, null);
 
-			var newCollection = _underlay.SpritePack;
+			var newCollection = _viewPanel.SpritePack;
 
-			_underlay.SpritePack = original;
+			_viewPanel.SpritePack = original;
 
-			if (Controls.Contains(_underlay))
+			if (Controls.Contains(_viewPanel))
 			{
-				Controls.Remove(_underlay);
+				Controls.Remove(_viewPanel);
 
 				_tabs = new TabControl();
 				_tabs.Dock = DockStyle.Fill;
 				pViewer.Controls.Add(_tabs);
 
 				var tab = new TabPage();
-				tab.Controls.Add(_underlay);
+				tab.Controls.Add(_viewPanel);
 				tab.Text = "Original";
 				_tabs.TabPages.Add(tab);
 
 				tab = new TabPage();
-				var panel = new ViewPanelUnderlay();
-				panel.ContextMenu = BuildContextMenu();
+				var panel = new ViewPanel();
+				panel.ContextMenu = BuildViewerContextMenu();
 				panel.Dock = DockStyle.Fill;
 				panel.SpritePack = newCollection;
 				tab.Controls.Add(panel);
@@ -639,7 +641,7 @@ namespace PckView
 			}
 		}
 
-		private void OnSaveCollectionClick(object sender, EventArgs e)
+		private void OnSaveCollectionClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
 		{
 /*			_dialogFilter.SetFilter(XCImageFile.Filter.Save);
 			_dictSaveFiles.Clear();
