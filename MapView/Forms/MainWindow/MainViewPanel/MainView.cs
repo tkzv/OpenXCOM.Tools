@@ -9,7 +9,7 @@ using XCom;
 using XCom.Interfaces.Base;
 
 
-namespace MapView // NOTE: namespace conflict w/ .NET itself
+namespace MapView
 {
 	public delegate void MouseDragEventHandler();
 
@@ -29,13 +29,13 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 			{
 				if (_baseMap != null)
 				{
-					_baseMap.HeightChanged -= OnHeightChanged;
+					_baseMap.HeightChanged       -= OnHeightChanged;
 					_baseMap.SelectedTileChanged -= OnTileChange;
 				}
 
 				if ((_baseMap = value) != null)
 				{
-					_baseMap.HeightChanged += OnHeightChanged;
+					_baseMap.HeightChanged       += OnHeightChanged;
 					_baseMap.SelectedTileChanged += OnTileChange;
 
 					SetMapSize();
@@ -137,8 +137,6 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 
 		internal MainView()
 		{
-//			_baseMap = null;
-
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
 				   | ControlStyles.AllPaintingInWmPaint
 				   | ControlStyles.UserPaint
@@ -169,6 +167,15 @@ namespace MapView // NOTE: namespace conflict w/ .NET itself
 
 					case Keys.V:
 						Paste();
+						break;
+				}
+			}
+			else
+			{
+				switch (e.KeyCode)
+				{
+					case Keys.Delete:
+						ClearSelection();
 						break;
 				}
 			}

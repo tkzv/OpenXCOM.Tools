@@ -133,8 +133,8 @@ namespace MapView
 			if (_scrollBarHori.Visible)
 			{
 				_scrollBarHori.Maximum = Math.Max(
-									_mainView.Width - ClientSize.Width + _scrollBarVert.Width,
-									_scrollBarHori.Minimum);
+											_mainView.Width - ClientSize.Width + _scrollBarVert.Width,
+											_scrollBarHori.Minimum);
 //				h = _scrollBarHori.Height;
 			}
 			else

@@ -70,6 +70,15 @@ namespace MapView.Forms.MapObservers.TopViews
 						break;
 				}
 			}
+			else
+			{
+				switch (e.KeyCode)
+				{
+					case Keys.Delete:
+						MainViewPanel.Instance.MainView.ClearSelection();
+						break;
+				}
+			}
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
