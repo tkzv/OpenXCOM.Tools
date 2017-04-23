@@ -127,12 +127,13 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			get // TODO: calculate and cache this value in the OnResize and loading events.
 			{
-				if (_tiles != null)// && _tilesX > 0) // NOTE '_tilesX' shall always be > 0.
+				if (_tiles != null)
 				{
-					if (_tiles.Length % _tilesX == 0)
-						return (_tiles.Length / _tilesX) * SpriteHeight;
+					int extra = 0;
+					if (_tiles.Length % _tilesX != 0)
+						extra = 1;
 
-					return (_tiles.Length / _tilesX + 1) * SpriteHeight;
+					return (_tiles.Length / _tilesX + extra) * SpriteHeight;
 				}
 				return 0;
 			}

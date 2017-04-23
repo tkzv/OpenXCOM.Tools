@@ -59,12 +59,9 @@ namespace PckView
 
 				_scrollBar.LargeChange = value.ImageFile.ImageSize.Height + ViewPanelOverlay.SpriteMargin * 2;
 
-//				LogFile.WriteLine("Under.SpritePack LargeChange= " + _scrollBar.LargeChange);
-//				LogFile.WriteLine(". imageHeight= " + value.ImageFile.ImageSize.Height);
-//				LogFile.WriteLine(". spriteMargin= " + ViewPanelOverlay.SpriteMargin);
-
 				UpdateScrollbar(true);
-				ClearSpriteStatus();
+				OnSpriteOver(-1);
+				OnSpriteClick(-1);
 
 				if (SpritePackChangedEvent != null)
 					SpritePackChangedEvent(new SpritePackChangedEventArgs(value));
@@ -84,18 +81,15 @@ namespace PckView
 			_overlay = new ViewPanelOverlay();
 			_overlay.Dock = DockStyle.Fill;
 			_overlay.SpriteClickEvent += OnSpriteClick;
-			_overlay.SpriteOverEvent += OnSpriteOver;
+			_overlay.SpriteOverEvent  += OnSpriteOver;
 
 			_scrollBar = new VScrollBar();
 			_scrollBar.Dock = DockStyle.Right;
 			_scrollBar.SmallChange = 1;
-
-//			_scrollBar.LargeChange = SpritePack.ImageFile.ImageSize.Height + ViewPanelOverlay.SpriteMargin * 2; // fu.net
-//			_scrollBar.LargeChange = 40 + ViewPanelOverlay.SpriteMargin * 2;
-			// you can set LargeChange here but on init it will still be 1.
-			
-//			_scrollBar.Scroll += OnSpritesScroll;
-			_scrollBar.ValueChanged += OnScrollBarValueChanged;
+//			_scrollBar.LargeChange = SpritePack.ImageFile.ImageSize.Height + ViewPanelOverlay.SpriteMargin * 2;	// fu.net
+																												// NOTE: LargeChange is set in the SpritePack setter.
+//			_scrollBar.Scroll += OnSpritesScroll;																// Even there (or anywhere else apparently) it returns
+			_scrollBar.ValueChanged += OnScrollBarValueChanged;													// a value of "1" until everything settles ....
 
 			_statusOverTile = new StatusBarPanel();
 			_statusOverTile.AutoSize = StatusBarPanelAutoSize.Contents;
@@ -123,7 +117,7 @@ namespace PckView
 //		protected override void OnSizeChanged(EventArgs e)
 //		{
 //			LogFile.WriteLine("");
-//			LogFile.WriteLine("Base.OnSizeChanged");
+//			LogFile.WriteLine("Underlay.OnSizeChanged");
 //
 //			base.OnSizeChanged(e);
 //////
@@ -136,15 +130,10 @@ namespace PckView
 ////			_viewPanelOverlay.Refresh();
 //		}
 
-		internal void ForceOnResize()
-		{
-			OnResize(null);
-		}
-
-		protected override void OnResize(EventArgs eventargs) // kL
+		protected override void OnResize(EventArgs eventargs)
 		{
 			//LogFile.WriteLine("");
-			//LogFile.WriteLine("Base.OnResize");
+			//LogFile.WriteLine("Underlay.OnResize");
 
 			base.OnResize(eventargs);
 
@@ -159,22 +148,24 @@ namespace PckView
 		/// Updates the scrollbar after a resize event or a sprite-pack changed
 		/// event.
 		/// </summary>
-		/// <param name="resetTrack">i don't want to talk about it.</param>
-		internal void UpdateScrollbar(bool resetTrack)
+		/// <param name="resetTrack">true to set the thingie to the top of the track</param>
+		private void UpdateScrollbar(bool resetTrack)
 		{
 			//LogFile.WriteLine("");
-			//LogFile.WriteLine("Base.UpdateScrollbar");
+			//LogFile.WriteLine("Underlay.UpdateScrollbar");
 
 			if (SpritePack != null)
 			{
-//				_scrollBar.LargeChange = SpritePack.ImageFile.ImageSize.Height + ViewPanelOverlay.SpriteMargin * 2; // fu.net
-				// no, you can't set LargeChange here.
-
 				if (resetTrack)
 					_scrollBar.Value = 0;
 
-				_scrollBar.Maximum = Math.Max(_overlay.AbstractHeight + _scrollBar.LargeChange + _forceLargeChange - Height - _statusBar.Height, 0);
-				_forceLargeChange = 0;
+				SetTilesX();
+				_scrollBar.Maximum = Math.Max(_overlay.AbstractHeight
+											+ _scrollBar.LargeChange
+											+ _forceLargeChange
+											- _statusBar.Height
+											- Height, 0);
+				_forceLargeChange = 0; // fu.net - if LargeChange can't stick on the 1st pass we'll do it the hard way.
 			}
 			else
 				_scrollBar.Maximum = 0;
@@ -184,15 +175,37 @@ namespace PckView
 			_scrollBar.Visible = (_scrollBar.Maximum != 0);
 		}
 
+		internal void SetTilesX()
+		{
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("Underlay.SetTilesX");
+
+			int tilesX = 1;
+
+			if (SpritePack != null && SpritePack.Count != 0)
+			{
+				int widthSprite = SpritePack.ImageFile.ImageSize.Width + ViewPanelOverlay.SpriteMargin * 2;
+				tilesX = (Width - 1) / widthSprite; // calculate without widthScroll first
+
+				if (tilesX * widthSprite + _scrollBar.Width > Width - 1)
+				{
+					int heightSprite = SpritePack.ImageFile.ImageSize.Height + ViewPanelOverlay.SpriteMargin * 2;
+					if ((SpritePack.Count / tilesX + 2) * heightSprite > Height - 1)
+						--tilesX;
+				}
+			}
+			_overlay.TilesX = tilesX;
+		}
+
 		/// <summary>
 		/// Fires when anything changes the Value of the scroll-bar.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnScrollBarValueChanged(object sender, EventArgs e) // kL
+		private void OnScrollBarValueChanged(object sender, EventArgs e)
 		{
 			//LogFile.WriteLine("");
-			//LogFile.WriteLine("Base.OnScrollBarValueChanged");
+			//LogFile.WriteLine("Underlay.OnScrollBarValueChanged");
 
 //			_scrollBar.Maximum = Math.Max(_viewPanelOverlay.AbstractHeight + _scrollBar.LargeChange - Height, 0);
 
@@ -283,22 +296,24 @@ namespace PckView
 			}
 		}
 
-		internal void ClearSpriteStatus()
-		{
-			OnSpriteOver(-1);
-			OnSpriteClick(-1);
-		}
-
 		#endregion
 
 
 		#region Methods
 
+		/// <summary>
+		/// Forwards a sprite change from PckViewForm to the Overlay panel.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="image"></param>
 		internal void ChangeSprite(int id, XCImage image)
 		{
 			_overlay.ChangeSprite(id, image);
 		}
 
+		/// <summary>
+		/// Forwards a sprite removed call from PckViewForm to the Overlay panel.
+		/// </summary>
 		internal void RemoveSelected()
 		{
 			_overlay.RemoveSelected();
@@ -321,6 +336,7 @@ namespace PckView
 	}
 
 
+	#region SpritePackChanged event handler & args
 	internal delegate void SpritePackChangedEventHandler(SpritePackChangedEventArgs e);
 
 	/// <summary>
@@ -337,4 +353,5 @@ namespace PckView
 			Sprites = sprites;
 		}
 	}
+	#endregion
 }

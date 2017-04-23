@@ -34,19 +34,17 @@ namespace PckView
 		private int _spriteWidth;
 		private int _spriteHeight;
 
+		private int _tilesX = 1;
+		internal int TilesX
+		{
+			set { _tilesX = value; }
+		}
+
 		private int _tileX = -1;
 		private int _tileY = -1;
 
-		private int _startY;
 		internal int StartY
-		{
-			get { return _startY; }
-			set
-			{
-				_startY = value;
-				Refresh();
-			}
-		}
+		{ get; set; }
 
 		internal Palette Pal
 		{
@@ -62,19 +60,8 @@ namespace PckView
 		{
 			get // TODO: calculate and cache this value in the OnResize and loading events.
 			{
-				if (_spritePack != null)// && _tilesX > 0) // NOTE '_tilesX' shall always be > 0.
-				{
-					int tilesX = GetTilesX();
-					int extra = (_spritePack.Count % tilesX == 0) ? 2
-																  : 3;
-					int height = (_spritePack.Count / tilesX + extra) * _spriteHeight;
-					//LogFile.WriteLine("Overlay.AbstractHeight= " + height);
-
-//					Height = height;
-
-					return height;
-				}
-				return 0;
+				return (_spritePack != null) ? (_spritePack.Count / _tilesX + 2) * _spriteHeight
+											 : 0;
 			}
 		}
 
@@ -88,14 +75,14 @@ namespace PckView
 				_spriteWidth  = _spritePack.ImageFile.ImageSize.Width  + SpriteMargin * 2;
 				_spriteHeight = _spritePack.ImageFile.ImageSize.Height + SpriteMargin * 2;
 
-//				Height = AbstractHeight;
+//				Height = AbstractHeight; ... nobody cares about the Height of Overlay. Let .NET deal with it.
 
 //				OnMouseDown(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 //				OnMouseMove(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 
 				_spritesSelected.Clear();
 
-				Refresh();
+//				Refresh();
 			}
 		}
 
@@ -133,14 +120,13 @@ namespace PckView
 
 			if (_spritePack != null)
 			{
-				int tileX =  e.X            / _spriteWidth;
-				int tileY = (e.Y - _startY) / _spriteHeight;
+				int tileX =  e.X           / _spriteWidth;
+				int tileY = (e.Y - StartY) / _spriteHeight;
 
-				int tilesX = GetTilesX();
-				if (tileX >= tilesX)
-					tileX =  tilesX - 1;
+				if (tileX >= _tilesX)
+					tileX =  _tilesX - 1;
 
-				int spriteId = tileX + tileY * tilesX;
+				int spriteId = tileX + tileY * _tilesX;
 
 				var selected   = new SpriteSelected();
 				selected.X     = tileX;
@@ -187,20 +173,19 @@ namespace PckView
 
 			if (_spritePack != null)
 			{
-				int tileX =  e.X            / _spriteWidth;
-				int tileY = (e.Y - _startY) / _spriteHeight;
+				int tileX =  e.X           / _spriteWidth;
+				int tileY = (e.Y - StartY) / _spriteHeight;
 
 				if (tileX != _tileX || tileY != _tileY)
 				{
 					_tileX = tileX;
 					_tileY = tileY;
 
-					int tilesX = GetTilesX();
-					if (_tileX >= tilesX)
-						_tileX  = tilesX - 1;
+					if (_tileX >= _tilesX)
+						_tileX  = _tilesX - 1;
 
 					if (SpriteOverEvent != null)
-						SpriteOverEvent(_tileX + _tileY * tilesX);
+						SpriteOverEvent(_tileX + _tileY * _tilesX);
 				}
 			}
 		}
@@ -213,24 +198,22 @@ namespace PckView
 			{
 				var g = e.Graphics;
 
-				int tilesX = GetTilesX();
+				if (_spritePack.Count < _tilesX) _tilesX = _spritePack.Count;
 
-				if (_spritePack.Count < tilesX) tilesX = _spritePack.Count;
-
-				for (int tileX = 0; tileX <= tilesX; ++tileX) // draw vertical lines
+				for (int tileX = 0; tileX <= _tilesX; ++tileX) // draw vertical lines
 					g.DrawLine(
 							Pens.Black,
-							new Point(tileX * _spriteWidth,          _startY),
-							new Point(tileX * _spriteWidth, Height - _startY));
+							new Point(tileX * _spriteWidth,          StartY),
+							new Point(tileX * _spriteWidth, Height - StartY));
 
-				int tilesY = _spritePack.Count / tilesX;
-				if (_spritePack.Count % tilesX != 0) ++tilesY;
+				int tilesY = _spritePack.Count / _tilesX;
+				if (_spritePack.Count % _tilesX != 0) ++tilesY;
 
 				for (int tileY = 0; tileY <= tilesY; ++tileY) // draw horizontal lines
 					g.DrawLine(
 							Pens.Black,
-							new Point(0,                     tileY * _spriteHeight + _startY),
-							new Point(_spriteWidth * tilesX, tileY * _spriteHeight + _startY));
+							new Point(0,                      tileY * _spriteHeight + StartY),
+							new Point(_spriteWidth * _tilesX, tileY * _spriteHeight + StartY));
 
 
 				var selected = new List<int>();
@@ -239,21 +222,21 @@ namespace PckView
 
 				for (int id = 0; id != _spritePack.Count; ++id) // fill selected tiles and draw sprites.
 				{
-					int tileX = id % tilesX;
-					int tileY = id / tilesX;
+					int tileX = id % _tilesX;
+					int tileY = id / _tilesX;
 
 					if (selected.Contains(id))
 						g.FillRectangle(
 									Brushes.Crimson,
 									tileX * _spriteWidth  + 1,
-									tileY * _spriteHeight + 1 + _startY,
+									tileY * _spriteHeight + 1 + StartY,
 									_spriteWidth  - 1,
 									_spriteHeight - 1);
 
 					g.DrawImage(
 							_spritePack[id].Image,
 							tileX * _spriteWidth  + SpriteMargin,
-							tileY * _spriteHeight + SpriteMargin + _startY);
+							tileY * _spriteHeight + SpriteMargin + StartY);
 				}
 			}
 		}
@@ -297,22 +280,16 @@ namespace PckView
 	
 				if (SpritePack.Count != 0)
 				{
-					int tilesX = GetTilesX();
-	
 					var selected = new SpriteSelected();
-					selected.Y   = lowestId / tilesX;
+					selected.Y   = lowestId / _tilesX;
 					selected.X   = lowestId - selected.Y;
-					selected.Id  = selected.X + selected.Y * tilesX;
+					selected.Id  = selected.X + selected.Y * _tilesX;
 	
 					_spritesSelected.Add(selected);
 				}
 			}
 		}
 
-		private int GetTilesX() // TODO: calculate and cache this value in the OnResize and loading events.
-		{
-			return Math.Max((Width - 1) / _spriteWidth, 1);
-		}
 		#endregion
 	}
 }
