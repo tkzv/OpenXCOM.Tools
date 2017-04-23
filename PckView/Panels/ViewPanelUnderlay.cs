@@ -114,22 +114,6 @@ namespace PckView
 
 		#region EventCalls
 
-//		protected override void OnSizeChanged(EventArgs e)
-//		{
-//			LogFile.WriteLine("");
-//			LogFile.WriteLine("Underlay.OnSizeChanged");
-//
-//			base.OnSizeChanged(e);
-//////
-//////			_scrollBar.Value         =
-//////			_viewPanelOverlay.StartY = 0;
-//////
-////			UpdateScrollbar();
-////
-////			Refresh();
-////			_viewPanelOverlay.Refresh();
-//		}
-
 		protected override void OnResize(EventArgs eventargs)
 		{
 			//LogFile.WriteLine("");
@@ -151,8 +135,8 @@ namespace PckView
 		/// <param name="resetTrack">true to set the thingie to the top of the track</param>
 		private void UpdateScrollbar(bool resetTrack)
 		{
-			//LogFile.WriteLine("");
-			//LogFile.WriteLine("Underlay.UpdateScrollbar");
+			LogFile.WriteLine("");
+			LogFile.WriteLine("Underlay.UpdateScrollbar");
 
 			if (SpritePack != null)
 			{
@@ -166,6 +150,9 @@ namespace PckView
 											- _statusBar.Height
 											- Height, 0);
 				_forceLargeChange = 0; // fu.net - if LargeChange can't stick on the 1st pass we'll do it the hard way.
+
+				if (_scrollBar.Maximum >= Height)
+					_scrollBar.Maximum = 0;
 			}
 			else
 				_scrollBar.Maximum = 0;
@@ -187,10 +174,13 @@ namespace PckView
 				int widthSprite = SpritePack.ImageFile.ImageSize.Width + ViewPanelOverlay.SpriteMargin * 2;
 				tilesX = (Width - 1) / widthSprite; // calculate without widthScroll first
 
+				if (tilesX > SpritePack.Count)
+					tilesX = SpritePack.Count;
+
 				if (tilesX * widthSprite + _scrollBar.Width > Width - 1)
 				{
 					int heightSprite = SpritePack.ImageFile.ImageSize.Height + ViewPanelOverlay.SpriteMargin * 2;
-					if ((SpritePack.Count / tilesX + 2) * heightSprite > Height - 1)
+					if ((SpritePack.Count / tilesX + 2) * heightSprite > Height - _statusBar.Height - 1)
 						--tilesX;
 				}
 			}

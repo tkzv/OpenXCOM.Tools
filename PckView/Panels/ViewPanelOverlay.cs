@@ -198,8 +198,6 @@ namespace PckView
 			{
 				var g = e.Graphics;
 
-				if (_spritePack.Count < _tilesX) _tilesX = _spritePack.Count;
-
 				for (int tileX = 0; tileX <= _tilesX; ++tileX) // draw vertical lines
 					g.DrawLine(
 							Pens.Black,
