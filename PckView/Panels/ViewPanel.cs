@@ -60,10 +60,12 @@ namespace PckView
 				_selectedSprites.Clear();
 
 //				Refresh();
+				_largeChange           =
 				_scrollBar.LargeChange = value.ImageFile.ImageSize.Height + SpriteMargin * 2;
-				LogFile.WriteLine(". LargeChange= " + (_scrollBar.LargeChange + _forceLargeChange));
+				LogFile.WriteLine(". LargeChange= " + _largeChange);
 
 				UpdateScrollbar(true);
+
 				OnSpriteOver(-1);
 				OnSpriteClick(-1);
 
@@ -88,18 +90,15 @@ namespace PckView
 		private readonly List<SpriteSelected> _selectedSprites = new List<SpriteSelected>();
 		internal ReadOnlyCollection<SpriteSelected> SelectedSprites
 		{
-			get
-			{
-				return (SpritePack != null) ? _selectedSprites.AsReadOnly()
-											: null;
-			}
+			get { return (SpritePack != null) ? _selectedSprites.AsReadOnly()
+											  : null; }
 		}
 
 		private int _idSelected;
 		private int _idOver;
 
 		/// <summary>
-		/// Used by UpdateScrollBar() to set its Maximum value.
+		/// Used by UpdateScrollBar() to determine its Maximum value.
 		/// </summary>
 		internal int AbstractHeight
 		{
@@ -121,7 +120,12 @@ namespace PckView
 			}
 		}
 
-		private int _forceLargeChange = 43;
+		/// <summary>
+		/// The LargeChange value for the scrollbar will be "1" when the bar
+		/// isn't visible. Therefore this value needs to be used instead of the
+		/// actual LargeValue in order to calculate the panel's various dynamics.
+		/// </summary>
+		private int _largeChange;
 		#endregion
 
 
@@ -212,15 +216,15 @@ namespace PckView
 				if (resetTrack)
 					_scrollBar.Value = 0;
 
-				_scrollBar.Maximum = Math.Max(AbstractHeight
-											+ _scrollBar.LargeChange
-											+ _forceLargeChange
-											- _statusBar.Height
-											- Height, 0);
-				_forceLargeChange = 0; // fu.net - if LargeChange can't stick on the 1st pass we'll do it the hard way.
+				int heightClient = FindForm().ClientSize.Height;
 
-				if (_scrollBar.Maximum >= Height)
-					_scrollBar.Maximum = 0;
+				_scrollBar.Maximum = Math.Max(AbstractHeight
+											+ _largeChange
+											- heightClient
+											- _statusBar.Height, 0);
+
+//				if (_scrollBar.Maximum >= Height)
+//					_scrollBar.Maximum = 0;
 			}
 			else
 				_scrollBar.Maximum = 0;
@@ -239,17 +243,15 @@ namespace PckView
 
 			if (SpritePack != null && SpritePack.Count != 0)
 			{
-				int widthSprite = SpritePack.ImageFile.ImageSize.Width + ViewPanel.SpriteMargin * 2;
-				tilesX = (Width - 1) / widthSprite; // calculate without widthScroll first
+				tilesX = (Width - 1) / _spriteWidth; // calculate without widthScroll first
 
 				if (tilesX > SpritePack.Count)
 					tilesX = SpritePack.Count;
 
-				if (tilesX * widthSprite + _scrollBar.Width > Width - 1)
+				if (tilesX * _spriteWidth + _scrollBar.Width > Width - 1
+					&& (SpritePack.Count / tilesX + 2) * _spriteHeight > Height - _statusBar.Height - 1)
 				{
-					int heightSprite = SpritePack.ImageFile.ImageSize.Height + ViewPanel.SpriteMargin * 2;
-					if ((SpritePack.Count / tilesX + 2) * heightSprite > Height - _statusBar.Height - 1)
-						--tilesX;
+					--tilesX;
 				}
 			}
 			_tilesX = tilesX;
