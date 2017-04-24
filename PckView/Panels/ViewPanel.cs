@@ -166,14 +166,12 @@ namespace PckView
 		private void OnScrollBarValueChanged(object sender, EventArgs e)
 		{
 			_startY = -_scrollBar.Value;
-
 			Refresh();
 		}
 
 		protected override void OnResize(EventArgs eventargs)
 		{
 			base.OnResize(eventargs);
-
 			UpdateScrollbar(false);
 		}
 

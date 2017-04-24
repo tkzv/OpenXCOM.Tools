@@ -101,7 +101,6 @@ namespace MapView.Forms.MapObservers.TileViews
 		private void OnScrollBarValueChanged(object sender, EventArgs e)
 		{
 			_scrollBar.Maximum = Math.Max(TableHeight + _scrollBar.LargeChange - Height, 0);
-
 			// That is needed only for initialization.
 			// OnResize, which also sets '_scrollBar.Maximum', fires a dozen
 			// times during init, but it gets the value right only once (else
@@ -114,6 +113,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		protected override void OnResize(EventArgs eventargs)
 		{
+			base.OnResize(eventargs);
+
 			_tilesX = Math.Max((Width - 1 - (_scrollBar.Visible ? _scrollBar.Width : 0)) / SpriteWidth, 1);
 
 //			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
