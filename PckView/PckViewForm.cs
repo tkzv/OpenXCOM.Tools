@@ -140,7 +140,8 @@ namespace PckView
 
 		private void OnSpriteClick(object sender, EventArgs e)
 		{
-			if (_viewPanel.SelectedSprites.Count > 0) // isSelected
+			if (   _viewPanel.SelectedSprites != null // isSelected
+				&& _viewPanel.SelectedSprites.Count > 0)
 			{
 				_miEdit.Enabled   = true;
 //				_miSave.Enabled   =
@@ -284,7 +285,8 @@ namespace PckView
 
 		private void OnSpriteEditClick(object sender, EventArgs e)
 		{
-			if (_viewPanel.SelectedSprites.Count != 0)
+			if (   _viewPanel.SelectedSprites != null
+				&& _viewPanel.SelectedSprites.Count != 0)
 			{
 				var selected = _viewPanel.SelectedSprites[_viewPanel.SelectedSprites.Count - 1];
 				if (selected != null)

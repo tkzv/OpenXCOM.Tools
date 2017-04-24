@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic; // List
-using System.Collections.ObjectModel; // ReadOnlyCollection
-using System.Drawing; // Pens, Brushes
-using System.Windows.Forms; // Panel
+using System.Collections.Generic;		// List
+using System.Collections.ObjectModel;	// ReadOnlyCollection
+using System.Drawing;					// Pens, Brushes
+using System.Windows.Forms;				// Panel
 
-using XCom; // Palette, XCImageCollection
-using XCom.Interfaces; // XCImage
+using XCom;								// Palette, XCImageCollection
+using XCom.Interfaces;					// XCImage
 
 
 namespace PckView
@@ -28,26 +28,18 @@ namespace PckView
 		private StatusBarPanel _statusTileOver;
 
 
-		internal Palette Pal
-		{ get; set; }
-
 		private XCImageCollection _spritePack;
 		internal XCImageCollection SpritePack
 		{
 			get { return _spritePack; }
 			set
 			{
-				LogFile.WriteLine("");
-				LogFile.WriteLine("SpritePack set");
-
 				_spritePack = value;
 
 				_spriteWidth  = value.ImageFile.ImageSize.Width  + SpriteMargin * 2;
 				_spriteHeight = value.ImageFile.ImageSize.Height + SpriteMargin * 2;
-				LogFile.WriteLine(". spriteWidth= " + _spriteWidth);
-				LogFile.WriteLine(". spriteHeight= " + _spriteHeight);
 
-//				Height = AbstractHeight; ... nobody cares about the Height. Let .NET deal with it.
+//				Height = TableHeight; ... nobody cares about the Height. Let .NET deal with it.
 
 //				OnMouseDown(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 //				OnMouseMove(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
@@ -56,19 +48,23 @@ namespace PckView
 
 				_largeChange           =
 				_scrollBar.LargeChange = value.ImageFile.ImageSize.Height + SpriteMargin * 2;
-				LogFile.WriteLine(". LargeChange= " + _largeChange);
 
 				UpdateScrollbar(true);
 
+				Refresh();
+				Focus();
+
 				OnSpriteClick(-1);
 				OnSpriteOver(-1);
-
-				Refresh();
 
 				if (SpritePackChangedEvent != null)
 					SpritePackChangedEvent(new SpritePackChangedEventArgs(value));
 			}
 		}
+
+		internal Palette Pal
+		{ get; set; }
+
 
 		private const int SpriteMargin = 2;
 
@@ -102,24 +98,18 @@ namespace PckView
 		{
 			get // TODO: calculate and cache this value in the OnResize and loading events.
 			{
-				LogFile.WriteLine("TableHeight");
-
 				SetTilesX();
-				LogFile.WriteLine(". Count= " + SpritePack.Count);
-				LogFile.WriteLine(". tilesX= " + _tilesX);
 
 				int height = 0;
 				if (SpritePack != null)
 					height = (SpritePack.Count / _tilesX + 2) * _spriteHeight;
 
-				LogFile.WriteLine(". TableHeight= " + height);
-				LogFile.WriteLine(". this Height= " + Height);
 				return height;
 			}
 		}
 
 		/// <summary>
-		/// The LargeChange value for the scrollbar will be "1" when the bar
+		/// The LargeChange value for the scrollbar will return "1" when the bar
 		/// isn't visible. Therefore this value needs to be used instead of the
 		/// actual LargeValue in order to calculate the panel's various dynamics.
 		/// </summary>
@@ -159,6 +149,9 @@ namespace PckView
 				_scrollBar,
 				_statusBar
 			});
+
+			OnSpriteClick(-1);
+			OnSpriteOver(-1);
 		}
 		#endregion
 
@@ -172,20 +165,13 @@ namespace PckView
 		/// <param name="e"></param>
 		private void OnScrollBarValueChanged(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("OnScrollBarValueChanged");
-
 			_startY = -_scrollBar.Value;
-			LogFile.WriteLine(". startY= " + _startY);
 
 			Refresh(); // TODO: might not be needed.
 		}
 
 		protected override void OnResize(EventArgs eventargs)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("OnResize");
-
 			base.OnResize(eventargs);
 
 			UpdateScrollbar(false);
@@ -198,9 +184,6 @@ namespace PckView
 		/// <param name="resetTrack">true to set the thingie to the top of the track</param>
 		private void UpdateScrollbar(bool resetTrack)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("UpdateScrollbar");
-
 			if (SpritePack != null)
 			{
 				if (resetTrack)
@@ -217,16 +200,11 @@ namespace PckView
 			else
 				_scrollBar.Maximum = 0;
 
-			LogFile.WriteLine(". Maximum= " + _scrollBar.Maximum);
-
 			_scrollBar.Visible = (_scrollBar.Maximum != 0);
 		}
 
 		internal void SetTilesX()
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("SetTilesX");
-
 			int tilesX = 1;
 
 			if (SpritePack != null && SpritePack.Count != 0)
@@ -264,33 +242,19 @@ namespace PckView
 
 			if (_scrollBar.Visible)
 			{
-				int delta = _spriteHeight;
-
 				if (e.Delta > 0)
 				{
-					if (_scrollBar.Value < delta)
-					{
-						_scrollBar.Value =
-						_startY          = 0;
-					}
+					if (_scrollBar.Value - _scrollBar.LargeChange < 0)
+						_scrollBar.Value = 0;
 					else
-					{
-						_scrollBar.Value -= delta;
-						_startY          += delta;
-					}
+						_scrollBar.Value -= _scrollBar.LargeChange;
 				}
 				else if (e.Delta < 0)
 				{
-					if (_scrollBar.Maximum - _scrollBar.Value < delta)
-					{
-						_scrollBar.Value =  _scrollBar.Maximum;
-						_startY          = -_scrollBar.Maximum;
-					}
+					if (_scrollBar.Value + (_scrollBar.LargeChange - 1) + _scrollBar.LargeChange > _scrollBar.Maximum)
+						_scrollBar.Value = _scrollBar.Maximum - (_scrollBar.LargeChange - 1);
 					else
-					{
-						_scrollBar.Value += delta;
-						_startY          -= delta;
-					}
+						_scrollBar.Value += _scrollBar.LargeChange;
 				}
 			}
 		}
@@ -303,6 +267,9 @@ namespace PckView
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 //			base.OnMouseDown(e);
+
+//			Focus();	// also set in SpritePack setter. here in case user tabs away from this Panel.
+						// but there's no tabbing atm.
 
 			bool clearSelected = true;
 

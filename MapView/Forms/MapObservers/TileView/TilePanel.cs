@@ -100,7 +100,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		private void OnScrollBarValueChanged(object sender, EventArgs e)
 		{
-			_scrollBar.Maximum = Math.Max(AbstractHeight + _scrollBar.LargeChange - Height, 0);
+			_scrollBar.Maximum = Math.Max(TableHeight + _scrollBar.LargeChange - Height, 0);
 
 			// That is needed only for initialization.
 			// OnResize, which also sets '_scrollBar.Maximum', fires a dozen
@@ -119,11 +119,11 @@ namespace MapView.Forms.MapObservers.TileViews
 //			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
 //			_scrollBar.Height = Height;
 
-			_scrollBar.Maximum = Math.Max(AbstractHeight + _scrollBar.LargeChange - Height, 0);
+			_scrollBar.Maximum = Math.Max(TableHeight + _scrollBar.LargeChange - Height, 0);
 			_scrollBar.Visible = (_scrollBar.Maximum != 0);
 		}
 
-		private int AbstractHeight
+		private int TableHeight
 		{
 			get // TODO: calculate and cache this value in the OnResize and loading events.
 			{
@@ -185,19 +185,22 @@ namespace MapView.Forms.MapObservers.TileViews
 			if (handledMouseEventArgs != null)
 				handledMouseEventArgs.Handled = true;
 
-			if (e.Delta > 0)
+			if (_scrollBar.Visible)
 			{
-				if (_scrollBar.Value - _scrollBar.LargeChange < 0)
-					_scrollBar.Value = 0;
-				else
-					_scrollBar.Value -= _scrollBar.LargeChange;
-			}
-			else if (e.Delta < 0)
-			{
-				if (_scrollBar.Value + (_scrollBar.LargeChange - 1) + _scrollBar.LargeChange > _scrollBar.Maximum)
-					_scrollBar.Value = _scrollBar.Maximum - (_scrollBar.LargeChange - 1);
-				else
-					_scrollBar.Value += _scrollBar.LargeChange;
+				if (e.Delta > 0)
+				{
+					if (_scrollBar.Value - _scrollBar.LargeChange < 0)
+						_scrollBar.Value = 0;
+					else
+						_scrollBar.Value -= _scrollBar.LargeChange;
+				}
+				else if (e.Delta < 0)
+				{
+					if (_scrollBar.Value + (_scrollBar.LargeChange - 1) + _scrollBar.LargeChange > _scrollBar.Maximum)
+						_scrollBar.Value = _scrollBar.Maximum - (_scrollBar.LargeChange - 1);
+					else
+						_scrollBar.Value += _scrollBar.LargeChange;
+				}
 			}
 		}
 
@@ -207,13 +210,13 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (_tiles != null)
 			{
-				int x =  e.X            / SpriteWidth;
-				int y = (e.Y - _startY) / SpriteHeight;
+				int tileX =  e.X            / SpriteWidth;
+				int tileY = (e.Y - _startY) / SpriteHeight;
 
-				if (x >= _tilesX)
-					x  = _tilesX - 1;
+				if (tileX >= _tilesX)
+					tileX  = _tilesX - 1;
 
-				int tile = x + y * _tilesX;
+				int tile = tileX + tileY * _tilesX;
 				if (tile < _tiles.Length)
 				{
 					_id = tile;
@@ -228,7 +231,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 		/// <summary>
-		/// g.Fill(black)
+		/// this.Fill(black)
 		/// </summary>
 		/// <param name="e"></param>
 		protected override void OnPaint(PaintEventArgs e)
@@ -303,9 +306,9 @@ namespace MapView.Forms.MapObservers.TileViews
 					g.DrawLine(
 							Pens.Black,
 							i * SpriteWidth, _startY,
-							i * SpriteWidth, _startY + AbstractHeight);
+							i * SpriteWidth, _startY + TableHeight);
 
-				for (int i = 0; i <= AbstractHeight; i += SpriteHeight)
+				for (int i = 0; i <= TableHeight; i += SpriteHeight)
 					g.DrawLine(
 							Pens.Black,
 							0,               _startY + i,
