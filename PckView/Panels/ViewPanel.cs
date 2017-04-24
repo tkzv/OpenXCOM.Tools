@@ -77,10 +77,15 @@ namespace PckView
 
 		private int _tilesX = 1;
 
-		private int _tileX = -1;
-		private int _tileY = -1;
-
 		private int _startY;
+
+		private int _idSelected;
+		private int _idOver;
+
+		private int _overX = -1;
+		private int _overY = -1;
+
+		private const string None = "n/a";
 
 
 		private readonly List<SpriteSelected> _selectedSprites = new List<SpriteSelected>();
@@ -89,9 +94,6 @@ namespace PckView
 			get { return (SpritePack != null) ? _selectedSprites.AsReadOnly()
 											  : null; }
 		}
-
-		private int _idSelected;
-		private int _idOver;
 
 		/// <summary>
 		/// Used by UpdateScrollBar() to determine its Maximum value.
@@ -141,10 +143,10 @@ namespace PckView
 			_scrollBar.ValueChanged += OnScrollBarValueChanged;
 
 			_statusTileSelected = new StatusBarPanel();
-			_statusTileSelected.AutoSize = StatusBarPanelAutoSize.Contents;
+			_statusTileSelected.Width = 100;
 
 			_statusTileOver = new StatusBarPanel();
-			_statusTileOver.AutoSize = StatusBarPanelAutoSize.Contents;
+			_statusTileOver.Width = 75;
 
 			_statusBar = new StatusBar();
 			_statusBar.Dock = DockStyle.Bottom;
@@ -285,15 +287,20 @@ namespace PckView
 			}
 		}
 
+		/// <summary>
+		/// Selects and shows status-information for a sprite. Overrides core
+		/// implementation for the MouseDown event.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 //			base.OnMouseDown(e);
 
 			bool clearSelected = true;
 
-			if (SpritePack != null)
+			if (SpritePack != null && SpritePack.Count != 0)
 			{
-				if (e.X <= _spriteWidth * _tilesX) // not out of bounds to right
+				if (e.X < _spriteWidth * _tilesX) // not out of bounds to right
 				{
 					int tileX =  e.X            / _spriteWidth;
 					int tileY = (e.Y - _startY) / _spriteHeight;
@@ -337,18 +344,26 @@ namespace PckView
 			}
 
 			if (clearSelected)
+			{
 				_selectedSprites.Clear();
+				OnSpriteClick(-1);
+			}
 
 			Refresh();
 		}
 
+		/// <summary>
+		/// Shows status-information for a sprite. Overrides core implementation
+		/// for the MouseMove event.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 //			base.OnMouseMove(e);
 
-			if (SpritePack != null)
+			if (SpritePack != null && SpritePack.Count != 0)
 			{
-				if ( e.X > _spriteWidth * _tilesX) // out of bounds to right
+				if ( e.X > _spriteWidth * _tilesX - 1) // out of bounds to right
 				{
 					OnSpriteOver(-1);
 				}
@@ -357,10 +372,10 @@ namespace PckView
 					int tileX =  e.X            / _spriteWidth;
 					int tileY = (e.Y - _startY) / _spriteHeight;
 
-					if (tileX != _tileX || tileY != _tileY)
+					if (tileX != _overX || tileY != _overY)
 					{
-						_tileX = tileX;
-						_tileY = tileY;
+						_overX = tileX;
+						_overY = tileY;
 
 						int id = tileX + tileY * _tilesX;
 						if (id >= SpritePack.Count) // out of bounds below
@@ -372,24 +387,46 @@ namespace PckView
 			}
 		}
 
+		/// <summary>
+		/// Updates the status-information for the sprite that the cursor is
+		/// currently over.
+		/// </summary>
+		/// <param name="spriteId">the entry # (id) of the currently mouseovered
+		/// sprite in the currently loaded PckPack</param>
 		private void OnSpriteOver(int spriteId)
 		{
+			if (spriteId == -1)
+			{
+				_overX =
+				_overY = -1;
+			}
+
 			_idOver = spriteId;
 			PrintStatus();
 		}
 
+		/// <summary>
+		/// Updates the status-information for the sprite that the cursor is
+		/// currently over.
+		/// </summary>
+		/// <param name="spriteId">the entry # (id) of the currently mouseclicked
+		/// sprite in the currently loaded PckPack</param>
 		private void OnSpriteClick(int spriteId)
 		{
 			_idSelected = spriteId;
 			PrintStatus();
 		}
 
+		/// <summary>
+		/// Prints the current status for the currently selected and/or
+		/// mouseovered sprite(s) in the status-bar.
+		/// </summary>
 		private void PrintStatus()
 		{
 			string selected = (_idSelected != -1) ? _idSelected.ToString(System.Globalization.CultureInfo.InvariantCulture)
-												  : "-";
+												  : None;
 			string over     = (_idOver != -1)     ? _idOver.ToString(System.Globalization.CultureInfo.InvariantCulture)
-												  : "-";
+												  : None;
 
 			_statusTileSelected.Text = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
@@ -399,6 +436,10 @@ namespace PckView
 												"Over {0}", over);
 		}
 
+		/// <summary>
+		/// Let's draw this puppy.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnPaint(PaintEventArgs e)
 		{
 //			base.OnPaint(e);
@@ -414,7 +455,8 @@ namespace PckView
 							new Point(tileX * _spriteWidth, Height - _startY));
 
 				int tilesY = SpritePack.Count / _tilesX;
-				if (SpritePack.Count % _tilesX != 0) ++tilesY;
+				if (SpritePack.Count % _tilesX != 0)
+					++tilesY;
 
 				for (int tileY = 0; tileY <= tilesY; ++tileY) // draw horizontal lines
 					g.DrawLine(
