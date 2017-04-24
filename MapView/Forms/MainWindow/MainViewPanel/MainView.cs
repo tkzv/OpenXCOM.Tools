@@ -285,12 +285,16 @@ namespace MapView
 		/// Flag that tells TopViewPanelBase.DrawSelectedLozenge that it's okay
 		/// to draw a lozenge for a selected tile; ie, that an initial tile has
 		/// actually been selected. This prevents an off-border lozenge from
-		/// being drawn right after TopView initially appears. This can also
-		/// happen on MainView when GraySelected is false.
+		/// being drawn right after TopView initially appears. Can also happen
+		/// on MainView when GraySelected is false.
 		/// </summary>
 		internal bool FirstClick
 		{ get; set; }
 
+		/// <summary>
+		/// Selects a tile and/or starts a drag-select procedure.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			if (_baseMap != null)
@@ -314,13 +318,17 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// uh.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			Refresh(); // is this used for anything like, at all.
 		}
 
 		/// <summary>
-		/// Scrolls the z-axis for MapView.
+		/// Scrolls the z-axis for MainView.
 		/// </summary>
 		/// <param name="e"></param>
 		protected override void OnMouseWheel(MouseEventArgs e)
@@ -330,24 +338,31 @@ namespace MapView
 			else if (e.Delta > 0) _baseMap.Down();
 		}
 
+		/// <summary>
+		/// Updates the drag-selection process.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			if (_baseMap != null)
 			{
-				var current = ConvertCoordsDiamond(
-												e.X, e.Y,
-												_baseMap.CurrentHeight);
+				var pt = ConvertCoordsDiamond(
+											e.X, e.Y,
+											_baseMap.CurrentHeight);
 
-				if (current.X != _dragEnd.X || current.Y != _dragEnd.Y)
+				if (pt.X != _dragEnd.X || pt.Y != _dragEnd.Y)
 				{
 					if (e.Button != MouseButtons.None)
-						SetDrag(_dragStart, current);
+						SetDrag(_dragStart, pt);
 
-					Refresh(); // mouseover refresh for MapView.
+					Refresh(); // mouseover refresh for MainView.
 				}
 			}
 		}
 
+		/// <summary>
+		/// Gets/Sets the drag-start point. See also 'GetDragStart()'.
+		/// </summary>
 		internal Point DragStart
 		{
 			get { return _dragStart; }
@@ -363,6 +378,9 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// Gets/Sets the drag-end point. See also 'GetDragEnd()'.
+		/// </summary>
 		internal Point DragEnd
 		{
 			get { return _dragEnd; }
@@ -378,6 +396,11 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// Fires the drag-select event handler.
+		/// </summary>
+		/// <param name="dragStart"></param>
+		/// <param name="dragEnd"></param>
 		internal void SetDrag(Point dragStart, Point dragEnd)
 		{
 			if (_dragStart != dragStart || _dragEnd != dragEnd)
@@ -392,6 +415,10 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// Gets the drag-start point. See also 'DragStart'.
+		/// </summary>
+		/// <returns></returns>
 		private Point GetDragStart()
 		{
 			var start = new Point();
@@ -400,6 +427,10 @@ namespace MapView
 			return start;
 		}
 
+		/// <summary>
+		/// Gets the drag-end point. See also 'DragEnd'.
+		/// </summary>
+		/// <returns></returns>
 		private Point GetDragEnd()
 		{
 			var end = new Point();
@@ -408,6 +439,9 @@ namespace MapView
 			return end;
 		}
 
+		/// <summary>
+		/// Sets this Panel to the size of the current Map including scaling.
+		/// </summary>
 		internal void SetMapSize()
 		{
 			if (_baseMap != null)
@@ -418,6 +452,11 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// Gets the required x/y size in pixels for the current Map as a lozenge.
+		/// </summary>
+		/// <param name="pckImageScale"></param>
+		/// <returns></returns>
 		internal Size GetMapSize(double pckImageScale)
 		{
 			if (_baseMap != null)

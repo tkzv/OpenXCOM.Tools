@@ -155,7 +155,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 			VolutarSettingService.LoadSettings(Settings);
 
-			TilePanel.SetColors(_brushes);
+			TilePanel.SetBrushes(_brushes);
 		}
 
 		private void OnBrushChanged(object sender, string key, object val)

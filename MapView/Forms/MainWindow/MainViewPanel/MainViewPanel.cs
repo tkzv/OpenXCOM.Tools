@@ -182,6 +182,9 @@ namespace MapView
 			OnResize(null);
 		}
 
+		/// <summary>
+		/// Sets the scale-factor and the Panel-size.
+		/// </summary>
 		internal void SetMapSize()
 		{
 			if (Globals.AutoPckImageScale)
@@ -191,15 +194,18 @@ namespace MapView
 				var width  = Width  / (double)size.Width;
 				var height = Height / (double)size.Height;
 
-				Globals.PckImageScale = (width > height) ? height : width;
+				Globals.PckImageScale = (width > height) ? height
+														 : width;
 				Globals.PckImageScale.Clamp(
 										Globals.MinPckImageScale,
 										Globals.MaxPckImageScale);
 			}
-
 			_mainView.SetMapSize();
 		}
 
+		/// <summary>
+		/// Forces an OnResize event for this Panel.
+		/// </summary>
 		internal void ForceResize()
 		{
 			OnResize(null);

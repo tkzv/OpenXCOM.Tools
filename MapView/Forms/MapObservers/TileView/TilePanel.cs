@@ -20,11 +20,15 @@ namespace MapView.Forms.MapObservers.TileViews
 		internal event SelectedTileChangedEventHandler PanelSelectedTileChanged;
 
 
+		#region Fields & Properties
 		private TileBase[] _tiles;
 
 		private const int SpriteMargin = 2;
 		private const int SpriteWidth  = 32 + SpriteMargin * 2;
 		private const int SpriteHeight = 40 + SpriteMargin * 2;
+
+		private const int _largeChange = SpriteHeight;	// apparently .NET won't return an accurate value
+														// for LargeChange unless the scrollbar is visible.
 
 //		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
 		private Pen _pen = new Pen(Brushes.Red, 3); // TODO: find some happy colors
@@ -35,9 +39,57 @@ namespace MapView.Forms.MapObservers.TileViews
 		private int _startY;
 		private int _id;
 
-		private VScrollBar _scrollBar;
+		private readonly VScrollBar _scrollBar;
 
 		private TileType _type;
+
+		private int TableHeight
+		{
+			get // TODO: calculate and cache this value in the OnResize and loading events.
+			{
+				if (_tiles != null)
+				{
+					int extra = 0;
+					if (_tiles.Length % _tilesX != 0)
+						extra = 1;
+
+					return (_tiles.Length / _tilesX + extra) * SpriteHeight;
+				}
+				return 0;
+			}
+		}
+
+		/// <summary>
+		/// Gets the selected-tile-id.
+		/// Sets the selected-tile-id when a valid QuadrantPanel quad is
+		/// double-clicked.
+		/// </summary>
+		internal TileBase SelectedTile
+		{
+			get
+			{
+				if (_id > -1 && _id < _tiles.Length)
+					return _tiles[_id];
+
+				return null;
+			}
+			set
+			{
+				if (value != null)
+				{
+					_id = value.TileListId + 1;
+
+					if (PanelSelectedTileChanged != null)
+						PanelSelectedTileChanged(SelectedTile);
+
+					ScrollToTile();
+				}
+				else
+					_id = 0;
+			}
+		}
+		#endregion
+
 
 		internal static readonly Color[] TileColors =
 		{
@@ -58,6 +110,11 @@ namespace MapView.Forms.MapObservers.TileViews
 			Color.Blue
 		};
 
+		internal static void SetBrushes(Hashtable table)
+		{
+			_brushes = table;
+		}
+
 //		private static PckSpriteCollection extraFile;
 //		public static PckSpriteCollection ExtraFile
 //		{
@@ -65,23 +122,24 @@ namespace MapView.Forms.MapObservers.TileViews
 //			set { extraFile = value; }
 //		}
 
-		internal static void SetColors(Hashtable table)
-		{
-			_brushes = table;
-		}
 
-
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="type"></param>
 		internal TilePanel(TileType type)
 		{
 			_type = type;
 
 			_scrollBar = new VScrollBar();
 			_scrollBar.Dock = DockStyle.Right;
-			_scrollBar.LargeChange = SpriteHeight;
+			_scrollBar.LargeChange = _largeChange;
 			_scrollBar.SmallChange = 1;
 			_scrollBar.ValueChanged += OnScrollBarValueChanged;
 
 			Controls.Add(_scrollBar);
+
 			MainViewPanel.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
@@ -91,8 +149,10 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			Globals.LoadExtras();
 		}
+		#endregion
 
 
+		#region Event Calls
 		/// <summary>
 		/// Fires when anything changes the Value of the scroll-bar.
 		/// </summary>
@@ -100,7 +160,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		private void OnScrollBarValueChanged(object sender, EventArgs e)
 		{
-			_scrollBar.Maximum = Math.Max(TableHeight + _scrollBar.LargeChange - Height, 0);
+			_scrollBar.Maximum = Math.Max(TableHeight + _largeChange - Height, 0);
 			// That is needed only for initialization.
 			// OnResize, which also sets '_scrollBar.Maximum', fires a dozen
 			// times during init, but it gets the value right only once (else
@@ -111,75 +171,36 @@ namespace MapView.Forms.MapObservers.TileViews
 			Refresh();
 		}
 
+		/// <summary>
+		/// Handles client resizing.
+		/// </summary>
+		/// <param name="eventargs"></param>
 		protected override void OnResize(EventArgs eventargs)
 		{
 			base.OnResize(eventargs);
 
-			_tilesX = Math.Max((Width - 1 - (_scrollBar.Visible ? _scrollBar.Width : 0)) / SpriteWidth, 1);
+			if (_tiles != null)
+			{
+				_tilesX = (Width - _scrollBar.Width - 1) / SpriteWidth; // reserve width for the scrollbar.
 
-//			_scrollBar.Location = new Point(Width - _scrollBar.Width, 0);
-//			_scrollBar.Height = Height;
+				if (_tilesX > _tiles.Length)
+					_tilesX = _tiles.Length;
 
-			_scrollBar.Maximum = Math.Max(TableHeight + _scrollBar.LargeChange - Height, 0);
+				_scrollBar.Maximum = TableHeight + _largeChange - Height;
+
+				if (_scrollBar.Maximum < _largeChange)
+					_scrollBar.Maximum = 0;
+			}
+			else
+				_scrollBar.Maximum = 0;
+
 			_scrollBar.Visible = (_scrollBar.Maximum != 0);
 		}
 
-		private int TableHeight
-		{
-			get // TODO: calculate and cache this value in the OnResize and loading events.
-			{
-				if (_tiles != null)
-				{
-					int extra = 0;
-					if (_tiles.Length % _tilesX != 0)
-						extra = 1;
-
-					return (_tiles.Length / _tilesX + extra) * SpriteHeight;
-				}
-				return 0;
-			}
-		}
-
-		internal void SetTiles(IList<TileBase> tiles)
-		{
-			if (tiles != null)
-			{
-				if (_type == TileType.All)
-				{
-					_tiles = new TileBase[tiles.Count + 1];
-					_tiles[0] = null;
-
-					for (int i = 0; i != tiles.Count; ++i)
-						_tiles[i + 1] = tiles[i];
-				}
-				else
-				{
-					int qtyTiles = 0;
-
-					for (int i = 0; i != tiles.Count; ++i)
-						if (tiles[i].Record.TileType == _type)
-							++qtyTiles;
-
-					_tiles = new TileBase[qtyTiles + 1];
-					_tiles[0] = null;
-
-					for (int i = 0, j = 1; i != tiles.Count; ++i)
-						if (tiles[i].Record.TileType == _type)
-							_tiles[j++] = tiles[i];
-				}
-
-				if (_id >= _tiles.Length)
-					_id = 0;
-			}
-			else
-			{
-				_tiles = null;
-				_id = 0;
-			}
-
-			OnResize(null);
-		}
-
+		/// <summary>
+		/// Scrolls the table by the mousewheel.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			var handledMouseEventArgs = e as HandledMouseEventArgs;
@@ -205,6 +226,10 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
+		/// <summary>
+		/// Selects a tile.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			Focus();
@@ -225,7 +250,7 @@ namespace MapView.Forms.MapObservers.TileViews
 					if (PanelSelectedTileChanged != null)
 						PanelSelectedTileChanged(SelectedTile);
 
-					TileScrollClient();
+					ScrollToTile();
 					Refresh();
 				}
 			}
@@ -312,7 +337,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				for (int i = 0; i <= TableHeight; i += SpriteHeight)
 					g.DrawLine(
 							Pens.Black,
-							0,               _startY + i,
+							0,                     _startY + i,
 							_tilesX * SpriteWidth, _startY + i);
 
 				g.DrawRectangle(
@@ -324,36 +349,63 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 		/// <summary>
-		/// Gets the selected-tile-id.
-		/// Sets the selected-tile-id when a valid QuadrantPanel quad is
-		/// double-clicked.
+		/// whee. Handles animations.
 		/// </summary>
-		internal TileBase SelectedTile
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnAnimationUpdate(object sender, EventArgs e)
 		{
-			get
-			{
-				if (_id > -1 && _id < _tiles.Length)
-					return _tiles[_id];
+			Refresh();
+		}
+		#endregion
 
-				return null;
-			}
-			set
+
+		#region Methods
+		internal void SetTiles(IList<TileBase> tiles)
+		{
+			if (tiles != null)
 			{
-				if (value != null)
+				if (_type == TileType.All)
 				{
-					_id = value.TileListId + 1;
+					_tiles = new TileBase[tiles.Count + 1];
+					_tiles[0] = null;
 
-					if (PanelSelectedTileChanged != null)
-						PanelSelectedTileChanged(SelectedTile);
-
-					TileScrollClient();
+					for (int i = 0; i != tiles.Count; ++i)
+						_tiles[i + 1] = tiles[i];
 				}
 				else
+				{
+					int qtyTiles = 0;
+
+					for (int i = 0; i != tiles.Count; ++i)
+						if (tiles[i].Record.TileType == _type)
+							++qtyTiles;
+
+					_tiles = new TileBase[qtyTiles + 1];
+					_tiles[0] = null;
+
+					for (int i = 0, j = 1; i != tiles.Count; ++i)
+						if (tiles[i].Record.TileType == _type)
+							_tiles[j++] = tiles[i];
+				}
+
+				if (_id >= _tiles.Length)
 					_id = 0;
 			}
+			else
+			{
+				_tiles = null;
+				_id = 0;
+			}
+
+			OnResize(null);
 		}
 
-		private void TileScrollClient()
+		/// <summary>
+		/// Checks if a selected tile is fully visible in the view-panel and
+		/// scrolls the table to show it if not.
+		/// </summary>
+		private void ScrollToTile()
 		{
 			int tileY = _id / _tilesX;
 
@@ -371,10 +423,6 @@ namespace MapView.Forms.MapObservers.TileViews
 				}
 			}
 		}
-
-		private void OnAnimationUpdate(object sender, EventArgs e)
-		{
-			Refresh();
-		}
+		#endregion
 	}
 }
