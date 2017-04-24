@@ -231,16 +231,24 @@ namespace PckView
 
 			if (SpritePack != null && SpritePack.Count != 0)
 			{
-				tilesX = (Width - 1) / _spriteWidth; // calculate without widthScroll first
+//				tilesX = (Width - 1) / _spriteWidth; // calculate without widthScroll first
+
+				// On 2nd thought always reserve width for the scrollbar.
+				// So user can increase/decrease the Height of the window
+				// without the tiles re-arranging.
+				tilesX = (Width - _scrollBar.Width - 1) / _spriteWidth;
 
 				if (tilesX > SpritePack.Count)
 					tilesX = SpritePack.Count;
 
-				if (tilesX * _spriteWidth + _scrollBar.Width > Width - 1
-					&& (SpritePack.Count / tilesX + 2) * _spriteHeight > Height - _statusBar.Height - 1)
-				{
-					--tilesX;
-				}
+				// This was for, if extra width was *not* reserved for the
+				// scrollbar, deciding if that width now needs to be injected
+				// since the scrollbar is going to appear, after all:
+//				if (tilesX * _spriteWidth + _scrollBar.Width > Width - 1
+//					&& (SpritePack.Count / tilesX + 2) * _spriteHeight > Height - _statusBar.Height - 1)
+//				{
+//					--tilesX;
+//				}
 			}
 			_tilesX = tilesX;
 		}
