@@ -167,8 +167,8 @@ namespace PckView
 			this.miHelpMenu.Index = 4;
 			this.miHelpMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miAbout,
-			this.miHelp,
 			this.miConsole,
+			this.miHelp,
 			this.miMapViewHelp});
 			this.miHelpMenu.Text = "Help";
 			// 
@@ -178,17 +178,17 @@ namespace PckView
 			this.miAbout.Text = "About";
 			this.miAbout.Click += new System.EventHandler(this.OnAboutClick);
 			// 
-			// miHelp
-			// 
-			this.miHelp.Index = 1;
-			this.miHelp.Text = "Help";
-			this.miHelp.Click += new System.EventHandler(this.OnHelpClick);
-			// 
 			// miConsole
 			// 
-			this.miConsole.Index = 2;
+			this.miConsole.Index = 1;
 			this.miConsole.Text = "Console";
 			this.miConsole.Click += new System.EventHandler(this.OnConsoleClick);
+			// 
+			// miHelp
+			// 
+			this.miHelp.Index = 2;
+			this.miHelp.Text = "Help";
+			this.miHelp.Click += new System.EventHandler(this.OnHelpClick);
 			// 
 			// miMapViewHelp
 			// 

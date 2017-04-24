@@ -191,7 +191,7 @@ namespace PckView
 			miGridMenu.Index = 1;
 			miGridMenu.MenuItems.AddRange(new [] {
 			miGrid});
-			miGridMenu.Text = "Lines";
+			miGridMenu.Text = "Grid";
 			// 
 			// miGrid
 			// 

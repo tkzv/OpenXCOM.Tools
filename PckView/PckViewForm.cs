@@ -89,7 +89,7 @@ namespace PckView
 
 			_viewPanel = new ViewPanel();
 			_viewPanel.Dock = DockStyle.Fill;
-			_viewPanel.ContextMenu = BuildViewerContextMenu();
+			_viewPanel.ContextMenu = ViewerContextMenu();
 			_viewPanel.SpritePackChangedEvent += OnSpritePackChanged;
 			_viewPanel.Click                  += OnSpriteClick;
 			_viewPanel.DoubleClick            += OnSpriteEditClick;
@@ -159,7 +159,7 @@ namespace PckView
 			}
 		}
 
-		private ContextMenu BuildViewerContextMenu()
+		private ContextMenu ViewerContextMenu()
 		{
 			var menu = new ContextMenu();
 
@@ -630,7 +630,7 @@ namespace PckView
 
 				tab = new TabPage();
 				var panel = new ViewPanel();
-				panel.ContextMenu = BuildViewerContextMenu();
+				panel.ContextMenu = ViewerContextMenu();
 				panel.Dock = DockStyle.Fill;
 				panel.SpritePack = newCollection;
 				tab.Controls.Add(panel);
