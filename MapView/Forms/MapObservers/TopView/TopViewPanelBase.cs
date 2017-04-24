@@ -20,6 +20,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		:
 			MapObserverControl1
 	{
+		#region Fields & Properties
 		private int _offX;
 		private int _offY;
 
@@ -46,14 +47,21 @@ namespace MapView.Forms.MapObservers.TopViews
 				HandleParentResize(Width, Height);
 			}
 		}
+		#endregion
 
 
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
 		internal protected TopViewPanelBase()
 		{
 			_lozSelector = new GraphicsPath();
 			_lozSelected = new GraphicsPath();
 //			_lozSel = new GraphicsPath();
 		}
+		#endregion
+
 
 		[Browsable(false), DefaultValue(null)]
 		public override IMapBase BaseMap
@@ -91,7 +99,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					else // use height
 					{
 						hHeight = height / (BaseMap.MapSize.Rows + BaseMap.MapSize.Cols);
-						hWidth = hHeight * 2;
+						hWidth  = hHeight * 2;
 					}
 				}
 
@@ -346,6 +354,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			if (BaseMap != null)
 			{
+				MainViewPanel.Instance.MainView.FirstClick = true;
+
 				var pt = ConvertCoordsDiamond(
 											e.X - _offX,
 											e.Y - _offY);

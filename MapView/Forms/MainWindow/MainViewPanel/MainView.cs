@@ -288,17 +288,14 @@ namespace MapView
 		/// being drawn right after TopView initially appears. This can also
 		/// happen on MainView when GraySelected is false.
 		/// </summary>
-		internal bool _firstClick;
 		internal bool FirstClick
-		{
-			get { return _firstClick; }
-		}
+		{ get; set; }
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			if (_baseMap != null)
 			{
-				_firstClick = true; // klugdge.
+				FirstClick = true;
 
 				var dragStart = ConvertCoordsDiamond(
 												e.X, e.Y,
@@ -524,7 +521,7 @@ namespace MapView
 				}
 
 //				if (_drawSelectionBox) // always false.
-				if (_firstClick && !_graySelection)
+				if (FirstClick && !_graySelection)
 					DrawLozengeSelected(g, _baseMap.CurrentHeight, dragRect);
 			}
 		}

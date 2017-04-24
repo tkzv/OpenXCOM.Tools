@@ -32,6 +32,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 
+		/// <summary>
+		/// cTor.
+		/// </summary>
 		public TopView()
 		{
 			InitializeComponent();
