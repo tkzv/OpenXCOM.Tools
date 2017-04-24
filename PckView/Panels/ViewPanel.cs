@@ -289,6 +289,8 @@ namespace PckView
 		{
 //			base.OnMouseDown(e);
 
+			bool clearSelected = true;
+
 			if (SpritePack != null)
 			{
 				if (e.X <= _spriteWidth * _tilesX) // not out of bounds to right
@@ -328,12 +330,16 @@ namespace PckView
 						_selectedSprites.Add(selected);
 //						}
 
-						Refresh();
-
 						OnSpriteClick(id);
+						clearSelected = false;
 					}
 				}
 			}
+
+			if (clearSelected)
+				_selectedSprites.Clear();
+
+			Refresh();
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
