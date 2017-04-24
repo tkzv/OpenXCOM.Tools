@@ -12,17 +12,12 @@ namespace PckView
 {
 	internal delegate void SpritePackChangedEventHandler(SpritePackChangedEventArgs e);
 
-	internal delegate void SpriteOverEventHandler(int spriteId);
-	internal delegate void SpriteClickEventHandler(int spriteId);
-
 
 	internal sealed class ViewPanel
 		:
 			Panel
 	{
 		internal event SpritePackChangedEventHandler SpritePackChangedEvent;
-		internal event SpriteClickEventHandler       SpriteClickEvent;
-		internal event SpriteOverEventHandler        SpriteOverEvent;
 
 
 		#region Fields & Properties
@@ -59,15 +54,16 @@ namespace PckView
 
 				_selectedSprites.Clear();
 
-//				Refresh();
 				_largeChange           =
 				_scrollBar.LargeChange = value.ImageFile.ImageSize.Height + SpriteMargin * 2;
 				LogFile.WriteLine(". LargeChange= " + _largeChange);
 
 				UpdateScrollbar(true);
 
-				OnSpriteOver(-1);
 				OnSpriteClick(-1);
+				OnSpriteOver(-1);
+
+				Refresh();
 
 				if (SpritePackChangedEvent != null)
 					SpritePackChangedEvent(new SpritePackChangedEventArgs(value));
@@ -161,9 +157,6 @@ namespace PckView
 				_scrollBar,
 				_statusBar
 			});
-
-			SpriteClickEvent += OnSpriteClick;
-			SpriteOverEvent  += OnSpriteOver;
 		}
 		#endregion
 
@@ -180,8 +173,6 @@ namespace PckView
 			LogFile.WriteLine("");
 			LogFile.WriteLine("OnScrollBarValueChanged");
 
-//			_scrollBar.Maximum = Math.Max(AbstractHeight + _scrollBar.LargeChange - Height, 0);
-
 			_startY = -_scrollBar.Value;
 			LogFile.WriteLine(". startY= " + _startY);
 
@@ -194,10 +185,6 @@ namespace PckView
 			LogFile.WriteLine("OnResize");
 
 			base.OnResize(eventargs);
-
-//			_tilesX = Math.Max((Width - 1 - (_scrollBar.Visible ? _scrollBar.Width : 0)) / SpriteWidth, 1);
-//			_scrollBar.Maximum = Math.Max(AbstractHeight + _scrollBar.LargeChange - Height, 0);
-//			_scrollBar.Visible = (_scrollBar.Maximum != 0);
 
 			UpdateScrollbar(false);
 		}
@@ -256,82 +243,6 @@ namespace PckView
 			_tilesX = tilesX;
 		}
 
-		protected override void OnMouseDown(MouseEventArgs e)
-		{
-//			base.OnMouseDown(e);
-
-			if (SpritePack != null)
-			{
-				int tileX =  e.X            / _spriteWidth;
-				int tileY = (e.Y - _startY) / _spriteHeight;
-
-				if (tileX >= _tilesX)
-					tileX =  _tilesX - 1;
-
-				int spriteId = tileX + tileY * _tilesX;
-
-				var selected   = new SpriteSelected();
-				selected.X     = tileX;
-				selected.Y     = tileY;
-				selected.Id    = spriteId;
-				selected.Image = SpritePack[spriteId];
-
-				if (spriteId < SpritePack.Count)
-				{
-					if (ModifierKeys == Keys.Control)
-					{
-						SpriteSelected spritePre = null;
-
-						foreach (var sprite in _selectedSprites)
-						{
-							if (sprite.X == tileX && sprite.Y == tileY)
-								spritePre = sprite;
-						}
-
-						if (spritePre != null)
-						{
-							_selectedSprites.Remove(spritePre);
-						}
-						else
-							_selectedSprites.Add(selected);
-					}
-					else
-					{
-						_selectedSprites.Clear();
-						_selectedSprites.Add(selected);
-					}
-
-					Refresh();
-
-					if (SpriteClickEvent != null)
-						SpriteClickEvent(spriteId);
-				}
-			}
-		}
-
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-//			base.OnMouseMove(e);
-
-			if (SpritePack != null)
-			{
-				int tileX =  e.X            / _spriteWidth;
-				int tileY = (e.Y - _startY) / _spriteHeight;
-
-				if (tileX != _tileX || tileY != _tileY)
-				{
-					_tileX = tileX;
-					_tileY = tileY;
-
-					if (_tileX >= _tilesX)
-						_tileX  = _tilesX - 1;
-
-					if (SpriteOverEvent != null)
-						SpriteOverEvent(_tileX + _tileY * _tilesX);
-				}
-			}
-		}
-
 		/// <summary>
 		/// Scrolls the Overlay-panel with the mousewheel after OnSpriteClick
 		/// has given it focus (see).
@@ -369,6 +280,87 @@ namespace PckView
 					{
 						_scrollBar.Value += delta;
 						_startY          -= delta;
+					}
+				}
+			}
+		}
+
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+//			base.OnMouseDown(e);
+
+			if (SpritePack != null)
+			{
+				if (e.X <= _spriteWidth * _tilesX) // not out of bounds to right
+				{
+					int tileX =  e.X            / _spriteWidth;
+					int tileY = (e.Y - _startY) / _spriteHeight;
+
+					int id = tileX + tileY * _tilesX;
+					if (id < SpritePack.Count) // not out of bounds below
+					{
+						var selected   = new SpriteSelected();
+						selected.X     = tileX;
+						selected.Y     = tileY;
+						selected.Id    = id;
+						selected.Image = SpritePack[id];
+
+//						if (ModifierKeys == Keys.Control)
+//						{
+//							SpriteSelected spritePre = null;
+//
+//							foreach (var sprite in _selectedSprites)
+//							{
+//								if (sprite.X == tileX && sprite.Y == tileY)
+//									spritePre = sprite;
+//							}
+//
+//							if (spritePre != null)
+//							{
+//								_selectedSprites.Remove(spritePre);
+//							}
+//							else
+//								_selectedSprites.Add(selected);
+//						}
+//						else
+//						{
+						_selectedSprites.Clear();
+						_selectedSprites.Add(selected);
+//						}
+
+						Refresh();
+
+						OnSpriteClick(id);
+					}
+				}
+			}
+		}
+
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+//			base.OnMouseMove(e);
+
+			if (SpritePack != null)
+			{
+				if ( e.X > _spriteWidth * _tilesX) // out of bounds to right
+				{
+					OnSpriteOver(-1);
+				}
+				else
+				{
+					int tileX =  e.X            / _spriteWidth;
+					int tileY = (e.Y - _startY) / _spriteHeight;
+
+					if (tileX != _tileX || tileY != _tileY)
+					{
+						_tileX = tileX;
+						_tileY = tileY;
+
+						int id = tileX + tileY * _tilesX;
+						if (id >= SpritePack.Count) // out of bounds below
+							id = -1;
+
+						OnSpriteOver(id);
 					}
 				}
 			}

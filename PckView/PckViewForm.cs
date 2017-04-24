@@ -23,8 +23,8 @@ namespace PckView
 
 		private ViewPanel _viewPanel;
 
-		private Editor        _editor;
-		private ConsoleForm   _console;
+		private Editor _editor;
+		private ConsoleForm _console;
 
 		private TabControl _tabs;
 
@@ -91,7 +91,7 @@ namespace PckView
 			_viewPanel.Dock = DockStyle.Fill;
 			_viewPanel.ContextMenu = BuildViewerContextMenu();
 			_viewPanel.SpritePackChangedEvent += OnSpritePackChanged;
-			_viewPanel.SpriteClickEvent       += OnSpriteClick;
+			_viewPanel.Click                  += OnSpriteClick;
 			_viewPanel.DoubleClick            += OnSpriteEditClick;
 
 			pViewer.Controls.Add(_viewPanel);
@@ -138,7 +138,7 @@ namespace PckView
 			miPaletteMenu.Enabled     = enabled;
 		}
 
-		private void OnSpriteClick(int spriteId)
+		private void OnSpriteClick(object sender, EventArgs e)
 		{
 			if (_viewPanel.SelectedSprites.Count > 0) // isSelected
 			{
