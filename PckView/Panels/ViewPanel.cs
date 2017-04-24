@@ -167,7 +167,7 @@ namespace PckView
 		{
 			_startY = -_scrollBar.Value;
 
-			Refresh(); // TODO: might not be needed.
+			Refresh();
 		}
 
 		protected override void OnResize(EventArgs eventargs)
