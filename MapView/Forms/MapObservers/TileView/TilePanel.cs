@@ -34,7 +34,8 @@ namespace MapView.Forms.MapObservers.TileViews
 														// for LargeChange unless the scrollbar is visible.
 
 //		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
-		private Pen _pen = new Pen(Brushes.Red, 3); // TODO: find some happy colors
+		private Pen _penRed = new Pen(Brushes.Red, 3); // TODO: find some happy colors
+		private Pen _penControlLight = new Pen(SystemColors.ControlLight, 1);
 
 		private static Hashtable _brushes;
 
@@ -44,7 +45,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private readonly VScrollBar _scrollBar;
 
-		private TileType _type;
+		private TileType _quadType;
 
 		private int TableHeight
 		{
@@ -137,10 +138,10 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		/// <param name="type"></param>
-		internal TilePanel(TileType type)
+		/// <param name="quadType"></param>
+		internal TilePanel(TileType quadType)
 		{
-			_type = type;
+			_quadType = quadType;
 
 			Dock = DockStyle.Fill;
 
@@ -172,15 +173,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		private void OnScrollBarValueChanged(object sender, EventArgs e)
 		{
-			if (_tiles != null)
+			if (_tiles != null && _tiles.Length != 0)
 			{
-//				_scrollBar.Maximum = Math.Max(TableHeight + _largeChange - Height, 0);
-				// That is needed only for initialization.
-				// OnResize, which also sets '_scrollBar.Maximum', fires a dozen
-				// times during init, but it gets the value right only once (else
-				// '0') and not on the last call either. So just do it here and
-				// marvel at the wonders of c#/.NET
-
 				_startY = -_scrollBar.Value;
 				Refresh();
 			}
@@ -246,7 +240,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			Focus();
 
-			if (_tiles != null)
+			if (_tiles != null && _tiles.Length != 0)
 			{
 				int tileX =  e.X            / SpriteWidth;
 				int tileY = (e.Y - _startY) / SpriteHeight;
@@ -274,7 +268,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			if (_tiles != null)
+			if (_tiles != null && _tiles.Length != 0)
 			{
 				var g = e.Graphics;
 
@@ -348,10 +342,16 @@ namespace MapView.Forms.MapObservers.TileViews
 							_tilesX * SpriteWidth, _startY + i);
 
 				g.DrawRectangle(
-							_pen,
+							_penRed,
 							_id % _tilesX * SpriteWidth,
 							_startY + _id / _tilesX * SpriteHeight,
 							SpriteWidth, SpriteHeight);
+
+				if (!_scrollBar.Visible) // indicate the reserved width for scrollbar.
+					g.DrawLine(
+							_penControlLight,
+							Width - _scrollBar.Width, 0,
+							Width - _scrollBar.Width, Height);
 			}
 		}
 
@@ -370,9 +370,9 @@ namespace MapView.Forms.MapObservers.TileViews
 		#region Methods
 		internal void SetTiles(IList<TileBase> tiles)
 		{
-			if (tiles != null)
-			{
-				if (_type == TileType.All)
+			if (tiles != null)// && _tiles.Length != 0)	// NOTE: This check for Length should be enough
+			{											// to cover all other checks for Length==0.
+				if (_quadType == TileType.All)			// Except that the eraser needs to be added anyway ....
 				{
 					_tiles = new TileBase[tiles.Count + 1];
 					_tiles[0] = null;
@@ -385,14 +385,14 @@ namespace MapView.Forms.MapObservers.TileViews
 					int qtyTiles = 0;
 
 					for (int i = 0; i != tiles.Count; ++i)
-						if (tiles[i].Record.TileType == _type)
+						if (tiles[i].Record.TileType == _quadType)
 							++qtyTiles;
 
 					_tiles = new TileBase[qtyTiles + 1];
 					_tiles[0] = null;
 
 					for (int i = 0, j = 1; i != tiles.Count; ++i)
-						if (tiles[i].Record.TileType == _type)
+						if (tiles[i].Record.TileType == _quadType)
 							_tiles[j++] = tiles[i];
 				}
 
