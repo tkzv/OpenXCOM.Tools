@@ -35,11 +35,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		private const int _largeChange = SpriteHeight;	// apparently .NET won't return an accurate value
 														// for LargeChange unless the scrollbar is visible.
 
-//		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
-		private Pen _penRed = new Pen(Brushes.Red, 3); // TODO: find some happy colors
-		private Pen _penControlLight = new Pen(SystemColors.ControlLight, 1);
+		private Pen   _penBlack        = new Pen(Brushes.Black, 1); // TODO: find some happy colors that play nice with Options.
+		private Pen   _penRed          = new Pen(Brushes.Red, 3);
+		private Pen   _penControlLight = new Pen(SystemColors.ControlLight, 1);
+		private Brush _brushBlack      = new SolidBrush(Color.Black);
 
-		private static Hashtable _brushes;
+		private static Hashtable _specialTypeBrushes;
 
 		private int _tilesX = 1;
 		private int _startY;
@@ -123,7 +124,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		internal static void SetBrushes(Hashtable table)
 		{
-			_brushes = table;
+			_specialTypeBrushes = table;
 		}
 
 //		private static PckSpriteCollection extraFile;
@@ -273,6 +274,10 @@ namespace MapView.Forms.MapObservers.TileViews
 				int top;
 				int left;
 
+				const string door = "door";
+//				int textWidth1 = TextRenderer.MeasureText(door, Font).Width;	// =30
+				int textWidth2 = (int)g.MeasureString(door, Font).Width;		// =24
+
 				foreach (var tile in _tiles)
 				{
 					left = x * SpriteWidth;
@@ -282,11 +287,11 @@ namespace MapView.Forms.MapObservers.TileViews
 										left, top,
 										SpriteWidth, SpriteHeight);
 
-					if (tile != null)
+					if (tile != null) // draw tile ->
 					{
 						string targetType = tile.Record.TargetType.ToString();
-						if (_brushes.ContainsKey(targetType))
-							g.FillRectangle((SolidBrush)_brushes[targetType], rect);
+						if (_specialTypeBrushes.ContainsKey(targetType))
+							g.FillRectangle((SolidBrush)_specialTypeBrushes[targetType], rect);
 
 						g.DrawImage(
 								tile[MainViewPanel.AniStep].Image,
@@ -295,11 +300,11 @@ namespace MapView.Forms.MapObservers.TileViews
 
 						if (tile.Record.HumanDoor || tile.Record.UfoDoor)
 							g.DrawString(
-									"Door",
+									door,
 									Font,
-									Brushes.Black,
-									left,
-									top + PckImage.Height - Font.Height);
+									_brushBlack,
+									left + (SpriteWidth - textWidth2) / 2 - 1,
+									top + SpriteHeight - Font.Height); // PckImage.Height
 					}
 					else // draw the eraser ->
 					{
@@ -327,13 +332,13 @@ namespace MapView.Forms.MapObservers.TileViews
 
 				for (int i = 0; i <= _tilesX; ++i)
 					g.DrawLine(
-							Pens.Black,
+							_penBlack,
 							i * SpriteWidth, _startY,
 							i * SpriteWidth, _startY + height);
 
 				for (int i = 0; i <= height; i += SpriteHeight)
 					g.DrawLine(
-							Pens.Black,
+							_penBlack,
 							0,                     _startY + i,
 							_tilesX * SpriteWidth, _startY + i);
 
@@ -342,6 +347,7 @@ namespace MapView.Forms.MapObservers.TileViews
 							_id % _tilesX * SpriteWidth,
 							_startY + _id / _tilesX * SpriteHeight,
 							SpriteWidth, SpriteHeight);
+
 
 				if (!_scrollBar.Visible) // indicate the reserved width for scrollbar.
 					g.DrawLine(

@@ -114,6 +114,10 @@ namespace PckView
 		/// actual LargeValue in order to calculate the panel's various dynamics.
 		/// </summary>
 		private int _largeChange;
+
+		private Pen   _penBlack        = new Pen(Brushes.Black, 1); // TODO: find some happy colors that play nice with Options.
+		private Pen   _penControlLight = new Pen(SystemColors.ControlLight, 1);
+		private Brush _brushCrimson    = new SolidBrush(Color.Crimson);
 		#endregion
 
 
@@ -418,7 +422,7 @@ namespace PckView
 
 				for (int tileX = 0; tileX <= _tilesX; ++tileX) // draw vertical lines
 					g.DrawLine(
-							Pens.Black,
+							_penBlack,
 							new Point(tileX * _spriteWidth,          _startY),
 							new Point(tileX * _spriteWidth, Height - _startY));
 
@@ -428,12 +432,19 @@ namespace PckView
 
 				for (int tileY = 0; tileY <= tilesY; ++tileY) // draw horizontal lines
 					g.DrawLine(
-							Pens.Black,
+							_penBlack,
 							new Point(0,                      tileY * _spriteHeight + _startY),
 							new Point(_spriteWidth * _tilesX, tileY * _spriteHeight + _startY));
 
 
-				var selected = new List<int>();
+				if (!_scrollBar.Visible) // indicate the reserved width for scrollbar.
+					g.DrawLine(
+							_penControlLight,
+							Width - _scrollBar.Width, 0,
+							Width - _scrollBar.Width, Height);
+
+
+				var selected = new List<int>(); // track currently selected spriteIds.
 				foreach (var sprite in _selectedSprites)
 					selected.Add(sprite.Id);
 
@@ -444,7 +455,7 @@ namespace PckView
 
 					if (selected.Contains(id))
 						g.FillRectangle(
-									Brushes.Crimson,
+									_brushCrimson,
 									tileX * _spriteWidth  + 1,
 									tileY * _spriteHeight + 1 + _startY,
 									_spriteWidth  - 1,

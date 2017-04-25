@@ -438,11 +438,11 @@ namespace PckView
 
 					UpdateCaption();
 
-					if (help)
-					{
-						pMapViewHelp.Visible  =
-						miMapViewHelp.Visible = true;
-					}
+//					if (help) // disabled until editing and saving get reinstated.
+//					{
+//						pMapViewHelp.Visible  =
+//						miMapViewHelp.Visible = true;
+//					}
 				}
 			}
 			else
