@@ -179,25 +179,21 @@ namespace PckView
 		/// Updates the scrollbar after a resize event or a sprite-pack changed
 		/// event.
 		/// </summary>
-		/// <param name="resetTrack">true to set the thingie to the top of the track</param>
+		/// <param name="resetTrack">true to set the thing to the top of the track</param>
 		private void UpdateScrollbar(bool resetTrack)
 		{
-			if (SpritePack != null)
+			int range = 0;
+			if (SpritePack != null && SpritePack.Count != 0)
 			{
 				if (resetTrack)
 					_scrollBar.Value = 0;
 
-				// IMPORTANT: Use Math.Max() here despite the check against
-				// LargeChange below.
-				_scrollBar.Maximum = Math.Max(TableHeight + _largeChange - Height - _statusBar.Height, 0);
-
-				if (_scrollBar.Maximum < _largeChange)
-					_scrollBar.Maximum = 0;
+				range = TableHeight + _largeChange - Height - _statusBar.Height;
+				if (range < _largeChange)
+					range = 0;
 			}
-			else
-				_scrollBar.Maximum = 0;
-
-			_scrollBar.Visible = (_scrollBar.Maximum != 0);
+			_scrollBar.Maximum = range;
+			_scrollBar.Visible = (range != 0);
 		}
 
 		internal void SetTilesX()

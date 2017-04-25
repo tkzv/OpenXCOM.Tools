@@ -188,19 +188,15 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			base.OnResize(eventargs);
 
+			int range = 0;
 			if (_tiles != null && _tiles.Length != 0)
 			{
-				// IMPORTANT: Use Math.Max() here despite the check against
-				// LargeChange below.
-				_scrollBar.Maximum = Math.Max(TableHeight + _largeChange - Height, 0);
-
-				if (_scrollBar.Maximum < _largeChange)
-					_scrollBar.Maximum = 0;
+				range = TableHeight + _largeChange - Height;
+				if (range < _largeChange)
+					range = 0;
 			}
-			else
-				_scrollBar.Maximum = 0;
-
-			_scrollBar.Visible = (_scrollBar.Maximum != 0);
+			_scrollBar.Maximum = range;
+			_scrollBar.Visible = (range != 0);
 		}
 
 		/// <summary>
