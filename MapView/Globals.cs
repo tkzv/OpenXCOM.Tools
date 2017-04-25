@@ -41,10 +41,10 @@ namespace MapView
 									.GetManifestResourceStream("MapView._Embedded.Extra.TAB"))
 				{
 					_extraTiles = new XCom.PckSpriteCollection(
-														strPck,
-														strTab,
-														2,
-														XCom.Palette.UfoBattle);
+															strPck,
+															strTab,
+															2,
+															XCom.Palette.UfoBattle);
 				}
 			}
 		}

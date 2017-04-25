@@ -60,34 +60,33 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			tcTileTypes.Selected += OnPageSelected;
 
-			_allTiles   = new TilePanel(TileType.All);
-			var ground  = new TilePanel(TileType.Ground);
-			var wWalls  = new TilePanel(TileType.WestWall);
-			var nWalls  = new TilePanel(TileType.NorthWall);
-			var objects = new TilePanel(TileType.Object);
+			_allTiles      = new TilePanel(TileType.All);
+			var floors     = new TilePanel(TileType.Ground);
+			var westwalls  = new TilePanel(TileType.WestWall);
+			var northwalls = new TilePanel(TileType.NorthWall);
+			var content    = new TilePanel(TileType.Object);
 
 			_panels = new[]
 			{
 				_allTiles,
-				ground,
-				wWalls,
-				nWalls,
-				objects
+				floors,
+				westwalls,
+				northwalls,
+				content
 			};
 
 			AddPanel(_allTiles, tpAll);
 
-			AddPanel(ground,  tpFloors);
-			AddPanel(wWalls,  tpWestwalls);
-			AddPanel(nWalls,  tpNorthwalls);
-			AddPanel(objects, tpObjects);
+			AddPanel(floors,     tpFloors);
+			AddPanel(westwalls,  tpWestwalls);
+			AddPanel(northwalls, tpNorthwalls);
+			AddPanel(content,    tpObjects);
 		}
 
 
 		private void AddPanel(TilePanel panel, Control page)
 		{
-			panel.Dock = DockStyle.Fill;
-			panel.PanelSelectedTileChanged += OnPanelTileChanged;
+			panel.PanelSelectedTileChangedEvent += OnPanelTileChanged;
 
 			page.Controls.Add(panel);
 		}

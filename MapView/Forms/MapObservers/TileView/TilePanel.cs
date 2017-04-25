@@ -13,11 +13,14 @@ namespace MapView.Forms.MapObservers.TileViews
 	internal delegate void SelectedTileChangedEventHandler(TileBase tile);
 
 
+	/// <summary>
+	/// A separate panel is created for each tab-page in the Tile viewer.
+	/// </summary>
 	internal sealed class TilePanel
 		:
 			Panel
 	{
-		internal event SelectedTileChangedEventHandler PanelSelectedTileChanged;
+		internal event SelectedTileChangedEventHandler PanelSelectedTileChangedEvent;
 
 
 		#region Fields & Properties
@@ -49,6 +52,8 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				if (_tiles != null)
 				{
+					SetTilesX();
+
 					int extra = 0;
 					if (_tiles.Length % _tilesX != 0)
 						extra = 1;
@@ -57,6 +62,19 @@ namespace MapView.Forms.MapObservers.TileViews
 				}
 				return 0;
 			}
+		}
+
+		private void SetTilesX()
+		{
+			if (_tiles != null && _tiles.Length != 0)
+			{
+				_tilesX = (Width - _scrollBar.Width - 1) / SpriteWidth; // reserve width for the scrollbar.
+
+				if (_tilesX > _tiles.Length)
+					_tilesX = _tiles.Length;
+			}
+			else
+				_tilesX = 1;
 		}
 
 		/// <summary>
@@ -79,8 +97,8 @@ namespace MapView.Forms.MapObservers.TileViews
 				{
 					_id = value.TileListId + 1;
 
-					if (PanelSelectedTileChanged != null)
-						PanelSelectedTileChanged(SelectedTile);
+					if (PanelSelectedTileChangedEvent != null)
+						PanelSelectedTileChangedEvent(SelectedTile);
 
 					ScrollToTile();
 				}
@@ -132,6 +150,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			_type = type;
 
+			Dock = DockStyle.Fill;
+
 			_scrollBar = new VScrollBar();
 			_scrollBar.Dock = DockStyle.Right;
 			_scrollBar.LargeChange = _largeChange;
@@ -153,6 +173,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 
 		#region Event Calls
+//		private bool _bypass;
+
 		/// <summary>
 		/// Fires when anything changes the Value of the scroll-bar.
 		/// </summary>
@@ -160,15 +182,30 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		private void OnScrollBarValueChanged(object sender, EventArgs e)
 		{
-			_scrollBar.Maximum = Math.Max(TableHeight + _largeChange - Height, 0);
-			// That is needed only for initialization.
-			// OnResize, which also sets '_scrollBar.Maximum', fires a dozen
-			// times during init, but it gets the value right only once (else
-			// '0') and not on the last call either. So just do it here and
-			// marvel at the wonders of c#/.NET
+			if (_tiles != null)// && !_bypass)
+			{
+//				_scrollBar.Maximum = Math.Max(TableHeight + _largeChange - Height, 0);
+				// That is needed only for initialization.
+				// OnResize, which also sets '_scrollBar.Maximum', fires a dozen
+				// times during init, but it gets the value right only once (else
+				// '0') and not on the last call either. So just do it here and
+				// marvel at the wonders of c#/.NET
 
-			_startY = -_scrollBar.Value;
-			Refresh();
+//				if (_scrollBar.Value < 0)	// what or how value can be set <0
+//				{							// but something during init does.
+//					_bypass = true;
+//					_scrollBar.Value = 0;
+//
+//					int tableHeight = TableHeight;
+//					_scrollBar.Maximum = Math.Max(tableHeight + _largeChange - Height, 0);
+//					_startY = 0;
+//				}
+//				else
+//					_bypass = false;
+
+				_startY = -_scrollBar.Value;
+				Refresh();
+			}
 		}
 
 		/// <summary>
@@ -181,18 +218,21 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (_tiles != null)
 			{
-				_tilesX = (Width - _scrollBar.Width - 1) / SpriteWidth; // reserve width for the scrollbar.
-
-				if (_tilesX > _tiles.Length)
-					_tilesX = _tiles.Length;
-
-				_scrollBar.Maximum = TableHeight + _largeChange - Height;
+				_scrollBar.Maximum = Math.Max(TableHeight + _largeChange - Height, 0);
 
 				if (_scrollBar.Maximum < _largeChange)
+				{
 					_scrollBar.Maximum = 0;
+//					_scrollBar.Value = 0;
+//					_startY = 0;
+				}
 			}
 			else
+			{
 				_scrollBar.Maximum = 0;
+//				_scrollBar.Value = 0;
+//				_startY = 0;
+			}
 
 			_scrollBar.Visible = (_scrollBar.Maximum != 0);
 		}
@@ -203,9 +243,9 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
-			var handledMouseEventArgs = e as HandledMouseEventArgs;
-			if (handledMouseEventArgs != null)
-				handledMouseEventArgs.Handled = true;
+			var args = e as HandledMouseEventArgs;
+			if (args != null)
+				args.Handled = true;
 
 			if (_scrollBar.Visible)
 			{
@@ -247,8 +287,8 @@ namespace MapView.Forms.MapObservers.TileViews
 				{
 					_id = tile;
 
-					if (PanelSelectedTileChanged != null)
-						PanelSelectedTileChanged(SelectedTile);
+					if (PanelSelectedTileChangedEvent != null)
+						PanelSelectedTileChangedEvent(SelectedTile);
 
 					ScrollToTile();
 					Refresh();
@@ -273,40 +313,36 @@ namespace MapView.Forms.MapObservers.TileViews
 
 				foreach (var tile in _tiles)
 				{
-					top  = y * SpriteHeight + _startY;
 					left = x * SpriteWidth;
+					top  = y * SpriteHeight + _startY;
 
 					var rect = new Rectangle(
-										left,  top,
+										left, top,
 										SpriteWidth, SpriteHeight);
 
 					if (tile != null)
 					{
-						if (_type == TileType.All || _type == tile.Record.TileType)
-						{
-							var targetType = tile.Record.TargetType.ToString();
-							if (_brushes.ContainsKey(targetType))
-								g.FillRectangle((SolidBrush)_brushes[targetType], rect);
+//						if (_type == TileType.All || _type == tile.Record.TileType)	// don't need that. The only tiles
+//						{															// in '_tiles' are of '_type'.
+						string targetType = tile.Record.TargetType.ToString();
+						if (_brushes.ContainsKey(targetType))
+							g.FillRectangle((SolidBrush)_brushes[targetType], rect);
 
-							g.DrawImage(
-									tile[MainViewPanel.AniStep].Image,
+						g.DrawImage(
+								tile[MainViewPanel.AniStep].Image,
+								left,
+								top - tile.Record.TileOffset);
+
+						if (tile.Record.HumanDoor || tile.Record.UfoDoor)
+							g.DrawString(
+									"Door",
+									Font,
+									Brushes.Black,
 									left,
-									top - tile.Record.TileOffset);
-
-							if (tile.Record.HumanDoor || tile.Record.UfoDoor)
-								g.DrawString(
-										"Door",
-										Font,
-										Brushes.Black,
-										left,
-										top + PckImage.Height - Font.Height);
-
-							x = (x + 1) % _tilesX;
-							if (x == 0)
-								y++;
-						}
+									top + PckImage.Height - Font.Height);
+//						}
 					}
-					else
+					else // draw the eraser ->
 					{
 						g.FillRectangle(Brushes.AliceBlue, rect);
 
@@ -314,11 +350,11 @@ namespace MapView.Forms.MapObservers.TileViews
 							g.DrawImage(
 									Globals.ExtraTiles[0].Image,
 									left, top);
-
-						x = (x + 1) % _tilesX;
-						if (x == 0)
-							y++;
 					}
+
+					x = (x + 1) % _tilesX;
+					if (x == 0)
+						y++;
 				}
 
 //				g.DrawRectangle(
@@ -328,13 +364,15 @@ namespace MapView.Forms.MapObservers.TileViews
 //							_width  + _space,
 //							_height + _space)
 
+				int height = TableHeight;
+
 				for (int i = 0; i <= _tilesX; ++i)
 					g.DrawLine(
 							Pens.Black,
 							i * SpriteWidth, _startY,
-							i * SpriteWidth, _startY + TableHeight);
+							i * SpriteWidth, _startY + height);
 
-				for (int i = 0; i <= TableHeight; i += SpriteHeight)
+				for (int i = 0; i <= height; i += SpriteHeight)
 					g.DrawLine(
 							Pens.Black,
 							0,                     _startY + i,
@@ -416,7 +454,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 			else						// <- check cutoff low
 			{
-				cutoff = (tileY + 1) * SpriteHeight - ClientSize.Height;
+				cutoff = (tileY + 1) * SpriteHeight - ClientSize.Height; // TODO: could probly be just 'Height'
 				if (cutoff > -_startY)
 				{
 					_scrollBar.Value = cutoff;
