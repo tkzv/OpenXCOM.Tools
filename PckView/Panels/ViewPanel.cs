@@ -187,7 +187,9 @@ namespace PckView
 				if (resetTrack)
 					_scrollBar.Value = 0;
 
-				_scrollBar.Maximum = TableHeight + _largeChange - Height - _statusBar.Height;
+				// IMPORTANT: Use Math.Max() here despite the check against
+				// LargeChange below.
+				_scrollBar.Maximum = Math.Max(TableHeight + _largeChange - Height - _statusBar.Height, 0);
 
 				if (_scrollBar.Maximum < _largeChange)
 					_scrollBar.Maximum = 0;

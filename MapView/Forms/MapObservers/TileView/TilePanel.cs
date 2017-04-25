@@ -26,6 +26,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		#region Fields & Properties
 		private TileBase[] _tiles;
 
+		private readonly VScrollBar _scrollBar;
+
 		private const int SpriteMargin = 2;
 		private const int SpriteWidth  = 32 + SpriteMargin * 2;
 		private const int SpriteHeight = 40 + SpriteMargin * 2;
@@ -42,8 +44,6 @@ namespace MapView.Forms.MapObservers.TileViews
 		private int _tilesX = 1;
 		private int _startY;
 		private int _id;
-
-		private readonly VScrollBar _scrollBar;
 
 		private TileType _quadType;
 
@@ -190,8 +190,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (_tiles != null && _tiles.Length != 0)
 			{
-				// IMPORTANT: Use Math.Max() here despite the check for
-				// LargeChange below. else 'worldofhurt=TRUE'.
+				// IMPORTANT: Use Math.Max() here despite the check against
+				// LargeChange below.
 				_scrollBar.Maximum = Math.Max(TableHeight + _largeChange - Height, 0);
 
 				if (_scrollBar.Maximum < _largeChange)

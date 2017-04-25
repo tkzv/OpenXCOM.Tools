@@ -22,6 +22,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		:
 			MapObserverControl0
 	{
+		#region Events
 		internal event SelectedTileChangedEventHandler Observer0SelectedTileChanged;
 		private void OnSelectedTileChanged(TileBase tile)
 		{
@@ -40,8 +41,10 @@ namespace MapView.Forms.MapObservers.TileViews
 			if (handler != null)
 				handler();
 		}
+		#endregion
 
 
+		#region Fields
 		private ShowHideManager _showAllManager;
 
 		private IContainer components = null; // quahhaha
@@ -52,8 +55,51 @@ namespace MapView.Forms.MapObservers.TileViews
 		private McdViewerForm _mcdInfoForm;
 
 		private Hashtable _brushes;
+		#endregion
 
 
+		#region Properties
+		public override IMapBase BaseMap
+		{
+			set
+			{
+				base.BaseMap = value;
+				Tiles = (value != null) ? value.Tiles
+										: null;
+			}
+		}
+
+		private System.Collections.Generic.IList<TileBase> Tiles
+		{
+			set
+			{
+				for (int i = 0; i != _panels.Length; ++i)
+					_panels[i].SetTiles(value);
+
+				OnResize(null);
+			}
+		}
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		internal TileBase SelectedTile
+		{
+			get { return _panels[tcTileTypes.SelectedIndex].SelectedTile; }
+			set
+			{
+				_allTiles.SelectedTile = value;
+				tcTileTypes.SelectedIndex = 0;
+
+				Refresh();
+			}
+		}
+		#endregion
+
+
+
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
 		internal TileView()
 		{
 			InitializeComponent();
@@ -82,6 +128,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			AddPanel(northwalls, tpNorthwalls);
 			AddPanel(content,    tpObjects);
 		}
+		#endregion
 
 
 		private void AddPanel(TilePanel panel, Control page)
@@ -193,40 +240,6 @@ namespace MapView.Forms.MapObservers.TileViews
 
 				it.Checked = false;
 				_foptions.Close();
-			}
-		}
-
-		public override IMapBase BaseMap
-		{
-			set
-			{
-				base.BaseMap = value;
-				Tiles = (value != null) ? value.Tiles
-										: null;
-			}
-		}
-
-		private System.Collections.Generic.IList<TileBase> Tiles
-		{
-			set
-			{
-				for (int i = 0; i != _panels.Length; ++i)
-					_panels[i].SetTiles(value);
-
-				OnResize(null);
-			}
-		}
-
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		internal TileBase SelectedTile
-		{
-			get { return _panels[tcTileTypes.SelectedIndex].SelectedTile; }
-			set
-			{
-				_allTiles.SelectedTile = value;
-				tcTileTypes.SelectedIndex = 0;
-
-				Refresh();
 			}
 		}
 
