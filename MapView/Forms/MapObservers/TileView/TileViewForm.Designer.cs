@@ -46,7 +46,7 @@
 			this.ClientSize = new System.Drawing.Size(632, 454);
 			this.Controls.Add(this.TileViewControl);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.MinimumSize = new System.Drawing.Size(480, 360);
+			this.MinimumSize = new System.Drawing.Size(320, 121);
 			this.Name = "TileViewForm";
 			this.ShowInTaskbar = false;
 			this.Text = "Tile View";
