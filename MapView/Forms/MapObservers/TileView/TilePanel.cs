@@ -50,9 +50,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			get // TODO: calculate and cache this value in the OnResize and loading events.
 			{
-				if (_tiles != null)
+				if (_tiles != null && _tiles.Length != 0)
 				{
-					SetTilesX();
+					_tilesX = (Width - _scrollBar.Width - 1) / SpriteWidth; // reserve width for the scrollbar.
+
+					if (_tilesX > _tiles.Length)
+						_tilesX = _tiles.Length;
 
 					int extra = 0;
 					if (_tiles.Length % _tilesX != 0)
@@ -60,21 +63,10 @@ namespace MapView.Forms.MapObservers.TileViews
 
 					return (_tiles.Length / _tilesX + extra) * SpriteHeight;
 				}
+
+				_tilesX = 1;
 				return 0;
 			}
-		}
-
-		private void SetTilesX()
-		{
-			if (_tiles != null && _tiles.Length != 0)
-			{
-				_tilesX = (Width - _scrollBar.Width - 1) / SpriteWidth; // reserve width for the scrollbar.
-
-				if (_tilesX > _tiles.Length)
-					_tilesX = _tiles.Length;
-			}
-			else
-				_tilesX = 1;
 		}
 
 		/// <summary>
@@ -173,8 +165,6 @@ namespace MapView.Forms.MapObservers.TileViews
 
 
 		#region Event Calls
-//		private bool _bypass;
-
 		/// <summary>
 		/// Fires when anything changes the Value of the scroll-bar.
 		/// </summary>
@@ -182,7 +172,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		private void OnScrollBarValueChanged(object sender, EventArgs e)
 		{
-			if (_tiles != null)// && !_bypass)
+			if (_tiles != null)
 			{
 //				_scrollBar.Maximum = Math.Max(TableHeight + _largeChange - Height, 0);
 				// That is needed only for initialization.
@@ -191,48 +181,30 @@ namespace MapView.Forms.MapObservers.TileViews
 				// '0') and not on the last call either. So just do it here and
 				// marvel at the wonders of c#/.NET
 
-//				if (_scrollBar.Value < 0)	// what or how value can be set <0
-//				{							// but something during init does.
-//					_bypass = true;
-//					_scrollBar.Value = 0;
-//
-//					int tableHeight = TableHeight;
-//					_scrollBar.Maximum = Math.Max(tableHeight + _largeChange - Height, 0);
-//					_startY = 0;
-//				}
-//				else
-//					_bypass = false;
-
 				_startY = -_scrollBar.Value;
 				Refresh();
 			}
 		}
 
 		/// <summary>
-		/// Handles client resizing.
+		/// Handles client resizing. Sets the scrollbar's Maximum value.
 		/// </summary>
 		/// <param name="eventargs"></param>
 		protected override void OnResize(EventArgs eventargs)
 		{
 			base.OnResize(eventargs);
 
-			if (_tiles != null)
+			if (_tiles != null && _tiles.Length != 0)
 			{
+				// IMPORTANT: Use Math.Max() here despite the check for
+				// LargeChange below. else 'worldofhurt=TRUE'.
 				_scrollBar.Maximum = Math.Max(TableHeight + _largeChange - Height, 0);
 
 				if (_scrollBar.Maximum < _largeChange)
-				{
 					_scrollBar.Maximum = 0;
-//					_scrollBar.Value = 0;
-//					_startY = 0;
-				}
 			}
 			else
-			{
 				_scrollBar.Maximum = 0;
-//				_scrollBar.Value = 0;
-//				_startY = 0;
-			}
 
 			_scrollBar.Visible = (_scrollBar.Maximum != 0);
 		}
@@ -322,8 +294,6 @@ namespace MapView.Forms.MapObservers.TileViews
 
 					if (tile != null)
 					{
-//						if (_type == TileType.All || _type == tile.Record.TileType)	// don't need that. The only tiles
-//						{															// in '_tiles' are of '_type'.
 						string targetType = tile.Record.TargetType.ToString();
 						if (_brushes.ContainsKey(targetType))
 							g.FillRectangle((SolidBrush)_brushes[targetType], rect);
@@ -340,7 +310,6 @@ namespace MapView.Forms.MapObservers.TileViews
 									Brushes.Black,
 									left,
 									top + PckImage.Height - Font.Height);
-//						}
 					}
 					else // draw the eraser ->
 					{
@@ -454,7 +423,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 			else						// <- check cutoff low
 			{
-				cutoff = (tileY + 1) * SpriteHeight - ClientSize.Height; // TODO: could probly be just 'Height'
+				cutoff = (tileY + 1) * SpriteHeight - Height;
 				if (cutoff > -_startY)
 				{
 					_scrollBar.Value = cutoff;
