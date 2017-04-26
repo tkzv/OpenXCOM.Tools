@@ -202,11 +202,11 @@ namespace MapView.Forms.MapObservers.TileViews
 				Settings.AddSetting(
 								specialType,
 								((SolidBrush)_brushes[specialType]).Color,
-								"Color of special tile type",
-								"TileView",
+								"Color of special tile type",	// appears as a tip at the bottom of the Options screen.
+								"TileView",						// this identifies what Option category the setting appears under.
 								OnSpecialPropertyColorChanged);
 			}
-			TilePanel.SetSpecialTileTypeColors(_brushes);
+			TilePanel.SetSpecialPropertyColors(_brushes);
 
 			VolutarSettingService.LoadSettings(Settings);
 		}

@@ -40,26 +40,32 @@ namespace MapView.Forms.MainWindow
 		{
 			_settings = settings;
 
-			CreateMenuitem(ViewerFormsManager.TileView,     "Tile View",     _viewsMenu);
+			CreateMenuItem(ViewerFormsManager.TileView,     "Tile View",     _viewsMenu);
 
 			_viewsMenu.MenuItems.Add(new MenuItem(Divider));
 
-			CreateMenuitem(ViewerFormsManager.TopView,      "Top View",      _viewsMenu);
-			CreateMenuitem(ViewerFormsManager.RouteView,    "Route View",    _viewsMenu);
-			CreateMenuitem(ViewerFormsManager.TopRouteView, "TopRoute View", _viewsMenu);
+			CreateMenuItem(ViewerFormsManager.TopView,      "Top View",      _viewsMenu);
+			CreateMenuItem(ViewerFormsManager.RouteView,    "Route View",    _viewsMenu);
+			CreateMenuItem(ViewerFormsManager.TopRouteView, "TopRoute View", _viewsMenu);
 
 			_viewsMenu.MenuItems.Add(new MenuItem(Divider));
 
-			CreateMenuitem(console,                         "Console",       _viewsMenu);
+			CreateMenuItem(console,                         "Console",       _viewsMenu);
 
 
-			CreateMenuitem(ViewerFormsManager.HelpScreen,   "Help",          _helpMenu);
-			CreateMenuitem(ViewerFormsManager.AboutScreen,  "About",         _helpMenu);
+			CreateMenuItem(ViewerFormsManager.HelpScreen,   "Help",          _helpMenu);
+			CreateMenuItem(ViewerFormsManager.AboutScreen,  "About",         _helpMenu);
 
-			AddMenuitemSettings();
+			AddMenuItemSettings();
 		}
 
-		private void CreateMenuitem(
+		/// <summary>
+		/// Creates a menuitem for a specified viewer. See PopulateMenus() above^
+		/// </summary>
+		/// <param name="f"></param>
+		/// <param name="text"></param>
+		/// <param name="parent"></param>
+		private void CreateMenuItem(
 				Form f,
 				string text,
 				Menu parent)
@@ -71,7 +77,7 @@ namespace MapView.Forms.MainWindow
 
 			parent.MenuItems.Add(it);
 
-			it.Click += OnMenuitemClick;
+			it.Click += OnMenuItemClick;
 
 			f.Closing += (sender, e) =>
 			{
@@ -84,7 +90,8 @@ namespace MapView.Forms.MainWindow
 			_allForms.Add(f);
 		}
 
-		private static void OnMenuitemClick(object sender, EventArgs e)
+		// Handles clicking on a MenuItem to open/close a viewer.
+		private static void OnMenuItemClick(object sender, EventArgs e)
 		{
 			var it = (MenuItem)sender;
 
@@ -93,6 +100,9 @@ namespace MapView.Forms.MainWindow
 				it.Checked = true;
 				((Form)it.Tag).Show();
 				((Form)it.Tag).WindowState = FormWindowState.Normal;
+
+				if (it.Tag is Help) // update colors that user might have set in TileView's Option-settings.
+					ViewerFormsManager.HelpScreen.UpdateSpecialPropertyColors();
 			}
 			else
 			{
@@ -101,21 +111,25 @@ namespace MapView.Forms.MainWindow
 			}
 		}
 
-		private void AddMenuitemSettings()
+		private void AddMenuItemSettings()
 		{
 			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
-				string key = GetWindowSettingKey(it);
+				string key = GetSettingsViewerKey(it);
 				if (!String.IsNullOrEmpty(key))
 				{
 					_settings.AddSetting(
 									key,
-//									!(it.Tag is XCom.ConsoleForm) && !(it.Tag is MapView.Forms.MapObservers.TileViews.TopRouteViewForm),	// q. why is TopRouteViewForm under 'TileViews'
-									(it.Tag is TopViewForm) || (it.Tag is RouteViewForm) || (it.Tag is TileViewForm),						// a. why not.
-									"Viewer - " + it.Text,	// NOTE: Console is not technically a viewer, but I don't see this being used anyway.
-									"Windows");				// nor do i see this used in any meaningful way yet.
-
-					var f = it.Tag as Form;
+//									!(it.Tag is XCom.ConsoleForm)
+//									!(it.Tag is MapView.Forms.MapObservers.TileViews.TopRouteViewForm),	// q. why is TopRouteViewForm under 'TileViews'
+																										// a. why not.
+									(       it.Tag is TopViewForm) // true to have the viewer open on 1st run.
+										|| (it.Tag is RouteViewForm)
+										|| (it.Tag is TileViewForm),
+									"Viewer - " + it.Text,	// appears as a tip at the bottom of the Options screen.
+									"Windows");				// this identifies what Option category the setting appears under.
+															// NOTE: the Console is not technically a viewer
+					var f = it.Tag as Form;					// but it appears under Options like the real viewers.
 					if (f != null)
 					{
 						f.VisibleChanged += (sender, e) =>
@@ -140,11 +154,11 @@ namespace MapView.Forms.MainWindow
 		/// Opens the subsidiary viewers. All viewers will open and those that
 		/// the user has flagged closed (in Options) will be re-closed.
 		/// </summary>
-		internal void StartViewers()
+		internal void StartAllViewers()
 		{
 			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
-				string key = GetWindowSettingKey(it);
+				string key = GetSettingsViewerKey(it);
 				if (key != null)
 				{
 					if (_settings[key].IsTrue)
@@ -168,7 +182,7 @@ namespace MapView.Forms.MainWindow
 			_viewsMenu.Enabled = true;
 		}
 
-		private static string GetWindowSettingKey(MenuItem it)
+		private static string GetSettingsViewerKey(MenuItem it)
 		{
 			string suffix = it.Text;
 			return (suffix != Divider) ? "Window" + Divider + suffix

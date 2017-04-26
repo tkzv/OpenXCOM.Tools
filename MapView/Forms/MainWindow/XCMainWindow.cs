@@ -775,8 +775,8 @@ namespace MapView
 				miDoors.Checked = false;
 				ToggleDoorSprites(false);
 
-				if (!menuShow.Enabled) // open all the forms in the show menu
-					_mainMenusManager.StartViewers();
+				if (!menuShow.Enabled) // open/close the forms that appear in the Views menu.
+					_mainMenusManager.StartAllViewers();
 
 				_viewerFormsManager.SetObservers(baseMap); // reset all observer events
 			}

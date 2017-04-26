@@ -35,28 +35,19 @@ namespace MapView
 		#endregion
 
 
-		/// <summary>
-		/// Gets a contrasting color based on the input color.
-		/// </summary>
-		/// <param name="color"></param>
-		/// <returns></returns>
-		private Color GetTextColor(Color color)
-		{
-			return ((int)color.R + color.G + color.B > 480) ? Color.DarkSlateBlue
-															: Color.Snow;
-		}
-
-
 		#region Event Calls
-		private void OnShown(object sender, EventArgs e)
+		internal void UpdateSpecialPropertyColors()
 		{
-			// TODO: update special tile colors from Settings.
+			// TODO: update special tile colors from Settings without requiring
+			// that the Help screen be reloaded. Neither form (Settings or Help)
+			// is modal, so the code can't rely on that user-forced effect.
 			_specialBrushes = MapView.Forms.MainWindow.ViewerFormsManager.TileView.Control.GetSpecialPropertyBrushes();
 
 			Color color = Color.Empty;
 
 			string specialType = String.Empty;
 
+			// TODO: get the string from the SpecialType enum ...
 			specialType = "Tile"; // 0
 			if (_specialBrushes.ContainsKey(specialType))
 			{
@@ -179,6 +170,18 @@ namespace MapView
 		}
 
 		/// <summary>
+		/// Gets a contrasting color based on the input color.
+		/// </summary>
+		/// <param name="color"></param>
+		/// <returns></returns>
+		private Color GetTextColor(Color color)
+		{
+			// TODO: check alpha .....
+			return ((int)color.R + color.G + color.B > 480) ? Color.DarkSlateBlue
+															: Color.Snow;
+		}
+
+		/// <summary>
 		/// Toggles the text descriptions between UFO and TFTD special tile types.
 		/// </summary>
 		/// <param name="sender"></param>
@@ -294,6 +297,7 @@ namespace MapView
 			this.label16 = new System.Windows.Forms.Label();
 			this.label21 = new System.Windows.Forms.Label();
 			this.tpTileView = new System.Windows.Forms.TabPage();
+			this.label26 = new System.Windows.Forms.Label();
 			this.label25 = new System.Windows.Forms.Label();
 			this.rbTftd = new System.Windows.Forms.RadioButton();
 			this.rbUfo = new System.Windows.Forms.RadioButton();
@@ -314,7 +318,6 @@ namespace MapView
 			this.lblType01 = new System.Windows.Forms.Label();
 			this.lblType00 = new System.Windows.Forms.Label();
 			this.label19 = new System.Windows.Forms.Label();
-			this.label26 = new System.Windows.Forms.Label();
 			this.tabMain.SuspendLayout();
 			this.tpMainView.SuspendLayout();
 			this.tpTopView.SuspendLayout();
@@ -394,9 +397,9 @@ namespace MapView
 			this.tpTopView.Controls.Add(this.label5);
 			this.tpTopView.Controls.Add(this.label4);
 			this.tpTopView.Controls.Add(this.label3);
-			this.tpTopView.Location = new System.Drawing.Point(4, 21);
+			this.tpTopView.Location = new System.Drawing.Point(4, 22);
 			this.tpTopView.Name = "tpTopView";
-			this.tpTopView.Size = new System.Drawing.Size(446, 251);
+			this.tpTopView.Size = new System.Drawing.Size(446, 250);
 			this.tpTopView.TabIndex = 1;
 			this.tpTopView.Text = "Top View";
 			// 
@@ -507,9 +510,9 @@ namespace MapView
 			this.tpRouteView.Controls.Add(this.label15);
 			this.tpRouteView.Controls.Add(this.label16);
 			this.tpRouteView.Controls.Add(this.label21);
-			this.tpRouteView.Location = new System.Drawing.Point(4, 21);
+			this.tpRouteView.Location = new System.Drawing.Point(4, 22);
 			this.tpRouteView.Name = "tpRouteView";
-			this.tpRouteView.Size = new System.Drawing.Size(446, 251);
+			this.tpRouteView.Size = new System.Drawing.Size(446, 250);
 			this.tpRouteView.TabIndex = 2;
 			this.tpRouteView.Text = "Route View";
 			// 
@@ -597,6 +600,15 @@ namespace MapView
 			this.tpTileView.TabIndex = 3;
 			this.tpTileView.Text = "Tile View";
 			// 
+			// label26
+			// 
+			this.label26.Location = new System.Drawing.Point(185, 55);
+			this.label26.Name = "label26";
+			this.label26.Size = new System.Drawing.Size(250, 40);
+			this.label26.TabIndex = 15;
+			this.label26.Text = "note: Help must be closed and re-opened to update any colors that were changed in" +
+	" TileView\'s options (when Help is also open).";
+			// 
 			// label25
 			// 
 			this.label25.Location = new System.Drawing.Point(5, 35);
@@ -660,6 +672,7 @@ namespace MapView
 			this.lblType09.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType09.Size = new System.Drawing.Size(130, 20);
 			this.lblType09.TabIndex = 26;
+			this.lblType09.Text = "09";
 			this.lblType09.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType14
@@ -670,6 +683,7 @@ namespace MapView
 			this.lblType14.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType14.Size = new System.Drawing.Size(130, 20);
 			this.lblType14.TabIndex = 25;
+			this.lblType14.Text = "14";
 			this.lblType14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType13
@@ -680,6 +694,7 @@ namespace MapView
 			this.lblType13.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType13.Size = new System.Drawing.Size(130, 20);
 			this.lblType13.TabIndex = 24;
+			this.lblType13.Text = "13";
 			this.lblType13.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType12
@@ -690,6 +705,7 @@ namespace MapView
 			this.lblType12.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType12.Size = new System.Drawing.Size(130, 20);
 			this.lblType12.TabIndex = 23;
+			this.lblType12.Text = "12";
 			this.lblType12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType11
@@ -700,6 +716,7 @@ namespace MapView
 			this.lblType11.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType11.Size = new System.Drawing.Size(130, 20);
 			this.lblType11.TabIndex = 22;
+			this.lblType11.Text = "11";
 			this.lblType11.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType10
@@ -710,6 +727,7 @@ namespace MapView
 			this.lblType10.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType10.Size = new System.Drawing.Size(130, 20);
 			this.lblType10.TabIndex = 21;
+			this.lblType10.Text = "10";
 			this.lblType10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType08
@@ -720,6 +738,7 @@ namespace MapView
 			this.lblType08.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType08.Size = new System.Drawing.Size(130, 20);
 			this.lblType08.TabIndex = 20;
+			this.lblType08.Text = "08";
 			this.lblType08.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType07
@@ -730,6 +749,7 @@ namespace MapView
 			this.lblType07.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType07.Size = new System.Drawing.Size(130, 20);
 			this.lblType07.TabIndex = 19;
+			this.lblType07.Text = "07";
 			this.lblType07.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType06
@@ -740,6 +760,7 @@ namespace MapView
 			this.lblType06.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType06.Size = new System.Drawing.Size(130, 20);
 			this.lblType06.TabIndex = 18;
+			this.lblType06.Text = "06";
 			this.lblType06.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType05
@@ -750,6 +771,7 @@ namespace MapView
 			this.lblType05.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType05.Size = new System.Drawing.Size(130, 20);
 			this.lblType05.TabIndex = 17;
+			this.lblType05.Text = "05";
 			this.lblType05.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType04
@@ -760,6 +782,7 @@ namespace MapView
 			this.lblType04.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType04.Size = new System.Drawing.Size(130, 20);
 			this.lblType04.TabIndex = 16;
+			this.lblType04.Text = "04";
 			this.lblType04.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType03
@@ -770,6 +793,7 @@ namespace MapView
 			this.lblType03.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType03.Size = new System.Drawing.Size(130, 20);
 			this.lblType03.TabIndex = 15;
+			this.lblType03.Text = "03";
 			this.lblType03.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType02
@@ -780,6 +804,7 @@ namespace MapView
 			this.lblType02.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType02.Size = new System.Drawing.Size(130, 20);
 			this.lblType02.TabIndex = 14;
+			this.lblType02.Text = "02";
 			this.lblType02.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType01
@@ -790,6 +815,7 @@ namespace MapView
 			this.lblType01.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType01.Size = new System.Drawing.Size(130, 20);
 			this.lblType01.TabIndex = 13;
+			this.lblType01.Text = "01";
 			this.lblType01.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblType00
@@ -801,6 +827,7 @@ namespace MapView
 			this.lblType00.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.lblType00.Size = new System.Drawing.Size(130, 20);
 			this.lblType00.TabIndex = 12;
+			this.lblType00.Text = "00";
 			this.lblType00.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// label19
@@ -810,15 +837,6 @@ namespace MapView
 			this.label19.Size = new System.Drawing.Size(440, 15);
 			this.label19.TabIndex = 10;
 			this.label19.Text = "Left click to select the tile to place.";
-			// 
-			// label26
-			// 
-			this.label26.Location = new System.Drawing.Point(135, 65);
-			this.label26.Name = "label26";
-			this.label26.Size = new System.Drawing.Size(300, 25);
-			this.label26.TabIndex = 15;
-			this.label26.Text = "MapView must be closed and reloaded to refresh the colors based on TileView Optio" +
-	"ns that have changed.";
 			// 
 			// Help
 			// 
@@ -835,7 +853,6 @@ namespace MapView
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Help";
-			this.Shown += new System.EventHandler(this.OnShown);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
 			this.tabMain.ResumeLayout(false);
 			this.tpMainView.ResumeLayout(false);

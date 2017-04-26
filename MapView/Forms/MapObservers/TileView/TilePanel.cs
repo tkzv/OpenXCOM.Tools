@@ -103,6 +103,10 @@ namespace MapView.Forms.MapObservers.TileViews
 		#endregion
 
 
+		// TODO: Check if these are actually used anywhere. Or can the colors be
+		// taken exclusively from user's Options.
+		// NOTE: the initial load routine runs through these before user gets
+		// anywhere near the TileView or Help windows.
 		internal static readonly Color[] TileColors =
 		{
 			Color.Cornsilk,
@@ -122,7 +126,12 @@ namespace MapView.Forms.MapObservers.TileViews
 			Color.Blue
 		};
 
-		internal static void SetSpecialTileTypeColors(Hashtable brushes)
+		/// <summary>
+		/// Sets a pointer to a hashtable of the special property brushes/colors.
+		/// The owner of the object is TileView.
+		/// </summary>
+		/// <param name="brushes"></param>
+		internal static void SetSpecialPropertyColors(Hashtable brushes)
 		{
 			_specialTypeBrushes = brushes;
 		}
