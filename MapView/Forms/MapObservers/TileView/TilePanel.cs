@@ -122,9 +122,9 @@ namespace MapView.Forms.MapObservers.TileViews
 			Color.Blue
 		};
 
-		internal static void SetBrushes(Hashtable table)
+		internal static void SetSpecialTileTypeColors(Hashtable brushes)
 		{
-			_specialTypeBrushes = table;
+			_specialTypeBrushes = brushes;
 		}
 
 //		private static PckSpriteCollection extraFile;
@@ -181,6 +181,9 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
+
+		private bool _resetTrack;
+
 		/// <summary>
 		/// Handles client resizing. Sets the scrollbar's Maximum value.
 		/// </summary>
@@ -192,6 +195,12 @@ namespace MapView.Forms.MapObservers.TileViews
 			int range = 0;
 			if (_tiles != null && _tiles.Length != 0)
 			{
+				if (_resetTrack)
+				{
+					_resetTrack = false;
+					_scrollBar.Value = 0;
+				}
+
 				range = TableHeight + _largeChange - Height;
 				if (range < _largeChange)
 					range = 0;
@@ -289,9 +298,11 @@ namespace MapView.Forms.MapObservers.TileViews
 
 					if (tile != null) // draw tile ->
 					{
-						string targetType = tile.Record.TargetType.ToString();
-						if (_specialTypeBrushes.ContainsKey(targetType))
-							g.FillRectangle((SolidBrush)_specialTypeBrushes[targetType], rect);
+						string specialType = tile.Record.TargetType.ToString();
+						if (_specialTypeBrushes.ContainsKey(specialType))
+						{
+							g.FillRectangle((SolidBrush)_specialTypeBrushes[specialType], rect);
+						}
 
 						g.DrawImage(
 								tile[MainViewPanel.AniStep].Image,
@@ -407,6 +418,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				_id = 0;
 			}
 
+			_resetTrack = true;
 			OnResize(null);
 		}
 

@@ -54,7 +54,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private McdViewerForm _mcdInfoForm;
 
-		private Hashtable _brushes;
+		private Hashtable _brushes = new Hashtable();
 		#endregion
 
 
@@ -185,29 +185,52 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <summary>
 		/// Loads default settings for TileView screen.
 		/// </summary>
-		public override void LoadControl0Settings() // TODO: access that internal
+		public override void LoadControl0Settings() // TODO: access that as internal
 		{
-			_brushes = new Hashtable();
-
-			foreach (string type in Enum.GetNames(typeof(SpecialType)))
+			foreach (string specialType in Enum.GetNames(typeof(SpecialType)))
 			{
-				_brushes[type] = new SolidBrush(TilePanel.TileColors[(int)Enum.Parse(typeof(SpecialType), type)]);
-				Settings.AddSetting(
-								type,
-								((SolidBrush)_brushes[type]).Color,
-								"Color of specified tile type",
-								"TileView",
-								OnBrushChanged);
-			}
-			VolutarSettingService.LoadSettings(Settings);
+				_brushes[specialType] = new SolidBrush(TilePanel.TileColors[(int)Enum.Parse(typeof(SpecialType), specialType)]);
 
-			TilePanel.SetBrushes(_brushes);
+				// NOTE: The colors of the brushes get overwritten by the
+				// Option settings somewhere/how between here and their actual
+				// use in TilePanel.OnPaint(). That is, this only sets default
+				// colors and might not even be very useful other than as
+				// perhaps for placeholder-key(s) for the actual values that
+				// are later retrieved from Options ....
+				//
+				// See OnSpecialPropertyColorChanged() below_
+				Settings.AddSetting(
+								specialType,
+								((SolidBrush)_brushes[specialType]).Color,
+								"Color of special tile type",
+								"TileView",
+								OnSpecialPropertyColorChanged);
+			}
+			TilePanel.SetSpecialTileTypeColors(_brushes);
+
+			VolutarSettingService.LoadSettings(Settings);
 		}
 
-		private void OnBrushChanged(object sender, string key, object val)
+		/// <summary>
+		/// Loads a different brush/color for a tiletype's Special Property into
+		/// an already existing key.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="key">a string representing the SpecialType</param>
+		/// <param name="val">the brush to insert</param>
+		private void OnSpecialPropertyColorChanged(object sender, string key, object val)
 		{
 			((SolidBrush)_brushes[key]).Color = (Color)val;
 			Refresh();
+		}
+
+		/// <summary>
+		/// Gets the brushes/colors for all tiletypes' Special Properties.
+		/// </summary>
+		/// <returns>a hashtable of the brushes</returns>
+		internal Hashtable GetSpecialPropertyBrushes()
+		{
+			return _brushes;
 		}
 
 

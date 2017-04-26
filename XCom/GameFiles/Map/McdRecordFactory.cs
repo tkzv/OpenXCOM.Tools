@@ -7,7 +7,7 @@ namespace XCom
 {
 	internal static class McdRecordFactory
 	{
-		internal static McdRecord CreateRecord(IList<byte> info)
+		internal static McdRecord CreateRecord(IList<byte> info) // question: why is this a List
 		{
 			var record = new McdRecord();
 

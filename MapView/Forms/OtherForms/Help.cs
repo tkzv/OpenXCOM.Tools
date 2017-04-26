@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Drawing;
 using System.Windows.Forms;
 
 using MapView.Forms.MapObservers.TileViews;
@@ -15,27 +17,218 @@ namespace MapView
 		:
 			Form
 	{
+		#region Fields
+		private Hashtable _specialBrushes;
+		#endregion
+
+
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
 		internal Help()
 		{
 			InitializeComponent();
 
-			 l1.ForeColor = TilePanel.TileColors[(int)SpecialType.Tile];
-			 l2.ForeColor = TilePanel.TileColors[(int)SpecialType.StartPoint];
-			 l3.ForeColor = TilePanel.TileColors[(int)SpecialType.IonBeamAccel];
-			 l4.ForeColor = TilePanel.TileColors[(int)SpecialType.DestroyObjective];
-			 l5.ForeColor = TilePanel.TileColors[(int)SpecialType.MagneticNav];
-			 l6.ForeColor = TilePanel.TileColors[(int)SpecialType.AlienCryo];
-			 l7.ForeColor = TilePanel.TileColors[(int)SpecialType.AlienClon];
-			 l8.ForeColor = TilePanel.TileColors[(int)SpecialType.AlienLearn];
-			 l9.ForeColor = TilePanel.TileColors[(int)SpecialType.AlienImplant];
-			l10.ForeColor = TilePanel.TileColors[(int)SpecialType.AlienPlastics];
-			l11.ForeColor = TilePanel.TileColors[(int)SpecialType.ExamRoom];
-			l12.ForeColor = TilePanel.TileColors[(int)SpecialType.DeadTile];
-			l13.ForeColor = TilePanel.TileColors[(int)SpecialType.EndPoint];
-			l14.ForeColor = TilePanel.TileColors[(int)SpecialType.MustDestroy];
+			OnCheckChanged(null, null);
+		}
+		#endregion
+
+
+		/// <summary>
+		/// Gets a contrasting color based on the input color.
+		/// </summary>
+		/// <param name="color"></param>
+		/// <returns></returns>
+		private Color GetTextColor(Color color)
+		{
+			return ((int)color.R + color.G + color.B > 480) ? Color.DarkSlateBlue
+															: Color.Snow;
 		}
 
-		private void keyClose(object sender, KeyEventArgs e)
+
+		#region Event Calls
+		private void OnShown(object sender, EventArgs e)
+		{
+			// TODO: update special tile colors from Settings.
+			_specialBrushes = MapView.Forms.MainWindow.ViewerFormsManager.TileView.Control.GetSpecialPropertyBrushes();
+
+			Color color = Color.Empty;
+
+			string specialType = String.Empty;
+
+			specialType = "Tile"; // 0
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType00.BackColor = color;
+				lblType00.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "StartPoint"; // 1
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType01.BackColor = color;
+				lblType01.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "IonBeamAccel"; // 2
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType02.BackColor = color;
+				lblType02.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "DestroyObjective"; // 3
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType03.BackColor = color;
+				lblType03.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "MagneticNav"; // 4
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType04.BackColor = color;
+				lblType04.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "AlienCryo"; // 5
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType05.BackColor = color;
+				lblType05.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "AlienClon"; // 6
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType06.BackColor = color;
+				lblType06.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "AlienLearn"; // 7
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType07.BackColor = color;
+				lblType07.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "AlienImplant"; // 8
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType08.BackColor = color;
+				lblType08.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "Unknown9"; // 9
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType09.BackColor = color;
+				lblType09.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "AlienPlastics"; // 10
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType10.BackColor = color;
+				lblType10.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "ExamRoom"; // 11
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType11.BackColor = color;
+				lblType11.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "DeadTile"; // 12
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType12.BackColor = color;
+				lblType12.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "EndPoint"; // 13
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType13.BackColor = color;
+				lblType13.ForeColor = GetTextColor(color);
+			}
+
+			specialType = "MustDestroy"; // 14
+			if (_specialBrushes.ContainsKey(specialType))
+			{
+				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				lblType14.BackColor = color;
+				lblType14.ForeColor = GetTextColor(color);
+			}
+		}
+
+		/// <summary>
+		/// Toggles the text descriptions between UFO and TFTD special tile types.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnCheckChanged(object sender, EventArgs e)
+		{
+			if (rbUfo.Checked)
+			{
+				lblType00.Text = "tile"; // switch to UFO ->
+				lblType01.Text = "entry point";
+				lblType02.Text = "power source";
+				lblType03.Text = "navigation";
+				lblType04.Text = "construction";
+				lblType05.Text = "food";
+				lblType06.Text = "reproduction";
+				lblType07.Text = "entertainment";
+				lblType08.Text = "surgery";
+				lblType09.Text = "examination";
+				lblType10.Text = "alien alloys";
+				lblType11.Text = "habitat";
+				lblType12.Text = "dead tile";
+				lblType13.Text = "exit point";
+				lblType14.Text = "must destroy";
+			}
+			else // rbTftd.Checked
+			{
+				lblType00.Text = "tile"; // switch to TFTD ->
+				lblType01.Text = "entry point";
+				lblType02.Text = "ion accelerator";
+				lblType03.Text = "destroy";
+				lblType04.Text = "navigation";
+				lblType05.Text = "cryogenics";
+				lblType06.Text = "cloning";
+				lblType07.Text = "learning arrays";
+				lblType08.Text = "implanter";
+				lblType09.Text = "unknown";
+				lblType10.Text = "plastics";
+				lblType11.Text = "re-animation";
+				lblType12.Text = "dead tile";
+				lblType13.Text = "exit point";
+				lblType14.Text = "must destroy";
+			}
+		}
+
+		/// <summary>
+		/// Closes the Help screen.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
 			switch (e.KeyCode)
 			{
@@ -45,6 +238,8 @@ namespace MapView
 					break;
 			}
 		}
+		#endregion
+
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -72,12 +267,12 @@ namespace MapView
 		private void InitializeComponent()
 		{
 			this.tabMain = new System.Windows.Forms.TabControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.tpMainView = new System.Windows.Forms.TabPage();
 			this.label17 = new System.Windows.Forms.Label();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.tpTopView = new System.Windows.Forms.TabPage();
 			this.label23 = new System.Windows.Forms.Label();
 			this.label22 = new System.Windows.Forms.Label();
 			this.label11 = new System.Windows.Forms.Label();
@@ -89,7 +284,7 @@ namespace MapView
 			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.tpRouteView = new System.Windows.Forms.TabPage();
 			this.label24 = new System.Windows.Forms.Label();
 			this.label20 = new System.Windows.Forms.Label();
 			this.label18 = new System.Windows.Forms.Label();
@@ -98,37 +293,42 @@ namespace MapView
 			this.label15 = new System.Windows.Forms.Label();
 			this.label16 = new System.Windows.Forms.Label();
 			this.label21 = new System.Windows.Forms.Label();
-			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.tpTileView = new System.Windows.Forms.TabPage();
+			this.label25 = new System.Windows.Forms.Label();
+			this.rbTftd = new System.Windows.Forms.RadioButton();
+			this.rbUfo = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.l14 = new System.Windows.Forms.Label();
-			this.l13 = new System.Windows.Forms.Label();
-			this.l12 = new System.Windows.Forms.Label();
-			this.l11 = new System.Windows.Forms.Label();
-			this.l10 = new System.Windows.Forms.Label();
-			this.l9 = new System.Windows.Forms.Label();
-			this.l8 = new System.Windows.Forms.Label();
-			this.l7 = new System.Windows.Forms.Label();
-			this.l6 = new System.Windows.Forms.Label();
-			this.l5 = new System.Windows.Forms.Label();
-			this.l4 = new System.Windows.Forms.Label();
-			this.l3 = new System.Windows.Forms.Label();
-			this.l2 = new System.Windows.Forms.Label();
-			this.l1 = new System.Windows.Forms.Label();
+			this.lblType09 = new System.Windows.Forms.Label();
+			this.lblType14 = new System.Windows.Forms.Label();
+			this.lblType13 = new System.Windows.Forms.Label();
+			this.lblType12 = new System.Windows.Forms.Label();
+			this.lblType11 = new System.Windows.Forms.Label();
+			this.lblType10 = new System.Windows.Forms.Label();
+			this.lblType08 = new System.Windows.Forms.Label();
+			this.lblType07 = new System.Windows.Forms.Label();
+			this.lblType06 = new System.Windows.Forms.Label();
+			this.lblType05 = new System.Windows.Forms.Label();
+			this.lblType04 = new System.Windows.Forms.Label();
+			this.lblType03 = new System.Windows.Forms.Label();
+			this.lblType02 = new System.Windows.Forms.Label();
+			this.lblType01 = new System.Windows.Forms.Label();
+			this.lblType00 = new System.Windows.Forms.Label();
 			this.label19 = new System.Windows.Forms.Label();
+			this.label26 = new System.Windows.Forms.Label();
 			this.tabMain.SuspendLayout();
-			this.tabPage1.SuspendLayout();
-			this.tabPage2.SuspendLayout();
-			this.tabPage3.SuspendLayout();
-			this.tabPage4.SuspendLayout();
+			this.tpMainView.SuspendLayout();
+			this.tpTopView.SuspendLayout();
+			this.tpRouteView.SuspendLayout();
+			this.tpTileView.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabMain
 			// 
-			this.tabMain.Controls.Add(this.tabPage1);
-			this.tabMain.Controls.Add(this.tabPage2);
-			this.tabMain.Controls.Add(this.tabPage3);
-			this.tabMain.Controls.Add(this.tabPage4);
+			this.tabMain.Controls.Add(this.tpMainView);
+			this.tabMain.Controls.Add(this.tpTopView);
+			this.tabMain.Controls.Add(this.tpRouteView);
+			this.tabMain.Controls.Add(this.tpTileView);
 			this.tabMain.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabMain.Location = new System.Drawing.Point(0, 0);
 			this.tabMain.Name = "tabMain";
@@ -136,17 +336,17 @@ namespace MapView
 			this.tabMain.Size = new System.Drawing.Size(454, 276);
 			this.tabMain.TabIndex = 0;
 			// 
-			// tabPage1
+			// tpMainView
 			// 
-			this.tabPage1.Controls.Add(this.label17);
-			this.tabPage1.Controls.Add(this.label12);
-			this.tabPage1.Controls.Add(this.label2);
-			this.tabPage1.Controls.Add(this.label1);
-			this.tabPage1.Location = new System.Drawing.Point(4, 21);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Size = new System.Drawing.Size(446, 251);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "Main Window";
+			this.tpMainView.Controls.Add(this.label17);
+			this.tpMainView.Controls.Add(this.label12);
+			this.tpMainView.Controls.Add(this.label2);
+			this.tpMainView.Controls.Add(this.label1);
+			this.tpMainView.Location = new System.Drawing.Point(4, 21);
+			this.tpMainView.Name = "tpMainView";
+			this.tpMainView.Size = new System.Drawing.Size(446, 251);
+			this.tpMainView.TabIndex = 0;
+			this.tpMainView.Text = "Main View";
 			// 
 			// label17
 			// 
@@ -181,24 +381,24 @@ namespace MapView
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Click anywhere to set the tile to edit.";
 			// 
-			// tabPage2
+			// tpTopView
 			// 
-			this.tabPage2.Controls.Add(this.label23);
-			this.tabPage2.Controls.Add(this.label22);
-			this.tabPage2.Controls.Add(this.label11);
-			this.tabPage2.Controls.Add(this.label10);
-			this.tabPage2.Controls.Add(this.label9);
-			this.tabPage2.Controls.Add(this.label8);
-			this.tabPage2.Controls.Add(this.label7);
-			this.tabPage2.Controls.Add(this.label6);
-			this.tabPage2.Controls.Add(this.label5);
-			this.tabPage2.Controls.Add(this.label4);
-			this.tabPage2.Controls.Add(this.label3);
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Size = new System.Drawing.Size(446, 250);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "Top View";
+			this.tpTopView.Controls.Add(this.label23);
+			this.tpTopView.Controls.Add(this.label22);
+			this.tpTopView.Controls.Add(this.label11);
+			this.tpTopView.Controls.Add(this.label10);
+			this.tpTopView.Controls.Add(this.label9);
+			this.tpTopView.Controls.Add(this.label8);
+			this.tpTopView.Controls.Add(this.label7);
+			this.tpTopView.Controls.Add(this.label6);
+			this.tpTopView.Controls.Add(this.label5);
+			this.tpTopView.Controls.Add(this.label4);
+			this.tpTopView.Controls.Add(this.label3);
+			this.tpTopView.Location = new System.Drawing.Point(4, 21);
+			this.tpTopView.Name = "tpTopView";
+			this.tpTopView.Size = new System.Drawing.Size(446, 251);
+			this.tpTopView.TabIndex = 1;
+			this.tpTopView.Text = "Top View";
 			// 
 			// label23
 			// 
@@ -297,21 +497,21 @@ namespace MapView
 			this.label3.TabIndex = 0;
 			this.label3.Text = "Click anywhere to set the tile to edit.";
 			// 
-			// tabPage3
+			// tpRouteView
 			// 
-			this.tabPage3.Controls.Add(this.label24);
-			this.tabPage3.Controls.Add(this.label20);
-			this.tabPage3.Controls.Add(this.label18);
-			this.tabPage3.Controls.Add(this.label13);
-			this.tabPage3.Controls.Add(this.label14);
-			this.tabPage3.Controls.Add(this.label15);
-			this.tabPage3.Controls.Add(this.label16);
-			this.tabPage3.Controls.Add(this.label21);
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(446, 250);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "Rmp View";
+			this.tpRouteView.Controls.Add(this.label24);
+			this.tpRouteView.Controls.Add(this.label20);
+			this.tpRouteView.Controls.Add(this.label18);
+			this.tpRouteView.Controls.Add(this.label13);
+			this.tpRouteView.Controls.Add(this.label14);
+			this.tpRouteView.Controls.Add(this.label15);
+			this.tpRouteView.Controls.Add(this.label16);
+			this.tpRouteView.Controls.Add(this.label21);
+			this.tpRouteView.Location = new System.Drawing.Point(4, 21);
+			this.tpRouteView.Name = "tpRouteView";
+			this.tpRouteView.Size = new System.Drawing.Size(446, 251);
+			this.tpRouteView.TabIndex = 2;
+			this.tpRouteView.Text = "Route View";
 			// 
 			// label24
 			// 
@@ -383,166 +583,225 @@ namespace MapView
 			this.label21.TabIndex = 9;
 			this.label21.Text = "Click anywhere to set the tile to edit.";
 			// 
-			// tabPage4
+			// tpTileView
 			// 
-			this.tabPage4.Controls.Add(this.groupBox1);
-			this.tabPage4.Controls.Add(this.label19);
-			this.tabPage4.Location = new System.Drawing.Point(4, 22);
-			this.tabPage4.Name = "tabPage4";
-			this.tabPage4.Size = new System.Drawing.Size(446, 250);
-			this.tabPage4.TabIndex = 3;
-			this.tabPage4.Text = "Tile View";
+			this.tpTileView.Controls.Add(this.label26);
+			this.tpTileView.Controls.Add(this.label25);
+			this.tpTileView.Controls.Add(this.rbTftd);
+			this.tpTileView.Controls.Add(this.rbUfo);
+			this.tpTileView.Controls.Add(this.groupBox1);
+			this.tpTileView.Controls.Add(this.label19);
+			this.tpTileView.Location = new System.Drawing.Point(4, 21);
+			this.tpTileView.Name = "tpTileView";
+			this.tpTileView.Size = new System.Drawing.Size(446, 251);
+			this.tpTileView.TabIndex = 3;
+			this.tpTileView.Text = "Tile View";
+			// 
+			// label25
+			// 
+			this.label25.Location = new System.Drawing.Point(5, 35);
+			this.label25.Name = "label25";
+			this.label25.Size = new System.Drawing.Size(440, 15);
+			this.label25.TabIndex = 14;
+			this.label25.Text = "These are background colors for the special tile properties.";
+			// 
+			// rbTftd
+			// 
+			this.rbTftd.Location = new System.Drawing.Point(20, 75);
+			this.rbTftd.Name = "rbTftd";
+			this.rbTftd.Size = new System.Drawing.Size(55, 15);
+			this.rbTftd.TabIndex = 13;
+			this.rbTftd.Text = "TFTD";
+			this.rbTftd.UseVisualStyleBackColor = true;
+			this.rbTftd.CheckedChanged += new System.EventHandler(this.OnCheckChanged);
+			// 
+			// rbUfo
+			// 
+			this.rbUfo.Checked = true;
+			this.rbUfo.Location = new System.Drawing.Point(20, 55);
+			this.rbUfo.Name = "rbUfo";
+			this.rbUfo.Size = new System.Drawing.Size(55, 15);
+			this.rbUfo.TabIndex = 12;
+			this.rbUfo.TabStop = true;
+			this.rbUfo.Text = "UFO";
+			this.rbUfo.UseVisualStyleBackColor = true;
+			this.rbUfo.CheckedChanged += new System.EventHandler(this.OnCheckChanged);
 			// 
 			// groupBox1
 			// 
 			this.groupBox1.BackColor = System.Drawing.SystemColors.ControlLight;
-			this.groupBox1.Controls.Add(this.l14);
-			this.groupBox1.Controls.Add(this.l13);
-			this.groupBox1.Controls.Add(this.l12);
-			this.groupBox1.Controls.Add(this.l11);
-			this.groupBox1.Controls.Add(this.l10);
-			this.groupBox1.Controls.Add(this.l9);
-			this.groupBox1.Controls.Add(this.l8);
-			this.groupBox1.Controls.Add(this.l7);
-			this.groupBox1.Controls.Add(this.l6);
-			this.groupBox1.Controls.Add(this.l5);
-			this.groupBox1.Controls.Add(this.l4);
-			this.groupBox1.Controls.Add(this.l3);
-			this.groupBox1.Controls.Add(this.l2);
-			this.groupBox1.Controls.Add(this.l1);
-			this.groupBox1.Location = new System.Drawing.Point(60, 60);
+			this.groupBox1.Controls.Add(this.lblType09);
+			this.groupBox1.Controls.Add(this.lblType14);
+			this.groupBox1.Controls.Add(this.lblType13);
+			this.groupBox1.Controls.Add(this.lblType12);
+			this.groupBox1.Controls.Add(this.lblType11);
+			this.groupBox1.Controls.Add(this.lblType10);
+			this.groupBox1.Controls.Add(this.lblType08);
+			this.groupBox1.Controls.Add(this.lblType07);
+			this.groupBox1.Controls.Add(this.lblType06);
+			this.groupBox1.Controls.Add(this.lblType05);
+			this.groupBox1.Controls.Add(this.lblType04);
+			this.groupBox1.Controls.Add(this.lblType03);
+			this.groupBox1.Controls.Add(this.lblType02);
+			this.groupBox1.Controls.Add(this.lblType01);
+			this.groupBox1.Controls.Add(this.lblType00);
+			this.groupBox1.Location = new System.Drawing.Point(10, 100);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(320, 144);
+			this.groupBox1.Size = new System.Drawing.Size(430, 150);
 			this.groupBox1.TabIndex = 11;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Tile Colors";
 			// 
-			// l14
+			// lblType09
 			// 
-			this.l14.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l14.Location = new System.Drawing.Point(115, 120);
-			this.l14.Name = "l14";
-			this.l14.Size = new System.Drawing.Size(95, 15);
-			this.l14.TabIndex = 25;
-			this.l14.Text = "Must Destroy";
+			this.lblType09.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType09.Location = new System.Drawing.Point(10, 95);
+			this.lblType09.Name = "lblType09";
+			this.lblType09.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType09.Size = new System.Drawing.Size(130, 20);
+			this.lblType09.TabIndex = 26;
+			this.lblType09.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l13
+			// lblType14
 			// 
-			this.l13.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l13.Location = new System.Drawing.Point(10, 120);
-			this.l13.Name = "l13";
-			this.l13.Size = new System.Drawing.Size(95, 15);
-			this.l13.TabIndex = 24;
-			this.l13.Text = "End Point";
+			this.lblType14.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType14.Location = new System.Drawing.Point(290, 120);
+			this.lblType14.Name = "lblType14";
+			this.lblType14.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType14.Size = new System.Drawing.Size(130, 20);
+			this.lblType14.TabIndex = 25;
+			this.lblType14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l12
+			// lblType13
 			// 
-			this.l12.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l12.Location = new System.Drawing.Point(220, 95);
-			this.l12.Name = "l12";
-			this.l12.Size = new System.Drawing.Size(95, 15);
-			this.l12.TabIndex = 23;
-			this.l12.Text = "Dead tile";
+			this.lblType13.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType13.Location = new System.Drawing.Point(150, 120);
+			this.lblType13.Name = "lblType13";
+			this.lblType13.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType13.Size = new System.Drawing.Size(130, 20);
+			this.lblType13.TabIndex = 24;
+			this.lblType13.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l11
+			// lblType12
 			// 
-			this.l11.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l11.Location = new System.Drawing.Point(115, 95);
-			this.l11.Name = "l11";
-			this.l11.Size = new System.Drawing.Size(95, 15);
-			this.l11.TabIndex = 22;
-			this.l11.Text = "Exam room";
+			this.lblType12.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType12.Location = new System.Drawing.Point(10, 120);
+			this.lblType12.Name = "lblType12";
+			this.lblType12.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType12.Size = new System.Drawing.Size(130, 20);
+			this.lblType12.TabIndex = 23;
+			this.lblType12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l10
+			// lblType11
 			// 
-			this.l10.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l10.Location = new System.Drawing.Point(10, 95);
-			this.l10.Name = "l10";
-			this.l10.Size = new System.Drawing.Size(95, 15);
-			this.l10.TabIndex = 21;
-			this.l10.Text = "Plastics";
+			this.lblType11.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType11.Location = new System.Drawing.Point(290, 95);
+			this.lblType11.Name = "lblType11";
+			this.lblType11.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType11.Size = new System.Drawing.Size(130, 20);
+			this.lblType11.TabIndex = 22;
+			this.lblType11.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l9
+			// lblType10
 			// 
-			this.l9.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l9.Location = new System.Drawing.Point(220, 70);
-			this.l9.Name = "l9";
-			this.l9.Size = new System.Drawing.Size(95, 15);
-			this.l9.TabIndex = 20;
-			this.l9.Text = "Implanter";
+			this.lblType10.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType10.Location = new System.Drawing.Point(150, 95);
+			this.lblType10.Name = "lblType10";
+			this.lblType10.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType10.Size = new System.Drawing.Size(130, 20);
+			this.lblType10.TabIndex = 21;
+			this.lblType10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l8
+			// lblType08
 			// 
-			this.l8.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l8.Location = new System.Drawing.Point(115, 70);
-			this.l8.Name = "l8";
-			this.l8.Size = new System.Drawing.Size(95, 15);
-			this.l8.TabIndex = 19;
-			this.l8.Text = "Learning Array";
+			this.lblType08.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType08.Location = new System.Drawing.Point(290, 70);
+			this.lblType08.Name = "lblType08";
+			this.lblType08.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType08.Size = new System.Drawing.Size(130, 20);
+			this.lblType08.TabIndex = 20;
+			this.lblType08.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l7
+			// lblType07
 			// 
-			this.l7.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l7.Location = new System.Drawing.Point(10, 70);
-			this.l7.Name = "l7";
-			this.l7.Size = new System.Drawing.Size(95, 15);
-			this.l7.TabIndex = 18;
-			this.l7.Text = "Cloning";
+			this.lblType07.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType07.Location = new System.Drawing.Point(150, 70);
+			this.lblType07.Name = "lblType07";
+			this.lblType07.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType07.Size = new System.Drawing.Size(130, 20);
+			this.lblType07.TabIndex = 19;
+			this.lblType07.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l6
+			// lblType06
 			// 
-			this.l6.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l6.Location = new System.Drawing.Point(220, 45);
-			this.l6.Name = "l6";
-			this.l6.Size = new System.Drawing.Size(95, 15);
-			this.l6.TabIndex = 17;
-			this.l6.Text = "Cryogenics";
+			this.lblType06.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType06.Location = new System.Drawing.Point(10, 70);
+			this.lblType06.Name = "lblType06";
+			this.lblType06.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType06.Size = new System.Drawing.Size(130, 20);
+			this.lblType06.TabIndex = 18;
+			this.lblType06.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l5
+			// lblType05
 			// 
-			this.l5.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l5.Location = new System.Drawing.Point(115, 45);
-			this.l5.Name = "l5";
-			this.l5.Size = new System.Drawing.Size(95, 15);
-			this.l5.TabIndex = 16;
-			this.l5.Text = "Navigation";
+			this.lblType05.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType05.Location = new System.Drawing.Point(290, 45);
+			this.lblType05.Name = "lblType05";
+			this.lblType05.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType05.Size = new System.Drawing.Size(130, 20);
+			this.lblType05.TabIndex = 17;
+			this.lblType05.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l4
+			// lblType04
 			// 
-			this.l4.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l4.Location = new System.Drawing.Point(10, 45);
-			this.l4.Name = "l4";
-			this.l4.Size = new System.Drawing.Size(95, 15);
-			this.l4.TabIndex = 15;
-			this.l4.Text = "Destroy Objective";
+			this.lblType04.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType04.Location = new System.Drawing.Point(150, 45);
+			this.lblType04.Name = "lblType04";
+			this.lblType04.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType04.Size = new System.Drawing.Size(130, 20);
+			this.lblType04.TabIndex = 16;
+			this.lblType04.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l3
+			// lblType03
 			// 
-			this.l3.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l3.Location = new System.Drawing.Point(220, 20);
-			this.l3.Name = "l3";
-			this.l3.Size = new System.Drawing.Size(95, 15);
-			this.l3.TabIndex = 14;
-			this.l3.Text = "Ion beam accelerator";
+			this.lblType03.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType03.Location = new System.Drawing.Point(10, 45);
+			this.lblType03.Name = "lblType03";
+			this.lblType03.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType03.Size = new System.Drawing.Size(130, 20);
+			this.lblType03.TabIndex = 15;
+			this.lblType03.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l2
+			// lblType02
 			// 
-			this.l2.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l2.Location = new System.Drawing.Point(115, 20);
-			this.l2.Name = "l2";
-			this.l2.Size = new System.Drawing.Size(95, 15);
-			this.l2.TabIndex = 13;
-			this.l2.Text = "Xcom start";
+			this.lblType02.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType02.Location = new System.Drawing.Point(290, 20);
+			this.lblType02.Name = "lblType02";
+			this.lblType02.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType02.Size = new System.Drawing.Size(130, 20);
+			this.lblType02.TabIndex = 14;
+			this.lblType02.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// l1
+			// lblType01
 			// 
-			this.l1.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.l1.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.l1.Location = new System.Drawing.Point(10, 20);
-			this.l1.Name = "l1";
-			this.l1.Size = new System.Drawing.Size(95, 15);
-			this.l1.TabIndex = 12;
-			this.l1.Text = "Tile";
+			this.lblType01.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType01.Location = new System.Drawing.Point(150, 20);
+			this.lblType01.Name = "lblType01";
+			this.lblType01.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType01.Size = new System.Drawing.Size(130, 20);
+			this.lblType01.TabIndex = 13;
+			this.lblType01.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// lblType00
+			// 
+			this.lblType00.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblType00.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.lblType00.Location = new System.Drawing.Point(10, 20);
+			this.lblType00.Name = "lblType00";
+			this.lblType00.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.lblType00.Size = new System.Drawing.Size(130, 20);
+			this.lblType00.TabIndex = 12;
+			this.lblType00.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// label19
 			// 
@@ -552,7 +811,16 @@ namespace MapView
 			this.label19.TabIndex = 10;
 			this.label19.Text = "Left click to select the tile to place.";
 			// 
-			// HelpScreen
+			// label26
+			// 
+			this.label26.Location = new System.Drawing.Point(135, 65);
+			this.label26.Name = "label26";
+			this.label26.Size = new System.Drawing.Size(300, 25);
+			this.label26.TabIndex = 15;
+			this.label26.Text = "MapView must be closed and reloaded to refresh the colors based on TileView Optio" +
+	"ns that have changed.";
+			// 
+			// Help
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(454, 276);
@@ -562,17 +830,18 @@ namespace MapView
 			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "HelpScreen";
+			this.Name = "Help";
 			this.ShowIcon = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Help";
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyClose);
+			this.Shown += new System.EventHandler(this.OnShown);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
 			this.tabMain.ResumeLayout(false);
-			this.tabPage1.ResumeLayout(false);
-			this.tabPage2.ResumeLayout(false);
-			this.tabPage3.ResumeLayout(false);
-			this.tabPage4.ResumeLayout(false);
+			this.tpMainView.ResumeLayout(false);
+			this.tpTopView.ResumeLayout(false);
+			this.tpRouteView.ResumeLayout(false);
+			this.tpTileView.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -580,12 +849,12 @@ namespace MapView
 		#endregion
 
 		private TabControl tabMain;
-		private TabPage tabPage1;
+		private TabPage tpMainView;
+		private TabPage tpTopView;
+		private TabPage tpRouteView;
+		private TabPage tpTileView;
 		private Label label1;
 		private Label label2;
-		private TabPage tabPage2;
-		private TabPage tabPage3;
-		private TabPage tabPage4;
 		private Label label3;
 		private Label label4;
 		private Label label5;
@@ -606,22 +875,27 @@ namespace MapView
 		private Label label19;
 		private Label label20;
 		private Label label22;
-		private GroupBox groupBox1;
-		private Label l1;
-		private Label l2;
-		private Label l3;
-		private Label l6;
-		private Label l5;
-		private Label l4;
-		private Label l9;
-		private Label l8;
-		private Label l7;
-		private Label l12;
-		private Label l11;
-		private Label l10;
-		private Label l14;
-		private Label l13;
 		private Label label23;
 		private Label label24;
+		private Label label25;
+		private GroupBox groupBox1;
+		private Label lblType00;
+		private Label lblType01;
+		private Label lblType02;
+		private Label lblType03;
+		private Label lblType04;
+		private Label lblType05;
+		private Label lblType06;
+		private Label lblType07;
+		private Label lblType08;
+		private Label lblType09;
+		private Label lblType10;
+		private Label lblType11;
+		private Label lblType12;
+		private Label lblType13;
+		private Label lblType14;
+		private RadioButton rbTftd;
+		private RadioButton rbUfo;
+		private System.Windows.Forms.Label label26;
 	}
 }

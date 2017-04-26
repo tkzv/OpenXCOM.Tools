@@ -53,7 +53,7 @@ namespace MapView.Forms.MainWindow
 			CreateMenuitem(console,                         "Console",       _viewsMenu);
 
 
-			CreateMenuitem(ViewerFormsManager.HelpScreen,   "Quick Help",    _helpMenu);
+			CreateMenuitem(ViewerFormsManager.HelpScreen,   "Help",          _helpMenu);
 			CreateMenuitem(ViewerFormsManager.AboutScreen,  "About",         _helpMenu);
 
 			AddMenuitemSettings();

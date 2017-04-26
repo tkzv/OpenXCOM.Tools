@@ -49,8 +49,8 @@ namespace MapView.Forms.MainWindow
 
 			AddViewer("Console", _consoleShare.GetConsole());
 
-			AddViewer("Quick Help", ViewerFormsManager.HelpScreen);
-			AddViewer("About",      ViewerFormsManager.AboutScreen);
+			AddViewer("Help",  ViewerFormsManager.HelpScreen);
+			AddViewer("About", ViewerFormsManager.AboutScreen);
 
 
 //			SetAsObserver(MainWindowsManager.TopView,      "Top View",      "TopView");
@@ -58,7 +58,7 @@ namespace MapView.Forms.MainWindow
 //			SetAsObserver(MainWindowsManager.TopRouteView, "TopRoute View", "TopRouteView");
 //			SetAsObserver(MainWindowsManager.TileView,     "Tile View",     "TileView");
 //			SetAsObserver(_consoleShare.GetNewConsole(),   "Console",       "Console");
-//			SetAsObserver(MainWindowsManager.HelpScreen,   "Quick Help");
+//			SetAsObserver(MainWindowsManager.HelpScreen,   "Help");
 //			SetAsObserver(MainWindowsManager.AboutWindow,  "About");
 
 //			MainWindowsManager.TopRouteView.ControlTop.RegistryInfo   = MainWindowsManager.TopView.Control.RegistryInfo;
@@ -109,7 +109,7 @@ namespace MapView.Forms.MainWindow
 
 		/// <summary>
 		/// Closes the following viewers: TopView, RouteView, TopRouteView,
-		/// TileView, Console, Quick Help, About.
+		/// TileView, Console, Help, About.
 		/// </summary>
 		internal void CloseSubsidiaryViewers()
 		{

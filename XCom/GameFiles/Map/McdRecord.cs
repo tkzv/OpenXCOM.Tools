@@ -70,11 +70,19 @@ namespace XCom
 	{
 		private static int _idCanonical = 0;
 
+
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
 		internal McdRecord()
 		{
 			Id = _idCanonical++;
 		}
+		#endregion
 
+
+		#region Properties
 		public int Id { get; private set; }
 
 //		public Rectangle Bounds { get; set; }
@@ -150,7 +158,7 @@ namespace XCom
 		public byte Unknown60         { get; set; } // info[60];}}                     // unsigned char u61;
 		public byte Unknown61         { get; set; } // info[61];}}                     // unsigned char u62;
 
-//		unsigned char Frame[8]; // Each frame is an index into the ____.TAB file; it rotates between the frames constantly.
+//		unsigned char Frame[8]; // Each frame is an index into the ____.TAB file; it cycles through the frames constantly.
 
 		public string ScanGReference { get; set; }
 
@@ -159,10 +167,13 @@ namespace XCom
 
 		public string Reference0To30  { get; set; }
 		public string Reference30To62 { get; set; }
+		#endregion
 
+
+		#region Methods
 		public List<byte> GetLoftList()
 		{
-			var list = new List<byte>();
+			var list = new List<byte>(); // question: why is this a List
 
 			list.Add(Loft1);
 			list.Add(Loft2);
@@ -179,5 +190,6 @@ namespace XCom
 
 			return list;
 		}
+		#endregion
 	}
 }
