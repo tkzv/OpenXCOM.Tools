@@ -282,26 +282,24 @@ namespace MapView.Forms.MapObservers.TileViews
 										left, top,
 										SpriteWidth, SpriteHeight);
 
-					if (tile != null) // draw tile ->
+					if (tile != null) // draw tile-sprite ->
 					{
-						string specialType = tile.Record.TargetType.ToString();
+						string specialType = tile.Record.TargetType.ToString();	// first fill Special Property color
 						if (_specialTypeBrushes.ContainsKey(specialType))
-						{
 							g.FillRectangle((SolidBrush)_specialTypeBrushes[specialType], rect);
-						}
 
-						g.DrawImage(
+						g.DrawImage(											// then draw the sprite itself
 								tile[MainViewPanel.AniStep].Image,
-								left,
-								top - tile.Record.TileOffset);
+								left + SpriteMargin,
+								top  + SpriteMargin - tile.Record.TileOffset);
 
-						if (tile.Record.HumanDoor || tile.Record.UfoDoor)
+						if (tile.Record.HumanDoor || tile.Record.UfoDoor)		// finally print "door" if it's a door
 							g.DrawString(
 									door,
 									Font,
 									_brushBlack,
-									left + (SpriteWidth - textWidth2) / 2 - 1,
-									top + SpriteHeight - Font.Height); // PckImage.Height
+									left + (SpriteWidth  - textWidth2) / 2,
+									top  +  SpriteHeight - Font.Height); // PckImage.Height
 					}
 					else // draw the eraser ->
 					{
