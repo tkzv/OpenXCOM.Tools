@@ -89,7 +89,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				if (value != null)
 				{
-					_id = value.TileListId + 1;
+					_id = value.TileListId + 1; // +1 to account for the eraser - not sure.
 
 					if (PanelSelectedTileChangedEvent != null)
 						PanelSelectedTileChangedEvent(SelectedTile);
@@ -225,7 +225,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 		/// <summary>
-		/// Selects a tile.
+		/// Focuses this panel and selects a tile.
 		/// </summary>
 		/// <param name="e"></param>
 		protected override void OnMouseDown(MouseEventArgs e)
@@ -234,22 +234,22 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (_tiles != null && _tiles.Length != 0)
 			{
-				int tileX =  e.X            / SpriteWidth;
-				int tileY = (e.Y - _startY) / SpriteHeight;
-
-				if (tileX >= _tilesX)
-					tileX  = _tilesX - 1;
-
-				int tile = tileX + tileY * _tilesX;
-				if (tile < _tiles.Length)
+				if (e.X < SpriteWidth * _tilesX) // not out of bounds to right
 				{
-					_id = tile;
+					int tileX =  e.X            / SpriteWidth;
+					int tileY = (e.Y - _startY) / SpriteHeight;
 
-					if (PanelSelectedTileChangedEvent != null)
-						PanelSelectedTileChangedEvent(SelectedTile);
+					int id = tileX + tileY * _tilesX;
+					if (id < _tiles.Length) // not out of bounds below
+					{
+						_id = id;
 
-					ScrollToTile();
-					Refresh();
+						if (PanelSelectedTileChangedEvent != null)
+							PanelSelectedTileChangedEvent(SelectedTile);
+
+						ScrollToTile();
+						Refresh();
+					}
 				}
 			}
 		}
