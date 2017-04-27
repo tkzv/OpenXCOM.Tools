@@ -310,10 +310,10 @@ namespace MapView.Forms.MapObservers.TopViews
 			Settings.AddSetting("SelectTileColor",  Color.LightBlue,         "Background color of the selected tile part",  "Other",  bc);
 			Settings.AddSetting("DiamondMinHeight", _topViewPanel.MinHeight, "Minimum height of the grid tiles",            "Tile",   dh);
 
-			_topViewPanel.Brushes  =
+			_topViewPanel.TopBrushes  =
 			QuadrantsPanel.Brushes = _topBrushes;
 
-			_topViewPanel.Pens  =
+			_topViewPanel.TopPens  =
 			QuadrantsPanel.Pens = _topPens;
 
 			Invalidate();

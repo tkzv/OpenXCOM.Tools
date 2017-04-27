@@ -16,7 +16,7 @@ namespace MapView.Forms.MapObservers.TopViews
 	/// <summary>
 	/// A base class for TopViewPanel.
 	/// </summary>
-	internal class TopViewPanelBase
+	internal class TopViewPanelParent
 		:
 			MapObserverControl1
 	{
@@ -38,8 +38,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 		private int _heightMin = 4;
-		internal int MinHeight
-		{
+		internal protected int MinHeight	// question: why can TopView access this
+		{									// it's 'protected'
 			get { return _heightMin; }
 			set
 			{
@@ -52,9 +52,9 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		#region cTor
 		/// <summary>
-		/// cTor.
+		/// cTor. Instantiated only as the parent of TopViewPanel.
 		/// </summary>
-		internal protected TopViewPanelBase()
+		internal protected TopViewPanelParent()
 		{
 			_lozSelector = new GraphicsPath();
 			_lozSelected = new GraphicsPath();
@@ -76,7 +76,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		internal void HandleParentResize(int width, int height)
+		internal protected void HandleParentResize(int width, int height)
 		{
 			if (BaseMap != null)
 			{
@@ -198,11 +198,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 		[Browsable(false), DefaultValue(null)]
-		internal Dictionary<string, SolidBrush> Brushes
+		internal protected Dictionary<string, SolidBrush> TopBrushes // question: why can TopView access this
 		{ get; set; }
 
 		[Browsable(false), DefaultValue(null)]
-		internal Dictionary<string, Pen> Pens
+		internal protected Dictionary<string, Pen> TopPens // question: why can TopView access this
 		{ get; set; }
 
 		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
@@ -260,7 +260,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 				for (int i = 0; i <= BaseMap.MapSize.Rows; ++i)
 					backBuffer.DrawLine(
-									Pens["GridColor"],
+									TopPens["GridColor"],
 									_offX - i * hWidth,
 									_offY + i * hHeight,
 									(BaseMap.MapSize.Cols - i) * hWidth  + _offX,
@@ -268,14 +268,14 @@ namespace MapView.Forms.MapObservers.TopViews
 
 				for (int i = 0; i <= BaseMap.MapSize.Cols; ++i)
 					backBuffer.DrawLine(
-									Pens["GridColor"],
+									TopPens["GridColor"],
 									_offX + i * hWidth,
 									_offY + i * hHeight,
 									i * hWidth  - BaseMap.MapSize.Rows * hWidth  + _offX,
 									i * hHeight + BaseMap.MapSize.Rows * hHeight + _offY);
 
 				if (MainViewUnderlay.Instance.MainView.FirstClick)
-					backBuffer.DrawPath(Pens["SelectColor"], _lozSelected);
+					backBuffer.DrawPath(TopPens["SelectColor"], _lozSelected);
 
 				if (   _mouseCol > -1
 					&& _mouseRow > -1
@@ -286,7 +286,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					int y = (_mouseCol + _mouseRow) * hHeight + _offY;
 
 					var sel = GetSelectorPath(x, y);
-					backBuffer.DrawPath(Pens["MouseColor"], sel);
+					backBuffer.DrawPath(TopPens["MouseColor"], sel);
 				}
 			}
 		}

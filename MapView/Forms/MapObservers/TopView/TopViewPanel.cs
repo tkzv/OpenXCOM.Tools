@@ -10,13 +10,12 @@ namespace MapView.Forms.MapObservers.TopViews
 {
 	internal sealed class TopViewPanel
 		:
-			TopViewPanelBase
+			TopViewPanelParent
 	{
 		#region Fields & Properties
-
-		private SolidPenBrush _colorWest;
-		private SolidPenBrush _colorNorth;
-		private SolidPenBrush _colorContent;
+		private ColorTools _colorWest;
+		private ColorTools _colorNorth;
+		private ColorTools _colorContent;
 
 		internal ToolStripMenuItem Ground
 		{ get; set; }
@@ -32,7 +31,6 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		internal QuadrantPanel QuadrantsPanel
 		{ get; set; }
-
 		#endregion
 
 
@@ -109,44 +107,44 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			var mapTile = (XCMapTile)tile;
 
-			if (mapTile.Ground != null && Ground.Checked)
+			if (Ground.Checked && mapTile.Ground != null)
 				DrawService.DrawFloor(
-								g,
-								Brushes["GroundColor"],
-								x, y);
+									g,
+									TopBrushes["GroundColor"],
+									x, y);
 
 
 			if (_colorNorth == null)
-				_colorNorth = new SolidPenBrush(Pens["NorthColor"]);
+				_colorNorth = new ColorTools(TopPens["NorthColor"]);
 
-			if (mapTile.North != null && North.Checked)
+			if (North.Checked && mapTile.North != null)
 				DrawService.DrawContent(
-								g,
-								_colorNorth,
-								x, y,
-								mapTile.North);
+									g,
+									_colorNorth,
+									x, y,
+									mapTile.North);
 
 
 			if (_colorWest == null)
-				_colorWest = new SolidPenBrush(Pens["WestColor"]);
+				_colorWest = new ColorTools(TopPens["WestColor"]);
 
-			if (mapTile.West != null && West.Checked)
+			if (West.Checked && mapTile.West != null)
 				DrawService.DrawContent(
-								g,
-								_colorWest,
-								x, y,
-								mapTile.West);
+									g,
+									_colorWest,
+									x, y,
+									mapTile.West);
 
 
 			if (_colorContent == null)
-				_colorContent = new SolidPenBrush(Brushes["ContentColor"], _colorNorth.Pen.Width);
+				_colorContent = new ColorTools(TopBrushes["ContentColor"], _colorNorth.Pen.Width); // TODO: qua, why '_colorNorth' for '_colorContent'
 
-			if (mapTile.Content != null && Content.Checked)
+			if (Content.Checked && mapTile.Content != null)
 				DrawService.DrawContent(
-								g,
-								_colorContent,
-								x, y,
-								mapTile.Content);
+									g,
+									_colorContent,
+									x, y,
+									mapTile.Content);
 		}
 		#endregion
 	}

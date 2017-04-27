@@ -8,7 +8,10 @@ using XCom;
 
 namespace MapView.Forms.MapObservers.RouteViews
 {
-	internal class RoutePanelBase
+	/// <summary>
+	/// A base class for RoutePanel.
+	/// </summary>
+	internal class RoutePanelParent
 		:
 			UserControl
 	{
@@ -16,7 +19,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		private XCMapFile _mapFile;
-		public XCMapFile MapFile
+		internal XCMapFile MapFile
 		{
 			get { return _mapFile; }
 			set
@@ -43,51 +46,53 @@ namespace MapView.Forms.MapObservers.RouteViews
 			get { return _drawAreaHeight; }
 		}
 
-		private readonly Dictionary<string, Pen> _mapPens;
-		public Dictionary<string, Pen> MapPens
+		private readonly Dictionary<string, Pen> _pens = new Dictionary<string, Pen>();
+		internal Dictionary<string, Pen> RoutePens
 		{
-			get { return _mapPens; }
+			get { return _pens; }
 		}
-		private readonly Dictionary<string, SolidBrush> _mapBrushes;
-		public Dictionary<string, SolidBrush> MapBrushes
+		private readonly Dictionary<string, SolidBrush> _brushes = new Dictionary<string, SolidBrush>();
+		internal Dictionary<string, SolidBrush> RouteBrushes
 		{
-			get { return _mapBrushes; }
+			get { return _brushes; }
 		}
 
 
-		public RoutePanelBase()
+		#region cTor
+		/// <summary>
+		/// cTor. Instantiated only as the parent of RoutePanel.
+		/// </summary>
+		internal protected RoutePanelParent()
 		{
-			_mapPens    = new Dictionary<string, Pen>();
-			_mapBrushes = new Dictionary<string, SolidBrush>();
-
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
 				   | ControlStyles.AllPaintingInWmPaint
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 		}
+		#endregion
 
 
 		/// <summary>
-		/// Get the tile contained at (x,y) in local screen coordinates.
+		/// Gets the tile contained at (x,y) in local screen coordinates.
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns>null if (x,y) is an invalid location for a tile</returns>
-		public XCMapTile GetTile(int x, int y)
-		{
+		internal protected XCMapTile GetTile(int x, int y)	// question: why can RouteView access this
+		{													// it's 'protected'
 			if (_mapFile != null)
 			{
-				Point p = ConvertCoordsDiamond(x, y);
-				if (   p.Y >= 0 && p.Y < _mapFile.MapSize.Rows
-					&& p.X >= 0 && p.X < _mapFile.MapSize.Cols)
+				Point pt = ConvertCoordsDiamond(x, y);
+				if (   pt.Y >= 0 && pt.Y < _mapFile.MapSize.Rows
+					&& pt.X >= 0 && pt.X < _mapFile.MapSize.Cols)
 				{
-					return (XCMapTile)_mapFile[p.Y, p.X];
+					return (XCMapTile)_mapFile[pt.Y, pt.X];
 				}
 			}
 			return null;
 		}
 
-		public Point GetTileCoordinates(int x, int y)
+		internal protected Point GetTileCoordinates(int x, int y)
 		{
 			Point pt = ConvertCoordsDiamond(x, y);
 			if (   pt.Y >= 0 && pt.Y < _mapFile.MapSize.Rows
@@ -98,7 +103,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			return new Point(-1, -1);
 		}
 
-		public void DeselectLocation()
+		internal protected void DeselectLocation()
 		{
 			ClickPoint = new Point(-1, -1);
 		}

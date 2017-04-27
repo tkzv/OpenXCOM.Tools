@@ -9,10 +9,14 @@ using XCom.Interfaces.Base;
 namespace MapView.Forms.MapObservers.RouteViews
 {
 	/// <summary>
-	/// Draws floor- and wall- and content- blobs for TopView and RMP View.
+	/// Draws floor- and wall- and content- blobs for RouteView and TopView.
 	/// </summary>
 	internal sealed class DrawContentService	// Warning CA1001: Implement IDisposable on 'DrawContentService' because
 	{											// it creates members of the following IDisposable types: 'GraphicsPath'.
+		#region Fields & Properties
+		private readonly GraphicsPath _floor   = new GraphicsPath();
+		private readonly GraphicsPath _content = new GraphicsPath();
+
 		private int _halfWidth = 8;
 		internal int HalfWidth
 		{
@@ -25,21 +29,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			get { return _halfHeight; }
 			set { _halfHeight = value; }
 		}
-
-		private readonly GraphicsPath _floor;
-		private readonly GraphicsPath _content;
+		#endregion
 
 
-		/// <summary>
-		/// cTor. Draws floor- and wall- and content- blobs for TopView and RMP View.
-		/// </summary>
-		internal DrawContentService()
-		{
-			_floor   = new GraphicsPath();
-			_content = new GraphicsPath();
-		}
-
-
+		#region Methods
 		/// <summary>
 		/// Draws floor-blobs for TopView.
 		/// </summary>
@@ -48,103 +41,103 @@ namespace MapView.Forms.MapObservers.RouteViews
 				Brush brush,
 				int x, int y)
 		{
-			g.FillPath(brush, GetFloorPath(x, y));
-		}
-
-		private GraphicsPath GetFloorPath(int x, int y)
-		{
 			_floor.Reset();
 			_floor.AddLine(
-						x, y,
-						x + _halfWidth, y + _halfHeight);
+						x,             y,
+						x + HalfWidth, y + HalfHeight);
 			_floor.AddLine(
-						x + _halfWidth, y + _halfHeight,
-						x, y + _halfHeight * 2);
+						x + HalfWidth, y + HalfHeight,
+						x,             y + HalfHeight * 2);
 			_floor.AddLine(
-						x, y + _halfHeight * 2,
-						x - _halfWidth, y + _halfHeight);
+						x,             y + HalfHeight * 2,
+						x - HalfWidth, y + HalfHeight);
 			_floor.CloseFigure();
 
-			return _floor;
+			g.FillPath(brush, _floor);
 		}
 
 
-		private const int Pad = 4;
+		private const int Margin = 4;
 
 		/// <summary>
-		/// Draws wall- and content- blobs for TopView and RMP View.
+		/// Draws wall- and content- blobs for RouteView and TopView.
 		/// </summary>
+		/// <param name="g"></param>
+		/// <param name="tool"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="tile"></param>
 		internal void DrawContent(
 				Graphics g,
-				SolidPenBrush color,
+				ColorTools tool,
 				int x, int y,
 				TileBase tile)
 		{
 			var ptTop   = new Point(
 								x,
-								(y > int.MaxValue - Pad) ? int.MaxValue : y + Pad); // <- FxCop ...
+								(y > int.MaxValue - Margin) ? int.MaxValue : y + Margin); // <- FxCop ...
 			var ptBot   = new Point(
 								x,
-								y + (_halfHeight * 2) - Pad);
+								y + (HalfHeight * 2) - Margin);
 			var ptLeft  = new Point(
-								x - _halfWidth + (Pad * 2),
-								y + _halfHeight);
+								x - HalfWidth + (Margin * 2),
+								y + HalfHeight);
 			var ptRight = new Point(
-								x + _halfWidth - (Pad * 2),
-								y + _halfHeight);
+								x + HalfWidth - (Margin * 2),
+								y + HalfHeight);
 
 			switch (ContentTypeService.GetContentType(tile))
 			{
 				case ContentType.Content:
-					SetGroundPath(x, y);
+					SetContentPath(x, y);
 					g.FillPath(
-							color.Brush,
+							tool.Brush,
 							_content);
 					break;
 
 				case ContentType.Ground:
-					SetGroundPath(x, y);
+					SetContentPath(x, y);
 					g.FillPath(
-							color.LightBrush,
+							tool.LightBrush,
 							_content);
 					break;
 
 				case ContentType.NorthFence:
 					g.DrawLine(
-							color.LightPen,
+							tool.LightPen,
 							ptTop,
 							ptRight);
 					break;
 
 				case ContentType.NorthWall:
 					g.DrawLine(
-							color.Pen,
+							tool.Pen,
 							ptTop,
 							ptRight);
 
 					if (ContentTypeService.IsDoor(tile))
 						g.DrawLine(
-								color.Pen,
+								tool.Pen,
 								ptTop,
 								Point.Add(ptRight, new Size(-10, 4)));
 					break;
 
 				case ContentType.WestFence:
 					g.DrawLine(
-							color.LightPen,
+							tool.LightPen,
 							ptTop,
 							ptLeft);
 					break;
 
 				case ContentType.WestWall:
 					g.DrawLine(
-							color.Pen,
+							tool.Pen,
 							ptTop,
 							ptLeft);
 
 					if (ContentTypeService.IsDoor(tile))
 						g.DrawLine(
-								color.Pen,
+								tool.Pen,
 								Point.Add(ptTop, new Size(6, 8)),
 								ptLeft);
 					break;
@@ -152,7 +145,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				case ContentType.NorthWallWindow:
 					DrawWindow(
 							g,
-							color,
+							tool,
 							ptTop,
 							ptRight);
 					break;
@@ -160,92 +153,92 @@ namespace MapView.Forms.MapObservers.RouteViews
 				case ContentType.WestWallWindow:
 					DrawWindow(
 							g,
-							color,
+							tool,
 							ptTop,
 							ptLeft);
 					break;
 
 				case ContentType.SouthWall:
 					g.DrawLine(
-							color.Pen,
+							tool.Pen,
 							ptLeft,
 							ptBot);
 					break;
 
 				case ContentType.EastWall:
 					g.DrawLine(
-							color.Pen,
+							tool.Pen,
 							ptBot,
 							ptRight);
 					break;
 
 				case ContentType.NorthwestSoutheast:
 					g.DrawLine(
-							color.Pen,
+							tool.Pen,
 							ptTop,
 							ptBot);
 					break;
 
 				case ContentType.NortheastSouthwest:
 					g.DrawLine(
-							color.Pen,
+							tool.Pen,
 							ptLeft,
 							ptRight);
 					break;
 
 				case ContentType.NorthwestCorner:
 					g.DrawLine(
-							color.Pen,
+							tool.Pen,
 							Point.Add(ptTop, new Size(-4, 0)),
 							Point.Add(ptTop, new Size( 4, 0)));
 					break;
 
 				case ContentType.NortheastCorner:
 					g.DrawLine(
-							color.Pen,
+							tool.Pen,
 							Point.Add(ptRight, new Size(0, -4)),
 							Point.Add(ptRight, new Size(0,  4)));
 					break;
 
 				case ContentType.SoutheastCorner:
 					g.DrawLine(
-							color.Pen,
+							tool.Pen,
 							Point.Add(ptBot, new Size(-4, 0)),
 							Point.Add(ptBot, new Size( 4, 0)));
 					break;
 
 				case ContentType.SouthwestCorner:
 					g.DrawLine(
-							color.Pen,
+							tool.Pen,
 							Point.Add(ptLeft, new Size(0, -4)),
 							Point.Add(ptLeft, new Size(0,  4)));
 					break;
 			}
 		}
 
-		private void SetGroundPath(int x, int y)
+		private void SetContentPath(int x, int y)
 		{
-			var w = _halfWidth  / 2;
-			var h = _halfHeight / 2;
+			var w = HalfWidth  / 2;
+			var h = HalfHeight / 2;
 
 			y += h;
 
 			_content.Reset();
 			_content.AddLine(
-							x, y,
+							x,     y,
 							x + w, y + h);
 			_content.AddLine(
 							x + w, y + h,
-							x, y + h * 2);
+							x,     y + h * 2);
 			_content.AddLine(
-							x, y + h * 2,
+							x,     y + h * 2,
 							x - w, y + h);
 			_content.CloseFigure();
 		}
 
 		private static void DrawWindow(
 				Graphics g,
-				SolidPenBrush color,
+				ColorTools tool,
 				Point start, Point end)
 		{
 			var pt = Point.Subtract(end, new Size(start));
@@ -253,17 +246,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 			pt     = Point.Add(start, Size.Add(xy, xy));
 
 			g.DrawLine(
-					color.Pen,
+					tool.Pen,
 					start,
 					Point.Add(start, xy));
 			g.DrawLine(
-					color.LightPen,
+					tool.LightPen,
 					Point.Add(start, xy),
 					pt);
 			g.DrawLine(
-					color.Pen,
+					tool.Pen,
 					pt,
 					end);
 		}
+		#endregion
 	}
 }

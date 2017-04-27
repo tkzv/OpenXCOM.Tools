@@ -169,7 +169,7 @@
       <DependentUpon>TileViewForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MapObservers\TopView\ContentTypeService.cs" />
-    <Compile Include="Forms\MapObservers\TopView\SolidPenBrush.cs" />
+    <Compile Include="Forms\MapObservers\TopView\ColorTools.cs" />
     <Compile Include="Forms\MapObservers\TopView\TopViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -217,7 +217,7 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Forms\MapObservers\RouteView\RoutePanelBase.cs">
+    <Compile Include="Forms\MapObservers\RouteView\RoutePanelParent.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="SettingServices\SettingsService.cs" />
@@ -300,7 +300,7 @@
     <Compile Include="Forms\MapObservers\TileView\TileView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\MapObservers\TopView\TopViewPanelBase.cs">
+    <Compile Include="Forms\MapObservers\TopView\TopViewPanelParent.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\MapObservers\TopView\TopView.cs">

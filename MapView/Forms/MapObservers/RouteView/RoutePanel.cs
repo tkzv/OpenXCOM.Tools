@@ -12,7 +12,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 {
 	internal sealed class RoutePanel
 		:
-			RoutePanelBase
+			RoutePanelParent
 	{
 		private Point _pos = new Point(-1, -1);
 		public Point Pos
@@ -25,7 +25,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private readonly Font _fontOverlay = new Font("Verdana", 7F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 		private readonly Font _fontRose    = new Font("Courier New", 22, FontStyle.Bold);
 
-		private SolidPenBrush _wallColor;
+		private ColorTools _penWalls;
+		private ColorTools _brushContent;
 
 		private Graphics     _graphics;
 		private GraphicsPath _layerFill = new GraphicsPath();
@@ -55,7 +56,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				DrawNodes();
 				DrawGridLines();
 				DrawRose();
-				DrawInformation();
+				DrawInfoOverlay();
 			}
 //			}
 //			catch (Exception ex)
@@ -76,35 +77,46 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void DrawWallsAndContent()
 		{
-			if (_wallColor == null)
-				_wallColor = new SolidPenBrush(MapPens["WallColor"]);
+			if (_penWalls == null)
+				_penWalls = new ColorTools(RoutePens["WallColor"]);
+
+			if (_brushContent == null)
+				_brushContent = new ColorTools(RouteBrushes["ContentColor"], _penWalls.Pen.Width);
 
 			_drawContentService.HalfWidth  = DrawAreaWidth;
 			_drawContentService.HalfHeight = DrawAreaHeight;
 
 			var map = MapFile;
 			for (int
-					r = 0, startX = Origin.X, startY = Origin.Y;
+					r = 0,
+						startX = Origin.X,
+						startY = Origin.Y;
 					r != map.MapSize.Rows;
-					++r, startX -= DrawAreaWidth, startY += DrawAreaHeight)
+					++r,
+						startX -= DrawAreaWidth,
+						startY += DrawAreaHeight)
 			{
 				for (int
-						c = 0, x = startX, y = startY;
+						c = 0,
+							x = startX,
+							y = startY;
 						c != map.MapSize.Cols;
-						++c, x += DrawAreaWidth, y += DrawAreaHeight)
+						++c,
+							x += DrawAreaWidth,
+							y += DrawAreaHeight)
 				{
 					if (map[r, c] != null)
 					{
 						var tile = (XCMapTile)map[r, c];
 
 						if (tile.North != null)
-							_drawContentService.DrawContent(_graphics, _wallColor, x, y, tile.North);
+							_drawContentService.DrawContent(_graphics, _penWalls, x, y, tile.North);
 
 						if (tile.West != null)
-							_drawContentService.DrawContent(_graphics, _wallColor, x, y, tile.West);
+							_drawContentService.DrawContent(_graphics, _penWalls, x, y, tile.West);
 
 						if (tile.Content != null)
-							_drawContentService.DrawContent(_graphics, _wallColor, x, y, tile.Content);
+							_drawContentService.DrawContent(_graphics, _brushContent, x, y, tile.Content);
 					}
 				}
 			}
@@ -115,22 +127,30 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void DrawUnselectedLink()
 		{
-			var pen = MapPens["UnselectedLinkColor"];
+			var pen = RoutePens["UnselectedLinkColor"];
 
 			for (int
-					r = 0, startX = Origin.X, startY = Origin.Y;
-					r != MapFile.MapSize.Rows;
-					++r, startX -= DrawAreaWidth, startY += DrawAreaHeight)
+					rSrc = 0,
+						x = Origin.X,
+						y = Origin.Y;
+					rSrc != MapFile.MapSize.Rows;
+					++rSrc,
+						x -= DrawAreaWidth,
+						y += DrawAreaHeight)
 			{
 				for (int
-						c = 0, x = startX, y = startY;
-						c != MapFile.MapSize.Cols;
-						++c, x += DrawAreaWidth, y += DrawAreaHeight)
+						cSrc = 0,
+							xSrc = x,
+							ySrc = y;
+						cSrc != MapFile.MapSize.Cols;
+						++cSrc,
+							xSrc += DrawAreaWidth,
+							ySrc += DrawAreaHeight)
 				{
-					if (MapFile[r, c] != null)
+					if (MapFile[rSrc, cSrc] != null)
 					{
-						var entry = ((XCMapTile)MapFile[r, c]).Node;
-						if (entry != null)
+						var node = ((XCMapTile)MapFile[rSrc, cSrc]).Node;
+						if (node != null)
 						{
 //							_layerFill.Reset();
 //							_layerFill.AddLine(
@@ -144,57 +164,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 //											x - DrawAreaWidth, y + DrawAreaHeight);
 //							_layerFill.CloseFigure();
 
-
-							int xEnd, yEnd;
-
-							for (int i = 0; i != RouteNode.LinkSlots; ++i)
-							{
-								xEnd = -1;
-								yEnd =  0;
-
-								var link = entry[i] as Link;
-								switch (link.Destination)
-								{
-									case Link.NotUsed:
-										break;
-
-									case Link.ExitNorth:
-										xEnd = Width;
-										break;
-
-									case Link.ExitEast:
-										xEnd = Width;
-										yEnd = Height;
-										break;
-
-									case Link.ExitSouth:
-										xEnd = 0;
-										yEnd = Height;
-										break;
-
-									case Link.ExitWest:
-										xEnd = 0;
-										break;
-
-									default:
-										if (   MapFile.RouteFile[link.Destination] != null
-											&& MapFile.RouteFile[link.Destination].Height == MapFile.CurrentHeight)
-										{
-											int rEnd = MapFile.RouteFile[link.Destination].Row;
-											int cEnd = MapFile.RouteFile[link.Destination].Col;
-
-											xEnd = Origin.X + (cEnd - rEnd)     * DrawAreaWidth;
-											yEnd = Origin.Y + (cEnd + rEnd + 1) * DrawAreaHeight;
-										}
-										break;
-								}
-
-								if (xEnd != -1)
-									_graphics.DrawLine(
-													pen,
-													x,    y + DrawAreaHeight,
-													xEnd, yEnd);
-							}
+							DrawLinkLine(xSrc, ySrc, node, pen, false);
 						}
 					}
 				}
@@ -206,70 +176,78 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void DrawSelectedLink()
 		{
-			int c = ClickPoint.X;
-			int r = ClickPoint.Y;
+			int cSrc = ClickPoint.X;
+			int rSrc = ClickPoint.Y;
 
-			if (c > -1 && r > -1)
+			if (cSrc > -1 && rSrc > -1)
 			{
-				var entry = ((XCMapTile)MapFile[r, c]).Node;
-				if (entry != null)
+				var node = ((XCMapTile)MapFile[rSrc, cSrc]).Node;
+				if (node != null)
 				{
-					int xLoc = Origin.X + (c - r)     * DrawAreaWidth;
-					int yLoc = Origin.Y + (c + r + 1) * DrawAreaHeight;
+					int xSrc = Origin.X + (cSrc - rSrc)     * DrawAreaWidth;
+					int ySrc = Origin.Y + (cSrc + rSrc + 1) * DrawAreaHeight;
 
-					var pen = MapPens["SelectedLinkColor"];
+					var pen = RoutePens["SelectedLinkColor"];
 
-					int xEnd, yEnd;
-
-					for (int i = 0; i != RouteNode.LinkSlots; ++i)
-					{
-						xEnd = -1;
-						yEnd =  0; // pacify the compiler.
-
-						var link = entry[i] as Link;
-						switch (link.Destination)
-						{
-							case Link.NotUsed:
-								break;
-
-							case Link.ExitNorth:
-								xEnd = Width;
-								break;
-
-							case Link.ExitEast:
-								xEnd = Width;
-								yEnd = Height;
-								break;
-
-							case Link.ExitSouth:
-								xEnd = 0;
-								yEnd = Height;
-								break;
-
-							case Link.ExitWest:
-								xEnd = 0;
-								break;
-
-							default:
-								if (   MapFile.RouteFile[link.Destination] != null
-									&& MapFile.RouteFile[link.Destination].Height == MapFile.CurrentHeight)
-								{
-									int cEnd = MapFile.RouteFile[link.Destination].Col;
-									int rEnd = MapFile.RouteFile[link.Destination].Row;
-
-									xEnd = Origin.X + (cEnd - rEnd)     * DrawAreaWidth;
-									yEnd = Origin.Y + (cEnd + rEnd + 1) * DrawAreaHeight;
-								}
-								break;
-						}
-
-						if (xEnd != -1)
-							_graphics.DrawLine(
-											pen,
-											xLoc, yLoc,
-											xEnd, yEnd);
-					}
+					DrawLinkLine(xSrc, ySrc, node, pen, true);
 				}
+			}
+		}
+
+		private void DrawLinkLine(int xSrc, int ySrc, RouteNode node, Pen pen, bool selected)
+		{
+			int xDst;
+			int yDst;
+			int yOffset = (!selected) ? DrawAreaHeight
+									  : 0;
+
+			for (int i = 0; i != RouteNode.LinkSlots; ++i)
+			{
+				xDst = -1;
+				yDst =  0;
+
+				var link = node[i] as Link;
+				switch (link.Destination)
+				{
+					case Link.NotUsed:
+						break;
+
+					case Link.ExitNorth:
+						xDst = Width;
+						break;
+
+					case Link.ExitEast:
+						xDst = Width;
+						yDst = Height;
+						break;
+
+					case Link.ExitSouth:
+						xDst = 0;
+						yDst = Height;
+						break;
+
+					case Link.ExitWest:
+						xDst = 0;
+						break;
+
+					default:
+						if (   MapFile.RouteFile[link.Destination] != null
+							&& MapFile.RouteFile[link.Destination].Height == MapFile.CurrentHeight)
+						{
+							int cDst = MapFile.RouteFile[link.Destination].Col;
+							int rDst = MapFile.RouteFile[link.Destination].Row;
+
+							xDst = Origin.X + (cDst - rDst)     * DrawAreaWidth;
+							yDst = Origin.Y + (cDst + rDst + 1) * DrawAreaHeight;
+						}
+						break;
+				}
+
+				if (xDst != -1)
+					_graphics.DrawLine(
+									pen,
+									xSrc, ySrc + yOffset, // unselected nodes need an offset
+									xDst, yDst);
 			}
 		}
 
@@ -281,9 +259,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void DrawNodes()
 		{
-			var brushSelected   = MapBrushes["SelectedNodeColor"]; // TODO: set these as class-vars ->
-			var brushUnselected = MapBrushes["UnselectedNodeColor"];
-			var brushSpawn      = MapBrushes["SpawnNodeColor"];
+			var brushSelected   = RouteBrushes["SelectedNodeColor"]; // TODO: set these as class-vars ->
+			var brushUnselected = RouteBrushes["UnselectedNodeColor"];
+			var brushSpawn      = RouteBrushes["SpawnNodeColor"];
 
 			brushSelected.Color   = Color.FromArgb(200, brushSelected.Color);
 			brushUnselected.Color = Color.FromArgb(200, brushUnselected.Color);
@@ -295,9 +273,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			for (int r = 0; r != MapFile.MapSize.Rows; ++r)
 			{
 				for (int
-						c = 0, x = startX, y = startY;
+						c = 0,
+							x = startX,
+							y = startY;
 						c != MapFile.MapSize.Cols;
-						++c, x += DrawAreaWidth, y += DrawAreaHeight)
+						++c,
+							x += DrawAreaWidth,
+							y += DrawAreaHeight)
 				{
 					var tile = MapFile[r, c] as XCMapTile;
 					if (tile != null)
@@ -347,7 +329,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 											&& MapFile.RouteFile[link.Destination].Height < MapFile.CurrentHeight)
 										{
 											_graphics.DrawLine(
-															MapPens["UnselectedLinkColor"],
+															RoutePens["UnselectedLinkColor"],
 															x, y,
 															x, y + DrawAreaHeight * 2);
 										}
@@ -355,7 +337,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 											&&   MapFile.RouteFile[link.Destination].Height > MapFile.CurrentHeight)
 										{
 											_graphics.DrawLine(
-															MapPens["UnselectedLinkColor"],
+															RoutePens["UnselectedLinkColor"],
 															x - DrawAreaWidth, y + DrawAreaHeight,
 															x + DrawAreaWidth, y + DrawAreaHeight);
 										}
@@ -438,7 +420,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			for (int i = 0; i <= map.MapSize.Rows; ++i)
 				_graphics.DrawLine(
-								MapPens["GridLineColor"],
+								RoutePens["GridLineColor"],
 								Origin.X - i * DrawAreaWidth,
 								Origin.Y + i * DrawAreaHeight,
 								Origin.X + ((map.MapSize.Cols - i) * DrawAreaWidth),
@@ -446,7 +428,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			for (int i = 0; i <= map.MapSize.Cols; ++i)
 				_graphics.DrawLine(
-								MapPens["GridLineColor"],
+								RoutePens["GridLineColor"],
 								Origin.X + i * DrawAreaWidth,
 								Origin.Y + i * DrawAreaHeight,
 							   (Origin.X + i * DrawAreaWidth)  - map.MapSize.Rows * DrawAreaWidth,
@@ -490,9 +472,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		/// <summary>
-		/// Draws tile information and the overlay.
+		/// Draws tile/node information in the overlay.
 		/// </summary>
-		private void DrawInformation()
+		private void DrawInfoOverlay()
 		{
 			var tile = GetTile(_pos.X, _pos.Y);
 			if (tile != null)

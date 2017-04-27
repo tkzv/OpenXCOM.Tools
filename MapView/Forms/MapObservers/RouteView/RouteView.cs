@@ -41,10 +41,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			InitializeComponent();
 
 			_routePanel = new RoutePanel();
-			pRoutes.Controls.Add(_routePanel);
+			_routePanel.Dock = DockStyle.Fill;
 			_routePanel.RoutePanelClickedEvent += OnRoutePanelClicked;
 			_routePanel.MouseMove += OnRoutePanelMouseMove;
-			_routePanel.Dock = DockStyle.Fill;
+			pRoutes.Controls.Add(_routePanel);
 
 			var unitTypes = new object[]
 			{
@@ -131,19 +131,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnBrushColorChanged(object sender, string key, object val)
 		{
-			_routePanel.MapBrushes[key].Color = (Color)val;
+			_routePanel.RouteBrushes[key].Color = (Color)val;
 			Refresh();
 		}
 
 		private void OnPenColorChanged(object sender, string key, object val)
 		{
-			_routePanel.MapPens[key].Color = (Color)val;
+			_routePanel.RoutePens[key].Color = (Color)val;
 			Refresh();
 		}
 
 		private void OnPenWidthChanged(object sender, string key, object val)
 		{
-			_routePanel.MapPens[key].Width = (int)val;
+			_routePanel.RoutePens[key].Width = (int)val;
 			Refresh();
 		}
 		
@@ -1001,20 +1001,20 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			tsmiConnectType.SelectedIndex = 0;
 
-			var brushes = _routePanel.MapBrushes;
-			var pens    = _routePanel.MapPens;
+			var pens    = _routePanel.RoutePens;
+			var brushes = _routePanel.RouteBrushes;
 
 			var bc = new ValueChangedEventHandler(OnBrushColorChanged);
 			var pc = new ValueChangedEventHandler(OnPenColorChanged);
 			var pw = new ValueChangedEventHandler(OnPenWidthChanged);
 
 			var settings = Settings;
-			var redPen = new Pen(new SolidBrush(Color.Red), 2);
-			pens["UnselectedLinkColor"] = redPen;
-			pens["UnselectedLinkWidth"] = redPen;
+			var penRed = new Pen(new SolidBrush(Color.Red), 2);
+			pens["UnselectedLinkColor"] = penRed;
+			pens["UnselectedLinkWidth"] = penRed;
 			settings.AddSetting(
 							"UnselectedLinkColor",
-							redPen.Color,
+							penRed.Color,
 							"Color of unselected link lines",
 							"Links",
 							pc);
@@ -1025,12 +1025,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 							"Links",
 							pw);
 
-			var bluePen = new Pen(new SolidBrush(Color.Blue), 2);
-			pens["SelectedLinkColor"] = bluePen;
-			pens["SelectedLinkWidth"] = bluePen;
+			var penBlue = new Pen(new SolidBrush(Color.Blue), 2);
+			pens["SelectedLinkColor"] = penBlue;
+			pens["SelectedLinkWidth"] = penBlue;
 			settings.AddSetting(
 							"SelectedLinkColor",
-							bluePen.Color,
+							penBlue.Color,
 							"Color of selected link lines",
 							"Links",
 							pc);
@@ -1041,12 +1041,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 							"Links",
 							pw);
 
-			var wallPen = new Pen(new SolidBrush(Color.Black), 4);
-			pens["WallColor"] = wallPen;
-			pens["WallWidth"] = wallPen;
+			var penWalls = new Pen(new SolidBrush(Color.Black), 4);
+			pens["WallColor"] = penWalls;
+			pens["WallWidth"] = penWalls;
 			settings.AddSetting(
 							"WallColor",
-							wallPen.Color,
+							penWalls.Color,
 							"Color of wall indicators",
 							"View",
 							pc);
@@ -1057,12 +1057,21 @@ namespace MapView.Forms.MapObservers.RouteViews
 							"View",
 							pw);
 
-			var gridPen = new Pen(new SolidBrush(Color.Black), 1);
-			pens["GridLineColor"] = gridPen;
-			pens["GridLineWidth"] = gridPen;
+			var brushContent = new SolidBrush(Color.DarkGray);
+			brushes["ContentColor"] = brushContent;
+			settings.AddSetting(
+							"ContentColor",
+							brushContent.Color,
+							"Color of content indicators",
+							"View", // "Other"
+							bc);
+
+			var penGrid = new Pen(new SolidBrush(Color.Black), 1);
+			pens["GridLineColor"] = penGrid;
+			pens["GridLineWidth"] = penGrid;
 			settings.AddSetting(
 							"GridLineColor",
-							gridPen.Color,
+							penGrid.Color,
 							"Color of grid lines",
 							"View",
 							pc);
@@ -1073,40 +1082,31 @@ namespace MapView.Forms.MapObservers.RouteViews
 							"View",
 							pw);
 
-			var selBrush = new SolidBrush(Color.Blue);
-			brushes["SelectedNodeColor"] = selBrush;
+			var brushSelected = new SolidBrush(Color.Blue);
+			brushes["SelectedNodeColor"] = brushSelected;
 			settings.AddSetting(
 							"SelectedNodeColor",
-							selBrush.Color,
+							brushSelected.Color,
 							"Color of selected nodes",
 							"Nodes",
 							bc);
 
-			var spawnBrush = new SolidBrush(Color.GreenYellow);
-			brushes["SpawnNodeColor"] = spawnBrush;
+			var brushSpawn = new SolidBrush(Color.GreenYellow);
+			brushes["SpawnNodeColor"] = brushSpawn;
 			settings.AddSetting(
 							"SpawnNodeColor",
-							spawnBrush.Color,
+							brushSpawn.Color,
 							"Color of spawn nodes",
 							"Nodes",
 							bc);
 
-			var nodeBrush = new SolidBrush(Color.Green);
-			brushes["UnselectedNodeColor"] = nodeBrush;
+			var brushNode = new SolidBrush(Color.Green);
+			brushes["UnselectedNodeColor"] = brushNode;
 			settings.AddSetting(
 							"UnselectedNodeColor",
-							nodeBrush.Color,
+							brushNode.Color,
 							"Color of unselected nodes",
 							"Nodes",
-							bc);
-
-			var contentBrush = new SolidBrush(Color.DarkGray);
-			brushes["ContentColor"] = contentBrush;
-			settings.AddSetting(
-							"ContentColor",
-							contentBrush.Color,
-							"Color of content indicators",
-							"Other",
 							bc);
 		}
 	}
