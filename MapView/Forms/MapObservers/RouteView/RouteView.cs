@@ -129,24 +129,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void OnBrushColorChanged(object sender, string key, object val)
-		{
-			_routePanel.RouteBrushes[key].Color = (Color)val;
-			Refresh();
-		}
-
-		private void OnPenColorChanged(object sender, string key, object val)
-		{
-			_routePanel.RoutePens[key].Color = (Color)val;
-			Refresh();
-		}
-
-		private void OnPenWidthChanged(object sender, string key, object val)
-		{
-			_routePanel.RoutePens[key].Width = (int)val;
-			Refresh();
-		}
-		
 		private void OnRoutePanelMouseMove(object sender, MouseEventArgs args)
 		{
 			var tile = _routePanel.GetTile(args.X, args.Y);
@@ -994,6 +976,31 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
+
+		private void OnBrushColorChanged(object sender, string key, object val)
+		{
+			_routePanel.RouteBrushes[key].Color = (Color)val;
+			Refresh();
+		}
+
+		private void OnPenColorChanged(object sender, string key, object val)
+		{
+			_routePanel.RoutePens[key].Color = (Color)val;
+			Refresh();
+		}
+
+		private void OnPenWidthChanged(object sender, string key, object val)
+		{
+			_routePanel.RoutePens[key].Width = (int)val;
+			Refresh();
+		}
+
+		private void OnNodeOpacityChanged(object sender, string key, object val)
+		{
+			_routePanel.Opacity = ((int)val).Clamp(0, 255);
+			Refresh();
+		}
+
 		/// <summary>
 		/// Loads default settings for RouteView in TopRouteView screens.
 		/// </summary>
@@ -1007,6 +1014,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var bc = new ValueChangedEventHandler(OnBrushColorChanged);
 			var pc = new ValueChangedEventHandler(OnPenColorChanged);
 			var pw = new ValueChangedEventHandler(OnPenWidthChanged);
+			var oc = new ValueChangedEventHandler(OnNodeOpacityChanged);
 
 			var settings = Settings;
 			var penRed = new Pen(new SolidBrush(Color.Red), 2);
@@ -1082,6 +1090,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 							"View",
 							pw);
 
+			var brushNode = new SolidBrush(Color.Green);
+			brushes["UnselectedNodeColor"] = brushNode;
+			settings.AddSetting(
+							"UnselectedNodeColor",
+							brushNode.Color,
+							"Color of unselected nodes",
+							"Nodes",
+							bc);
+
 			var brushSelected = new SolidBrush(Color.Blue);
 			brushes["SelectedNodeColor"] = brushSelected;
 			settings.AddSetting(
@@ -1100,14 +1117,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 							"Nodes",
 							bc);
 
-			var brushNode = new SolidBrush(Color.Green);
-			brushes["UnselectedNodeColor"] = brushNode;
 			settings.AddSetting(
-							"UnselectedNodeColor",
-							brushNode.Color,
-							"Color of unselected nodes",
+							"NodeOpacity",
+							255,
+							"Opacity of node colors",
 							"Nodes",
-							bc);
+							oc);
 		}
 	}
 }

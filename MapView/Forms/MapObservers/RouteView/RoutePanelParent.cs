@@ -57,6 +57,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			get { return _brushes; }
 		}
 
+		private int _opacity = 255;
+		internal int Opacity
+		{
+			get { return _opacity; }
+			set { _opacity = value; }
+		}
+
 
 		#region cTor
 		/// <summary>

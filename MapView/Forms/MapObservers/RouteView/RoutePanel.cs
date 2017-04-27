@@ -271,11 +271,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 				_brushSelected   = RouteBrushes["SelectedNodeColor"];
 				_brushUnselected = RouteBrushes["UnselectedNodeColor"];
 				_brushSpawn      = RouteBrushes["SpawnNodeColor"];
-
-//				_brushSelected.Color   = Color.FromArgb(200, _brushSelected.Color);
-//				_brushUnselected.Color = Color.FromArgb(200, _brushUnselected.Color);
-//				_brushSpawn.Color      = Color.FromArgb(200, _brushSpawn.Color);
 			}
+
+			_brushSelected.Color   = Color.FromArgb(Opacity, _brushSelected.Color);
+			_brushUnselected.Color = Color.FromArgb(Opacity, _brushUnselected.Color);
+			_brushSpawn.Color      = Color.FromArgb(Opacity, _brushSpawn.Color);
+
 
 			var startX = Origin.X;
 			var startY = Origin.Y;
