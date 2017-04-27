@@ -42,7 +42,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		internal TopViewPanel()
 		{
-			MainViewPanel.Instance.MainView.MouseDragEvent += OnMouseDrag;
+			MainViewUnderlay.Instance.MainView.MouseDragEvent += OnMouseDrag;
 
 			(this as Control).KeyDown += OnEditKeyDown;
 		}
@@ -57,16 +57,16 @@ namespace MapView.Forms.MapObservers.TopViews
 				switch (e.KeyCode)
 				{
 					case Keys.X:
-						MainViewPanel.Instance.MainView.Copy();
-						MainViewPanel.Instance.MainView.ClearSelection();
+						MainViewUnderlay.Instance.MainView.Copy();
+						MainViewUnderlay.Instance.MainView.ClearSelection();
 						break;
 
 					case Keys.C:
-						MainViewPanel.Instance.MainView.Copy();
+						MainViewUnderlay.Instance.MainView.Copy();
 						break;
 
 					case Keys.V:
-						MainViewPanel.Instance.MainView.Paste();
+						MainViewUnderlay.Instance.MainView.Paste();
 						break;
 				}
 			}
@@ -75,7 +75,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				switch (e.KeyCode)
 				{
 					case Keys.Delete:
-						MainViewPanel.Instance.MainView.ClearSelection();
+						MainViewUnderlay.Instance.MainView.ClearSelection();
 						break;
 				}
 			}

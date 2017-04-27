@@ -34,7 +34,7 @@ namespace MapView
 		:
 			Form
 	{
-		private readonly MainViewPanel         _mainViewPanel; // has static functs.
+		private readonly MainViewUnderlay         _mainViewPanel; // has static functs.
 
 		private readonly ViewersManager        _viewersManager;
 		private readonly ViewerFormsManager    _viewerFormsManager; // has static functs.
@@ -155,7 +155,7 @@ namespace MapView
 			LogFile.WriteLine("MainView Settings loaded.");	// since managers might be re-instantiating needlessly
 															// when OnSettingsChange() runs ....
 
-			_mainViewPanel = MainViewPanel.Instance;
+			_mainViewPanel = MainViewUnderlay.Instance;
 			LogFile.WriteLine("MainView panel instantiated.");
 
 
@@ -195,7 +195,7 @@ namespace MapView
 
 			ViewerFormsManager.TileView.Control.MapChangedEvent += OnMapChanged;
 
-			MainViewPanel.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			MainViewUnderlay.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 
 			_mainViewPanel.Dock = DockStyle.Fill;
@@ -435,7 +435,7 @@ namespace MapView
 
 			settings.AddSetting(
 							"Animation",
-							MainViewPanel.IsAnimated,
+							MainViewUnderlay.IsAnimated,
 							"If true the sprites will animate.",
 							"Main",
 							handler);
@@ -454,34 +454,34 @@ namespace MapView
 
 			settings.AddSetting(
 							"ShowGrid",
-							MainViewPanel.Instance.MainView.ShowGrid,
+							MainViewUnderlay.Instance.MainView.ShowGrid,
 							"If true a grid will show up at the current level of editing.",
 							"MapView",
-							null, MainViewPanel.Instance.MainView);
+							null, MainViewUnderlay.Instance.MainView);
 			settings.AddSetting(
 							"GridColor",
-							MainViewPanel.Instance.MainView.GridColor,
+							MainViewUnderlay.Instance.MainView.LayerColor,
 							"Color of the grid in (a,r,g,b) format.",
 							"MapView",
-							null, MainViewPanel.Instance.MainView);
+							null, MainViewUnderlay.Instance.MainView);
 			settings.AddSetting(
 							"GridLineColor",
-							MainViewPanel.Instance.MainView.GridLineColor,
+							MainViewUnderlay.Instance.MainView.GridLineColor,
 							"Color of the lines that make up the grid.",
 							"MapView",
-							null, MainViewPanel.Instance.MainView);
+							null, MainViewUnderlay.Instance.MainView);
 			settings.AddSetting(
 							"GridLineWidth",
-							MainViewPanel.Instance.MainView.GridLineWidth,
+							MainViewUnderlay.Instance.MainView.GridLineWidth,
 							"Width of the grid lines in pixels.",
 							"MapView",
-							null, MainViewPanel.Instance.MainView);
+							null, MainViewUnderlay.Instance.MainView);
 			settings.AddSetting(
 							"GraySelection",
-							MainViewPanel.Instance.MainView.GraySelection,
+							MainViewUnderlay.Instance.MainView.GraySelection,
 							"If true the selection area will show up in gray.",
 							"MapView",
-							null, MainViewPanel.Instance.MainView);
+							null, MainViewUnderlay.Instance.MainView);
 //			settings.AddSetting(
 //							"SaveOnExit",
 //							true,
@@ -499,7 +499,7 @@ namespace MapView
 				case "Animation":
 					miOn.Checked = (bool)val;		// NOTE: 'miOn.Checked' and 'miOff.Checked' are used
 					miOff.Checked = !miOn.Checked;	// by the F1 and F2 keys to switch animations on/off.
-					MainViewPanel.Animate(miOn.Checked);
+					MainViewUnderlay.Animate(miOn.Checked);
 
 					if (!miOn.Checked) // show the doorsprites closed in TileView and QuadrantPanel.
 					{
@@ -541,19 +541,19 @@ namespace MapView
 					break;
 
 				case "ShowGrid":
-					MainViewPanel.Instance.MainView.ShowGrid = (bool)val;
+					MainViewUnderlay.Instance.MainView.ShowGrid = (bool)val;
 					break;
 
 				case "GridColor":
-					MainViewPanel.Instance.MainView.GridColor = (Color)val;
+					MainViewUnderlay.Instance.MainView.LayerColor = (Color)val;
 					break;
 
 				case "GridLineColor":
-					MainViewPanel.Instance.MainView.GridLineColor = (Color)val;
+					MainViewUnderlay.Instance.MainView.GridLineColor = (Color)val;
 					break;
 
 				case "GridLineWidth":
-					MainViewPanel.Instance.MainView.GridLineWidth = (int)val;
+					MainViewUnderlay.Instance.MainView.GridLineWidth = (int)val;
 					break;
 
 				// NOTE: "GraySelection" is handled. reasons ...

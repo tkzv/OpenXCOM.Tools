@@ -146,7 +146,7 @@
     <Compile Include="Forms\MapObservers\IMapObserverProvider.cs" />
     <Compile Include="Forms\MapObservers\RouteView\ConnectNodeType.cs" />
     <Compile Include="Forms\MapObservers\RouteView\DrawContentService.cs" />
-    <Compile Include="Forms\MapObservers\RouteView\RoutePanelClickEventArgs.cs" />
+    <Compile Include="Forms\MapObservers\RouteView\RoutePanelClickedEventArgs.cs" />
     <Compile Include="Forms\MapObservers\RouteView\RoutePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -256,7 +256,7 @@
     <Compile Include="Forms\OtherForms\MapInfoForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MainWindow\MainViewPanel\MainViewPanel.cs">
+    <Compile Include="Forms\MainWindow\MainViewPanel\MainViewUnderlay.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\OtherForms\NewMapForm.cs">
@@ -312,7 +312,7 @@
     <Compile Include="Forms\MapObservers\TopView\TopViewPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\MainWindow\MainViewPanel\MainView.cs">
+    <Compile Include="Forms\MainWindow\MainViewPanel\MainViewOverlay.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\MainWindow\XCMainWindow.cs">

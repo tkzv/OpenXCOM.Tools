@@ -142,7 +142,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		private void DrawSelectedLozenge()
 		{
-			if (MainViewPanel.Instance.MainView.FirstClick)
+			if (MainViewUnderlay.Instance.MainView.FirstClick)
 			{
 				var start = GetDragStart();
 				var end   = GetDragEnd();
@@ -177,11 +177,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			var start = new Point(0, 0);
 			start.X = Math.Min(
-							MainViewPanel.Instance.MainView.DragStart.X,
-							MainViewPanel.Instance.MainView.DragEnd.X);
+							MainViewUnderlay.Instance.MainView.DragStart.X,
+							MainViewUnderlay.Instance.MainView.DragEnd.X);
 			start.Y = Math.Min(
-							MainViewPanel.Instance.MainView.DragStart.Y,
-							MainViewPanel.Instance.MainView.DragEnd.Y);
+							MainViewUnderlay.Instance.MainView.DragStart.Y,
+							MainViewUnderlay.Instance.MainView.DragEnd.Y);
 			return start;
 		}
 
@@ -189,11 +189,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			var end = new Point(0, 0);
 			end.X = Math.Max(
-						MainViewPanel.Instance.MainView.DragStart.X,
-						MainViewPanel.Instance.MainView.DragEnd.X);
+						MainViewUnderlay.Instance.MainView.DragStart.X,
+						MainViewUnderlay.Instance.MainView.DragEnd.X);
 			end.Y = Math.Max(
-						MainViewPanel.Instance.MainView.DragStart.Y,
-						MainViewPanel.Instance.MainView.DragEnd.Y);
+						MainViewUnderlay.Instance.MainView.DragStart.Y,
+						MainViewUnderlay.Instance.MainView.DragEnd.Y);
 			return end;
 		}
 
@@ -274,7 +274,7 @@ namespace MapView.Forms.MapObservers.TopViews
 									i * hWidth  - BaseMap.MapSize.Rows * hWidth  + _offX,
 									i * hHeight + BaseMap.MapSize.Rows * hHeight + _offY);
 
-				if (MainViewPanel.Instance.MainView.FirstClick)
+				if (MainViewUnderlay.Instance.MainView.FirstClick)
 					backBuffer.DrawPath(Pens["SelectColor"], _lozSelected);
 
 				if (   _mouseCol > -1
@@ -354,7 +354,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			if (BaseMap != null)
 			{
-				MainViewPanel.Instance.MainView.FirstClick = true;
+				MainViewUnderlay.Instance.MainView.FirstClick = true;
 
 				var pt = ConvertCoordsDiamond(
 											e.X - _offX,
@@ -365,14 +365,14 @@ namespace MapView.Forms.MapObservers.TopViews
 													BaseMap.CurrentHeight);
 
 				_isMouseDrag = true;
-				MainViewPanel.Instance.MainView.SetDrag(pt, pt);
+				MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);
 			}
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			_isMouseDrag = false;
-			MainViewPanel.Instance.MainView.Refresh();
+			MainViewUnderlay.Instance.MainView.Refresh();
 
 			Refresh();
 		}
@@ -388,8 +388,8 @@ namespace MapView.Forms.MapObservers.TopViews
 				_mouseRow = pt.Y;
 
 				if (_isMouseDrag)
-					MainViewPanel.Instance.MainView.SetDrag(
-														MainViewPanel.Instance.MainView.DragStart,
+					MainViewUnderlay.Instance.MainView.SetDrag(
+														MainViewUnderlay.Instance.MainView.DragStart,
 														pt);
 
 				Refresh(); // mouseover refresh for TopView.

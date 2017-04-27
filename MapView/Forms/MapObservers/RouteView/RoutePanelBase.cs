@@ -12,7 +12,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		:
 			UserControl
 	{
-		public event EventHandler<RoutePanelClickEventArgs> RoutePanelClicked;
+		public event EventHandler<RoutePanelClickedEventArgs> RoutePanelClickedEvent;
 
 
 		private XCMapFile _mapFile;
@@ -105,41 +105,36 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (_mapFile != null)
+			if (_mapFile != null && RoutePanelClickedEvent != null)
 			{
-				if (RoutePanelClicked != null)
+				var pt = ConvertCoordsDiamond(e.X, e.Y);
+				if (   pt.Y >= 0 && pt.Y < _mapFile.MapSize.Rows
+					&& pt.X >= 0 && pt.X < _mapFile.MapSize.Cols)
 				{
-					var pt = ConvertCoordsDiamond(e.X, e.Y);
-					if (   pt.Y >= 0 && pt.Y < _mapFile.MapSize.Rows
-						&& pt.X >= 0 && pt.X < _mapFile.MapSize.Cols)
+					var tile = _mapFile[pt.Y, pt.X];
+					if (tile != null)
 					{
-						var tile = _mapFile[pt.Y, pt.X];
-						if (tile != null)
-						{
-							ClickPoint = pt;
+						ClickPoint = pt;
 
-							_mapFile.SelectedTile = new MapLocation(
+						_mapFile.SelectedTile = new MapLocation(
 															ClickPoint.Y,
 															ClickPoint.X,
 															_mapFile.CurrentHeight);
 
-							MainViewPanel.Instance.MainView.SetDrag(pt, pt);
+						MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);
 
-							var args = new RoutePanelClickEventArgs();
-							args.ClickTile = tile;
-							args.MouseEventArgs = e;
-							args.ClickLocation = new MapLocation(
-															ClickPoint.Y,
-															ClickPoint.X,
-															_mapFile.CurrentHeight);
-							RoutePanelClicked(this, args);
+						var args = new RoutePanelClickedEventArgs();
+						args.ClickTile = tile;
+						args.MouseEventArgs = e;
+						args.ClickLocation = new MapLocation(
+														ClickPoint.Y,
+														ClickPoint.X,
+														_mapFile.CurrentHeight);
+						RoutePanelClickedEvent(this, args);
 
-							Refresh();
-						}
-//						else return;
+						Refresh();
 					}
 				}
-//				Refresh(); // moved up^
 			}
 		}
 

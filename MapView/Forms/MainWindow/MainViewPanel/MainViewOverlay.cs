@@ -14,7 +14,7 @@ namespace MapView
 	public delegate void MouseDragEventHandler();
 
 
-	internal sealed class MainView
+	internal sealed class MainViewOverlay
 		:
 			Panel
 	{
@@ -56,41 +56,52 @@ namespace MapView
 		private Point _dragStart = new Point(-1, -1);
 		private Point _dragEnd   = new Point(-1, -1);
 
-		private GraphicsPath _gridUnder;
-		private Brush _brushTrans;
+		private GraphicsPath _layerFill = new GraphicsPath();
 
-		private Color _colorGrid;
-		public Color GridColor // public for Reflection.
+		private Brush _brushLayer;
+
+		private Color _colorLayer;
+		public Color LayerColor // public for Reflection.
 		{
-			get { return _colorGrid; }
+			get { return _colorLayer; }
 			set
 			{
-				_colorGrid = value;
-				_brushTrans = new SolidBrush(value);
+				_colorLayer = value;
+				_brushLayer = new SolidBrush(value);
 				Refresh();
 			}
 		}
 
-		private Pen _penDash;
+		private Pen _penGrid;
 		public Color GridLineColor // public for Reflection.
 		{
-			get { return _penDash.Color; }
+			get { return _penGrid.Color; }
 			set
 			{
-				_penDash.Color = value;
+				_penGrid.Color = value;
 				Refresh();
 			}
 		}
 		public int GridLineWidth // public for Reflection.
 		{
-			get { return (int)_penDash.Width; }
+			get { return (int)_penGrid.Width; }
 			set
 			{
-				_penDash.Width = value;
+				_penGrid.Width = value;
 				Refresh();
 			}
 		}
 
+		private bool _showGrid = true;
+		public bool ShowGrid // public for Reflection.
+		{
+			get { return _showGrid; }
+			set
+			{
+				_showGrid = value;
+				Refresh();
+			}
+		}
 
 		private bool _graySelection = true;
 		// NOTE: Remove suppression for Release cfg.
@@ -104,17 +115,6 @@ namespace MapView
 			set
 			{
 				_graySelection = value;
-				Refresh();
-			}
-		}
-
-		private bool _showGrid = true;
-		public bool ShowGrid // public for Reflection.
-		{
-			get { return _showGrid; }
-			set
-			{
-				_showGrid = value;
 				Refresh();
 			}
 		}
@@ -135,19 +135,21 @@ namespace MapView
 //		}
 
 
-		internal MainView()
+		#region cTor
+		internal MainViewOverlay()
 		{
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
 				   | ControlStyles.AllPaintingInWmPaint
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 
-			_colorGrid  = Color.FromArgb(175, 69, 100, 129);
-			_brushTrans = new SolidBrush(_colorGrid);
-			_penDash    = new Pen(Brushes.Black, 1);
+			_colorLayer  = Color.FromArgb(175, 69, 100, 129);
+			_brushLayer = new SolidBrush(_colorLayer);
+			_penGrid    = new Pen(Brushes.Black, 1);
 
 			KeyDown += OnEditKeyDown;
 		}
+		#endregion
 
 
 		private void OnEditKeyDown(object sender, KeyEventArgs e)
@@ -551,7 +553,7 @@ namespace MapView
 									_cursor.DrawLow(
 												g,
 												x, y,
-												MainViewPanel.AniStep,
+												MainViewUnderlay.AniStep,
 												false,
 												_baseMap.CurrentHeight == h);
 							}
@@ -588,8 +590,6 @@ namespace MapView
 				var xMax = _baseMap.MapSize.Rows * hWidth;
 				var yMax = _baseMap.MapSize.Rows * hHeight;
 
-				_gridUnder = new GraphicsPath();
-
 				var pt0 = new Point(x, y);
 				var pt1 = new Point(
 								x + _baseMap.MapSize.Cols * hWidth,
@@ -599,16 +599,17 @@ namespace MapView
 								y + (_baseMap.MapSize.Rows + _baseMap.MapSize.Cols) * hHeight);
 				var pt3 = new Point(x - xMax, yMax + y);
 
-				_gridUnder.AddLine(pt0, pt1);
-				_gridUnder.AddLine(pt1, pt2);
-				_gridUnder.AddLine(pt2, pt3);
-				_gridUnder.CloseFigure();
+				_layerFill.Reset();
+				_layerFill.AddLine(pt0, pt1);
+				_layerFill.AddLine(pt1, pt2);
+				_layerFill.AddLine(pt2, pt3);
+				_layerFill.CloseFigure();
 
-				g.FillPath(_brushTrans, _gridUnder);
+				g.FillPath(_brushLayer, _layerFill);
 
 				for (var i = 0; i <= _baseMap.MapSize.Rows; ++i)
 					g.DrawLine(
-							_penDash,
+							_penGrid,
 							x - hWidth  * i,
 							y + hHeight * i,
 							x + (_baseMap.MapSize.Cols - i) * hWidth,
@@ -616,7 +617,7 @@ namespace MapView
 
 				for (int i = 0; i <= _baseMap.MapSize.Cols; ++i)
 					g.DrawLine(
-							_penDash,
+							_penGrid,
 							x + hWidth  * i,
 							y + hHeight * i,
 							hWidth  * i - xMax + x,
@@ -632,28 +633,28 @@ namespace MapView
 			{
 				var baseTile = tile.Ground;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Image);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
 			}
 
 			if (topView.WestVisible)
 			{
 				var baseTile = tile.West;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Image);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
 			}
 
 			if (topView.NorthVisible)
 			{
 				var baseTile = tile.North;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Image);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
 			}
 
 			if (topView.ContentVisible)
 			{
 				var baseTile = tile.Content;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Image);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
 			}
 		}
 
@@ -665,28 +666,28 @@ namespace MapView
 			{
 				var baseTile = tile.Ground;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Gray);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
 			}
 
 			if (topView.WestVisible)
 			{
 				var baseTile = tile.West;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Gray);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
 			}
 
 			if (topView.NorthVisible)
 			{
 				var baseTile = tile.North;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Gray);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
 			}
 
 			if (topView.ContentVisible)
 			{
 				var baseTile = tile.Content;
 				if (baseTile != null)
-					DrawTileImage(g, x, y, baseTile, baseTile[MainViewPanel.AniStep].Gray);
+					DrawTileImage(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
 			}
 		}
 

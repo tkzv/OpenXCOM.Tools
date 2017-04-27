@@ -86,7 +86,7 @@ namespace MapView.Forms.MainWindow
 				if (f != null)
 					SetObserver(baseMap, f);
 
-			MainViewPanel.Instance.MainView.Refresh();
+			MainViewUnderlay.Instance.MainView.Refresh();
 		}
 
 		private void SetObserver(IMapBase baseMap, IMapObserver observer)

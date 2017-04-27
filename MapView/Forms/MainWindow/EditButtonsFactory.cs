@@ -10,12 +10,12 @@ namespace MapView.Forms.MainWindow
 {
 	internal sealed class EditButtonsFactory
 	{
-		private readonly MainViewPanel _mainViewPanel;
+		private readonly MainViewUnderlay _mainViewPanel;
 
 		private readonly List<ToolStripButton> _pasteButtons = new List<ToolStripButton>();
 
 
-		public EditButtonsFactory(MainViewPanel panel)
+		public EditButtonsFactory(MainViewUnderlay panel)
 		{
 			_mainViewPanel = panel;
 		}
@@ -158,7 +158,7 @@ namespace MapView.Forms.MainWindow
 		private static void Refresh()
 		{
 //			MainViewPanel.Instance.Refresh();			// either this
-			MainViewPanel.Instance.MainView.Refresh();	// or this, both works
+			MainViewUnderlay.Instance.MainView.Refresh();	// or this, both works
 
 			ViewerFormsManager.TopView.Refresh();
 			ViewerFormsManager.RouteView.Refresh();
@@ -177,14 +177,14 @@ namespace MapView.Forms.MainWindow
 
 		private void OnDownClick(object sender, EventArgs e)
 		{
-			if (MainViewPanel.Instance.MainView.Map != null)
-				MainViewPanel.Instance.MainView.Map.Down();
+			if (MainViewUnderlay.Instance.MainView.Map != null)
+				MainViewUnderlay.Instance.MainView.Map.Down();
 		}
 
 		private void OnUpClick(object sender, EventArgs e)
 		{
-			if (MainViewPanel.Instance.MainView.Map != null)
-				MainViewPanel.Instance.MainView.Map.Up();
+			if (MainViewUnderlay.Instance.MainView.Map != null)
+				MainViewUnderlay.Instance.MainView.Map.Up();
 		}
 	}
 }

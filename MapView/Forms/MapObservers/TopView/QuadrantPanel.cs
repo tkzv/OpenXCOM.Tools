@@ -147,7 +147,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 					if (e.Button == MouseButtons.Right) // see SetSelected() above^
 					{
-						MainViewPanel.Instance.MainView.Refresh();
+						MainViewUnderlay.Instance.MainView.Refresh();
 						ViewerFormsManager.TopView.Refresh();
 						ViewerFormsManager.TopRouteView.Refresh();
 						ViewerFormsManager.RouteView.Refresh();

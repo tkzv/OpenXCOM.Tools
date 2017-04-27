@@ -42,7 +42,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			_routePanel = new RoutePanel();
 			pRoutes.Controls.Add(_routePanel);
-			_routePanel.RoutePanelClicked += OnRoutePanelClick;
+			_routePanel.RoutePanelClickedEvent += OnRoutePanelClicked;
 			_routePanel.MouseMove += OnRoutePanelMouseMove;
 			_routePanel.Dock = DockStyle.Fill;
 
@@ -161,7 +161,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_routePanel.Refresh(); // mouseover refresh for RouteView.
 		}
 
-		private void OnRoutePanelClick(object sender, RoutePanelClickEventArgs args)
+		/// <summary>
+		/// Selects a node on LMB, creates and/or connects nodes on RMB.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="args"></param>
+		private void OnRoutePanelClicked(object sender, RoutePanelClickedEventArgs args)
 		{
 			_routePanel.Focus();
 			labelSelectedPos.Text = Text;
@@ -204,20 +209,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private ConnectNodeType GetConnectionSetting()
-		{
-			if (tsmiConnectType.Text == "Connect One way")
-				return ConnectNodeType.ConnectOneWay;
-
-			if (tsmiConnectType.Text == "Connect Two ways")
-				return ConnectNodeType.ConnectTwoWays;
-
-			return ConnectNodeType.DoNotConnect;
-		}
-
+		/// <summary>
+		/// Checks connector and connects nodes if applicable.
+		/// </summary>
+		/// <param name="node"></param>
 		private void ConnectNode(RouteNode node)
 		{
-			var type = GetConnectionSetting();
+			var type = GetConnector();
 			if (type != ConnectNodeType.DoNotConnect)
 			{
 				int linkId = GetOpenLinkSlot(_nodeSelected, node.Index);
@@ -239,6 +237,21 @@ namespace MapView.Forms.MapObservers.RouteViews
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Gets the user-set Connector type.
+		/// </summary>
+		/// <returns></returns>
+		private ConnectNodeType GetConnector()
+		{
+			if (tsmiConnectType.Text == "Connect One way")
+				return ConnectNodeType.ConnectOneWay;
+
+			if (tsmiConnectType.Text == "Connect Two ways")
+				return ConnectNodeType.ConnectTwoWays;
+
+			return ConnectNodeType.DoNotConnect;
 		}
 
 		private static int GetOpenLinkSlot(RouteNode node, int idOther = -1)
@@ -401,10 +414,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_loadingGui = false;
 		}
 
-/*		public void SetMap(object sender, SetMapEventArgs args)
-		{
-			Map = args.Map;
-		} */
+//		public void SetMap(object sender, SetMapEventArgs args)
+//		{
+//			Map = args.Map;
+//		}
 
 		public override IMapBase BaseMap
 		{
@@ -986,6 +999,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		public override void LoadControl0Settings()
 		{
+			tsmiConnectType.SelectedIndex = 0;
+
 			var brushes = _routePanel.MapBrushes;
 			var pens    = _routePanel.MapPens;
 
@@ -1086,15 +1101,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 							bc);
 
 			var contentBrush = new SolidBrush(Color.DarkGray);
-			brushes["ContentTiles"] = contentBrush;
+			brushes["ContentColor"] = contentBrush;
 			settings.AddSetting(
-							"ContentTiles",
+							"ContentColor",
 							contentBrush.Color,
-							"Color of map tiles with a content tile",
+							"Color of content indicators",
 							"Other",
 							bc);
-
-			tsmiConnectType.SelectedIndex = 0;
 		}
 	}
 }

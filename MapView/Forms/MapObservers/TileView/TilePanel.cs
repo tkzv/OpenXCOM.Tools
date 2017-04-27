@@ -140,7 +140,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			Controls.Add(_scrollBar);
 
-			MainViewPanel.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			MainViewUnderlay.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
 				   | ControlStyles.AllPaintingInWmPaint
@@ -289,7 +289,7 @@ namespace MapView.Forms.MapObservers.TileViews
 							g.FillRectangle((SolidBrush)_specialTypeBrushes[specialType], rect);
 
 						g.DrawImage(											// then draw the sprite itself
-								tile[MainViewPanel.AniStep].Image,
+								tile[MainViewUnderlay.AniStep].Image,
 								left + SpriteMargin,
 								top  + SpriteMargin - tile.Record.TileOffset);
 

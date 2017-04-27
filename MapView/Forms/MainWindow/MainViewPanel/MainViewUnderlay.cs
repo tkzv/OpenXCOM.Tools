@@ -7,23 +7,23 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	internal sealed class MainViewPanel
+	internal sealed class MainViewUnderlay
 		:
 			Panel
 	{
-		private MainView _mainView;
-		internal MainView MainView
+		private MainViewOverlay _mainView;
+		internal MainViewOverlay MainView
 		{
 			get { return _mainView; }
 		}
 
-		private static MainViewPanel _instance;
-		internal static MainViewPanel Instance
+		private static MainViewUnderlay _instance;
+		internal static MainViewUnderlay Instance
 		{
 			get
 			{
 				if (_instance == null)
-					_instance = new MainViewPanel();
+					_instance = new MainViewUnderlay();
 
 				return _instance;
 			}
@@ -33,7 +33,11 @@ namespace MapView
 		private readonly VScrollBar _scrollBarVert;
 
 
-		private MainViewPanel()
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		private MainViewUnderlay()
 		{
 			AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
@@ -48,7 +52,7 @@ namespace MapView
 
 			Controls.AddRange(new Control[]{ _scrollBarVert, _scrollBarHori });
 
-			var mainView = new MainView();
+			var mainView = new MainViewOverlay();
 			if (_mainView != null)
 			{
 				mainView.Map = _mainView.Map;
@@ -66,6 +70,7 @@ namespace MapView
 
 			Controls.Add(_mainView);
 		}
+		#endregion
 
 
 		internal void OnCut(object sender, EventArgs e)
