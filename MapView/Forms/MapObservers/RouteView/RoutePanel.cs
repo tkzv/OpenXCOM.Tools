@@ -254,18 +254,28 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private const int NODE_VAL_MAX = 12;
 
+		private bool _brushes;
+		private SolidBrush _brushSelected;
+		private SolidBrush _brushUnselected;
+		private SolidBrush _brushSpawn;
+
 		/// <summary>
 		/// Draws the nodes.
 		/// </summary>
 		private void DrawNodes()
 		{
-			var brushSelected   = RouteBrushes["SelectedNodeColor"]; // TODO: set these as class-vars ->
-			var brushUnselected = RouteBrushes["UnselectedNodeColor"];
-			var brushSpawn      = RouteBrushes["SpawnNodeColor"];
+			if (!_brushes)
+			{
+				_brushes = true;
 
-			brushSelected.Color   = Color.FromArgb(200, brushSelected.Color);
-			brushUnselected.Color = Color.FromArgb(200, brushUnselected.Color);
-			brushSpawn.Color      = Color.FromArgb(200, brushSpawn.Color);
+				_brushSelected   = RouteBrushes["SelectedNodeColor"];
+				_brushUnselected = RouteBrushes["UnselectedNodeColor"];
+				_brushSpawn      = RouteBrushes["SpawnNodeColor"];
+
+//				_brushSelected.Color   = Color.FromArgb(200, _brushSelected.Color);
+//				_brushUnselected.Color = Color.FromArgb(200, _brushUnselected.Color);
+//				_brushSpawn.Color      = Color.FromArgb(200, _brushSpawn.Color);
+			}
 
 			var startX = Origin.X;
 			var startY = Origin.Y;
@@ -293,23 +303,23 @@ namespace MapView.Forms.MapObservers.RouteViews
 											x + DrawAreaWidth, y + DrawAreaHeight);
 							_layerFill.AddLine(
 											x + DrawAreaWidth, y + DrawAreaHeight,
-											x,                 y + 2 * DrawAreaHeight);
+											x,                 y + DrawAreaHeight * 2);
 							_layerFill.AddLine(
-											x,                 y + 2 * DrawAreaHeight,
+											x,                 y + DrawAreaHeight * 2,
 											x - DrawAreaWidth, y + DrawAreaHeight);
 							_layerFill.CloseFigure();
 
 
 							if (r == ClickPoint.Y && c == ClickPoint.X)
 							{
-								_graphics.FillPath(brushSelected, _layerFill);
+								_graphics.FillPath(_brushSelected, _layerFill);
 							}
 							else if (node.Spawn != SpawnUsage.NoSpawn)
 							{
-								_graphics.FillPath(brushSpawn, _layerFill);
+								_graphics.FillPath(_brushSpawn, _layerFill);
 							}
 							else
-								_graphics.FillPath(brushUnselected, _layerFill);
+								_graphics.FillPath(_brushUnselected, _layerFill);
 
 
 							for (int i = 0; i != RouteNode.LinkSlots; ++i)
