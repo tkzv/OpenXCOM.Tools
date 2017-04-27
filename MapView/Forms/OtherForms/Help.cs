@@ -3,8 +3,6 @@ using System.Collections;
 using System.Drawing;
 using System.Windows.Forms;
 
-using MapView.Forms.MapObservers.TileViews;
-
 using XCom;
 
 
@@ -35,20 +33,24 @@ namespace MapView
 		#endregion
 
 
-		#region Event Calls
+		/// <summary>
+		/// Updates the special property colors via an arcane methodology from
+		/// the user's custom Options.
+		/// </summary>
 		internal void UpdateSpecialPropertyColors()
 		{
-			// TODO: update special tile colors from Settings without requiring
-			// that the Help screen be reloaded. Neither form (Settings or Help)
-			// is modal, so the code can't rely on that user-forced effect.
+			// TODO: update special property colors from Settings without
+			// requiring that the Help screen be reloaded. Neither form
+			// (Settings or Help) is modal, so the code can't rely on that
+			// user-forced effect.
 			_specialBrushes = MapView.Forms.MainWindow.ViewerFormsManager.TileView.Control.GetSpecialPropertyBrushes();
 
 			Color color = Color.Empty;
 
-			string specialType = String.Empty;
+			// TODO: iterate through the labels using a function-pointer/delegate
+			// if possible.
 
-			// TODO: get the string from the SpecialType enum ...
-			specialType = "Tile"; // 0
+			string specialType = Enum.GetName(typeof(SpecialType), 0);	// "Tile"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -56,7 +58,7 @@ namespace MapView
 				lblType00.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "StartPoint"; // 1
+			specialType = Enum.GetName(typeof(SpecialType), 1);			// "StartPoint"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -64,7 +66,7 @@ namespace MapView
 				lblType01.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "IonBeamAccel"; // 2
+			specialType = Enum.GetName(typeof(SpecialType), 2);			// "IonBeamAccel"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -72,7 +74,7 @@ namespace MapView
 				lblType02.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "DestroyObjective"; // 3
+			specialType = Enum.GetName(typeof(SpecialType), 3);			// "DestroyObjective"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -80,7 +82,7 @@ namespace MapView
 				lblType03.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "MagneticNav"; // 4
+			specialType = Enum.GetName(typeof(SpecialType), 4);			// "MagneticNav"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -88,7 +90,7 @@ namespace MapView
 				lblType04.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "AlienCryo"; // 5
+			specialType = Enum.GetName(typeof(SpecialType), 5);			// "AlienCryo"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -96,7 +98,7 @@ namespace MapView
 				lblType05.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "AlienClon"; // 6
+			specialType = Enum.GetName(typeof(SpecialType), 6);			// "AlienClon"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -104,7 +106,7 @@ namespace MapView
 				lblType06.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "AlienLearn"; // 7
+			specialType = Enum.GetName(typeof(SpecialType), 7);			// "AlienLearn"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -112,7 +114,7 @@ namespace MapView
 				lblType07.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "AlienImplant"; // 8
+			specialType = Enum.GetName(typeof(SpecialType), 8);			// "AlienImplant"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -120,7 +122,7 @@ namespace MapView
 				lblType08.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "Unknown9"; // 9
+			specialType = Enum.GetName(typeof(SpecialType), 9);			// "Unknown9"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -128,7 +130,7 @@ namespace MapView
 				lblType09.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "AlienPlastics"; // 10
+			specialType = Enum.GetName(typeof(SpecialType), 10);		// "AlienPlastics"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -136,7 +138,7 @@ namespace MapView
 				lblType10.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "ExamRoom"; // 11
+			specialType = Enum.GetName(typeof(SpecialType), 11);		// "ExamRoom"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -144,7 +146,7 @@ namespace MapView
 				lblType11.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "DeadTile"; // 12
+			specialType = Enum.GetName(typeof(SpecialType), 12);		// "DeadTile"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -152,7 +154,7 @@ namespace MapView
 				lblType12.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "EndPoint"; // 13
+			specialType = Enum.GetName(typeof(SpecialType), 13);		// "EndPoint"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -160,7 +162,7 @@ namespace MapView
 				lblType13.ForeColor = GetTextColor(color);
 			}
 
-			specialType = "MustDestroy"; // 14
+			specialType = Enum.GetName(typeof(SpecialType), 14);		// "MustDestroy"
 			if (_specialBrushes.ContainsKey(specialType))
 			{
 				color = ((SolidBrush)_specialBrushes[specialType]).Color;
@@ -177,12 +179,15 @@ namespace MapView
 		private Color GetTextColor(Color color)
 		{
 			// TODO: check alpha .....
-			return ((int)color.R + color.G + color.B > 480) ? Color.DarkSlateBlue
+			return ((int)color.R + color.G + color.B > 485) ? Color.DarkSlateBlue
 															: Color.Snow;
 		}
 
+
+		#region Event Calls
 		/// <summary>
-		/// Toggles the text descriptions between UFO and TFTD special tile types.
+		/// Toggles the text descriptions between UFO and TFTD special property
+		/// types.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>

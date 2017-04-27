@@ -183,13 +183,38 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 		/// <summary>
+		/// These are the default colors for tiles' Special Properties.
+		/// TileView will load these colors when the program loads, then any
+		/// Special Property colors that were customized will be set and
+		/// accessed by TilePanel and/or the Help screen later.
+		/// </summary>
+		internal static readonly Color[] TileColors =
+		{
+			Color.NavajoWhite,		//  0 - Tile
+			Color.Lavender,			//  1 - StartPoint
+			Color.IndianRed,		//  2 - IonBeamAccel
+			Color.PaleTurquoise,	//  3 - DestroyObjective
+			Color.Khaki,			//  4 - MagneticNav
+			Color.MistyRose,		//  5 - AlienCryo
+			Color.Aquamarine,		//  6 - AlienClon
+			Color.LightSkyBlue,		//  7 - AlienLearn
+			Color.Thistle,			//  8 - AlienImplant
+			Color.YellowGreen,		//  9 - Unknown9
+			Color.MediumPurple,		// 10 - AlienPlastics
+			Color.LightCoral,		// 11 - ExamRoom
+			Color.LightCyan,		// 12 - DeadTile
+			Color.BurlyWood,		// 13 - EndPoint
+			Color.Blue				// 14 - MustDestroy
+		};
+
+		/// <summary>
 		/// Loads default settings for TileView screen.
 		/// </summary>
 		public override void LoadControl0Settings() // TODO: access that as internal
 		{
 			foreach (string specialType in Enum.GetNames(typeof(SpecialType)))
 			{
-				_brushes[specialType] = new SolidBrush(TilePanel.TileColors[(int)Enum.Parse(typeof(SpecialType), specialType)]);
+				_brushes[specialType] = new SolidBrush(TileColors[(int)Enum.Parse(typeof(SpecialType), specialType)]);
 
 				// NOTE: The colors of the brushes get overwritten by the
 				// Option settings somewhere/how between here and their actual

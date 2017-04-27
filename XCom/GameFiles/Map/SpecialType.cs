@@ -5,6 +5,9 @@ namespace XCom
 	// TFTD.
 	// Note that the Help screen already uses a radio-button to switch the
 	// descriptions between the two.
+	//
+	// WARNING: Do not assign the same value to multiple enum-keys. The Help
+	// screen uses Enum.GetName() to evaluate special-property colors.
 	public enum SpecialType
 	{
 		// TFTD:					// UFO:

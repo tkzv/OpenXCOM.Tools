@@ -35,7 +35,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		private const int _largeChange = SpriteHeight;	// apparently .NET won't return an accurate value
 														// for LargeChange unless the scrollbar is visible.
 
-		private Pen   _penBlack        = new Pen(Brushes.Black, 1); // TODO: find some happy colors that play nice with Options.
+		private Pen   _penBlack        = new Pen(Brushes.Black, 1);
 		private Pen   _penRed          = new Pen(Brushes.Red, 3);
 		private Pen   _penControlLight = new Pen(SystemColors.ControlLight, 1);
 		private Brush _brushBlack      = new SolidBrush(Color.Black);
@@ -102,29 +102,6 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 		#endregion
 
-
-		// TODO: Check if these are actually used anywhere. Or can the colors be
-		// taken exclusively from user's Options.
-		// NOTE: the initial load routine runs through these before user gets
-		// anywhere near the TileView or Help windows.
-		internal static readonly Color[] TileColors =
-		{
-			Color.Cornsilk,
-			Color.Lavender,
-			Color.DarkRed,
-			Color.Fuchsia,
-			Color.Aqua,
-			Color.DarkOrange,
-			Color.DeepPink,
-			Color.LightBlue,
-			Color.Lime,
-			Color.LightGreen,
-			Color.MediumPurple,
-			Color.LightCoral,
-			Color.LightCyan,
-			Color.Yellow,
-			Color.Blue
-		};
 
 		/// <summary>
 		/// Sets a pointer to a hashtable of the special property brushes/colors.

@@ -115,7 +115,7 @@ namespace PckView
 		/// </summary>
 		private int _largeChange;
 
-		private Pen   _penBlack        = new Pen(Brushes.Black, 1); // TODO: find some happy colors that play nice with Options.
+		private Pen   _penBlack        = new Pen(Brushes.Black, 1);
 		private Pen   _penControlLight = new Pen(SystemColors.ControlLight, 1);
 		private Brush _brushCrimson    = new SolidBrush(Color.Crimson);
 		#endregion
