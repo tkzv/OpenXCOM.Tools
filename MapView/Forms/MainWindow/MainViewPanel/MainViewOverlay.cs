@@ -60,8 +60,8 @@ namespace MapView
 
 		private Brush _brushLayer;
 
-		private Color _colorLayer;
-		public Color LayerColor // public for Reflection.
+		private Color _colorLayer = Color.FromArgb(175, 69, 100, 129);	// default color for the grid-layer
+		public Color GridLayerColor // public for Reflection.			// TODO: get that from Settings, or other ...
 		{
 			get { return _colorLayer; }
 			set
@@ -143,7 +143,6 @@ namespace MapView
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 
-			_colorLayer  = Color.FromArgb(175, 69, 100, 129);
 			_brushLayer = new SolidBrush(_colorLayer);
 			_penGrid    = new Pen(Brushes.Black, 1);
 

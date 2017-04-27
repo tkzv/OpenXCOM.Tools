@@ -459,8 +459,8 @@ namespace MapView
 							"MapView",
 							null, MainViewUnderlay.Instance.MainView);
 			settings.AddSetting(
-							"GridColor",
-							MainViewUnderlay.Instance.MainView.LayerColor,
+							"GridLayerColor",
+							MainViewUnderlay.Instance.MainView.GridLayerColor,
 							"Color of the grid in (a,r,g,b) format.",
 							"MapView",
 							null, MainViewUnderlay.Instance.MainView);
@@ -544,8 +544,8 @@ namespace MapView
 					MainViewUnderlay.Instance.MainView.ShowGrid = (bool)val;
 					break;
 
-				case "GridColor":
-					MainViewUnderlay.Instance.MainView.LayerColor = (Color)val;
+				case "GridLayerColor":
+					MainViewUnderlay.Instance.MainView.GridLayerColor = (Color)val;
 					break;
 
 				case "GridLineColor":

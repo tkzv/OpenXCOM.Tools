@@ -157,7 +157,7 @@ namespace MapView.Forms.MainWindow
 
 		private static void Refresh()
 		{
-//			MainViewPanel.Instance.Refresh();			// either this
+//			MainViewPanel.Instance.Refresh();				// either this
 			MainViewUnderlay.Instance.MainView.Refresh();	// or this, both works
 
 			ViewerFormsManager.TopView.Refresh();

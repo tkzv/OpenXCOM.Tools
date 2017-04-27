@@ -337,6 +337,11 @@ namespace MapView
 		private readonly object _obj;
 
 
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="property"></param>
 		public Property(object obj, string property)
 		{
 			_obj  = obj;
@@ -344,6 +349,10 @@ namespace MapView
 		}
 
 
+		/// <summary>
+		/// Sets the value of this Property to a specified object.
+		/// </summary>
+		/// <param name="obj"></param>
 		public void SetValue(object obj)
 		{
 			_info.SetValue(_obj, obj, new object[]{});
