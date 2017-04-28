@@ -11,6 +11,7 @@ namespace MapView.Forms.McdViewer
 		:
 			Form
 	{
+		#region cTor
 		/// <summary>
 		/// cTor. Instantiates an MCD-info screen.
 		/// </summary>
@@ -22,10 +23,26 @@ namespace MapView.Forms.McdViewer
 			rtbInfo.WordWrap = false;
 			rtbInfo.ReadOnly = true;
 		}
+		#endregion
 
 
+		#region EventCalls
 		/// <summary>
-		/// Updates data when the selected tile changes.
+		/// Closes the screen on an Escape keydown event.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+				Close();
+		}
+		#endregion
+
+
+		#region Methods
+		/// <summary>
+		/// Updates the displayed data whenever the selected tile changes.
 		/// </summary>
 		/// <param name="record"></param>
 		internal void UpdateData(McdRecord record)
@@ -178,13 +195,6 @@ namespace MapView.Forms.McdViewer
 			rtbInfo.SelectionStart  =
 			rtbInfo.SelectionLength = 0;
 		}
-
-		protected override void OnKeyDown(KeyEventArgs e)
-		{
-//			base.OnKeyDown(e);
-
-			if (e.KeyCode == Keys.Escape)
-				Close();
-		}
+		#endregion
 	}
 }

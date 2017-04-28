@@ -44,6 +44,7 @@
 			this.rtbInfo.Size = new System.Drawing.Size(692, 504);
 			this.rtbInfo.TabIndex = 0;
 			this.rtbInfo.Text = "";
+			this.rtbInfo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
 			// 
 			// bsInfo
 			// 

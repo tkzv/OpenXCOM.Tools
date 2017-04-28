@@ -37,7 +37,6 @@ namespace MapView.SettingServices
 							}
 							else
 								MessageBox.Show(
-											f,
 											"File not found.",
 											"Error",
 											MessageBoxButtons.OK,
