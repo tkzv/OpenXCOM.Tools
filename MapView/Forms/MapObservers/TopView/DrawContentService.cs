@@ -1,20 +1,13 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 
-using MapView.Forms.MapObservers.TopViews;
-
+using XCom;
 using XCom.Interfaces.Base;
 
 
-
-using System.Collections.Generic;
-
-using XCom;
-//using XCom.Interfaces.Base;
-//namespace MapView.Forms.MapObservers.TopViews
-
-
-namespace MapView.Forms.MapObservers.RouteViews
+namespace MapView.Forms.MapObservers.TopViews
 {
 	/// <summary>
 	/// The various wall- and content-types that will be used to determine how

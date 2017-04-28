@@ -5,8 +5,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-using MapView.Forms.MapObservers.RouteViews;
-
 using XCom;
 using XCom.Interfaces.Base;
 

@@ -145,7 +145,6 @@
     <Compile Include="Forms\MainWindow\MainMenusManager.cs" />
     <Compile Include="Forms\MapObservers\IMapObserverProvider.cs" />
     <Compile Include="Forms\MapObservers\RouteView\ConnectNodeType.cs" />
-    <Compile Include="Forms\MapObservers\RouteView\DrawContentService.cs" />
     <Compile Include="Forms\MapObservers\RouteView\RoutePanelClickedEventArgs.cs" />
     <Compile Include="Forms\MapObservers\RouteView\RoutePanel.cs">
       <SubType>UserControl</SubType>
@@ -169,6 +168,7 @@
       <DependentUpon>TileViewForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MapObservers\TopView\ColorTools.cs" />
+    <Compile Include="Forms\MapObservers\TopView\DrawContentService.cs" />
     <Compile Include="Forms\MapObservers\TopView\TopViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
