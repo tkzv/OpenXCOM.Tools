@@ -13,7 +13,7 @@ namespace MapView.Forms.MapObservers.TopViews
 	/// The various wall- and content-types that will be used to determine how
 	/// to draw the wall- and content-blobs in TopView and RouteView.
 	/// </summary>
-	internal enum ContentType
+	internal enum BlobType
 	{
 		Content,
 		EastWall,
@@ -37,8 +37,8 @@ namespace MapView.Forms.MapObservers.TopViews
 	/// <summary>
 	/// Draws floor- and wall- and content- blobs for RouteView and TopView.
 	/// </summary>
-	internal sealed class DrawContentService	// Warning CA1001: Implement IDisposable on 'DrawContentService' because
-	{											// it creates members of the following IDisposable types: 'GraphicsPath'.
+	internal sealed class DrawBlobService	// Warning CA1001: Implement IDisposable on 'DrawContentService' because
+	{										// it creates members of the following IDisposable types: 'GraphicsPath'.
 		#region Fields & Properties
 		private readonly GraphicsPath _floor   = new GraphicsPath();
 		private readonly GraphicsPath _content = new GraphicsPath();
@@ -112,63 +112,63 @@ namespace MapView.Forms.MapObservers.TopViews
 								x + HalfWidth - (Margin * 2),
 								y + HalfHeight);
 
-			switch (ContentTypeService.GetContentType(tile))
+			switch (BlobTypeService.GetBlobType(tile))
 			{
-				case ContentType.Content:
+				case BlobType.Content:
 					SetContentPath(x, y);
 					g.FillPath(
 							tool.Brush,
 							_content);
 					break;
 
-				case ContentType.Ground:
+				case BlobType.Ground:
 					SetContentPath(x, y);
 					g.FillPath(
 							tool.LightBrush,
 							_content);
 					break;
 
-				case ContentType.NorthFence:
+				case BlobType.NorthFence:
 					g.DrawLine(
 							tool.LightPen,
 							ptTop,
 							ptRight);
 					break;
 
-				case ContentType.NorthWall:
+				case BlobType.NorthWall:
 					g.DrawLine(
 							tool.Pen,
 							ptTop,
 							ptRight);
 
-					if (ContentTypeService.IsDoor(tile))
+					if (BlobTypeService.IsDoor(tile))
 						g.DrawLine(
 								tool.Pen,
 								ptTop,
 								Point.Add(ptRight, new Size(-10, 4)));
 					break;
 
-				case ContentType.WestFence:
+				case BlobType.WestFence:
 					g.DrawLine(
 							tool.LightPen,
 							ptTop,
 							ptLeft);
 					break;
 
-				case ContentType.WestWall:
+				case BlobType.WestWall:
 					g.DrawLine(
 							tool.Pen,
 							ptTop,
 							ptLeft);
 
-					if (ContentTypeService.IsDoor(tile))
+					if (BlobTypeService.IsDoor(tile))
 						g.DrawLine(
 								tool.Pen,
 								Point.Add(ptTop, new Size(6, 8)),
 								ptLeft);
 					break;
 
-				case ContentType.NorthWallWindow:
+				case BlobType.NorthWallWindow:
 					DrawWindow(
 							g,
 							tool,
@@ -176,7 +176,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							ptRight);
 					break;
 
-				case ContentType.WestWallWindow:
+				case BlobType.WestWallWindow:
 					DrawWindow(
 							g,
 							tool,
@@ -184,56 +184,56 @@ namespace MapView.Forms.MapObservers.TopViews
 							ptLeft);
 					break;
 
-				case ContentType.SouthWall:
+				case BlobType.SouthWall:
 					g.DrawLine(
 							tool.Pen,
 							ptLeft,
 							ptBot);
 					break;
 
-				case ContentType.EastWall:
+				case BlobType.EastWall:
 					g.DrawLine(
 							tool.Pen,
 							ptBot,
 							ptRight);
 					break;
 
-				case ContentType.NorthwestSoutheast:
+				case BlobType.NorthwestSoutheast:
 					g.DrawLine(
 							tool.Pen,
 							ptTop,
 							ptBot);
 					break;
 
-				case ContentType.NortheastSouthwest:
+				case BlobType.NortheastSouthwest:
 					g.DrawLine(
 							tool.Pen,
 							ptLeft,
 							ptRight);
 					break;
 
-				case ContentType.NorthwestCorner:
+				case BlobType.NorthwestCorner:
 					g.DrawLine(
 							tool.Pen,
 							Point.Add(ptTop, new Size(-4, 0)),
 							Point.Add(ptTop, new Size( 4, 0)));
 					break;
 
-				case ContentType.NortheastCorner:
+				case BlobType.NortheastCorner:
 					g.DrawLine(
 							tool.Pen,
 							Point.Add(ptRight, new Size(0, -4)),
 							Point.Add(ptRight, new Size(0,  4)));
 					break;
 
-				case ContentType.SoutheastCorner:
+				case BlobType.SoutheastCorner:
 					g.DrawLine(
 							tool.Pen,
 							Point.Add(ptBot, new Size(-4, 0)),
 							Point.Add(ptBot, new Size( 4, 0)));
 					break;
 
-				case ContentType.SouthwestCorner:
+				case BlobType.SouthwestCorner:
 					g.DrawLine(
 							tool.Pen,
 							Point.Add(ptLeft, new Size(0, -4)),
@@ -244,8 +244,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private void SetContentPath(int x, int y)
 		{
-			var w = HalfWidth  / 2;
-			var h = HalfHeight / 2;
+			int w = HalfWidth  / 2;
+			int h = HalfHeight / 2;
 
 			y += h;
 
@@ -292,7 +292,7 @@ namespace MapView.Forms.MapObservers.TopViews
 	/// A class that determines how walls and objects are drawn for TopView and
 	/// RouteView.
 	/// </summary>
-	internal static class ContentTypeService
+	internal static class BlobTypeService
 	{
 		#region Fields
 		private static List<byte> _loftList;
@@ -306,7 +306,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		/// <param name="tile"></param>
 		/// <returns></returns>
-		internal static ContentType GetContentType(TileBase tile)
+		internal static BlobType GetBlobType(TileBase tile)
 		{
 			var record = tile.Record;
 			if (record != null)
@@ -314,63 +314,68 @@ namespace MapView.Forms.MapObservers.TopViews
 				_loftList = record.GetLoftList();
 
 				if (IsGround())
-					return ContentType.Ground;
+					return BlobType.Ground;
 
-				if (HasAllInNecessary(new[]{ 24, 26 }))
-					return ContentType.EastWall;
+				if (CheckAllAreInGroup(new[]{ 24, 26 }))
+					return BlobType.EastWall;
 
-				if (HasAllInNecessary(new[]{ 23, 25 }))
-					return ContentType.SouthWall;
+				if (CheckAllAreInGroup(new[]{ 23, 25 }))
+					return BlobType.SouthWall;
 
-				if (HasAllInNecessary(new[]{ 8, 10, 12, 14, 38 })
-					&& HasAnyInContingent(new[]{ 38 }))
+				if (CheckAllAreInGroup(new[]{ 8, 10, 12, 14, 38 })
+					&& CheckAnyIsLoft(38))
 				{
-					return ContentType.NorthWallWindow;
+					return BlobType.NorthWallWindow;
 				}
 
-				if (HasAllInNecessary(new[]{ 0, 8, 10, 12, 14, 38, 39, 77 })
-					&& HasAnyInContingent(new[]{ 0 }))
+				if (CheckAllAreInGroup(new[]{ 0, 8, 10, 12, 14, 38, 39, 77 })
+					&& CheckAnyIsLoft(0))
 				{
-					return ContentType.NorthFence;
+					return BlobType.NorthFence;
 				}
 
-				if (HasAllInNecessary(new[]{ 8, 10, 12, 14, 16, 18, 20, 21 }))
-					return ContentType.NorthWall;
+				if (CheckAllAreInGroup(new[]{ 8, 10, 12, 14, 16, 18, 20, 21 }))
+					return BlobType.NorthWall;
 
-				if (HasAllInNecessary(new[]{ 7, 9, 11, 13, 37 })
-					&& HasAnyInContingent(new[]{ 37 }))
+				if (CheckAllAreInGroup(new[]{ 7, 9, 11, 13, 37 })
+					&& CheckAnyIsLoft(37))
 				{
-					return ContentType.WestWallWindow;
+					return BlobType.WestWallWindow;
 				}
 
-				if (HasAllInNecessary(new[]{ 0, 7, 9, 11, 13, 37, 39, 76 })
-					&& HasAnyInContingent(new[]{ 0 }))
+				if (CheckAllAreInGroup(new[]{ 0, 7, 9, 11, 13, 37, 39, 76 })
+					&& CheckAnyIsLoft(0))
 				{
-					return ContentType.WestFence;
+					return BlobType.WestFence;
 				}
 
-				if (HasAllInNecessary(new[]{ 7, 9, 11, 13, 15, 17, 19, 22 }))
-					return ContentType.WestWall;
+				if (CheckAllAreInGroup(new[]{ 7, 9, 11, 13, 15, 17, 19, 22 }))
+					return BlobType.WestWall;
 
-				if (HasAllInNecessary(new[]{ 35 }))
-					return ContentType.NorthwestSoutheast;
+//				if (CheckEachIsInGroup(new[]{ 35 }))
+				if (CheckAllAreLoft(35))
+					return BlobType.NorthwestSoutheast;
 
-				if (HasAllInNecessary(new[]{ 36 }))
-					return ContentType.NortheastSouthwest;
+//				if (CheckEachIsInGroup(new[]{ 36 }))
+				if (CheckAllAreLoft(36))
+					return BlobType.NortheastSouthwest;
 
-				if (HasAllInNecessary(new[]{ 39, 40, 41, 103 }))
-					return ContentType.NorthwestCorner;
+				if (CheckAllAreInGroup(new[]{ 39, 40, 41, 103 }))
+					return BlobType.NorthwestCorner;
 
-				if (HasAllInNecessary(new[]{ 100 }))
-					return ContentType.NortheastCorner;
+//				if (CheckEachIsInGroup(new[]{ 100 }))
+				if (CheckAllAreLoft(100))
+					return BlobType.NortheastCorner;
 
-				if (HasAllInNecessary(new[]{ 106 }))
-					return ContentType.SouthwestCorner;
+//				if (CheckEachIsInGroup(new[]{ 106 }))
+				if (CheckAllAreLoft(106))
+					return BlobType.SouthwestCorner;
 
-				if (HasAllInNecessary(new[]{ 109 }))
-					return ContentType.SoutheastCorner;
+//				if (CheckEachIsInGroup(new[]{ 109 }))
+				if (CheckAllAreLoft(109))
+					return BlobType.SoutheastCorner;
 			}
-			return ContentType.Content;
+			return BlobType.Content;
 		}
 
 		/// <summary>
@@ -399,16 +404,16 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 		/// <summary>
-		/// Checks if all entries in '_loftList' are in 'necessary'.
+		/// Checks if all entries in '_loftList' are among 'contingent'.
 		/// </summary>
-		/// <param name="necessary"></param>
+		/// <param name="contingent"></param>
 		/// <returns></returns>
-		private static bool HasAllInNecessary(int[] necessary)
+		private static bool CheckAllAreInGroup(int[] contingent)
 		{
 			foreach (var loft in _loftList)
 			{
 				var valid = false;
-				foreach (var gottfried in necessary)
+				foreach (var gottfried in contingent)
 					if (gottfried == loft)
 					{
 						valid = true;
@@ -422,19 +427,41 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 		/// <summary>
-		/// Checks if any entry in '_loftList' is also in 'contingent'.
+		/// Checks if all entries in '_loftList' match 'necessary'.
 		/// </summary>
-		/// <param name="contingent"></param>
+		/// <param name="necessary"></param>
 		/// <returns></returns>
-		private static bool HasAnyInContingent(int[] contingent)
+		private static bool CheckAllAreLoft(int necessary)
 		{
 			foreach (var loft in _loftList)
-				foreach (var gottfried in contingent)
-					if (gottfried == loft)
-						return true;
+				if (loft != necessary)
+					return false;
+
+			return true;
+		}
+
+		/// <summary>
+		/// Checks if any entry in '_loftList' matches 'necessary'.
+		/// </summary>
+		/// <param name="necessary"></param>
+		/// <returns></returns>
+		private static bool CheckAnyIsLoft(int necessary)
+		{
+			foreach (var loft in _loftList)
+				if (loft == necessary)
+					return true;
 
 			return false;
 		}
+//		private static bool CheckAnyIsLoft(int[] necessary)
+//		{
+//			foreach (var loft in _loftList)
+//				foreach (var gottfried in necessary)
+//					if (gottfried == loft)
+//						return true;
+//
+//			return false;
+//		}
 
 		/// <summary>
 		/// Checks if a tilepart is either a standard door or a ufo door.

@@ -29,10 +29,10 @@ namespace MapView.Forms.MapObservers.TopViews
 		private int _mouseRow = -1;
 		private int _mouseCol = -1;
 
-		private DrawContentService _drawService = new DrawContentService();
-		internal protected DrawContentService DrawService
+		private DrawBlobService _blobService = new DrawBlobService();
+		internal protected DrawBlobService BlobService
 		{
-			get { return _drawService; }
+			get { return _blobService; }
 		}
 
 		private int _heightMin = 4;
@@ -67,7 +67,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			set
 			{
 				base.BaseMap = value;
-				_drawService.HalfWidth = 7; // TODO: 7 ... inits to 8 in DrawContentService.
+				_blobService.HalfWidth = 7; // TODO: 7 ... inits to 8 in DrawContentService.
 				HandleParentResize(Parent.Width, Parent.Height);
 
 				Refresh();
@@ -78,8 +78,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			if (BaseMap != null)
 			{
-				var hWidth  = _drawService.HalfWidth;
-				var hHeight = _drawService.HalfHeight;
+				int hWidth  = _blobService.HalfWidth;
+				int hHeight = _blobService.HalfHeight;
 				
 				int curWidth = hWidth;
 
@@ -107,8 +107,8 @@ namespace MapView.Forms.MapObservers.TopViews
 					hHeight = _heightMin;
 				}
 
-				_drawService.HalfWidth  = hWidth;
-				_drawService.HalfHeight = hHeight;
+				_blobService.HalfWidth  = hWidth;
+				_blobService.HalfHeight = hHeight;
 
 				_offX = 4 + BaseMap.MapSize.Rows * hWidth;
 				_offY = 4;
@@ -145,8 +145,8 @@ namespace MapView.Forms.MapObservers.TopViews
 				var start = GetDragStart();
 				var end   = GetDragEnd();
 	
-				var hWidth  = _drawService.HalfWidth;
-				var hHeight = _drawService.HalfHeight;
+				int hWidth  = _blobService.HalfWidth;
+				int hHeight = _blobService.HalfHeight;
 	
 				var sel1 = new Point(
 								_offX + (start.X - start.Y) * hWidth,
@@ -235,8 +235,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			backBuffer.FillRectangle(SystemBrushes.Control, ClientRectangle);
 
-			var hWidth  = _drawService.HalfWidth;
-			var hHeight = _drawService.HalfHeight;
+			int hWidth  = _blobService.HalfWidth;
+			int hHeight = _blobService.HalfHeight;
 
 			if (BaseMap != null)
 			{
@@ -319,8 +319,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <returns></returns>
 		private GraphicsPath GetSelectorPath(int x, int y)
 		{
-			var hWidth  = _drawService.HalfWidth;
-			var hHeight = _drawService.HalfHeight;
+			int hWidth  = _blobService.HalfWidth;
+			int hHeight = _blobService.HalfHeight;
 
 			_lozSelector.Reset();
 			_lozSelector.AddLine(
@@ -342,8 +342,8 @@ namespace MapView.Forms.MapObservers.TopViews
 			// 16 is half the width of the diamond
 			// 24 is the distance from the top of the diamond to the very top of the image
 
-			var hWidth  = (double)_drawService.HalfWidth;
-			var hHeight = (double)_drawService.HalfHeight;
+			double hWidth  = (double)_blobService.HalfWidth;
+			double hHeight = (double)_blobService.HalfHeight;
 
 			double x1 =  (x          / (hWidth * 2)) + (y / (hHeight * 2));
 			double x2 = -(x - y * 2) / (hWidth * 2);
@@ -395,8 +395,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 				if (_isMouseDrag)
 					MainViewUnderlay.Instance.MainView.SetDrag(
-														MainViewUnderlay.Instance.MainView.DragStart,
-														pt);
+															MainViewUnderlay.Instance.MainView.DragStart,
+															pt);
 
 				Refresh(); // mouseover refresh for TopView.
 			}

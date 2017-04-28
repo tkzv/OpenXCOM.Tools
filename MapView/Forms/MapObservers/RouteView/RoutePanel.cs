@@ -20,7 +20,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			set { _pos = value; }
 		}
 
-		private readonly DrawContentService _drawContentService = new DrawContentService();
+		private readonly DrawBlobService _blobService = new DrawBlobService();
 
 		private readonly Font _fontOverlay = new Font("Verdana", 7F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 		private readonly Font _fontRose    = new Font("Courier New", 22, FontStyle.Bold);
@@ -83,8 +83,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (_brushContent == null)
 				_brushContent = new ColorTools(RouteBrushes["ContentColor"], _penWalls.Pen.Width);
 
-			_drawContentService.HalfWidth  = DrawAreaWidth;
-			_drawContentService.HalfHeight = DrawAreaHeight;
+			_blobService.HalfWidth  = DrawAreaWidth;
+			_blobService.HalfHeight = DrawAreaHeight;
 
 			var map = MapFile;
 			for (int
@@ -110,13 +110,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 						var tile = (XCMapTile)map[r, c];
 
 						if (tile.Content != null)
-							_drawContentService.DrawContent(_graphics, _brushContent, x, y, tile.Content);
+							_blobService.DrawContent(_graphics, _brushContent, x, y, tile.Content);
 
 						if (tile.West != null)
-							_drawContentService.DrawContent(_graphics, _penWalls, x, y, tile.West);
+							_blobService.DrawContent(_graphics, _penWalls, x, y, tile.West);
 
 						if (tile.North != null)
-							_drawContentService.DrawContent(_graphics, _penWalls, x, y, tile.North);
+							_blobService.DrawContent(_graphics, _penWalls, x, y, tile.North);
 					}
 				}
 			}

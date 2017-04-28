@@ -350,29 +350,36 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnMcdInfoClick(object sender, EventArgs e)
+		internal void OnMcdInfoClick(object sender, EventArgs e)
 		{
-			if (_mcdInfoForm == null)
+			if (!tsmiMcdInfo.Checked)
 			{
-				_mcdInfoForm = new McdViewerForm();
-				_mcdInfoForm.Closing += OnMcdInfoClosing;
+				tsmiMcdInfo.Checked = true;
 
-				var f = FindForm();
-
-				McdRecord record = null;
-
-				var tile = SelectedTile;
-				if (tile != null)
+				if (_mcdInfoForm == null)
 				{
-					f.Text = BuildTitleString(tile.TileListId, tile.Id);
-					record = tile.Record;
-				}
-				else
-					f.Text = "Tile View";
+					_mcdInfoForm = new McdViewerForm();
+					_mcdInfoForm.Closing += OnMcdInfoClosing;
 
-				_mcdInfoForm.UpdateData(record);
+					var f = FindForm();
+
+					McdRecord record = null;
+
+					var tile = SelectedTile;
+					if (tile != null)
+					{
+						f.Text = BuildTitleString(tile.TileListId, tile.Id);
+						record = tile.Record;
+					}
+					else
+						f.Text = "Tile View";
+
+					_mcdInfoForm.UpdateData(record);
+				}
+				_mcdInfoForm.Show();
 			}
-			_mcdInfoForm.Show();
+			else
+				OnMcdInfoClosing(null, null);
 		}
 
 		/// <summary>
@@ -382,7 +389,11 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		private void OnMcdInfoClosing(object sender, CancelEventArgs e)
 		{
-			e.Cancel = true;
+			tsmiMcdInfo.Checked = false;
+
+			if (e != null)
+				e.Cancel = true;
+
 			_mcdInfoForm.Hide();
 		}
 

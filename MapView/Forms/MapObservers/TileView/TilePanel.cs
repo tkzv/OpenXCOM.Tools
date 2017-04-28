@@ -232,26 +232,42 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			Focus();
 
-			if (_tiles != null && _tiles.Length != 0)
+			int id = GetTileUnderCursor(e);
+			if (id != -1 && id < _tiles.Length)
 			{
-				if (e.X < SpriteWidth * _tilesX) // not out of bounds to right
-				{
-					int tileX =  e.X            / SpriteWidth;
-					int tileY = (e.Y - _startY) / SpriteHeight;
+				_id = id;
 
-					int id = tileX + tileY * _tilesX;
-					if (id < _tiles.Length) // not out of bounds below
-					{
-						_id = id;
+				if (PanelSelectedTileChangedEvent != null)
+					PanelSelectedTileChangedEvent(SelectedTile);
 
-						if (PanelSelectedTileChangedEvent != null)
-							PanelSelectedTileChangedEvent(SelectedTile);
-
-						ScrollToTile();
-						Refresh();
-					}
-				}
+				ScrollToTile();
+				Refresh();
 			}
+		}
+
+		/// <summary>
+		/// Opens the MCD-info screen when a valid tile is double-clicked.
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnMouseDoubleClick(MouseEventArgs e)
+		{
+			int id = GetTileUnderCursor(e);
+
+			if (id != -1 && id < _tiles.Length)
+				MapView.Forms.MainWindow.ViewerFormsManager.TileView.Control.OnMcdInfoClick(null, null);
+		}
+
+		private int GetTileUnderCursor(MouseEventArgs e)
+		{
+			if (_tiles != null && _tiles.Length != 0
+				&& e.X < SpriteWidth * _tilesX) // not out of bounds to right
+			{
+				int tileX =  e.X            / SpriteWidth;
+				int tileY = (e.Y - _startY) / SpriteHeight;
+
+				return tileX + tileY * _tilesX;
+			}
+			return -1;
 		}
 
 		/// <summary>

@@ -108,7 +108,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			var mapTile = (XCMapTile)tile;
 
 			if (Ground.Checked && mapTile.Ground != null)
-				DrawService.DrawFloor(
+				BlobService.DrawFloor(
 									g,
 									TopBrushes["GroundColor"],
 									x, y);
@@ -118,7 +118,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				_colorNorth = new ColorTools(TopPens["NorthColor"]);
 
 			if (North.Checked && mapTile.North != null)
-				DrawService.DrawContent(
+				BlobService.DrawContent(
 									g,
 									_colorNorth,
 									x, y,
@@ -129,7 +129,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				_colorWest = new ColorTools(TopPens["WestColor"]);
 
 			if (West.Checked && mapTile.West != null)
-				DrawService.DrawContent(
+				BlobService.DrawContent(
 									g,
 									_colorWest,
 									x, y,
@@ -140,7 +140,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				_colorContent = new ColorTools(TopBrushes["ContentColor"], _colorNorth.Pen.Width);
 
 			if (Content.Checked && mapTile.Content != null)
-				DrawService.DrawContent(
+				BlobService.DrawContent(
 									g,
 									_colorContent,
 									x, y,
