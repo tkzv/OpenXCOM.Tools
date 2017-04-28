@@ -293,6 +293,8 @@ namespace MapView.Forms.MapObservers.TileViews
 								left + SpriteMargin,
 								top  + SpriteMargin - tile.Record.TileOffset);
 
+						// NOTE: keep the door-string and its placement consistent with
+						// QuadrantPanelDrawService.Draw().
 						if (tile.Record.HumanDoor || tile.Record.UfoDoor)		// finally print "door" if it's a door
 							g.DrawString(
 									door,

@@ -6,8 +6,41 @@ using MapView.Forms.MapObservers.TopViews;
 using XCom.Interfaces.Base;
 
 
+
+using System.Collections.Generic;
+
+using XCom;
+//using XCom.Interfaces.Base;
+//namespace MapView.Forms.MapObservers.TopViews
+
+
 namespace MapView.Forms.MapObservers.RouteViews
 {
+	/// <summary>
+	/// The various wall- and content-types that will be used to determine how
+	/// to draw the wall- and content-blobs in TopView and RouteView.
+	/// </summary>
+	internal enum ContentType
+	{
+		Content,
+		EastWall,
+		SouthWall,
+		NorthWall,
+		WestWall,
+		NorthwestSoutheast,
+		NortheastSouthwest,
+		NorthWallWindow,
+		WestWallWindow,
+		Ground,
+		NorthFence,
+		WestFence,
+		NorthwestCorner,
+		NortheastCorner,
+		SouthwestCorner,
+		SoutheastCorner
+	}
+
+
 	/// <summary>
 	/// Draws floor- and wall- and content- blobs for RouteView and TopView.
 	/// </summary>
@@ -257,6 +290,173 @@ namespace MapView.Forms.MapObservers.RouteViews
 					tool.Pen,
 					pt,
 					end);
+		}
+		#endregion
+	}
+
+
+	/// <summary>
+	/// A class that determines how walls and objects are drawn for TopView and
+	/// RouteView.
+	/// </summary>
+	internal static class ContentTypeService
+	{
+		#region Fields
+		private static List<byte> _loftList;
+		#endregion
+
+
+		#region Methods
+		/// <summary>
+		/// Gets the ContentType of a given tile for drawing its blob in TopView
+		/// and/or RouteView.
+		/// </summary>
+		/// <param name="tile"></param>
+		/// <returns></returns>
+		internal static ContentType GetContentType(TileBase tile)
+		{
+			var record = tile.Record;
+			if (record != null)
+			{
+				_loftList = record.GetLoftList();
+
+				if (IsGround())
+					return ContentType.Ground;
+
+				if (HasAllInNecessary(new[]{ 24, 26 }))
+					return ContentType.EastWall;
+
+				if (HasAllInNecessary(new[]{ 23, 25 }))
+					return ContentType.SouthWall;
+
+				if (HasAllInNecessary(new[]{ 8, 10, 12, 14, 38 })
+					&& HasAnyInContingent(new[]{ 38 }))
+				{
+					return ContentType.NorthWallWindow;
+				}
+
+				if (HasAllInNecessary(new[]{ 0, 8, 10, 12, 14, 38, 39, 77 })
+					&& HasAnyInContingent(new[]{ 0 }))
+				{
+					return ContentType.NorthFence;
+				}
+
+				if (HasAllInNecessary(new[]{ 8, 10, 12, 14, 16, 18, 20, 21 }))
+					return ContentType.NorthWall;
+
+				if (HasAllInNecessary(new[]{ 7, 9, 11, 13, 37 })
+					&& HasAnyInContingent(new[]{ 37 }))
+				{
+					return ContentType.WestWallWindow;
+				}
+
+				if (HasAllInNecessary(new[]{ 0, 7, 9, 11, 13, 37, 39, 76 })
+					&& HasAnyInContingent(new[]{ 0 }))
+				{
+					return ContentType.WestFence;
+				}
+
+				if (HasAllInNecessary(new[]{ 7, 9, 11, 13, 15, 17, 19, 22 }))
+					return ContentType.WestWall;
+
+				if (HasAllInNecessary(new[]{ 35 }))
+					return ContentType.NorthwestSoutheast;
+
+				if (HasAllInNecessary(new[]{ 36 }))
+					return ContentType.NortheastSouthwest;
+
+				if (HasAllInNecessary(new[]{ 39, 40, 41, 103 }))
+					return ContentType.NorthwestCorner;
+
+				if (HasAllInNecessary(new[]{ 100 }))
+					return ContentType.NortheastCorner;
+
+				if (HasAllInNecessary(new[]{ 106 }))
+					return ContentType.SouthwestCorner;
+
+				if (HasAllInNecessary(new[]{ 109 }))
+					return ContentType.SoutheastCorner;
+			}
+			return ContentType.Content;
+		}
+
+		/// <summary>
+		/// Checks if the tilepart is purely Floor-type.
+		/// </summary>
+		/// <returns></returns>
+		private static bool IsGround()
+		{
+			int length = _loftList.Count;
+			for (int id = 0; id != length; ++id)
+			{
+				switch (id)
+				{
+					case 0:
+						if (_loftList[id] == 0)
+							return false;
+						break;
+
+					default:
+						if (_loftList[id] != 0)
+							return false;
+						break;
+				}
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Checks if all entries in '_loftList' are in 'necessary'.
+		/// </summary>
+		/// <param name="necessary"></param>
+		/// <returns></returns>
+		private static bool HasAllInNecessary(int[] necessary)
+		{
+			foreach (var loft in _loftList)
+			{
+				var valid = false;
+				foreach (var gottfried in necessary)
+					if (gottfried == loft)
+					{
+						valid = true;
+						break;
+					}
+
+				if (!valid)
+					return false;
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Checks if any entry in '_loftList' is also in 'contingent'.
+		/// </summary>
+		/// <param name="contingent"></param>
+		/// <returns></returns>
+		private static bool HasAnyInContingent(int[] contingent)
+		{
+			foreach (var loft in _loftList)
+				foreach (var gottfried in contingent)
+					if (gottfried == loft)
+						return true;
+
+			return false;
+		}
+
+		/// <summary>
+		/// Checks if a tilepart is either a standard door or a ufo door.
+		/// </summary>
+		/// <param name="tile"></param>
+		/// <returns></returns>
+		internal static bool IsDoor(TileBase tile)
+		{
+			var record = tile.Record;
+			if (record != null
+				&& (record.HumanDoor || record.UfoDoor))
+			{
+				return true;
+			}
+			return false;
 		}
 		#endregion
 	}

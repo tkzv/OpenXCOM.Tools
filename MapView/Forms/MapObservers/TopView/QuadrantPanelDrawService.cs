@@ -10,6 +10,23 @@ namespace MapView.Forms.MapObservers.TopViews
 {
 	internal sealed class QuadrantPanelDrawService
 	{
+		#region Fields
+		private const int QuadWidth  = 32;
+		private const int QuadHeight = 40;
+
+		private const int Margin    =  2;
+
+		internal const int QuadWidthTotal = QuadWidth + Margin * 2;
+
+		internal const int StartX = 5;
+		private  const int StartY = 0;
+
+		private const string Door = "door";
+		private const int PrintOffsetY = 2;
+		#endregion
+
+
+		#region Properties
 		internal SolidBrush Brush
 		{ get; set; }
 
@@ -21,178 +38,180 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		internal Font Font
 		{ get; set; }
+		#endregion
 
-		private const int _width  = 32;
-		private const int _height = 40;
 
-		private const int _pad    =  2;
-
-		internal const int QuadsWidthTotal = _width + _pad * 2;
-
-		internal const int startX = 5;
-		private  const int startY = 0;
-
+		#region Methods
 		internal void Draw(
 				Graphics g,
 				XCMapTile mapTile,
 				QuadrantType selectedQuadrant)
 		{
+			// NOTE: keep the door-string and its placement consistent with
+			// TilePanel.OnPaint().
+			int textWidth = (int)g.MeasureString(Door, Font).Width;
+
 			switch (selectedQuadrant) // Fill background of selected quadrant type.
 			{
 				case QuadrantType.Ground:
 					g.FillRectangle(
 								Brush,
-								startX,
-								startY,
-								_width  + 1,
-								_height + 2);
+								StartX,
+								StartY,
+								QuadWidth  + 1,
+								QuadHeight + 2);
 					break;
 
 				case QuadrantType.West:
 					g.FillRectangle(
 								Brush,
-								startX + QuadsWidthTotal,
-								startY,
-								_width  + 1,
-								_height + 2);
+								StartX + QuadWidthTotal,
+								StartY,
+								QuadWidth  + 1,
+								QuadHeight + 2);
 					break;
 
 				case QuadrantType.North:
 					g.FillRectangle(
 								Brush,
-								startX + QuadsWidthTotal * 2,
-								startY,
-								_width  + 1,
-								_height + 2);
+								StartX + QuadWidthTotal * 2,
+								StartY,
+								QuadWidth  + 1,
+								QuadHeight + 2);
 					break;
 
 				case QuadrantType.Content:
 					g.FillRectangle(
 								Brush,
-								startX + QuadsWidthTotal * 3,
-								startY,
-								_width  + 1,
-								_height + 2);
+								StartX + QuadWidthTotal * 3,
+								StartY,
+								QuadWidth  + 1,
+								QuadHeight + 2);
 					break;
 			}
 
+
 			var topView = ViewerFormsManager.TopView.Control;
 
-			if (!topView.GroundVisible) // Ground not visible
+			if (!topView.GroundVisible) // Ground
 				g.FillRectangle(
 							System.Drawing.Brushes.DarkGray,
-							startX,
-							startY,
-							_width  + 1,
-							_height + 2);
+							StartX,
+							StartY,
+							QuadWidth  + 1,
+							QuadHeight + 2);
 
 			if (mapTile != null && mapTile.Ground != null)
 			{
 				g.DrawImage(
 							mapTile.Ground[MainViewUnderlay.AniStep].Image,
-							startX,
-							startY - mapTile.Ground.Record.TileOffset);
+							StartX,
+							StartY - mapTile.Ground.Record.TileOffset);
 
 				if (mapTile.Ground.Record.HumanDoor || mapTile.Ground.Record.UfoDoor)
 					g.DrawString(
-							"Door",
+							Door,
 							Font,
 							System.Drawing.Brushes.Black,
-							startX,
-							startY + PckImage.Height - Font.Height);
+							StartX + (QuadWidth  - textWidth) / 2,
+							StartY +  QuadHeight - Font.Height + PrintOffsetY); // PckImage.Height
 			}
 			else
 				g.DrawImage(
 							Globals.ExtraTiles[3].Image,
-							startX,
-							startY);
+							StartX,
+							StartY);
 
-			if (!topView.WestVisible) // Westwall not visible
+
+			if (!topView.WestVisible) // Westwall
 				g.FillRectangle(
 							System.Drawing.Brushes.DarkGray,
-							startX + QuadsWidthTotal,
-							startY,
-							_width  + 1,
-							_height + 2);
+							StartX + QuadWidthTotal,
+							StartY,
+							QuadWidth  + 1,
+							QuadHeight + 2);
 
 			if (mapTile != null && mapTile.West != null)
 			{
 				g.DrawImage(
 							mapTile.West[MainViewUnderlay.AniStep].Image,
-							startX + QuadsWidthTotal,
-							startY - mapTile.West.Record.TileOffset);
+							StartX + QuadWidthTotal,
+							StartY - mapTile.West.Record.TileOffset);
 
 				if (mapTile.West.Record.HumanDoor || mapTile.West.Record.UfoDoor)
 					g.DrawString(
-							"Door",
+							Door,
 							Font,
 							System.Drawing.Brushes.Black,
-							startX + QuadsWidthTotal,
-							startY + PckImage.Height - Font.Height);
+							StartX + (QuadWidth  - textWidth) / 2 + QuadWidthTotal,
+							StartY +  QuadHeight - Font.Height + PrintOffsetY); // PckImage.Height
 			}
 			else
 				g.DrawImage(
 							Globals.ExtraTiles[1].Image,
-							startX + QuadsWidthTotal,
-							startY);
+							StartX + QuadWidthTotal,
+							StartY);
 
-			if (!topView.NorthVisible) // Northwall not visible
+
+			if (!topView.NorthVisible) // Northwall
 				g.FillRectangle(
 							System.Drawing.Brushes.DarkGray,
-							startX + QuadsWidthTotal * 2,
-							startY,
-							_width  + 1,
-							_height + 2);
+							StartX + QuadWidthTotal * 2,
+							StartY,
+							QuadWidth  + 1,
+							QuadHeight + 2);
 
 			if (mapTile != null && mapTile.North != null)
 			{
 				g.DrawImage(
 							mapTile.North[MainViewUnderlay.AniStep].Image,
-							startX + QuadsWidthTotal * 2,
-							startY - mapTile.North.Record.TileOffset);
+							StartX + QuadWidthTotal * 2,
+							StartY - mapTile.North.Record.TileOffset);
 
 				if (mapTile.North.Record.HumanDoor || mapTile.North.Record.UfoDoor)
 					g.DrawString(
-							"Door",
+							Door,
 							Font,
 							System.Drawing.Brushes.Black,
-							startX + QuadsWidthTotal * 2,
-							startY + PckImage.Height - Font.Height);
+							StartX + (QuadWidth  - textWidth) / 2 + QuadWidthTotal * 2,
+							StartY +  QuadHeight - Font.Height + PrintOffsetY); // PckImage.Height
 			}
 			else
 				g.DrawImage(
 							Globals.ExtraTiles[2].Image,
-							startX + QuadsWidthTotal * 2,
-							startY);
+							StartX + QuadWidthTotal * 2,
+							StartY);
 
-			if (!topView.ContentVisible) // Content not visible
+
+			if (!topView.ContentVisible) // Content
 				g.FillRectangle(
 							System.Drawing.Brushes.DarkGray,
-							startX + QuadsWidthTotal * 3,
-							startY,
-							_width  + 1,
-							_height + 2);
+							StartX + QuadWidthTotal * 3,
+							StartY,
+							QuadWidth  + 1,
+							QuadHeight + 2);
 
 			if (mapTile != null && mapTile.Content != null)
 			{
 				g.DrawImage(
 							mapTile.Content[MainViewUnderlay.AniStep].Image,
-							startX + QuadsWidthTotal * 3,
-							startY - mapTile.Content.Record.TileOffset);
+							StartX + QuadWidthTotal * 3,
+							StartY - mapTile.Content.Record.TileOffset);
 
 				if (mapTile.Content.Record.HumanDoor || mapTile.Content.Record.UfoDoor)
 					g.DrawString(
-							"Door",
+							Door,
 							Font,
 							System.Drawing.Brushes.Black,
-							startX + QuadsWidthTotal * 3,
-							startY + PckImage.Height - Font.Height);
+							StartX + (QuadWidth  - textWidth) / 2 + QuadWidthTotal * 3,
+							StartY +  QuadHeight - Font.Height + PrintOffsetY); // PckImage.Height
 			}
 			else
 				g.DrawImage(
 							Globals.ExtraTiles[4].Image,
-							startX + QuadsWidthTotal * 3,
-							startY);
+							StartX + QuadWidthTotal * 3,
+							StartY);
+
 
 			DrawGroundAndContent(g);
 
@@ -201,9 +220,9 @@ namespace MapView.Forms.MapObservers.TopViews
 					Font,
 					System.Drawing.Brushes.Black,
 					new RectangleF(
-								startX,
-								startY + _height + _pad,
-								_width,
+								StartX,
+								StartY + QuadHeight + Margin,
+								QuadWidth,
 								50));
 
 			g.DrawString(
@@ -211,9 +230,9 @@ namespace MapView.Forms.MapObservers.TopViews
 					Font,
 					System.Drawing.Brushes.Black,
 					new RectangleF(
-								startX + QuadsWidthTotal,
-								startY + _height + _pad,
-								_width,
+								StartX + QuadWidthTotal,
+								StartY + QuadHeight + Margin,
+								QuadWidth,
 								50));
 
 			g.DrawString(
@@ -221,28 +240,29 @@ namespace MapView.Forms.MapObservers.TopViews
 					Font,
 					System.Drawing.Brushes.Black,
 					new RectangleF(
-								startX + QuadsWidthTotal * 2,
-								startY + _height + _pad,
-								_width,
+								StartX + QuadWidthTotal * 2,
+								StartY + QuadHeight + Margin,
+								QuadWidth,
 								50));
 
 			g.DrawString(
-					"Object",
+					"Content",
 					Font,
 					System.Drawing.Brushes.Black,
 					new RectangleF(
-								startX + QuadsWidthTotal * 3,
-								startY + _height + _pad,
-								_width + 50,
+								StartX + QuadWidthTotal * 3,
+								StartY + QuadHeight + Margin,
+								QuadWidth + 50,
 								50));
 
-			for (int i = 0; i < 4; i++)
+
+			for (int i = 0; i != 4; ++i)
 				g.DrawRectangle(
 							System.Drawing.Pens.Black,
-							startX - 1 + QuadsWidthTotal * i,
-							startY,
-							_width  + 2,
-							_height + 2);
+							StartX - 1 + QuadWidthTotal * i,
+							StartY,
+							QuadWidth  + 2,
+							QuadHeight + 2);
 		}
 
 		private void DrawGroundAndContent(Graphics g)
@@ -252,35 +272,36 @@ namespace MapView.Forms.MapObservers.TopViews
 				g.FillRectangle(
 							Brushes["GroundColor"],
 							new RectangleF(
-										startX,
-										startY + _height + _pad + Font.Height,
-										_width,
+										StartX,
+										StartY + QuadHeight + Margin + Font.Height,
+										QuadWidth,
 										3));
 
 				g.FillRectangle(
 							new SolidBrush(Pens["NorthColor"].Color),
 							new RectangleF(
-										startX + QuadsWidthTotal,
-										startY + _height + _pad + Font.Height,
-										_width,
+										StartX + QuadWidthTotal,
+										StartY + QuadHeight + Margin + Font.Height,
+										QuadWidth,
 										3));
 
 				g.FillRectangle(
 							new SolidBrush(Pens["WestColor"].Color),
 							new RectangleF(
-										startX + QuadsWidthTotal * 2,
-										startY + _height + _pad + Font.Height,
-										_width,
+										StartX + QuadWidthTotal * 2,
+										StartY + QuadHeight + Margin + Font.Height,
+										QuadWidth,
 										3));
 
 				g.FillRectangle(
 							Brushes["ContentColor"],
 							new RectangleF(
-										startX + QuadsWidthTotal * 3,
-										startY + _height + _pad + Font.Height,
-										_width,
+										StartX + QuadWidthTotal * 3,
+										StartY + QuadHeight + Margin + Font.Height,
+										QuadWidth,
 										3));
 			}
 		}
+		#endregion
 	}
 }

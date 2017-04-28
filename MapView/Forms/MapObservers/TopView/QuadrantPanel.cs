@@ -134,7 +134,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			var quad = (QuadrantType)((e.X - QuadrantPanelDrawService.startX) / QuadrantPanelDrawService.QuadsWidthTotal);
+			var quad = (QuadrantType)((e.X - QuadrantPanelDrawService.StartX) / QuadrantPanelDrawService.QuadWidthTotal);
 			switch (quad)
 			{
 				case QuadrantType.Ground:

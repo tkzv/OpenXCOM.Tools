@@ -124,7 +124,7 @@ namespace XCom
 		public byte Unknown29 { get; set; }                                            // unsigned char u62;
 
 		public bool UfoDoor    { get; set; }        // info[30]==1;}}                                                 // If it's a UFO door it uses only Frame[0] until it is walked through, then it animates once and becomes Alt_MCD. It changes back at the end of the turn.
-		public bool StopLOS    { get; set; }        // info[31]!=1;}}                  // unsigned char Stop_LOS;     // You cannot see through this tile.
+		public bool StopLOS    { get; set; }        // info[31]==1;}}                  // unsigned char Stop_LOS;     // You cannot see through this tile.
 		public bool NoGround   { get; set; }        // info[32]==1;}}                  // unsigned char No_Floor;     // If 1, then a non-flying unit can't stand here
 		public bool BigWall    { get; set; }        // info[33]==1;}}                  // unsigned char Big_Wall;     // It's an object (tile type 3), but it acts like a wall
 		public bool GravLift   { get; set; }        // info[34]==1;}}                  // unsigned char Gravlift;
@@ -158,15 +158,16 @@ namespace XCom
 		public byte Unknown60         { get; set; } // info[60];}}                     // unsigned char u61;
 		public byte Unknown61         { get; set; } // info[61];}}                     // unsigned char u62;
 
+
 //		unsigned char Frame[8]; // Each frame is an index into the ____.TAB file; it cycles through the frames constantly.
-
-		public string ScanGReference { get; set; }
-
+		public string Images          { get; set; }
+		public string ScanGReference  { get; set; }
 //		unsigned char LOFT[12]; // The 12 levels of references into GEODATA\LOFTEMPS.DAT
-		public string LoftReference { get; set; }
+		public string LoftReference   { get; set; }
 
-		public string Reference0To30  { get; set; }
-		public string Reference30To62 { get; set; }
+//		public string Reference0To30  { get; set; }
+//		public string Reference30To62 { get; set; }
+		public string ByteTable       { get; set; }
 		#endregion
 
 
