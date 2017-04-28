@@ -36,11 +36,12 @@
 			// rtbInfo
 			// 
 			this.rtbInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.rtbInfo.Font = new System.Drawing.Font("Courier New", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.rtbInfo.Location = new System.Drawing.Point(0, 0);
 			this.rtbInfo.Name = "rtbInfo";
 			this.rtbInfo.ReadOnly = true;
 			this.rtbInfo.ShowSelectionMargin = true;
-			this.rtbInfo.Size = new System.Drawing.Size(522, 425);
+			this.rtbInfo.Size = new System.Drawing.Size(692, 504);
 			this.rtbInfo.TabIndex = 0;
 			this.rtbInfo.Text = "";
 			// 
@@ -54,7 +55,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
 			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-			this.ClientSize = new System.Drawing.Size(522, 425);
+			this.ClientSize = new System.Drawing.Size(692, 504);
 			this.Controls.Add(this.rtbInfo);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "McdViewerForm";

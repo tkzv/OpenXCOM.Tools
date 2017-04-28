@@ -80,7 +80,7 @@ namespace MapView
 		}
 
 
-		public virtual void LoadControl0Settings()
+		internal protected virtual void LoadControl0Settings()
 		{}
 
 /*		/// <summary>

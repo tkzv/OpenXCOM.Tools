@@ -151,6 +151,7 @@ namespace MapView
 
 			_settingsManager = new SettingsManager(); // goes before LoadSettings()
 
+			Settings = new Settings();
 			LoadSettings();									// TODO: check if this should go after the managers load
 			LogFile.WriteLine("MainView Settings loaded.");	// since managers might be re-instantiating needlessly
 															// when OnSettingsChange() runs ....
@@ -429,66 +430,63 @@ namespace MapView
 //				keySoftware.Close();
 //			}
 
-			var settings = new Settings();
 			var handler  = new ValueChangedEventHandler(OnSettingChange);
 //			Color.FromArgb(175, 69, 100, 129)
 
-			settings.AddSetting(
+			Settings.AddSetting(
 							"Animation",
 							MainViewUnderlay.IsAnimated,
-							"If true the sprites will animate.",
+							"If true the sprites will animate",
 							"Main",
 							handler);
-			settings.AddSetting(
+			Settings.AddSetting(
 							"Doors",
 							false,
-							"If true the doors will animate.",
+							"If true the doors will animate",
 							"Main",
 							handler);
-			settings.AddSetting(
+			Settings.AddSetting(
 							"SaveWindowPositions",
 							true, //PathsEditor.SaveRegistry,
-							"If true the window positions and sizes will be saved to the MapViewers YAML file.",
+							"If true the window positions and sizes will be saved",
 							"Main",
 							handler);
 
-			settings.AddSetting(
+			Settings.AddSetting(
 							"ShowGrid",
 							MainViewUnderlay.Instance.MainView.ShowGrid,
-							"If true a grid will show up at the current level of editing.",
+							"If true a grid will display at the current level of editing",
 							"MapView",
 							null, MainViewUnderlay.Instance.MainView);
-			settings.AddSetting(
+			Settings.AddSetting(
 							"GridLayerColor",
 							MainViewUnderlay.Instance.MainView.GridLayerColor,
-							"Color of the grid in (a,r,g,b) format.",
+							"Color of the grid (a,r,g,b)",
 							"MapView",
 							null, MainViewUnderlay.Instance.MainView);
-			settings.AddSetting(
+			Settings.AddSetting(
 							"GridLineColor",
 							MainViewUnderlay.Instance.MainView.GridLineColor,
-							"Color of the lines that make up the grid.",
+							"Color of the lines that make up the grid",
 							"MapView",
 							null, MainViewUnderlay.Instance.MainView);
-			settings.AddSetting(
+			Settings.AddSetting(
 							"GridLineWidth",
 							MainViewUnderlay.Instance.MainView.GridLineWidth,
-							"Width of the grid lines in pixels.",
+							"Width of the grid lines in pixels",
 							"MapView",
 							null, MainViewUnderlay.Instance.MainView);
-			settings.AddSetting(
+			Settings.AddSetting(
 							"GraySelection",
 							MainViewUnderlay.Instance.MainView.GraySelection,
-							"If true the selection area will show up in gray.",
+							"If true the selection area will show up in gray",
 							"MapView",
 							null, MainViewUnderlay.Instance.MainView);
-//			settings.AddSetting(
+//			Settings.AddSetting(
 //							"SaveOnExit",
 //							true,
-//							"If true these settings will be saved on program exit.",
+//							"If true these settings will be saved on program exit",
 //							"Main");
-
-			Settings = settings;
 		}
 
 		private void OnSettingChange(object sender, string key, object val)

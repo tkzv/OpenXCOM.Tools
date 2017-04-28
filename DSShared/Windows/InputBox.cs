@@ -33,7 +33,7 @@ namespace DSShared.Windows
 		/// <param name="notice"></param>
 		public InputBox(string notice)
 			:
-				this(notice, "Input", String.Empty)
+				this(notice, "Input Text", String.Empty)
 		{}
 
 
@@ -47,8 +47,8 @@ namespace DSShared.Windows
 
 		private void btnFindFile_Click(object sender, EventArgs e)
 		{
-			using (var f = openFileDialog)
-			{
+			using (var f = openFileDialog)	// TODO: Delete the OpenFileDialog class and use stock .NET forms.
+			{								// In fact delete this class also and use stock .NET forms.
 				f.Title = "Find MCDEdit.exe";
 				if (f.ShowDialog() == DialogResult.OK)
 					tbInput.Text = f.FileName;

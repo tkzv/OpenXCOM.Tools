@@ -243,14 +243,22 @@ namespace MapView.Forms.MapObservers.TopViews
 			if (BaseMap != null)
 			{
 				for (int
-						r = 0, startX = _offX, startY = _offY;
+						r = 0,
+							startX = _offX,
+							startY = _offY;
 						r != BaseMap.MapSize.Rows;
-						++r, startX -= hWidth, startY += hHeight)
+						++r,
+							startX -= hWidth,
+							startY += hHeight)
 				{
 					for (int
-							c = 0, x = startX, y = startY;
+							c = 0,
+								x = startX,
+								y = startY;
 							c != BaseMap.MapSize.Cols;
-							++c, x += hWidth, y += hHeight)
+							++c,
+								x += hWidth,
+								y += hHeight)
 					{
 						var mapTile = BaseMap[r, c] as MapTileBase;
 						if (mapTile != null)

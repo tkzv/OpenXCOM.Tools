@@ -45,7 +45,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 
 		#region Fields
-		private ShowHideManager _showAllManager;
+		private ShowHideManager _showHideManager;
 
 		private IContainer components = null; // quahhaha
 
@@ -98,7 +98,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		#region cTor
 		/// <summary>
-		/// cTor.
+		/// cTor. Instantiates the TileView viewer and its pages/panels.
 		/// </summary>
 		internal TileView()
 		{
@@ -121,8 +121,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				content
 			};
 
-			AddPanel(_allTiles, tpAll);
-
+			AddPanel(_allTiles,  tpAll);
 			AddPanel(floors,     tpFloors);
 			AddPanel(westwalls,  tpWestwalls);
 			AddPanel(northwalls, tpNorthwalls);
@@ -134,8 +133,27 @@ namespace MapView.Forms.MapObservers.TileViews
 		private void AddPanel(TilePanel panel, Control page)
 		{
 			panel.PanelSelectedTileChangedEvent += OnPanelTileChanged;
-
 			page.Controls.Add(panel);
+		}
+
+		#region EventCalls
+		private void OnPageSelected(object sender, TabControlEventArgs e)
+		{
+			var f = FindForm();
+
+			McdRecord record = null;
+
+			var tile = SelectedTile;
+			if (tile != null)
+			{
+				f.Text = BuildTitleString(tile.TileListId, tile.Id);
+				record = tile.Record;
+			}
+			else
+				f.Text = "Tile View";
+
+			if (_mcdInfoForm != null)
+				_mcdInfoForm.UpdateData(record);
 		}
 
 		private void OnPanelTileChanged(TileBase tile)
@@ -157,29 +175,15 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			OnSelectedTileChanged(tile);
 		}
+		#endregion
 
-		private void OnPageSelected(object sender, TabControlEventArgs e)
+		/// <summary>
+		/// Sets the ShowHideManager.
+		/// </summary>
+		/// <param name="showHideManager"></param>
+		internal void SetShowHideManager(ShowHideManager showHideManager)
 		{
-			var f = FindForm();
-
-			McdRecord record = null;
-
-			var tile = SelectedTile;
-			if (tile != null)
-			{
-				f.Text = BuildTitleString(tile.TileListId, tile.Id);
-				record = tile.Record;
-			}
-			else
-				f.Text = "Tile View";
-
-			if (_mcdInfoForm != null)
-				_mcdInfoForm.UpdateData(record);
-		}
-
-		internal void SetShowAllManager(ShowHideManager showAllManager)
-		{
-			_showAllManager = showAllManager;
+			_showHideManager = showHideManager;
 		}
 
 		/// <summary>
@@ -190,33 +194,83 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// </summary>
 		internal static readonly Color[] TileColors =
 		{
-			Color.NavajoWhite,		//  0 - Tile
-			Color.Lavender,			//  1 - StartPoint
-			Color.IndianRed,		//  2 - IonBeamAccel
-			Color.PaleTurquoise,	//  3 - DestroyObjective
-			Color.Khaki,			//  4 - MagneticNav
-			Color.MistyRose,		//  5 - AlienCryo
-			Color.Aquamarine,		//  6 - AlienClon
-			Color.LightSkyBlue,		//  7 - AlienLearn
-			Color.Thistle,			//  8 - AlienImplant
-			Color.YellowGreen,		//  9 - Unknown9
-			Color.MediumPurple,		// 10 - AlienPlastics
-			Color.LightCoral,		// 11 - ExamRoom
+									//      UFO:			TFTD:
+			Color.NavajoWhite,		//  0 - Standard
+			Color.Lavender,			//  1 - EntryPoint
+			Color.IndianRed,		//  2 - PowerSource		IonBeamAccel
+			Color.PaleTurquoise,	//  3 - Navigation		DestroyObjective
+			Color.Khaki,			//  4 - Construction	MagneticNav
+			Color.MistyRose,		//  5 - Food			AlienCryo
+			Color.Aquamarine,		//  6 - Reproduction	AlienClon
+			Color.LightSkyBlue,		//  7 - Entertainment	AlienLearn
+			Color.Thistle,			//  8 - Surgery			AlienImplant
+			Color.YellowGreen,		//  9 - ExaminationRoom	Unknown9
+			Color.MediumPurple,		// 10 - Alloys			AlienPlastics
+			Color.LightCoral,		// 11 - Habitat			ExamRoom
 			Color.LightCyan,		// 12 - DeadTile
-			Color.BurlyWood,		// 13 - EndPoint
+			Color.BurlyWood,		// 13 - ExitPoint
 			Color.Blue				// 14 - MustDestroy
 		};
 
 		/// <summary>
 		/// Loads default settings for TileView screen.
 		/// </summary>
-		public override void LoadControl0Settings() // TODO: access that as internal
+		protected internal override void LoadControl0Settings()
 		{
+			string desc = String.Empty;
+
 			foreach (string specialType in Enum.GetNames(typeof(SpecialType)))
 			{
-				_brushes[specialType] = new SolidBrush(TileColors[(int)Enum.Parse(typeof(SpecialType), specialType)]);
+				int i = (int)Enum.Parse(typeof(SpecialType), specialType);
+				_brushes[specialType] = new SolidBrush(TileColors[i]);
 
-				// NOTE: The colors of the brushes get overwritten by the
+				switch (i)
+				{
+					case  0: desc = "Color of (standard tile)";
+						break;
+					case  1: desc = "Color of (entry point)";
+						break;
+					case  2: desc = "Color of UFO Power Source - UFO" + Environment.NewLine
+								  + "Color of Ion-beam Accelerators - TFTD";
+						break;
+					case  3: desc = "Color of UFO Navigation - UFO" + Environment.NewLine
+								  + "Color of (destroy objective) (alias of Magnetic Navigation) - TFTD";
+						break;
+					case  4: desc = "Color of UFO Construction - UFO" + Environment.NewLine
+								  + "Color of Magnetic Navigation (alias of Alien Sub Construction) - TFTD";
+						break;
+					case  5: desc = "Color of Alien Food - UFO" + Environment.NewLine
+								  + "Color of Alien Cryogenics - TFTD";
+						break;
+					case  6: desc = "Color of Alien Reproduction - UFO" + Environment.NewLine
+								  + "Color of Alien Cloning - TFTD";
+						break;
+					case  7: desc = "Color of Alien Entertainment - UFO" + Environment.NewLine
+								  + "Color of Alien Learning Arrays - TFTD";
+						break;
+					case  8: desc = "Color of Alien Surgery - UFO" + Environment.NewLine
+								  + "Color of Alien Implanter - TFTD";
+						break;
+					case  9: desc = "Color of Examination Room - UFO" + Environment.NewLine
+								  + "Color of (unknown) (alias of Examination Room) - TFTD";
+						break;
+					case 10: desc = "Color of Alien Alloys - UFO" + Environment.NewLine
+								  + "Color of Aqua Plastics - TFTD";
+						break;
+					case 11: desc = "Color of Alien Habitat - UFO" + Environment.NewLine
+								  + "Color of Examination Room (alias of Alien Re-animation Zone) - TFTD";
+						break;
+					case 12: desc = "Color of (dead tile)";
+						break;
+					case 13: desc = "Color of (exit point)";
+						break;
+					case 14: desc = "Color of (must destroy tile)" + Environment.NewLine
+								  + "Alien Brain - UFO" + Environment.NewLine
+								  + "T'leth Power Cylinders - TFTD";
+						break;
+				}
+
+				// NOTE: The colors of these brushes get overwritten by the
 				// Option settings somewhere/how between here and their actual
 				// use in TilePanel.OnPaint(). That is, this only sets default
 				// colors and might not even be very useful other than as
@@ -227,8 +281,8 @@ namespace MapView.Forms.MapObservers.TileViews
 				Settings.AddSetting(
 								specialType,
 								((SolidBrush)_brushes[specialType]).Color,
-								"Color of special tile type",	// appears as a tip at the bottom of the Options screen.
-								"TileView",						// this identifies what Option category the setting appears under.
+								desc,					// appears as a tip at the bottom of the Options screen.
+								"TileBackgroundColors",	// this identifies what Option category the setting appears under.
 								OnSpecialPropertyColorChanged);
 			}
 			TilePanel.SetSpecialPropertyColors(_brushes);
@@ -291,6 +345,11 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
+		/// <summary>
+		/// Opens the MCD-info screen.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnMcdInfoClick(object sender, EventArgs e)
 		{
 			if (_mcdInfoForm == null)
@@ -316,49 +375,46 @@ namespace MapView.Forms.MapObservers.TileViews
 			_mcdInfoForm.Show();
 		}
 
+		/// <summary>
+		/// Hides the MCD-info screen.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnMcdInfoClosing(object sender, CancelEventArgs e)
 		{
 			e.Cancel = true;
 			_mcdInfoForm.Hide();
 		}
 
+		/// <summary>
+		/// Opens MCDEdit.exe or any program or file specified in Settings.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnVolutarMcdEditorClick(object sender, EventArgs e)
 		{
 			if ((BaseMap as XCMapFile) != null)
 			{
 				var service = new VolutarSettingService(Settings);
-				var path = service.FullPath;	// this will invoke a box for the user to input the
-												// executable's path if it doesn't exist in Settings.
-				if (!String.IsNullOrEmpty(path))
+				var pfe = service.FullPath;	// this will invoke a box for the user to input the
+											// executable's path if it doesn't exist in Settings.
+				if (File.Exists(pfe))
 				{
-					string dir = path.Substring(0, path.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
-					Directory.SetCurrentDirectory(dir); // change to MCDEdit dir so that accessing MCDEdit.txt doesn't cause probs.
+					string dir = Path.GetDirectoryName(pfe); // change to MCDEdit dir so that accessing MCDEdit.txt doesn't cause probs.
+					Directory.SetCurrentDirectory(dir);
 
-					Process.Start(new ProcessStartInfo(path));
+					Process.Start(new ProcessStartInfo(pfe));
 
 					Directory.SetCurrentDirectory(SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory)); // change back to app dir
 				}
 			}
 		}
 
-		private string BuildTitleString(int id, int mcd)
-		{
-			var dep = GetDepLabel();
-			return "Tile View - id[" + id + "]  mcd[" + mcd + "]  file[" + (dep ?? "unknown") + "]";
-		}
-
-		private string GetDepLabel()
-		{
-			var tile = SelectedTile;
-			if (tile != null)
-			{
-				var file = BaseMap as XCMapFile;
-				if (file != null)
-					return file.GetDepLabel(tile);
-			}
-			return null;
-		}
-
+		/// <summary>
+		/// Opens PckView with the tileset of the currently selected tile loaded.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnPckEditorClick(object sender, EventArgs e)
 		{
 			var dep = GetDepLabel();
@@ -395,7 +451,7 @@ namespace MapView.Forms.MapObservers.TileViews
 					}
 					else
 					{
-						_showAllManager.HideAll();
+						_showHideManager.HideAll();
 
 						using (var f = new PckViewForm())
 						{
@@ -422,7 +478,7 @@ namespace MapView.Forms.MapObservers.TileViews
 							}
 						}
 
-						_showAllManager.RestoreAll();
+						_showHideManager.RestoreAll();
 					}
 				}
 			}
@@ -438,5 +494,36 @@ namespace MapView.Forms.MapObservers.TileViews
 							0);
 			}
 		}
+
+		#region Methods
+		/// <summary>
+		/// Builds and returns a string that's appropriate for the currently
+		/// selected tile.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="mcd"></param>
+		/// <returns></returns>
+		private string BuildTitleString(int id, int mcd)
+		{
+			var dep = GetDepLabel();
+			return "Tile View - id[" + id + "]  mcd[" + mcd + "]  file[" + (dep ?? "unknown") + "]";
+		}
+
+		/// <summary>
+		/// Gets the label of the tileset of the currently selected tile.
+		/// </summary>
+		/// <returns></returns>
+		private string GetDepLabel()
+		{
+			var tile = SelectedTile;
+			if (tile != null)
+			{
+				var file = BaseMap as XCMapFile;
+				if (file != null)
+					return file.GetDepLabel(tile);
+			}
+			return null;
+		}
+		#endregion
 	}
 }

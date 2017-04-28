@@ -137,7 +137,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 			if (_colorContent == null)
-				_colorContent = new ColorTools(TopBrushes["ContentColor"], _colorNorth.Pen.Width); // TODO: qua, why '_colorNorth' for '_colorContent'
+				_colorContent = new ColorTools(TopBrushes["ContentColor"], _colorNorth.Pen.Width);
 
 			if (Content.Checked && mapTile.Content != null)
 				DrawService.DrawContent(

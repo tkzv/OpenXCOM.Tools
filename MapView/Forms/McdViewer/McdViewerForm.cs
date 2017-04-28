@@ -11,16 +11,24 @@ namespace MapView.Forms.McdViewer
 		:
 			Form
 	{
-		public McdViewerForm()
+		/// <summary>
+		/// cTor. Instantiates an MCD-info screen.
+		/// </summary>
+		internal McdViewerForm()
 		{
 			InitializeComponent();
 
+			rtbInfo.ScrollBars = RichTextBoxScrollBars.ForcedBoth;
 			rtbInfo.WordWrap = false;
 			rtbInfo.ReadOnly = true;
 		}
 
 
-		public void UpdateData(McdRecord record)
+		/// <summary>
+		/// Updates data when the selected tile changes.
+		/// </summary>
+		/// <param name="record"></param>
+		internal void UpdateData(McdRecord record)
 		{
 			bsInfo.DataSource = record;
 
@@ -157,7 +165,7 @@ namespace MapView.Forms.McdViewer
 				rtbInfo.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "light produced: {0}" + Environment.NewLine, record.LightSource));
 //				unsigned char Light_Source; // The amount of light this tile produces
 
-				rtbInfo.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "special: {0}" + Environment.NewLine, record.TargetType));
+				rtbInfo.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "special property: {0}" + Environment.NewLine, record.TargetType));
 //				unsigned char Target_Type; // The special properties of the tile
 
 //				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[60]));
@@ -166,6 +174,17 @@ namespace MapView.Forms.McdViewer
 //				rtb.AppendText(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unknown data: {0}" + Environment.NewLine, info[61]));
 //				unsigned char u62;
 			}
+
+			rtbInfo.SelectionStart  =
+			rtbInfo.SelectionLength = 0;
+		}
+
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+//			base.OnKeyDown(e);
+
+			if (e.KeyCode == Keys.Escape)
+				Close();
 		}
 	}
 }

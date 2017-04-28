@@ -8,7 +8,7 @@ using XCom;
 
 namespace MapView
 {
-	internal delegate void ValueChangedEventHandler(object sender, string key, object value); // TODO: FxCop CA1009.
+	internal delegate void ValueChangedEventHandler(object sender, string key, object value);
 
 	internal delegate string ConvertObjectHandler(object value);
 

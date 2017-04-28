@@ -109,14 +109,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 					{
 						var tile = (XCMapTile)map[r, c];
 
-						if (tile.North != null)
-							_drawContentService.DrawContent(_graphics, _penWalls, x, y, tile.North);
+						if (tile.Content != null)
+							_drawContentService.DrawContent(_graphics, _brushContent, x, y, tile.Content);
 
 						if (tile.West != null)
 							_drawContentService.DrawContent(_graphics, _penWalls, x, y, tile.West);
 
-						if (tile.Content != null)
-							_drawContentService.DrawContent(_graphics, _brushContent, x, y, tile.Content);
+						if (tile.North != null)
+							_drawContentService.DrawContent(_graphics, _penWalls, x, y, tile.North);
 					}
 				}
 			}

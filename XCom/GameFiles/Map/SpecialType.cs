@@ -10,22 +10,20 @@ namespace XCom
 	// screen uses Enum.GetName() to evaluate special-property colors.
 	public enum SpecialType
 	{
-		// TFTD:					// UFO:
-
-		Tile = 0,			// 0	// default tile value
-		StartPoint,			// 1	// EntryTile
-		IonBeamAccel,		// 2	// UfoPowerSource
-		DestroyObjective,	// 3	// UfoNavigation
-		MagneticNav,		// 4	// UfoConstruction
-		AlienCryo,			// 5	// AlienFood
-		AlienClon,			// 6	// AlienReproduction
-		AlienLearn,			// 7	// AlienEntertainment
-		AlienImplant,		// 8	// AlienSurgery
-		Unknown9,			// 9	// AlienExaminationRoom
-		AlienPlastics,		// 10	// AlienAlloys
-		ExamRoom,			// 11	// AlienHabitat
+		Standard = 0,		// 0	// default tile value
+		EntryPoint,			// 1	// EntryTile
+		PowerSource,		// 2	// UfoPowerSource
+		Navigation,			// 3	// UfoNavigation
+		Construction,		// 4	// UfoConstruction
+		Food,				// 5	// AlienFood
+		Reproduction,		// 6	// AlienReproduction
+		Entertainment,		// 7	// AlienEntertainment
+		Surgery,			// 8	// AlienSurgery
+		ExaminationRoom,	// 9	// AlienExaminationRoom
+		Alloys,				// 10	// AlienAlloys
+		Habitat,			// 11	// AlienHabitat
 		DeadTile,			// 12	// DeadTile
-		EndPoint,			// 13	// ExitTile
+		ExitPoint,			// 13	// ExitTile
 		MustDestroy			// 14	// AlienBrain
 	};
 }

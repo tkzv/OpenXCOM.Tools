@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Windows.Forms;
 
 using DSShared.Windows;
 
@@ -7,7 +8,7 @@ using DSShared.Windows;
 namespace MapView.SettingServices
 {
 	/// <summary>
-	/// Deals with Volutar's MCD Editor app.
+	/// Deals with Volutar's MCD Editor app. Or any app/file really.
 	/// </summary>
 	internal sealed class VolutarSettingService
 	{
@@ -27,13 +28,23 @@ namespace MapView.SettingServices
 				{
 					using (var f = new InputBox("Enter the Volutar MCD Editor Path in full"))
 					{
-						if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK
-							&& File.Exists(f.InputString))
+						if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 						{
-							_fullpath = f.InputString;
-							setting.Value = (object)f.InputString;
+							if (File.Exists(f.InputString))
+							{
+								_fullpath = f.InputString;
+								setting.Value = (object)f.InputString;
+							}
+							else
+								MessageBox.Show(
+											f,
+											"File not found.",
+											"Error",
+											MessageBoxButtons.OK,
+											MessageBoxIcon.Error,
+											MessageBoxDefaultButton.Button1,
+											0);
 						}
-						// TODO: Error handling. As is the input form simply disappears.
 					}
 				}
 				return _fullpath;
@@ -52,8 +63,11 @@ namespace MapView.SettingServices
 			settings.AddSetting(
 							VolutarMcdEditorPath,
 							String.Empty,
-							"Path to Volutar MCD Editor",
-							"TileView");
+							"Path to Volutar MCD Editor" + Environment.NewLine
+								+ "note: The path specified can actually be "
+								+ "used to start any valid program or to open "
+								+ "a specific file with its associated viewer.",
+							"McdViewer");
 		}
 	}
 }

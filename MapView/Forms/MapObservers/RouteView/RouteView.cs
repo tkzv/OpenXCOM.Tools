@@ -36,6 +36,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private readonly List<object> _linksList = new List<object>();
 
 
+		#region cTor
+		/// <summary>
+		/// cTor. Instantiates the RouteView viewer and its components/controls.
+		/// </summary>
 		public RouteView()
 		{
 			InitializeComponent();
@@ -95,6 +99,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			DeselectNode();
 		}
+		#endregion
 
 
 		private Form _foptions;
@@ -1004,7 +1009,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Loads default settings for RouteView in TopRouteView screens.
 		/// </summary>
-		public override void LoadControl0Settings()
+		protected internal override void LoadControl0Settings()
 		{
 			tsmiConnectType.SelectedIndex = 0;
 
@@ -1016,17 +1021,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var pw = new ValueChangedEventHandler(OnPenWidthChanged);
 			var oc = new ValueChangedEventHandler(OnNodeOpacityChanged);
 
-			var settings = Settings;
 			var penRed = new Pen(new SolidBrush(Color.Red), 2);
 			pens["UnselectedLinkColor"] = penRed;
 			pens["UnselectedLinkWidth"] = penRed;
-			settings.AddSetting(
+			Settings.AddSetting(
 							"UnselectedLinkColor",
 							penRed.Color,
 							"Color of unselected link lines",
 							"Links",
 							pc);
-			settings.AddSetting(
+			Settings.AddSetting(
 							"UnselectedLinkWidth",
 							2,
 							"Width of unselected link lines",
@@ -1036,13 +1040,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var penBlue = new Pen(new SolidBrush(Color.Blue), 2);
 			pens["SelectedLinkColor"] = penBlue;
 			pens["SelectedLinkWidth"] = penBlue;
-			settings.AddSetting(
+			Settings.AddSetting(
 							"SelectedLinkColor",
 							penBlue.Color,
 							"Color of selected link lines",
 							"Links",
 							pc);
-			settings.AddSetting(
+			Settings.AddSetting(
 							"SelectedLinkWidth",
 							2,
 							"Width of selected link lines",
@@ -1052,13 +1056,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var penWalls = new Pen(new SolidBrush(Color.Black), 4);
 			pens["WallColor"] = penWalls;
 			pens["WallWidth"] = penWalls;
-			settings.AddSetting(
+			Settings.AddSetting(
 							"WallColor",
 							penWalls.Color,
 							"Color of wall indicators",
 							"View",
 							pc);
-			settings.AddSetting(
+			Settings.AddSetting(
 							"WallWidth",
 							4,
 							"Width of wall indicators",
@@ -1067,23 +1071,23 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			var brushContent = new SolidBrush(Color.DarkGray);
 			brushes["ContentColor"] = brushContent;
-			settings.AddSetting(
+			Settings.AddSetting(
 							"ContentColor",
 							brushContent.Color,
 							"Color of content indicators",
-							"View", // "Other"
+							"View",
 							bc);
 
 			var penGrid = new Pen(new SolidBrush(Color.Black), 1);
 			pens["GridLineColor"] = penGrid;
 			pens["GridLineWidth"] = penGrid;
-			settings.AddSetting(
+			Settings.AddSetting(
 							"GridLineColor",
 							penGrid.Color,
 							"Color of grid lines",
 							"View",
 							pc);
-			settings.AddSetting(
+			Settings.AddSetting(
 							"GridLineWidth",
 							1,
 							"Width of grid lines",
@@ -1092,7 +1096,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			var brushNode = new SolidBrush(Color.Green);
 			brushes["UnselectedNodeColor"] = brushNode;
-			settings.AddSetting(
+			Settings.AddSetting(
 							"UnselectedNodeColor",
 							brushNode.Color,
 							"Color of unselected nodes",
@@ -1101,7 +1105,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			var brushSelected = new SolidBrush(Color.Blue);
 			brushes["SelectedNodeColor"] = brushSelected;
-			settings.AddSetting(
+			Settings.AddSetting(
 							"SelectedNodeColor",
 							brushSelected.Color,
 							"Color of selected nodes",
@@ -1110,17 +1114,17 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			var brushSpawn = new SolidBrush(Color.GreenYellow);
 			brushes["SpawnNodeColor"] = brushSpawn;
-			settings.AddSetting(
+			Settings.AddSetting(
 							"SpawnNodeColor",
 							brushSpawn.Color,
 							"Color of spawn nodes",
 							"Nodes",
 							bc);
 
-			settings.AddSetting(
+			Settings.AddSetting(
 							"NodeOpacity",
 							255,
-							"Opacity of node colors",
+							"Opacity of node colors (0..255)",
 							"Nodes",
 							oc);
 		}

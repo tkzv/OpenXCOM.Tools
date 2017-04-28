@@ -161,24 +161,6 @@ namespace MapView
 		}
 
 
-		private GroupBox groupInfo;
-		private Label lbl1Dimensions;
-		private Label lbl2Dimensions;
-		private Label lbl1Tilesets;
-		private Label lbl2Tilesets;
-		private Label lbl1PckImages;
-		private Label lbl2PckImages;
-		private Label lbl1McdRecords;
-		private Label lbl2McdRecords;
-		private Label lbl1PartsFilled;
-		private Label lbl2PartsFilled;
-		private GroupBox groupAnalyze;
-		private ProgressBar pBar;
-		private Button btnCancel;
-
-		private System.ComponentModel.Container components = null;
-
-
 		#region Windows Form Designer generated code
 
 		/// <summary>
@@ -380,8 +362,24 @@ namespace MapView
 			this.groupAnalyze.ResumeLayout(false);
 			this.groupInfo.ResumeLayout(false);
 			this.ResumeLayout(false);
-
 		}
 		#endregion
+
+		private System.ComponentModel.Container components = null;
+
+		private GroupBox groupInfo;
+		private Label lbl1Dimensions;
+		private Label lbl2Dimensions;
+		private Label lbl1Tilesets;
+		private Label lbl2Tilesets;
+		private Label lbl1PckImages;
+		private Label lbl2PckImages;
+		private Label lbl1McdRecords;
+		private Label lbl2McdRecords;
+		private Label lbl1PartsFilled;
+		private Label lbl2PartsFilled;
+		private GroupBox groupAnalyze;
+		private ProgressBar pBar;
+		private Button btnCancel;
 	}
 }
