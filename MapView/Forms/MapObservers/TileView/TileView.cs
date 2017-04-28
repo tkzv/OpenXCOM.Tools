@@ -379,7 +379,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				_mcdInfoForm.Show();
 			}
 			else
-				OnMcdInfoClosing(null, null);
+				OnMcdInfoClosing(null, new CancelEventArgs(true));
 		}
 
 		/// <summary>
@@ -391,8 +391,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			tsmiMcdInfo.Checked = false;
 
-			if (e != null)
-				e.Cancel = true;
+			e.Cancel = true;
 
 			_mcdInfoForm.Hide();
 		}
