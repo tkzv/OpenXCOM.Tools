@@ -449,9 +449,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
+			MainViewUnderlay.Instance.MainView.FirstClick = true;
+
 			labelSelectedPos.Text = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
-												/*"Position{0}*/"c {0} r {1}",
+												/*"Position{0}*/        "c {0}  r {1}",
 												/*Environment.NewLine, */e.Location.Col, e.Location.Row);
 		}
 

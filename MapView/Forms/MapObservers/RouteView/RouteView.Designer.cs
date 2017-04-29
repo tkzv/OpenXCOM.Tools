@@ -74,21 +74,21 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tstbExtraHeight = new System.Windows.Forms.ToolStripTextBox();
 			this.gbLinkData = new System.Windows.Forms.GroupBox();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.gbNodeEditor = new System.Windows.Forms.GroupBox();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.gbPatrolData = new System.Windows.Forms.GroupBox();
 			this.cbAttack = new System.Windows.Forms.ComboBox();
 			this.labelAttack = new System.Windows.Forms.Label();
 			this.gbNodeData = new System.Windows.Forms.GroupBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.gbNodeEditor = new System.Windows.Forms.GroupBox();
 			this.gbSpawnData.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.gbLinkData.SuspendLayout();
 			this.panel1.SuspendLayout();
+			this.gbNodeEditor.SuspendLayout();
 			this.panel2.SuspendLayout();
 			this.gbPatrolData.SuspendLayout();
 			this.gbNodeData.SuspendLayout();
-			this.gbNodeEditor.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cbLink5Dest
@@ -243,8 +243,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelSelectedPos.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelSelectedPos.Location = new System.Drawing.Point(20, 15);
 			this.labelSelectedPos.Name = "labelSelectedPos";
-			this.labelSelectedPos.Size = new System.Drawing.Size(90, 30);
+			this.labelSelectedPos.Size = new System.Drawing.Size(90, 25);
 			this.labelSelectedPos.TabIndex = 0;
+			this.labelSelectedPos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// gbSpawnData
 			// 
@@ -284,8 +285,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelMouseOverId.ForeColor = System.Drawing.Color.Sienna;
 			this.labelMouseOverId.Location = new System.Drawing.Point(200, 15);
 			this.labelMouseOverId.Name = "labelMouseOverId";
-			this.labelMouseOverId.Size = new System.Drawing.Size(80, 30);
+			this.labelMouseOverId.Size = new System.Drawing.Size(80, 25);
 			this.labelMouseOverId.TabIndex = 2;
+			this.labelMouseOverId.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// btnCopy
 			// 
@@ -311,8 +313,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelSelectedId.ForeColor = System.Drawing.Color.Orchid;
 			this.labelSelectedId.Location = new System.Drawing.Point(115, 15);
 			this.labelSelectedId.Name = "labelSelectedId";
-			this.labelSelectedId.Size = new System.Drawing.Size(80, 30);
+			this.labelSelectedId.Size = new System.Drawing.Size(80, 25);
 			this.labelSelectedId.TabIndex = 2;
+			this.labelSelectedId.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// tbLink5Dist
 			// 
@@ -539,6 +542,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.panel1.Size = new System.Drawing.Size(640, 210);
 			this.panel1.TabIndex = 4;
 			// 
+			// gbNodeEditor
+			// 
+			this.gbNodeEditor.Controls.Add(this.btnCopy);
+			this.gbNodeEditor.Controls.Add(this.btnPaste);
+			this.gbNodeEditor.Controls.Add(this.btnDelete);
+			this.gbNodeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.gbNodeEditor.Location = new System.Drawing.Point(289, 155);
+			this.gbNodeEditor.Name = "gbNodeEditor";
+			this.gbNodeEditor.Size = new System.Drawing.Size(351, 55);
+			this.gbNodeEditor.TabIndex = 12;
+			this.gbNodeEditor.TabStop = false;
+			this.gbNodeEditor.Text = "Node editor";
+			// 
 			// panel2
 			// 
 			this.panel2.Controls.Add(this.gbSpawnData);
@@ -597,19 +613,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.gbNodeData.Size = new System.Drawing.Size(289, 50);
 			this.gbNodeData.TabIndex = 1;
 			this.gbNodeData.TabStop = false;
-			// 
-			// gbNodeEditor
-			// 
-			this.gbNodeEditor.Controls.Add(this.btnCopy);
-			this.gbNodeEditor.Controls.Add(this.btnPaste);
-			this.gbNodeEditor.Controls.Add(this.btnDelete);
-			this.gbNodeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.gbNodeEditor.Location = new System.Drawing.Point(289, 155);
-			this.gbNodeEditor.Name = "gbNodeEditor";
-			this.gbNodeEditor.Size = new System.Drawing.Size(351, 55);
-			this.gbNodeEditor.TabIndex = 12;
-			this.gbNodeEditor.TabStop = false;
-			this.gbNodeEditor.Text = "Node editor";
+			this.gbNodeData.Text = "Tile data";
 			// 
 			// RouteView
 			// 
@@ -626,10 +630,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.gbLinkData.ResumeLayout(false);
 			this.gbLinkData.PerformLayout();
 			this.panel1.ResumeLayout(false);
+			this.gbNodeEditor.ResumeLayout(false);
 			this.panel2.ResumeLayout(false);
 			this.gbPatrolData.ResumeLayout(false);
 			this.gbNodeData.ResumeLayout(false);
-			this.gbNodeEditor.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
