@@ -24,7 +24,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		NortheastSouthwest,
 		NorthWallWindow,
 		WestWallWindow,
-		Ground,
+		Floor,
 		NorthFence,
 		WestFence,
 		NorthwestCorner,
@@ -121,7 +121,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							_content);
 					break;
 
-				case BlobType.Ground:
+				case BlobType.Floor:
 					SetContentPath(x, y);
 					g.FillPath(
 							tool.LightBrush,
@@ -301,9 +301,10 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		#region Methods
 		/// <summary>
-		/// Gets the ContentType of a given tile for drawing its blob in TopView
+		/// Gets the BlobType of a given tile for drawing its blob in TopView
 		/// and/or RouteView.
 		/// </summary>
+		/// <remarks>http://www.ufopaedia.org/index.php/LOFTEMPS.DAT</remarks>
 		/// <param name="tile"></param>
 		/// <returns></returns>
 		internal static BlobType GetBlobType(TileBase tile)
@@ -313,66 +314,68 @@ namespace MapView.Forms.MapObservers.TopViews
 			{
 				_loftList = record.GetLoftList();
 
-				if (IsGround())
-					return BlobType.Ground;
+				// Floor
+				if (CheckFloor())
+					return BlobType.Floor;
 
-				if (CheckAllAreInGroup(new[]{ 24, 26 }))
+				// East
+				if (CheckAllAreInGroup(new[]{ 24, 26 }))//, 28, 30, 32, 34 }))
 					return BlobType.EastWall;
 
-				if (CheckAllAreInGroup(new[]{ 23, 25 }))
+				// South
+				if (CheckAllAreInGroup(new[]{ 23, 25 }))//, 27, 29, 31, 33 }))
 					return BlobType.SouthWall;
 
-				if (CheckAllAreInGroup(new[]{ 8, 10, 12, 14, 38 })
-					&& CheckAnyIsLoft(38))
+				// North ->
+				if (CheckAnyIsLoft(38)
+					&& CheckAllAreInGroup(new[]{ 8, 10, 12, 14, 38 }))
 				{
 					return BlobType.NorthWallWindow;
 				}
 
-				if (CheckAllAreInGroup(new[]{ 0, 8, 10, 12, 14, 38, 39, 77 })
-					&& CheckAnyIsLoft(0))
+				if (CheckAnyIsLoft(0)
+					&& CheckAllAreInGroup(new[]{ 0, 8, 10, 12, 14, 38, 39, 77 })) // 40,41
 				{
 					return BlobType.NorthFence;
 				}
 
-				if (CheckAllAreInGroup(new[]{ 8, 10, 12, 14, 16, 18, 20, 21 }))
+				if (CheckAllAreInGroup(new[]{ 8, 10, 12, 14 }))//, 16, 18, 20, 21 }))
 					return BlobType.NorthWall;
 
-				if (CheckAllAreInGroup(new[]{ 7, 9, 11, 13, 37 })
-					&& CheckAnyIsLoft(37))
+				// West ->
+				if (CheckAnyIsLoft(37)
+					&& CheckAllAreInGroup(new[]{ 7, 9, 11, 13, 37 }))
 				{
 					return BlobType.WestWallWindow;
 				}
 
-				if (CheckAllAreInGroup(new[]{ 0, 7, 9, 11, 13, 37, 39, 76 })
-					&& CheckAnyIsLoft(0))
+				if (CheckAnyIsLoft(0)
+					&& CheckAllAreInGroup(new[]{ 0, 7, 9, 11, 13, 37, 39, 76 })) // 40,41
 				{
 					return BlobType.WestFence;
 				}
 
-				if (CheckAllAreInGroup(new[]{ 7, 9, 11, 13, 15, 17, 19, 22 }))
+				if (CheckAllAreInGroup(new[]{ 7, 9, 11, 13 }))//, 15, 17, 19, 22 }))
 					return BlobType.WestWall;
 
-//				if (CheckEachIsInGroup(new[]{ 35 }))
+				// diagonals ->
 				if (CheckAllAreLoft(35))
 					return BlobType.NorthwestSoutheast;
 
-//				if (CheckEachIsInGroup(new[]{ 36 }))
 				if (CheckAllAreLoft(36))
 					return BlobType.NortheastSouthwest;
 
-				if (CheckAllAreInGroup(new[]{ 39, 40, 41, 103 }))
+				// corners ->
+				if (CheckAllAreInGroup(new[]{ 39, 40, 41, 103 })) // 102,101
 					return BlobType.NorthwestCorner;
 
-//				if (CheckEachIsInGroup(new[]{ 100 }))
-				if (CheckAllAreLoft(100))
+				if (CheckAllAreLoft(100)) // 99,98
 					return BlobType.NortheastCorner;
 
-//				if (CheckEachIsInGroup(new[]{ 106 }))
-				if (CheckAllAreLoft(106))
+				if (CheckAllAreLoft(106)) // 105,104
 					return BlobType.SouthwestCorner;
 
-//				if (CheckEachIsInGroup(new[]{ 109 }))
-				if (CheckAllAreLoft(109))
+				if (CheckAllAreLoft(109)) // 108,107
 					return BlobType.SoutheastCorner;
 			}
 			return BlobType.Content;
@@ -382,20 +385,19 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// Checks if the tilepart is purely Floor-type.
 		/// </summary>
 		/// <returns></returns>
-		private static bool IsGround()
+		private static bool CheckFloor()
 		{
 			int length = _loftList.Count;
-			for (int id = 0; id != length; ++id)
+			for (int layer = 0; layer != length; ++layer)
 			{
-				switch (id)
+				switch (layer)
 				{
 					case 0:
-						if (_loftList[id] == 0)
-							return false;
+					case 1:
 						break;
 
 					default:
-						if (_loftList[id] != 0)
+						if (_loftList[layer] != 0)
 							return false;
 						break;
 				}

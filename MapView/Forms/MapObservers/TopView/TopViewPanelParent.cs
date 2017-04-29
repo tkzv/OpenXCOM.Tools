@@ -260,7 +260,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					{
 						var mapTile = BaseMap[r, c] as MapTileBase;
 						if (mapTile != null)
-							RenderTile(mapTile, backBuffer, x, y);
+							DrawTileBlobs(mapTile, backBuffer, x, y);
 					}
 				}
 
@@ -298,13 +298,13 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 		/// <summary>
-		/// Forwards the call to TopViewPanel.RenderTile.
+		/// Forwards the call to TopViewPanel.DrawTileBlobs().
 		/// </summary>
 		/// <param name="tile"></param>
 		/// <param name="g"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		internal protected virtual void RenderTile(
+		internal protected virtual void DrawTileBlobs(
 				MapTileBase tile,
 				Graphics g,
 				int x, int y)

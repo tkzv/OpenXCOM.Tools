@@ -100,12 +100,22 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		#region Methods
-		internal protected override void RenderTile(
+		internal protected override void DrawTileBlobs(
 				MapTileBase tile,
 				Graphics g,
 				int x, int y)
 		{
 			var mapTile = (XCMapTile)tile;
+
+			if (_colorWest == null)
+				_colorWest = new ColorTools(TopPens["WestColor"]);
+
+			if (_colorNorth == null)
+				_colorNorth = new ColorTools(TopPens["NorthColor"]);
+
+			if (_colorContent == null)
+				_colorContent = new ColorTools(TopBrushes["ContentColor"], _colorNorth.Pen.Width);
+
 
 			if (Ground.Checked && mapTile.Ground != null)
 				BlobService.DrawFloor(
@@ -113,20 +123,12 @@ namespace MapView.Forms.MapObservers.TopViews
 									TopBrushes["GroundColor"],
 									x, y);
 
-
-			if (_colorNorth == null)
-				_colorNorth = new ColorTools(TopPens["NorthColor"]);
-
-			if (North.Checked && mapTile.North != null)
+			if (Content.Checked && mapTile.Content != null)
 				BlobService.DrawContent(
 									g,
-									_colorNorth,
+									_colorContent,
 									x, y,
-									mapTile.North);
-
-
-			if (_colorWest == null)
-				_colorWest = new ColorTools(TopPens["WestColor"]);
+									mapTile.Content);
 
 			if (West.Checked && mapTile.West != null)
 				BlobService.DrawContent(
@@ -135,16 +137,12 @@ namespace MapView.Forms.MapObservers.TopViews
 									x, y,
 									mapTile.West);
 
-
-			if (_colorContent == null)
-				_colorContent = new ColorTools(TopBrushes["ContentColor"], _colorNorth.Pen.Width);
-
-			if (Content.Checked && mapTile.Content != null)
+			if (North.Checked && mapTile.North != null)
 				BlobService.DrawContent(
 									g,
-									_colorContent,
+									_colorNorth,
 									x, y,
-									mapTile.Content);
+									mapTile.North);
 		}
 		#endregion
 	}
