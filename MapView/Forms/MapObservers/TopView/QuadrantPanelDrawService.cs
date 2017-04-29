@@ -14,15 +14,30 @@ namespace MapView.Forms.MapObservers.TopViews
 		private const int QuadWidth  = 32;
 		private const int QuadHeight = 40;
 
-		private const int Margin    =  2;
+		private const int Margin    =  5;
 
 		internal const int QuadWidthTotal = QuadWidth + Margin * 2;
 
-		internal const int StartX = 5;
-		private  const int StartY = 0;
+		internal const int StartX = 10;
+		private  const int StartY = 2;
 
+		// NOTE: keep the door-string and its placement consistent with
+		// TilePanel.OnPaint().
 		private const string Door = "door";
+		private static int DoorWidth;
 		private const int PrintOffsetY = 2;
+
+		private const string Floor   = "fLoOr";
+		private const string West    = "WEst";
+		private const string North   = "noRtH";
+		private const string Content = "ConTeNt";
+
+		private static int FloorWidth;
+		private static int WestWidth;
+		private static int NorthWidth;
+		private static int ContentWidth;
+
+		private static bool Inited;
 		#endregion
 
 
@@ -47,11 +62,22 @@ namespace MapView.Forms.MapObservers.TopViews
 				XCMapTile mapTile,
 				QuadrantType selectedQuadrant)
 		{
-			// NOTE: keep the door-string and its placement consistent with
-			// TilePanel.OnPaint().
-			int textWidth = (int)g.MeasureString(Door, Font).Width;
+			if (!Inited)
+			{
+				Inited = true;
 
-			switch (selectedQuadrant) // Fill background of selected quadrant type.
+				DoorWidth    = (int)g.MeasureString(Door,    Font).Width;
+
+				FloorWidth   = (int)g.MeasureString(Floor,   Font).Width;
+				WestWidth    = (int)g.MeasureString(West,    Font).Width;
+				NorthWidth   = (int)g.MeasureString(North,   Font).Width;
+				ContentWidth = (int)g.MeasureString(Content, Font).Width;
+			}
+
+			// fill the background of the selected quadrant type
+			// NOTE: the selected quadrant will be re-filled with DarkGray
+			// if user has toggled that quadrant's visibility off.
+			switch (selectedQuadrant)
 			{
 				case QuadrantType.Ground:
 					g.FillRectangle(
@@ -91,6 +117,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 
 
+			// draw the Sprites
 			var topView = ViewerFormsManager.TopView.Control;
 
 			if (!topView.GroundVisible) // Ground
@@ -113,7 +140,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							Door,
 							Font,
 							System.Drawing.Brushes.Black,
-							StartX + (QuadWidth  - textWidth) / 2,
+							StartX + (QuadWidth  - DoorWidth) / 2,
 							StartY +  QuadHeight - Font.Height + PrintOffsetY); // PckImage.Height
 			}
 			else
@@ -143,7 +170,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							Door,
 							Font,
 							System.Drawing.Brushes.Black,
-							StartX + (QuadWidth  - textWidth) / 2 + QuadWidthTotal,
+							StartX + (QuadWidth  - DoorWidth) / 2 + QuadWidthTotal,
 							StartY +  QuadHeight - Font.Height + PrintOffsetY); // PckImage.Height
 			}
 			else
@@ -173,7 +200,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							Door,
 							Font,
 							System.Drawing.Brushes.Black,
-							StartX + (QuadWidth  - textWidth) / 2 + QuadWidthTotal * 2,
+							StartX + (QuadWidth  - DoorWidth) / 2 + QuadWidthTotal * 2,
 							StartY +  QuadHeight - Font.Height + PrintOffsetY); // PckImage.Height
 			}
 			else
@@ -203,7 +230,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							Door,
 							Font,
 							System.Drawing.Brushes.Black,
-							StartX + (QuadWidth  - textWidth) / 2 + QuadWidthTotal * 3,
+							StartX + (QuadWidth  - DoorWidth) / 2 + QuadWidthTotal * 3,
 							StartY +  QuadHeight - Font.Height + PrintOffsetY); // PckImage.Height
 			}
 			else
@@ -213,60 +240,47 @@ namespace MapView.Forms.MapObservers.TopViews
 							StartY);
 
 
-			DrawGroundAndContent(g);
-
-			g.DrawString(
-					"Floor",
-					Font,
-					System.Drawing.Brushes.Black,
-					new RectangleF(
-								StartX,
-								StartY + QuadHeight + Margin,
-								QuadWidth,
-								50));
-
-			g.DrawString(
-					"West",
-					Font,
-					System.Drawing.Brushes.Black,
-					new RectangleF(
-								StartX + QuadWidthTotal,
-								StartY + QuadHeight + Margin,
-								QuadWidth,
-								50));
-
-			g.DrawString(
-					"North",
-					Font,
-					System.Drawing.Brushes.Black,
-					new RectangleF(
-								StartX + QuadWidthTotal * 2,
-								StartY + QuadHeight + Margin,
-								QuadWidth,
-								50));
-
-			g.DrawString(
-					"Content",
-					Font,
-					System.Drawing.Brushes.Black,
-					new RectangleF(
-								StartX + QuadWidthTotal * 3,
-								StartY + QuadHeight + Margin,
-								QuadWidth + 50,
-								50));
-
-
+			// draw each quadrant's bounding rectangle
 			for (int i = 0; i != 4; ++i)
 				g.DrawRectangle(
 							System.Drawing.Pens.Black,
 							StartX - 1 + QuadWidthTotal * i,
-							StartY,
+							StartY - 1,
 							QuadWidth  + 2,
 							QuadHeight + 2);
-		}
 
-		private void DrawGroundAndContent(Graphics g)
-		{
+
+			// draw the label under each quadrant
+			g.DrawString(
+					Floor,
+					Font,
+					System.Drawing.Brushes.Black,
+					StartX + (QuadWidth  - FloorWidth) / 2,
+					StartY +  QuadHeight + Margin);
+
+			g.DrawString(
+					West,
+					Font,
+					System.Drawing.Brushes.Black,
+					StartX + (QuadWidth  - WestWidth) / 2 + QuadWidthTotal,
+					StartY +  QuadHeight + Margin);
+
+			g.DrawString(
+					North,
+					Font,
+					System.Drawing.Brushes.Black,
+					StartX + (QuadWidth  - NorthWidth) / 2 + QuadWidthTotal * 2,
+					StartY +  QuadHeight + Margin);
+
+			g.DrawString(
+					Content,
+					Font,
+					System.Drawing.Brushes.Black,
+					StartX + (QuadWidth  - ContentWidth) / 2 + QuadWidthTotal * 3,
+					StartY +  QuadHeight + Margin);
+
+
+			// fill the color-tip under each quadrant
 			if (Brushes != null && Pens != null)
 			{
 				g.FillRectangle(
@@ -274,7 +288,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							new RectangleF(
 										StartX,
 										StartY + QuadHeight + Margin + Font.Height,
-										QuadWidth,
+										QuadWidth + 1,
 										3));
 
 				g.FillRectangle(
@@ -282,7 +296,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							new RectangleF(
 										StartX + QuadWidthTotal,
 										StartY + QuadHeight + Margin + Font.Height,
-										QuadWidth,
+										QuadWidth + 1,
 										3));
 
 				g.FillRectangle(
@@ -290,7 +304,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							new RectangleF(
 										StartX + QuadWidthTotal * 2,
 										StartY + QuadHeight + Margin + Font.Height,
-										QuadWidth,
+										QuadWidth + 1,
 										3));
 
 				g.FillRectangle(
@@ -298,7 +312,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							new RectangleF(
 										StartX + QuadWidthTotal * 3,
 										StartY + QuadHeight + Margin + Font.Height,
-										QuadWidth,
+										QuadWidth + 1,
 										3));
 			}
 		}
