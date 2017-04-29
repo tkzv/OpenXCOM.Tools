@@ -97,7 +97,6 @@ namespace MapView.Forms.MainWindow
 			{
 				EnablePasteButton();
 				_mainViewPanel.OnCut(sender, e);
-				Refresh();
 			};
 			//
 			// tsbCopy
@@ -126,11 +125,7 @@ namespace MapView.Forms.MainWindow
 			tsbPaste.Size = new Size(25, 25);
 //			tsbPaste.Text = "Paste";
 			tsbPaste.ToolTipText = "Paste";
-			tsbPaste.Click += (sender, e) =>
-			{
-				_mainViewPanel.OnPaste(sender, e);
-				Refresh();
-			};
+			tsbPaste.Click += _mainViewPanel.OnPaste;
 			tsbPaste.Enabled = false;
 			_pasteButtons.Add(tsbPaste);
 			//
@@ -142,28 +137,13 @@ namespace MapView.Forms.MainWindow
 			tsbFill.Size = new Size(25, 25);
 			tsbFill.Text = "Fill";
 			tsbFill.ToolTipText = "Fill";
-			tsbFill.Click += (sender, e) =>
-			{
-				_mainViewPanel.OnFill(sender, e);
-				Refresh();
-			};
+			tsbFill.Click += _mainViewPanel.OnFill;
 			tsbUp.Image    = Resources.up;
 			tsbDown.Image  = Resources.down;
 			tsbCut.Image   = Resources.cut;
 			tsbCopy.Image  = Resources.copy;
 			tsbPaste.Image = Resources.paste;
 //			tsbFill.Image  = ; // TODO: embed a Fill image.
-		}
-
-		private static void Refresh()
-		{
-//			MainViewPanel.Instance.Refresh();				// either this
-			MainViewUnderlay.Instance.MainView.Refresh();	// or this, both works
-
-			ViewerFormsManager.TopView.Refresh();
-			ViewerFormsManager.RouteView.Refresh();
-
-			// TODO: refresh TopRouteView (both Top & Route panels) also.
 		}
 
 		/// <summary>

@@ -195,7 +195,7 @@ namespace MapView
 					for (int r = start.Y; r <= end.Y; ++r)
 						_baseMap[r, c] = XCMapTile.BlankTile;
 
-//				Refresh(); // handled for all viewers by EditButtonsFactory.
+				RefreshViewers();
 			}
 		}
 
@@ -245,7 +245,7 @@ namespace MapView
 						}
 					}
 
-//				Refresh(); // handled for all viewers by EditButtonsFactory.
+				RefreshViewers();
 			}
 		}
 
@@ -271,9 +271,18 @@ namespace MapView
 					for (int r = start.Y; r <= end.Y; ++r)
 						((XCMapTile)_baseMap[r, c])[quadType] = tileView.SelectedTile;
 
-//				MainViewPanel.Instance.Refresh();
-//				Refresh(); // handled for all viewers by EditButtonsFactory.
+				RefreshViewers();
 			}
+		}
+
+		private void RefreshViewers()
+		{
+			Refresh();
+
+			ViewerFormsManager.TopView.Refresh();
+			ViewerFormsManager.RouteView.Refresh();
+
+			// TODO: refresh TopRouteView (both Top & Route panels) also.
 		}
 
 		internal void SetCursor(CursorSprite cursor)
