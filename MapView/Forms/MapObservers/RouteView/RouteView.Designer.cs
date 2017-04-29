@@ -183,7 +183,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbPriority.Name = "cbPriority";
 			this.cbPriority.Size = new System.Drawing.Size(130, 20);
 			this.cbPriority.TabIndex = 8;
-			this.toolTip1.SetToolTip(this.cbPriority, "How likely an alien will go to this location");
+			this.toolTip1.SetToolTip(this.cbPriority, "patrol priority");
 			this.cbPriority.SelectedIndexChanged += new System.EventHandler(this.OnPatrolPrioritySelectedIndexChanged);
 			// 
 			// cbSpawnRank
@@ -192,7 +192,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbSpawnRank.Name = "cbSpawnRank";
 			this.cbSpawnRank.Size = new System.Drawing.Size(130, 20);
 			this.cbSpawnRank.TabIndex = 7;
-			this.toolTip1.SetToolTip(this.cbSpawnRank, "Rank must be 0 if this isn\'t a UFO or UFO base, else will not spawn");
+			this.toolTip1.SetToolTip(this.cbSpawnRank, "faction or rank (if aLiens) that may spawn here. Nodes for aLiens outside their U" +
+		"FO or base should be set to 0");
 			this.cbSpawnRank.SelectedIndexChanged += new System.EventHandler(this.OnSpawnRankSelectedIndexChanged);
 			// 
 			// cbUnitType
@@ -201,6 +202,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbUnitType.Name = "cbUnitType";
 			this.cbUnitType.Size = new System.Drawing.Size(130, 20);
 			this.cbUnitType.TabIndex = 6;
+			this.toolTip1.SetToolTip(this.cbUnitType, "characteristics of units that may use the node");
 			this.cbUnitType.SelectedIndexChanged += new System.EventHandler(this.OnUnitTypeSelectedIndexChanged);
 			// 
 			// labelSpawnWeight
@@ -269,6 +271,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbSpawnWeight.Name = "cbSpawnWeight";
 			this.cbSpawnWeight.Size = new System.Drawing.Size(130, 20);
 			this.cbSpawnWeight.TabIndex = 10;
+			this.toolTip1.SetToolTip(this.cbSpawnWeight, "chance that an aLien will spawn here");
 			this.cbSpawnWeight.SelectedIndexChanged += new System.EventHandler(this.OnSpawnWeightSelectedIndexChanged);
 			// 
 			// btnPaste
@@ -600,7 +603,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbAttack.Name = "cbAttack";
 			this.cbAttack.Size = new System.Drawing.Size(130, 20);
 			this.cbAttack.TabIndex = 8;
-			this.toolTip1.SetToolTip(this.cbAttack, "How likely an alien may start shooting base modules.");
+			this.toolTip1.SetToolTip(this.cbAttack, "attacts an aLien to shoot at xcom base tiles");
 			this.cbAttack.SelectedIndexChanged += new System.EventHandler(this.OnBaseAttackSelectedIndexChanged);
 			// 
 			// labelAttack
