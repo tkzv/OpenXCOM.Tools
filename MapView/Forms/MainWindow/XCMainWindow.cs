@@ -894,11 +894,11 @@ namespace MapView
 
 		private void OnResizeClick(object sender, EventArgs e)
 		{
-			if (_mainViewPanel.MainView.Map != null)
+			if (_mainViewPanel.MainView.BaseMap != null)
 			{
 				using (var f = new ChangeMapSizeForm())
 				{
-					f.Map = _mainViewPanel.MainView.Map;
+					f.Map = _mainViewPanel.MainView.BaseMap;
 					if (f.ShowDialog(this) == DialogResult.OK)
 					{
 						f.Map.ResizeTo(

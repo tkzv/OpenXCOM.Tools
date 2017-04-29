@@ -29,6 +29,11 @@ namespace MapView
 			}
 		}
 
+		internal IMapBase BaseMap
+		{
+			get { return _mainView.BaseMap; }
+		}
+
 		private readonly HScrollBar _scrollBarHori;
 		private readonly VScrollBar _scrollBarVert;
 
@@ -55,7 +60,7 @@ namespace MapView
 			var mainView = new MainViewOverlay();
 			if (_mainView != null)
 			{
-				mainView.Map = _mainView.Map;
+				mainView.BaseMap = _mainView.BaseMap;
 				Controls.Remove(_mainView);
 			}
 			_mainView = mainView;
@@ -94,11 +99,6 @@ namespace MapView
 			_mainView.Fill();
 		}
 
-		internal IMapBase BaseMap
-		{
-			get { return _mainView.Map; }
-		}
-
 		private void OnAnimationUpdate(object sender, EventArgs e)
 		{
 			_mainView.Refresh();
@@ -116,7 +116,7 @@ namespace MapView
 			if (Globals.AutoPckImageScale)
 				SetMapSize();
 
-			_scrollBarVert.Value  = _scrollBarVert.Minimum;
+			_scrollBarVert.Value = _scrollBarVert.Minimum;
 			_scrollBarHori.Value = _scrollBarHori.Minimum;
 
 			OnVerticalScroll(null, null);
@@ -167,7 +167,7 @@ namespace MapView
 
 		internal void SetMap(IMapBase baseMap)
 		{
-			_mainView.Map = baseMap;
+			_mainView.BaseMap = baseMap;
 //			_mapView.Select();					// TODO: Select the *panel*
 
 //			Select();							// doesn't work right.

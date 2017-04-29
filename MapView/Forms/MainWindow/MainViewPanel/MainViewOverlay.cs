@@ -22,7 +22,7 @@ namespace MapView
 
 
 		private IMapBase _baseMap;
-		internal IMapBase Map
+		internal IMapBase BaseMap
 		{
 			get { return _baseMap; }
 			set
@@ -283,6 +283,17 @@ namespace MapView
 		}
 
 		/// <summary>
+		/// Scrolls the z-axis for MainView.
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnMouseWheel(MouseEventArgs e)
+		{
+			base.OnMouseWheel(e);
+			if      (e.Delta < 0) _baseMap.Up();
+			else if (e.Delta > 0) _baseMap.Down();
+		}
+
+		/// <summary>
 		/// Flag that tells TopViewPanelBase.DrawSelectedLozenge that it's okay
 		/// to draw a lozenge for a selected tile; ie, that an initial tile has
 		/// actually been selected. This prevents an off-border lozenge from
@@ -291,6 +302,8 @@ namespace MapView
 		/// </summary>
 		internal bool FirstClick
 		{ get; set; }
+
+		private bool _isMouseDrag;
 
 		/// <summary>
 		/// Selects a tile and/or starts a drag-select procedure.
@@ -308,14 +321,18 @@ namespace MapView
 				var dragEnd   = ConvertCoordsDiamond(
 												e.X, e.Y,
 												_baseMap.CurrentHeight);
-				SetDrag(dragStart, dragEnd);
+				if (   dragStart.Y >= 0 && dragStart.Y < BaseMap.MapSize.Rows
+					&& dragStart.X >= 0 && dragStart.X < BaseMap.MapSize.Cols)
+				{
+					_isMouseDrag = true;
+					SetDrag(dragStart, dragEnd);
 
-				_baseMap.SelectedTile = new MapLocation(
-													_dragEnd.Y, _dragEnd.X,
-													_baseMap.CurrentHeight);
-
-				Select();
-				Refresh();
+					_baseMap.SelectedTile = new MapLocation(
+														dragStart.Y, dragStart.X,
+														_baseMap.CurrentHeight);
+					Select();
+					Refresh();
+				}
 			}
 		}
 
@@ -325,18 +342,8 @@ namespace MapView
 		/// <param name="e"></param>
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
+			_isMouseDrag = false;
 			Refresh(); // is this used for anything like, at all.
-		}
-
-		/// <summary>
-		/// Scrolls the z-axis for MainView.
-		/// </summary>
-		/// <param name="e"></param>
-		protected override void OnMouseWheel(MouseEventArgs e)
-		{
-			base.OnMouseWheel(e);
-			if      (e.Delta < 0) _baseMap.Up();
-			else if (e.Delta > 0) _baseMap.Down();
 		}
 
 		/// <summary>
@@ -353,7 +360,8 @@ namespace MapView
 
 				if (pt.X != _dragEnd.X || pt.Y != _dragEnd.Y)
 				{
-					if (e.Button != MouseButtons.None)
+//					if (e.Button != MouseButtons.None)
+					if (_isMouseDrag)
 						SetDrag(_dragStart, pt);
 
 					Refresh(); // mouseover refresh for MainView.

@@ -136,8 +136,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 						MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);
 
 						var args = new RoutePanelClickedEventArgs();
-						args.ClickTile = tile;
 						args.MouseEventArgs = e;
+						args.ClickTile = tile;
 						args.ClickLocation = new MapLocation(
 														ClickPoint.Y,
 														ClickPoint.X,

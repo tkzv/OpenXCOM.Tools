@@ -177,14 +177,14 @@ namespace MapView.Forms.MainWindow
 
 		private void OnDownClick(object sender, EventArgs e)
 		{
-			if (MainViewUnderlay.Instance.MainView.Map != null)
-				MainViewUnderlay.Instance.MainView.Map.Down();
+			if (MainViewUnderlay.Instance.MainView.BaseMap != null)
+				MainViewUnderlay.Instance.MainView.BaseMap.Down();
 		}
 
 		private void OnUpClick(object sender, EventArgs e)
 		{
-			if (MainViewUnderlay.Instance.MainView.Map != null)
-				MainViewUnderlay.Instance.MainView.Map.Up();
+			if (MainViewUnderlay.Instance.MainView.BaseMap != null)
+				MainViewUnderlay.Instance.MainView.BaseMap.Up();
 		}
 	}
 }

@@ -365,13 +365,17 @@ namespace MapView.Forms.MapObservers.TopViews
 				var pt = ConvertCoordsDiamond(
 											e.X - _offX,
 											e.Y - _offY);
-				BaseMap.SelectedTile = new MapLocation(
-													pt.Y,
-													pt.X,
-													BaseMap.CurrentHeight);
+				if (   pt.Y >= 0 && pt.Y < MainViewUnderlay.Instance.BaseMap.MapSize.Rows
+					&& pt.X >= 0 && pt.X < MainViewUnderlay.Instance.BaseMap.MapSize.Cols)
+				{
+					BaseMap.SelectedTile = new MapLocation(
+														pt.Y,
+														pt.X,
+														BaseMap.CurrentHeight);
 
-				_isMouseDrag = true;
-				MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);
+					_isMouseDrag = true;
+					MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);
+				}
 			}
 		}
 

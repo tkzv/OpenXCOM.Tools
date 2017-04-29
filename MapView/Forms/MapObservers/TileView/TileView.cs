@@ -529,9 +529,9 @@ namespace MapView.Forms.MapObservers.TileViews
 			var tile = SelectedTile;
 			if (tile != null)
 			{
-				var file = BaseMap as XCMapFile;
-				if (file != null)
-					return file.GetDepLabel(tile);
+				var mapFile = BaseMap as XCMapFile;
+				if (mapFile != null)
+					return mapFile.GetDepLabel(tile);
 			}
 			return null;
 		}

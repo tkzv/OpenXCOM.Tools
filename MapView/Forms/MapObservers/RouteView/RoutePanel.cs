@@ -86,12 +86,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_blobService.HalfWidth  = DrawAreaWidth;
 			_blobService.HalfHeight = DrawAreaHeight;
 
-			var map = MapFile;
+			var mapFile = MapFile;
 			for (int
 					r = 0,
 						startX = Origin.X,
 						startY = Origin.Y;
-					r != map.MapSize.Rows;
+					r != mapFile.MapSize.Rows;
 					++r,
 						startX -= DrawAreaWidth,
 						startY += DrawAreaHeight)
@@ -100,14 +100,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 						c = 0,
 							x = startX,
 							y = startY;
-						c != map.MapSize.Cols;
+						c != mapFile.MapSize.Cols;
 						++c,
 							x += DrawAreaWidth,
 							y += DrawAreaHeight)
 				{
-					if (map[r, c] != null)
+					if (mapFile[r, c] != null)
 					{
-						var tile = (XCMapTile)map[r, c];
+						var tile = (XCMapTile)mapFile[r, c];
 
 						if (tile.Content != null)
 							_blobService.DrawContent(_graphics, _brushContent, x, y, tile.Content);
