@@ -322,8 +322,6 @@ namespace MapView
 		{
 			if (_baseMap != null)
 			{
-				FirstClick = true;
-
 				var dragStart = ConvertCoordsDiamond(
 												e.X, e.Y,
 												_baseMap.CurrentHeight);
@@ -333,6 +331,8 @@ namespace MapView
 				if (   dragStart.Y >= 0 && dragStart.Y < BaseMap.MapSize.Rows
 					&& dragStart.X >= 0 && dragStart.X < BaseMap.MapSize.Cols)
 				{
+					FirstClick = true;
+
 					_isMouseDrag = true;
 					SetDrag(dragStart, dragEnd);
 

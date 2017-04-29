@@ -156,7 +156,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private void OnRoutePanelClicked(object sender, RoutePanelClickedEventArgs args)
 		{
 			_routePanel.Focus();
-			labelSelectedPos.Text = Text;
 
 			if (_nodeSelected == null)
 			{
@@ -202,7 +201,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="node"></param>
 		private void ConnectNode(RouteNode node)
 		{
-			var type = GetConnector();
+			var type = GetConnectorType();
 			if (type != ConnectNodeType.DoNotConnect)
 			{
 				int linkId = GetOpenLinkSlot(_nodeSelected, node.Index);
@@ -230,7 +229,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// Gets the user-set Connector type.
 		/// </summary>
 		/// <returns></returns>
-		private ConnectNodeType GetConnector()
+		private ConnectNodeType GetConnectorType()
 		{
 			if (tsmiConnectType.Text == "Connect One way")
 				return ConnectNodeType.ConnectOneWay;
@@ -450,10 +449,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
-			Text = String.Format(
-							System.Globalization.CultureInfo.InvariantCulture,
-							"Position{0}c:{1} r:{2}",
-							Environment.NewLine, e.Location.Col, e.Location.Row);
+			labelSelectedPos.Text = String.Format(
+												System.Globalization.CultureInfo.InvariantCulture,
+												/*"Position{0}*/"c {0} r {1}",
+												/*Environment.NewLine, */e.Location.Col, e.Location.Row);
 		}
 
 		public override void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)

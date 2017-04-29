@@ -360,14 +360,14 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			if (BaseMap != null)
 			{
-				MainViewUnderlay.Instance.MainView.FirstClick = true;
-
 				var pt = ConvertCoordsDiamond(
 											e.X - _offX,
 											e.Y - _offY);
 				if (   pt.Y >= 0 && pt.Y < MainViewUnderlay.Instance.BaseMap.MapSize.Rows
 					&& pt.X >= 0 && pt.X < MainViewUnderlay.Instance.BaseMap.MapSize.Cols)
 				{
+					MainViewUnderlay.Instance.MainView.FirstClick = true;
+
 					BaseMap.SelectedTile = new MapLocation(
 														pt.Y,
 														pt.X,
