@@ -136,6 +136,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			page.Controls.Add(panel);
 		}
 
+
 		#region EventCalls
 		private void OnPageSelected(object sender, TabControlEventArgs e)
 		{
@@ -143,11 +144,12 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			McdRecord record = null;
 
-			var tile = SelectedTile;
-			if (tile != null)
+			if (SelectedTile != null)
 			{
-				f.Text = BuildTitleString(tile.TileListId, tile.Id);
-				record = tile.Record;
+				ViewerFormsManager.TopView.Control.SelectQuadrant(SelectedTile.Record.TileType);
+
+				f.Text = BuildTitleString(SelectedTile.TileListId, SelectedTile.Id);
+				record = SelectedTile.Record;
 			}
 			else
 				f.Text = "Tile View";

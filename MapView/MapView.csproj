@@ -168,7 +168,7 @@
       <DependentUpon>TileViewForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MapObservers\TopView\ColorTools.cs" />
-    <Compile Include="Forms\MapObservers\TopView\DrawContentService.cs" />
+    <Compile Include="Forms\MapObservers\TopView\DrawBlobService.cs" />
     <Compile Include="Forms\MapObservers\TopView\TopViewForm.cs">
       <SubType>Form</SubType>
     </Compile>

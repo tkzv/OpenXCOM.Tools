@@ -199,7 +199,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 		/// <summary>
-		/// Selects a quadrant in the QuadrantsPanel given on a selected tiletype.
+		/// Selects a quadrant in the QuadrantsPanel given a selected tiletype.
 		/// </summary>
 		/// <param name="tileType"></param>
 		internal void SelectQuadrant(TileType tileType)
