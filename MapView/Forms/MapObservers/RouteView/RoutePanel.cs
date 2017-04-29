@@ -252,7 +252,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
-		private const int NODE_VAL_MAX = 12;
+		private const int NodeValMax = 12;
 
 		private bool _brushes;
 		private SolidBrush _brushSelected;
@@ -359,14 +359,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 //							if (DrawAreaHeight >= NODE_VAL_MAX)
 //							{
 							int infoboxX = x - DrawAreaWidth / 2;
-							int infoboxY = y + DrawAreaHeight - NODE_VAL_MAX / 2;
+							int infoboxY = y + DrawAreaHeight - NodeValMax / 2;
 
 							var nodePatrolPriority = (int)node.Priority;
 							DrawBox(
 									infoboxX,
 									infoboxY,
 									nodePatrolPriority,
-									NODE_VAL_MAX,
+									NodeValMax,
 									Brushes.CornflowerBlue);
 
 							var nodeSpawnWeight = (int)node.SpawnWeight;
@@ -374,7 +374,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 									infoboxX + 3,
 									infoboxY,
 									nodeSpawnWeight,
-									NODE_VAL_MAX,
+									NodeValMax,
 									Brushes.Firebrick);
 //							}
 						}
@@ -403,20 +403,20 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_graphics.FillRectangle(
 								Brushes.Gray,
 								boxX, boxY,
-								3, NODE_VAL_MAX);
+								3, NodeValMax);
 			_graphics.DrawRectangle(
 								Pens.Black,
 								boxX, boxY,
-								3, NODE_VAL_MAX);
+								3, NodeValMax);
 
 			if (value > 0)
 			{
-				value = (value > max) ? NODE_VAL_MAX
-									  : (int)(Math.Ceiling((double)value / max * NODE_VAL_MAX));
+				value = (value > max) ? NodeValMax
+									  : (int)(Math.Ceiling((double)value / max * NodeValMax));
 				_graphics.FillRectangle(
 									color,
 									boxX + 1,
-									boxY + (NODE_VAL_MAX - value) - 1,
+									boxY + (NodeValMax - value) - 1,
 									2,
 									value + 1);
 			}

@@ -364,7 +364,7 @@ namespace XCom
 
 		/// <summary>
 		/// Checks for and if necessary deletes nodes that are outside of a
-		/// Map's x/y/z bounds. See also RouteService.CheckNodeBounds().
+		/// Map's x/y/z bounds. See also RouteCheckService.CheckNodeBounds().
 		/// </summary>
 		/// <param name="newC"></param>
 		/// <param name="newR"></param>

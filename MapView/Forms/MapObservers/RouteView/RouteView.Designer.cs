@@ -637,7 +637,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "RouteView";
 			this.Size = new System.Drawing.Size(640, 480);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
 			this.gbSpawnData.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();

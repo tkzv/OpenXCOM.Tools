@@ -109,7 +109,7 @@
     <Compile Include="GameFiles\Map\McdRecordFactory.cs" />
     <Compile Include="GameFiles\Map\RouteData\Link.cs" />
     <Compile Include="GameFiles\Map\RouteData\RouteNode.cs" />
-    <Compile Include="GameFiles\Map\RouteData\RouteService.cs" />
+    <Compile Include="GameFiles\Map\RouteData\RouteCheckService.cs" />
     <Compile Include="GameFiles\Map\SpecialType.cs" />
     <Compile Include="GameFiles\Map\XCMapFileService.cs" />
     <Compile Include="GameFiles\Map\XCTileFactory.cs" />

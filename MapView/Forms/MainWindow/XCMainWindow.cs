@@ -762,7 +762,7 @@ namespace MapView
 
 				tsEdit.Enabled = true;
 
-				RouteService.CheckNodeBounds(baseMap);
+				RouteCheckService.CheckNodeBounds(baseMap);
 
 				tsslMap.Text = desc.Label;
 

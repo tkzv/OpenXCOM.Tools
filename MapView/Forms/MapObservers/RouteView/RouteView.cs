@@ -46,8 +46,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			_routePanel = new RoutePanel();
 			_routePanel.Dock = DockStyle.Fill;
-			_routePanel.RoutePanelClickedEvent += OnRoutePanelClicked;
+			_routePanel.RoutePanelClickedEvent += OnBigLozengeClicked;
 			_routePanel.MouseMove += OnRoutePanelMouseMove;
+			_routePanel.KeyDown += OnKeyDown;
 			pRoutes.Controls.Add(_routePanel);
 
 			var unitTypes = new object[]
@@ -153,7 +154,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		private void OnRoutePanelClicked(object sender, RoutePanelClickedEventArgs args)
+		private void OnBigLozengeClicked(object sender, RoutePanelClickedEventArgs args)
 		{
 			_routePanel.Focus();
 
@@ -873,30 +874,38 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnCopyClick(object sender, EventArgs e)
 		{
-			var nodeText = string.Format(
-									System.Globalization.CultureInfo.InvariantCulture,
-									"{0}|{1}|{2}|{3}|{4}|{5}",
-									NodeCopyPrefix,
-									cbUnitType.SelectedIndex,
-									cbSpawnRank.SelectedIndex,
-									cbPriority.SelectedIndex,
-									cbAttack.SelectedIndex,
-									cbSpawnWeight.SelectedIndex);
-									// TODO: include Link info
-			Clipboard.SetText(nodeText);
+			if (_nodeSelected != null)
+			{
+				var nodeText = string.Format(
+										System.Globalization.CultureInfo.InvariantCulture,
+										"{0}|{1}|{2}|{3}|{4}|{5}",
+										NodeCopyPrefix,
+										cbUnitType.SelectedIndex,
+										cbSpawnRank.SelectedIndex,
+										cbPriority.SelectedIndex,
+										cbAttack.SelectedIndex,
+										cbSpawnWeight.SelectedIndex);
+										// TODO: include Link info ... perhaps.
+				Clipboard.SetText(nodeText);
+			}
 		}
 
 		private void OnPasteClick(object sender, EventArgs e)
 		{
-			var nodeData = Clipboard.GetText().Split('|');
-			if (nodeData[0] == NodeCopyPrefix)
+			if (_nodeSelected != null)
 			{
-				cbUnitType.SelectedIndex    = Int32.Parse(nodeData[1], System.Globalization.CultureInfo.InvariantCulture);
-				cbSpawnRank.SelectedIndex   = Int32.Parse(nodeData[2], System.Globalization.CultureInfo.InvariantCulture);
-				cbPriority.SelectedIndex    = Int32.Parse(nodeData[3], System.Globalization.CultureInfo.InvariantCulture);
-				cbAttack.SelectedIndex      = Int32.Parse(nodeData[4], System.Globalization.CultureInfo.InvariantCulture);
-				cbSpawnWeight.SelectedIndex = Int32.Parse(nodeData[5], System.Globalization.CultureInfo.InvariantCulture);
-				// TODO: include Link info
+				_mapFile.MapChanged = true;
+
+				var nodeData = Clipboard.GetText().Split('|');
+				if (nodeData[0] == NodeCopyPrefix)
+				{
+					cbUnitType.SelectedIndex    = Int32.Parse(nodeData[1], System.Globalization.CultureInfo.InvariantCulture);
+					cbSpawnRank.SelectedIndex   = Int32.Parse(nodeData[2], System.Globalization.CultureInfo.InvariantCulture);
+					cbPriority.SelectedIndex    = Int32.Parse(nodeData[3], System.Globalization.CultureInfo.InvariantCulture);
+					cbAttack.SelectedIndex      = Int32.Parse(nodeData[4], System.Globalization.CultureInfo.InvariantCulture);
+					cbSpawnWeight.SelectedIndex = Int32.Parse(nodeData[5], System.Globalization.CultureInfo.InvariantCulture);
+					// TODO: include Link info ... perhaps.
+				}
 			}
 		}
 
@@ -914,8 +923,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				DeselectNode();
 
-				gbSpawnData.Enabled  =
 				gbPatrolData.Enabled =
+				gbSpawnData.Enabled  =
 				gbNodeData.Enabled   =
 				gbLinkData.Enabled   = false;
 
@@ -931,11 +940,40 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Control && e.KeyCode == Keys.S
-				&& _mapFile != null)
+			if (e.Control)
 			{
-				_mapFile.Save();
-				e.Handled = true;
+				switch (e.KeyCode)
+				{
+//					case Keys.S: // TODO: vet that.
+//						if (_mapFile != null)
+//						{
+//							_mapFile.Save();
+//							e.Handled = true; // why.
+//						}
+//						break;
+
+					case Keys.X:
+						OnCopyClick(null, null);
+						OnDeleteClick(null, null);
+						break;
+
+					case Keys.C:
+						OnCopyClick(null, null);
+						break;
+
+					case Keys.V:
+						OnPasteClick(null, null);
+						break;
+				}
+			}
+			else
+			{
+				switch (e.KeyCode)
+				{
+					case Keys.Delete:
+						OnDeleteClick(null, null);
+						break;
+				}
 			}
 		}
 

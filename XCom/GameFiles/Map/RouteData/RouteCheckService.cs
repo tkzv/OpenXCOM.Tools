@@ -7,11 +7,11 @@ using XCom.Interfaces.Base;
 
 namespace XCom.GameFiles.Map.RouteData
 {
-	public static class RouteService
+	public static class RouteCheckService
 	{
 		/// <summary>
 		/// Checks for and if necessary deletes nodes that are outside of a
-		/// Map's x/y/z bounds. See also RouteFile.CheckNodeBounds().
+		/// Map's x/y/z bounds. See also RouteNodeCollectionFile.CheckNodeBounds().
 		/// </summary>
 		/// <param name="baseMap"></param>
 		public static void CheckNodeBounds(IMapBase baseMap)
