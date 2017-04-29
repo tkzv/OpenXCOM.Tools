@@ -45,13 +45,14 @@ namespace XCom.Interfaces.Base
 
 
 	/// <summary>
-	/// EventArgs with a MapLocation and MapTile for when a SelectedTileChanged event fires.
+	/// EventArgs with a MapLocation and MapTile for when a SelectedTileChanged
+	/// event fires.
 	/// </summary>
 	public sealed class SelectedTileChangedEventArgs
 		:
 			EventArgs
 	{
-		private MapLocation _location;
+		private readonly MapLocation _location;
 		public MapLocation Location
 		{
 			get { return _location; }

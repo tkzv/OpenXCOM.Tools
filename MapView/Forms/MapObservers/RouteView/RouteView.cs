@@ -139,10 +139,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var tile = _routePanel.GetTile(args.X, args.Y);
 			if (tile != null && tile.Node != null)
 			{
-				labelCurrentMouseOver.Text = "Over " + tile.Node.Index;
+				labelMouseOverId.Text = "Over " + tile.Node.Index;
 			}
 			else
-				labelCurrentMouseOver.Text = String.Empty;
+				labelMouseOverId.Text = String.Empty;
 
 			_routePanel.Pos = new Point(args.X, args.Y);
 			_routePanel.Refresh(); // mouseover refresh for RouteView.
@@ -268,7 +268,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			if (_nodeSelected == null)
 			{
-				labelSelected.Text = String.Empty;
+				labelSelectedId.Text = String.Empty;
 
 				gbNodeData.Enabled   =
 				gbPatrolData.Enabled =
@@ -306,7 +306,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 			else
 			{
-				labelSelected.Text = "Selected " + _nodeSelected.Index;
+				labelSelectedId.Text = "Selected " + _nodeSelected.Index;
 
 				gbNodeData.Enabled   =
 				gbPatrolData.Enabled =

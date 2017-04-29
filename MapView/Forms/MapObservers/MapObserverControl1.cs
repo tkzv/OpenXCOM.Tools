@@ -10,7 +10,7 @@ using XCom.Interfaces.Base;
 namespace MapView
 {
 	/// <summary>
-	/// Parent for TopViewPanelBase, TopViewPanel, QuadrantPanel.
+	/// Parent for TopViewPanelParent, TopViewPanel, QuadrantPanel.
 	/// </summary>
 	internal class MapObserverControl1
 		:

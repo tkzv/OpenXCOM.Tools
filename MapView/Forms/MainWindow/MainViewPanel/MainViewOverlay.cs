@@ -303,7 +303,7 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Flag that tells TopViewPanelBase.DrawSelectedLozenge that it's okay
+		/// Flag that tells TopViewPanelParent.DrawSelectedLozenge that it's okay
 		/// to draw a lozenge for a selected tile; ie, that an initial tile has
 		/// actually been selected. This prevents an off-border lozenge from
 		/// being drawn right after TopView initially appears. Can also happen

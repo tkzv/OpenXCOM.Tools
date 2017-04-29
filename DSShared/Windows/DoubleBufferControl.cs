@@ -44,7 +44,7 @@ namespace DSShared.Windows
 		}
 
 		/// <summary>
-		/// Shunts rendering off to TopViewPanelBase and QuadrantPanel.
+		/// Shunts rendering off to TopViewPanelParent and QuadrantPanel.
 		/// </summary>
 		protected virtual void Render(Graphics backBuffer)
 		{}

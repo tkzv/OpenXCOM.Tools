@@ -120,15 +120,18 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
-			_mapTile = (XCMapTile)e.SelectedTile;
-			_mapLoc = e.Location;
+			_mapTile = e.SelectedTile as XCMapTile;
+			_mapLoc  = e.Location;
 			Refresh();
 		}
 
 		public override void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
-			_mapLoc.Height = e.Height;
-			_mapTile = BaseMap[_mapLoc.Row, _mapLoc.Col] as XCMapTile;
+			if (_mapLoc != null)
+			{
+				_mapTile = BaseMap[_mapLoc.Row, _mapLoc.Col] as XCMapTile;
+				_mapLoc.Height = e.Height;
+			}
 			Refresh();
 		}
 
@@ -149,8 +152,8 @@ namespace MapView.Forms.MapObservers.TopViews
 					{
 						MainViewUnderlay.Instance.MainView.Refresh();
 						ViewerFormsManager.TopView.Refresh();
-						ViewerFormsManager.TopRouteView.Refresh();
 						ViewerFormsManager.RouteView.Refresh();
+						ViewerFormsManager.TopRouteView.Refresh();
 					}
 					Refresh();
 					break;
