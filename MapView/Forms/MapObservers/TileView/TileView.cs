@@ -379,7 +379,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				_mcdInfoForm.Show();
 			}
 			else
-				OnMcdInfoClosing(null, new CancelEventArgs(true));
+				OnMcdInfoClosing(null, null);
 		}
 
 		/// <summary>
@@ -391,7 +391,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			tsmiMcdInfo.Checked = false;
 
-			e.Cancel = true;
+			if (e != null)			// if (e==null) the form is hiding due to a menu-click, or a double-click on a tile
+				e.Cancel = true;	// if (e!=null) the form really was closed, so cancel that.
 
 			_mcdInfoForm.Hide();
 		}
