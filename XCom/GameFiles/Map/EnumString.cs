@@ -3,7 +3,7 @@ using System;
 
 namespace XCom
 {
-	public struct StrEnum
+	public struct EnumString
 	{
 		private readonly object _enumeration;
 		public object Enum
@@ -14,9 +14,9 @@ namespace XCom
 		private readonly string _display;
 
 
-		internal StrEnum(string display, object enumeration)
+		internal EnumString(string display, object enumeration)
 		{
-			_display = display;
+			_display     = display;
 			_enumeration = enumeration;
 		}
 

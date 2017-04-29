@@ -318,11 +318,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbAttack.SelectedItem   = _nodeSelected.Attack;
 
 				if (_mapFile.Tiles[0][0].Palette == Palette.UfoBattle)
-					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[_nodeSelected.UsableRank];
+					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[_nodeSelected.SpawnRank];
 				else
-					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankTftd[_nodeSelected.UsableRank];
+					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankTftd[_nodeSelected.SpawnRank];
 
-				cbSpawnWeight.SelectedItem = RouteNodeCollection.SpawnUsage[(byte)_nodeSelected.Spawn];
+				cbSpawnWeight.SelectedItem = RouteNodeCollection.SpawnUsage[(byte)_nodeSelected.SpawnWeight];
 
 				cbLink1Dest.Items.Clear();
 				cbLink2Dest.Items.Clear();
@@ -489,14 +489,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private void OnSpawnRankSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
-				_nodeSelected.UsableRank = (byte)((StrEnum)cbSpawnRank.SelectedItem).Enum;
+				_nodeSelected.SpawnRank = (byte)((EnumString)cbSpawnRank.SelectedItem).Enum;
 		}
 
 		private void OnSpawnWeightSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 			{
-				_nodeSelected.Spawn = (SpawnUsage)((StrEnum)cbSpawnWeight.SelectedItem).Enum;
+				_nodeSelected.SpawnWeight = (SpawnUsage)((EnumString)cbSpawnWeight.SelectedItem).Enum;
 				Refresh();
 			}
 		}
@@ -862,29 +862,41 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
+
+		private const string NodeCopyPrefix = "MVNode";
+
+		private void OnCutClick(object sender, EventArgs e)
+		{
+			OnCopyClick(null, null);
+			OnDeleteClick(null, null);
+		}
+
 		private void OnCopyClick(object sender, EventArgs e)
 		{
 			var nodeText = string.Format(
 									System.Globalization.CultureInfo.InvariantCulture,
-									"MVNode|{0}|{1}|{2}|{3}|{4}",
+									"{0}|{1}|{2}|{3}|{4}|{5}",
+									NodeCopyPrefix,
 									cbUnitType.SelectedIndex,
 									cbSpawnRank.SelectedIndex,
 									cbPriority.SelectedIndex,
 									cbAttack.SelectedIndex,
 									cbSpawnWeight.SelectedIndex);
+									// TODO: include Link info
 			Clipboard.SetText(nodeText);
 		}
 
 		private void OnPasteClick(object sender, EventArgs e)
 		{
 			var nodeData = Clipboard.GetText().Split('|');
-			if (nodeData[0] == "MVNode")
+			if (nodeData[0] == NodeCopyPrefix)
 			{
 				cbUnitType.SelectedIndex    = Int32.Parse(nodeData[1], System.Globalization.CultureInfo.InvariantCulture);
 				cbSpawnRank.SelectedIndex   = Int32.Parse(nodeData[2], System.Globalization.CultureInfo.InvariantCulture);
 				cbPriority.SelectedIndex    = Int32.Parse(nodeData[3], System.Globalization.CultureInfo.InvariantCulture);
 				cbAttack.SelectedIndex      = Int32.Parse(nodeData[4], System.Globalization.CultureInfo.InvariantCulture);
 				cbSpawnWeight.SelectedIndex = Int32.Parse(nodeData[5], System.Globalization.CultureInfo.InvariantCulture);
+				// TODO: include Link info
 			}
 		}
 
@@ -952,10 +964,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			var count = 0;
 			foreach (RouteNode node in _mapFile.RouteFile)
-				if (node.UsableRank != 0)
+				if (node.SpawnRank != 0)
 				{
 					++count;
-					node.UsableRank = 0;
+					node.SpawnRank = 0;
 				}
 
 			if (count != 0)

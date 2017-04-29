@@ -75,6 +75,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.gbLinkData = new System.Windows.Forms.GroupBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.gbNodeEditor = new System.Windows.Forms.GroupBox();
+			this.btnCut = new System.Windows.Forms.Button();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.gbPatrolData = new System.Windows.Forms.GroupBox();
 			this.cbAttack = new System.Windows.Forms.ComboBox();
@@ -272,9 +273,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// btnPaste
 			// 
-			this.btnPaste.Location = new System.Drawing.Point(100, 15);
+			this.btnPaste.Location = new System.Drawing.Point(145, 15);
 			this.btnPaste.Name = "btnPaste";
-			this.btnPaste.Size = new System.Drawing.Size(85, 30);
+			this.btnPaste.Size = new System.Drawing.Size(65, 30);
 			this.btnPaste.TabIndex = 35;
 			this.btnPaste.Text = "Paste";
 			this.btnPaste.Click += new System.EventHandler(this.OnPasteClick);
@@ -291,18 +292,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// btnCopy
 			// 
-			this.btnCopy.Location = new System.Drawing.Point(10, 15);
+			this.btnCopy.Location = new System.Drawing.Point(75, 15);
 			this.btnCopy.Name = "btnCopy";
-			this.btnCopy.Size = new System.Drawing.Size(85, 30);
+			this.btnCopy.Size = new System.Drawing.Size(65, 30);
 			this.btnCopy.TabIndex = 34;
 			this.btnCopy.Text = "Copy";
 			this.btnCopy.Click += new System.EventHandler(this.OnCopyClick);
 			// 
 			// btnDelete
 			// 
-			this.btnDelete.Location = new System.Drawing.Point(190, 15);
+			this.btnDelete.Location = new System.Drawing.Point(215, 15);
 			this.btnDelete.Name = "btnDelete";
-			this.btnDelete.Size = new System.Drawing.Size(85, 30);
+			this.btnDelete.Size = new System.Drawing.Size(65, 30);
 			this.btnDelete.TabIndex = 36;
 			this.btnDelete.Text = "Delete";
 			this.btnDelete.Click += new System.EventHandler(this.OnDeleteClick);
@@ -544,6 +545,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// gbNodeEditor
 			// 
+			this.gbNodeEditor.Controls.Add(this.btnCut);
 			this.gbNodeEditor.Controls.Add(this.btnCopy);
 			this.gbNodeEditor.Controls.Add(this.btnPaste);
 			this.gbNodeEditor.Controls.Add(this.btnDelete);
@@ -554,6 +556,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.gbNodeEditor.TabIndex = 12;
 			this.gbNodeEditor.TabStop = false;
 			this.gbNodeEditor.Text = "Node editor";
+			// 
+			// btnCut
+			// 
+			this.btnCut.Location = new System.Drawing.Point(5, 15);
+			this.btnCut.Name = "btnCut";
+			this.btnCut.Size = new System.Drawing.Size(65, 30);
+			this.btnCut.TabIndex = 37;
+			this.btnCut.Text = "Cut";
+			this.btnCut.Click += new System.EventHandler(this.OnCutClick);
 			// 
 			// panel2
 			// 
@@ -693,5 +704,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.GroupBox gbNodeData;
 		private System.Windows.Forms.ToolStripMenuItem tsmiMakeAllNodeRank0;
 		private System.Windows.Forms.GroupBox gbNodeEditor;
+		private System.Windows.Forms.Button btnCut;
 	}
 }

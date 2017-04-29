@@ -43,12 +43,8 @@ namespace XCom
 			get { return _row; }
 		}
 
-		private int _height;
 		public int Height
-		{
-			get { return _height; }
-			set { _height = value ; }
-		}
+		{ get; set; }
 
 		private readonly Link[] _links;
 		/// <summary>
@@ -62,7 +58,7 @@ namespace XCom
 		public UnitType UsableType
 		{ get; set; }
 
-		public byte UsableRank
+		public byte SpawnRank
 		{ get; set; }
 
 		public NodeImportance Priority
@@ -71,7 +67,7 @@ namespace XCom
 		public BaseModuleAttack Attack
 		{ get; set; }
 
-		public SpawnUsage Spawn
+		public SpawnUsage SpawnWeight
 		{ get; set; }
 
 		/// <summary>
@@ -85,9 +81,9 @@ namespace XCom
 		{
 			Index = id;
 
-			_row    = data[0];
-			_col    = data[1];
-			_height = data[2];
+			_row   = data[0];
+			_col   = data[1];
+			Height = data[2]; // NOTE: auto-converts to int-type.
 
 			_links = new Link[LinkSlots];
 
@@ -101,29 +97,29 @@ namespace XCom
 				x += 3;
 			}
 
-			UsableType = (UnitType)data[19];
-			UsableRank = data[20];
-			Priority   = (NodeImportance)data[21];
-			Attack     = (BaseModuleAttack)data[22];
-			Spawn      = (SpawnUsage)data[23];
+			UsableType  = (UnitType)data[19];
+			SpawnRank   = data[20];
+			Priority    = (NodeImportance)data[21];
+			Attack      = (BaseModuleAttack)data[22];
+			SpawnWeight = (SpawnUsage)data[23];
 		}
 		internal RouteNode(byte id, byte row, byte col, byte height)
 		{
 			Index = id;
 
-			_col    = col;
-			_row    = row;
-			_height = height;
+			_col   = col;
+			_row   = row;
+			Height = height; // NOTE: auto-converts to int-type.
 
 			_links = new Link[LinkSlots];
 			for (int i = 0; i != LinkSlots; ++i)
 				_links[i] = new Link(Link.NotUsed, 0, 0);
 
-			UsableType = UnitType.Any;
-			UsableRank = 0;
-			Priority   = NodeImportance.Zero;
-			Attack     = BaseModuleAttack.Zero;
-			Spawn      = SpawnUsage.NoSpawn;
+			UsableType  = UnitType.Any;
+			SpawnRank   = 0;
+			Priority    = NodeImportance.Zero;
+			Attack      = BaseModuleAttack.Zero;
+			SpawnWeight = SpawnUsage.NoSpawn;
 		}
 
 
@@ -135,7 +131,7 @@ namespace XCom
 		{
 			str.WriteByte(_row);
 			str.WriteByte(_col);
-			str.WriteByte((byte)_height);
+			str.WriteByte((byte)Height);
 			str.WriteByte((byte)0);
 
 			for (int i = 0; i != LinkSlots; ++i)
@@ -146,10 +142,10 @@ namespace XCom
 			}
 
 			str.WriteByte((byte)UsableType);
-			str.WriteByte((byte)UsableRank);
+			str.WriteByte((byte)SpawnRank); // NOTE: is already a byte-type.
 			str.WriteByte((byte)Priority);
 			str.WriteByte((byte)Attack);
-			str.WriteByte((byte)Spawn);
+			str.WriteByte((byte)SpawnWeight);
 		}
 
 		public override bool Equals(object obj)
@@ -163,10 +159,10 @@ namespace XCom
 			return Index;
 		}
 
-/*		public override string ToString()
+		public override string ToString()
 		{
-			return ("c:" + _col + " r:" + _row + " h:" + _height);
-		} */
+			return ("c:" + _col + " r:" + _row + " h:" + Height);
+		}
 
 //		public Link GetLinkedNode(int id)
 //		{

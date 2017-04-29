@@ -315,7 +315,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							{
 								_graphics.FillPath(_brushSelected, _layerFill);
 							}
-							else if (node.Spawn != SpawnUsage.NoSpawn)
+							else if (node.SpawnWeight != SpawnUsage.NoSpawn)
 							{
 								_graphics.FillPath(_brushSpawn, _layerFill);
 							}
@@ -369,7 +369,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 									NODE_VAL_MAX,
 									Brushes.CornflowerBlue);
 
-							var nodeSpawnWeight = (int)node.Spawn;
+							var nodeSpawnWeight = (int)node.SpawnWeight;
 							DrawBox(
 									infoboxX + 3,
 									infoboxY,
@@ -518,8 +518,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 					textOver2     = (tile.Node.Index).ToString(System.Globalization.CultureInfo.CurrentCulture);
 					textPriority2 = (tile.Node.Priority).ToString();
-					textSpawn2    = (RouteNodeCollection.UnitRankUfo[tile.Node.UsableRank]).ToString();
-					textWeight2   = (tile.Node.Spawn).ToString();
+					textSpawn2    = (RouteNodeCollection.UnitRankUfo[tile.Node.SpawnRank]).ToString();
+					textWeight2   = (tile.Node.SpawnWeight).ToString();
 
 					int width;
 //					width = TextRenderer.MeasureText(textOver1, font).Width;

@@ -161,7 +161,7 @@
     <Compile Include="GameFiles\Map\RouteData\RouteNodeCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Map\StrEnum.cs">
+    <Compile Include="GameFiles\Map\EnumString.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Map\XCTile.cs">

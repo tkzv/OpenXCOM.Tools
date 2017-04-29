@@ -92,7 +92,14 @@ observed
 
 namespace XCom
 {
+	// NOTE: Only 'UnitRankUfo' and 'UnitRankTftd' need to be enumerated as
+	// byte-type. Otherwise the EnumString class goes snakey when
+	// RouteView.OnSpawnRankSelectedIndexChanged() fires. For reasons, it cannot
+	// handle the cast automatically like the other enumerated types here appear
+	// to. But I left the others as bytes also for safety.
 	public enum UnitType
+		:
+			byte
 	{
 		Any         = 0,
 		Flying      = 1,
@@ -102,6 +109,8 @@ namespace XCom
 	};
 
 	public enum UnitRankUfo
+		:
+			byte
 	{
 		Civilian        = 0,
 		XCom            = 1,
@@ -115,6 +124,8 @@ namespace XCom
 	};
 
 	public enum UnitRankTftd
+		:
+			byte
 	{
 		Civilian        = 0,
 		XCom            = 1,
@@ -128,6 +139,8 @@ namespace XCom
 	};
 
 	public enum SpawnUsage
+		:
+			byte
 	{
 		NoSpawn = 0,
 		Spawn1  = 1,
@@ -143,6 +156,8 @@ namespace XCom
 	};
 
 	public enum NodeImportance
+		:
+			byte
 	{
 		Zero  = 0,
 		One   = 1,
@@ -158,6 +173,8 @@ namespace XCom
 	};
 
 	public enum BaseModuleAttack
+		:
+			byte
 	{
 		Zero  = 0,
 		One   = 1,
@@ -173,6 +190,8 @@ namespace XCom
 	};
 
 	public enum LinkType
+		:
+			byte
 	{
 		None      = 0x00, // pacify FxCop CA1008 BUT DO NOT USE IT.
 		NotUsed   = 0xFF, // since valid route-nodes can and will have a value of 0.
@@ -197,46 +216,52 @@ namespace XCom
 
 		public static readonly object[] UnitRankUfo =
 		{
-			new StrEnum("0:Civ-Scout",        XCom.UnitRankUfo.Civilian),
-			new StrEnum("1:XCom",             XCom.UnitRankUfo.XCom),
-			new StrEnum("2:Soldier",          XCom.UnitRankUfo.Soldier),
-			new StrEnum("3:Navigator",        XCom.UnitRankUfo.Navigator),
-			new StrEnum("4:Leader/Commander", XCom.UnitRankUfo.LeaderCommander),
-			new StrEnum("5:Engineer",         XCom.UnitRankUfo.Engineer),
-			new StrEnum("6:Misc1",            XCom.UnitRankUfo.Misc1),
-			new StrEnum("7:Medic",            XCom.UnitRankUfo.Medic),
-			new StrEnum("8:Misc2",            XCom.UnitRankUfo.Misc2)
+			new EnumString("0:Civ-Scout",        XCom.UnitRankUfo.Civilian),
+			new EnumString("1:XCom",             XCom.UnitRankUfo.XCom),
+			new EnumString("2:Soldier",          XCom.UnitRankUfo.Soldier),
+			new EnumString("3:Navigator",        XCom.UnitRankUfo.Navigator),
+			new EnumString("4:Leader/Commander", XCom.UnitRankUfo.LeaderCommander),
+			new EnumString("5:Engineer",         XCom.UnitRankUfo.Engineer),
+			new EnumString("6:Misc1",            XCom.UnitRankUfo.Misc1),
+			new EnumString("7:Medic",            XCom.UnitRankUfo.Medic),
+			new EnumString("8:Misc2",            XCom.UnitRankUfo.Misc2)
 		};
 
 		public static readonly object[] UnitRankTftd =
 		{
-			new StrEnum("0:Civ-Scout",        XCom.UnitRankTftd.Civilian),
-			new StrEnum("1:XCom",             XCom.UnitRankTftd.XCom),
-			new StrEnum("2:Soldier",          XCom.UnitRankTftd.Soldier),
-			new StrEnum("3:Squad Leader",     XCom.UnitRankTftd.SquadLeader),
-			new StrEnum("4:Leader/Commander", XCom.UnitRankTftd.LeaderCommander),
-			new StrEnum("5:Medic",            XCom.UnitRankTftd.Medic),
-			new StrEnum("6:Misc1",            XCom.UnitRankTftd.Misc1),
-			new StrEnum("7:Technician",       XCom.UnitRankTftd.Technician),
-			new StrEnum("8:Misc2",            XCom.UnitRankTftd.Misc2)
+			new EnumString("0:Civ-Scout",        XCom.UnitRankTftd.Civilian),
+			new EnumString("1:XCom",             XCom.UnitRankTftd.XCom),
+			new EnumString("2:Soldier",          XCom.UnitRankTftd.Soldier),
+			new EnumString("3:Squad Leader",     XCom.UnitRankTftd.SquadLeader),
+			new EnumString("4:Leader/Commander", XCom.UnitRankTftd.LeaderCommander),
+			new EnumString("5:Medic",            XCom.UnitRankTftd.Medic),
+			new EnumString("6:Misc1",            XCom.UnitRankTftd.Misc1),
+			new EnumString("7:Technician",       XCom.UnitRankTftd.Technician),
+			new EnumString("8:Misc2",            XCom.UnitRankTftd.Misc2)
 		};
 
 		public static readonly object[] SpawnUsage =
 		{
-			new StrEnum("0:No Spawn", XCom.SpawnUsage.NoSpawn),
-			new StrEnum("1:Spawn",    XCom.SpawnUsage.Spawn1),
-			new StrEnum("2:Spawn",    XCom.SpawnUsage.Spawn2),
-			new StrEnum("3:Spawn",    XCom.SpawnUsage.Spawn3),
-			new StrEnum("4:Spawn",    XCom.SpawnUsage.Spawn4),
-			new StrEnum("5:Spawn",    XCom.SpawnUsage.Spawn5),
-			new StrEnum("6:Spawn",    XCom.SpawnUsage.Spawn6),
-			new StrEnum("7:Spawn",    XCom.SpawnUsage.Spawn7),
-			new StrEnum("8:Spawn",    XCom.SpawnUsage.Spawn8),
-			new StrEnum("9:Spawn",    XCom.SpawnUsage.Spawn9),
-			new StrEnum("10:Spawn",   XCom.SpawnUsage.Spawn10)
+			new EnumString("0:No Spawn", XCom.SpawnUsage.NoSpawn),
+			new EnumString("1:Spawn",    XCom.SpawnUsage.Spawn1),
+			new EnumString("2:Spawn",    XCom.SpawnUsage.Spawn2),
+			new EnumString("3:Spawn",    XCom.SpawnUsage.Spawn3),
+			new EnumString("4:Spawn",    XCom.SpawnUsage.Spawn4),
+			new EnumString("5:Spawn",    XCom.SpawnUsage.Spawn5),
+			new EnumString("6:Spawn",    XCom.SpawnUsage.Spawn6),
+			new EnumString("7:Spawn",    XCom.SpawnUsage.Spawn7),
+			new EnumString("8:Spawn",    XCom.SpawnUsage.Spawn8),
+			new EnumString("9:Spawn",    XCom.SpawnUsage.Spawn9),
+			new EnumString("10:Spawn",   XCom.SpawnUsage.Spawn10)
 		};
 
 
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="baseName"></param>
+		/// <param name="basePath"></param>
 		internal RouteNodeCollection(string baseName, string basePath)
 		{
 			_baseName = baseName;
@@ -258,6 +283,7 @@ namespace XCom
 				}
 			}
 		}
+		#endregion
 
 
 		/// <summary>
