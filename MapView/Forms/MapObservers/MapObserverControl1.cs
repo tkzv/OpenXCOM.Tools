@@ -38,14 +38,26 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// Satisfies IMapObserver. Used by QuadrantPanel but disabled in
+		/// TopViewPanelParent.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
-			Refresh();
+//			Refresh();
 		}
 
+		/// <summary>
+		/// Satisfies IMapObserver. Used by QuadrantPanel and does not exist in
+		/// TopViewPanelParent.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
 		{
-			Refresh();
+//			Refresh();
 		}
 
 //		/// <summary>

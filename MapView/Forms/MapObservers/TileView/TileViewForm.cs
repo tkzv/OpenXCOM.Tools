@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 
 namespace MapView.Forms.MapObservers.TileViews
@@ -11,8 +12,17 @@ namespace MapView.Forms.MapObservers.TileViews
 		internal TileViewForm()
 		{
 			InitializeComponent();
+
+			Activated += OnActivated;
 		}
 
+		/// <summary>
+		/// Fires when the form is activated.
+		/// </summary>
+		private void OnActivated(object sender, EventArgs e)
+		{
+			TileViewControl.GetSelectedPanel().Focus();
+		}
 
 		internal TileView Control
 		{

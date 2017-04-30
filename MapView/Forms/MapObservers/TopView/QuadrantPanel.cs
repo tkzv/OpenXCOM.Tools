@@ -19,10 +19,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		:
 			MapObserverControl1
 	{
+		#region Fields & Properties
+		private readonly QuadrantPanelDrawService _drawService;
+
 		private XCMapTile _mapTile;
 		private MapLocation _mapLoc;
-
-		private readonly QuadrantPanelDrawService _drawService;
 
 		private QuadrantType _selType;
 		public QuadrantType SelectedQuadrant
@@ -34,24 +35,6 @@ namespace MapView.Forms.MapObservers.TopViews
 				Refresh();
 			}
 		}
-
-
-		public QuadrantPanel()
-		{
-			_mapTile = null;
-
-			SetStyle(ControlStyles.OptimizedDoubleBuffer
-				   | ControlStyles.AllPaintingInWmPaint
-				   | ControlStyles.UserPaint
-				   | ControlStyles.ResizeRedraw, true);
-
-			Globals.LoadExtras();
-
-			_drawService = new QuadrantPanelDrawService();
-			_drawService.Brush = new SolidBrush(Color.FromArgb(204, 204, 255));
-			_drawService.Font = new Font("Verdana", 7);
-		}
-
 
 		[Browsable(false)]
 		public Dictionary<string, SolidBrush> Brushes
@@ -75,49 +58,30 @@ namespace MapView.Forms.MapObservers.TopViews
 				Refresh();
 			}
 		}
+		#endregion
 
-		public void SetSelected(MouseButtons btn, int clicks)
+
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		public QuadrantPanel()
 		{
-			if (_mapTile != null)
-			{
-				switch (btn)
-				{
-					case MouseButtons.Left:
-						switch (clicks)
-						{
-							case 1:
-								break;
+			_mapTile = null;
 
-							case 2:
-								var tileView = ViewerFormsManager.TileView.Control;
-								tileView.SelectedTile = _mapTile[SelectedQuadrant];
-								break;
-						}
-						break;
+			SetStyle(ControlStyles.OptimizedDoubleBuffer
+				   | ControlStyles.AllPaintingInWmPaint
+				   | ControlStyles.UserPaint
+				   | ControlStyles.ResizeRedraw, true);
 
-					case MouseButtons.Right:
-					{
-						switch (clicks)
-						{
-							case 1:
-								var tileView = ViewerFormsManager.TileView.Control;
-								_mapTile[SelectedQuadrant] = tileView.SelectedTile;
-								break;
+			Globals.LoadExtras();
 
-							case 2:
-								_mapTile[SelectedQuadrant] = null;
-								break;
-						}
-
-						BaseMap.MapChanged = true;
-						Refresh();
-
-						break;
-					}
-				}
-			}
+			_drawService = new QuadrantPanelDrawService();
 		}
+		#endregion
 
+
+		#region EventCalls
 		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
 			_mapTile = e.SelectedTile as XCMapTile;
@@ -160,9 +124,55 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		protected override void Render(Graphics backBuffer)
+		protected override void RenderGraphics(Graphics backBuffer)
 		{
 			_drawService.Draw(backBuffer, _mapTile, SelectedQuadrant);
 		}
+		#endregion
+
+
+		#region Methods
+		public void SetSelected(MouseButtons btn, int clicks)
+		{
+			if (_mapTile != null)
+			{
+				switch (btn)
+				{
+					case MouseButtons.Left:
+						switch (clicks)
+						{
+							case 1:
+								break;
+
+							case 2:
+								var tileView = ViewerFormsManager.TileView.Control;
+								tileView.SelectedTile = _mapTile[SelectedQuadrant];
+								break;
+						}
+						break;
+
+					case MouseButtons.Right:
+					{
+						switch (clicks)
+						{
+							case 1:
+								var tileView = ViewerFormsManager.TileView.Control;
+								_mapTile[SelectedQuadrant] = tileView.SelectedTile;
+								break;
+
+							case 2:
+								_mapTile[SelectedQuadrant] = null;
+								break;
+						}
+
+						BaseMap.MapChanged = true;
+						Refresh();
+
+						break;
+					}
+				}
+			}
+		}
+		#endregion
 	}
 }

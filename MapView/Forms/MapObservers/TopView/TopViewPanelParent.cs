@@ -22,9 +22,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		private int _offX;
 		private int _offY;
 
-		private readonly GraphicsPath _lozSelector;
-		private readonly GraphicsPath _lozSelected;
-//		private readonly GraphicsPath _lozSel;
+		private readonly GraphicsPath _lozSelector = new GraphicsPath(); // mouse-over cursor lozenge
+		private readonly GraphicsPath _lozSelected = new GraphicsPath(); // selected tile or tiles being drag-selected
+//		private readonly GraphicsPath _lozSel      = new GraphicsPath();
 
 		private int _mouseRow = -1;
 		private int _mouseCol = -1;
@@ -35,14 +35,14 @@ namespace MapView.Forms.MapObservers.TopViews
 			get { return _blobService; }
 		}
 
-		private int _heightMin = 4;
-		internal protected int MinHeight	// question: why can TopView access this
-		{									// it's 'protected'
-			get { return _heightMin; }
+		private int _lozHeightMin = 4;
+		internal protected int TileLozengeHeight	// question: why can TopView access this
+		{											// it's 'protected'
+			get { return _lozHeightMin; }
 			set
 			{
-				_heightMin = value;
-				HandleParentResize(Width, Height);
+				_lozHeightMin = value;
+				ResizeObserver(Width, Height);
 			}
 		}
 		#endregion
@@ -54,9 +54,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		internal protected TopViewPanelParent()
 		{
-			_lozSelector = new GraphicsPath();
-			_lozSelected = new GraphicsPath();
-//			_lozSel = new GraphicsPath();
+//			_lozSelector;
+//			_lozSelected;
+//			_lozSel;
 		}
 		#endregion
 
@@ -67,14 +67,21 @@ namespace MapView.Forms.MapObservers.TopViews
 			set
 			{
 				base.BaseMap = value;
-				_blobService.HalfWidth = 7; // TODO: 7 ... inits to 8 in DrawContentService.
-				HandleParentResize(Parent.Width, Parent.Height);
+//				_blobService.HalfWidth = 7; // TODO: 7 ... inits to 8 in DrawContentService.
+				_blobService.HalfWidth = 8;
+				ResizeObserver(Parent.Width, Parent.Height);
 
 				Refresh();
 			}
 		}
 
-		internal protected void HandleParentResize(int width, int height)
+		/// <summary>
+		/// Called by the main panel's resize event. See TopView. Also fired by
+		/// TileLozengeHeight set change, or by a straight BaseMap set change.
+		/// </summary>
+		/// <param name="width">the width to resize to</param>
+		/// <param name="height">the height to resize to</param>
+		internal protected void ResizeObserver(int width, int height)
 		{
 			if (BaseMap != null)
 			{
@@ -83,7 +90,11 @@ namespace MapView.Forms.MapObservers.TopViews
 				
 				int curWidth = hWidth;
 
-				if (BaseMap.MapSize.Rows > 0 || BaseMap.MapSize.Cols > 0)
+				width  -= hWidth; // don't clip the bottom or right tips of the big-lozenge.
+				height -= hHeight;
+
+
+				if (BaseMap.MapSize.Rows > 0 || BaseMap.MapSize.Cols > 0) // safety vs. div-by-0
 				{
 					if (height > width / 2) // use width
 					{
@@ -101,10 +112,10 @@ namespace MapView.Forms.MapObservers.TopViews
 					}
 				}
 
-				if (hHeight < _heightMin)
+				if (hHeight < _lozHeightMin)
 				{
-					hWidth  = _heightMin * 2;
-					hHeight = _heightMin;
+					hWidth  = _lozHeightMin * 2;
+					hHeight = _lozHeightMin;
 				}
 
 				_blobService.HalfWidth  = hWidth;
@@ -126,19 +137,19 @@ namespace MapView.Forms.MapObservers.TopViews
 		protected override void OnResize(EventArgs e)
 		{
 			base.OnResize(e);
-			DrawSelectedLozenge();
+			DrawSelectionLozenge();
 		}
 
 		internal protected void OnMouseDrag()
 		{
-			DrawSelectedLozenge();
+			DrawSelectionLozenge();
 		}
 
 		/// <summary>
 		/// Draws a lozenge-border around all tiles that are selected or
 		/// being selected.
 		/// </summary>
-		private void DrawSelectedLozenge()
+		private void DrawSelectionLozenge()
 		{
 			if (MainViewUnderlay.Instance.MainView.FirstClick)
 			{
@@ -195,6 +206,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			return end;
 		}
 
+
 		[Browsable(false), DefaultValue(null)]
 		internal protected Dictionary<string, SolidBrush> TopBrushes // question: why can TopView access this
 		{ get; set; }
@@ -203,9 +215,10 @@ namespace MapView.Forms.MapObservers.TopViews
 		internal protected Dictionary<string, Pen> TopPens // question: why can TopView access this
 		{ get; set; }
 
-		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
+
+/*		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
 		{
-/*			var pt = e.MapPosition;
+			var pt = e.MapPosition;
 //			Text = "c: " + pt.Col + " r: " + pt.Row; // I don't think this actually prints anywhere.
 
 			var hWidth  = _drawService.HalfWidth;
@@ -228,18 +241,18 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			OnMouseDrag();
 
-			Refresh(); */
-		}
+			Refresh(); // I don't think this is needed.
+		} */
 
-		protected override void Render(Graphics backBuffer)
+		protected override void RenderGraphics(Graphics backBuffer)
 		{
 			backBuffer.FillRectangle(SystemBrushes.Control, ClientRectangle);
 
-			int hWidth  = _blobService.HalfWidth;
-			int hHeight = _blobService.HalfHeight;
-
 			if (BaseMap != null)
 			{
+				int hWidth  = _blobService.HalfWidth;
+				int hHeight = _blobService.HalfHeight;
+
 				for (int
 						r = 0,
 							startX = _offX,
@@ -260,13 +273,13 @@ namespace MapView.Forms.MapObservers.TopViews
 					{
 						var mapTile = BaseMap[r, c] as MapTileBase;
 						if (mapTile != null)
-							DrawTileBlobs(mapTile, backBuffer, x, y);
+							((TopViewPanel)this).DrawTileBlobs(mapTile, backBuffer, x, y);
 					}
 				}
 
 				for (int i = 0; i <= BaseMap.MapSize.Rows; ++i)
 					backBuffer.DrawLine(
-									TopPens["GridColor"],
+									TopPens[TopView.GridColor],
 									_offX - i * hWidth,
 									_offY + i * hHeight,
 									(BaseMap.MapSize.Cols - i) * hWidth  + _offX,
@@ -274,14 +287,14 @@ namespace MapView.Forms.MapObservers.TopViews
 
 				for (int i = 0; i <= BaseMap.MapSize.Cols; ++i)
 					backBuffer.DrawLine(
-									TopPens["GridColor"],
+									TopPens[TopView.GridColor],
 									_offX + i * hWidth,
 									_offY + i * hHeight,
 									i * hWidth  - BaseMap.MapSize.Rows * hWidth  + _offX,
 									i * hHeight + BaseMap.MapSize.Rows * hHeight + _offY);
 
 				if (MainViewUnderlay.Instance.MainView.FirstClick)
-					backBuffer.DrawPath(TopPens["SelectColor"], _lozSelected);
+					backBuffer.DrawPath(TopPens[TopView.SelectedColor], _lozSelected);
 
 				if (   _mouseCol > -1
 					&& _mouseRow > -1
@@ -291,25 +304,24 @@ namespace MapView.Forms.MapObservers.TopViews
 					int x = (_mouseCol - _mouseRow) * hWidth  + _offX;
 					int y = (_mouseCol + _mouseRow) * hHeight + _offY;
 
-					var sel = GetSelectorPath(x, y);
-					backBuffer.DrawPath(TopPens["MouseColor"], sel);
+					SetSelectorPath(x, y);
+					backBuffer.DrawPath(TopPens[TopView.SelectorColor], _lozSelector);
 				}
 			}
 		}
 
-		/// <summary>
-		/// Forwards the call to TopViewPanel.DrawTileBlobs().
-		/// </summary>
-		/// <param name="tile"></param>
-		/// <param name="g"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		internal protected virtual void DrawTileBlobs(
-				MapTileBase tile,
-				Graphics g,
-				int x, int y)
-		{}
-
+//		/// <summary>
+//		/// Forwards the call to TopViewPanel.DrawTileBlobs().
+//		/// </summary>
+//		/// <param name="tile"></param>
+//		/// <param name="g"></param>
+//		/// <param name="x"></param>
+//		/// <param name="y"></param>
+//		internal protected virtual void DrawTileBlobs(
+//				MapTileBase tile,
+//				Graphics g,
+//				int x, int y)
+//		{}
 
 		/// <summary>
 		/// Gets the GraphicsPath to draw for ... what.
@@ -317,7 +329,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		private GraphicsPath GetSelectorPath(int x, int y)
+		private void SetSelectorPath(int x, int y)
 		{
 			int hWidth  = _blobService.HalfWidth;
 			int hHeight = _blobService.HalfHeight;
@@ -333,8 +345,6 @@ namespace MapView.Forms.MapObservers.TopViews
 						x, y + 2 * hHeight,
 						x - hWidth, y + hHeight);
 			_lozSelector.CloseFigure();
-
-			return _lozSelector;
 		}
 
 		private Point ConvertCoordsDiamond(int x, int y)

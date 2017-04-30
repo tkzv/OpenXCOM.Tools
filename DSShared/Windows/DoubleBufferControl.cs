@@ -12,7 +12,9 @@ namespace DSShared.Windows
 		:
 			Control
 	{
+		#region cTor
 		/// <summary>
+		/// cTor.
 		/// </summary>
 		public DoubleBufferControl()
 		{
@@ -21,33 +23,40 @@ namespace DSShared.Windows
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 		}
+		#endregion
 
 
+		#region EventCalls
 		/// <summary>
+		/// Paints a surface.
 		/// </summary>
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			if (DesignMode)
-			{
-				base.OnPaint(e);
-
-				e.Graphics.DrawLine(Pens.Black, 0, 0,      Width, Height);
-				e.Graphics.DrawLine(Pens.Black, 0, Height, Width, 0);
-
-				ControlPaint.DrawBorder3D(
-										e.Graphics,
-										ClientRectangle,
-										Border3DStyle.Flat);
-			}
-			else
-				Render(e.Graphics);
+//			if (DesignMode)
+//			{
+//				base.OnPaint(e);
+//
+//				e.Graphics.DrawLine(Pens.Black, 0, 0,      Width, Height);
+//				e.Graphics.DrawLine(Pens.Black, 0, Height, Width, 0);
+//
+//				ControlPaint.DrawBorder3D(
+//										e.Graphics,
+//										ClientRectangle,
+//										Border3DStyle.Flat);
+//			}
+//			else
+			RenderGraphics(e.Graphics);
 		}
+		#endregion
 
+
+		#region Methods
 		/// <summary>
 		/// Shunts rendering off to TopViewPanelParent and QuadrantPanel.
 		/// </summary>
-		protected virtual void Render(Graphics backBuffer)
+		protected virtual void RenderGraphics(Graphics backBuffer)
 		{}
+		#endregion
 	}
 
 /*	public class DoubleBufferControl

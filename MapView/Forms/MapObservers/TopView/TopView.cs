@@ -17,16 +17,18 @@ namespace MapView.Forms.MapObservers.TopViews
 			MapObserverControl0
 	{
 		#region Fields
-//		private readonly Dictionary<ToolStripMenuItem, int> _visQuadsDictionary = new Dictionary<ToolStripMenuItem, int>();
+		private event EventHandler VisibleTileChangedEvent;
+
+		private readonly TopViewPanel _topViewPanel;
+
+		private EditButtonsFactory _editButtonsFactory;
 
 		private Dictionary<string, Pen> _topPens;
 		private Dictionary<string, SolidBrush> _topBrushes;
 
-		private readonly TopViewPanel _topViewPanel;
-		private EditButtonsFactory _editButtonsFactory;
-
-		private event EventHandler VisibleTileChangedEvent;
+//		private readonly Dictionary<ToolStripMenuItem, int> _visQuadsDictionary = new Dictionary<ToolStripMenuItem, int>();
 		#endregion
+
 
 		#region Properties
 		internal QuadrantPanel QuadrantsPanel
@@ -67,13 +69,14 @@ namespace MapView.Forms.MapObservers.TopViews
 			SuspendLayout();
 
 			_topViewPanel = new TopViewPanel();
-			_topViewPanel.Width  = 100;
-			_topViewPanel.Height = 100;
+			_topViewPanel.Dock = DockStyle.Fill;
+//			_topViewPanel.Width  = 100;//pMain.Width;
+//			_topViewPanel.Height = 100;//pMain.Height;
 
 			pMain.AutoScroll = true;
 			pMain.Controls.Add(_topViewPanel);
 
-			pMain.Resize += (sender, e) => _topViewPanel.HandleParentResize(pMain.Width, pMain.Height);
+			pMain.Resize += (sender, e) => _topViewPanel.ResizeObserver(pMain.Width, pMain.Height);
 
 			var visQuads = tsddbVisibleQuads.DropDown.Items;
 
@@ -227,6 +230,28 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		#region Settings
+		internal const string FloorColor        = "FloorColor";
+		internal const string WestColor         = "WestColor";
+		internal const string NorthColor        = "NorthColor";
+		internal const string ContentColor      = "ContentColor";
+
+		internal const string WestWidth         = "WestWidth";
+		internal const string NorthWidth        = "NorthWidth";
+
+		internal const string SelectorColor     = "SelectorColor";
+		internal const string SelectorWidth     = "SelectorWidth";
+
+		internal const string SelectedColor     = "SelectedColor";
+		internal const string SelectedWidth     = "SelectedWidth";
+
+		internal const string SelectedPartColor = "SelectedPartColor";
+
+		internal const string GridColor         = "GridColor";
+		internal const string GridWidth         = "GridWidth";
+
+		internal const string TileMinHeight     = "TileMinHeight";
+
+
 		/// <summary>
 		/// Loads default settings for TopView in TopRouteView screens.
 		/// </summary>
@@ -235,49 +260,51 @@ namespace MapView.Forms.MapObservers.TopViews
 			_topBrushes = new Dictionary<string, SolidBrush>();
 			_topPens    = new Dictionary<string, Pen>();
 
-			_topBrushes.Add("GroundColor", new SolidBrush(Color.Orange));
-			_topBrushes.Add("ContentColor", new SolidBrush(Color.Green));
-			_topBrushes.Add("SelectTileColor", QuadrantsPanel.SelectColor);
+			_topBrushes.Add(FloorColor, new SolidBrush(Color.BurlyWood));
+			_topBrushes.Add(ContentColor, new SolidBrush(Color.MediumSeaGreen));
+			_topBrushes.Add(SelectedPartColor, QuadrantsPanel.SelectColor);
 
-			var penNorth = new Pen(new SolidBrush(Color.Red), 4);
-			_topPens.Add("NorthColor", penNorth);
-			_topPens.Add("NorthWidth", penNorth);
+			var penWest = new Pen(new SolidBrush(Color.Khaki), 4);
+			_topPens.Add(WestColor, penWest);
+			_topPens.Add(WestWidth, penWest);
 
-			var penWest = new Pen(new SolidBrush(Color.Red), 4);
-			_topPens.Add("WestColor", penWest);
-			_topPens.Add("WestWidth", penWest);
+			var penNorth = new Pen(new SolidBrush(Color.Wheat), 4);
+			_topPens.Add(NorthColor, penNorth);
+			_topPens.Add(NorthWidth, penNorth);
 
-			var penSelected = new Pen(new SolidBrush(Color.Black), 2);
-			_topPens.Add("SelectColor", penSelected);
-			_topPens.Add("SelectWidth", penSelected);
+			var penOver = new Pen(new SolidBrush(Color.Black), 2);
+			_topPens.Add(SelectorColor, penOver);
+			_topPens.Add(SelectorWidth, penOver);
+
+			var penSelected = new Pen(new SolidBrush(Color.RoyalBlue), 2);
+			_topPens.Add(SelectedColor, penSelected);
+			_topPens.Add(SelectedWidth, penSelected);
 
 			var penGrid = new Pen(new SolidBrush(Color.Black), 1);
-			_topPens.Add("GridColor", penGrid);
-			_topPens.Add("GridWidth", penGrid);
-
-			var penOver = new Pen(new SolidBrush(Color.Blue), 2);
-			_topPens.Add("MouseColor", penOver);
-			_topPens.Add("MouseWidth", penOver);
+			_topPens.Add(GridColor, penGrid);
+			_topPens.Add(GridWidth, penGrid);
 
 			ValueChangedEventHandler bc = OnBrushChanged;
 			ValueChangedEventHandler pc = OnPenColorChanged;
 			ValueChangedEventHandler pw = OnPenWidthChanged;
 			ValueChangedEventHandler dh = OnDiamondHeight;
 
-			Settings.AddSetting("GroundColor",      Color.Orange,            "Color of the ground tile indicator",          "Tile",   bc);
-			Settings.AddSetting("NorthColor",       Color.Red,               "Color of the north tile indicator",           "Tile",   pc);
-			Settings.AddSetting("WestColor",        Color.Red,               "Color of the west tile indicator",            "Tile",   pc);
-			Settings.AddSetting("ContentColor",     Color.Green,             "Color of the content tile indicator",         "Tile",   bc);
-			Settings.AddSetting("NorthWidth",       4,                       "Width of the north tile indicator in pixels", "Tile",   pw);
-			Settings.AddSetting("WestWidth",        4,                       "Width of the west tile indicator in pixels",  "Tile",   pw);
-			Settings.AddSetting("SelectColor",      Color.Black,             "Color of the selection line",                 "Select", pc);
-			Settings.AddSetting("SelectWidth",      2,                       "Width of the selection line in pixels",       "Select", pw);
-			Settings.AddSetting("GridColor",        Color.Black,             "Color of the grid lines",                     "Grid",   pc);
-			Settings.AddSetting("GridWidth",        1,                       "Width of the grid lines",                     "Grid",   pw);
-			Settings.AddSetting("MouseWidth",       2,                       "Width of the mouse-over indicator",           "Grid",   pw);
-			Settings.AddSetting("MouseColor",       Color.Blue,              "Color of the mouse-over indicator",           "Grid",   pc);
-			Settings.AddSetting("SelectTileColor",  Color.LightBlue,         "Background color of the selected tile part",  "Other",  bc);
-			Settings.AddSetting("DiamondMinHeight", _topViewPanel.MinHeight, "Minimum height of the grid tiles",            "Tile",   dh);
+			Settings.AddSetting(FloorColor,        Color.BurlyWood,                 "Color of the floor tile indicator",           "Tile",   bc);
+			Settings.AddSetting(WestColor,         Color.Khaki,                     "Color of the west tile indicator",            "Tile",   pc);
+			Settings.AddSetting(NorthColor,        Color.Wheat,                     "Color of the north tile indicator",           "Tile",   pc);
+			Settings.AddSetting(ContentColor,      Color.MediumSeaGreen,            "Color of the content tile indicator",         "Tile",   bc);
+			Settings.AddSetting(WestWidth,         3,                               "Width of the west tile indicator in pixels",  "Tile",   pw);
+			Settings.AddSetting(NorthWidth,        3,                               "Width of the north tile indicator in pixels", "Tile",   pw);
+
+			Settings.AddSetting(SelectorColor,     Color.Black,                     "Color of the mouse-over indicator",           "Select", pc);
+			Settings.AddSetting(SelectorWidth,     2,                               "Width of the mouse-over indicator in pixels", "Select", pw);
+			Settings.AddSetting(SelectedColor,     Color.RoyalBlue,                 "Color of the selection line",                 "Select", pc);
+			Settings.AddSetting(SelectedWidth,     2,                               "Width of the selection line in pixels",       "Select", pw);
+			Settings.AddSetting(SelectedPartColor, Color.LightBlue,                 "Background color of the selected tiletype",   "Select", bc);
+
+			Settings.AddSetting(GridColor,         Color.Black,                     "Color of the grid lines",                     "Grid",   pc);
+			Settings.AddSetting(GridWidth,         1,                               "Width of the grid lines in pixels",           "Grid",   pw);
+			Settings.AddSetting(TileMinHeight,     _topViewPanel.TileLozengeHeight, "Minimum height of the grid tiles in pixels",  "Grid",   dh);
 
 			QuadrantsPanel.Pens   =
 			_topViewPanel.TopPens = _topPens;
@@ -298,7 +325,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			_topBrushes[key].Color = (Color)val;
 
-			if (key == "SelectTileColor")
+			if (key == "SelectedPartColor")
 				QuadrantsPanel.SelectColor = _topBrushes[key];
 
 			Refresh();
@@ -336,7 +363,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <param name="val"></param>
 		private void OnDiamondHeight(object sender, string keyword, object val)
 		{
-			_topViewPanel.MinHeight = (int)val;
+			_topViewPanel.TileLozengeHeight = (int)val;
 		}
 		#endregion
 	}

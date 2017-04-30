@@ -14,11 +14,12 @@ namespace MapView.Forms.MapObservers.TopViews
 		private const int QuadWidth  = 32;
 		private const int QuadHeight = 40;
 
-		private const int Margin    =  5;
+		private const int MarginHori = 5;
+		private const int MarginVert = 3;
 
-		internal const int QuadWidthTotal = QuadWidth + Margin * 2;
+		internal const int QuadWidthTotal = QuadWidth + MarginHori * 2;
 
-		internal const int StartX = 10;
+		internal const int StartX = 26;
 		private  const int StartY = 2;
 
 		// NOTE: keep the door-string and its placement consistent with
@@ -53,6 +54,18 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		internal Font Font
 		{ get; set; }
+		#endregion
+
+
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		internal QuadrantPanelDrawService()
+		{
+			Brush = new SolidBrush(Color.LightBlue);
+			Font  = new Font("Comic Sans MS", 7);
+		}
 		#endregion
 
 
@@ -256,64 +269,64 @@ namespace MapView.Forms.MapObservers.TopViews
 					Font,
 					System.Drawing.Brushes.Black,
 					StartX + (QuadWidth  - FloorWidth) / 2,
-					StartY +  QuadHeight + Margin);
+					StartY +  QuadHeight + MarginVert);
 
 			g.DrawString(
 					West,
 					Font,
 					System.Drawing.Brushes.Black,
 					StartX + (QuadWidth  - WestWidth) / 2 + QuadWidthTotal,
-					StartY +  QuadHeight + Margin);
+					StartY +  QuadHeight + MarginVert);
 
 			g.DrawString(
 					North,
 					Font,
 					System.Drawing.Brushes.Black,
 					StartX + (QuadWidth  - NorthWidth) / 2 + QuadWidthTotal * 2,
-					StartY +  QuadHeight + Margin);
+					StartY +  QuadHeight + MarginVert);
 
 			g.DrawString(
 					Content,
 					Font,
 					System.Drawing.Brushes.Black,
 					StartX + (QuadWidth  - ContentWidth) / 2 + QuadWidthTotal * 3,
-					StartY +  QuadHeight + Margin);
+					StartY +  QuadHeight + MarginVert);
 
 
 			// fill the color-tip under each quadrant
 			if (Brushes != null && Pens != null)
 			{
 				g.FillRectangle(
-							Brushes["GroundColor"],
+							Brushes[TopView.FloorColor],
 							new RectangleF(
 										StartX,
-										StartY + QuadHeight + Margin + Font.Height,
+										StartY + QuadHeight + MarginVert + Font.Height + 1,
 										QuadWidth + 1,
-										3));
+										5));
 
 				g.FillRectangle(
-							new SolidBrush(Pens["NorthColor"].Color),
-							new RectangleF(
-										StartX + QuadWidthTotal,
-										StartY + QuadHeight + Margin + Font.Height,
-										QuadWidth + 1,
-										3));
-
-				g.FillRectangle(
-							new SolidBrush(Pens["WestColor"].Color),
+							new SolidBrush(Pens[TopView.WestColor].Color),
 							new RectangleF(
 										StartX + QuadWidthTotal * 2,
-										StartY + QuadHeight + Margin + Font.Height,
+										StartY + QuadHeight + MarginVert + Font.Height + 1,
 										QuadWidth + 1,
-										3));
+										5));
 
 				g.FillRectangle(
-							Brushes["ContentColor"],
+							new SolidBrush(Pens[TopView.NorthColor].Color),
+							new RectangleF(
+										StartX + QuadWidthTotal,
+										StartY + QuadHeight + MarginVert + Font.Height + 1,
+										QuadWidth + 1,
+										5));
+
+				g.FillRectangle(
+							Brushes[TopView.ContentColor],
 							new RectangleF(
 										StartX + QuadWidthTotal * 3,
-										StartY + QuadHeight + Margin + Font.Height,
+										StartY + QuadHeight + MarginVert + Font.Height + 1,
 										QuadWidth + 1,
-										3));
+										5));
 			}
 		}
 		#endregion

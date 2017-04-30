@@ -9,8 +9,8 @@ MainView:
   Width: 800
   Height: 480
 TopView:
-  Left: 50
-  Top: 20
+  Left: 70
+  Top: 40
   Width: 640
   Height: 480
 RouteView:
@@ -19,8 +19,8 @@ RouteView:
   Width: 640
   Height: 480
 TileView:
-  Left: 70
-  Top: 40
+  Left: 50
+  Top: 20
   Width: 640
   Height: 480
 TopRouteView:

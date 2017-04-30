@@ -100,7 +100,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		#region Methods
-		internal protected override void DrawTileBlobs(
+//		internal protected override void DrawTileBlobs(
+		internal void DrawTileBlobs(
 				MapTileBase tile,
 				Graphics g,
 				int x, int y)
@@ -108,19 +109,19 @@ namespace MapView.Forms.MapObservers.TopViews
 			var mapTile = (XCMapTile)tile;
 
 			if (_colorWest == null)
-				_colorWest = new ColorTools(TopPens["WestColor"]);
+				_colorWest = new ColorTools(TopPens[TopView.WestColor]);
 
 			if (_colorNorth == null)
-				_colorNorth = new ColorTools(TopPens["NorthColor"]);
+				_colorNorth = new ColorTools(TopPens[TopView.NorthColor]);
 
 			if (_colorContent == null)
-				_colorContent = new ColorTools(TopBrushes["ContentColor"], _colorNorth.Pen.Width);
+				_colorContent = new ColorTools(TopBrushes[TopView.ContentColor], _colorNorth.Pen.Width);
 
 
 			if (Ground.Checked && mapTile.Ground != null)
 				BlobService.DrawFloor(
 									g,
-									TopBrushes["GroundColor"],
+									TopBrushes[TopView.FloorColor],
 									x, y);
 
 			if (Content.Checked && mapTile.Content != null)

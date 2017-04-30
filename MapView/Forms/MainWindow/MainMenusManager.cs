@@ -179,6 +179,7 @@ namespace MapView.Forms.MainWindow
 //				if (!(_settings[key].IsTrue))
 //					it.PerformClick();
 //			}
+
 			_viewsMenu.Enabled = true;
 		}
 

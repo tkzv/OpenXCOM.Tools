@@ -104,7 +104,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			InitializeComponent();
 
-			tcTileTypes.Selected += OnPageSelected;
+			tcTileTypes.SelectedIndexChanged += OnSelectedIndexChanged;
 
 			_allTiles      = new TilePanel(TileType.All);
 			var floors     = new TilePanel(TileType.Ground);
@@ -138,8 +138,15 @@ namespace MapView.Forms.MapObservers.TileViews
 
 
 		#region EventCalls
-		private void OnPageSelected(object sender, TabControlEventArgs e)
+		/// <summary>
+		/// Focuses the selected panel, updates the quadrant and MCD-info if
+		/// applicable.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnSelectedIndexChanged(object sender, EventArgs e)
 		{
+			GetSelectedPanel().Focus();
 			var f = FindForm();
 
 			McdRecord record = null;
@@ -536,6 +543,15 @@ namespace MapView.Forms.MapObservers.TileViews
 					return mapFile.GetDepLabel(tile);
 			}
 			return null;
+		}
+
+		/// <summary>
+		/// Gets the panel of the currently displayed tabpage.
+		/// </summary>
+		/// <returns></returns>
+		internal Panel GetSelectedPanel()
+		{
+			return _panels[tcTileTypes.SelectedIndex];
 		}
 		#endregion
 	}

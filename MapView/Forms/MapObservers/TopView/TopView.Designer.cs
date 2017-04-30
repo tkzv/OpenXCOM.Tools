@@ -51,7 +51,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			// tscMain.ContentPanel
 			// 
 			this.tscMain.ContentPanel.Controls.Add(this.pMain);
-			this.tscMain.ContentPanel.Size = new System.Drawing.Size(609, 359);
+			this.tscMain.ContentPanel.Size = new System.Drawing.Size(609, 385);
 			this.tscMain.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tscMain.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			// 
@@ -65,7 +65,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			// tscMain.RightToolStripPanel
 			// 
 			this.tscMain.RightToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.tscMain.Size = new System.Drawing.Size(640, 384);
+			this.tscMain.Size = new System.Drawing.Size(640, 385);
 			this.tscMain.TabIndex = 4;
 			this.tscMain.Text = "toolStripContainer2";
 			// 
@@ -79,7 +79,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.pMain.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.pMain.Location = new System.Drawing.Point(0, 0);
 			this.pMain.Name = "pMain";
-			this.pMain.Size = new System.Drawing.Size(609, 359);
+			this.pMain.Size = new System.Drawing.Size(609, 385);
 			this.pMain.TabIndex = 2;
 			// 
 			// tsEdit
@@ -98,10 +98,10 @@ namespace MapView.Forms.MapObservers.TopViews
 			// 
 			this.quadrants.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.quadrants.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.quadrants.Location = new System.Drawing.Point(0, 409);
+			this.quadrants.Location = new System.Drawing.Point(0, 410);
 			this.quadrants.Name = "quadrants";
 			this.quadrants.SelectedQuadrant = XCom.QuadrantType.Ground;
-			this.quadrants.Size = new System.Drawing.Size(640, 71);
+			this.quadrants.Size = new System.Drawing.Size(640, 70);
 			this.quadrants.TabIndex = 0;
 			this.quadrants.Text = "bottom";
 			// 
