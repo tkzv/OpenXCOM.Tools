@@ -180,10 +180,10 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <param name="e"></param>
 		private void OnKeyDown(object sender, KeyEventArgs e) // TODO: vet that.
 		{
-//			if (BaseMap != null
+//			if (MapBase != null
 //				&& e.Control && e.KeyCode == Keys.S)
 //			{
-//				BaseMap.Save();
+//				MapBase.Save();
 //				e.Handled = true; // why.
 //			}
 		}

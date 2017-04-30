@@ -59,11 +59,11 @@ namespace MapView.Forms.MapObservers.TileViews
 
 
 		#region Properties
-		public override IMapBase BaseMap
+		public override IMapBase MapBase
 		{
 			set
 			{
-				base.BaseMap = value;
+				base.MapBase = value;
 				Tiles = (value != null) ? value.Tiles
 										: null;
 			}
@@ -413,7 +413,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		private void OnVolutarMcdEditorClick(object sender, EventArgs e)
 		{
-			if ((BaseMap as XCMapFile) != null)
+			if ((MapBase as XCMapFile) != null)
 			{
 				var service = new VolutarSettingService(Settings);
 				var pfe = service.FullPath;	// this will invoke a box for the user to input the
@@ -538,7 +538,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			var tile = SelectedTile;
 			if (tile != null)
 			{
-				var mapFile = BaseMap as XCMapFile;
+				var mapFile = MapBase as XCMapFile;
 				if (mapFile != null)
 					return mapFile.GetDepLabel(tile);
 			}

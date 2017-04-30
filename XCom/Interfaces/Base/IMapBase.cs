@@ -34,7 +34,7 @@ namespace XCom.Interfaces.Base
 			get { return _height; }
 			set
 			{
-				if (value < (byte)MapSize.Height)
+				if (value < (byte)MapSize.Levs)
 				{
 //					var args = new HeightChangedEventArgs(_height, value);
 					var args = new HeightChangedEventArgs(value);
@@ -164,7 +164,7 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public void Down()
 		{
-			if (_height < MapSize.Height - 1)
+			if (_height < MapSize.Levs - 1)
 			{
 				++_height; // TODO: wait a second !
 				var args = new HeightChangedEventArgs(_height + 1);
@@ -178,7 +178,7 @@ namespace XCom.Interfaces.Base
 		public virtual void ResizeTo(	// NOTE: This doesn't handle Routes or node-checking
 				int rPost,				// which XCMapFile.ResizeTo() does.
 				int cPost,
-				int hPost,
+				int lPost,
 				bool toCeiling)
 		{
 /*			var tileList = MapResizeService.ResizeMap(
@@ -214,7 +214,7 @@ namespace XCom.Interfaces.Base
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
 			var b = XCBitmap.MakeBitmap(
 								rowPlusCols * (PckImage.Width / 2),
-								(MapSize.Height - _height) * 24 + rowPlusCols * 8,
+								(MapSize.Levs - _height) * 24 + rowPlusCols * 8,
 								palette.Colors);
 
 			var start = new Point(
@@ -224,7 +224,7 @@ namespace XCom.Interfaces.Base
 			int i = 0;
 			if (MapTiles != null)
 			{
-				for (int h = MapSize.Height - 1; h >= _height; --h)
+				for (int h = MapSize.Levs - 1; h >= _height; --h)
 				{
 					for (int
 							r = 0, startX = start.X, startY = start.Y + h * 24;
@@ -243,7 +243,7 @@ namespace XCom.Interfaces.Base
 								XCBitmap.Draw(tile[0].Image, b, x, y - tile.Record.TileOffset);
 							}
 
-							XCBitmap.FireLoadingEvent(i, (MapSize.Height - _height) * MapSize.Rows * MapSize.Cols);
+							XCBitmap.FireLoadingEvent(i, (MapSize.Levs - _height) * MapSize.Rows * MapSize.Cols);
 						}
 					}
 				}
@@ -263,7 +263,7 @@ namespace XCom.Interfaces.Base
 
 		private Palette GetFirstGroundPalette()
 		{
-			for (int h = 0; h != MapSize.Height; ++h)
+			for (int h = 0; h != MapSize.Levs; ++h)
 				for (int r = 0; r != MapSize.Rows; ++r)
 					for (int c = 0; c != MapSize.Cols; ++c)
 					{

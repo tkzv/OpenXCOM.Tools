@@ -11,40 +11,40 @@ namespace MapView
 			Form
 	{
 		#region Fields & Properties
-		private IMapBase _baseMap;
-		internal IMapBase BaseMap
+		private IMapBase _mapBase;
+		internal IMapBase MapBase
 		{
-			get { return _baseMap; }
+			get { return _mapBase; }
 			set
 			{
-				if ((_baseMap = value) != null)
+				if ((_mapBase = value) != null)
 				{
 					oldR.Text =
-					txtR.Text = _baseMap.MapSize.Rows.ToString(System.Globalization.CultureInfo.InvariantCulture);
+					txtR.Text = _mapBase.MapSize.Rows.ToString(System.Globalization.CultureInfo.InvariantCulture);
 					oldC.Text =
-					txtC.Text = _baseMap.MapSize.Cols.ToString(System.Globalization.CultureInfo.InvariantCulture);
-					oldH.Text =
-					txtH.Text = _baseMap.MapSize.Height.ToString(System.Globalization.CultureInfo.InvariantCulture);
+					txtC.Text = _mapBase.MapSize.Cols.ToString(System.Globalization.CultureInfo.InvariantCulture);
+					oldL.Text =
+					txtL.Text = _mapBase.MapSize.Levs.ToString(System.Globalization.CultureInfo.InvariantCulture);
 				}
 			}
 		}
 
 		private int _rows;
-		internal int NewRows
+		internal int Rows
 		{
 			get { return _rows; }
 		}
 
 		private int _cols;
-		internal int NewCols
+		internal int Cols
 		{
 			get { return _cols; }
 		}
 
-		private int _height;
-		internal int NewHeight
+		private int _levs;
+		internal int Levs
 		{
-			get { return _height; }
+			get { return _levs; }
 		}
 
 		internal bool CeilingChecked
@@ -73,13 +73,13 @@ namespace MapView
 		{
 			if (   String.IsNullOrEmpty(txtC.Text)
 				|| String.IsNullOrEmpty(txtR.Text)
-				|| String.IsNullOrEmpty(txtH.Text))
+				|| String.IsNullOrEmpty(txtL.Text))
 			{
 				ShowErrorDialog("All fields must have a value.", "Error", MessageBoxIcon.Error);
 			}
-			else if (!Int32.TryParse(txtC.Text, out _cols)   || _cols   < 1
-				||   !Int32.TryParse(txtR.Text, out _rows)   || _rows   < 1
-				||   !Int32.TryParse(txtH.Text, out _height) || _height < 1)
+			else if (!Int32.TryParse(txtC.Text, out _cols) || _cols < 1
+				||   !Int32.TryParse(txtR.Text, out _rows) || _rows < 1
+				||   !Int32.TryParse(txtL.Text, out _levs) || _levs < 1)
 			{
 				ShowErrorDialog("Values must be positive integers greater than 0.", "Error", MessageBoxIcon.Error);
 			}
@@ -87,9 +87,9 @@ namespace MapView
 			{
 				ShowErrorDialog("Columns and Rows must be evenly divisible by 10.", "Error", MessageBoxIcon.Error);
 			}
-			else if (_cols   == int.Parse(oldC.Text, System.Globalization.CultureInfo.InvariantCulture)
-				&&   _rows   == int.Parse(oldR.Text, System.Globalization.CultureInfo.InvariantCulture)
-				&&   _height == int.Parse(oldH.Text, System.Globalization.CultureInfo.InvariantCulture))
+			else if (_cols == int.Parse(oldC.Text, System.Globalization.CultureInfo.InvariantCulture)
+				&&   _rows == int.Parse(oldR.Text, System.Globalization.CultureInfo.InvariantCulture)
+				&&   _levs == int.Parse(oldL.Text, System.Globalization.CultureInfo.InvariantCulture))
 			{
 				ShowErrorDialog("The new size is the same as the old size.", "uh ...", MessageBoxIcon.Error);
 			}
@@ -115,15 +115,15 @@ namespace MapView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnHeightTextChanged(object sender, EventArgs e)
+		private void OnLevelTextChanged(object sender, EventArgs e)
 		{
-			if (!String.IsNullOrEmpty(txtH.Text)) // NOTE: btnOkClick will deal with a blank string.
+			if (!String.IsNullOrEmpty(txtL.Text)) // NOTE: btnOkClick will deal with a blank string.
 			{
 				int height = -1;
-				if (Int32.TryParse(txtH.Text, out height))
+				if (Int32.TryParse(txtL.Text, out height))
 				{
 					if (height > 0)
-						cbCeiling.Visible = (height != _baseMap.MapSize.Height);
+						cbCeiling.Visible = (height != _mapBase.MapSize.Levs);
 					else
 						ShowErrorDialog("Height must be 1 or more.", "Error", MessageBoxIcon.Error);
 				}
@@ -179,13 +179,13 @@ namespace MapView
 		{
 			this.oldC = new System.Windows.Forms.TextBox();
 			this.oldR = new System.Windows.Forms.TextBox();
-			this.oldH = new System.Windows.Forms.TextBox();
+			this.oldL = new System.Windows.Forms.TextBox();
 			this.txtR = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.txtC = new System.Windows.Forms.TextBox();
-			this.txtH = new System.Windows.Forms.TextBox();
+			this.txtL = new System.Windows.Forms.TextBox();
 			this.btnOk = new System.Windows.Forms.Button();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.cbCeiling = new System.Windows.Forms.CheckBox();
@@ -213,11 +213,11 @@ namespace MapView
 			// 
 			// oldH
 			// 
-			this.oldH.Location = new System.Drawing.Point(120, 55);
-			this.oldH.Name = "oldH";
-			this.oldH.ReadOnly = true;
-			this.oldH.Size = new System.Drawing.Size(45, 19);
-			this.oldH.TabIndex = 8;
+			this.oldL.Location = new System.Drawing.Point(120, 55);
+			this.oldL.Name = "oldH";
+			this.oldL.ReadOnly = true;
+			this.oldL.Size = new System.Drawing.Size(45, 19);
+			this.oldL.TabIndex = 8;
 			// 
 			// txtR
 			// 
@@ -262,11 +262,11 @@ namespace MapView
 			// 
 			// txtH
 			// 
-			this.txtH.Location = new System.Drawing.Point(120, 95);
-			this.txtH.Name = "txtH";
-			this.txtH.Size = new System.Drawing.Size(45, 19);
-			this.txtH.TabIndex = 3;
-			this.txtH.TextChanged += new System.EventHandler(this.OnHeightTextChanged);
+			this.txtL.Location = new System.Drawing.Point(120, 95);
+			this.txtL.Name = "txtH";
+			this.txtL.Size = new System.Drawing.Size(45, 19);
+			this.txtL.TabIndex = 3;
+			this.txtL.TextChanged += new System.EventHandler(this.OnLevelTextChanged);
 			// 
 			// btnOk
 			// 
@@ -352,14 +352,14 @@ namespace MapView
 			this.Controls.Add(this.cbCeiling);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
-			this.Controls.Add(this.txtH);
+			this.Controls.Add(this.txtL);
 			this.Controls.Add(this.txtC);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.txtR);
 			this.Controls.Add(this.oldC);
-			this.Controls.Add(this.oldH);
+			this.Controls.Add(this.oldL);
 			this.Controls.Add(this.oldR);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -383,12 +383,12 @@ namespace MapView
 		private Label label5;
 		private TextBox txtC;
 		private TextBox txtR;
-		private TextBox txtH;
+		private TextBox txtL;
 		private Button btnOk;
 		private Button btnCancel;
 		private TextBox oldC;
 		private TextBox oldR;
-		private TextBox oldH;
+		private TextBox oldL;
 		private Label label6;
 		private Label label7;
 		private Label label2;

@@ -93,7 +93,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			if (_mapLoc != null)
 			{
-				_mapTile = BaseMap[_mapLoc.Row, _mapLoc.Col] as XCMapTile;
+				_mapTile = MapBase[_mapLoc.Row, _mapLoc.Col] as XCMapTile;
 				_mapLoc.Height = e.Height;
 			}
 			Refresh();
@@ -165,7 +165,7 @@ namespace MapView.Forms.MapObservers.TopViews
 								break;
 						}
 
-						BaseMap.MapChanged = true;
+						MapBase.MapChanged = true;
 						Refresh();
 
 						break;

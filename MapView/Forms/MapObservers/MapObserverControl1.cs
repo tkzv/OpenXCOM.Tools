@@ -26,14 +26,14 @@ namespace MapView
 			get { return _observersDictionary; }
 		}
 
-		private IMapBase _baseMap;
+		private IMapBase _mapBase;
 		[Browsable(false), DefaultValue(null)]
-		public virtual IMapBase BaseMap
+		public virtual IMapBase MapBase
 		{
-			get { return _baseMap; }
+			get { return _mapBase; }
 			set
 			{
-				_baseMap = value;
+				_mapBase = value;
 				Refresh();
 			}
 		}

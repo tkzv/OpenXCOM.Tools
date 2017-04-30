@@ -406,11 +406,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 //			Map = args.Map;
 //		}
 
-		public override IMapBase BaseMap
+		public override IMapBase MapBase
 		{
 			set
 			{
-				base.BaseMap = value;
+				base.MapBase = value;
 				_mapFile = (XCMapFile)value;
 
 //				_loadingMap = true;

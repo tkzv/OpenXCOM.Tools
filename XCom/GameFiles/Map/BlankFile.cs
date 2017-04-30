@@ -54,7 +54,7 @@ namespace XCom
 				bool flip = true;
 				UInt16 i = 0;
 
-				for (int h = 0; h != file.MapSize.Height; ++h)
+				for (int h = 0; h != file.MapSize.Levs; ++h)
 					for (int r = 0; r != file.MapSize.Rows; ++r)
 						for (int c = 0; c != file.MapSize.Cols; ++c)
 						{

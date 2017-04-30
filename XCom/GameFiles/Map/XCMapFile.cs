@@ -62,7 +62,7 @@ namespace XCom
 					}
 					catch
 					{
-						for (int h = 0; h != MapSize.Height; ++h)
+						for (int h = 0; h != MapSize.Levs; ++h)
 							for (int r = 0; r != MapSize.Rows; ++r)
 								for (int c = 0; c != MapSize.Cols; ++c)
 									this[r, c, h].DrawAbove = true;
@@ -123,7 +123,7 @@ namespace XCom
 
 		private void CalculateDrawAbove()
 		{
-			for (int h = MapSize.Height - 1; h > -1; --h)
+			for (int h = MapSize.Levs - 1; h > -1; --h)
 				for (int r = 0; r < MapSize.Rows - 2; ++r)
 					for (int c = 0; c < MapSize.Cols - 2; ++c)
 						if (this[r, c, h] != null && h - 1 > -1)		// TODO: should probably be "h-1 > 0"
@@ -237,9 +237,9 @@ namespace XCom
 
 				fs.WriteByte((byte)MapSize.Rows);	// http://www.ufopaedia.org/index.php/MAPS
 				fs.WriteByte((byte)MapSize.Cols);	// - says this header is "height, width and depth (in that order)"
-				fs.WriteByte((byte)MapSize.Height);
+				fs.WriteByte((byte)MapSize.Levs);
 
-				for (int h = 0; h != MapSize.Height; ++h)
+				for (int h = 0; h != MapSize.Levs; ++h)
 					for (int r = 0; r != MapSize.Rows; ++r)
 						for (int c = 0; c != MapSize.Cols; ++c)
 						{
@@ -273,13 +273,13 @@ namespace XCom
 		public override void ResizeTo(
 				int rPost,
 				int cPost,
-				int hPost,
+				int lPost,
 				bool toCeiling)
 		{
 			var tileList = MapResizeService.ResizeMap(
 												rPost,
 												cPost,
-												hPost,
+												lPost,
 												MapSize,
 												MapTiles,
 												toCeiling);
@@ -287,9 +287,9 @@ namespace XCom
 			{
 				MapChanged = true;
 
-				if (toCeiling && hPost != MapSize.Height) // update Routes
+				if (toCeiling && lPost != MapSize.Levs) // update Routes
 				{
-					int d = hPost - MapSize.Height;
+					int d = lPost - MapSize.Levs;
 					foreach (RouteNode node in RouteFile)
 					{
 //						if (hPost < MapSize.Height)
@@ -301,15 +301,15 @@ namespace XCom
 
 				if (   cPost < MapSize.Cols // delete route-nodes outside the new bounds
 					|| rPost < MapSize.Rows
-					|| hPost < MapSize.Height)
+					|| lPost < MapSize.Levs)
 				{
-					RouteFile.CheckNodeBounds(cPost, rPost, hPost);
+					RouteFile.CheckNodeBounds(cPost, rPost, lPost);
 				}
 
 				MapTiles = tileList;
-				MapSize  = new MapSize(rPost, cPost, hPost);
+				MapSize  = new MapSize(rPost, cPost, lPost);
 
-				CurrentHeight = (byte)(MapSize.Height - 1);
+				CurrentHeight = (byte)(MapSize.Levs - 1);
 			}
 		}
 

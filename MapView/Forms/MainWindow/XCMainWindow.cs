@@ -529,9 +529,9 @@ namespace MapView
 					}
 					else if (miDoors.Checked) // switch to the doors' alt-tile (whether ufo-door or wood-door)
 					{
-						if (_mainViewUnderlay.BaseMap != null) // NOTE: BaseMap is null on MapView load.
+						if (_mainViewUnderlay.MapBase != null) // NOTE: MapBase is null on MapView load.
 						{
-							foreach (XCTile tile in _mainViewUnderlay.BaseMap.Tiles)
+							foreach (XCTile tile in _mainViewUnderlay.MapBase.Tiles)
 								tile.SetDoorToAlternateSprite();
 
 							Refresh();
@@ -692,10 +692,10 @@ namespace MapView
 
 		private void OnSaveClick(object sender, EventArgs e)
 		{
-			if (_mainViewUnderlay.BaseMap != null)
+			if (_mainViewUnderlay.MapBase != null)
 			{
-				_mainViewUnderlay.BaseMap.Save();
-				XConsole.AdZerg("Saved: " + _mainViewUnderlay.BaseMap.Name);
+				_mainViewUnderlay.MapBase.Save();
+				XConsole.AdZerg("Saved: " + _mainViewUnderlay.MapBase.Name);
 			}
 		}
 
@@ -765,7 +765,7 @@ namespace MapView
 				var fileService = new XCMapFileService(tileFactory);
 
 				var baseMap = fileService.Load(desc as XCMapDesc);
-				_mainViewUnderlay.SetMap(baseMap);
+				_mainViewUnderlay.SetBaseMap(baseMap);
 
 				tsEdit.Enabled = true;
 
@@ -791,9 +791,9 @@ namespace MapView
 
 		private void ToggleDoorSprites(bool animate)
 		{
-			if (_mainViewUnderlay.BaseMap != null) // NOTE: BaseMap is null on MapView load.
+			if (_mainViewUnderlay.MapBase != null) // NOTE: MapBase is null on MapView load.
 			{
-				foreach (XCTile tile in _mainViewUnderlay.BaseMap.Tiles)
+				foreach (XCTile tile in _mainViewUnderlay.MapBase.Tiles)
 					tile.SetDoorSprites(animate);
 
 				Refresh();
@@ -803,7 +803,7 @@ namespace MapView
 
 		private DialogResult NotifySave()
 		{
-			if (_mainViewUnderlay.BaseMap != null && _mainViewUnderlay.BaseMap.MapChanged)
+			if (_mainViewUnderlay.MapBase != null && _mainViewUnderlay.MapBase.MapChanged)
 			{
 				switch (MessageBox.Show(
 									this,
@@ -818,7 +818,7 @@ namespace MapView
 						break;
 
 					case DialogResult.Yes:		// save
-						_mainViewUnderlay.BaseMap.Save();
+						_mainViewUnderlay.MapBase.Save();
 						break;
 
 					case DialogResult.Cancel:	// do nothing
@@ -862,16 +862,16 @@ namespace MapView
 
 		private void OnSaveImageClick(object sender, EventArgs e)
 		{
-			if (_mainViewUnderlay.BaseMap != null)
+			if (_mainViewUnderlay.MapBase != null)
 			{
-				sfdSaveDialog.FileName = _mainViewUnderlay.BaseMap.Name;
+				sfdSaveDialog.FileName = _mainViewUnderlay.MapBase.Name;
 				if (sfdSaveDialog.ShowDialog() == DialogResult.OK)
 				{
 					_loadingProgress.Show();
 
 					try
 					{
-						_mainViewUnderlay.BaseMap.SaveGif(sfdSaveDialog.FileName);
+						_mainViewUnderlay.MapBase.SaveGif(sfdSaveDialog.FileName);
 					}
 					finally
 					{
@@ -883,7 +883,7 @@ namespace MapView
 
 		private void OnHq2xClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE.
 		{
-//			var map = _mainViewPanel.BaseMap as XCMapFile;
+//			var map = _mainViewPanel.MapBase as XCMapFile;
 //			if (map != null)
 //			{
 //				map.HQ2X();
@@ -894,25 +894,25 @@ namespace MapView
 //		private void OnDoorsClick(object sender, EventArgs e)
 //		{
 //			miDoors.Checked = !miDoors.Checked;
-//			foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
+//			foreach (XCTile tile in _mainViewPanel.MapBase.Tiles)
 //				if (tile.Record.UfoDoor || tile.Record.HumanDoor)
 //					tile.SetAnimationSprites(miDoors.Checked, tile.Record.UfoDoor);
 //		}
 
 		private void OnResizeClick(object sender, EventArgs e)
 		{
-			if (_mainViewUnderlay.MainView.BaseMap != null)
+			if (_mainViewUnderlay.MainView.MapBase != null)
 			{
 				using (var f = new ChangeMapSizeForm())
 				{
-					f.BaseMap = _mainViewUnderlay.MainView.BaseMap;
+					f.MapBase = _mainViewUnderlay.MainView.MapBase;
 					if (f.ShowDialog(this) == DialogResult.OK)
 					{
-						f.BaseMap.ResizeTo(
-									f.NewRows,
-									f.NewCols,
-									f.NewHeight,
-									f.CeilingChecked);
+						f.MapBase.ResizeTo(
+										f.Rows,
+										f.Cols,
+										f.Levs,
+										f.CeilingChecked);
 						_mainViewUnderlay.ForceResize();
 					}
 				}
@@ -940,11 +940,11 @@ namespace MapView
 
 		private void OnInfoClick(object sender, EventArgs e)
 		{
-			if (_mainViewUnderlay.BaseMap != null)
+			if (_mainViewUnderlay.MapBase != null)
 			{
 				var f = new MapInfoForm();
 				f.Show();
-				f.Analyze(_mainViewUnderlay.BaseMap);
+				f.Analyze(_mainViewUnderlay.MapBase);
 			}
 		}
 
@@ -1009,15 +1009,14 @@ namespace MapView
 		{
 			if (!auto)
 			{
-				Globals.AutoPckImageScale =
-				tsbAutoZoom.Checked       = false;
+				tsbAutoZoom.Checked       =
+				Globals.AutoPckImageScale = false;
 			}
 
-			_mainViewUnderlay.SetMapSize();
+			_mainViewUnderlay.SetPanelSize();
+			_mainViewUnderlay.ForceResize();
 
 			Refresh();
-
-			_mainViewUnderlay.OnResize();
 		}
 
 		internal void StatusBarPrintPosition(int col, int row)

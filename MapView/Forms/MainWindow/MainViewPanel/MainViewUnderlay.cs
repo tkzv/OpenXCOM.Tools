@@ -11,10 +11,11 @@ namespace MapView
 		:
 			Panel
 	{
-		private MainViewOverlay _mainView;
+		#region Fields & Properties
+		private MainViewOverlay _mainViewOverlay;
 		internal MainViewOverlay MainView
 		{
-			get { return _mainView; }
+			get { return _mainViewOverlay; }
 		}
 
 		private static MainViewUnderlay _instance;
@@ -29,13 +30,14 @@ namespace MapView
 			}
 		}
 
-		internal IMapBase BaseMap
+		internal IMapBase MapBase
 		{
-			get { return _mainView.BaseMap; }
+			get { return _mainViewOverlay.MapBase; }
 		}
 
 		private readonly HScrollBar _scrollBarHori;
 		private readonly VScrollBar _scrollBarVert;
+		#endregion
 
 
 		#region cTor
@@ -58,53 +60,57 @@ namespace MapView
 			Controls.AddRange(new Control[]{ _scrollBarVert, _scrollBarHori });
 
 			var mainView = new MainViewOverlay();
-			if (_mainView != null)
+			if (_mainViewOverlay != null)
 			{
-				mainView.BaseMap = _mainView.BaseMap;
-				Controls.Remove(_mainView);
+				mainView.MapBase = _mainViewOverlay.MapBase;
+				Controls.Remove(_mainViewOverlay);
 			}
-			_mainView = mainView;
+			_mainViewOverlay = mainView;
 
-			_mainView.Location = new Point(0, 0);
-			_mainView.BorderStyle = BorderStyle.Fixed3D;
+			_mainViewOverlay.Location = new Point(0, 0);
+			_mainViewOverlay.BorderStyle = BorderStyle.Fixed3D;
 
 			_scrollBarVert.Minimum = 0;
 			_scrollBarVert.Value = _scrollBarVert.Minimum;
 
-			_mainView.Width = ClientSize.Width - _scrollBarVert.Width - 1;
+			_mainViewOverlay.Width = ClientSize.Width - _scrollBarVert.Width - 1;
 
-			Controls.Add(_mainView);
+			Controls.Add(_mainViewOverlay);
 		}
 		#endregion
 
 
+		#region EventCalls
 		internal void OnCut(object sender, EventArgs e)
 		{
-			_mainView.Copy();
-			_mainView.ClearSelection();
+			_mainViewOverlay.Copy();
+			_mainViewOverlay.ClearSelection();
 		}
 
 		internal void OnCopy(object sender, EventArgs e)
 		{
-			_mainView.Copy();
+			_mainViewOverlay.Copy();
 		}
 
 		internal void OnPaste(object sender, EventArgs e)
 		{
-			_mainView.Paste();
+			_mainViewOverlay.Paste();
 		}
 
 		internal void OnFill(object sender, EventArgs e)
 		{
-			_mainView.Fill();
+			_mainViewOverlay.Fill();
 		}
 
 		private void OnAnimationUpdate(object sender, EventArgs e)
 		{
-			_mainView.Refresh();
+			_mainViewOverlay.Refresh();
 		}
 
-		internal void OnResize()
+		/// <summary>
+		/// Forces an OnResize event for this Panel.
+		/// </summary>
+		internal void ForceResize()
 		{
 			OnResize(EventArgs.Empty);
 		}
@@ -114,7 +120,7 @@ namespace MapView
 			base.OnResize(eventargs);
 
 			if (Globals.AutoPckImageScale)
-				SetMapSize();
+				SetPanelSize();
 
 			_scrollBarVert.Value = _scrollBarVert.Minimum;
 			_scrollBarHori.Value = _scrollBarHori.Minimum;
@@ -125,20 +131,20 @@ namespace MapView
 //			int h = 0;
 //			int w = 0;
 
-			_scrollBarVert.Visible = (_mainView.Height > ClientSize.Height);
+			_scrollBarVert.Visible = (_mainViewOverlay.Height > ClientSize.Height);
 			if (_scrollBarVert.Visible)
 			{
-				_scrollBarVert.Maximum = _mainView.Height - ClientSize.Height + _scrollBarHori.Height;
+				_scrollBarVert.Maximum = _mainViewOverlay.Height - ClientSize.Height + _scrollBarHori.Height;
 //				w = _scrollBarVert.Width;
 			}
 			else
 				_scrollBarHori.Width = ClientSize.Width;
 
-			_scrollBarHori.Visible = (_mainView.Width > ClientSize.Width);
+			_scrollBarHori.Visible = (_mainViewOverlay.Width > ClientSize.Width);
 			if (_scrollBarHori.Visible)
 			{
 				_scrollBarHori.Maximum = Math.Max(
-											_mainView.Width - ClientSize.Width + _scrollBarVert.Width,
+											_mainViewOverlay.Width - ClientSize.Width + _scrollBarVert.Width,
 											_scrollBarHori.Minimum);
 //				h = _scrollBarHori.Height;
 			}
@@ -146,28 +152,31 @@ namespace MapView
 				_scrollBarVert.Height = ClientSize.Height;
 
 //			_mapView.Viewable = new Size(Width - w, Height - h);
-			_mainView.Refresh();
+			_mainViewOverlay.Refresh();
 		}
 
 		private void OnVerticalScroll(object sender, ScrollEventArgs e)
 		{
-			_mainView.Location = new Point(
-										_mainView.Left,
-										-(_scrollBarVert.Value) + 1);
-			_mainView.Refresh();
+			_mainViewOverlay.Location = new Point(
+											_mainViewOverlay.Left,
+											-(_scrollBarVert.Value) + 1);
+			_mainViewOverlay.Refresh();
 		}
 
 		private void OnHorizontalScroll(object sender, ScrollEventArgs e)
 		{
-			_mainView.Location = new Point(
-										-(_scrollBarHori.Value),
-										_mainView.Top);
-			_mainView.Refresh();
+			_mainViewOverlay.Location = new Point(
+											-(_scrollBarHori.Value),
+											_mainViewOverlay.Top);
+			_mainViewOverlay.Refresh();
 		}
+		#endregion
 
-		internal void SetMap(IMapBase baseMap)
+
+		#region Methods
+		internal void SetBaseMap(IMapBase baseMap)
 		{
-			_mainView.BaseMap = baseMap;
+			_mainViewOverlay.MapBase = baseMap;
 //			_mapView.Select();					// TODO: Select the *panel*
 
 //			Select();							// doesn't work right.
@@ -190,11 +199,11 @@ namespace MapView
 		/// <summary>
 		/// Sets the scale-factor and the Panel-size.
 		/// </summary>
-		internal void SetMapSize()
+		internal void SetPanelSize()
 		{
 			if (Globals.AutoPckImageScale)
 			{
-				var size = _mainView.GetMapSize(1.0);
+				var size = _mainViewOverlay.GetPanelSizeRequired(1.0);
 
 				var width  = Width  / (double)size.Width;
 				var height = Height / (double)size.Height;
@@ -205,20 +214,12 @@ namespace MapView
 										Globals.MinPckImageScale,
 										Globals.MaxPckImageScale);
 			}
-			_mainView.SetMapSize();
+			_mainViewOverlay.SetPanelSize();
 		}
-
-		/// <summary>
-		/// Forces an OnResize event for this Panel.
-		/// </summary>
-		internal void ForceResize()
-		{
-			OnResize(null);
-		}
+		#endregion
 
 
 		#region Timer stuff for Animations
-
 		internal static event EventHandler AnimationUpdateEvent;
 
 		private static Timer _timer;

@@ -17,18 +17,18 @@ namespace XCom
 			get { return _cols; }
 		}
 
-		private readonly int _height;
-		public int Height
+		private readonly int _levs;
+		public int Levs
 		{
-			get { return _height; }
+			get { return _levs; }
 		}
 
 
-		public MapSize(int rows, int cols, int height)
+		public MapSize(int rows, int cols, int levs)
 		{
-			_rows   = rows;
-			_cols   = cols;
-			_height = height;
+			_rows = rows;
+			_cols = cols;
+			_levs = levs;
 		}
 
 
@@ -37,7 +37,7 @@ namespace XCom
 			return String.Format(
 							System.Globalization.CultureInfo.CurrentCulture,
 							"{0},{1},{2}",
-							_rows, _cols, _height);
+							_rows, _cols, _levs);
 		}
 
 		#region Satisfy FxCop CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes
@@ -55,7 +55,7 @@ namespace XCom
 				// Suitable nullity checks etc, of course :)
 				hash = hash * 29 + _rows.GetHashCode();
 				hash = hash * 29 + _cols.GetHashCode();
-				hash = hash * 29 + _height.GetHashCode();
+				hash = hash * 29 + _levs.GetHashCode();
 				return hash;
 			}
 		}
@@ -64,9 +64,9 @@ namespace XCom
 		// https://msdn.microsoft.com/en-us/library/ms173147(VS.90).aspx
 		public bool Equals(MapSize other)
 		{
-			return (other._rows   == _rows
-				 && other._cols   == _cols
-				 && other._height == _height);
+			return (other._rows == _rows
+				 && other._cols == _cols
+				 && other._levs == _levs);
 		}
 
 		public override bool Equals(object obj)

@@ -5,7 +5,7 @@ namespace XCom.Services
 {
 	internal static class MapResizeService
 	{
-		public static MapTileList ResizeMap(
+		internal static MapTileList ResizeMap(
 				int rPost,
 				int cPost,
 				int hPost,
@@ -29,7 +29,7 @@ namespace XCom.Services
 
 				for (int
 						h = 0;
-						h != hPost && h < sizePre.Height;
+						h != hPost && h < sizePre.Levs;
 						++h)
 					for (int
 							r = 0;
@@ -42,8 +42,8 @@ namespace XCom.Services
 						{
 							if (toCeiling)
 							{
-								levelPost = hPost          - h - 1;
-								levelPre  = sizePre.Height - h - 1;
+								levelPost = hPost        - h - 1;
+								levelPre  = sizePre.Levs - h - 1;
 							}
 							else
 							{

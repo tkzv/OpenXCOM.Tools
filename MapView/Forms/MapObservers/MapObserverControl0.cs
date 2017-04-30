@@ -25,14 +25,14 @@ namespace MapView
 			get { return _observersDictionary; }
 		}
 
-		private IMapBase _baseMap;
+		private IMapBase _mapBase;
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public virtual IMapBase BaseMap
+		public virtual IMapBase MapBase
 		{
-			get { return _baseMap; }
+			get { return _mapBase; }
 			set
 			{
-				_baseMap = value;
+				_mapBase = value;
 				Refresh();
 			}
 		}
@@ -103,8 +103,8 @@ namespace MapView
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
-			if      (e.Delta < 0) _baseMap.Up();
-			else if (e.Delta > 0) _baseMap.Down();
+			if      (e.Delta < 0) _mapBase.Up();
+			else if (e.Delta > 0) _mapBase.Down();
 		}
 	}
 }

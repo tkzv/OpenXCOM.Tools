@@ -9,7 +9,7 @@ namespace XCom.Interfaces.Base
 	/// </summary>
 	public interface IMapObserver
 	{
-		IMapBase BaseMap
+		IMapBase MapBase
 		{ set; get;}
 
 		Dictionary<string, IMapObserver> MoreObservers
@@ -32,14 +32,14 @@ namespace XCom.Interfaces.Base
 		:
 			EventArgs
 	{
-		private readonly IMapBase _baseMap;
+		private readonly IMapBase _mapBase;
 		public IMapBase Map
 		{
-			get { return _baseMap; }
+			get { return _mapBase; }
 		}
-		internal SetMapEventArgs(IMapBase baseMap)
+		internal SetMapEventArgs(IMapBase mapBase)
 		{
-			_baseMap = baseMap;
+			_mapBase = mapBase;
 		}
 	} */
 

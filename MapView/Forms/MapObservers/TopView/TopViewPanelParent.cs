@@ -58,11 +58,11 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		[Browsable(false), DefaultValue(null)]
-		public override IMapBase BaseMap
+		public override IMapBase MapBase
 		{
 			set
 			{
-				base.BaseMap = value;
+				base.MapBase = value;
 //				_blobService.HalfWidth = 7; // TODO: 7 ... inits to 8 in DrawContentService.
 				_blobService.HalfWidth = 8;
 				ResizeObserver(Parent.Width, Parent.Height);
@@ -73,13 +73,13 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		/// <summary>
 		/// Called by the main panel's resize event. See TopView. Also fired by
-		/// TileLozengeHeight set change, or by a straight BaseMap set change.
+		/// TileLozengeHeight set change, or by a straight MapBase set change.
 		/// </summary>
 		/// <param name="width">the width to resize to</param>
 		/// <param name="height">the height to resize to</param>
 		internal protected void ResizeObserver(int width, int height)
 		{
-			if (BaseMap != null)
+			if (MapBase != null)
 			{
 				int hWidth  = _blobService.HalfWidth;
 				int hHeight = _blobService.HalfHeight;
@@ -90,11 +90,11 @@ namespace MapView.Forms.MapObservers.TopViews
 				height -= hHeight;
 
 
-				if (BaseMap.MapSize.Rows > 0 || BaseMap.MapSize.Cols > 0) // safety vs. div-by-0
+				if (MapBase.MapSize.Rows > 0 || MapBase.MapSize.Cols > 0) // safety vs. div-by-0
 				{
 					if (height > width / 2) // use width
 					{
-						hWidth = width / (BaseMap.MapSize.Rows + BaseMap.MapSize.Cols);
+						hWidth = width / (MapBase.MapSize.Rows + MapBase.MapSize.Cols);
 
 						if (hWidth % 2 != 0)
 							--hWidth;
@@ -103,7 +103,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					}
 					else // use height
 					{
-						hHeight = height / (BaseMap.MapSize.Rows + BaseMap.MapSize.Cols);
+						hHeight = height / (MapBase.MapSize.Rows + MapBase.MapSize.Cols);
 						hWidth  = hHeight * 2;
 					}
 				}
@@ -122,13 +122,13 @@ namespace MapView.Forms.MapObservers.TopViews
 				_blobService.HalfWidth  = hWidth;
 				_blobService.HalfHeight = hHeight;
 
-				_offX = 4 + BaseMap.MapSize.Rows * hWidth;
+				_offX = 4 + MapBase.MapSize.Rows * hWidth;
 				_offY = 4;
 
 				if (curWidth != hWidth)
 				{
-					Width  = 8 + (BaseMap.MapSize.Rows + BaseMap.MapSize.Cols) * hWidth;
-					Height = 8 + (BaseMap.MapSize.Rows + BaseMap.MapSize.Cols) * hHeight;
+					Width  = 8 + (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * hWidth;
+					Height = 8 + (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * hHeight;
 
 					Refresh();
 				}
@@ -249,7 +249,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			backBuffer.FillRectangle(SystemBrushes.Control, ClientRectangle);
 
-			if (BaseMap != null)
+			if (MapBase != null)
 			{
 				int hWidth  = _blobService.HalfWidth;
 				int hHeight = _blobService.HalfHeight;
@@ -258,7 +258,7 @@ namespace MapView.Forms.MapObservers.TopViews
 						r = 0,
 							startX = _offX,
 							startY = _offY;
-						r != BaseMap.MapSize.Rows;
+						r != MapBase.MapSize.Rows;
 						++r,
 							startX -= hWidth,
 							startY += hHeight)
@@ -267,40 +267,40 @@ namespace MapView.Forms.MapObservers.TopViews
 							c = 0,
 								x = startX,
 								y = startY;
-							c != BaseMap.MapSize.Cols;
+							c != MapBase.MapSize.Cols;
 							++c,
 								x += hWidth,
 								y += hHeight)
 					{
-						var mapTile = BaseMap[r, c] as MapTileBase;
+						var mapTile = MapBase[r, c] as MapTileBase;
 						if (mapTile != null)
 							((TopViewPanel)this).DrawTileBlobs(mapTile, backBuffer, x, y);
 					}
 				}
 
-				for (int i = 0; i <= BaseMap.MapSize.Rows; ++i)
+				for (int i = 0; i <= MapBase.MapSize.Rows; ++i)
 					backBuffer.DrawLine(
 									TopPens[TopView.GridColor],
 									_offX - i * hWidth,
 									_offY + i * hHeight,
-									(BaseMap.MapSize.Cols - i) * hWidth  + _offX,
-									(BaseMap.MapSize.Cols + i) * hHeight + _offY);
+									(MapBase.MapSize.Cols - i) * hWidth  + _offX,
+									(MapBase.MapSize.Cols + i) * hHeight + _offY);
 
-				for (int i = 0; i <= BaseMap.MapSize.Cols; ++i)
+				for (int i = 0; i <= MapBase.MapSize.Cols; ++i)
 					backBuffer.DrawLine(
 									TopPens[TopView.GridColor],
 									_offX + i * hWidth,
 									_offY + i * hHeight,
-									i * hWidth  - BaseMap.MapSize.Rows * hWidth  + _offX,
-									i * hHeight + BaseMap.MapSize.Rows * hHeight + _offY);
+									i * hWidth  - MapBase.MapSize.Rows * hWidth  + _offX,
+									i * hHeight + MapBase.MapSize.Rows * hHeight + _offY);
 
 				if (MainViewUnderlay.Instance.MainView.FirstClick)
 					backBuffer.DrawPath(TopPens[TopView.SelectedColor], _lozSelected);
 
 				if (   _mouseCol > -1
 					&& _mouseRow > -1
-					&& _mouseCol < BaseMap.MapSize.Cols
-					&& _mouseRow < BaseMap.MapSize.Rows)
+					&& _mouseCol < MapBase.MapSize.Cols
+					&& _mouseRow < MapBase.MapSize.Rows)
 				{
 					int x = (_mouseCol - _mouseRow) * hWidth  + _offX;
 					int y = (_mouseCol + _mouseRow) * hHeight + _offY;
@@ -369,20 +369,20 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (BaseMap != null)
+			if (MapBase != null)
 			{
 				var pt = ConvertCoordsDiamond(
 											e.X - _offX,
 											e.Y - _offY);
-				if (   pt.Y >= 0 && pt.Y < MainViewUnderlay.Instance.BaseMap.MapSize.Rows
-					&& pt.X >= 0 && pt.X < MainViewUnderlay.Instance.BaseMap.MapSize.Cols)
+				if (   pt.Y >= 0 && pt.Y < MainViewUnderlay.Instance.MapBase.MapSize.Rows
+					&& pt.X >= 0 && pt.X < MainViewUnderlay.Instance.MapBase.MapSize.Cols)
 				{
 					MainViewUnderlay.Instance.MainView.FirstClick = true;
 
-					BaseMap.SelectedTile = new MapLocation(
+					MapBase.SelectedTile = new MapLocation(
 														pt.Y,
 														pt.X,
-														BaseMap.CurrentHeight);
+														MapBase.CurrentHeight);
 
 					_isMouseDrag = true;
 					MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);

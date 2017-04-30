@@ -26,7 +26,7 @@ namespace MapView
 
 			lbl2Dimensions.Text = baseMap.MapSize.Cols + ","
 								+ baseMap.MapSize.Rows + ","
-								+ baseMap.MapSize.Height;
+								+ baseMap.MapSize.Levs;
 
 			lbl2Tilesets.Text = String.Empty;
 
@@ -63,14 +63,14 @@ namespace MapView
 			var recordsTable = new Hashtable();
 			var spritesTable = new Hashtable();
 
-			pBar.Maximum = baseMap.MapSize.Cols * baseMap.MapSize.Rows * baseMap.MapSize.Height;
+			pBar.Maximum = baseMap.MapSize.Cols * baseMap.MapSize.Rows * baseMap.MapSize.Levs;
 			pBar.Value = 0;
 
 			for (int c = 0; c != baseMap.MapSize.Cols; ++c)
 			{
 				for (int r = 0; r != baseMap.MapSize.Rows; ++r)
 				{
-					for (int h = 0; h != baseMap.MapSize.Height; ++h)
+					for (int h = 0; h != baseMap.MapSize.Levs; ++h)
 					{
 						var tile = baseMap[r, c, h] as XCMapTile;
 						if (!tile.Blank)

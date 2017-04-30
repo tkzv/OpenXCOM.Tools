@@ -26,7 +26,7 @@ namespace XCom.GameFiles.Map.RouteData
 													node,
 													baseMap.MapSize.Cols,
 													baseMap.MapSize.Rows,
-													baseMap.MapSize.Height))
+													baseMap.MapSize.Levs))
 					{
 						invalid.Add(node);
 					}
