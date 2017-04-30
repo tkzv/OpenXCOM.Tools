@@ -932,12 +932,20 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
+		/// <summary>
+		/// Deselects any currently selected node.
+		/// </summary>
 		private void DeselectNode()
 		{
 			_nodeSelected = null;
-			_routePanel.DeselectLocation();
+			_routePanel.ClearClickPoint();
 		}
 
+		/// <summary>
+		/// Handles keyboard input.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control)

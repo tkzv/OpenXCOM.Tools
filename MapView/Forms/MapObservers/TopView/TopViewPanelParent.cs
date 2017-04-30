@@ -35,16 +35,16 @@ namespace MapView.Forms.MapObservers.TopViews
 			get { return _blobService; }
 		}
 
-		private int _lozHeightMin = 4;
-		internal protected int TileLozengeHeight	// question: why can TopView access this
-		{											// it's 'protected'
-			get { return _lozHeightMin; }
-			set
-			{
-				_lozHeightMin = value;
-				ResizeObserver(Width, Height);
-			}
-		}
+//		private int _lozHeightMin = 4;
+//		internal protected int TileLozengeHeight	// question: why can TopView access this
+//		{											// it's 'protected'
+//			get { return _lozHeightMin; }
+//			set
+//			{
+//				_lozHeightMin = value;
+//				ResizeObserver(Width, Height);
+//			}
+//		}
 		#endregion
 
 
@@ -53,11 +53,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// cTor. Instantiated only as the parent of TopViewPanel.
 		/// </summary>
 		internal protected TopViewPanelParent()
-		{
-//			_lozSelector;
-//			_lozSelected;
-//			_lozSel;
-		}
+		{}
 		#endregion
 
 
@@ -112,10 +108,15 @@ namespace MapView.Forms.MapObservers.TopViews
 					}
 				}
 
-				if (hHeight < _lozHeightMin)
+//				if (hHeight < _lozHeightMin)
+//				{
+//					hWidth  = _lozHeightMin * 2;
+//					hHeight = _lozHeightMin;
+//				}
+				if (hHeight < 1)
 				{
-					hWidth  = _lozHeightMin * 2;
-					hHeight = _lozHeightMin;
+					hHeight = 1;
+					hWidth  = 2;
 				}
 
 				_blobService.HalfWidth  = hWidth;

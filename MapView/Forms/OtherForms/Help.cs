@@ -176,7 +176,7 @@ namespace MapView
 		/// </summary>
 		/// <param name="color"></param>
 		/// <returns></returns>
-		private Color GetTextColor(Color color)
+		private static Color GetTextColor(Color color)
 		{
 			// TODO: check alpha .....
 			return ((int)color.R + color.G + color.B > 485) ? Color.DarkSlateBlue

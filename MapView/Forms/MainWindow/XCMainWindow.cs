@@ -30,11 +30,14 @@ namespace MapView
 //	public delegate void StringDelegate(object sender, string args);
 
 
+	/// <summary>
+	/// Instantiates a MainView screen as the basis for all user-interaction.
+	/// </summary>
 	internal sealed partial class XCMainWindow
 		:
 			Form
 	{
-		private readonly MainViewUnderlay         _mainViewPanel; // has static functs.
+		private readonly MainViewUnderlay      _mainViewUnderlay; // has static functs.
 
 		private readonly ViewersManager        _viewersManager;
 		private readonly ViewerFormsManager    _viewerFormsManager; // has static functs.
@@ -51,6 +54,10 @@ namespace MapView
 		}
 
 
+		#region cTor
+		/// <summary>
+		/// This is where the user-app end of things *really* starts.
+		/// </summary>
 		internal XCMainWindow()
 		{
 			// TODO: further optimize this loading sequence ....
@@ -114,7 +121,6 @@ namespace MapView
 				LogFile.WriteLine("Window configuration file exists.");
 
 
-
 			InitializeComponent();
 			LogFile.WriteLine("MainView window initialized.");
 
@@ -156,7 +162,7 @@ namespace MapView
 			LogFile.WriteLine("MainView Settings loaded.");	// since managers might be re-instantiating needlessly
 															// when OnSettingsChange() runs ....
 
-			_mainViewPanel = MainViewUnderlay.Instance;
+			_mainViewUnderlay = MainViewUnderlay.Instance;
 			LogFile.WriteLine("MainView panel instantiated.");
 
 
@@ -181,7 +187,7 @@ namespace MapView
 			LogFile.WriteLine("ShowAllManager created.");
 
 
-			ViewerFormsManager.EditFactory = new EditButtonsFactory(_mainViewPanel);
+			ViewerFormsManager.EditFactory = new EditButtonsFactory(_mainViewUnderlay);
 			ViewerFormsManager.Initialize();
 			LogFile.WriteLine("MainWindowsManager initialized.");
 
@@ -199,11 +205,11 @@ namespace MapView
 			MainViewUnderlay.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
 
-			_mainViewPanel.Dock = DockStyle.Fill;
+			_mainViewUnderlay.Dock = DockStyle.Fill;
 
 			tvMaps.TreeViewNodeSorter = StringComparer.OrdinalIgnoreCase;
 
-			tscPanel.ContentPanel.Controls.Add(_mainViewPanel);
+			tscPanel.ContentPanel.Controls.Add(_mainViewUnderlay);
 
 			ViewerFormsManager.EditFactory.BuildEditStrip(tsEdit);
 			tsEdit.Enabled = false;
@@ -216,7 +222,7 @@ namespace MapView
 															String.Empty,
 															2,
 															Palette.UfoBattle);
-				_mainViewPanel.MainView.SetCursor(new CursorSprite(cursor));
+				_mainViewUnderlay.MainView.SetCursor(new CursorSprite(cursor));
 			}
 			catch
 			{
@@ -227,11 +233,11 @@ namespace MapView
 																String.Empty,
 																4,
 																Palette.TftdBattle);
-					_mainViewPanel.MainView.SetCursor(new CursorSprite(cursor));
+					_mainViewUnderlay.MainView.SetCursor(new CursorSprite(cursor));
 				}
 				catch
 				{
-					_mainViewPanel.Cursor = null;
+					_mainViewUnderlay.Cursor = null;
 					throw; // TODO: there's got to be a better way to do that ....
 				}
 				throw;
@@ -285,6 +291,7 @@ namespace MapView
 			LogFile.WriteLine("About to show MainView ...");
 			Show();
 		}
+		#endregion
 
 
 		private static void InitGameInfo(PathInfo filePaths)
@@ -522,9 +529,9 @@ namespace MapView
 					}
 					else if (miDoors.Checked) // switch to the doors' alt-tile (whether ufo-door or wood-door)
 					{
-						if (_mainViewPanel.BaseMap != null) // NOTE: BaseMap is null on MapView load.
+						if (_mainViewUnderlay.BaseMap != null) // NOTE: BaseMap is null on MapView load.
 						{
-							foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
+							foreach (XCTile tile in _mainViewUnderlay.BaseMap.Tiles)
 								tile.SetDoorToAlternateSprite();
 
 							Refresh();
@@ -685,10 +692,10 @@ namespace MapView
 
 		private void OnSaveClick(object sender, EventArgs e)
 		{
-			if (_mainViewPanel.BaseMap != null)
+			if (_mainViewUnderlay.BaseMap != null)
 			{
-				_mainViewPanel.BaseMap.Save();
-				XConsole.AdZerg("Saved: " + _mainViewPanel.BaseMap.Name);
+				_mainViewUnderlay.BaseMap.Save();
+				XConsole.AdZerg("Saved: " + _mainViewUnderlay.BaseMap.Name);
 			}
 		}
 
@@ -758,7 +765,7 @@ namespace MapView
 				var fileService = new XCMapFileService(tileFactory);
 
 				var baseMap = fileService.Load(desc as XCMapDesc);
-				_mainViewPanel.SetMap(baseMap);
+				_mainViewUnderlay.SetMap(baseMap);
 
 				tsEdit.Enabled = true;
 
@@ -784,9 +791,9 @@ namespace MapView
 
 		private void ToggleDoorSprites(bool animate)
 		{
-			if (_mainViewPanel.BaseMap != null) // NOTE: BaseMap is null on MapView load.
+			if (_mainViewUnderlay.BaseMap != null) // NOTE: BaseMap is null on MapView load.
 			{
-				foreach (XCTile tile in _mainViewPanel.BaseMap.Tiles)
+				foreach (XCTile tile in _mainViewUnderlay.BaseMap.Tiles)
 					tile.SetDoorSprites(animate);
 
 				Refresh();
@@ -796,7 +803,7 @@ namespace MapView
 
 		private DialogResult NotifySave()
 		{
-			if (_mainViewPanel.BaseMap != null && _mainViewPanel.BaseMap.MapChanged)
+			if (_mainViewUnderlay.BaseMap != null && _mainViewUnderlay.BaseMap.MapChanged)
 			{
 				switch (MessageBox.Show(
 									this,
@@ -811,7 +818,7 @@ namespace MapView
 						break;
 
 					case DialogResult.Yes:		// save
-						_mainViewPanel.BaseMap.Save();
+						_mainViewUnderlay.BaseMap.Save();
 						break;
 
 					case DialogResult.Cancel:	// do nothing
@@ -855,16 +862,16 @@ namespace MapView
 
 		private void OnSaveImageClick(object sender, EventArgs e)
 		{
-			if (_mainViewPanel.BaseMap != null)
+			if (_mainViewUnderlay.BaseMap != null)
 			{
-				sfdSaveDialog.FileName = _mainViewPanel.BaseMap.Name;
+				sfdSaveDialog.FileName = _mainViewUnderlay.BaseMap.Name;
 				if (sfdSaveDialog.ShowDialog() == DialogResult.OK)
 				{
 					_loadingProgress.Show();
 
 					try
 					{
-						_mainViewPanel.BaseMap.SaveGif(sfdSaveDialog.FileName);
+						_mainViewUnderlay.BaseMap.SaveGif(sfdSaveDialog.FileName);
 					}
 					finally
 					{
@@ -894,19 +901,19 @@ namespace MapView
 
 		private void OnResizeClick(object sender, EventArgs e)
 		{
-			if (_mainViewPanel.MainView.BaseMap != null)
+			if (_mainViewUnderlay.MainView.BaseMap != null)
 			{
 				using (var f = new ChangeMapSizeForm())
 				{
-					f.Map = _mainViewPanel.MainView.BaseMap;
+					f.BaseMap = _mainViewUnderlay.MainView.BaseMap;
 					if (f.ShowDialog(this) == DialogResult.OK)
 					{
-						f.Map.ResizeTo(
+						f.BaseMap.ResizeTo(
 									f.NewRows,
 									f.NewCols,
 									f.NewHeight,
-									f.AddToCeiling);
-						_mainViewPanel.ForceResize();
+									f.CeilingChecked);
+						_mainViewUnderlay.ForceResize();
 					}
 				}
 			}
@@ -933,11 +940,11 @@ namespace MapView
 
 		private void OnInfoClick(object sender, EventArgs e)
 		{
-			if (_mainViewPanel.BaseMap != null)
+			if (_mainViewUnderlay.BaseMap != null)
 			{
 				var f = new MapInfoForm();
 				f.Show();
-				f.Analyze(_mainViewPanel.BaseMap);
+				f.Analyze(_mainViewUnderlay.BaseMap);
 			}
 		}
 
@@ -1006,18 +1013,18 @@ namespace MapView
 				tsbAutoZoom.Checked       = false;
 			}
 
-			_mainViewPanel.SetMapSize();
+			_mainViewUnderlay.SetMapSize();
 
 			Refresh();
 
-			_mainViewPanel.OnResize();
+			_mainViewUnderlay.OnResize();
 		}
 
 		internal void StatusBarPrintPosition(int col, int row)
 		{
 			tsslPosition.Text = string.Format(
 											System.Globalization.CultureInfo.CurrentCulture,
-											"c:{0} r:{1}",
+											"c {0}  r {1}",
 											col, row);
 		}
 
@@ -1027,7 +1034,7 @@ namespace MapView
 		/// embedded MapViewers manifest to '/settings/MapViewers.yml'.
 		/// Based on InstallationForm.
 		/// </summary>
-		private void CreateViewersFile()
+		private static void CreateViewersFile()
 		{
 			var info = (PathInfo)SharedSpace.Instance[PathInfo.MapViewers];
 			info.CreateDirectory();

@@ -178,14 +178,14 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnKeyDown(object sender, KeyEventArgs e)
+		private void OnKeyDown(object sender, KeyEventArgs e) // TODO: vet that.
 		{
-			if (BaseMap != null
-				&& e.Control && e.KeyCode == Keys.S)
-			{
-				BaseMap.Save();
-				e.Handled = true;
-			}
+//			if (BaseMap != null
+//				&& e.Control && e.KeyCode == Keys.S)
+//			{
+//				BaseMap.Save();
+//				e.Handled = true; // why.
+//			}
 		}
 		#endregion
 
@@ -249,7 +249,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		internal const string GridColor         = "GridColor";
 		internal const string GridWidth         = "GridWidth";
 
-		internal const string TileMinHeight     = "TileMinHeight";
+//		internal const string TileMinHeight     = "TileMinHeight";
 
 
 		/// <summary>
@@ -287,7 +287,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			ValueChangedEventHandler bc = OnBrushChanged;
 			ValueChangedEventHandler pc = OnPenColorChanged;
 			ValueChangedEventHandler pw = OnPenWidthChanged;
-			ValueChangedEventHandler dh = OnDiamondHeight;
+//			ValueChangedEventHandler dh = OnDiamondHeight;
 
 			Settings.AddSetting(FloorColor,        Color.BurlyWood,                 "Color of the floor tile indicator",           "Tile",   bc);
 			Settings.AddSetting(WestColor,         Color.Khaki,                     "Color of the west tile indicator",            "Tile",   pc);
@@ -304,7 +304,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			Settings.AddSetting(GridColor,         Color.Black,                     "Color of the grid lines",                     "Grid",   pc);
 			Settings.AddSetting(GridWidth,         1,                               "Width of the grid lines in pixels",           "Grid",   pw);
-			Settings.AddSetting(TileMinHeight,     _topViewPanel.TileLozengeHeight, "Minimum height of the grid tiles in pixels",  "Grid",   dh);
+//			Settings.AddSetting(TileMinHeight,     _topViewPanel.TileLozengeHeight, "Minimum height of the grid tiles in pixels",  "Grid",   dh);
 
 			QuadrantsPanel.Pens   =
 			_topViewPanel.TopPens = _topPens;
@@ -355,16 +355,16 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh();
 		}
 
-		/// <summary>
-		/// Fires when the minimum diamond-height changes in Settings.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="keyword"></param>
-		/// <param name="val"></param>
-		private void OnDiamondHeight(object sender, string keyword, object val)
-		{
-			_topViewPanel.TileLozengeHeight = (int)val;
-		}
+//		/// <summary>
+//		/// Fires when the minimum diamond-height changes in Settings.
+//		/// </summary>
+//		/// <param name="sender"></param>
+//		/// <param name="keyword"></param>
+//		/// <param name="val"></param>
+//		private void OnDiamondHeight(object sender, string keyword, object val)
+//		{
+//			_topViewPanel.TileLozengeHeight = (int)val;
+//		}
 		#endregion
 	}
 }

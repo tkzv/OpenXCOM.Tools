@@ -6,21 +6,13 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	public class ChangeMapSizeForm
+	internal sealed class ChangeMapSizeForm
 		:
 			Form
 	{
+		#region Fields & Properties
 		private IMapBase _baseMap;
-
-
-		public ChangeMapSizeForm()
-		{
-			InitializeComponent();
-			DialogResult = DialogResult.Cancel;
-		}
-
-
-		public IMapBase Map
+		internal IMapBase BaseMap
 		{
 			get { return _baseMap; }
 			set
@@ -38,110 +30,132 @@ namespace MapView
 		}
 
 		private int _rows;
-		public int NewRows
+		internal int NewRows
 		{
 			get { return _rows; }
 		}
 
 		private int _cols;
-		public int NewCols
+		internal int NewCols
 		{
 			get { return _cols; }
 		}
 
 		private int _height;
-		public int NewHeight
+		internal int NewHeight
 		{
 			get { return _height; }
 		}
 
-		public bool AddToCeiling
+		internal bool CeilingChecked
 		{
 			get { return cbCeiling.Checked; }
 		}
+		#endregion
 
+
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		internal ChangeMapSizeForm()
+		{
+			InitializeComponent();
+
+			btnCancel.Select();
+			DialogResult = DialogResult.Cancel;
+		}
+		#endregion
+
+
+		#region EventCalls
 		private void OnOkClick(object sender, EventArgs e)
 		{
-			try
+			if (   String.IsNullOrEmpty(txtC.Text)
+				|| String.IsNullOrEmpty(txtR.Text)
+				|| String.IsNullOrEmpty(txtH.Text))
 			{
-				var icon = MessageBoxIcon.None;
-				string title   = null;
-				string message = null;
-
-				_cols   = int.Parse(txtC.Text, System.Globalization.CultureInfo.InvariantCulture);
-				_rows   = int.Parse(txtR.Text, System.Globalization.CultureInfo.InvariantCulture);
-				_height = int.Parse(txtH.Text, System.Globalization.CultureInfo.InvariantCulture);
-
-				if (_cols > 0 && _rows > 0 && _height > 0)
-				{
-					if (_cols % 10 == 0 && _rows % 10 == 0)
-					{
-						int colsOld   = int.Parse(oldC.Text, System.Globalization.CultureInfo.InvariantCulture);
-						int rowsOld   = int.Parse(oldR.Text, System.Globalization.CultureInfo.InvariantCulture);
-						int heightOld = int.Parse(oldH.Text, System.Globalization.CultureInfo.InvariantCulture);
-
-						if (colsOld != _cols || rowsOld != _rows || heightOld != _height)
-						{
-							DialogResult = DialogResult.OK;
-							Close();
-						}
-						else
-						{
-							icon = MessageBoxIcon.Information;
-							title = "uh";
-							message = "The new size is the same as the old size.";
-						}
-					}
-					else
-					{
-						icon = MessageBoxIcon.Exclamation;
-						title = "Error";
-						message = "Columns and Rows must be evenly divisible by 10.";
-					}
-				}
-				else
-				{
-					icon = MessageBoxIcon.Exclamation;
-					title = "Error";
-					message = "Values must be positive integers greater than 0.";
-				}
-
-				if (icon != MessageBoxIcon.None)
-				{
-					MessageBox.Show(
-								this,
-								message,
-								title,
-								MessageBoxButtons.OK,
-								MessageBoxIcon.Exclamation,
-								MessageBoxDefaultButton.Button1,
-								0);
-				}
+				ShowErrorDialog("All fields must have a value.", "Error", MessageBoxIcon.Error);
 			}
-			catch
+			else if (!Int32.TryParse(txtC.Text, out _cols)   || _cols   < 1
+				||   !Int32.TryParse(txtR.Text, out _rows)   || _rows   < 1
+				||   !Int32.TryParse(txtH.Text, out _height) || _height < 1)
 			{
-				MessageBox.Show(
-							this,
-							"Columns and Rows must be evenly divisible by 10 and Height must be 1 or more.",
-							"Error",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Exclamation,
-							MessageBoxDefaultButton.Button1,
-							0);
-				throw;
+				ShowErrorDialog("Values must be positive integers greater than 0.", "Error", MessageBoxIcon.Error);
+			}
+			else if (_cols % 10 != 0 || _rows % 10 != 0)
+			{
+				ShowErrorDialog("Columns and Rows must be evenly divisible by 10.", "Error", MessageBoxIcon.Error);
+			}
+			else if (_cols   == int.Parse(oldC.Text, System.Globalization.CultureInfo.InvariantCulture)
+				&&   _rows   == int.Parse(oldR.Text, System.Globalization.CultureInfo.InvariantCulture)
+				&&   _height == int.Parse(oldH.Text, System.Globalization.CultureInfo.InvariantCulture))
+			{
+				ShowErrorDialog("The new size is the same as the old size.", "uh ...", MessageBoxIcon.Error);
+			}
+			else // finally (sic) ->
+			{
+				DialogResult = DialogResult.OK;
+				Close();
 			}
 		}
 
+		/// <summary>
+		/// Closes this form and discards any changes.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnCancelClick(object sender, EventArgs e)
 		{
 			Close();
 		}
 
-		private void OnTextChanged(object sender, EventArgs e)
+		/// <summary>
+		/// Shows the AddToCeiling checkbox if the height has delta.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnHeightTextChanged(object sender, EventArgs e)
 		{
-			int current = int.Parse(txtH.Text, System.Globalization.CultureInfo.InvariantCulture);
-			cbCeiling.Visible = (current != _baseMap.MapSize.Height);
+			if (!String.IsNullOrEmpty(txtH.Text)) // NOTE: btnOkClick will deal with a blank string.
+			{
+				int height = -1;
+				if (Int32.TryParse(txtH.Text, out height))
+				{
+					if (height > 0)
+						cbCeiling.Visible = (height != _baseMap.MapSize.Height);
+					else
+						ShowErrorDialog("Height must be 1 or more.", "Error", MessageBoxIcon.Error);
+				}
+				else
+					ShowErrorDialog("Height must a positive integer.", "Error", MessageBoxIcon.Error);
+			}
 		}
+		#endregion
+
+
+		#region Methods
+		/// <summary>
+		/// Wrapper for MessageBox.Show().
+		/// </summary>
+		/// <param name="error">the error string to show</param>
+		/// <param name="caption">the dialog's caption text</param>
+		/// <param name="icon">the MessageBoxIcon to use</param>
+		private void ShowErrorDialog(
+				string error,
+				string caption,
+				MessageBoxIcon icon)
+		{
+			MessageBox.Show(
+						this,
+						error,
+						caption,
+						MessageBoxButtons.OK,
+						icon,
+						MessageBoxDefaultButton.Button1,
+						0);
+		}
+		#endregion
 
 
 		#region Windows Form Designer generated code
@@ -252,7 +266,7 @@ namespace MapView
 			this.txtH.Name = "txtH";
 			this.txtH.Size = new System.Drawing.Size(45, 19);
 			this.txtH.TabIndex = 3;
-			this.txtH.TextChanged += new System.EventHandler(this.OnTextChanged);
+			this.txtH.TextChanged += new System.EventHandler(this.OnHeightTextChanged);
 			// 
 			// btnOk
 			// 
@@ -266,6 +280,7 @@ namespace MapView
 			// 
 			// btnCancel
 			// 
+			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnCancel.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.btnCancel.Location = new System.Drawing.Point(220, 130);
 			this.btnCancel.Name = "btnCancel";
@@ -326,9 +341,10 @@ namespace MapView
 			// 
 			// ChangeMapSizeForm
 			// 
+			this.AcceptButton = this.btnOk;
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
+			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(314, 176);
-			this.ControlBox = false;
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.label6);
@@ -348,14 +364,11 @@ namespace MapView
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
-			this.MaximumSize = new System.Drawing.Size(320, 200);
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(320, 200);
 			this.Name = "ChangeMapSizeForm";
-			this.ShowIcon = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Change Map Size";
+			this.Text = "Modify Map Size";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -364,21 +377,21 @@ namespace MapView
 
 		private System.ComponentModel.Container components = null;
 
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.TextBox txtC;
-		private System.Windows.Forms.TextBox txtR;
-		private System.Windows.Forms.TextBox txtH;
-		private System.Windows.Forms.Button btnOk;
-		private System.Windows.Forms.Button btnCancel;
-		private System.Windows.Forms.TextBox oldC;
-		private System.Windows.Forms.TextBox oldR;
-		private System.Windows.Forms.TextBox oldH;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.CheckBox cbCeiling;
+		private Label label1;
+		private Label label3;
+		private Label label4;
+		private Label label5;
+		private TextBox txtC;
+		private TextBox txtR;
+		private TextBox txtH;
+		private Button btnOk;
+		private Button btnCancel;
+		private TextBox oldC;
+		private TextBox oldR;
+		private TextBox oldH;
+		private Label label6;
+		private Label label7;
+		private Label label2;
+		private CheckBox cbCeiling;
 	}
 }
