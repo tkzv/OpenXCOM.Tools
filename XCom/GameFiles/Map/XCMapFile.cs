@@ -62,10 +62,10 @@ namespace XCom
 					}
 					catch
 					{
-						for (int h = 0; h != MapSize.Levs; ++h)
+						for (int l = 0; l != MapSize.Levs; ++l)
 							for (int r = 0; r != MapSize.Rows; ++r)
 								for (int c = 0; c != MapSize.Cols; ++c)
-									this[r, c, h].DrawAbove = true;
+									this[r, c, l].DrawAbove = true;
 						throw;
 					}
 				}
@@ -83,14 +83,14 @@ namespace XCom
 		{
 			using (var bs = new BufferedStream(str))
 			{
-				int rows   = bs.ReadByte();
-				int cols   = bs.ReadByte();
-				int height = bs.ReadByte();
+				int rows = bs.ReadByte();
+				int cols = bs.ReadByte();
+				int levs = bs.ReadByte();
 	
-				MapTiles = new MapTileList(rows, cols, height);
-				MapSize  = new MapSize(rows, cols, height);
+				MapTiles = new MapTileList(rows, cols, levs);
+				MapSize  = new MapSize(rows, cols, levs);
 
-				for (int h = 0; h != height; ++h)
+				for (int l = 0; l != levs; ++l)
 					for (int r = 0; r != rows; ++r)
 						for (int c = 0; c != cols; ++c)
 						{
@@ -99,7 +99,7 @@ namespace XCom
 							int q3 = bs.ReadByte();
 							int q4 = bs.ReadByte();
 
-							this[r, c, h] = CreateTile(tiles, q1, q2, q3, q4);
+							this[r, c, l] = CreateTile(tiles, q1, q2, q3, q4);
 						}
 
 //				if (bs.Position < bs.Length)
@@ -111,11 +111,11 @@ namespace XCom
 		{
 			if (file.ExtraHeight != 0) // remove ExtraHeight for editing - see Save() below_
 				foreach (RouteNode node in file)
-					node.Height -= file.ExtraHeight;
+					node.Lev -= file.ExtraHeight;
 
 			foreach (RouteNode node in file)
 			{
-				var baseTile = this[node.Row, node.Col, node.Height];
+				var baseTile = this[node.Row, node.Col, node.Lev];
 				if (baseTile != null)
 					((XCMapTile)baseTile).Node = node;
 			}
@@ -123,25 +123,25 @@ namespace XCom
 
 		private void CalculateDrawAbove()
 		{
-			for (int h = MapSize.Levs - 1; h > -1; --h)
+			for (int l = MapSize.Levs - 1; l > -1; --l)
 				for (int r = 0; r < MapSize.Rows - 2; ++r)
 					for (int c = 0; c < MapSize.Cols - 2; ++c)
-						if (this[r, c, h] != null && h - 1 > -1)		// TODO: should probably be "h-1 > 0"
+						if (this[r, c, l] != null && l - 1 > -1)		// TODO: should probably be "l-1 > 0"
 						{
-							var tile = (XCMapTile)this[r, c, h - 1];	// TODO: ... because "h-1"
+							var tile = (XCMapTile)this[r, c, l - 1];	// TODO: ... because "l-1"
 
 							if (   tile != null							// TODO: doesn't happen anyway.
 								&& tile.Ground != null										// top
-								&& ((XCMapTile)this[r + 1, c,     h - 1]).Ground != null	// south
-								&& ((XCMapTile)this[r + 2, c,     h - 1]).Ground != null
-								&& ((XCMapTile)this[r + 1, c + 1, h - 1]).Ground != null	// southeast
-								&& ((XCMapTile)this[r + 2, c + 1, h - 1]).Ground != null
-								&& ((XCMapTile)this[r + 2, c + 2, h - 1]).Ground != null
-								&& ((XCMapTile)this[r,     c + 1, h - 1]).Ground != null	// east
-								&& ((XCMapTile)this[r,     c + 2, h - 1]).Ground != null
-								&& ((XCMapTile)this[r + 1, c + 2, h - 1]).Ground != null)
+								&& ((XCMapTile)this[r + 1, c,     l - 1]).Ground != null	// south
+								&& ((XCMapTile)this[r + 2, c,     l - 1]).Ground != null
+								&& ((XCMapTile)this[r + 1, c + 1, l - 1]).Ground != null	// southeast
+								&& ((XCMapTile)this[r + 2, c + 1, l - 1]).Ground != null
+								&& ((XCMapTile)this[r + 2, c + 2, l - 1]).Ground != null
+								&& ((XCMapTile)this[r,     c + 1, l - 1]).Ground != null	// east
+								&& ((XCMapTile)this[r,     c + 2, l - 1]).Ground != null
+								&& ((XCMapTile)this[r + 1, c + 2, l - 1]).Ground != null)
 							{
-								this[r, c, h].DrawAbove = false;
+								this[r, c, l].DrawAbove = false;
 							}
 						}
 		}
@@ -188,8 +188,8 @@ namespace XCom
 			var node = RouteFile.Add(
 								(byte)loc.Row,
 								(byte)loc.Col,
-								(byte)loc.Height);
-			((XCMapTile)this[node.Row, node.Col, node.Height]).Node = node;
+								(byte)loc.Lev);
+			((XCMapTile)this[node.Row, node.Col, node.Lev]).Node = node;
 
 			return node;
 		}
@@ -200,20 +200,20 @@ namespace XCom
 		/// <param name="str"></param>
 		/// <param name="rows"></param>
 		/// <param name="cols"></param>
-		/// <param name="height"></param>
+		/// <param name="levs"></param>
 		public static void CreateMap(
 				Stream str,
 				byte rows,
 				byte cols,
-				byte height)
+				byte levs)
 		{
 			using (var bw = new BinaryWriter(str))
 			{
 				bw.Write(rows);
 				bw.Write(cols);
-				bw.Write(height);
+				bw.Write(levs);
 
-				for (int h = 0; h != height; ++h)
+				for (int l = 0; l != levs; ++l)
 					for (int r = 0; r != rows; ++r)
 						for (int c = 0; c != cols; ++c)
 							bw.Write((int)0);
@@ -231,7 +231,7 @@ namespace XCom
 			{
 				if (RouteFile.ExtraHeight != 0) // add ExtraHeight to save - see SetupRoutes() above^
 					foreach (RouteNode node in RouteFile)
-						node.Height += RouteFile.ExtraHeight;
+						node.Lev += RouteFile.ExtraHeight;
 
 				RouteFile.Save(); // <- saves the .RMP file
 
@@ -239,11 +239,11 @@ namespace XCom
 				fs.WriteByte((byte)MapSize.Cols);	// - says this header is "height, width and depth (in that order)"
 				fs.WriteByte((byte)MapSize.Levs);
 
-				for (int h = 0; h != MapSize.Levs; ++h)
+				for (int l = 0; l != MapSize.Levs; ++l)
 					for (int r = 0; r != MapSize.Rows; ++r)
 						for (int c = 0; c != MapSize.Cols; ++c)
 						{
-							var tile = this[r, c, h] as XCMapTile;
+							var tile = this[r, c, l] as XCMapTile;
 
 							if (tile.Ground == null)
 								fs.WriteByte(0);
@@ -295,7 +295,7 @@ namespace XCom
 //						if (hPost < MapSize.Height)
 //							node.Height = node.Height + d;
 //						else
-						node.Height += d;
+						node.Lev += d;
 					}
 				}
 
@@ -309,7 +309,7 @@ namespace XCom
 				MapTiles = tileList;
 				MapSize  = new MapSize(rPost, cPost, lPost);
 
-				CurrentHeight = (byte)(MapSize.Levs - 1);
+				Levels = (byte)(MapSize.Levs - 1);
 			}
 		}
 

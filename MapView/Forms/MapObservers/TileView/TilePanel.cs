@@ -10,7 +10,7 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TileViews
 {
-	internal delegate void SelectedTileChangedEventHandler(TileBase tile);
+	internal delegate void LocationChangedEventHandler(TileBase tile);
 
 
 	/// <summary>
@@ -20,7 +20,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		:
 			Panel
 	{
-		internal event SelectedTileChangedEventHandler PanelSelectedTileChangedEvent;
+		internal event LocationChangedEventHandler PanelSelectedTileChangedEvent;
 
 
 		#region Fields & Properties

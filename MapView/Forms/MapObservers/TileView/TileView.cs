@@ -23,8 +23,8 @@ namespace MapView.Forms.MapObservers.TileViews
 			MapObserverControl0
 	{
 		#region Events
-		internal event SelectedTileChangedEventHandler Observer0SelectedTileChanged;
-		private void OnSelectedTileChanged(TileBase tile)
+		internal event LocationChangedEventHandler Observer0SelectedTileChanged;
+		private void OnLocationChanged(TileBase tile)
 		{
 			var handler = Observer0SelectedTileChanged;
 			if (handler != null)
@@ -182,7 +182,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			if (_mcdInfoForm != null)
 				_mcdInfoForm.UpdateData(record);
 
-			OnSelectedTileChanged(tile);
+			OnLocationChanged(tile);
 		}
 		#endregion
 

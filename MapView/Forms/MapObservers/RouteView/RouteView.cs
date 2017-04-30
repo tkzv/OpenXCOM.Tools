@@ -448,7 +448,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
+		public override void OnLocationChanged(IMapBase sender, LocationChangedEventArgs e)
 		{
 			MainViewUnderlay.Instance.MainView.FirstClick = true;
 
@@ -458,7 +458,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 												/*Environment.NewLine, */e.Location.Col, e.Location.Row);
 		}
 
-		public override void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
+		public override void OnLevelChanged(IMapBase sender, LevelChangedEventArgs e)
 		{
 			DeselectNode();
 			FillNodeInformation();
@@ -563,9 +563,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				Control textBox = null)
 		{
 			var dist = (byte)Math.Sqrt(
-									Math.Pow(nodeA.Col    - nodeB.Col,    2) +
-									Math.Pow(nodeA.Row    - nodeB.Row,    2) +
-									Math.Pow(nodeA.Height - nodeB.Height, 2));
+									Math.Pow(nodeA.Col - nodeB.Col, 2) +
+									Math.Pow(nodeA.Row - nodeB.Row, 2) +
+									Math.Pow(nodeA.Lev - nodeB.Lev, 2));
 			if (textBox != null)
 				textBox.Text = dist.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
@@ -919,7 +919,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				((XCMapTile)_mapFile[_nodeSelected.Row,
 									 _nodeSelected.Col,
-									 _nodeSelected.Height]).Node = null;
+									 _nodeSelected.Lev]).Node = null;
 
 				DeselectNode();
 

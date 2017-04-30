@@ -15,15 +15,21 @@ namespace XCom
 		public int Col
 		{ get; set; }
 
-		public int Height
+		public int Lev
 		{ get; set; }
 
 
-		public MapLocation(int row, int col, int height) // TODO: Switch row & col so things are x/y instead of y/x.
+		/// <summary>
+		/// cTor. Constructs a MapLocation vector.
+		/// </summary>
+		/// <param name="row"></param>
+		/// <param name="col"></param>
+		/// <param name="lev"></param>
+		public MapLocation(int row, int col, int lev) // TODO: Switch row & col so things are x/y instead of y/x.
 		{
-			Row    = row;
-			Col    = col;
-			Height = height;
+			Row = row;
+			Col = col;
+			Lev = lev;
 		}
 	}
 }

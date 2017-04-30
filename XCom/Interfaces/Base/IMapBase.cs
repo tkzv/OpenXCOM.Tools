@@ -3,45 +3,45 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-using XCom.Services;
+//using XCom.Services;
 
 
 namespace XCom.Interfaces.Base
 {
-	public delegate void HeightChangedEventHandler(IMapBase sender, HeightChangedEventArgs e);
+	public delegate void LevelChangedEventHandler(IMapBase sender, LevelChangedEventArgs e);
 
-	public delegate void SelectedTileChangedEventHandler(IMapBase sender, SelectedTileChangedEventArgs e);
+	public delegate void LocationChangedEventHandler(IMapBase sender, LocationChangedEventArgs e);
 
 
 	/// <summary>
-	/// Abstract base class definining all common functionality of an editable Map.
+	/// Abstract base class defining all common functionality of an editable Map.
 	/// </summary>
 	public class IMapBase // psst. This isn't an interface.
 	{
-		public event HeightChangedEventHandler HeightChanged;
-		public event SelectedTileChangedEventHandler SelectedTileChanged;
+		public event LevelChangedEventHandler LevelChangedEvent;
+		public event LocationChangedEventHandler LocationChangedEvent;
+
 
 		private const int HalfWidth  = 16;
 		private const int HalfHeight =  8;
 
-		private byte _height;
+		private byte _levs;
 		/// <summary>
-		/// Gets the current height.
-		/// Setting the height will fire a HeightChanged event.
+		/// Gets this MapBase's levels.
+		/// Setting the levels will fire a LevelChanged event.
 		/// </summary>
-		public byte CurrentHeight
+		public byte Levels
 		{
-			get { return _height; }
+			get { return _levs; }
 			set
 			{
 				if (value < (byte)MapSize.Levs)
 				{
-//					var args = new HeightChangedEventArgs(_height, value);
-					var args = new HeightChangedEventArgs(value);
-					_height = value;
+					var args = new LevelChangedEventArgs(value);
+					_levs = value;
 
-					if (HeightChanged != null)
-						HeightChanged(this, args);
+					if (LevelChangedEvent != null)
+						LevelChangedEvent(this, args);
 				}
 			}
 		}
@@ -55,7 +55,7 @@ namespace XCom.Interfaces.Base
 		public string Name
 		{ get; protected set; }
 
-		protected MapTileList MapTiles
+		internal MapTileList MapTiles
 		{ get; set; }
 
 		private readonly List<TileBase> _tiles;
@@ -79,10 +79,10 @@ namespace XCom.Interfaces.Base
 				{
 					_selLoc = value;
 					var tile = this[_selLoc.Row, _selLoc.Col];
-					var args = new SelectedTileChangedEventArgs(value, tile);
+					var args = new LocationChangedEventArgs(value, tile);
 
-					if (SelectedTileChanged != null)
-						SelectedTileChanged(this, args);
+					if (LocationChangedEvent != null)
+						LocationChangedEvent(this, args);
 				}
 			}
 		}
@@ -99,16 +99,13 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		/// <param name="row"></param>
 		/// <param name="col"></param>
-		/// <param name="height"></param>
+		/// <param name="lev"></param>
 		/// <returns></returns>
-		public MapTileBase this[int row, int col, int height]
+		public MapTileBase this[int row, int col, int lev]
 		{
-			get
-			{
-				return (MapTiles != null) ? MapTiles[row, col, height]
-										  : null;
-			}
-			set { MapTiles[row, col, height] = value; }
+			get { return (MapTiles != null) ? MapTiles[row, col, lev]
+											: null; }
+			set { MapTiles[row, col, lev] = value; }
 		}
 		/// <summary>
 		/// Gets/Sets a MapTile at the current height using row,col values.
@@ -118,16 +115,16 @@ namespace XCom.Interfaces.Base
 		/// <returns></returns>
 		public MapTileBase this[int row, int col]
 		{
-			get { return this[row, col, _height]; }
-			set { this[row, col, _height] = value; }
+			get { return this[row, col, _levs]; }
+			set { this[row, col, _levs] = value; }
 		}
 		/// <summary>
 		/// Gets/Sets a MapTile using a MapLocation.
 		/// </summary>
 		public MapTileBase this[MapLocation loc]
 		{
-			get { return this[loc.Row, loc.Col, loc.Height]; }
-			set { this[loc.Row, loc.Col, loc.Height] = value; }
+			get { return this[loc.Row, loc.Col, loc.Lev]; }
+			set { this[loc.Row, loc.Col, loc.Lev] = value; }
 		}
 
 
@@ -148,30 +145,30 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public void Up()
 		{
-			if (_height > 0)
+			if (_levs > 0)
 			{
-//				var args = new HeightChangedEventArgs(_height, _height - 1);
-				var args = new HeightChangedEventArgs(_height - 1);
-				--_height;
+//				var args = new HeightChangedEventArgs(_levs, _levs - 1);
+				var args = new LevelChangedEventArgs(_levs - 1);
+				--_levs;
 
-				if (HeightChanged != null)
-					HeightChanged(this, args);
+				if (LevelChangedEvent != null)
+					LevelChangedEvent(this, args);
 			}
 		}
 
 		/// <summary>
-		/// Changes the '_height' property and fires a HeightChanged event.
+		/// Changes the '_levs' property and fires a HeightChanged event.
 		/// </summary>
 		public void Down()
 		{
-			if (_height < MapSize.Levs - 1)
+			if (_levs < MapSize.Levs - 1)
 			{
-				++_height; // TODO: wait a second !
-				var args = new HeightChangedEventArgs(_height + 1);
-//				var args = new HeightChangedEventArgs(_height, _height + 1);
+				++_levs; // TODO: wait a second !
+				var args = new LevelChangedEventArgs(_levs + 1);
+//				var args = new HeightChangedEventArgs(_levs, _levs + 1);
 
-				if (HeightChanged != null)
-					HeightChanged(this, args);
+				if (LevelChangedEvent != null)
+					LevelChangedEvent(this, args);
 			}
 		}
 
@@ -214,20 +211,20 @@ namespace XCom.Interfaces.Base
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
 			var b = XCBitmap.MakeBitmap(
 								rowPlusCols * (PckImage.Width / 2),
-								(MapSize.Levs - _height) * 24 + rowPlusCols * 8,
+								(MapSize.Levs - _levs) * 24 + rowPlusCols * 8,
 								palette.Colors);
 
 			var start = new Point(
 								(MapSize.Rows - 1) * (PckImage.Width / 2),
-								-(24 * _height));
+								-(24 * _levs));
 
 			int i = 0;
 			if (MapTiles != null)
 			{
-				for (int h = MapSize.Levs - 1; h >= _height; --h)
+				for (int l = MapSize.Levs - 1; l >= _levs; --l)
 				{
 					for (int
-							r = 0, startX = start.X, startY = start.Y + h * 24;
+							r = 0, startX = start.X, startY = start.Y + l * 24;
 							r != MapSize.Rows;
 							++r, startX -= HalfWidth, startY += HalfHeight)
 					{
@@ -236,14 +233,14 @@ namespace XCom.Interfaces.Base
 								c != MapSize.Cols;
 								++c, x += HalfWidth, y += HalfHeight, ++i)
 						{
-							var tiles = this[r, c, h].UsedTiles;
+							var tiles = this[r, c, l].UsedTiles;
 							foreach (var tileBase in tiles)
 							{
 								var tile = (XCTile)tileBase;
 								XCBitmap.Draw(tile[0].Image, b, x, y - tile.Record.TileOffset);
 							}
 
-							XCBitmap.FireLoadingEvent(i, (MapSize.Levs - _height) * MapSize.Rows * MapSize.Cols);
+							XCBitmap.FireLoadingEvent(i, (MapSize.Levs - _levs) * MapSize.Rows * MapSize.Cols);
 						}
 					}
 				}
@@ -263,11 +260,11 @@ namespace XCom.Interfaces.Base
 
 		private Palette GetFirstGroundPalette()
 		{
-			for (int h = 0; h != MapSize.Levs; ++h)
+			for (int l = 0; l != MapSize.Levs; ++l)
 				for (int r = 0; r != MapSize.Rows; ++r)
 					for (int c = 0; c != MapSize.Cols; ++c)
 					{
-						var tile = (XCMapTile)this[r, c, h];
+						var tile = (XCMapTile)this[r, c, l];
 						if (tile.Ground != null)
 							return tile.Ground[0].Palette;
 					}

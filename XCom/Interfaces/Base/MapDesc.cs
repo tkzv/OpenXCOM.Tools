@@ -10,30 +10,24 @@ namespace XCom.Interfaces.Base
 //		: IAssemblyLoadable, IDialogFilter
 	{
 		#region Properties
-
 		public string Label
 		{ get; protected set; }
-
 		#endregion
 
 
 		#region cTor
-
 		public MapDesc(string label)
 		{
 			Label = label;
 		}
-
 		#endregion
 
 
 		#region Methods
-
 		public override string ToString() // isUsed yes/no
 		{
 			return Label;
 		}
-
 		#endregion
 
 

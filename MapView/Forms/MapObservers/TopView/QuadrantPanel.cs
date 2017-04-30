@@ -82,19 +82,19 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		#region EventCalls
-		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
+		public override void OnLocationChanged(IMapBase sender, LocationChangedEventArgs e)
 		{
 			_mapTile = e.SelectedTile as XCMapTile;
 			_mapLoc  = e.Location;
 			Refresh();
 		}
 
-		public override void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
+		public override void OnLevelChanged(IMapBase sender, LevelChangedEventArgs e)
 		{
 			if (_mapLoc != null)
 			{
 				_mapTile = MapBase[_mapLoc.Row, _mapLoc.Col] as XCMapTile;
-				_mapLoc.Height = e.Height;
+				_mapLoc.Lev = e.Level;
 			}
 			Refresh();
 		}

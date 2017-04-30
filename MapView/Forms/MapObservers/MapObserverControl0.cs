@@ -54,12 +54,12 @@ namespace MapView
 			}
 		} */
 
-		public virtual void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
+		public virtual void OnLocationChanged(IMapBase sender, LocationChangedEventArgs e)
 		{
 			Refresh();
 		}
 
-		public virtual void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e)
+		public virtual void OnLevelChanged(IMapBase sender, LevelChangedEventArgs e)
 		{
 			Refresh();
 		}

@@ -9,14 +9,13 @@ namespace XCom.Interfaces.Base
 	public abstract class MapTileBase
 	{
 		/// <summary>
-		/// A list of ITiles in the correct draw order. You should iterate over
-		/// this array when drawing to the screen. This list does not include IUnits.
-		/// </summary>
+		/// An array of TileBase[] in the correct draw order. This array should
+		/// be iterated over when drawing to the screen.</summary>
 		public abstract TileBase[] UsedTiles
 		{ get; }
 
 		/// <summary>
-		/// Flag to help optimize screen drawing.
+		/// Flag to optimize screen drawing.
 		/// </summary>
 		public bool DrawAbove
 		{ get; set; }

@@ -217,7 +217,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{ get; set; }
 
 
-/*		public override void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e)
+/*		public override void OnLocationChanged(IMapBase sender, LocationChangedEventArgs e)
 		{
 			var pt = e.MapPosition;
 //			Text = "c: " + pt.Col + " r: " + pt.Row; // I don't think this actually prints anywhere.
@@ -382,7 +382,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					MapBase.SelectedTile = new MapLocation(
 														pt.Y,
 														pt.X,
-														MapBase.CurrentHeight);
+														MapBase.Levels);
 
 					_isMouseDrag = true;
 					MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);

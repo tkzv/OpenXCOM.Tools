@@ -43,8 +43,9 @@ namespace XCom
 			get { return _row; }
 		}
 
-		public int Height
+		public int Lev
 		{ get; set; }
+
 
 		private readonly Link[] _links;
 		/// <summary>
@@ -81,9 +82,9 @@ namespace XCom
 		{
 			Index = id;
 
-			_row   = data[0];
-			_col   = data[1];
-			Height = data[2]; // NOTE: auto-converts to int-type.
+			_row = data[0];
+			_col = data[1];
+			Lev  = data[2]; // NOTE: auto-converts to int-type.
 
 			_links = new Link[LinkSlots];
 
@@ -103,13 +104,13 @@ namespace XCom
 			Attack      = (BaseModuleAttack)data[22];
 			SpawnWeight = (SpawnUsage)data[23];
 		}
-		internal RouteNode(byte id, byte row, byte col, byte height)
+		internal RouteNode(byte id, byte row, byte col, byte lev)
 		{
 			Index = id;
 
-			_col   = col;
-			_row   = row;
-			Height = height; // NOTE: auto-converts to int-type.
+			_col = col;
+			_row = row;
+			Lev  = lev; // NOTE: auto-converts to int-type.
 
 			_links = new Link[LinkSlots];
 			for (int i = 0; i != LinkSlots; ++i)
@@ -131,7 +132,7 @@ namespace XCom
 		{
 			str.WriteByte(_row);
 			str.WriteByte(_col);
-			str.WriteByte((byte)Height);
+			str.WriteByte((byte)Lev);
 			str.WriteByte((byte)0);
 
 			for (int i = 0; i != LinkSlots; ++i)
@@ -161,7 +162,7 @@ namespace XCom
 
 		public override string ToString()
 		{
-			return ("c:" + _col + " r:" + _row + " h:" + Height);
+			return ("c:" + _col + " r:" + _row + " l:" + Lev);
 		}
 
 //		public Link GetLinkedNode(int id)

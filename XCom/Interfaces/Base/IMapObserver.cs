@@ -19,9 +19,9 @@ namespace XCom.Interfaces.Base
 //		{ get; set; }
 
 
-		void OnSelectedTileChanged(IMapBase sender, SelectedTileChangedEventArgs e);
+		void OnLocationChanged(IMapBase sender, LocationChangedEventArgs e);
 
-		void OnHeightChanged(IMapBase sender, HeightChangedEventArgs e);
+		void OnLevelChanged(IMapBase sender, LevelChangedEventArgs e);
 	}
 
 
@@ -45,10 +45,10 @@ namespace XCom.Interfaces.Base
 
 
 	/// <summary>
-	/// EventArgs with a MapLocation and MapTile for when a SelectedTileChanged
+	/// EventArgs with a MapLocation and MapTile for when a LocationChanged
 	/// event fires.
 	/// </summary>
-	public sealed class SelectedTileChangedEventArgs
+	public sealed class LocationChangedEventArgs
 		:
 			EventArgs
 	{
@@ -65,7 +65,7 @@ namespace XCom.Interfaces.Base
 		}
 
 
-		internal SelectedTileChangedEventArgs(MapLocation location, MapTileBase baseTile)
+		internal LocationChangedEventArgs(MapLocation location, MapTileBase baseTile)
 		{
 			_location = location;
 			_baseTile = baseTile;
@@ -73,30 +73,22 @@ namespace XCom.Interfaces.Base
 	}
 
 	/// <summary>
-	/// EventArgs for when a HeightChanged event fires.
+	/// EventArgs for when a LevelChanged event fires.
 	/// </summary>
-	public sealed class HeightChangedEventArgs
+	public sealed class LevelChangedEventArgs
 		:
 			EventArgs
 	{
-		private readonly int _height;
-		public int Height
+		private readonly int _lev;
+		public int Level
 		{
-			get { return _height; }
+			get { return _lev; }
 		}
 
-/*		private readonly int _heightOld;
-		public int OldHeight
-		{
-			get { return _heightOld; }
-		} */
 
-
-//		public HeightChangedEventArgs(int heightOld, int heightNew)
-		internal HeightChangedEventArgs(int height)
+		internal LevelChangedEventArgs(int lev)
 		{
-			_height = height;
-//			_heightOld = heightOld;
+			_lev = lev;
 		}
 	}
 }

@@ -1,38 +1,41 @@
 ﻿namespace XCom.Interfaces.Base
 {
-	public sealed class MapTileList
+	internal sealed class MapTileList
 	{
-		private readonly MapTileBase[] _mapData;
-		private readonly MapPosition _mapPos;
+		private readonly MapTileBase[] _tileArray;
+		private readonly MapPosition   _pos;
 
-
-		internal MapTileList(int rows, int cols, int height)
-		{
-			_mapData = new MapTileBase[rows * cols * height];
-			_mapPos  = new MapPosition(rows,  cols,  height);
-		}
-
-
-		public MapTileBase this[int row, int col, int height]
+		public MapTileBase this[int row, int col, int lev]
 		{
 			get
 			{
-				if (   row    <= _mapPos.MaxRows
-					&& col    <= _mapPos.MaxCols
-					&& height <= _mapPos.MaxHeight)
+				if (   row <= _pos.MaxRows
+					&& col <= _pos.MaxCols
+					&& lev <= _pos.MaxLevs)
 				{
-					var id = _mapPos.GetLocationId(row, col, height);
-					if (id < _mapData.Length)
-						return _mapData[id];
+					var id = _pos.GetPositionId(row, col, lev);
+					if (id < _tileArray.Length)
+						return _tileArray[id];
 				}
 				return null;
 			}
-
 			set
 			{
-				var id = _mapPos.GetLocationId(row, col, height);
-				_mapData[id] = value;
+				_tileArray[_pos.GetPositionId(row, col, lev)] = value;
 			}
+		}
+
+
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="rows"></param>
+		/// <param name="cols"></param>
+		/// <param name="height"></param>
+		internal MapTileList(int rows, int cols, int height)
+		{
+			_tileArray = new MapTileBase[rows * cols * height];
+			_pos       = new MapPosition(rows,  cols,  height);
 		}
 	}
 }

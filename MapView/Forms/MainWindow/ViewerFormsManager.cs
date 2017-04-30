@@ -57,7 +57,7 @@ namespace MapView.Forms.MainWindow
 			TopView.Control.InitializeEditStrip(EditFactory);
 
 			TileView.Control.SetShowHideManager(ShowAllManager);
-			TileView.Control.Observer0SelectedTileChanged += OnSelectedTileChanged;
+			TileView.Control.Observer0SelectedTileChanged += OnLocationChanged;
 		}
 
 		/// <summary>
@@ -65,7 +65,7 @@ namespace MapView.Forms.MainWindow
 		/// in TileView.
 		/// </summary>
 		/// <param name="tile"></param>
-		private static void OnSelectedTileChanged(TileBase tile)
+		private static void OnLocationChanged(TileBase tile)
 		{
 			if (tile != null && tile.Record != null)
 				TopView.Control.SelectQuadrant(tile.Record.TileType);
@@ -93,14 +93,14 @@ namespace MapView.Forms.MainWindow
 		{
 			if (observer.MapBase != null)
 			{
-				observer.MapBase.HeightChanged -= observer.OnHeightChanged;
-				observer.MapBase.SelectedTileChanged -= observer.OnSelectedTileChanged;
+				observer.MapBase.LevelChangedEvent    -= observer.OnLevelChanged;
+				observer.MapBase.LocationChangedEvent -= observer.OnLocationChanged;
 			}
 
 			if ((observer.MapBase = baseMap) != null)
 			{
-				baseMap.HeightChanged += observer.OnHeightChanged;
-				baseMap.SelectedTileChanged += observer.OnSelectedTileChanged;
+				baseMap.LevelChangedEvent    += observer.OnLevelChanged;
+				baseMap.LocationChangedEvent += observer.OnLocationChanged;
 			}
 
 			foreach (string key in observer.MoreObservers.Keys) // ie. TopViewPanel and QuadrantsPanel

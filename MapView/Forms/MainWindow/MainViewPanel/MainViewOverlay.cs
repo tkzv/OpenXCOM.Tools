@@ -29,14 +29,14 @@ namespace MapView
 			{
 				if (_mapBase != null)
 				{
-					_mapBase.HeightChanged       -= OnHeightChanged;
-					_mapBase.SelectedTileChanged -= OnTileChange;
+					_mapBase.LevelChangedEvent        -= OnLevelChanged;
+					_mapBase.LocationChangedEvent -= OnSelectedChanged;
 				}
 
 				if ((_mapBase = value) != null)
 				{
-					_mapBase.HeightChanged       += OnHeightChanged;
-					_mapBase.SelectedTileChanged += OnTileChange;
+					_mapBase.LevelChangedEvent        += OnLevelChanged;
+					_mapBase.LocationChangedEvent += OnSelectedChanged;
 
 					SetPanelSize();
 
@@ -324,10 +324,10 @@ namespace MapView
 			{
 				var dragStart = ConvertCoordsDiamond(
 												e.X, e.Y,
-												_mapBase.CurrentHeight);
+												_mapBase.Levels);
 				var dragEnd   = ConvertCoordsDiamond(
 												e.X, e.Y,
-												_mapBase.CurrentHeight);
+												_mapBase.Levels);
 				if (   dragStart.Y >= 0 && dragStart.Y < MapBase.MapSize.Rows
 					&& dragStart.X >= 0 && dragStart.X < MapBase.MapSize.Cols)
 				{
@@ -338,7 +338,7 @@ namespace MapView
 
 					_mapBase.SelectedTile = new MapLocation(
 														dragStart.Y, dragStart.X,
-														_mapBase.CurrentHeight);
+														_mapBase.Levels);
 					Select();
 					Refresh();
 				}
@@ -365,7 +365,7 @@ namespace MapView
 			{
 				var pt = ConvertCoordsDiamond(
 											e.X, e.Y,
-											_mapBase.CurrentHeight);
+											_mapBase.Levels);
 
 				if (pt.X != _dragEnd.X || pt.Y != _dragEnd.Y)
 				{
@@ -494,7 +494,7 @@ namespace MapView
 			return Size.Empty;
 		}
 
-		private void OnTileChange(IMapBase baseMap, SelectedTileChangedEventArgs e)
+		private void OnSelectedChanged(IMapBase baseMap, LocationChangedEventArgs e)
 		{
 			var loc = e.Location;
 			var start = new Point(loc.Col, loc.Row);
@@ -503,7 +503,7 @@ namespace MapView
 			XCMainWindow.Instance.StatusBarPrintPosition(loc.Col, loc.Row);
 		}
 
-		private void OnHeightChanged(IMapBase baseMap, HeightChangedEventArgs e)
+		private void OnLevelChanged(IMapBase baseMap, LevelChangedEventArgs e)
 		{
 			Refresh();
 		}
@@ -532,7 +532,7 @@ namespace MapView
 
 				for (int h = _mapBase.MapSize.Levs - 1; h > -1; --h)
 				{
-					if (_mapBase.CurrentHeight <= h)
+					if (_mapBase.Levels <= h)
 					{
 						DrawGrid(h, g);
 
@@ -554,7 +554,7 @@ namespace MapView
 								if (isClicked)
 									DrawCursor(g, x, y, h);
 
-								if (_mapBase.CurrentHeight == h || _mapBase[r, c, h].DrawAbove)
+								if (_mapBase.Levels == h || _mapBase[r, c, h].DrawAbove)
 								{
 									var tile = (XCMapTile)_mapBase[r, c, h];
 									if (_graySelection
@@ -572,7 +572,7 @@ namespace MapView
 												x, y,
 												MainViewUnderlay.AniStep,
 												false,
-												_mapBase.CurrentHeight == h);
+												_mapBase.Levels == h);
 							}
 						}
 					}
@@ -580,7 +580,7 @@ namespace MapView
 
 //				if (_drawSelectionBox) // always false.
 				if (FirstClick && !_graySelection)
-					DrawLozengeSelected(g, _mapBase.CurrentHeight, dragRect);
+					DrawLozengeSelected(g, _mapBase.Levels, dragRect);
 			}
 		}
 
@@ -591,18 +591,18 @@ namespace MapView
 							g,
 							x, y,
 							false,
-							_mapBase.CurrentHeight == h);
+							_mapBase.Levels == h);
 		}
 
 		private void DrawGrid(int h, Graphics g)
 		{
-			if (_showGrid && _mapBase.CurrentHeight == h)
+			if (_showGrid && _mapBase.Levels == h)
 			{
 				var hWidth  = (int)(HalfWidth  * Globals.PckImageScale);
 				var hHeight = (int)(HalfHeight * Globals.PckImageScale);
 
 				var x = hWidth + _origin.X;
-				var y = (_mapBase.CurrentHeight + 1) * (hHeight * 3) + _origin.Y;
+				var y = (_mapBase.Levels + 1) * (hHeight * 3) + _origin.Y;
 
 				var xMax = _mapBase.MapSize.Rows * hWidth;
 				var yMax = _mapBase.MapSize.Rows * hHeight;

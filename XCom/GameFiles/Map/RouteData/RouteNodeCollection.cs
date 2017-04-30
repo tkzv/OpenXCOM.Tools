@@ -354,9 +354,9 @@ namespace XCom
 			}
 		}
 
-		internal RouteNode Add(byte row, byte col, byte height)
+		internal RouteNode Add(byte row, byte col, byte lev)
 		{
-			var node = new RouteNode((byte)_nodes.Count, row, col, height);
+			var node = new RouteNode((byte)_nodes.Count, row, col, lev);
 			_nodes.Add(node);
 
 			return node;
@@ -366,15 +366,15 @@ namespace XCom
 		/// Checks for and if necessary deletes nodes that are outside of a
 		/// Map's x/y/z bounds. See also RouteCheckService.CheckNodeBounds().
 		/// </summary>
-		/// <param name="newC"></param>
-		/// <param name="newR"></param>
-		/// <param name="newH"></param>
-		internal void CheckNodeBounds(int newC, int newR, int newH)
+		/// <param name="cols"></param>
+		/// <param name="rows"></param>
+		/// <param name="levs"></param>
+		internal void CheckNodeBounds(int cols, int rows, int levs)
 		{
 			var deletions = new List<RouteNode>();
 
 			foreach (var node in _nodes)
-				if (IsOutsideMap(node, newC, newR, newH))
+				if (IsOutsideMap(node, cols, rows, levs))
 					deletions.Add(node);
 
 			foreach (var entry in deletions)
@@ -385,11 +385,11 @@ namespace XCom
 				RouteNode node,
 				int cols,
 				int rows,
-				int height)
+				int levs)
 		{
-			return node.Col    < 0 || node.Col    >= cols
-				|| node.Row    < 0 || node.Row    >= rows
-				|| node.Height < 0 || node.Height >= height;
+			return node.Col < 0 || node.Col >= cols
+				|| node.Row < 0 || node.Row >= rows
+				|| node.Lev < 0 || node.Lev >= levs;
 		}
 
 //		public RmpEntry GetEntryAtHeight(byte currentHeight)
