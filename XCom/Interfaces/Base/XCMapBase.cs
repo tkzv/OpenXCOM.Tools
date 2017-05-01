@@ -29,6 +29,7 @@ namespace XCom.Interfaces.Base
 		/// <summary>
 		/// Gets this MapBase's currently displayed level.
 		/// Changing level will fire a LevelChanged event.
+		/// WARNING: Level 0 is the top level of the displayed Map.
 		/// </summary>
 		public int Level
 		{
@@ -46,7 +47,7 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// User is shown the "Do you want to save?" dialog if true.
+		/// User will be shown a dialog asking to save if true.
 		/// </summary>
 		public bool MapChanged
 		{ get; set; }
@@ -129,7 +130,7 @@ namespace XCom.Interfaces.Base
 
 		#region cTor
 		/// <summary>
-		/// cTor.
+		/// cTor. Instantiated only as the parent of XCMapFile.
 		/// </summary>
 		/// <param name="label"></param>
 		/// <param name="tiles"></param>

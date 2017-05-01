@@ -14,6 +14,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		:
 			RoutePanelParent
 	{
+		#region Fields & Properties
 		private Point _pos = new Point(-1, -1);
 		public Point Pos
 		{
@@ -25,11 +26,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private readonly Font _fontOverlay = new Font("Verdana", 7F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 		private readonly Font _fontRose    = new Font("Courier New", 22, FontStyle.Bold);
 
-		private ColorTools _penWalls;
-		private ColorTools _brushContent;
+		private ColorTools _toolWall;
+		private ColorTools _toolContent;
 
 		private Graphics     _graphics;
 		private GraphicsPath _layerFill = new GraphicsPath();
+		#endregion
 
 
 //		public void Calculate()
@@ -71,17 +73,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 //			}
 		}
 
+
 		#region Draw Methods
 		/// <summary>
 		/// Draws any wall and/or content indicators.
 		/// </summary>
 		private void DrawWallsAndContent()
 		{
-			if (_penWalls == null)
-				_penWalls = new ColorTools(RoutePens["WallColor"]);
+			if (_toolWall == null)
+				_toolWall = new ColorTools(RoutePens[RouteView.WallColor]);
 
-			if (_brushContent == null)
-				_brushContent = new ColorTools(RouteBrushes["ContentColor"], _penWalls.Pen.Width);
+			if (_toolContent == null)
+				_toolContent = new ColorTools(RouteBrushes[RouteView.ContentColor], _toolWall.Pen.Width);
 
 			_blobService.HalfWidth  = DrawAreaWidth;
 			_blobService.HalfHeight = DrawAreaHeight;
@@ -110,13 +113,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 						var tile = (XCMapTile)mapFile[r, c];
 
 						if (tile.Content != null)
-							_blobService.DrawContent(_graphics, _brushContent, x, y, tile.Content);
+							_blobService.DrawContent(_graphics, _toolContent, x, y, tile.Content);
 
 						if (tile.West != null)
-							_blobService.DrawContent(_graphics, _penWalls, x, y, tile.West);
+							_blobService.DrawContent(_graphics, _toolWall, x, y, tile.West);
 
 						if (tile.North != null)
-							_blobService.DrawContent(_graphics, _penWalls, x, y, tile.North);
+							_blobService.DrawContent(_graphics, _toolWall, x, y, tile.North);
 					}
 				}
 			}
@@ -127,7 +130,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void DrawUnselectedLink()
 		{
-			var pen = RoutePens["UnselectedLinkColor"];
+			var pen = RoutePens[RouteView.UnselectedLinkColor];
 
 			for (int
 					rSrc = 0,
@@ -187,14 +190,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 					int xSrc = Origin.X + (cSrc - rSrc)     * DrawAreaWidth;
 					int ySrc = Origin.Y + (cSrc + rSrc + 1) * DrawAreaHeight;
 
-					var pen = RoutePens["SelectedLinkColor"];
+					var pen = RoutePens[RouteView.SelectedLinkColor];
 
 					DrawLinkLine(xSrc, ySrc, node, pen, true);
 				}
 			}
 		}
 
-		private void DrawLinkLine(int xSrc, int ySrc, RouteNode node, Pen pen, bool selected)
+		private void DrawLinkLine(
+				int xSrc,
+				int ySrc,
+				RouteNode node,
+				Pen pen,
+				bool selected)
 		{
 			int xDst;
 			int yDst;
@@ -268,9 +276,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				_brushes = true;
 
-				_brushSelected   = RouteBrushes["SelectedNodeColor"];
-				_brushUnselected = RouteBrushes["UnselectedNodeColor"];
-				_brushSpawn      = RouteBrushes["SpawnNodeColor"];
+				_brushSelected   = RouteBrushes[RouteView.SelectedNodeColor];
+				_brushUnselected = RouteBrushes[RouteView.UnselectedNodeColor];
+				_brushSpawn      = RouteBrushes[RouteView.SpawnNodeColor];
 			}
 
 			_brushSelected.Color   = Color.FromArgb(Opacity, _brushSelected.Color);
@@ -340,7 +348,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 											&& MapFile.RouteFile[link.Destination].Lev < MapFile.Level)
 										{
 											_graphics.DrawLine(
-															RoutePens["UnselectedLinkColor"],
+															RoutePens[RouteView.UnselectedLinkColor],
 															x, y,
 															x, y + DrawAreaHeight * 2);
 										}
@@ -348,7 +356,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 											&&   MapFile.RouteFile[link.Destination].Lev > MapFile.Level)
 										{
 											_graphics.DrawLine(
-															RoutePens["UnselectedLinkColor"],
+															RoutePens[RouteView.UnselectedLinkColor],
 															x - DrawAreaWidth, y + DrawAreaHeight,
 															x + DrawAreaWidth, y + DrawAreaHeight);
 										}
@@ -362,7 +370,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							int infoboxY = y + DrawAreaHeight - NodeValMax / 2;
 
 							var nodePatrolPriority = (int)node.Priority;
-							DrawBox(
+							DrawImportanceMeter(
 									infoboxX,
 									infoboxY,
 									nodePatrolPriority,
@@ -370,7 +378,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 									Brushes.CornflowerBlue);
 
 							var nodeSpawnWeight = (int)node.SpawnWeight;
-							DrawBox(
+							DrawImportanceMeter(
 									infoboxX + 3,
 									infoboxY,
 									nodeSpawnWeight,
@@ -393,7 +401,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="value"></param>
 		/// <param name="max"></param>
 		/// <param name="color"></param>
-		private void DrawBox(
+		private void DrawImportanceMeter(
 				int boxX,
 				int boxY,
 				int value,
@@ -431,7 +439,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			for (int i = 0; i <= map.MapSize.Rows; ++i)
 				_graphics.DrawLine(
-								RoutePens["GridLineColor"],
+								RoutePens[RouteView.GridLineColor],
 								Origin.X - i * DrawAreaWidth,
 								Origin.Y + i * DrawAreaHeight,
 								Origin.X + ((map.MapSize.Cols - i) * DrawAreaWidth),
@@ -439,7 +447,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			for (int i = 0; i <= map.MapSize.Cols; ++i)
 				_graphics.DrawLine(
-								RoutePens["GridLineColor"],
+								RoutePens[RouteView.GridLineColor],
 								Origin.X + i * DrawAreaWidth,
 								Origin.Y + i * DrawAreaHeight,
 							   (Origin.X + i * DrawAreaWidth)  - map.MapSize.Rows * DrawAreaWidth,
@@ -567,9 +575,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				if (overlay.Y + overlay.Height > ClientRectangle.Height)
 					overlay.Y = _pos.Y - overlay.Height;
 
-				_graphics.FillRectangle(new SolidBrush(Color.FromArgb(160, 0, 0, 0)), overlay);
+				_graphics.FillRectangle(new SolidBrush(Color.FromArgb(160, Color.Black)), overlay);
 				_graphics.FillRectangle(
-									new SolidBrush(Color.FromArgb(160, 255, 255, 255)),
+									new SolidBrush(Color.FromArgb(160, Color.White)),
 									overlay.X + 2,
 									overlay.Y + 2,
 									overlay.Width  - 4,

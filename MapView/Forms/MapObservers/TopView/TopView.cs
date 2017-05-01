@@ -355,6 +355,26 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh();
 		}
 
+		/// <summary>
+		/// Gets the brushes/colors for the Floor and Content blobs.
+		/// Used by the Help screen.
+		/// </summary>
+		/// <returns>a hashtable of the brushes</returns>
+		internal Dictionary<string, SolidBrush> GetBlobBrushes()
+		{
+			return _topBrushes;
+		}
+
+		/// <summary>
+		/// Gets the pens/colors for the Westwall and Northwall blobs.
+		/// Used by the Help screen.
+		/// </summary>
+		/// <returns>a hashtable of the brushes</returns>
+		internal Dictionary<string, Pen> GetBlobPens()
+		{
+			return _topPens;
+		}
+
 //		/// <summary>
 //		/// Fires when the minimum diamond-height changes in Settings.
 //		/// </summary>

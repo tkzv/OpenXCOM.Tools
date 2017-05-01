@@ -1041,6 +1041,151 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
+		#region Settings
+		internal const string Links = "Links";
+		internal const string View  = "View";
+		internal const string Nodes = "Nodes";
+
+		internal const string UnselectedLinkColor = "UnselectedLinkColor";
+		internal const string UnselectedLinkWidth = "UnselectedLinkWidth";
+		internal const string SelectedLinkColor   = "SelectedLinkColor";
+		internal const string SelectedLinkWidth   = "SelectedLinkWidth";
+
+		internal const string WallColor           = "WallColor";
+		internal const string WallWidth           = "WallWidth";
+		internal const string ContentColor        = "ContentColor";
+
+		internal const string GridLineColor       = "GridLineColor";
+		internal const string GridLineWidth       = "GridLineWidth";
+
+		internal const string UnselectedNodeColor = "UnselectedNodeColor";
+		internal const string SelectedNodeColor   = "SelectedNodeColor";
+		internal const string SpawnNodeColor      = "SpawnNodeColor";
+		internal const string NodeOpacity         = "NodeOpacity";
+
+		/// <summary>
+		/// Loads default settings for RouteView in TopRouteView screens.
+		/// </summary>
+		protected internal override void LoadControl0Settings()
+		{
+			tsmiConnectType.SelectedIndex = 0;
+
+			var pens    = _routePanel.RoutePens;
+			var brushes = _routePanel.RouteBrushes;
+
+			var bc = new ValueChangedEventHandler(OnBrushColorChanged);
+			var pc = new ValueChangedEventHandler(OnPenColorChanged);
+			var pw = new ValueChangedEventHandler(OnPenWidthChanged);
+			var oc = new ValueChangedEventHandler(OnNodeOpacityChanged);
+
+			var pen = new Pen(new SolidBrush(Color.OrangeRed), 2);
+			pens[UnselectedLinkColor] = pen;
+			pens[UnselectedLinkWidth] = pen;
+			Settings.AddSetting(
+							UnselectedLinkColor,
+							pen.Color,
+							"Color of unselected link lines",
+							Links,
+							pc);
+			Settings.AddSetting(
+							UnselectedLinkWidth,
+							2,
+							"Width of unselected link lines",
+							Links,
+							pw);
+
+			pen = new Pen(new SolidBrush(Color.RoyalBlue), 2);
+			pens[SelectedLinkColor] = pen;
+			pens[SelectedLinkWidth] = pen;
+			Settings.AddSetting(
+							SelectedLinkColor,
+							pen.Color,
+							"Color of selected link lines",
+							Links,
+							pc);
+			Settings.AddSetting(
+							SelectedLinkWidth,
+							2,
+							"Width of selected link lines",
+							Links,
+							pw);
+
+			pen = new Pen(new SolidBrush(Color.BurlyWood), 3);
+			pens[WallColor] = pen;
+			pens[WallWidth] = pen;
+			Settings.AddSetting(
+							WallColor,
+							pen.Color,
+							"Color of wall indicators",
+							View,
+							pc);
+			Settings.AddSetting(
+							WallWidth,
+							3,
+							"Width of wall indicators",
+							View,
+							pw);
+
+			var brush = new SolidBrush(Color.DarkGoldenrod);
+			brushes[ContentColor] = brush;
+			Settings.AddSetting(
+							ContentColor,
+							brush.Color,
+							"Color of content indicators",
+							View,
+							bc);
+
+			pen = new Pen(new SolidBrush(Color.Black), 1);
+			pens[GridLineColor] = pen;
+			pens[GridLineWidth] = pen;
+			Settings.AddSetting(
+							GridLineColor,
+							pen.Color,
+							"Color of grid lines",
+							View,
+							pc);
+			Settings.AddSetting(
+							GridLineWidth,
+							1,
+							"Width of grid lines",
+							View,
+							pw);
+
+			brush = new SolidBrush(Color.MediumSeaGreen);
+			brushes[UnselectedNodeColor] = brush;
+			Settings.AddSetting(
+							UnselectedNodeColor,
+							brush.Color,
+							"Color of unselected nodes",
+							Nodes,
+							bc);
+
+			brush = new SolidBrush(Color.RoyalBlue);
+			brushes[SelectedNodeColor] = brush;
+			Settings.AddSetting(
+							SelectedNodeColor,
+							brush.Color,
+							"Color of selected nodes",
+							Nodes,
+							bc);
+
+			brush = new SolidBrush(Color.GreenYellow);
+			brushes[SpawnNodeColor] = brush;
+			Settings.AddSetting(
+							SpawnNodeColor,
+							brush.Color,
+							"Color of spawn nodes",
+							Nodes,
+							bc);
+
+			Settings.AddSetting(
+							NodeOpacity,
+							255,
+							"Opacity of node colors (0..255)",
+							Nodes,
+							oc);
+		}
+
 		private void OnBrushColorChanged(object sender, string key, object val)
 		{
 			_routePanel.RouteBrushes[key].Color = (Color)val;
@@ -1066,126 +1211,22 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		/// <summary>
-		/// Loads default settings for RouteView in TopRouteView screens.
+		/// Gets the wall-color for use by the Help screen.
 		/// </summary>
-		protected internal override void LoadControl0Settings()
+		/// <returns></returns>
+		internal Dictionary<string, Pen> GetWallPen()
 		{
-			tsmiConnectType.SelectedIndex = 0;
-
-			var pens    = _routePanel.RoutePens;
-			var brushes = _routePanel.RouteBrushes;
-
-			var bc = new ValueChangedEventHandler(OnBrushColorChanged);
-			var pc = new ValueChangedEventHandler(OnPenColorChanged);
-			var pw = new ValueChangedEventHandler(OnPenWidthChanged);
-			var oc = new ValueChangedEventHandler(OnNodeOpacityChanged);
-
-			var penRed = new Pen(new SolidBrush(Color.Red), 2);
-			pens["UnselectedLinkColor"] = penRed;
-			pens["UnselectedLinkWidth"] = penRed;
-			Settings.AddSetting(
-							"UnselectedLinkColor",
-							penRed.Color,
-							"Color of unselected link lines",
-							"Links",
-							pc);
-			Settings.AddSetting(
-							"UnselectedLinkWidth",
-							2,
-							"Width of unselected link lines",
-							"Links",
-							pw);
-
-			var penBlue = new Pen(new SolidBrush(Color.Blue), 2);
-			pens["SelectedLinkColor"] = penBlue;
-			pens["SelectedLinkWidth"] = penBlue;
-			Settings.AddSetting(
-							"SelectedLinkColor",
-							penBlue.Color,
-							"Color of selected link lines",
-							"Links",
-							pc);
-			Settings.AddSetting(
-							"SelectedLinkWidth",
-							2,
-							"Width of selected link lines",
-							"Links",
-							pw);
-
-			var penWalls = new Pen(new SolidBrush(Color.Black), 4);
-			pens["WallColor"] = penWalls;
-			pens["WallWidth"] = penWalls;
-			Settings.AddSetting(
-							"WallColor",
-							penWalls.Color,
-							"Color of wall indicators",
-							"View",
-							pc);
-			Settings.AddSetting(
-							"WallWidth",
-							4,
-							"Width of wall indicators",
-							"View",
-							pw);
-
-			var brushContent = new SolidBrush(Color.DarkGray);
-			brushes["ContentColor"] = brushContent;
-			Settings.AddSetting(
-							"ContentColor",
-							brushContent.Color,
-							"Color of content indicators",
-							"View",
-							bc);
-
-			var penGrid = new Pen(new SolidBrush(Color.Black), 1);
-			pens["GridLineColor"] = penGrid;
-			pens["GridLineWidth"] = penGrid;
-			Settings.AddSetting(
-							"GridLineColor",
-							penGrid.Color,
-							"Color of grid lines",
-							"View",
-							pc);
-			Settings.AddSetting(
-							"GridLineWidth",
-							1,
-							"Width of grid lines",
-							"View",
-							pw);
-
-			var brushNode = new SolidBrush(Color.Green);
-			brushes["UnselectedNodeColor"] = brushNode;
-			Settings.AddSetting(
-							"UnselectedNodeColor",
-							brushNode.Color,
-							"Color of unselected nodes",
-							"Nodes",
-							bc);
-
-			var brushSelected = new SolidBrush(Color.Blue);
-			brushes["SelectedNodeColor"] = brushSelected;
-			Settings.AddSetting(
-							"SelectedNodeColor",
-							brushSelected.Color,
-							"Color of selected nodes",
-							"Nodes",
-							bc);
-
-			var brushSpawn = new SolidBrush(Color.GreenYellow);
-			brushes["SpawnNodeColor"] = brushSpawn;
-			Settings.AddSetting(
-							"SpawnNodeColor",
-							brushSpawn.Color,
-							"Color of spawn nodes",
-							"Nodes",
-							bc);
-
-			Settings.AddSetting(
-							"NodeOpacity",
-							255,
-							"Opacity of node colors (0..255)",
-							"Nodes",
-							oc);
+			return _routePanel.RoutePens;
 		}
+
+		/// <summary>
+		/// Gets the content-color for use by the Help screen.
+		/// </summary>
+		/// <returns></returns>
+		internal Dictionary<string, SolidBrush> GetContentBrush()
+		{
+			return _routePanel.RouteBrushes;
+		}
+		#endregion
 	}
 }

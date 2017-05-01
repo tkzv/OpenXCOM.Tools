@@ -385,6 +385,24 @@ namespace MapView
 				AddTileset(GameInfo.TilesetInfo.Tilesets[key]);
 		}
 
+
+		#region Settings
+		const string MapView             = "MapView";
+		const string Main                = "Main";
+
+		const string Animation           = "Animation";
+		const string Doors               = "Doors";
+		const string SaveWindowPositions = "SaveWindowPositions";
+//		const string SaveOnExit          = "SaveOnExit";
+
+		const string ShowGrid            = "ShowGrid";
+		const string GridLayerColor      = "GridLayerColor";
+		const string GridLineColor       = "GridLineColor";
+		const string GridLineWidth       = "GridLineWidth";
+
+		const string GraySelection       = "GraySelection";
+
+
 		private void LoadSettings()
 		{
 			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
@@ -405,13 +423,13 @@ namespace MapView
 							switch (keyval.Key.ToString().ToUpperInvariant())
 							{
 								case "LEFT": // TODO: Error handling. ->
-									Left = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+									Left   = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 								case "TOP":
-									Top = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+									Top    = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 								case "WIDTH":
-									Width = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+									Width  = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 								case "HEIGHT":
 									Height = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
@@ -437,63 +455,63 @@ namespace MapView
 //				keySoftware.Close();
 //			}
 
-			var handler  = new ValueChangedEventHandler(OnSettingChange);
-//			Color.FromArgb(175, 69, 100, 129)
+			var handler = new ValueChangedEventHandler(OnSettingChange);
 
 			Settings.AddSetting(
-							"Animation",
+							Animation,
 							MainViewUnderlay.IsAnimated,
 							"If true the sprites will animate",
-							"Main",
+							Main,
 							handler);
 			Settings.AddSetting(
-							"Doors",
+							Doors,
 							false,
 							"If true the doors will animate",
-							"Main",
+							Main,
 							handler);
 			Settings.AddSetting(
-							"SaveWindowPositions",
+							SaveWindowPositions,
 							true, //PathsEditor.SaveRegistry,
 							"If true the window positions and sizes will be saved",
-							"Main",
+							Main,
 							handler);
 
 			Settings.AddSetting(
-							"ShowGrid",
+							ShowGrid,
 							MainViewUnderlay.Instance.MainView.ShowGrid,
 							"If true a grid will display at the current level of editing",
-							"MapView",
+							MapView,
 							null, MainViewUnderlay.Instance.MainView);
 			Settings.AddSetting(
-							"GridLayerColor",
+							GridLayerColor,
 							MainViewUnderlay.Instance.MainView.GridLayerColor,
 							"Color of the grid (a,r,g,b)",
-							"MapView",
+							MapView,
 							null, MainViewUnderlay.Instance.MainView);
 			Settings.AddSetting(
-							"GridLineColor",
+							GridLineColor,
 							MainViewUnderlay.Instance.MainView.GridLineColor,
 							"Color of the lines that make up the grid",
-							"MapView",
+							MapView,
 							null, MainViewUnderlay.Instance.MainView);
 			Settings.AddSetting(
-							"GridLineWidth",
+							GridLineWidth,
 							MainViewUnderlay.Instance.MainView.GridLineWidth,
 							"Width of the grid lines in pixels",
-							"MapView",
+							MapView,
 							null, MainViewUnderlay.Instance.MainView);
 			Settings.AddSetting(
-							"GraySelection",
+							GraySelection,
 							MainViewUnderlay.Instance.MainView.GraySelection,
 							"If true the selection area will show up in gray",
-							"MapView",
+							MapView,
 							null, MainViewUnderlay.Instance.MainView);
+
 //			Settings.AddSetting(
-//							"SaveOnExit",
+//							SaveOnExit,
 //							true,
 //							"If true these settings will be saved on program exit",
-//							"Main");
+//							Main);
 		}
 
 		private void OnSettingChange(object sender, string key, object val)
@@ -501,7 +519,7 @@ namespace MapView
 			Settings[key].Value = val;
 			switch (key)
 			{
-				case "Animation":
+				case Animation:
 					miOn.Checked = (bool)val;		// NOTE: 'miOn.Checked' and 'miOff.Checked' are used
 					miOff.Checked = !miOn.Checked;	// by the F1 and F2 keys to switch animations on/off.
 					MainViewUnderlay.Animate(miOn.Checked);
@@ -520,7 +538,7 @@ namespace MapView
 						ToggleDoorSprites(true);
 					break;
 
-				case "Doors":
+				case Doors:
 					miDoors.Checked = (bool)val; // NOTE: 'miDoors.Checked' is used by the F3 key to toggle door animations.
 
 					if (miOn.Checked)
@@ -541,29 +559,31 @@ namespace MapView
 						ToggleDoorSprites(false);
 					break;
 
-				case "SaveWindowPositions":
+				case SaveWindowPositions:
 //					PathsEditor.SaveRegistry = (bool)val; // TODO: find a place to cache this value.
 					break;
 
-				case "ShowGrid":
+				case ShowGrid:
 					MainViewUnderlay.Instance.MainView.ShowGrid = (bool)val;
 					break;
 
-				case "GridLayerColor":
+				case GridLayerColor:
 					MainViewUnderlay.Instance.MainView.GridLayerColor = (Color)val;
 					break;
 
-				case "GridLineColor":
+				case GridLineColor:
 					MainViewUnderlay.Instance.MainView.GridLineColor = (Color)val;
 					break;
 
-				case "GridLineWidth":
+				case GridLineWidth:
 					MainViewUnderlay.Instance.MainView.GridLineWidth = (int)val;
 					break;
 
-				// NOTE: "GraySelection" is handled. reasons ...
+				// NOTE: 'GraySelection' is handled. reasons ...
 			}
 		}
+		#endregion
+
 
 		private void OnCloseSaveRegistry(object sender, CancelEventArgs args)
 		{
@@ -667,7 +687,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnOnClick(object sender, EventArgs e)
 		{
-			OnSettingChange(this, "Animation", true);
+			OnSettingChange(this, Animation, true);
 		}
 
 		/// <summary>
@@ -677,7 +697,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnOffClick(object sender, EventArgs e)
 		{
-			OnSettingChange(this, "Animation", false);
+			OnSettingChange(this, Animation, false);
 		}
 
 		/// <summary>
@@ -687,7 +707,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnToggleDoorsClick(object sender, EventArgs e)
 		{
-			OnSettingChange(this, "Doors", !miDoors.Checked);
+			OnSettingChange(this, Doors, !miDoors.Checked);
 		}
 
 		private void OnSaveClick(object sender, EventArgs e)
@@ -773,7 +793,7 @@ namespace MapView
 				tsslDimensions.Text = (mapBase != null) ? mapBase.MapSize.ToString()
 														: "size: n/a";
 
-				Settings["Doors"].Value = false; // toggle off door-animations; not sure that this is necessary to do.
+				Settings[Doors].Value = false; // toggle off door-animations; not sure that this is necessary to do.
 				miDoors.Checked = false;
 				ToggleDoorSprites(false);
 

@@ -54,7 +54,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private McdViewerForm _mcdInfoForm;
 
-		private Hashtable _brushes = new Hashtable();
+		private Hashtable _brushesSpecial = new Hashtable();
 		#endregion
 
 
@@ -231,7 +231,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			foreach (string specialType in Enum.GetNames(typeof(SpecialType)))
 			{
 				int i = (int)Enum.Parse(typeof(SpecialType), specialType);
-				_brushes[specialType] = new SolidBrush(TileColors[i]);
+				_brushesSpecial[specialType] = new SolidBrush(TileColors[i]);
 
 				switch (i)
 				{
@@ -289,12 +289,12 @@ namespace MapView.Forms.MapObservers.TileViews
 				// See OnSpecialPropertyColorChanged() below_
 				Settings.AddSetting(
 								specialType,
-								((SolidBrush)_brushes[specialType]).Color,
+								((SolidBrush)_brushesSpecial[specialType]).Color,
 								desc,					// appears as a tip at the bottom of the Options screen.
 								"TileBackgroundColors",	// this identifies what Option category the setting appears under.
 								OnSpecialPropertyColorChanged);
 			}
-			TilePanel.SetSpecialPropertyColors(_brushes);
+			TilePanel.SetSpecialPropertyColors(_brushesSpecial);
 
 			VolutarSettingService.LoadSettings(Settings);
 		}
@@ -308,17 +308,18 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="val">the brush to insert</param>
 		private void OnSpecialPropertyColorChanged(object sender, string key, object val)
 		{
-			((SolidBrush)_brushes[key]).Color = (Color)val;
+			((SolidBrush)_brushesSpecial[key]).Color = (Color)val;
 			Refresh();
 		}
 
 		/// <summary>
 		/// Gets the brushes/colors for all tiletypes' Special Properties.
+		/// Used by the Help screen.
 		/// </summary>
 		/// <returns>a hashtable of the brushes</returns>
 		internal Hashtable GetSpecialPropertyBrushes()
 		{
-			return _brushes;
+			return _brushesSpecial;
 		}
 
 

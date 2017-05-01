@@ -11,14 +11,14 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	public delegate void MouseDragEventHandler();
+	internal delegate void MouseDragEventHandler();
 
 
 	internal sealed class MainViewOverlay
 		:
 			Panel
 	{
-		public event MouseDragEventHandler MouseDragEvent;
+		internal event MouseDragEventHandler MouseDragEvent;
 
 
 		private XCMapBase _mapBase;
@@ -60,7 +60,7 @@ namespace MapView
 
 		private Brush _brushLayer;
 
-		private Color _colorLayer = Color.FromArgb(175, 69, 100, 129);	// default color for the grid-layer
+		private Color _colorLayer = Color.FromArgb(175, 69, 100, 129);	// initialization color for the grid-layer
 		public Color GridLayerColor // public for Reflection.			// TODO: get that from Settings, or other ...
 		{
 			get { return _colorLayer; }
@@ -121,7 +121,7 @@ namespace MapView
 
 		/// <summary>
 		/// If true draws a translucent red box around selected tiles ->
-		/// superceded by using GraySelection (false) property.
+		/// superceded by using GraySelection(false) property.
 		/// </summary>
 //		private bool _drawSelectionBox;
 //		public bool DrawSelectionBox
@@ -465,8 +465,8 @@ namespace MapView
 			if (_mapBase != null)
 			{
 				var size = GetPanelSizeRequired(Globals.PckImageScale);
-				Width    = size.Width;
-				Height   = size.Height;
+				Width  = size.Width;
+				Height = size.Height;
 			}
 		}
 
@@ -497,8 +497,8 @@ namespace MapView
 		private void OnSelectedChanged(XCMapBase mapBase, LocationChangedEventArgs e)
 		{
 			var loc = e.Location;
-			var start = new Point(loc.Col, loc.Row);
-			SetDrag(start, _dragEnd);
+			var dragStart = new Point(loc.Col, loc.Row);
+			SetDrag(dragStart, _dragEnd);
 
 			XCMainWindow.Instance.StatusBarPrintPosition(loc.Col, loc.Row);
 		}

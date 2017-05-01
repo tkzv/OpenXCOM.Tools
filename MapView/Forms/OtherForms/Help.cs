@@ -15,11 +15,6 @@ namespace MapView
 		:
 			Form
 	{
-		#region Fields
-		private Hashtable _specialBrushes;
-		#endregion
-
-
 		#region cTor
 		/// <summary>
 		/// cTor.
@@ -33,139 +28,226 @@ namespace MapView
 		#endregion
 
 
+		#region Methods
 		/// <summary>
-		/// Updates the special property colors via an arcane methodology from
-		/// the user's custom Options.
+		/// Wraps the several color-updates into one call.
 		/// </summary>
-		internal void UpdateSpecialPropertyColors()
+		internal void UpdateColors()
+		{
+			UpdateTopViewBlobColors();
+			UpdateRouteViewBlobColors();
+			UpdateSpecialPropertyColors();
+		}
+
+		/// <summary>
+		/// Updates the TopView blob colors via an arcane methodology from the
+		/// user's custom Options.
+		/// </summary>
+		private void UpdateTopViewBlobColors()
+		{
+			var pens    = MapView.Forms.MainWindow.ViewerFormsManager.TopView.Control.GetBlobPens();
+			var brushes = MapView.Forms.MainWindow.ViewerFormsManager.TopView.Control.GetBlobBrushes();
+
+			Color color = Color.Empty;
+
+			string partType = MapView.Forms.MapObservers.TopViews.TopView.FloorColor;
+			if (brushes.ContainsKey(partType))
+			{
+				color = ((SolidBrush)brushes[partType]).Color;
+				label7.BackColor = color;
+				label7.ForeColor = GetTextColor(color);
+			}
+
+			partType = MapView.Forms.MapObservers.TopViews.TopView.WestColor;
+			if (pens.ContainsKey(partType))
+			{
+				color = ((Pen)pens[partType]).Color;
+				label8.BackColor = color;
+				label8.ForeColor = GetTextColor(color);
+			}
+
+			partType = MapView.Forms.MapObservers.TopViews.TopView.NorthColor;
+			if (pens.ContainsKey(partType))
+			{
+				color = ((Pen)pens[partType]).Color;
+				label9.BackColor = color;
+				label9.ForeColor = GetTextColor(color);
+			}
+
+			partType = MapView.Forms.MapObservers.TopViews.TopView.ContentColor;
+			if (brushes.ContainsKey(partType))
+			{
+				color = ((SolidBrush)brushes[partType]).Color;
+				label10.BackColor = color;
+				label10.ForeColor = GetTextColor(color);
+			}
+		}
+
+		/// <summary>
+		/// Updates the RouteView blob colors via an arcane methodology from the
+		/// user's custom Options.
+		/// </summary>
+		private void UpdateRouteViewBlobColors()
+		{
+			var penWall      = MapView.Forms.MainWindow.ViewerFormsManager.RouteView.Control.GetWallPen();
+			var brushContent = MapView.Forms.MainWindow.ViewerFormsManager.RouteView.Control.GetContentBrush();
+
+			Color color = Color.Empty;
+
+			string partType = MapView.Forms.MapObservers.RouteViews.RouteView.WallColor;
+			if (penWall.ContainsKey(partType))
+			{
+				color = ((Pen)penWall[partType]).Color;
+
+				label14.BackColor = color;
+				label15.BackColor = color;
+
+				label14.ForeColor = GetTextColor(color);
+				label15.ForeColor = GetTextColor(color);
+			}
+
+			partType = MapView.Forms.MapObservers.RouteViews.RouteView.ContentColor;
+			if (brushContent.ContainsKey(partType))
+			{
+				color = ((SolidBrush)brushContent[partType]).Color;
+				label16.BackColor = color;
+				label16.ForeColor = GetTextColor(color);
+			}
+		}
+
+		/// <summary>
+		/// Updates TileView's special property colors via an arcane methodology
+		/// from the user's custom Options.
+		/// </summary>
+		private void UpdateSpecialPropertyColors()
 		{
 			// TODO: update special property colors from Settings without
 			// requiring that the Help screen be reloaded. Neither form
 			// (Settings or Help) is modal, so the code can't rely on that
 			// user-forced effect.
-			_specialBrushes = MapView.Forms.MainWindow.ViewerFormsManager.TileView.Control.GetSpecialPropertyBrushes();
+			var brushesSpecial = MapView.Forms.MainWindow.ViewerFormsManager.TileView.Control.GetSpecialPropertyBrushes();
 
 			Color color = Color.Empty;
 
 			// TODO: iterate through the labels using a function-pointer/delegate
 			// if possible.
 
-			string specialType = Enum.GetName(typeof(SpecialType), 0);	// "Tile"
-			if (_specialBrushes.ContainsKey(specialType))
+			string specialType = Enum.GetName(typeof(SpecialType), 0);	// "Standard"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType00.BackColor = color;
 				lblType00.ForeColor = GetTextColor(color);
 			}
 
-			specialType = Enum.GetName(typeof(SpecialType), 1);			// "StartPoint"
-			if (_specialBrushes.ContainsKey(specialType))
+			specialType = Enum.GetName(typeof(SpecialType), 1);			// "EntryPoint"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType01.BackColor = color;
 				lblType01.ForeColor = GetTextColor(color);
 			}
 
-			specialType = Enum.GetName(typeof(SpecialType), 2);			// "IonBeamAccel"
-			if (_specialBrushes.ContainsKey(specialType))
+			specialType = Enum.GetName(typeof(SpecialType), 2);			// "PowerSource"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType02.BackColor = color;
 				lblType02.ForeColor = GetTextColor(color);
 			}
 
-			specialType = Enum.GetName(typeof(SpecialType), 3);			// "DestroyObjective"
-			if (_specialBrushes.ContainsKey(specialType))
+			specialType = Enum.GetName(typeof(SpecialType), 3);			// "Navigation"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType03.BackColor = color;
 				lblType03.ForeColor = GetTextColor(color);
 			}
 
-			specialType = Enum.GetName(typeof(SpecialType), 4);			// "MagneticNav"
-			if (_specialBrushes.ContainsKey(specialType))
+			specialType = Enum.GetName(typeof(SpecialType), 4);			// "Construction"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType04.BackColor = color;
 				lblType04.ForeColor = GetTextColor(color);
 			}
 
-			specialType = Enum.GetName(typeof(SpecialType), 5);			// "AlienCryo"
-			if (_specialBrushes.ContainsKey(specialType))
+			specialType = Enum.GetName(typeof(SpecialType), 5);			// "Food"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType05.BackColor = color;
 				lblType05.ForeColor = GetTextColor(color);
 			}
 
-			specialType = Enum.GetName(typeof(SpecialType), 6);			// "AlienClon"
-			if (_specialBrushes.ContainsKey(specialType))
+			specialType = Enum.GetName(typeof(SpecialType), 6);			// "Reproduction"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType06.BackColor = color;
 				lblType06.ForeColor = GetTextColor(color);
 			}
 
-			specialType = Enum.GetName(typeof(SpecialType), 7);			// "AlienLearn"
-			if (_specialBrushes.ContainsKey(specialType))
+			specialType = Enum.GetName(typeof(SpecialType), 7);			// "Entertainment"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType07.BackColor = color;
 				lblType07.ForeColor = GetTextColor(color);
 			}
 
-			specialType = Enum.GetName(typeof(SpecialType), 8);			// "AlienImplant"
-			if (_specialBrushes.ContainsKey(specialType))
+			specialType = Enum.GetName(typeof(SpecialType), 8);			// "Surgery"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType08.BackColor = color;
 				lblType08.ForeColor = GetTextColor(color);
 			}
 
-			specialType = Enum.GetName(typeof(SpecialType), 9);			// "Unknown9"
-			if (_specialBrushes.ContainsKey(specialType))
+			specialType = Enum.GetName(typeof(SpecialType), 9);			// "ExaminationRoom"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType09.BackColor = color;
 				lblType09.ForeColor = GetTextColor(color);
 			}
 
-			specialType = Enum.GetName(typeof(SpecialType), 10);		// "AlienPlastics"
-			if (_specialBrushes.ContainsKey(specialType))
+			specialType = Enum.GetName(typeof(SpecialType), 10);		// "Alloys"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType10.BackColor = color;
 				lblType10.ForeColor = GetTextColor(color);
 			}
 
-			specialType = Enum.GetName(typeof(SpecialType), 11);		// "ExamRoom"
-			if (_specialBrushes.ContainsKey(specialType))
+			specialType = Enum.GetName(typeof(SpecialType), 11);		// "Habitat"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType11.BackColor = color;
 				lblType11.ForeColor = GetTextColor(color);
 			}
 
 			specialType = Enum.GetName(typeof(SpecialType), 12);		// "DeadTile"
-			if (_specialBrushes.ContainsKey(specialType))
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType12.BackColor = color;
 				lblType12.ForeColor = GetTextColor(color);
 			}
 
-			specialType = Enum.GetName(typeof(SpecialType), 13);		// "EndPoint"
-			if (_specialBrushes.ContainsKey(specialType))
+			specialType = Enum.GetName(typeof(SpecialType), 13);		// "ExitPoint"
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType13.BackColor = color;
 				lblType13.ForeColor = GetTextColor(color);
 			}
 
 			specialType = Enum.GetName(typeof(SpecialType), 14);		// "MustDestroy"
-			if (_specialBrushes.ContainsKey(specialType))
+			if (brushesSpecial.ContainsKey(specialType))
 			{
-				color = ((SolidBrush)_specialBrushes[specialType]).Color;
+				color = ((SolidBrush)brushesSpecial[specialType]).Color;
 				lblType14.BackColor = color;
 				lblType14.ForeColor = GetTextColor(color);
 			}
@@ -182,6 +264,7 @@ namespace MapView
 			return ((int)color.R + color.G + color.B > 485) ? Color.DarkSlateBlue
 															: Color.Snow;
 		}
+		#endregion
 
 
 		#region Event Calls
@@ -281,32 +364,32 @@ namespace MapView
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tpTopView = new System.Windows.Forms.TabPage();
-			this.label23 = new System.Windows.Forms.Label();
+			this.gbTopViewColors = new System.Windows.Forms.GroupBox();
+			this.label7 = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
+			this.label10 = new System.Windows.Forms.Label();
+			this.label8 = new System.Windows.Forms.Label();
 			this.label22 = new System.Windows.Forms.Label();
 			this.label11 = new System.Windows.Forms.Label();
-			this.label10 = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
-			this.label8 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.tpRouteView = new System.Windows.Forms.TabPage();
-			this.label24 = new System.Windows.Forms.Label();
+			this.gbRouteViewColors = new System.Windows.Forms.GroupBox();
+			this.label16 = new System.Windows.Forms.Label();
+			this.label15 = new System.Windows.Forms.Label();
+			this.label14 = new System.Windows.Forms.Label();
 			this.label20 = new System.Windows.Forms.Label();
 			this.label18 = new System.Windows.Forms.Label();
 			this.label13 = new System.Windows.Forms.Label();
-			this.label14 = new System.Windows.Forms.Label();
-			this.label15 = new System.Windows.Forms.Label();
-			this.label16 = new System.Windows.Forms.Label();
 			this.label21 = new System.Windows.Forms.Label();
 			this.tpTileView = new System.Windows.Forms.TabPage();
 			this.label26 = new System.Windows.Forms.Label();
 			this.label25 = new System.Windows.Forms.Label();
 			this.rbTftd = new System.Windows.Forms.RadioButton();
 			this.rbUfo = new System.Windows.Forms.RadioButton();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.gbTileViewColors = new System.Windows.Forms.GroupBox();
 			this.lblType09 = new System.Windows.Forms.Label();
 			this.lblType14 = new System.Windows.Forms.Label();
 			this.lblType13 = new System.Windows.Forms.Label();
@@ -326,9 +409,11 @@ namespace MapView
 			this.tabMain.SuspendLayout();
 			this.tpMainView.SuspendLayout();
 			this.tpTopView.SuspendLayout();
+			this.gbTopViewColors.SuspendLayout();
 			this.tpRouteView.SuspendLayout();
+			this.gbRouteViewColors.SuspendLayout();
 			this.tpTileView.SuspendLayout();
-			this.groupBox1.SuspendLayout();
+			this.gbTileViewColors.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabMain
@@ -391,32 +476,84 @@ namespace MapView
 			// 
 			// tpTopView
 			// 
-			this.tpTopView.Controls.Add(this.label23);
+			this.tpTopView.Controls.Add(this.gbTopViewColors);
 			this.tpTopView.Controls.Add(this.label22);
 			this.tpTopView.Controls.Add(this.label11);
-			this.tpTopView.Controls.Add(this.label10);
-			this.tpTopView.Controls.Add(this.label9);
-			this.tpTopView.Controls.Add(this.label8);
-			this.tpTopView.Controls.Add(this.label7);
 			this.tpTopView.Controls.Add(this.label6);
 			this.tpTopView.Controls.Add(this.label5);
 			this.tpTopView.Controls.Add(this.label4);
 			this.tpTopView.Controls.Add(this.label3);
-			this.tpTopView.Location = new System.Drawing.Point(4, 22);
+			this.tpTopView.Location = new System.Drawing.Point(4, 21);
 			this.tpTopView.Name = "tpTopView";
-			this.tpTopView.Size = new System.Drawing.Size(446, 250);
+			this.tpTopView.Size = new System.Drawing.Size(446, 251);
 			this.tpTopView.TabIndex = 1;
 			this.tpTopView.Text = "Top View";
 			// 
-			// label23
+			// gbTopViewColors
 			// 
-			this.label23.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label23.ForeColor = System.Drawing.Color.Red;
-			this.label23.Location = new System.Drawing.Point(85, 220);
-			this.label23.Name = "label23";
-			this.label23.Size = new System.Drawing.Size(65, 15);
-			this.label23.TabIndex = 10;
-			this.label23.Text = "Northwall";
+			this.gbTopViewColors.BackColor = System.Drawing.SystemColors.ControlLight;
+			this.gbTopViewColors.Controls.Add(this.label7);
+			this.gbTopViewColors.Controls.Add(this.label9);
+			this.gbTopViewColors.Controls.Add(this.label10);
+			this.gbTopViewColors.Controls.Add(this.label8);
+			this.gbTopViewColors.Location = new System.Drawing.Point(10, 175);
+			this.gbTopViewColors.Name = "gbTopViewColors";
+			this.gbTopViewColors.Size = new System.Drawing.Size(430, 55);
+			this.gbTopViewColors.TabIndex = 11;
+			this.gbTopViewColors.TabStop = false;
+			this.gbTopViewColors.Text = "Tile Colors";
+			// 
+			// label7
+			// 
+			this.label7.BackColor = System.Drawing.SystemColors.ControlLight;
+			this.label7.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.label7.Location = new System.Drawing.Point(10, 20);
+			this.label7.Name = "label7";
+			this.label7.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.label7.Size = new System.Drawing.Size(95, 25);
+			this.label7.TabIndex = 4;
+			this.label7.Text = "floor";
+			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// label9
+			// 
+			this.label9.BackColor = System.Drawing.SystemColors.ControlLight;
+			this.label9.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label9.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.label9.Location = new System.Drawing.Point(220, 20);
+			this.label9.Name = "label9";
+			this.label9.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.label9.Size = new System.Drawing.Size(95, 25);
+			this.label9.TabIndex = 10;
+			this.label9.Text = "north";
+			this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// label10
+			// 
+			this.label10.BackColor = System.Drawing.SystemColors.ControlLight;
+			this.label10.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label10.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.label10.Location = new System.Drawing.Point(325, 20);
+			this.label10.Name = "label10";
+			this.label10.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.label10.Size = new System.Drawing.Size(95, 25);
+			this.label10.TabIndex = 5;
+			this.label10.Text = "content";
+			this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// label8
+			// 
+			this.label8.BackColor = System.Drawing.SystemColors.ControlLight;
+			this.label8.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label8.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.label8.Location = new System.Drawing.Point(115, 20);
+			this.label8.Name = "label8";
+			this.label8.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.label8.Size = new System.Drawing.Size(95, 25);
+			this.label8.TabIndex = 6;
+			this.label8.Text = "west";
+			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// label22
 			// 
@@ -434,44 +571,6 @@ namespace MapView
 			this.label11.Size = new System.Drawing.Size(440, 15);
 			this.label11.TabIndex = 8;
 			this.label11.Text = "Setting the size will make things larger/smaller.";
-			// 
-			// label10
-			// 
-			this.label10.Location = new System.Drawing.Point(5, 175);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(70, 15);
-			this.label10.TabIndex = 7;
-			this.label10.Text = "Tile Colors:";
-			// 
-			// label9
-			// 
-			this.label9.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label9.ForeColor = System.Drawing.Color.Red;
-			this.label9.Location = new System.Drawing.Point(85, 205);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(65, 15);
-			this.label9.TabIndex = 6;
-			this.label9.Text = "Westwall";
-			// 
-			// label8
-			// 
-			this.label8.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label8.ForeColor = System.Drawing.Color.Green;
-			this.label8.Location = new System.Drawing.Point(85, 190);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(65, 15);
-			this.label8.TabIndex = 5;
-			this.label8.Text = "Content";
-			// 
-			// label7
-			// 
-			this.label7.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-			this.label7.Location = new System.Drawing.Point(85, 175);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(65, 15);
-			this.label7.TabIndex = 4;
-			this.label7.Text = "Floor";
 			// 
 			// label6
 			// 
@@ -507,29 +606,65 @@ namespace MapView
 			// 
 			// tpRouteView
 			// 
-			this.tpRouteView.Controls.Add(this.label24);
+			this.tpRouteView.Controls.Add(this.gbRouteViewColors);
 			this.tpRouteView.Controls.Add(this.label20);
 			this.tpRouteView.Controls.Add(this.label18);
 			this.tpRouteView.Controls.Add(this.label13);
-			this.tpRouteView.Controls.Add(this.label14);
-			this.tpRouteView.Controls.Add(this.label15);
-			this.tpRouteView.Controls.Add(this.label16);
 			this.tpRouteView.Controls.Add(this.label21);
-			this.tpRouteView.Location = new System.Drawing.Point(4, 22);
+			this.tpRouteView.Location = new System.Drawing.Point(4, 21);
 			this.tpRouteView.Name = "tpRouteView";
-			this.tpRouteView.Size = new System.Drawing.Size(446, 250);
+			this.tpRouteView.Size = new System.Drawing.Size(446, 251);
 			this.tpRouteView.TabIndex = 2;
 			this.tpRouteView.Text = "Route View";
 			// 
-			// label24
+			// gbRouteViewColors
 			// 
-			this.label24.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label24.ForeColor = System.Drawing.Color.Black;
-			this.label24.Location = new System.Drawing.Point(90, 145);
-			this.label24.Name = "label24";
-			this.label24.Size = new System.Drawing.Size(65, 15);
-			this.label24.TabIndex = 20;
-			this.label24.Text = "Northwall";
+			this.gbRouteViewColors.BackColor = System.Drawing.SystemColors.ControlLight;
+			this.gbRouteViewColors.Controls.Add(this.label16);
+			this.gbRouteViewColors.Controls.Add(this.label15);
+			this.gbRouteViewColors.Controls.Add(this.label14);
+			this.gbRouteViewColors.Location = new System.Drawing.Point(10, 115);
+			this.gbRouteViewColors.Name = "gbRouteViewColors";
+			this.gbRouteViewColors.Size = new System.Drawing.Size(325, 55);
+			this.gbRouteViewColors.TabIndex = 21;
+			this.gbRouteViewColors.TabStop = false;
+			this.gbRouteViewColors.Text = "Tile Colors";
+			// 
+			// label16
+			// 
+			this.label16.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label16.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.label16.Location = new System.Drawing.Point(220, 20);
+			this.label16.Name = "label16";
+			this.label16.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.label16.Size = new System.Drawing.Size(95, 25);
+			this.label16.TabIndex = 14;
+			this.label16.Text = "content";
+			this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// label15
+			// 
+			this.label15.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label15.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.label15.Location = new System.Drawing.Point(115, 20);
+			this.label15.Name = "label15";
+			this.label15.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.label15.Size = new System.Drawing.Size(95, 25);
+			this.label15.TabIndex = 20;
+			this.label15.Text = "north";
+			this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// label14
+			// 
+			this.label14.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label14.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.label14.Location = new System.Drawing.Point(10, 20);
+			this.label14.Name = "label14";
+			this.label14.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
+			this.label14.Size = new System.Drawing.Size(95, 25);
+			this.label14.TabIndex = 15;
+			this.label14.Text = "west";
+			this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// label20
 			// 
@@ -555,34 +690,6 @@ namespace MapView
 			this.label13.TabIndex = 17;
 			this.label13.Text = "Clicking a green square will select a node to edit.";
 			// 
-			// label14
-			// 
-			this.label14.Location = new System.Drawing.Point(5, 115);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(70, 15);
-			this.label14.TabIndex = 16;
-			this.label14.Text = "Tile Colors:";
-			// 
-			// label15
-			// 
-			this.label15.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label15.ForeColor = System.Drawing.Color.Black;
-			this.label15.Location = new System.Drawing.Point(90, 130);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(65, 15);
-			this.label15.TabIndex = 15;
-			this.label15.Text = "Westwall";
-			// 
-			// label16
-			// 
-			this.label16.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label16.ForeColor = System.Drawing.Color.Gray;
-			this.label16.Location = new System.Drawing.Point(90, 115);
-			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(65, 15);
-			this.label16.TabIndex = 14;
-			this.label16.Text = "Content";
-			// 
 			// label21
 			// 
 			this.label21.Location = new System.Drawing.Point(5, 10);
@@ -597,7 +704,7 @@ namespace MapView
 			this.tpTileView.Controls.Add(this.label25);
 			this.tpTileView.Controls.Add(this.rbTftd);
 			this.tpTileView.Controls.Add(this.rbUfo);
-			this.tpTileView.Controls.Add(this.groupBox1);
+			this.tpTileView.Controls.Add(this.gbTileViewColors);
 			this.tpTileView.Controls.Add(this.label19);
 			this.tpTileView.Location = new System.Drawing.Point(4, 21);
 			this.tpTileView.Name = "tpTileView";
@@ -644,30 +751,30 @@ namespace MapView
 			this.rbUfo.UseVisualStyleBackColor = true;
 			this.rbUfo.CheckedChanged += new System.EventHandler(this.OnCheckChanged);
 			// 
-			// groupBox1
+			// gbTileViewColors
 			// 
-			this.groupBox1.BackColor = System.Drawing.SystemColors.ControlLight;
-			this.groupBox1.Controls.Add(this.lblType09);
-			this.groupBox1.Controls.Add(this.lblType14);
-			this.groupBox1.Controls.Add(this.lblType13);
-			this.groupBox1.Controls.Add(this.lblType12);
-			this.groupBox1.Controls.Add(this.lblType11);
-			this.groupBox1.Controls.Add(this.lblType10);
-			this.groupBox1.Controls.Add(this.lblType08);
-			this.groupBox1.Controls.Add(this.lblType07);
-			this.groupBox1.Controls.Add(this.lblType06);
-			this.groupBox1.Controls.Add(this.lblType05);
-			this.groupBox1.Controls.Add(this.lblType04);
-			this.groupBox1.Controls.Add(this.lblType03);
-			this.groupBox1.Controls.Add(this.lblType02);
-			this.groupBox1.Controls.Add(this.lblType01);
-			this.groupBox1.Controls.Add(this.lblType00);
-			this.groupBox1.Location = new System.Drawing.Point(10, 100);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(430, 150);
-			this.groupBox1.TabIndex = 11;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Tile Colors";
+			this.gbTileViewColors.BackColor = System.Drawing.SystemColors.ControlLight;
+			this.gbTileViewColors.Controls.Add(this.lblType09);
+			this.gbTileViewColors.Controls.Add(this.lblType14);
+			this.gbTileViewColors.Controls.Add(this.lblType13);
+			this.gbTileViewColors.Controls.Add(this.lblType12);
+			this.gbTileViewColors.Controls.Add(this.lblType11);
+			this.gbTileViewColors.Controls.Add(this.lblType10);
+			this.gbTileViewColors.Controls.Add(this.lblType08);
+			this.gbTileViewColors.Controls.Add(this.lblType07);
+			this.gbTileViewColors.Controls.Add(this.lblType06);
+			this.gbTileViewColors.Controls.Add(this.lblType05);
+			this.gbTileViewColors.Controls.Add(this.lblType04);
+			this.gbTileViewColors.Controls.Add(this.lblType03);
+			this.gbTileViewColors.Controls.Add(this.lblType02);
+			this.gbTileViewColors.Controls.Add(this.lblType01);
+			this.gbTileViewColors.Controls.Add(this.lblType00);
+			this.gbTileViewColors.Location = new System.Drawing.Point(10, 100);
+			this.gbTileViewColors.Name = "gbTileViewColors";
+			this.gbTileViewColors.Size = new System.Drawing.Size(430, 150);
+			this.gbTileViewColors.TabIndex = 11;
+			this.gbTileViewColors.TabStop = false;
+			this.gbTileViewColors.Text = "Tile Colors";
 			// 
 			// lblType09
 			// 
@@ -862,9 +969,11 @@ namespace MapView
 			this.tabMain.ResumeLayout(false);
 			this.tpMainView.ResumeLayout(false);
 			this.tpTopView.ResumeLayout(false);
+			this.gbTopViewColors.ResumeLayout(false);
 			this.tpRouteView.ResumeLayout(false);
+			this.gbRouteViewColors.ResumeLayout(false);
 			this.tpTileView.ResumeLayout(false);
-			this.groupBox1.ResumeLayout(false);
+			this.gbTileViewColors.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -882,13 +991,11 @@ namespace MapView
 		private Label label5;
 		private Label label6;
 		private Label label7;
-		private Label label8;
-		private Label label9;
 		private Label label10;
+		private Label label8;
 		private Label label11;
 		private Label label12;
 		private Label label14;
-		private Label label15;
 		private Label label16;
 		private Label label21;
 		private Label label13;
@@ -897,10 +1004,10 @@ namespace MapView
 		private Label label19;
 		private Label label20;
 		private Label label22;
-		private Label label23;
-		private Label label24;
+		private Label label9;
+		private Label label15;
 		private Label label25;
-		private GroupBox groupBox1;
+		private GroupBox gbTileViewColors;
 		private Label lblType00;
 		private Label lblType01;
 		private Label lblType02;
@@ -919,5 +1026,7 @@ namespace MapView
 		private RadioButton rbTftd;
 		private RadioButton rbUfo;
 		private System.Windows.Forms.Label label26;
+		private System.Windows.Forms.GroupBox gbTopViewColors;
+		private System.Windows.Forms.GroupBox gbRouteViewColors;
 	}
 }

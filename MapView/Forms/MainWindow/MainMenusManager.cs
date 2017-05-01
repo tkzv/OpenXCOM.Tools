@@ -102,7 +102,7 @@ namespace MapView.Forms.MainWindow
 				((Form)it.Tag).WindowState = FormWindowState.Normal;
 
 				if (it.Tag is Help) // update colors that user might have set in TileView's Option-settings.
-					ViewerFormsManager.HelpScreen.UpdateSpecialPropertyColors();
+					ViewerFormsManager.HelpScreen.UpdateColors();
 			}
 			else
 			{

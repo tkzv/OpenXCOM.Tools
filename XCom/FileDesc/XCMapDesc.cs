@@ -10,18 +10,14 @@ namespace XCom
 			MapDesc
 	{
 		#region Properties
-
-		internal Palette Palette
-		{ get; set; }
-
 		internal string MapPath
-		{ get; set; }
-
-		internal string RoutePath
-		{ get; set; }
+		{ get; private set; }
 
 		internal string BlankPath
-		{ get; set; }
+		{ get; private set; }
+
+		internal string RoutePath
+		{ get; private set; }
 
 		internal string FilePath
 		{
@@ -33,11 +29,21 @@ namespace XCom
 		public string[] Dependencies
 		{ get; set; }
 
+		internal Palette Palette
+		{ get; private set; }
 		#endregion
 
 
 		#region cTor
-
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="label"></param>
+		/// <param name="pathMaps"></param>
+		/// <param name="pathBlanks"></param>
+		/// <param name="pathRoutes"></param>
+		/// <param name="deps"></param>
+		/// <param name="pal"></param>
 		public XCMapDesc(
 				string label,
 				string pathMaps,
@@ -48,14 +54,13 @@ namespace XCom
 			:
 				base(label)
 		{
-			Palette      = pal;
 			MapPath      = pathMaps;
-			RoutePath    = pathRoutes;
 			BlankPath    = pathBlanks;
+			RoutePath    = pathRoutes;
 			Dependencies = deps;
+			Palette      = pal;
 //			IsStatic     = false;
 		}
-
 		#endregion
 
 

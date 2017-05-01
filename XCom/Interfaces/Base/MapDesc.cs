@@ -11,12 +11,16 @@ namespace XCom.Interfaces.Base
 	{
 		#region Properties
 		public string Label
-		{ get; protected set; }
+		{ get; internal protected set; }
 		#endregion
 
 
 		#region cTor
-		public MapDesc(string label)
+		/// <summary>
+		/// cTor. Instantiated only as the parent of XCMapDesc.
+		/// </summary>
+		/// <param name="label"></param>
+		internal protected MapDesc(string label)
 		{
 			Label = label;
 		}
