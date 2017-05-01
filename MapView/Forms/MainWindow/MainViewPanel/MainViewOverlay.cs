@@ -60,14 +60,26 @@ namespace MapView
 
 		private Brush _brushLayer;
 
-		private Color _colorLayer = Color.FromArgb(175, 69, 100, 129);	// initialization color for the grid-layer
-		public Color GridLayerColor // public for Reflection.			// TODO: get that from Settings, or other ...
+		private Color _colorLayer = Color.MediumVioletRed; // initial color for the grid-layer
+		public Color GridLayerColor // public for Reflection.
 		{
 			get { return _colorLayer; }
 			set
 			{
 				_colorLayer = value;
-				_brushLayer = new SolidBrush(value);
+				_brushLayer = new SolidBrush(Color.FromArgb(GridLayerOpacity, value));
+				Refresh();
+			}
+		}
+
+		private int _opacity = 200; // initialization opacity for the grid-layer
+		public int GridLayerOpacity // public for Reflection.
+		{
+			get { return _opacity; }
+			set
+			{
+				_opacity = ((int)value).Clamp(0, 255);
+				_brushLayer = new SolidBrush(Color.FromArgb(_opacity, ((SolidBrush)_brushLayer).Color));
 				Refresh();
 			}
 		}
@@ -143,7 +155,7 @@ namespace MapView
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 
-			_brushLayer = new SolidBrush(_colorLayer);
+			_brushLayer = new SolidBrush(Color.FromArgb(GridLayerOpacity, GridLayerColor));
 			_penGrid    = new Pen(Brushes.Black, 1);
 
 			KeyDown += OnEditKeyDown;

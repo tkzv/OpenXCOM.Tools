@@ -1206,7 +1206,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnNodeOpacityChanged(object sender, string key, object val)
 		{
-			_routePanel.Opacity = ((int)val).Clamp(0, 255);
+			_routePanel.Opacity = (int)val;
 			Refresh();
 		}
 

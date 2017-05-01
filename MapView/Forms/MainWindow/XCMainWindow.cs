@@ -397,6 +397,7 @@ namespace MapView
 
 		const string ShowGrid            = "ShowGrid";
 		const string GridLayerColor      = "GridLayerColor";
+		const string GridLayerOpacity    = "GridLayerOpacity";
 		const string GridLineColor       = "GridLineColor";
 		const string GridLineWidth       = "GridLineWidth";
 
@@ -485,7 +486,13 @@ namespace MapView
 			Settings.AddSetting(
 							GridLayerColor,
 							MainViewUnderlay.Instance.MainView.GridLayerColor,
-							"Color of the grid (a,r,g,b)",
+							"Color of the grid",
+							MapView,
+							null, MainViewUnderlay.Instance.MainView);
+			Settings.AddSetting(
+							GridLayerOpacity,
+							MainViewUnderlay.Instance.MainView.GridLayerOpacity,
+							"Opacity of the grid (0..255)",
 							MapView,
 							null, MainViewUnderlay.Instance.MainView);
 			Settings.AddSetting(
@@ -569,6 +576,10 @@ namespace MapView
 
 				case GridLayerColor:
 					MainViewUnderlay.Instance.MainView.GridLayerColor = (Color)val;
+					break;
+
+				case GridLayerOpacity:
+					MainViewUnderlay.Instance.MainView.GridLayerOpacity = (int)val;
 					break;
 
 				case GridLineColor:

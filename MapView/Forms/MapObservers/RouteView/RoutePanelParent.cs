@@ -61,7 +61,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		internal int Opacity
 		{
 			get { return _opacity; }
-			set { _opacity = value; }
+			set { _opacity = ((int)value).Clamp(0, 255); }
 		}
 
 
