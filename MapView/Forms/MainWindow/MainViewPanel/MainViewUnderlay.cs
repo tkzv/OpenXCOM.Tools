@@ -30,7 +30,7 @@ namespace MapView
 			}
 		}
 
-		internal IMapBase MapBase
+		internal XCMapBase MapBase
 		{
 			get { return _mainViewOverlay.MapBase; }
 		}
@@ -174,24 +174,9 @@ namespace MapView
 
 
 		#region Methods
-		internal void SetBaseMap(IMapBase baseMap)
+		internal void SetMapBase(XCMapBase mapBase)
 		{
-			_mainViewOverlay.MapBase = baseMap;
-//			_mapView.Select();					// TODO: Select the *panel*
-
-//			Select();							// doesn't work right.
-//			MainViewPanel.Instance.Select();	// doesn't work.
-//			MainViewPanel.Instance.Focus();		// doesn't work.
-
-//			var controls = _mapView.Controls.Find("tscPanel", true);
-//			if (controls.GetLength(0) != 0)
-//				controls[0].Select();			// doesn't work.
-
-//			Focus();
-//			Select();							// doesn't work.
-
-			//LeftToolStripPanel
-
+			_mainViewOverlay.MapBase = mapBase; // TODO: Select the *panel*
 
 			OnResize(null);
 		}

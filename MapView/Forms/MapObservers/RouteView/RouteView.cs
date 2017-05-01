@@ -406,7 +406,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 //			Map = args.Map;
 //		}
 
-		public override IMapBase MapBase
+		public override XCMapBase MapBase
 		{
 			set
 			{
@@ -448,7 +448,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		public override void OnLocationChanged(IMapBase sender, LocationChangedEventArgs e)
+		public override void OnLocationChanged(XCMapBase sender, LocationChangedEventArgs e)
 		{
 			MainViewUnderlay.Instance.MainView.FirstClick = true;
 
@@ -458,7 +458,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 												/*Environment.NewLine, */e.Location.Col, e.Location.Row);
 		}
 
-		public override void OnLevelChanged(IMapBase sender, LevelChangedEventArgs e)
+		public override void OnLevelChanged(XCMapBase sender, LevelChangedEventArgs e)
 		{
 			DeselectNode();
 			FillNodeInformation();

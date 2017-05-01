@@ -117,7 +117,7 @@
     <Compile Include="Interfaces\Base\MapTileList.cs" />
     <Compile Include="Services\MapResizeService.cs" />
     <Compile Include="Interfaces\Base\MapTileBase.cs" />
-    <Compile Include="Interfaces\Base\IMapBase.cs" />
+    <Compile Include="Interfaces\Base\XCMapBase.cs" />
     <Compile Include="Interfaces\Base\IMapObserver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

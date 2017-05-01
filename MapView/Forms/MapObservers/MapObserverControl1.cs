@@ -26,9 +26,9 @@ namespace MapView
 			get { return _observersDictionary; }
 		}
 
-		private IMapBase _mapBase;
+		private XCMapBase _mapBase;
 		[Browsable(false), DefaultValue(null)]
-		public virtual IMapBase MapBase
+		public virtual XCMapBase MapBase
 		{
 			get { return _mapBase; }
 			set
@@ -44,7 +44,7 @@ namespace MapView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		public virtual void OnLocationChanged(IMapBase sender, LocationChangedEventArgs e)
+		public virtual void OnLocationChanged(XCMapBase sender, LocationChangedEventArgs e)
 		{
 //			Refresh();
 		}
@@ -55,7 +55,7 @@ namespace MapView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		public virtual void OnLevelChanged(IMapBase sender, LevelChangedEventArgs e)
+		public virtual void OnLevelChanged(XCMapBase sender, LevelChangedEventArgs e)
 		{
 //			Refresh();
 		}

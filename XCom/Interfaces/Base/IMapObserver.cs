@@ -9,7 +9,7 @@ namespace XCom.Interfaces.Base
 	/// </summary>
 	public interface IMapObserver
 	{
-		IMapBase MapBase
+		XCMapBase MapBase
 		{ set; get;}
 
 		Dictionary<string, IMapObserver> MoreObservers
@@ -19,25 +19,25 @@ namespace XCom.Interfaces.Base
 //		{ get; set; }
 
 
-		void OnLocationChanged(IMapBase sender, LocationChangedEventArgs e);
+		void OnLocationChanged(XCMapBase sender, LocationChangedEventArgs e);
 
-		void OnLevelChanged(IMapBase sender, LevelChangedEventArgs e);
+		void OnLevelChanged(XCMapBase sender, LevelChangedEventArgs e);
 	}
 
 
 /*	/// <summary>
-	/// EventArgs with an IMapBase for when a SetMap event fires.
+	/// EventArgs with an XCMapBase for when a SetMap event fires.
 	/// </summary>
 	public class SetMapEventArgs
 		:
 			EventArgs
 	{
-		private readonly IMapBase _mapBase;
-		public IMapBase Map
+		private readonly XCMapBase _mapBase;
+		public XCMapBase Map
 		{
 			get { return _mapBase; }
 		}
-		internal SetMapEventArgs(IMapBase mapBase)
+		internal SetMapEventArgs(XCMapBase mapBase)
 		{
 			_mapBase = mapBase;
 		}

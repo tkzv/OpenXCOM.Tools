@@ -8,15 +8,15 @@ using System.Drawing.Imaging;
 
 namespace XCom.Interfaces.Base
 {
-	public delegate void LevelChangedEventHandler(IMapBase sender, LevelChangedEventArgs e);
+	public delegate void LevelChangedEventHandler(XCMapBase sender, LevelChangedEventArgs e);
 
-	public delegate void LocationChangedEventHandler(IMapBase sender, LocationChangedEventArgs e);
+	public delegate void LocationChangedEventHandler(XCMapBase sender, LocationChangedEventArgs e);
 
 
 	/// <summary>
 	/// Abstract base class defining all common functionality of an editable Map.
 	/// </summary>
-	public class IMapBase // psst. This isn't an interface.
+	public class XCMapBase
 	{
 		public event LevelChangedEventHandler LevelChangedEvent;
 		public event LocationChangedEventHandler LocationChangedEvent;
@@ -63,21 +63,21 @@ namespace XCom.Interfaces.Base
 			get { return _tiles; }
 		}
 
-		private MapLocation _selLoc;
+		private MapLocation _location;
 		/// <summary>
 		/// Gets/Sets the current selected location. Setting the location will
-		/// fire a SelectedTileChanged event.
+		/// fire a LocationChanged event.
 		/// </summary>
-		public MapLocation SelectedTile
+		public MapLocation Location
 		{
-			get { return _selLoc; }
+			get { return _location; }
 			set
 			{
 				if (   value.Row > -1 && value.Row < this.MapSize.Rows
 					&& value.Col > -1 && value.Col < this.MapSize.Cols)
 				{
-					_selLoc = value;
-					var tile = this[_selLoc.Row, _selLoc.Col];
+					_location = value;
+					var tile = this[_location.Row, _location.Col];
 					var args = new LocationChangedEventArgs(value, tile);
 
 					if (LocationChangedEvent != null)
@@ -127,7 +127,7 @@ namespace XCom.Interfaces.Base
 		}
 
 
-		protected IMapBase(string name, List<TileBase> tiles)
+		protected XCMapBase(string name, List<TileBase> tiles)
 		{
 			Name = name;
 			_tiles = tiles;
@@ -136,18 +136,19 @@ namespace XCom.Interfaces.Base
 
 		public virtual void Save()
 		{
-			throw new InvalidOperationException("IMapBase: Save() is not implemented."); // ... odd ....
+			throw new InvalidOperationException("XCMapBase: Save() is not implemented."); // ... odd ....
 		}
 
 		/// <summary>
-		/// Changes the '_height' property and fires a HeightChanged event.
+		/// Changes the '_level' property and fires a LevelChanged event.
 		/// </summary>
 		public void Up()
 		{
+			LogFile.WriteLine("XCMapBase.Up");
+
 			if (_level > 0)
 			{
-				var args = new LevelChangedEventArgs(_level - 1);
-				--_level;
+				var args = new LevelChangedEventArgs(--_level);
 
 				if (LevelChangedEvent != null)
 					LevelChangedEvent(this, args);
@@ -159,6 +160,8 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public void Down()
 		{
+			LogFile.WriteLine("XCMapBase.Down");
+
 			if (_level < MapSize.Levs - 1)
 			{
 				++_level; // TODO: wait a second !
@@ -203,7 +206,7 @@ namespace XCom.Interfaces.Base
 		{
 			var palette = GetFirstGroundPalette();
 			if (palette == null)
-				throw new ArgumentNullException("file", "IMapBase: At least 1 ground tile is required.");
+				throw new ArgumentNullException("file", "XCMapBase: At least 1 ground tile is required.");
 
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
 			var b = XCBitmap.MakeBitmap(

@@ -18,7 +18,7 @@ namespace XCom
 		}
 
 
-		public IMapBase Load(XCMapDesc desc)
+		public XCMapBase Load(XCMapDesc desc)
 		{
 			if (desc != null && File.Exists(desc.FilePath))
 			{

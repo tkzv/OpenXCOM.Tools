@@ -21,8 +21,8 @@ namespace MapView
 		public event MouseDragEventHandler MouseDragEvent;
 
 
-		private IMapBase _mapBase;
-		internal IMapBase MapBase
+		private XCMapBase _mapBase;
+		internal XCMapBase MapBase
 		{
 			get { return _mapBase; }
 			set
@@ -336,9 +336,9 @@ namespace MapView
 					_isMouseDrag = true;
 					SetDrag(dragStart, dragEnd);
 
-					_mapBase.SelectedTile = new MapLocation(
-														dragStart.Y, dragStart.X,
-														_mapBase.Level);
+					_mapBase.Location = new MapLocation(
+													dragStart.Y, dragStart.X,
+													_mapBase.Level);
 					Select();
 					Refresh();
 				}
@@ -494,7 +494,7 @@ namespace MapView
 			return Size.Empty;
 		}
 
-		private void OnSelectedChanged(IMapBase baseMap, LocationChangedEventArgs e)
+		private void OnSelectedChanged(XCMapBase mapBase, LocationChangedEventArgs e)
 		{
 			var loc = e.Location;
 			var start = new Point(loc.Col, loc.Row);
@@ -503,7 +503,7 @@ namespace MapView
 			XCMainWindow.Instance.StatusBarPrintPosition(loc.Col, loc.Row);
 		}
 
-		private void OnLevelChanged(IMapBase baseMap, LevelChangedEventArgs e)
+		private void OnLevelChanged(XCMapBase mapBase, LevelChangedEventArgs e)
 		{
 			Refresh();
 		}

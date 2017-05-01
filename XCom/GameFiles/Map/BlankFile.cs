@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 
+using XCom.Interfaces.Base;
+
 
 namespace XCom
 {
@@ -10,12 +12,11 @@ namespace XCom
 
 
 		public static void LoadBlank(
-				string baseName,
-				string blankPath,
-				XCom.Interfaces.Base.IMapBase file)
-//				XCMapFile file)
+				string file,
+				string path,
+				XCMapBase mapBase)
 		{
-			using (var br = new BinaryReader(File.OpenRead(blankPath + baseName + BlankExt)))
+			using (var br = new BinaryReader(File.OpenRead(path + file + BlankExt)))
 			{
 				bool flip = true;
 				int i = 0;
@@ -28,11 +29,11 @@ namespace XCom
 					{
 						for (int j = i; j < i + inconspicuousVariable; ++j)
 						{
-							int h =  j / (file.MapSize.Rows  * file.MapSize.Cols);
-							int c =  j %  file.MapSize.Cols;
-							int r = (j /  file.MapSize.Cols) - file.MapSize.Rows * h;
+							int l =  j / (mapBase.MapSize.Rows  * mapBase.MapSize.Cols);
+							int c =  j %  mapBase.MapSize.Cols;
+							int r = (j /  mapBase.MapSize.Cols) - mapBase.MapSize.Rows * l;
 
-							((XCMapTile)file[r, c, h]).DrawAbove = false;
+							((XCMapTile)mapBase[r, c, l]).DrawAbove = false;
 						}
 					}
 
@@ -43,23 +44,23 @@ namespace XCom
 		}
 
 		public static void SaveBlank(
-				string baseName,
-				string blankPath,
-				XCom.Interfaces.Base.IMapBase file)
+				string file,
+				string path,
+				XCMapBase mapBase)
 		{
-			Directory.CreateDirectory(blankPath);
+			Directory.CreateDirectory(path);
 
-			using (var bw = new BinaryWriter(new FileStream(blankPath + baseName + BlankExt, FileMode.Create)))
+			using (var bw = new BinaryWriter(new FileStream(path + file + BlankExt, FileMode.Create)))
 			{
 				bool flip = true;
 				UInt16 i = 0;
 
-				for (int h = 0; h != file.MapSize.Levs; ++h)
-					for (int r = 0; r != file.MapSize.Rows; ++r)
-						for (int c = 0; c != file.MapSize.Cols; ++c)
+				for (int l = 0; l != mapBase.MapSize.Levs; ++l)
+					for (int r = 0; r != mapBase.MapSize.Rows; ++r)
+						for (int c = 0; c != mapBase.MapSize.Cols; ++c)
 						{
-							if (   ( flip &&  ((XCMapTile)file[r, c, h]).DrawAbove)
-								|| (!flip && !((XCMapTile)file[r, c, h]).DrawAbove))
+							if (   ( flip &&  ((XCMapTile)mapBase[r, c, l]).DrawAbove)
+								|| (!flip && !((XCMapTile)mapBase[r, c, l]).DrawAbove))
 							{
 								bw.Write(i);
 

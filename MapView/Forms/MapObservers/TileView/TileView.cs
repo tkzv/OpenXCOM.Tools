@@ -59,7 +59,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 
 		#region Properties
-		public override IMapBase MapBase
+		public override XCMapBase MapBase
 		{
 			set
 			{

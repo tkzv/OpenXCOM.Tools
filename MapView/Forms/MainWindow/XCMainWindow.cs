@@ -179,7 +179,7 @@ namespace MapView
 
 			_viewerFormsManager = new ViewerFormsManager();
 			_viewersManager     = new ViewersManager(_settingsManager, consoleShare);
-			_mainMenusManager   = new MainMenusManager(menuShow, menuHelp);
+			_mainMenusManager   = new MainMenusManager(menuView, menuHelp);
 
 			_mainMenusManager.PopulateMenus(consoleShare.GetConsole(), Settings);
 			LogFile.WriteLine("MainView menus populated.");
@@ -693,10 +693,7 @@ namespace MapView
 		private void OnSaveClick(object sender, EventArgs e)
 		{
 			if (_mainViewUnderlay.MapBase != null)
-			{
 				_mainViewUnderlay.MapBase.Save();
-				XConsole.AdZerg("Saved: " + _mainViewUnderlay.MapBase.Name);
-			}
 		}
 
 		private void OnQuitClick(object sender, EventArgs e)
@@ -760,30 +757,30 @@ namespace MapView
 //				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.
 
 				var tileFactory = new XCTileFactory();
-				tileFactory.WarningEvent += _warningHandler.HandleWarning;
-
+				tileFactory.WarningEvent += _warningHandler.HandleWarning;	// used to send a message to the Console if
+																			// a DeadTile or AlternateTile is out of bounds.
 				var fileService = new XCMapFileService(tileFactory);
 
-				var baseMap = fileService.Load(desc as XCMapDesc);
-				_mainViewUnderlay.SetBaseMap(baseMap);
+				var mapBase = fileService.Load(desc as XCMapDesc);
+				_mainViewUnderlay.SetMapBase(mapBase);
 
 				tsEdit.Enabled = true;
 
-				RouteCheckService.CheckNodeBounds(baseMap);
+				RouteCheckService.CheckNodeBounds(mapBase);
 
 				tsslMap.Text = desc.Label;
 
-				tsslDimensions.Text = (baseMap != null) ? baseMap.MapSize.ToString()
+				tsslDimensions.Text = (mapBase != null) ? mapBase.MapSize.ToString()
 														: "size: n/a";
 
 				Settings["Doors"].Value = false; // toggle off door-animations; not sure that this is necessary to do.
 				miDoors.Checked = false;
 				ToggleDoorSprites(false);
 
-				if (!menuShow.Enabled) // open/close the forms that appear in the Views menu.
+				if (!menuView.Enabled) // open/close the forms that appear in the Views menu.
 					_mainMenusManager.StartAllViewers();
 
-				_viewerFormsManager.SetObservers(baseMap); // reset all observer events
+				_viewerFormsManager.SetObservers(mapBase); // reset all observer events
 			}
 //			else
 //				miExport.Enabled = false;
@@ -927,7 +924,7 @@ namespace MapView
 			{
 				_windowFlag = true;
 
-				foreach (MenuItem it in menuShow.MenuItems)
+				foreach (MenuItem it in menuView.MenuItems)
 					if (it.Checked)
 						((Form)it.Tag).BringToFront();
 

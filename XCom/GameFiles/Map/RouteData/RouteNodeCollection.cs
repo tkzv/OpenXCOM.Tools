@@ -324,8 +324,8 @@ namespace XCom
 			get { return _nodes.Count; }
 		}
 
-		public byte ExtraHeight
-		{ get; set; }
+//		public byte ExtraHeight
+//		{ get; set; }
 
 		public void Delete(RouteNode node)
 		{

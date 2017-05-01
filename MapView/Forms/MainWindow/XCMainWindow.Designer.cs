@@ -48,7 +48,7 @@ namespace MapView
 			this.miOn = new System.Windows.Forms.MenuItem();
 			this.miOff = new System.Windows.Forms.MenuItem();
 			this.miDoors = new System.Windows.Forms.MenuItem();
-			this.menuShow = new System.Windows.Forms.MenuItem();
+			this.menuView = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.tvMaps = new System.Windows.Forms.TreeView();
 			this.sfdSaveDialog = new System.Windows.Forms.SaveFileDialog();
@@ -75,7 +75,7 @@ namespace MapView
 			this.menuFile,
 			this.miEdit,
 			this.miAnimation,
-			this.menuShow,
+			this.menuView,
 			this.menuHelp});
 			// 
 			// menuFile
@@ -201,11 +201,11 @@ namespace MapView
 			this.miDoors.Text = "Doors";
 			this.miDoors.Click += new System.EventHandler(this.OnToggleDoorsClick);
 			// 
-			// menuShow
+			// menuView
 			// 
-			this.menuShow.Enabled = false;
-			this.menuShow.Index = 3;
-			this.menuShow.Text = "&View";
+			this.menuView.Enabled = false;
+			this.menuView.Index = 3;
+			this.menuView.Text = "&View";
 			// 
 			// menuHelp
 			// 
@@ -405,7 +405,7 @@ namespace MapView
 
 		private System.Windows.Forms.MenuItem menuFile;
 		private System.Windows.Forms.MenuItem miQuit;
-		private System.Windows.Forms.MenuItem menuShow;
+		private System.Windows.Forms.MenuItem menuView;
 		private System.Windows.Forms.MenuItem miSave;
 		private System.Windows.Forms.MainMenu mmMain;
 		private System.Windows.Forms.MenuItem miBarHori;

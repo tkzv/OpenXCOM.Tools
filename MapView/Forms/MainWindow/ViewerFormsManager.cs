@@ -71,7 +71,7 @@ namespace MapView.Forms.MainWindow
 				TopView.Control.SelectQuadrant(tile.Record.TileType);
 		}
 
-		internal void SetObservers(IMapBase baseMap)
+		internal void SetObservers(XCMapBase mapBase)
 		{
 			var observers = new IMapObserver[]
 			{
@@ -84,12 +84,12 @@ namespace MapView.Forms.MainWindow
 
 			foreach (var f in observers)
 				if (f != null)
-					SetObserver(baseMap, f);
+					SetObserver(mapBase, f);
 
 			MainViewUnderlay.Instance.MainView.Refresh();
 		}
 
-		private void SetObserver(IMapBase baseMap, IMapObserver observer)
+		private void SetObserver(XCMapBase mapBase, IMapObserver observer)
 		{
 			if (observer.MapBase != null)
 			{
@@ -97,14 +97,14 @@ namespace MapView.Forms.MainWindow
 				observer.MapBase.LocationChangedEvent -= observer.OnLocationChanged;
 			}
 
-			if ((observer.MapBase = baseMap) != null)
+			if ((observer.MapBase = mapBase) != null)
 			{
-				baseMap.LevelChangedEvent    += observer.OnLevelChanged;
-				baseMap.LocationChangedEvent += observer.OnLocationChanged;
+				mapBase.LevelChangedEvent    += observer.OnLevelChanged;
+				mapBase.LocationChangedEvent += observer.OnLocationChanged;
 			}
 
 			foreach (string key in observer.MoreObservers.Keys) // ie. TopViewPanel and QuadrantsPanel
-				SetObserver(baseMap, observer.MoreObservers[key]);
+				SetObserver(mapBase, observer.MoreObservers[key]);
 		}
 	}
 }

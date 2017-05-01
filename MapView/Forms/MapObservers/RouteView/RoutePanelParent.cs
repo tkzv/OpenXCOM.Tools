@@ -128,10 +128,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 					{
 						ClickPoint = pt;
 
-						_mapFile.SelectedTile = new MapLocation(
-															ClickPoint.Y,
-															ClickPoint.X,
-															_mapFile.Level);
+						_mapFile.Location = new MapLocation(
+														ClickPoint.Y,
+														ClickPoint.X,
+														_mapFile.Level);
 
 						MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);
 

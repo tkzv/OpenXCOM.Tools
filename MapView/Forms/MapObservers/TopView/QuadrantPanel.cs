@@ -13,43 +13,44 @@ using XCom.Interfaces.Base;
 namespace MapView.Forms.MapObservers.TopViews
 {
 	/// <summary>
-	/// These are not actually "quadrants"; they are tile-part types.
+	/// These are not actually "quadrants"; they are tile-part types. But that's
+	/// the way this rolls.
 	/// </summary>
 	internal sealed class QuadrantPanel
 		:
 			MapObserverControl1
 	{
 		#region Fields & Properties
-		private readonly QuadrantPanelDrawService _drawService;
+		private readonly QuadrantPanelDrawService _drawService = new QuadrantPanelDrawService();
 
-		private XCMapTile _mapTile;
-		private MapLocation _mapLoc;
+		private XCMapTile _tile;
+		private MapLocation _location;
 
-		private QuadrantType _selType;
-		public QuadrantType SelectedQuadrant
+		private QuadrantType _quadrant;
+		internal QuadrantType SelectedQuadrant
 		{
-			get { return _selType; }
+			get { return _quadrant; }
 			set
 			{
-				_selType = value;
+				_quadrant = value;
 				Refresh();
 			}
 		}
 
 		[Browsable(false)]
-		public Dictionary<string, SolidBrush> Brushes
+		internal Dictionary<string, SolidBrush> Brushes
 		{
 			set { _drawService.Brushes = value; }
 		}
 
 		[Browsable(false)]
-		public Dictionary<string, Pen> Pens
+		internal Dictionary<string, Pen> Pens
 		{
 			set { _drawService.Pens = value; }
 		}
 
 		[Browsable(false)]
-		public SolidBrush SelectColor
+		internal SolidBrush SelectColor
 		{
 			get { return _drawService.Brush; }
 			set
@@ -65,36 +66,32 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		public QuadrantPanel()
+		internal QuadrantPanel()
 		{
-			_mapTile = null;
-
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
 				   | ControlStyles.AllPaintingInWmPaint
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 
 			Globals.LoadExtras();
-
-			_drawService = new QuadrantPanelDrawService();
 		}
 		#endregion
 
 
 		#region EventCalls
-		public override void OnLocationChanged(IMapBase sender, LocationChangedEventArgs e)
+		public override void OnLocationChanged(XCMapBase sender, LocationChangedEventArgs e)
 		{
-			_mapTile = e.SelectedTile as XCMapTile;
-			_mapLoc  = e.Location;
+			_tile = e.SelectedTile as XCMapTile;
+			_location = e.Location;
 			Refresh();
 		}
 
-		public override void OnLevelChanged(IMapBase sender, LevelChangedEventArgs e)
+		public override void OnLevelChanged(XCMapBase sender, LevelChangedEventArgs e)
 		{
-			if (_mapLoc != null)
+			if (_location != null)
 			{
-				_mapTile = MapBase[_mapLoc.Row, _mapLoc.Col] as XCMapTile;
-				_mapLoc.Lev = e.Level;
+				_tile = MapBase[_location.Row, _location.Col] as XCMapTile;
+				_location.Lev = e.Level;
 			}
 			Refresh();
 		}
@@ -126,15 +123,15 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		protected override void RenderGraphics(Graphics backBuffer)
 		{
-			_drawService.Draw(backBuffer, _mapTile, SelectedQuadrant);
+			_drawService.Draw(backBuffer, _tile, SelectedQuadrant);
 		}
 		#endregion
 
 
 		#region Methods
-		public void SetSelected(MouseButtons btn, int clicks)
+		internal void SetSelected(MouseButtons btn, int clicks)
 		{
-			if (_mapTile != null)
+			if (_tile != null)
 			{
 				switch (btn)
 				{
@@ -146,7 +143,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 							case 2:
 								var tileView = ViewerFormsManager.TileView.Control;
-								tileView.SelectedTile = _mapTile[SelectedQuadrant];
+								tileView.SelectedTile = _tile[SelectedQuadrant];
 								break;
 						}
 						break;
@@ -157,11 +154,11 @@ namespace MapView.Forms.MapObservers.TopViews
 						{
 							case 1:
 								var tileView = ViewerFormsManager.TileView.Control;
-								_mapTile[SelectedQuadrant] = tileView.SelectedTile;
+								_tile[SelectedQuadrant] = tileView.SelectedTile;
 								break;
 
 							case 2:
-								_mapTile[SelectedQuadrant] = null;
+								_tile[SelectedQuadrant] = null;
 								break;
 						}
 

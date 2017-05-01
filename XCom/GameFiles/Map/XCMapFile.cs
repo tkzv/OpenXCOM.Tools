@@ -10,55 +10,75 @@ namespace XCom
 {
 	public sealed class XCMapFile
 		:
-			IMapBase
+			XCMapBase
 	{
-//		private readonly string _blankPath;
-		private readonly string[] _deps;
-
+		#region Fields & Properties
 		public static readonly string MapExt = ".MAP";
 
+		private readonly string _file = String.Empty;
+		private readonly string _path = String.Empty;
+
+		private readonly string[] _deps;
+		public string[] Dependencies
+		{
+			get { return _deps; }
+		}
+
 		private RouteNodeCollection _routeFile;
+		public RouteNodeCollection RouteFile
+		{
+			get { return _routeFile; }
+		}
+		#endregion
 
 
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="file"></param>
+		/// <param name="path"></param>
+		/// <param name="blankPath"></param>
+		/// <param name="tiles"></param>
+		/// <param name="dependencies"></param>
+		/// <param name="routeFile"></param>
 		internal XCMapFile(
-				string baseName,
-				string basePath,
+				string file,
+				string path,
 				string blankPath,
 				List<TileBase> tiles,
-				string[] depList,
+				string[] dependencies,
 				RouteNodeCollection routeFile)
 			:
-				base(baseName, tiles)
+				base(file, tiles)
 		{
-			BaseName = baseName;
-			BasePath = basePath;
+			_file = file;
+			_path = path;
 
-//			_blankPath = blankPath;
-
-			_deps = depList;
+			_deps = dependencies;
 
 			_routeFile = routeFile;
 
-			var filePath = basePath + baseName + MapExt;
-			if (!File.Exists(filePath))
+			var pfe = path + file + MapExt;
+			if (!File.Exists(pfe))
 			{
-				throw new FileNotFoundException(filePath);
+				throw new FileNotFoundException(pfe);
 			}
 
 			for (int i = 0; i != tiles.Count; ++i)
 				tiles[i].TileListId = i;
 
-			ReadMapFile(File.OpenRead(filePath), tiles);
+			ReadMapFile(File.OpenRead(pfe), tiles);
 
 			SetupRoutes(routeFile);
 
-			if (!string.IsNullOrEmpty(blankPath)) // TODO: investigate saving/loading of the Blanks.
+			if (!String.IsNullOrEmpty(blankPath)) // TODO: investigate saving/loading of the Blanks.
 			{
-				if (File.Exists(blankPath + baseName + BlankFile.BlankExt))
+				if (File.Exists(blankPath + file + BlankFile.BlankExt))
 				{
 					try
 					{
-						BlankFile.LoadBlank(baseName, blankPath, this);
+						BlankFile.LoadBlank(file, blankPath, this);
 					}
 					catch
 					{
@@ -72,13 +92,15 @@ namespace XCom
 				else
 				{
 					CalculateDrawAbove();
-					BlankFile.SaveBlank(BaseName, blankPath, this);
+					BlankFile.SaveBlank(_file, blankPath, this);
 				}
 			}
 			// TODO: throw something here or at least inform the user.
 		}
+		#endregion
 
 
+		#region Methods
 		private void ReadMapFile(Stream str, List<TileBase> tiles)
 		{
 			using (var bs = new BufferedStream(str))
@@ -109,9 +131,9 @@ namespace XCom
 
 		private void SetupRoutes(RouteNodeCollection file)
 		{
-			if (file.ExtraHeight != 0) // remove ExtraHeight for editing - see Save() below_
-				foreach (RouteNode node in file)
-					node.Lev -= file.ExtraHeight;
+//			if (file.ExtraHeight != 0) // remove ExtraHeight for editing - see Save() below_
+//				foreach (RouteNode node in file)
+//					node.Lev -= file.ExtraHeight;
 
 			foreach (RouteNode node in file)
 			{
@@ -146,17 +168,6 @@ namespace XCom
 						}
 		}
 
-		internal string BaseName
-		{ get; private set; }
-
-		internal string BasePath
-		{ get; private set; }
-
-		public string[] Dependencies
-		{
-			get { return _deps; }
-		}
-
 		public string GetDepLabel(TileBase tile)
 		{
 			int id = -1;
@@ -174,11 +185,6 @@ namespace XCom
 				return _deps[id];
 
 			return null;
-		}
-
-		public RouteNodeCollection RouteFile
-		{
-			get { return _routeFile; }
 		}
 
 		public RouteNode AddRouteNode(MapLocation loc)
@@ -227,16 +233,16 @@ namespace XCom
 		{
 			MapChanged = false;
 
-			using (var fs = File.Create(BasePath + BaseName + MapExt))
+			using (var fs = File.Create(_path + _file + MapExt))
 			{
-				if (RouteFile.ExtraHeight != 0) // add ExtraHeight to save - see SetupRoutes() above^
-					foreach (RouteNode node in RouteFile)
-						node.Lev += RouteFile.ExtraHeight;
+//				if (RouteFile.ExtraHeight != 0) // add ExtraHeight to save - see SetupRoutes() above^
+//					foreach (RouteNode node in RouteFile)
+//						node.Lev += RouteFile.ExtraHeight;
 
 				RouteFile.Save(); // <- saves the .RMP file
 
-				fs.WriteByte((byte)MapSize.Rows);	// http://www.ufopaedia.org/index.php/MAPS
-				fs.WriteByte((byte)MapSize.Cols);	// - says this header is "height, width and depth (in that order)"
+				fs.WriteByte((byte)MapSize.Rows); // http://www.ufopaedia.org/index.php/MAPS
+				fs.WriteByte((byte)MapSize.Cols); // - says this header is "height, width and depth (in that order)"
 				fs.WriteByte((byte)MapSize.Levs);
 
 				for (int l = 0; l != MapSize.Levs; ++l)
@@ -342,10 +348,10 @@ namespace XCom
 				// TODO: Settle a graceful way to handle exceptions throughout.
 				// Unfortunately it would take a long time to force each one to
 				// be raised for investigation.
-				XConsole.AdZerg("XCMapFile.CreateTile() Invalid value(s) in .MAP file: " + BaseName);
+				XConsole.AdZerg("XCMapFile.CreateTile() Invalid value(s) in .MAP file: " + _file);
 				System.Windows.Forms.MessageBox.Show(
 												"XCMapFile.CreateTile()" + Environment.NewLine
-													+ "Invalid value(s) in .MAP file: " + BaseName + Environment.NewLine
+													+ "Invalid value(s) in .MAP file: " + _file + Environment.NewLine
 													+ "indices: " + q1 + "," + q2 + "," + q3 + "," + q4 + Environment.NewLine
 													+ "length: " + tiles.Count + Environment.NewLine
 													+ ex + ":" + ex.Message,
@@ -358,6 +364,9 @@ namespace XCom
 				throw;
 			}
 		}
+		#endregion
+	}
+}
 
 //		public void HQ2X()
 //		{
@@ -368,5 +377,3 @@ namespace XCom
 //			PckImage.Width  *= 2;
 //			PckImage.Height *= 2;
 //		}
-	}
-}

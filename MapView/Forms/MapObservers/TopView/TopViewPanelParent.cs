@@ -58,7 +58,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		[Browsable(false), DefaultValue(null)]
-		public override IMapBase MapBase
+		public override XCMapBase MapBase
 		{
 			set
 			{
@@ -217,7 +217,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{ get; set; }
 
 
-/*		public override void OnLocationChanged(IMapBase sender, LocationChangedEventArgs e)
+/*		public override void OnLocationChanged(XCMapBase sender, LocationChangedEventArgs e)
 		{
 			var pt = e.MapPosition;
 //			Text = "c: " + pt.Col + " r: " + pt.Row; // I don't think this actually prints anywhere.
@@ -379,10 +379,10 @@ namespace MapView.Forms.MapObservers.TopViews
 				{
 					MainViewUnderlay.Instance.MainView.FirstClick = true;
 
-					MapBase.SelectedTile = new MapLocation(
-														pt.Y,
-														pt.X,
-														MapBase.Level);
+					MapBase.Location = new MapLocation(
+													pt.Y,
+													pt.X,
+													MapBase.Level);
 
 					_isMouseDrag = true;
 					MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);

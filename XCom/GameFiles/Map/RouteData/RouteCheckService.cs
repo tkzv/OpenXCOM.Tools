@@ -13,10 +13,10 @@ namespace XCom.GameFiles.Map.RouteData
 		/// Checks for and if necessary deletes nodes that are outside of a
 		/// Map's x/y/z bounds. See also RouteNodeCollectionFile.CheckNodeBounds().
 		/// </summary>
-		/// <param name="baseMap"></param>
-		public static void CheckNodeBounds(IMapBase baseMap)
+		/// <param name="mapBase"></param>
+		public static void CheckNodeBounds(XCMapBase mapBase)
 		{
-			var mapFile = baseMap as XCMapFile;
+			var mapFile = mapBase as XCMapFile;
 			if (mapFile != null)
 			{
 				var invalid = new List<RouteNode>();
@@ -24,9 +24,9 @@ namespace XCom.GameFiles.Map.RouteData
 				foreach (RouteNode node in mapFile.RouteFile)
 					if (RouteNodeCollection.IsOutsideMap(
 													node,
-													baseMap.MapSize.Cols,
-													baseMap.MapSize.Rows,
-													baseMap.MapSize.Levs))
+													mapBase.MapSize.Cols,
+													mapBase.MapSize.Rows,
+													mapBase.MapSize.Levs))
 					{
 						invalid.Add(node);
 					}
