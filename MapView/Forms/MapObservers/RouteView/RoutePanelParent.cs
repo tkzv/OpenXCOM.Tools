@@ -131,7 +131,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 						_mapFile.SelectedTile = new MapLocation(
 															ClickPoint.Y,
 															ClickPoint.X,
-															_mapFile.Levels);
+															_mapFile.Level);
 
 						MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);
 
@@ -141,7 +141,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 						args.ClickLocation = new MapLocation(
 														ClickPoint.Y,
 														ClickPoint.X,
-														_mapFile.Levels);
+														_mapFile.Level);
 						RoutePanelClickedEvent(this, args);
 
 						Refresh();

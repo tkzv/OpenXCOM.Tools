@@ -309,7 +309,7 @@ namespace XCom
 				MapTiles = tileList;
 				MapSize  = new MapSize(rPost, cPost, lPost);
 
-				Levels = (byte)(MapSize.Levs - 1);
+				Level = MapSize.Levs - 1;
 			}
 		}
 

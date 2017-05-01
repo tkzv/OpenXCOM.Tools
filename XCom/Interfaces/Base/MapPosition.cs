@@ -5,22 +5,31 @@ namespace XCom.Interfaces.Base
 {
 	internal sealed class MapPosition // TODO: merge with MapLocation.
 	{
-		private readonly int _rowMax;
+		/// <summary>
+		/// Gets the total rows.
+		/// </summary>
+		private readonly int _rows;
 		internal int MaxRows
 		{
-			get { return _rowMax; }
+			get { return _rows; }
 		}
 
-		private readonly int _colMax;
+		/// <summary>
+		/// Gets the total columns.
+		/// </summary>
+		private readonly int _cols;
 		internal int MaxCols
 		{
-			get { return _colMax; }
+			get { return _cols; }
 		}
 
-		private readonly int _levMax;
+		/// <summary>
+		/// Gets the total levels.
+		/// </summary>
+		private readonly int _levs;
 		internal int MaxLevs
 		{
-			get { return _levMax; }
+			get { return _levs; }
 		}
 
 
@@ -32,9 +41,9 @@ namespace XCom.Interfaces.Base
 		/// <param name="levs">the maximum levels of a Map</param>
 		internal MapPosition(int rows, int cols, int levs)
 		{
-			_rowMax = rows;
-			_colMax = cols;
-			_levMax = levs;
+			_rows = rows;
+			_cols = cols;
+			_levs = levs;
 		}
 
 
@@ -47,7 +56,7 @@ namespace XCom.Interfaces.Base
 		/// <returns></returns>
 		internal int GetPositionId(int row, int col, int lev)
 		{
-			return (_rowMax * _colMax * lev) + (_colMax * row) + col;
+			return (_rows * _cols * lev) + (_cols * row) + col;
 		}
 	}
 }

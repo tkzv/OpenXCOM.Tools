@@ -25,23 +25,22 @@ namespace XCom.Interfaces.Base
 		private const int HalfWidth  = 16;
 		private const int HalfHeight =  8;
 
-		private byte _levs;
+		private int _level;
 		/// <summary>
-		/// Gets this MapBase's levels.
-		/// Setting the levels will fire a LevelChanged event.
+		/// Gets this MapBase's currently displayed level.
+		/// Changing level will fire a LevelChanged event.
 		/// </summary>
-		public byte Levels
+		public int Level
 		{
-			get { return _levs; }
+			get { return _level; }
 			set
 			{
-				if (value < (byte)MapSize.Levs)
+				if (value < MapSize.Levs)
 				{
-					var args = new LevelChangedEventArgs(value);
-					_levs = value;
+					_level = value;
 
 					if (LevelChangedEvent != null)
-						LevelChangedEvent(this, args);
+						LevelChangedEvent(this, new LevelChangedEventArgs(value));
 				}
 			}
 		}
@@ -115,8 +114,8 @@ namespace XCom.Interfaces.Base
 		/// <returns></returns>
 		public MapTileBase this[int row, int col]
 		{
-			get { return this[row, col, _levs]; }
-			set { this[row, col, _levs] = value; }
+			get { return this[row, col, _level]; }
+			set { this[row, col, _level] = value; }
 		}
 		/// <summary>
 		/// Gets/Sets a MapTile using a MapLocation.
@@ -145,11 +144,10 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public void Up()
 		{
-			if (_levs > 0)
+			if (_level > 0)
 			{
-//				var args = new HeightChangedEventArgs(_levs, _levs - 1);
-				var args = new LevelChangedEventArgs(_levs - 1);
-				--_levs;
+				var args = new LevelChangedEventArgs(_level - 1);
+				--_level;
 
 				if (LevelChangedEvent != null)
 					LevelChangedEvent(this, args);
@@ -157,15 +155,14 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Changes the '_levs' property and fires a HeightChanged event.
+		/// Changes the '_level' property and fires a LevelChanged event.
 		/// </summary>
 		public void Down()
 		{
-			if (_levs < MapSize.Levs - 1)
+			if (_level < MapSize.Levs - 1)
 			{
-				++_levs; // TODO: wait a second !
-				var args = new LevelChangedEventArgs(_levs + 1);
-//				var args = new HeightChangedEventArgs(_levs, _levs + 1);
+				++_level; // TODO: wait a second !
+				var args = new LevelChangedEventArgs(_level + 1);
 
 				if (LevelChangedEvent != null)
 					LevelChangedEvent(this, args);
@@ -178,23 +175,23 @@ namespace XCom.Interfaces.Base
 				int lPost,
 				bool toCeiling)
 		{
-/*			var tileList = MapResizeService.ResizeMap(
-												rPost,
-												cPost,
-												hPost,
-												MapSize,
-												MapTiles,
-												toCeiling);
-			if (tileList != null)
-			{
-				MapChanged = true;
-
-				MapTiles = tileList;
-				MapSize  = new MapSize(rPost, cPost, hPost);
-
-				if (hPost > 0) // assuage FxCop re 'possible' underflow.
-					_height = (byte)(hPost - 1);
-			} */
+//			var tileList = MapResizeService.ResizeMap(
+//												rPost,
+//												cPost,
+//												lPost,
+//												MapSize,
+//												MapTiles,
+//												toCeiling);
+//			if (tileList != null)
+//			{
+//				MapChanged = true;
+//
+//				MapTiles = tileList;
+//				MapSize  = new MapSize(rPost, cPost, lPost);
+//
+//				if (lPost > 0) // assuage FxCop re 'possible' underflow.
+//					_level = hPost - 1;
+//			}
 		}
 
 		/// <summary>
@@ -211,17 +208,17 @@ namespace XCom.Interfaces.Base
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
 			var b = XCBitmap.MakeBitmap(
 								rowPlusCols * (PckImage.Width / 2),
-								(MapSize.Levs - _levs) * 24 + rowPlusCols * 8,
+								(MapSize.Levs - _level) * 24 + rowPlusCols * 8,
 								palette.Colors);
 
 			var start = new Point(
 								(MapSize.Rows - 1) * (PckImage.Width / 2),
-								-(24 * _levs));
+								-(24 * _level));
 
 			int i = 0;
 			if (MapTiles != null)
 			{
-				for (int l = MapSize.Levs - 1; l >= _levs; --l)
+				for (int l = MapSize.Levs - 1; l >= _level; --l)
 				{
 					for (int
 							r = 0, startX = start.X, startY = start.Y + l * 24;
@@ -240,7 +237,7 @@ namespace XCom.Interfaces.Base
 								XCBitmap.Draw(tile[0].Image, b, x, y - tile.Record.TileOffset);
 							}
 
-							XCBitmap.FireLoadingEvent(i, (MapSize.Levs - _levs) * MapSize.Rows * MapSize.Cols);
+							XCBitmap.FireLoadingEvent(i, (MapSize.Levs - _level) * MapSize.Rows * MapSize.Cols);
 						}
 					}
 				}

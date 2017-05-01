@@ -382,7 +382,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					MapBase.SelectedTile = new MapLocation(
 														pt.Y,
 														pt.X,
-														MapBase.Levels);
+														MapBase.Level);
 
 					_isMouseDrag = true;
 					MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);

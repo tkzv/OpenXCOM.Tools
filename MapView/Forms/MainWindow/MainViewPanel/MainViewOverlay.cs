@@ -29,13 +29,13 @@ namespace MapView
 			{
 				if (_mapBase != null)
 				{
-					_mapBase.LevelChangedEvent        -= OnLevelChanged;
+					_mapBase.LevelChangedEvent    -= OnLevelChanged;
 					_mapBase.LocationChangedEvent -= OnSelectedChanged;
 				}
 
 				if ((_mapBase = value) != null)
 				{
-					_mapBase.LevelChangedEvent        += OnLevelChanged;
+					_mapBase.LevelChangedEvent    += OnLevelChanged;
 					_mapBase.LocationChangedEvent += OnSelectedChanged;
 
 					SetPanelSize();
@@ -324,10 +324,10 @@ namespace MapView
 			{
 				var dragStart = ConvertCoordsDiamond(
 												e.X, e.Y,
-												_mapBase.Levels);
+												_mapBase.Level);
 				var dragEnd   = ConvertCoordsDiamond(
 												e.X, e.Y,
-												_mapBase.Levels);
+												_mapBase.Level);
 				if (   dragStart.Y >= 0 && dragStart.Y < MapBase.MapSize.Rows
 					&& dragStart.X >= 0 && dragStart.X < MapBase.MapSize.Cols)
 				{
@@ -338,7 +338,7 @@ namespace MapView
 
 					_mapBase.SelectedTile = new MapLocation(
 														dragStart.Y, dragStart.X,
-														_mapBase.Levels);
+														_mapBase.Level);
 					Select();
 					Refresh();
 				}
@@ -365,7 +365,7 @@ namespace MapView
 			{
 				var pt = ConvertCoordsDiamond(
 											e.X, e.Y,
-											_mapBase.Levels);
+											_mapBase.Level);
 
 				if (pt.X != _dragEnd.X || pt.Y != _dragEnd.Y)
 				{
@@ -530,21 +530,29 @@ namespace MapView
 				int halfWidth  = (int)(HalfWidth  * Globals.PckImageScale);
 				int halfHeight = (int)(HalfHeight * Globals.PckImageScale);
 
-				for (int h = _mapBase.MapSize.Levs - 1; h > -1; --h)
+				for (int l = _mapBase.MapSize.Levs - 1; l > -1; --l)
 				{
-					if (_mapBase.Levels <= h)
+					if (_mapBase.Level <= l)
 					{
-						DrawGrid(h, g);
+						DrawGrid(l, g);
 
 						for (int
-								r = 0, startY = _origin.Y + (halfHeight * h * 3), startX = _origin.X;
+								r = 0,
+									startY = _origin.Y + (halfHeight * l * 3),
+									startX = _origin.X;
 								r != _mapBase.MapSize.Rows;
-								++r, startY += halfHeight, startX -= halfWidth)
+								++r,
+									startY += halfHeight,
+									startX -= halfWidth)
 						{
 							for (int
-									c = 0, x = startX, y = startY;
+									c = 0,
+										x = startX,
+										y = startY;
 									c != _mapBase.MapSize.Cols;
-									++c, x += halfWidth, y += halfHeight)
+									++c,
+										x += halfWidth,
+										y += halfHeight)
 							{
 								var tileRect = new Rectangle(c, r, 1, 1);
 
@@ -552,11 +560,11 @@ namespace MapView
 											  || (r == _dragEnd.Y   && c == _dragEnd.X);
 
 								if (isClicked)
-									DrawCursor(g, x, y, h);
+									DrawCursor(g, x, y, l);
 
-								if (_mapBase.Levels == h || _mapBase[r, c, h].DrawAbove)
+								if (_mapBase.Level == l || _mapBase[r, c, l].DrawAbove)
 								{
-									var tile = (XCMapTile)_mapBase[r, c, h];
+									var tile = (XCMapTile)_mapBase[r, c, l];
 									if (_graySelection
 										&& (isClicked || dragRect.IntersectsWith(tileRect)))
 									{
@@ -572,7 +580,7 @@ namespace MapView
 												x, y,
 												MainViewUnderlay.AniStep,
 												false,
-												_mapBase.Levels == h);
+												_mapBase.Level == l);
 							}
 						}
 					}
@@ -580,32 +588,32 @@ namespace MapView
 
 //				if (_drawSelectionBox) // always false.
 				if (FirstClick && !_graySelection)
-					DrawLozengeSelected(g, _mapBase.Levels, dragRect);
+					DrawLozengeSelected(g, _mapBase.Level, dragRect);
 			}
 		}
 
-		private void DrawCursor(Graphics g, int x, int y, int h)
+		private void DrawCursor(Graphics g, int x, int y, int l)
 		{
 			if (_cursor != null)
 				_cursor.DrawHigh(
 							g,
 							x, y,
 							false,
-							_mapBase.Levels == h);
+							_mapBase.Level == l);
 		}
 
-		private void DrawGrid(int h, Graphics g)
+		private void DrawGrid(int l, Graphics g)
 		{
-			if (_showGrid && _mapBase.Levels == h)
+			if (_showGrid && _mapBase.Level == l)
 			{
-				var hWidth  = (int)(HalfWidth  * Globals.PckImageScale);
-				var hHeight = (int)(HalfHeight * Globals.PckImageScale);
+				int hWidth  = (int)(HalfWidth  * Globals.PckImageScale);
+				int hHeight = (int)(HalfHeight * Globals.PckImageScale);
 
-				var x = hWidth + _origin.X;
-				var y = (_mapBase.Levels + 1) * (hHeight * 3) + _origin.Y;
+				int x = hWidth + _origin.X;
+				int y = (_mapBase.Level + 1) * (hHeight * 3) + _origin.Y;
 
-				var xMax = _mapBase.MapSize.Rows * hWidth;
-				var yMax = _mapBase.MapSize.Rows * hHeight;
+				int xMax = _mapBase.MapSize.Rows * hWidth;
+				int yMax = _mapBase.MapSize.Rows * hHeight;
 
 				var pt0 = new Point(x, y);
 				var pt1 = new Point(
@@ -624,7 +632,7 @@ namespace MapView
 
 				g.FillPath(_brushLayer, _layerFill);
 
-				for (var i = 0; i <= _mapBase.MapSize.Rows; ++i)
+				for (int i = 0; i <= _mapBase.MapSize.Rows; ++i)
 					g.DrawLine(
 							_penGrid,
 							x - hWidth  * i,
@@ -718,14 +726,14 @@ namespace MapView
 					(int)(image.Height * Globals.PckImageScale));
 		}
 
-		private void DrawLozengeSelected(Graphics g, int h, Rectangle dragRect)
+		private void DrawLozengeSelected(Graphics g, int l, Rectangle dragRect)
 		{
 			var hWidth = (int)(HalfWidth * Globals.PckImageScale);
 
-			var top    = ConvertCoordsRect(new Point(dragRect.X,     dragRect.Y), h + 1);
-			var right  = ConvertCoordsRect(new Point(dragRect.Right, dragRect.Y), h + 1);
-			var bottom = ConvertCoordsRect(new Point(dragRect.Right, dragRect.Bottom), h + 1);
-			var left   = ConvertCoordsRect(new Point(dragRect.Left,  dragRect.Bottom), h + 1);
+			var top    = ConvertCoordsRect(new Point(dragRect.X,     dragRect.Y), l + 1);
+			var right  = ConvertCoordsRect(new Point(dragRect.Right, dragRect.Y), l + 1);
+			var bottom = ConvertCoordsRect(new Point(dragRect.Right, dragRect.Bottom), l + 1);
+			var left   = ConvertCoordsRect(new Point(dragRect.Left,  dragRect.Bottom), l + 1);
 
 			top.X    += hWidth;
 			right.X  += hWidth;
@@ -768,11 +776,11 @@ namespace MapView
 						(int)Math.Floor(y1));
 		}
 
-		private Point ConvertCoordsRect(Point pt, int height)
+		private Point ConvertCoordsRect(Point pt, int level)
 		{
 			int hWidth  = (int)(HalfWidth  * Globals.PckImageScale);
 			int hHeight = (int)(HalfHeight * Globals.PckImageScale);
-			int hOffset = hHeight * height * 3;
+			int hOffset = hHeight * level * 3;
 			return new Point(
 						_origin.X + (pt.X - pt.Y) * hWidth,
 						_origin.Y + (pt.X + pt.Y) * hHeight + hOffset);

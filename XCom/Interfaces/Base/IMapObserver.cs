@@ -65,6 +65,11 @@ namespace XCom.Interfaces.Base
 		}
 
 
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="location"></param>
+		/// <param name="baseTile"></param>
 		internal LocationChangedEventArgs(MapLocation location, MapTileBase baseTile)
 		{
 			_location = location;
@@ -79,16 +84,20 @@ namespace XCom.Interfaces.Base
 		:
 			EventArgs
 	{
-		private readonly int _lev;
+		private readonly int _level;
 		public int Level
 		{
-			get { return _lev; }
+			get { return _level; }
 		}
 
 
-		internal LevelChangedEventArgs(int lev)
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="level">the new level</param>
+		internal LevelChangedEventArgs(int level)
 		{
-			_lev = lev;
+			_level = level;
 		}
 	}
 }

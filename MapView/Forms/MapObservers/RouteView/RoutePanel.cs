@@ -232,7 +232,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 					default:
 						if (   MapFile.RouteFile[link.Destination] != null
-							&& MapFile.RouteFile[link.Destination].Lev == MapFile.Levels)
+							&& MapFile.RouteFile[link.Destination].Lev == MapFile.Level)
 						{
 							int cDst = MapFile.RouteFile[link.Destination].Col;
 							int rDst = MapFile.RouteFile[link.Destination].Row;
@@ -337,7 +337,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 									default:
 										if (   MapFile.RouteFile[link.Destination] != null
-											&& MapFile.RouteFile[link.Destination].Lev < MapFile.Levels)
+											&& MapFile.RouteFile[link.Destination].Lev < MapFile.Level)
 										{
 											_graphics.DrawLine(
 															RoutePens["UnselectedLinkColor"],
@@ -345,7 +345,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 															x, y + DrawAreaHeight * 2);
 										}
 										else if (MapFile.RouteFile[link.Destination] != null
-											&&   MapFile.RouteFile[link.Destination].Lev > MapFile.Levels)
+											&&   MapFile.RouteFile[link.Destination].Lev > MapFile.Level)
 										{
 											_graphics.DrawLine(
 															RoutePens["UnselectedLinkColor"],
