@@ -861,7 +861,7 @@ namespace MapView
 		{
 			if (_mainViewUnderlay.MapBase != null)
 			{
-				sfdSaveDialog.FileName = _mainViewUnderlay.MapBase.Name;
+				sfdSaveDialog.FileName = _mainViewUnderlay.MapBase.Label;
 				if (sfdSaveDialog.ShowDialog() == DialogResult.OK)
 				{
 					_loadingProgress.Show();

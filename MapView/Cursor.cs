@@ -6,58 +6,66 @@ using XCom;
 
 namespace MapView
 {
-	internal enum CursorState
-	{
-		Select,
-		Aim,
-		SelectMControl,
-		Waypoint,
-		Throw
-	};
-
-
 	internal class CursorSprite
 	{
-		private CursorState _state;
-		private readonly PckSpriteCollection _pckPack;
-
-
-		public CursorSprite(PckSpriteCollection pckPack)
+/*		private enum CursorState
 		{
-			_state = CursorState.Select;
+			Standard,
+			Aim,
+			MindControl,
+			Waypoint,
+			Throw
+		}; */
+
+
+		#region Fields
+//		private CursorState _state;
+		private readonly PckSpriteCollection _pckPack;
+		#endregion
+
+
+		#region cTor
+		/// <summary>
+		/// Constructs a CursorSprite.
+		/// The CursorSprite is the actual cuboid selector in XCOM resources.
+		/// </summary>
+		/// <param name="pckPack"></param>
+		internal CursorSprite(PckSpriteCollection pckPack)
+		{
+//			_state = CursorState.Standard;
 			_pckPack = pckPack;
 
 			foreach (PckImage image in pckPack)
 				image.Image.MakeTransparent(pckPack.Pal.Transparent);
 		}
+		#endregion
 
 
-/*		public CursorState State
-		{
-			get { return _state; }
-			set { _state = value; }
-		} */
-
-/*		public PckSpriteCollection PckSpriteCollection
-		{
-			get { return _file; }
-		} */
-
-		public void DrawHigh(
+		#region Methods
+		/// <summary>
+		/// Draws the back half of the cuboid.
+		/// </summary>
+		/// <param name="g"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+//		/// <param name="over"></param>
+		/// <param name="topLevel"></param>
+		internal void DrawCursorBack(
 				Graphics g,
 				int x, int y,
-				bool over,
-				bool top)
+//				bool over, // always false.
+				bool topLevel)
 		{
-			Bitmap image;
-			if (top && _state != CursorState.Aim)
+			int id = (topLevel) ? 0
+								: 2;
+/*			int id = 2;
+			if (topLevel)// && _state != CursorState.Aim)
 			{
-				image = (over) ? _pckPack[1].Image
-							   : _pckPack[0].Image;
-			}
-			else
-				image = _pckPack[2].Image;
+//				id = (over) ? 1 : 0;
+				id = 0;
+			} */
 
+			var image = _pckPack[id].Image;
 			g.DrawImage(
 					image,
 					x, y,
@@ -65,49 +73,66 @@ namespace MapView
 					(int)(image.Height * Globals.PckImageScale));
 		}
 
-		public void DrawLow(
+		/// <summary>
+		/// Draws the front half of the cuboid.
+		/// </summary>
+		/// <param name="g"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="i"></param>
+//		/// <param name="over"></param>
+		/// <param name="topLevel"></param>
+		internal void DrawCursorFront(
 				Graphics g,
 				int x, int y,
 				int i,
-				bool over,
-				bool top)
+//				bool over, // always false.
+				bool topLevel)
 		{
-			Bitmap image;
+			int id = (topLevel) ? 3
+								: 5;
 
-			if (top)
+/*			int id = 5;
+			if (topLevel)
 			{
 				switch (_state)
 				{
 					case CursorState.Aim:
-						image = _pckPack[7 + i % 4].Image;
+						id = 7 + i % 4;
 						break;
-
-					case CursorState.SelectMControl:
-						image = _pckPack[11 + i % 2].Image;
+					case CursorState.MindControl:
+						id = 11 + i % 2;
 						break;
-
 					case CursorState.Throw:
-						image = _pckPack[15 + i % 2].Image;
+						id = 15 + i % 2;
 						break;
-
 					case CursorState.Waypoint:
-						image = _pckPack[13 + i % 2].Image;
+						id = 13 + i % 2;
 						break;
-
 					default:
-						image = (over) ? _pckPack[4].Image
-									   : _pckPack[3].Image;
+//						id = (over) ? 4 : 3;
+						id = 3;
 						break;
 				}
-			}
-			else
-				image = _pckPack[5].Image;
+			} */
 
+			var image = _pckPack[id].Image;
 			g.DrawImage(
 					image,
 					x, y,
 					(int)(image.Width  * Globals.PckImageScale),
 					(int)(image.Height * Globals.PckImageScale));
 		}
+		#endregion
 	}
 }
+
+//		public CursorState State
+//		{
+//			get { return _state; }
+//			set { _state = value; }
+//		}
+//		public PckSpriteCollection PckCursorSprites
+//		{
+//			get { return _file; }
+//		}

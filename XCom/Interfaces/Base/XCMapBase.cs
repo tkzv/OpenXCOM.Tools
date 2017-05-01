@@ -14,7 +14,7 @@ namespace XCom.Interfaces.Base
 
 
 	/// <summary>
-	/// Abstract base class defining all common functionality of an editable Map.
+	/// This is basically the currently loaded Map.
 	/// </summary>
 	public class XCMapBase
 	{
@@ -51,8 +51,8 @@ namespace XCom.Interfaces.Base
 		public bool MapChanged
 		{ get; set; }
 
-		public string Name
-		{ get; protected set; }
+		public string Label
+		{ get; private set; }
 
 		internal MapTileList MapTiles
 		{ get; set; }
@@ -127,16 +127,23 @@ namespace XCom.Interfaces.Base
 		}
 
 
-		protected XCMapBase(string name, List<TileBase> tiles)
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="label"></param>
+		/// <param name="tiles"></param>
+		protected XCMapBase(string label, List<TileBase> tiles)
 		{
-			Name = name;
+			Label = label;
 			_tiles = tiles;
 		}
+		#endregion
 
 
 		public virtual void Save()
 		{
-			throw new InvalidOperationException("XCMapBase: Save() is not implemented."); // ... odd ....
+//			throw new InvalidOperationException("XCMapBase: Save() is not implemented."); // ... odd ....
 		}
 
 		/// <summary>
@@ -144,8 +151,6 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public void Up()
 		{
-			LogFile.WriteLine("XCMapBase.Up");
-
 			if (_level > 0)
 			{
 				var args = new LevelChangedEventArgs(--_level);
@@ -160,8 +165,6 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public void Down()
 		{
-			LogFile.WriteLine("XCMapBase.Down");
-
 			if (_level < MapSize.Levs - 1)
 			{
 				++_level; // TODO: wait a second !

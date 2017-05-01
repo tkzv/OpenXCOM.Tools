@@ -530,7 +530,7 @@ namespace MapView
 				int halfWidth  = (int)(HalfWidth  * Globals.PckImageScale);
 				int halfHeight = (int)(HalfHeight * Globals.PckImageScale);
 
-				for (int l = _mapBase.MapSize.Levs - 1; l > -1; --l)
+				for (int l = _mapBase.MapSize.Levs - 1; l != -1; --l)
 				{
 					if (_mapBase.Level <= l)
 					{
@@ -559,8 +559,12 @@ namespace MapView
 								bool isClicked = (r == _dragStart.Y && c == _dragStart.X)
 											  || (r == _dragEnd.Y   && c == _dragEnd.X);
 
-								if (isClicked)
-									DrawCursor(g, x, y, l);
+								if (isClicked && _cursor != null)
+									_cursor.DrawCursorBack(
+														g,
+														x, y,
+//														false,
+														_mapBase.Level == l);
 
 								if (_mapBase.Level == l || _mapBase[r, c, l].DrawAbove)
 								{
@@ -575,12 +579,12 @@ namespace MapView
 								}
 
 								if (isClicked && _cursor != null)
-									_cursor.DrawLow(
-												g,
-												x, y,
-												MainViewUnderlay.AniStep,
-												false,
-												_mapBase.Level == l);
+									_cursor.DrawCursorFront(
+														g,
+														x, y,
+														MainViewUnderlay.AniStep,
+//														false,
+														_mapBase.Level == l);
 							}
 						}
 					}
@@ -590,16 +594,6 @@ namespace MapView
 				if (FirstClick && !_graySelection)
 					DrawLozengeSelected(g, _mapBase.Level, dragRect);
 			}
-		}
-
-		private void DrawCursor(Graphics g, int x, int y, int l)
-		{
-			if (_cursor != null)
-				_cursor.DrawHigh(
-							g,
-							x, y,
-							false,
-							_mapBase.Level == l);
 		}
 
 		private void DrawGrid(int l, Graphics g)

@@ -22,7 +22,7 @@ namespace MapView
 
 		public void Analyze(XCMapBase mapBase)
 		{
-			groupInfo.Text = "Map: " + mapBase.Name;
+			groupInfo.Text = "Map: " + mapBase.Label;
 
 			lbl2Dimensions.Text = mapBase.MapSize.Cols + ","
 								+ mapBase.MapSize.Rows + ","
