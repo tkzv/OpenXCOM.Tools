@@ -79,13 +79,13 @@ namespace MapView
 		/// <param name="g"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		/// <param name="i"></param>
+//		/// <param name="aniStep"></param>
 //		/// <param name="over"></param>
 		/// <param name="topLevel"></param>
 		internal void DrawCursorFront(
 				Graphics g,
 				int x, int y,
-				int i,
+//				int aniStep,
 //				bool over, // always false.
 				bool topLevel)
 		{
@@ -98,16 +98,16 @@ namespace MapView
 				switch (_state)
 				{
 					case CursorState.Aim:
-						id = 7 + i % 4;
+						id = 7 + aniStep % 4;
 						break;
 					case CursorState.MindControl:
-						id = 11 + i % 2;
+						id = 11 + aniStep % 2;
 						break;
 					case CursorState.Throw:
-						id = 15 + i % 2;
+						id = 15 + aniStep % 2;
 						break;
 					case CursorState.Waypoint:
-						id = 13 + i % 2;
+						id = 13 + aniStep % 2;
 						break;
 					default:
 //						id = (over) ? 4 : 3;

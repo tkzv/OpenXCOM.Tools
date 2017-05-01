@@ -582,7 +582,7 @@ namespace MapView
 									_cursor.DrawCursorFront(
 														g,
 														x, y,
-														MainViewUnderlay.AniStep,
+//														MainViewUnderlay.AniStep,
 //														false,
 														_mapBase.Level == l);
 							}
