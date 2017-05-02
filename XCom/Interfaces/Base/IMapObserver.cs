@@ -19,9 +19,9 @@ namespace XCom.Interfaces.Base
 //		{ get; set; }
 
 
-		void OnLocationChanged(XCMapBase sender, LocationChangedEventArgs e);
+		void OnLocationSelected_Observer(XCMapBase sender, LocationSelectedEventArgs e);
 
-		void OnLevelChanged(XCMapBase sender, LevelChangedEventArgs e);
+		void OnLevelChanged_Observer(XCMapBase sender, LevelChangedEventArgs e);
 	}
 
 
@@ -45,10 +45,10 @@ namespace XCom.Interfaces.Base
 
 
 	/// <summary>
-	/// EventArgs with a MapLocation and MapTile for when a LocationChanged
+	/// EventArgs with a MapLocation and MapTile for when a LocationSelected
 	/// event fires.
 	/// </summary>
-	public sealed class LocationChangedEventArgs
+	public sealed class LocationSelectedEventArgs
 		:
 			EventArgs
 	{
@@ -70,7 +70,7 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		/// <param name="location"></param>
 		/// <param name="baseTile"></param>
-		internal LocationChangedEventArgs(MapLocation location, MapTileBase baseTile)
+		internal LocationSelectedEventArgs(MapLocation location, MapTileBase baseTile)
 		{
 			_location = location;
 			_baseTile = baseTile;

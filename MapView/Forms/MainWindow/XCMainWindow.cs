@@ -183,8 +183,9 @@ namespace MapView
 
 			_mainMenusManager.PopulateMenus(consoleShare.GetConsole(), Settings);
 			LogFile.WriteLine("MainView menus populated.");
-			ViewerFormsManager.ShowAllManager = _mainMenusManager.CreateShowAllManager();
-			LogFile.WriteLine("ShowAllManager created.");
+
+			ViewerFormsManager.HideViewersManager = _mainMenusManager.CreateShowAllManager();
+			LogFile.WriteLine("HideViewersManager created.");
 
 
 			ViewerFormsManager.EditFactory = new EditButtonsFactory(_mainViewUnderlay);
@@ -200,7 +201,7 @@ namespace MapView
 			_viewersManager.ManageViewers();
 
 
-			ViewerFormsManager.TileView.Control.MapChangedEvent += OnMapChanged;
+			ViewerFormsManager.TileView.Control.PckSaveEvent += OnPckSaveEvent;
 
 			MainViewUnderlay.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
@@ -211,7 +212,7 @@ namespace MapView
 
 			tscPanel.ContentPanel.Controls.Add(_mainViewUnderlay);
 
-			ViewerFormsManager.EditFactory.BuildEditStrip(tsEdit);
+			ViewerFormsManager.EditFactory.CreateEditorStrip(tsEdit);
 			tsEdit.Enabled = false;
 
 
@@ -222,7 +223,7 @@ namespace MapView
 															String.Empty,
 															2,
 															Palette.UfoBattle);
-				_mainViewUnderlay.MainView.SetCursor(new CursorSprite(cursor));
+				_mainViewUnderlay.MainViewOverlay.SetCursor(new CursorSprite(cursor));
 			}
 			catch
 			{
@@ -233,7 +234,7 @@ namespace MapView
 																String.Empty,
 																4,
 																Palette.TftdBattle);
-					_mainViewUnderlay.MainView.SetCursor(new CursorSprite(cursor));
+					_mainViewUnderlay.MainViewOverlay.SetCursor(new CursorSprite(cursor));
 				}
 				catch
 				{
@@ -479,40 +480,40 @@ namespace MapView
 
 			Settings.AddSetting(
 							ShowGrid,
-							MainViewUnderlay.Instance.MainView.ShowGrid,
+							MainViewUnderlay.Instance.MainViewOverlay.ShowGrid,
 							"If true a grid will display at the current level of editing",
 							MapView,
-							null, MainViewUnderlay.Instance.MainView);
+							null, MainViewUnderlay.Instance.MainViewOverlay);
 			Settings.AddSetting(
 							GridLayerColor,
-							MainViewUnderlay.Instance.MainView.GridLayerColor,
+							MainViewUnderlay.Instance.MainViewOverlay.GridLayerColor,
 							"Color of the grid",
 							MapView,
-							null, MainViewUnderlay.Instance.MainView);
+							null, MainViewUnderlay.Instance.MainViewOverlay);
 			Settings.AddSetting(
 							GridLayerOpacity,
-							MainViewUnderlay.Instance.MainView.GridLayerOpacity,
+							MainViewUnderlay.Instance.MainViewOverlay.GridLayerOpacity,
 							"Opacity of the grid (0..255)",
 							MapView,
-							null, MainViewUnderlay.Instance.MainView);
+							null, MainViewUnderlay.Instance.MainViewOverlay);
 			Settings.AddSetting(
 							GridLineColor,
-							MainViewUnderlay.Instance.MainView.GridLineColor,
+							MainViewUnderlay.Instance.MainViewOverlay.GridLineColor,
 							"Color of the lines that make up the grid",
 							MapView,
-							null, MainViewUnderlay.Instance.MainView);
+							null, MainViewUnderlay.Instance.MainViewOverlay);
 			Settings.AddSetting(
 							GridLineWidth,
-							MainViewUnderlay.Instance.MainView.GridLineWidth,
+							MainViewUnderlay.Instance.MainViewOverlay.GridLineWidth,
 							"Width of the grid lines in pixels",
 							MapView,
-							null, MainViewUnderlay.Instance.MainView);
+							null, MainViewUnderlay.Instance.MainViewOverlay);
 			Settings.AddSetting(
 							GraySelection,
-							MainViewUnderlay.Instance.MainView.GraySelection,
+							MainViewUnderlay.Instance.MainViewOverlay.GraySelection,
 							"If true the selection area will show up in gray",
 							MapView,
-							null, MainViewUnderlay.Instance.MainView);
+							null, MainViewUnderlay.Instance.MainViewOverlay);
 
 //			Settings.AddSetting(
 //							SaveOnExit,
@@ -571,23 +572,23 @@ namespace MapView
 					break;
 
 				case ShowGrid:
-					MainViewUnderlay.Instance.MainView.ShowGrid = (bool)val;
+					MainViewUnderlay.Instance.MainViewOverlay.ShowGrid = (bool)val;
 					break;
 
 				case GridLayerColor:
-					MainViewUnderlay.Instance.MainView.GridLayerColor = (Color)val;
+					MainViewUnderlay.Instance.MainViewOverlay.GridLayerColor = (Color)val;
 					break;
 
 				case GridLayerOpacity:
-					MainViewUnderlay.Instance.MainView.GridLayerOpacity = (int)val;
+					MainViewUnderlay.Instance.MainViewOverlay.GridLayerOpacity = (int)val;
 					break;
 
 				case GridLineColor:
-					MainViewUnderlay.Instance.MainView.GridLineColor = (Color)val;
+					MainViewUnderlay.Instance.MainViewOverlay.GridLineColor = (Color)val;
 					break;
 
 				case GridLineWidth:
-					MainViewUnderlay.Instance.MainView.GridLineWidth = (int)val;
+					MainViewUnderlay.Instance.MainViewOverlay.GridLineWidth = (int)val;
 					break;
 
 				// NOTE: 'GraySelection' is handled. reasons ...
@@ -775,7 +776,10 @@ namespace MapView
 			LoadSelectedMap();
 		}
 
-		private void OnMapChanged()
+		/// <summary>
+		/// Reloads the map when a save is done in PckView (via TileView).
+		/// </summary>
+		private void OnPckSaveEvent()
 		{
 			LoadSelectedMap();
 		}
@@ -786,6 +790,8 @@ namespace MapView
 			if (desc != null)
 			{
 //				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.
+
+				_mainViewUnderlay.MainViewOverlay.FirstClick = false;
 
 				var tileFactory = new XCTileFactory();
 				tileFactory.WarningEvent += _warningHandler.HandleWarning;	// used to send a message to the Console if
@@ -929,11 +935,11 @@ namespace MapView
 
 		private void OnResizeClick(object sender, EventArgs e)
 		{
-			if (_mainViewUnderlay.MainView.MapBase != null)
+			if (_mainViewUnderlay.MainViewOverlay.MapBase != null)
 			{
 				using (var f = new ChangeMapSizeForm())
 				{
-					f.MapBase = _mainViewUnderlay.MainView.MapBase;
+					f.MapBase = _mainViewUnderlay.MainViewOverlay.MapBase;
 					if (f.ShowDialog(this) == DialogResult.OK)
 					{
 						f.MapBase.ResizeTo(

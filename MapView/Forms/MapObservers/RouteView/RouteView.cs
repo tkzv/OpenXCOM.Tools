@@ -167,7 +167,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				}
 
 				if (_nodeSelected != null)
-					FillNodeInformation();
+					UpdateNodeInformation();
 			}
 			else // if a node is already selected ...
 			{
@@ -179,7 +179,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 						ConnectNode(node);
 
 					_nodeSelected = node;
-					FillNodeInformation();
+					UpdateNodeInformation();
 				}
 				else if (node == null)
 				{
@@ -190,7 +190,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					}
 
 					_nodeSelected = node;
-					FillNodeInformation();
+					UpdateNodeInformation();
 				}
 				// else the selected node is the node clicked.
 			}
@@ -257,7 +257,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			return -1;
 		}
 
-		private void FillNodeInformation()
+		private void UpdateNodeInformation()
 		{
 			_loadingGui = true;
 
@@ -438,7 +438,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					else
 						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankTftd);
 
-					FillNodeInformation();
+					UpdateNodeInformation();
 				}
 //				}
 //				finally
@@ -448,9 +448,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		public override void OnLocationChanged(XCMapBase sender, LocationChangedEventArgs e)
+		public override void OnLocationSelected_Observer(XCMapBase sender, LocationSelectedEventArgs e)
 		{
-			MainViewUnderlay.Instance.MainView.FirstClick = true;
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("RouteView.OnLocationSelected_Observer");
+
+			MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
 
 			labelSelectedPos.Text = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
@@ -458,10 +461,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 												/*Environment.NewLine, */e.Location.Col, e.Location.Row);
 		}
 
-		public override void OnLevelChanged(XCMapBase sender, LevelChangedEventArgs e)
+		public override void OnLevelChanged_Observer(XCMapBase sender, LevelChangedEventArgs e)
 		{
 			DeselectNode();
-			FillNodeInformation();
+			UpdateNodeInformation();
 
 			Refresh();
 		}

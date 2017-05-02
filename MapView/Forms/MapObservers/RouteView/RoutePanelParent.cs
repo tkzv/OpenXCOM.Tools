@@ -61,7 +61,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		internal int Opacity
 		{
 			get { return _opacity; }
-			set { _opacity = ((int)value).Clamp(0, 255); }
+			set { _opacity = value.Clamp(0, 255); }
 		}
 
 
@@ -133,7 +133,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 														ClickPoint.X,
 														_mapFile.Level);
 
-						MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);
+						MainViewUnderlay.Instance.MainViewOverlay.SetDrag(pt, pt);
 
 						var args = new RoutePanelClickedEventArgs();
 						args.MouseEventArgs = e;
@@ -149,6 +149,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 				}
 			}
 		}
+
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			MainViewUnderlay.Instance.MainViewOverlay.Refresh();	// For some whack reason, this is needed in order to refresh
+		}															// MainView's selector iff a Map has just been loaded *and*
+																	// the route-panel is clicked at location (0,0).
 
 		protected override void OnResize(EventArgs e)
 		{

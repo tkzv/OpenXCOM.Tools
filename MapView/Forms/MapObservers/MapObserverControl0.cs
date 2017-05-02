@@ -54,12 +54,15 @@ namespace MapView
 			}
 		} */
 
-		public virtual void OnLocationChanged(XCMapBase sender, LocationChangedEventArgs e)
+		public virtual void OnLocationSelected_Observer(XCMapBase sender, LocationSelectedEventArgs e)
 		{
+			//XCom.LogFile.WriteLine("");
+			//XCom.LogFile.WriteLine("MapObserverControl0.OnLocationSelected_Observer");
+
 			Refresh();
 		}
 
-		public virtual void OnLevelChanged(XCMapBase sender, LevelChangedEventArgs e)
+		public virtual void OnLevelChanged_Observer(XCMapBase sender, LevelChangedEventArgs e)
 		{
 			Refresh();
 		}

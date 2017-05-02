@@ -79,14 +79,17 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		#region EventCalls
-		public override void OnLocationChanged(XCMapBase sender, LocationChangedEventArgs e)
+		public override void OnLocationSelected_Observer(XCMapBase sender, LocationSelectedEventArgs e)
 		{
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("QuadrantPanel.OnLocationSelected_Observer");
+
 			_tile = e.SelectedTile as XCMapTile;
 			_location = e.Location;
 			Refresh();
 		}
 
-		public override void OnLevelChanged(XCMapBase sender, LevelChangedEventArgs e)
+		public override void OnLevelChanged_Observer(XCMapBase sender, LevelChangedEventArgs e)
 		{
 			if (_location != null)
 			{
@@ -111,7 +114,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 					if (e.Button == MouseButtons.Right) // see SetSelected() above^
 					{
-						MainViewUnderlay.Instance.MainView.Refresh();
+						MainViewUnderlay.Instance.MainViewOverlay.Refresh();
 						ViewerFormsManager.TopView.Refresh();
 						ViewerFormsManager.RouteView.Refresh();
 						ViewerFormsManager.TopRouteView.Refresh();

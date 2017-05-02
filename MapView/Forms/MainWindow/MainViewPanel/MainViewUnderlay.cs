@@ -13,7 +13,7 @@ namespace MapView
 	{
 		#region Fields & Properties
 		private MainViewOverlay _mainViewOverlay;
-		internal MainViewOverlay MainView
+		internal MainViewOverlay MainViewOverlay
 		{
 			get { return _mainViewOverlay; }
 		}

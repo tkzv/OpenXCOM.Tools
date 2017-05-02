@@ -26,8 +26,14 @@ namespace MapView.Forms.MapObservers.TopViews
 		private readonly GraphicsPath _lozSelected = new GraphicsPath(); // selected tile or tiles being drag-selected
 //		private readonly GraphicsPath _lozSel      = new GraphicsPath();
 
-		private int _mouseRow = -1;
-		private int _mouseCol = -1;
+		private int _cursorCol = -1;
+		private int _cursorRow = -1;
+		
+//		internal void ResetCursorPosition()
+//		{
+//			_cursorCol = -1;
+//			_cursorRow = -1;
+//		}
 
 		private DrawBlobService _blobService = new DrawBlobService();
 		internal protected DrawBlobService BlobService
@@ -138,73 +144,78 @@ namespace MapView.Forms.MapObservers.TopViews
 		protected override void OnResize(EventArgs e)
 		{
 			base.OnResize(e);
-			DrawSelectionLozenge();
+			SetSelectedBorder();
 		}
 
 		internal protected void OnMouseDrag()
 		{
-			DrawSelectionLozenge();
+			SetSelectedBorder();
 		}
 
 		/// <summary>
-		/// Draws a lozenge-border around all tiles that are selected or
-		/// being selected.
+		/// Sets the graphics-path for a lozenge-border around all tiles that
+		/// are selected or being selected.
 		/// </summary>
-		private void DrawSelectionLozenge()
+		internal void SetSelectedBorder()
 		{
-			if (MainViewUnderlay.Instance.MainView.FirstClick)
-			{
-				var start = GetDragStart();
-				var end   = GetDragEnd();
-	
-				int hWidth  = _blobService.HalfWidth;
-				int hHeight = _blobService.HalfHeight;
-	
-				var sel1 = new Point(
-								_offX + (start.X - start.Y) * hWidth,
-								_offY + (start.X + start.Y) * hHeight);
-				var sel2 = new Point(
-								_offX + (end.X - start.Y) * hWidth + hWidth,
-								_offY + (end.X + start.Y) * hHeight + hHeight);
-				var sel3 = new Point(
-								_offX + (end.X - end.Y) * hWidth,
-								_offY + (end.X + end.Y) * hHeight + hHeight + hHeight);
-				var sel4 = new Point(
-								_offX + (start.X - end.Y) * hWidth - hWidth,
-								_offY + (start.X + end.Y) * hHeight + hHeight);
-	
-				_lozSelected.Reset();
-				_lozSelected.AddLine(sel1, sel2);
-				_lozSelected.AddLine(sel2, sel3);
-				_lozSelected.AddLine(sel3, sel4);
-				_lozSelected.CloseFigure();
-	
-				Refresh();
-			}
+			var dragStart = GetDragStart();
+			var dragEnd   = GetDragEnd();
+
+			int hWidth  = _blobService.HalfWidth;
+			int hHeight = _blobService.HalfHeight;
+
+			var p1 = new Point(
+							_offX + (dragStart.X - dragStart.Y) * hWidth,
+							_offY + (dragStart.X + dragStart.Y) * hHeight);
+			var p2 = new Point(
+							_offX + (dragEnd.X - dragStart.Y) * hWidth + hWidth,
+							_offY + (dragEnd.X + dragStart.Y) * hHeight + hHeight);
+			var p3 = new Point(
+							_offX + (dragEnd.X - dragEnd.Y) * hWidth,
+							_offY + (dragEnd.X + dragEnd.Y) * hHeight + hHeight + hHeight);
+			var p4 = new Point(
+							_offX + (dragStart.X - dragEnd.Y) * hWidth - hWidth,
+							_offY + (dragStart.X + dragEnd.Y) * hHeight + hHeight);
+
+			_lozSelected.Reset();
+			_lozSelected.AddLine(p1, p2);
+			_lozSelected.AddLine(p2, p3);
+			_lozSelected.AddLine(p3, p4);
+			_lozSelected.CloseFigure();
+
+			Refresh();
 		}
 
+		/// <summary>
+		/// Gets the drag-start point. Note that 'MainViewOverlay' will bound the
+		/// point between 0,0 and the map's maximum dimensions (-1) inclusively.
+		/// </summary>
+		/// <returns></returns>
 		private static Point GetDragStart()
 		{
-			var start = new Point(0, 0);
-			start.X = Math.Min(
-							MainViewUnderlay.Instance.MainView.DragStart.X,
-							MainViewUnderlay.Instance.MainView.DragEnd.X);
-			start.Y = Math.Min(
-							MainViewUnderlay.Instance.MainView.DragStart.Y,
-							MainViewUnderlay.Instance.MainView.DragEnd.Y);
-			return start;
+			return new Point(
+						Math.Min(
+								MainViewUnderlay.Instance.MainViewOverlay.DragStart.X,
+								MainViewUnderlay.Instance.MainViewOverlay.DragEnd.X),
+						Math.Min(
+								MainViewUnderlay.Instance.MainViewOverlay.DragStart.Y,
+								MainViewUnderlay.Instance.MainViewOverlay.DragEnd.Y));
 		}
 
+		/// <summary>
+		/// Gets the drag-end point. Note that 'MainViewOverlay' will bound the
+		/// point between 0,0 and the map's maximum dimensions (-1) inclusively.
+		/// </summary>
+		/// <returns></returns>
 		private static Point GetDragEnd()
 		{
-			var end = new Point(0, 0);
-			end.X = Math.Max(
-						MainViewUnderlay.Instance.MainView.DragStart.X,
-						MainViewUnderlay.Instance.MainView.DragEnd.X);
-			end.Y = Math.Max(
-						MainViewUnderlay.Instance.MainView.DragStart.Y,
-						MainViewUnderlay.Instance.MainView.DragEnd.Y);
-			return end;
+			return new Point(
+						Math.Max(
+								MainViewUnderlay.Instance.MainViewOverlay.DragStart.X,
+								MainViewUnderlay.Instance.MainViewOverlay.DragEnd.X),
+						Math.Max(
+								MainViewUnderlay.Instance.MainViewOverlay.DragStart.Y,
+								MainViewUnderlay.Instance.MainViewOverlay.DragEnd.Y));
 		}
 
 
@@ -217,10 +228,18 @@ namespace MapView.Forms.MapObservers.TopViews
 		{ get; set; }
 
 
-/*		public override void OnLocationChanged(XCMapBase sender, LocationChangedEventArgs e)
+/*		/// <summary>
+		/// Inherits from IMapObserver.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		public override void OnLocationSelected_Observer(XCMapBase sender, LocationSelectedEventArgs e)
 		{
-			var pt = e.MapPosition;
-//			Text = "c: " + pt.Col + " r: " + pt.Row; // I don't think this actually prints anywhere.
+			LogFile.WriteLine("");
+			LogFile.WriteLine("TopViewPanelParent.OnLocationSelected_Observer");
+
+			var pt = e.MapLocation;
+//			Text = "c " + pt.Col + "  r " + pt.Row; // I don't think this actually prints anywhere.
 
 			var hWidth  = _drawService.HalfWidth;
 			var hHeight = _drawService.HalfHeight;
@@ -244,6 +263,9 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			Refresh(); // I don't think this is needed.
 		} */
+
+		// NOTE: there is no OnLevelChanged_Observer for TopView.
+
 
 		protected override void RenderGraphics(Graphics backBuffer)
 		{
@@ -294,16 +316,16 @@ namespace MapView.Forms.MapObservers.TopViews
 									i * hWidth  - MapBase.MapSize.Rows * hWidth  + _offX,
 									i * hHeight + MapBase.MapSize.Rows * hHeight + _offY);
 
-				if (MainViewUnderlay.Instance.MainView.FirstClick)
+				if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick)
 					backBuffer.DrawPath(TopPens[TopView.SelectedColor], _lozSelected);
 
-				if (   _mouseCol > -1
-					&& _mouseRow > -1
-					&& _mouseCol < MapBase.MapSize.Cols
-					&& _mouseRow < MapBase.MapSize.Rows)
+				if (   _cursorCol > -1
+					&& _cursorRow > -1
+					&& _cursorCol < MapBase.MapSize.Cols
+					&& _cursorRow < MapBase.MapSize.Rows)
 				{
-					int x = (_mouseCol - _mouseRow) * hWidth  + _offX;
-					int y = (_mouseCol + _mouseRow) * hHeight + _offY;
+					int x = (_cursorCol - _cursorRow) * hWidth  + _offX;
+					int y = (_cursorCol + _cursorRow) * hHeight + _offY;
 
 					SetSelectorPath(x, y);
 					backBuffer.DrawPath(TopPens[TopView.SelectorColor], _lozSelector);
@@ -311,21 +333,9 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-//		/// <summary>
-//		/// Forwards the call to TopViewPanel.DrawTileBlobs().
-//		/// </summary>
-//		/// <param name="tile"></param>
-//		/// <param name="g"></param>
-//		/// <param name="x"></param>
-//		/// <param name="y"></param>
-//		internal protected virtual void DrawTileBlobs(
-//				MapTileBase tile,
-//				Graphics g,
-//				int x, int y)
-//		{}
-
 		/// <summary>
-		/// Gets the GraphicsPath to draw for ... what.
+		/// Sets the graphics-path for a lozenge-border around the tile that
+		/// is currently mouse-overed.
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
@@ -377,7 +387,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				if (   pt.Y >= 0 && pt.Y < MainViewUnderlay.Instance.MapBase.MapSize.Rows
 					&& pt.X >= 0 && pt.X < MainViewUnderlay.Instance.MapBase.MapSize.Cols)
 				{
-					MainViewUnderlay.Instance.MainView.FirstClick = true;
+					MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
 
 					MapBase.Location = new MapLocation(
 													pt.Y,
@@ -385,7 +395,7 @@ namespace MapView.Forms.MapObservers.TopViews
 													MapBase.Level);
 
 					_isMouseDrag = true;
-					MainViewUnderlay.Instance.MainView.SetDrag(pt, pt);
+					MainViewUnderlay.Instance.MainViewOverlay.SetDrag(pt, pt);
 				}
 			}
 		}
@@ -393,25 +403,26 @@ namespace MapView.Forms.MapObservers.TopViews
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			_isMouseDrag = false;
-			MainViewUnderlay.Instance.MainView.Refresh();
+			MainViewUnderlay.Instance.MainViewOverlay.Refresh();
 
 			Refresh();
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			var pt = ConvertCoordsDiamond(
-										e.X - _offX,
-										e.Y - _offY);
-			if (pt.X != _mouseCol || pt.Y != _mouseRow)
+			var ptCursor = ConvertCoordsDiamond(
+											e.X - _offX,
+											e.Y - _offY);
+			if (ptCursor.X != _cursorCol || ptCursor.Y != _cursorRow)
 			{
-				_mouseCol = pt.X;
-				_mouseRow = pt.Y;
+				_cursorCol = ptCursor.X;
+				_cursorRow = ptCursor.Y;
 
 				if (_isMouseDrag)
-					MainViewUnderlay.Instance.MainView.SetDrag(
-															MainViewUnderlay.Instance.MainView.DragStart,
-															pt);
+				{
+					var overlay = MainViewUnderlay.Instance.MainViewOverlay;
+					overlay.SetDrag(overlay.DragStart, ptCursor);
+				}
 
 				Refresh(); // mouseover refresh for TopView.
 			}

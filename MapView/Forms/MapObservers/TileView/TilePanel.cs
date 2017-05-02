@@ -10,7 +10,7 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TileViews
 {
-	internal delegate void LocationChangedEventHandler(TileBase tile);
+	internal delegate void TileSelectedEventHandler(TileBase tile);
 
 
 	/// <summary>
@@ -20,7 +20,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		:
 			Panel
 	{
-		internal event LocationChangedEventHandler PanelSelectedTileChangedEvent;
+		internal event TileSelectedEventHandler TileSelectedEvent;
 
 
 		#region Fields & Properties
@@ -76,7 +76,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// Sets the selected-tile-id when a valid QuadrantPanel quad is
 		/// double-clicked.
 		/// </summary>
-		internal TileBase SelectedTile
+		internal TileBase TileSelected
 		{
 			get
 			{
@@ -91,8 +91,8 @@ namespace MapView.Forms.MapObservers.TileViews
 				{
 					_id = value.TileListId + 1; // +1 to account for the eraser - not sure.
 
-					if (PanelSelectedTileChangedEvent != null)
-						PanelSelectedTileChangedEvent(SelectedTile);
+					if (TileSelectedEvent != null)
+						TileSelectedEvent(TileSelected);
 
 					ScrollToTile();
 				}
@@ -237,8 +237,8 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				_id = id;
 
-				if (PanelSelectedTileChangedEvent != null)
-					PanelSelectedTileChangedEvent(SelectedTile);
+				if (TileSelectedEvent != null)
+					TileSelectedEvent(TileSelected);
 
 				ScrollToTile();
 				Refresh();

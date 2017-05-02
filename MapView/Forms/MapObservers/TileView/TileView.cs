@@ -23,24 +23,12 @@ namespace MapView.Forms.MapObservers.TileViews
 			MapObserverControl0
 	{
 		#region Events
-		internal event LocationChangedEventHandler Observer0SelectedTileChanged;
-		private void OnLocationChanged(TileBase tile)
-		{
-			var handler = Observer0SelectedTileChanged;
-			if (handler != null)
-				handler(tile);
-		}
+		internal event TileSelectedEventHandler TileSelectedEvent_Observer0;
 
 		/// <summary>
-		/// Raised when a save is done in PckView.
+		/// Fires if a save was done in PckView (via TileView).
 		/// </summary>
-		internal event MethodInvoker MapChangedEvent;
-		private void OnMapChanged()
-		{
-			var handler = MapChangedEvent;
-			if (handler != null)
-				handler();
-		}
+		internal event MethodInvoker PckSaveEvent;
 		#endregion
 
 
@@ -83,10 +71,10 @@ namespace MapView.Forms.MapObservers.TileViews
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		internal TileBase SelectedTile
 		{
-			get { return _panels[tcTileTypes.SelectedIndex].SelectedTile; }
+			get { return _panels[tcTileTypes.SelectedIndex].TileSelected; }
 			set
 			{
-				_allTiles.SelectedTile = value;
+				_allTiles.TileSelected = value;
 				tcTileTypes.SelectedIndex = 0;
 
 				Refresh();
@@ -132,7 +120,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private void AddPanel(TilePanel panel, Control page)
 		{
-			panel.PanelSelectedTileChangedEvent += OnPanelTileChanged;
+			panel.TileSelectedEvent += OnTileSelected;
 			page.Controls.Add(panel);
 		}
 
@@ -165,7 +153,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				_mcdInfoForm.UpdateData(record);
 		}
 
-		private void OnPanelTileChanged(TileBase tile)
+		private void OnTileSelected(TileBase tile)
 		{
 			var f = FindForm();
 
@@ -182,7 +170,21 @@ namespace MapView.Forms.MapObservers.TileViews
 			if (_mcdInfoForm != null)
 				_mcdInfoForm.UpdateData(record);
 
-			OnLocationChanged(tile);
+			SelectQuadrant(tile);
+		}
+
+		/// <summary>
+		/// Changes the currently selected quadrant in the QuadrantPanel when
+		/// a tile is selected in TileView.
+		/// That is, fires 'TopView.Control.SelectQuadrant' through the
+		/// 'Observer0TileSelectedEvent'.
+		/// </summary>
+		/// <param name="tile"></param>
+		private void SelectQuadrant(TileBase tile)
+		{
+			var handler = TileSelectedEvent_Observer0;
+			if (handler != null)
+				handler(tile);
 		}
 		#endregion
 
@@ -515,6 +517,17 @@ namespace MapView.Forms.MapObservers.TileViews
 							0);
 			}
 		}
+
+		/// <summary>
+		/// Raised when a save is done in PckView.
+		/// </summary>
+		private void OnMapChanged()
+		{
+			var handler = PckSaveEvent;
+			if (handler != null)
+				handler();
+		}
+
 
 		#region Methods
 		/// <summary>

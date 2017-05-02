@@ -20,6 +20,10 @@ namespace MapView.Forms.MapObservers.TopViews
 		private event EventHandler VisibleTileChangedEvent;
 
 		private readonly TopViewPanel _topViewPanel;
+		internal TopViewPanel TopViewPanel
+		{
+			get { return _topViewPanel; }
+		}
 
 		private EditButtonsFactory _editButtonsFactory;
 
@@ -198,7 +202,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		internal void InitializeEditStrip(EditButtonsFactory editButtons)
 		{
 			_editButtonsFactory = editButtons;
-			_editButtonsFactory.BuildEditStrip(tsEdit);
+			_editButtonsFactory.CreateEditorStrip(tsEdit);
 		}
 
 		/// <summary>
@@ -325,7 +329,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			_topBrushes[key].Color = (Color)val;
 
-			if (key == "SelectedPartColor")
+			if (key == SelectedPartColor)
 				QuadrantsPanel.SelectColor = _topBrushes[key];
 
 			Refresh();
@@ -360,7 +364,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// Used by the Help screen.
 		/// </summary>
 		/// <returns>a hashtable of the brushes</returns>
-		internal Dictionary<string, SolidBrush> GetBlobBrushes()
+		internal Dictionary<string, SolidBrush> GetFloorContentBrushes()
 		{
 			return _topBrushes;
 		}
@@ -370,7 +374,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// Used by the Help screen.
 		/// </summary>
 		/// <returns>a hashtable of the brushes</returns>
-		internal Dictionary<string, Pen> GetBlobPens()
+		internal Dictionary<string, Pen> GetWallPens()
 		{
 			return _topPens;
 		}

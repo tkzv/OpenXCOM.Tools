@@ -29,14 +29,14 @@ namespace MapView
 			{
 				if (_mapBase != null)
 				{
-					_mapBase.LevelChangedEvent    -= OnLevelChanged;
-					_mapBase.LocationChangedEvent -= OnSelectedChanged;
+					_mapBase.LevelChangedEvent     -= OnLevelChanged_Main;
+					_mapBase.LocationSelectedEvent -= OnLocationSelected_Main;
 				}
 
 				if ((_mapBase = value) != null)
 				{
-					_mapBase.LevelChangedEvent    += OnLevelChanged;
-					_mapBase.LocationChangedEvent += OnSelectedChanged;
+					_mapBase.LevelChangedEvent     += OnLevelChanged_Main;
+					_mapBase.LocationSelectedEvent += OnLocationSelected_Main;
 
 					SetPanelSize();
 
@@ -56,6 +56,31 @@ namespace MapView
 		private Point _dragStart = new Point(-1, -1);
 		private Point _dragEnd   = new Point(-1, -1);
 
+		private bool _firstClick;
+		/// <summary>
+		/// Flag that tells the viewers, including Main, that it's okay to draw
+		/// a lozenge for a selected tile; ie, that an initial tile has actually
+		/// been selected.
+		/// Can also happen on MainView when GraySelected is false.
+		/// </summary>
+		internal bool FirstClick
+		{
+			get { return _firstClick; }
+			set
+			{
+				_firstClick = value;
+
+				if (!_firstClick)
+				{
+					_dragStart = new Point(-1, -1);
+					_dragEnd   = new Point(-1, -1);
+
+					ViewerFormsManager.TopView.Control.TopViewPanel.SetSelectedBorder();
+				}
+			}
+		}
+
+
 		private GraphicsPath _layerFill = new GraphicsPath();
 
 		private Brush _brushLayer;
@@ -67,24 +92,24 @@ namespace MapView
 			set
 			{
 				_colorLayer = value;
-				_brushLayer = new SolidBrush(Color.FromArgb(GridLayerOpacity, value));
+				_brushLayer = new SolidBrush(Color.FromArgb(GridLayerOpacity, _colorLayer));
 				Refresh();
 			}
 		}
 
-		private int _opacity = 200; // initialization opacity for the grid-layer
+		private int _opacity = 200; // initial opacity for the grid-layer
 		public int GridLayerOpacity // public for Reflection.
 		{
 			get { return _opacity; }
 			set
 			{
-				_opacity = ((int)value).Clamp(0, 255);
+				_opacity = value.Clamp(0, 255);
 				_brushLayer = new SolidBrush(Color.FromArgb(_opacity, ((SolidBrush)_brushLayer).Color));
 				Refresh();
 			}
 		}
 
-		private Pen _penGrid;
+		private Pen _penGrid = new Pen(Brushes.Black, 1); // initial pen for grid-lines
 		public Color GridLineColor // public for Reflection.
 		{
 			get { return _penGrid.Color; }
@@ -104,7 +129,7 @@ namespace MapView
 			}
 		}
 
-		private bool _showGrid = true;
+		private bool _showGrid = true; // initial val for show-grid
 		public bool ShowGrid // public for Reflection.
 		{
 			get { return _showGrid; }
@@ -115,7 +140,7 @@ namespace MapView
 			}
 		}
 
-		private bool _graySelection = true;
+		private bool _graySelection = true; // initial val for gray-selection
 		// NOTE: Remove suppression for Release cfg.
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
 		"CA1811:AvoidUncalledPrivateCode",
@@ -156,7 +181,6 @@ namespace MapView
 				   | ControlStyles.ResizeRedraw, true);
 
 			_brushLayer = new SolidBrush(Color.FromArgb(GridLayerOpacity, GridLayerColor));
-			_penGrid    = new Pen(Brushes.Black, 1);
 
 			KeyDown += OnEditKeyDown;
 		}
@@ -235,18 +259,18 @@ namespace MapView
 				_mapBase.MapChanged = true;
 
 				for (int
-						r = _dragStart.Y;
-						r != _mapBase.MapSize.Rows && (r - _dragStart.Y) < _copied.GetLength(0);
+						r = DragStart.Y;
+						r != _mapBase.MapSize.Rows && (r - DragStart.Y) < _copied.GetLength(0);
 						++r)
 					for (int
-							c = _dragStart.X;
-							c != _mapBase.MapSize.Cols && (c - _dragStart.X) < _copied.GetLength(1);
+							c = DragStart.X;
+							c != _mapBase.MapSize.Cols && (c - DragStart.X) < _copied.GetLength(1);
 							++c)
 					{
 						var tile = _mapBase[r, c] as XCMapTile;
 						if (tile != null)
 						{
-							var copyTile = _copied[r - _dragStart.Y, c - _dragStart.X] as XCMapTile;
+							var copyTile = _copied[r - DragStart.Y, c - DragStart.X] as XCMapTile;
 							if (copyTile != null)
 							{
 								tile.Ground  = copyTile.Ground;
@@ -314,16 +338,6 @@ namespace MapView
 			else if (e.Delta > 0) _mapBase.Down();
 		}
 
-		/// <summary>
-		/// Flag that tells TopViewPanelParent.DrawSelectedLozenge that it's okay
-		/// to draw a lozenge for a selected tile; ie, that an initial tile has
-		/// actually been selected. This prevents an off-border lozenge from
-		/// being drawn right after TopView initially appears. Can also happen
-		/// on MainView when GraySelected is false.
-		/// </summary>
-		internal bool FirstClick
-		{ get; set; }
-
 		private bool _isMouseDrag;
 
 		/// <summary>
@@ -337,19 +351,20 @@ namespace MapView
 				var dragStart = ConvertCoordsDiamond(
 												e.X, e.Y,
 												_mapBase.Level);
-				var dragEnd   = ConvertCoordsDiamond(
-												e.X, e.Y,
-												_mapBase.Level);
-				if (   dragStart.Y >= 0 && dragStart.Y < MapBase.MapSize.Rows
-					&& dragStart.X >= 0 && dragStart.X < MapBase.MapSize.Cols)
+				if (   dragStart.X > -1 && dragStart.X < MapBase.MapSize.Cols
+					&& dragStart.Y > -1 && dragStart.Y < MapBase.MapSize.Rows)
 				{
 					FirstClick = true;
 
 					_isMouseDrag = true;
+					var dragEnd = ConvertCoordsDiamond(
+													e.X, e.Y,
+													_mapBase.Level);
 					SetDrag(dragStart, dragEnd);
 
 					_mapBase.Location = new MapLocation(
-													dragStart.Y, dragStart.X,
+													DragStart.Y,
+													DragStart.X,
 													_mapBase.Level);
 					Select();
 					Refresh();
@@ -379,11 +394,10 @@ namespace MapView
 											e.X, e.Y,
 											_mapBase.Level);
 
-				if (pt.X != _dragEnd.X || pt.Y != _dragEnd.Y)
+				if (pt.X != DragEnd.X || pt.Y != DragEnd.Y)
 				{
-//					if (e.Button != MouseButtons.None)
 					if (_isMouseDrag)
-						SetDrag(_dragStart, pt);
+						SetDrag(DragStart, pt);
 
 					Refresh(); // mouseover refresh for MainView.
 				}
@@ -396,7 +410,7 @@ namespace MapView
 		internal Point DragStart
 		{
 			get { return _dragStart; }
-			private set
+			set
 			{
 				_dragStart = value;
 
@@ -414,7 +428,7 @@ namespace MapView
 		internal Point DragEnd
 		{
 			get { return _dragEnd; }
-			private set
+			set
 			{
 				_dragEnd = value;
 
@@ -433,7 +447,7 @@ namespace MapView
 		/// <param name="dragEnd"></param>
 		internal void SetDrag(Point dragStart, Point dragEnd)
 		{
-			if (_dragStart != dragStart || _dragEnd != dragEnd)
+			if (DragStart != dragStart || DragEnd != dragEnd)
 			{
 				DragStart = dragStart;
 				DragEnd   = dragEnd;
@@ -441,9 +455,13 @@ namespace MapView
 				if (MouseDragEvent != null)
 					MouseDragEvent();
 
-				Refresh();
-			}
-		}
+				// refreshes MainView in realtime iff a drag-select is happening in TopView.
+				// But if the drag-select is done on MainView itself this is not needed to update the selection in realtime.
+				Refresh();	// this refreshes MainView for a click on RouteView
+			}				// unless the click is at location (0,0) *and* the
+		}					// map has just been loaded ... NOTE: a click on
+							// TopView will refresh the MainView selected-tile
+							// by some other other way ... -> TopViewPanelParent.OnMouseUp().
 
 		/// <summary>
 		/// Gets the drag-start point. See also 'DragStart'.
@@ -451,10 +469,9 @@ namespace MapView
 		/// <returns></returns>
 		private Point GetDragStart()
 		{
-			var start = new Point();
-			start.X = Math.Max(Math.Min(_dragStart.X, _dragEnd.X), 0); // TODO: these bounds should have been taken care of
-			start.Y = Math.Max(Math.Min(_dragStart.Y, _dragEnd.Y), 0); // unless drag is being gotten right after instantiation ....
-			return start;
+			return new Point(
+						Math.Max(Math.Min(DragStart.X, DragEnd.X), 0),	// TODO: these bounds should have been taken care of
+						Math.Max(Math.Min(DragStart.Y, DragEnd.Y), 0));	// unless drag is being gotten right after instantiation ....
 		}
 
 		/// <summary>
@@ -463,10 +480,9 @@ namespace MapView
 		/// <returns></returns>
 		private Point GetDragEnd()
 		{
-			var end = new Point();
-			end.X = Math.Max(_dragStart.X, _dragEnd.X); // wft: is dragend not dragend ...
-			end.Y = Math.Max(_dragStart.Y, _dragEnd.Y);
-			return end;
+			return new Point(
+						Math.Max(DragStart.X, DragEnd.X), // wft: is dragend not dragend ...
+						Math.Max(DragStart.Y, DragEnd.Y));
 		}
 
 		/// <summary>
@@ -506,16 +522,26 @@ namespace MapView
 			return Size.Empty;
 		}
 
-		private void OnSelectedChanged(XCMapBase mapBase, LocationChangedEventArgs e)
+		/// <summary>
+		/// Fires when a location is selected in MainView.
+		/// </summary>
+		/// <param name="mapBase"></param>
+		/// <param name="e"></param>
+		private void OnLocationSelected_Main(XCMapBase mapBase, LocationSelectedEventArgs e)
 		{
 			var loc = e.Location;
 			var dragStart = new Point(loc.Col, loc.Row);
-			SetDrag(dragStart, _dragEnd);
+			SetDrag(dragStart, DragEnd);
 
 			XCMainWindow.Instance.StatusBarPrintPosition(loc.Col, loc.Row);
 		}
 
-		private void OnLevelChanged(XCMapBase mapBase, LevelChangedEventArgs e)
+		/// <summary>
+		/// Fires when the map level changes in MainView.
+		/// </summary>
+		/// <param name="mapBase"></param>
+		/// <param name="e"></param>
+		private void OnLevelChanged_Main(XCMapBase mapBase, LevelChangedEventArgs e)
 		{
 			Refresh();
 		}
@@ -528,16 +554,20 @@ namespace MapView
 			{
 				var g = e.Graphics;
 
-				var dragMin = new Point(
-									Math.Min(_dragStart.X, _dragEnd.X),
-									Math.Min(_dragStart.Y, _dragEnd.Y));
-				var dragMax = new Point(
-									Math.Max(_dragStart.X, _dragEnd.X),
-									Math.Max(_dragStart.Y, _dragEnd.Y));
+				var dragRect = new Rectangle(new Point(0, 0), new Size(0, 0));
+				if (FirstClick)
+				{
+					var dragMin = new Point(
+										Math.Min(DragStart.X, DragEnd.X),
+										Math.Min(DragStart.Y, DragEnd.Y));
+					var dragMax = new Point(
+										Math.Max(DragStart.X, DragEnd.X),
+										Math.Max(DragStart.Y, DragEnd.Y));
 
-				var dragRect = new Rectangle(dragMin, new Size(Point.Subtract(dragMax, new Size(dragMin))));
-				dragRect.Width  += 1;
-				dragRect.Height += 1;
+					dragRect = new Rectangle(dragMin, new Size(Point.Subtract(dragMax, new Size(dragMin))));
+					dragRect.Width  += 1;
+					dragRect.Height += 1;
+				}
 
 				int halfWidth  = (int)(HalfWidth  * Globals.PckImageScale);
 				int halfHeight = (int)(HalfHeight * Globals.PckImageScale);
@@ -568,10 +598,10 @@ namespace MapView
 							{
 								var tileRect = new Rectangle(c, r, 1, 1);
 
-								bool isClicked = (r == _dragStart.Y && c == _dragStart.X)
-											  || (r == _dragEnd.Y   && c == _dragEnd.X);
+								bool isClicked = (c == DragStart.X && r == DragStart.Y)
+											  || (c == DragEnd.X   && r == DragEnd.Y);
 
-								if (isClicked && _cursor != null)
+								if (FirstClick && isClicked && _cursor != null)
 									_cursor.DrawCursorBack(
 														g,
 														x, y,
@@ -581,7 +611,7 @@ namespace MapView
 								if (_mapBase.Level == l || _mapBase[r, c, l].DrawAbove)
 								{
 									var tile = (XCMapTile)_mapBase[r, c, l];
-									if (_graySelection
+									if (_graySelection && FirstClick
 										&& (isClicked || dragRect.IntersectsWith(tileRect)))
 									{
 										DrawTileGray(g, tile, x, y);
@@ -590,7 +620,7 @@ namespace MapView
 										DrawTile(g, tile, x, y);
 								}
 
-								if (isClicked && _cursor != null)
+								if (FirstClick && isClicked && _cursor != null)
 									_cursor.DrawCursorFront(
 														g,
 														x, y,
@@ -636,7 +666,7 @@ namespace MapView
 				_layerFill.AddLine(pt2, pt3);
 				_layerFill.CloseFigure();
 
-				g.FillPath(_brushLayer, _layerFill);
+				g.FillPath(_brushLayer, _layerFill); // the grid-layer
 
 				for (int i = 0; i <= _mapBase.MapSize.Rows; ++i)
 					g.DrawLine(

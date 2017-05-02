@@ -9,7 +9,7 @@ namespace MapView.Forms.MainWindow
 {
 	internal sealed class ViewerFormsManager
 	{
-		internal static ShowHideManager ShowAllManager;
+		internal static ShowHideManager HideViewersManager;
 		internal static EditButtonsFactory EditFactory;
 
 
@@ -56,16 +56,16 @@ namespace MapView.Forms.MainWindow
 
 			TopView.Control.InitializeEditStrip(EditFactory);
 
-			TileView.Control.SetShowHideManager(ShowAllManager);
-			TileView.Control.Observer0SelectedTileChanged += OnLocationChanged;
+			TileView.Control.SetShowHideManager(HideViewersManager);
+			TileView.Control.TileSelectedEvent_Observer0 += OnTileSelected_Observer0;
 		}
 
 		/// <summary>
-		/// Changes the selected quadrant in TopView when a tilepart is selected
-		/// in TileView.
+		/// Changes the selected quadrant in the QuadrantPanel when a tilepart
+		/// is selected in TileView.
 		/// </summary>
 		/// <param name="tile"></param>
-		private static void OnLocationChanged(TileBase tile)
+		private static void OnTileSelected_Observer0(TileBase tile)
 		{
 			if (tile != null && tile.Record != null)
 				TopView.Control.SelectQuadrant(tile.Record.TileType);
@@ -86,21 +86,21 @@ namespace MapView.Forms.MainWindow
 				if (f != null)
 					SetObserver(mapBase, f);
 
-			MainViewUnderlay.Instance.MainView.Refresh();
+			MainViewUnderlay.Instance.MainViewOverlay.Refresh();
 		}
 
 		private void SetObserver(XCMapBase mapBase, IMapObserver observer)
 		{
 			if (observer.MapBase != null)
 			{
-				observer.MapBase.LevelChangedEvent    -= observer.OnLevelChanged;
-				observer.MapBase.LocationChangedEvent -= observer.OnLocationChanged;
+				observer.MapBase.LevelChangedEvent     -= observer.OnLevelChanged_Observer;
+				observer.MapBase.LocationSelectedEvent -= observer.OnLocationSelected_Observer;
 			}
 
 			if ((observer.MapBase = mapBase) != null)
 			{
-				mapBase.LevelChangedEvent    += observer.OnLevelChanged;
-				mapBase.LocationChangedEvent += observer.OnLocationChanged;
+				mapBase.LevelChangedEvent     += observer.OnLevelChanged_Observer;
+				mapBase.LocationSelectedEvent += observer.OnLocationSelected_Observer;
 			}
 
 			foreach (string key in observer.MoreObservers.Keys) // ie. TopViewPanel and QuadrantsPanel

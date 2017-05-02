@@ -24,6 +24,9 @@ namespace MapView.Forms.MapObservers.TileViews
 			TileViewControl.GetSelectedPanel().Focus();
 		}
 
+		/// <summary>
+		/// Gets TileView as a child of MapObserverControl0.
+		/// </summary>
 		internal TileView Control
 		{
 			get { return TileViewControl; }

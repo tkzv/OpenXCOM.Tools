@@ -10,7 +10,7 @@ namespace XCom.Interfaces.Base
 {
 	public delegate void LevelChangedEventHandler(XCMapBase sender, LevelChangedEventArgs e);
 
-	public delegate void LocationChangedEventHandler(XCMapBase sender, LocationChangedEventArgs e);
+	public delegate void LocationSelectedEventHandler(XCMapBase sender, LocationSelectedEventArgs e);
 
 
 	/// <summary>
@@ -19,7 +19,7 @@ namespace XCom.Interfaces.Base
 	public class XCMapBase
 	{
 		public event LevelChangedEventHandler LevelChangedEvent;
-		public event LocationChangedEventHandler LocationChangedEvent;
+		public event LocationSelectedEventHandler LocationSelectedEvent;
 
 
 		private const int HalfWidth  = 16;
@@ -67,22 +67,22 @@ namespace XCom.Interfaces.Base
 		private MapLocation _location;
 		/// <summary>
 		/// Gets/Sets the current selected location. Setting the location will
-		/// fire a LocationChanged event.
+		/// fire a LocationSelected event.
 		/// </summary>
 		public MapLocation Location
 		{
 			get { return _location; }
 			set
 			{
-				if (   value.Row > -1 && value.Row < this.MapSize.Rows
-					&& value.Col > -1 && value.Col < this.MapSize.Cols)
+				if (   value.Row > -1 && value.Row < MapSize.Rows
+					&& value.Col > -1 && value.Col < MapSize.Cols)
 				{
 					_location = value;
 					var tile = this[_location.Row, _location.Col];
-					var args = new LocationChangedEventArgs(value, tile);
+					var args = new LocationSelectedEventArgs(value, tile);
 
-					if (LocationChangedEvent != null)
-						LocationChangedEvent(this, args);
+					if (LocationSelectedEvent != null)
+						LocationSelectedEvent(this, args);
 				}
 			}
 		}

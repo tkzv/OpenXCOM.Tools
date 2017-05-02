@@ -26,7 +26,7 @@ namespace MapView.Forms.MainWindow
 		/// toolstrip as well as sets some properties for the toolstrip.
 		/// </summary>
 		/// <param name="toolStrip"></param>
-		public void BuildEditStrip(ToolStrip toolStrip)
+		public void CreateEditorStrip(ToolStrip toolStrip)
 		{
 			//
 			// toolStripButtons
@@ -157,14 +157,14 @@ namespace MapView.Forms.MainWindow
 
 		private void OnDownClick(object sender, EventArgs e)
 		{
-			if (MainViewUnderlay.Instance.MainView.MapBase != null)
-				MainViewUnderlay.Instance.MainView.MapBase.Down();
+			if (MainViewUnderlay.Instance.MainViewOverlay.MapBase != null)
+				MainViewUnderlay.Instance.MainViewOverlay.MapBase.Down();
 		}
 
 		private void OnUpClick(object sender, EventArgs e)
 		{
-			if (MainViewUnderlay.Instance.MainView.MapBase != null)
-				MainViewUnderlay.Instance.MainView.MapBase.Up();
+			if (MainViewUnderlay.Instance.MainViewOverlay.MapBase != null)
+				MainViewUnderlay.Instance.MainViewOverlay.MapBase.Up();
 		}
 	}
 }
