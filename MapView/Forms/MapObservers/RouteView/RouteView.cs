@@ -23,6 +23,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 		:
 			MapObserverControl0
 	{
+		private enum ConnectNodeType
+		{
+			ConnectNone,
+			ConnectOneWay,
+			ConnectTwoWays
+		}
+
+		#region Fields
 		private readonly RoutePanel _routePanel;
 
 		private Panel pRoutes;
@@ -35,6 +43,59 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private readonly List<object> _linksList = new List<object>();
 
+		private const string DontConnect   = "DontConnect";
+		private const string OneWayConnect = "OneWayConnect";
+		private const string TwoWayConnect = "TwoWayConnect";
+		#endregion
+
+
+		#region Fields
+		/// <summary>
+		/// Inherited from IMapObserver through MapObserverControl0.
+		/// </summary>
+		public override XCMapBase MapBase
+		{
+			set
+			{
+				base.MapBase = value;
+				_mapFile = (XCMapFile)value;
+
+//				_loadingMap = true;
+//				try
+//				{
+//				tstbExtraHeight.Text = _mapFile.RouteFile.ExtraHeight.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+				DeselectNode();
+
+//				var route = _map.Rmp.GetEntryAtHeight(_map.CurrentHeight); // this forces a selected node when RouteView opens.
+//				if (route != null)
+//				{
+//					_currEntry = route;
+//					_rmpPanel.ClickPoint = new Point(
+//												_currEntry.Col,
+//												_currEntry.Row);
+//				}
+
+				if ((_routePanel.MapFile = _mapFile) != null)
+				{
+					cbSpawnRank.Items.Clear();
+
+					if (_mapFile.Tiles[0][0].Palette == Palette.UfoBattle)
+						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);
+					else
+						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankTftd);
+
+					UpdateNodeInformation();
+				}
+//				}
+//				finally
+//				{
+//					_loadingMap = false;
+//				}
+			}
+		}
+		#endregion
+
 
 		#region cTor
 		/// <summary>
@@ -44,9 +105,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			InitializeComponent();
 
+			this.tsmiConnectType.Items.AddRange(new object[]
+			{
+				DontConnect,
+				OneWayConnect,
+				TwoWayConnect,
+			});
+
 			_routePanel = new RoutePanel();
 			_routePanel.Dock = DockStyle.Fill;
-			_routePanel.RoutePanelClickedEvent += OnBigLozengeClicked;
+			_routePanel.RoutePanelClickedEvent += OnRoutePanelClicked;
 			_routePanel.MouseMove += OnRoutePanelMouseMove;
 			_routePanel.KeyDown += OnKeyDown;
 			pRoutes.Controls.Add(_routePanel);
@@ -103,6 +171,38 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
+		/// <summary>
+		/// Inherited from IMapObserver through MapObserverControl0.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		public override void OnLocationSelected_Observer(XCMapBase sender, LocationSelectedEventArgs e)
+		{
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("RouteView.OnLocationSelected_Observer");
+
+			MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
+
+			labelSelectedPos.Text = String.Format(
+												System.Globalization.CultureInfo.InvariantCulture,
+												/*"Position{0}*/        "c {0}  r {1}",
+												/*Environment.NewLine, */e.Location.Col, e.Location.Row);
+		}
+
+		/// <summary>
+		/// Inherited from IMapObserver through MapObserverControl0.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		public override void OnLevelChanged_Observer(XCMapBase sender, LevelChangedEventArgs e)
+		{
+			DeselectNode();
+			UpdateNodeInformation();
+
+			Refresh();
+		}
+
+
 		private Form _foptions;
 		private bool _closing;
 
@@ -154,7 +254,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		private void OnBigLozengeClicked(object sender, RoutePanelClickedEventArgs args)
+		private void OnRoutePanelClicked(object sender, RoutePanelClickedEventArgs args)
 		{
 			_routePanel.Focus();
 
@@ -173,7 +273,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				var node = ((XCMapTile)args.ClickTile).Node;
 
-				if (node != null && !_nodeSelected.Equals(node)) // NOTE: a null node "Equals" any valid node ....
+				if (node != null && !node.Equals(_nodeSelected)) // NOTE: a null node "Equals" any valid node ....
 				{
 					if (args.MouseEventArgs.Button == MouseButtons.Right)
 						ConnectNode(node);
@@ -194,16 +294,35 @@ namespace MapView.Forms.MapObservers.RouteViews
 				}
 				// else the selected node is the node clicked.
 			}
+
+			if (_nodeSelected != null)
+			{
+				btnCut.Enabled    =
+				btnCopy.Enabled   =
+				btnDelete.Enabled = true;
+
+				var nodeData = Clipboard.GetText().Split(NodeCopySeparator);
+				if (nodeData[0] == NodeCopyPrefix)
+					btnPaste.Enabled = true;
+			}
+			else
+			{
+				btnCut.Enabled    =
+				btnCopy.Enabled   =
+				btnPaste.Enabled  =
+				btnDelete.Enabled = false;
+			}
 		}
 
 		/// <summary>
 		/// Checks connector and connects nodes if applicable.
 		/// </summary>
-		/// <param name="node"></param>
+		/// <param name="node">the node to try to link the currently selected
+		/// node to</param>
 		private void ConnectNode(RouteNode node)
 		{
 			var type = GetConnectorType();
-			if (type != ConnectNodeType.DoNotConnect)
+			if (type != ConnectNodeType.ConnectNone)
 			{
 				int linkId = GetOpenLinkSlot(_nodeSelected, node.Index);
 				if (linkId != -1)
@@ -227,21 +346,21 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		/// <summary>
-		/// Gets the user-set Connector type.
+		/// Gets the user-selected Connector type.
 		/// </summary>
 		/// <returns></returns>
 		private ConnectNodeType GetConnectorType()
 		{
-			if (tsmiConnectType.Text == "Connect One way")
+			if (tsmiConnectType.Text == OneWayConnect)
 				return ConnectNodeType.ConnectOneWay;
 
-			if (tsmiConnectType.Text == "Connect Two ways")
+			if (tsmiConnectType.Text == TwoWayConnect)
 				return ConnectNodeType.ConnectTwoWays;
 
-			return ConnectNodeType.DoNotConnect;
+			return ConnectNodeType.ConnectNone;
 		}
 
-		private static int GetOpenLinkSlot(RouteNode node, int idOther = -1)
+		private static int GetOpenLinkSlot(RouteNode node, int idOther)
 		{
 			if (node != null)
 			{
@@ -405,69 +524,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 //		{
 //			Map = args.Map;
 //		}
-
-		public override XCMapBase MapBase
-		{
-			set
-			{
-				base.MapBase = value;
-				_mapFile = (XCMapFile)value;
-
-//				_loadingMap = true;
-//				try
-//				{
-//				tstbExtraHeight.Text = _mapFile.RouteFile.ExtraHeight.ToString(System.Globalization.CultureInfo.InvariantCulture);
-
-				DeselectNode();
-
-//				var route = _map.Rmp.GetEntryAtHeight(_map.CurrentHeight); // this forces a selected node when RouteView opens.
-//				if (route != null)
-//				{
-//					_currEntry = route;
-//					_rmpPanel.ClickPoint = new Point(
-//												_currEntry.Col,
-//												_currEntry.Row);
-//				}
-
-				if ((_routePanel.MapFile = _mapFile) != null)
-				{
-					cbSpawnRank.Items.Clear();
-
-					if (_mapFile.Tiles[0][0].Palette == Palette.UfoBattle)
-						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);
-					else
-						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankTftd);
-
-					UpdateNodeInformation();
-				}
-//				}
-//				finally
-//				{
-//					_loadingMap = false;
-//				}
-			}
-		}
-
-		public override void OnLocationSelected_Observer(XCMapBase sender, LocationSelectedEventArgs e)
-		{
-			//LogFile.WriteLine("");
-			//LogFile.WriteLine("RouteView.OnLocationSelected_Observer");
-
-			MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
-
-			labelSelectedPos.Text = String.Format(
-												System.Globalization.CultureInfo.InvariantCulture,
-												/*"Position{0}*/        "c {0}  r {1}",
-												/*Environment.NewLine, */e.Location.Col, e.Location.Row);
-		}
-
-		public override void OnLevelChanged_Observer(XCMapBase sender, LevelChangedEventArgs e)
-		{
-			DeselectNode();
-			UpdateNodeInformation();
-
-			Refresh();
-		}
 
 		private void OnUnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -867,7 +923,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
-		private const string NodeCopyPrefix = "MVNode";
+		private const string NodeCopyPrefix  = "MVNode"; // TODO: use a struct to copy/paste the info.
+		private const char NodeCopySeparator = '|';
+
+		/// <summary>
+		/// Prevents two error-dialogs from showing if a key-cut is underway.
+		/// </summary>
+		private bool _asterisk;
 
 		private void OnCutClick(object sender, EventArgs e)
 		{
@@ -879,6 +941,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (_nodeSelected != null)
 			{
+				btnPaste.Enabled = true;
+
 				var nodeText = string.Format(
 										System.Globalization.CultureInfo.InvariantCulture,
 										"{0}|{1}|{2}|{3}|{4}|{5}",
@@ -891,17 +955,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 										// TODO: include Link info ... perhaps.
 				Clipboard.SetText(nodeText);
 			}
+			else
+				ShowDialogAsterisk("A node must be selected.");
 		}
 
 		private void OnPasteClick(object sender, EventArgs e)
 		{
 			if (_nodeSelected != null)
 			{
-				_mapFile.MapChanged = true;
-
-				var nodeData = Clipboard.GetText().Split('|');
+				var nodeData = Clipboard.GetText().Split(NodeCopySeparator);
 				if (nodeData[0] == NodeCopyPrefix)
 				{
+					_mapFile.MapChanged = true;
+
 					cbUnitType.SelectedIndex    = Int32.Parse(nodeData[1], System.Globalization.CultureInfo.InvariantCulture);
 					cbSpawnRank.SelectedIndex   = Int32.Parse(nodeData[2], System.Globalization.CultureInfo.InvariantCulture);
 					cbPriority.SelectedIndex    = Int32.Parse(nodeData[3], System.Globalization.CultureInfo.InvariantCulture);
@@ -909,7 +975,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 					cbSpawnWeight.SelectedIndex = Int32.Parse(nodeData[5], System.Globalization.CultureInfo.InvariantCulture);
 					// TODO: include Link info ... perhaps.
 				}
+				else
+					ShowDialogAsterisk("The data on the clipboard is not a node.");
 			}
+			else
+				ShowDialogAsterisk("A node must be selected.");
 		}
 
 		private void OnDeleteClick(object sender, EventArgs e)
@@ -933,6 +1003,20 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				Refresh();
 			}
+			else if (!_asterisk)
+				ShowDialogAsterisk("A node must be selected.");
+		}
+
+		private void ShowDialogAsterisk(string asterisk)
+		{
+			MessageBox.Show(
+						this,
+						asterisk,
+						"Err..",
+						MessageBoxButtons.OK,
+						MessageBoxIcon.Asterisk,
+						MessageBoxDefaultButton.Button1,
+						0);
 		}
 
 		/// <summary>
@@ -964,8 +1048,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 //						break;
 
 					case Keys.X:
+						_asterisk = true;
 						OnCopyClick(null, null);
 						OnDeleteClick(null, null);
+						_asterisk = false;
 						break;
 
 					case Keys.C:
@@ -1045,26 +1131,26 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Settings
-		internal const string Links = "Links";
-		internal const string View  = "View";
-		internal const string Nodes = "Nodes";
+		private const string Links = "Links";
+		private const string View  = "View";
+		private const string Nodes = "Nodes";
 
 		internal const string UnselectedLinkColor = "UnselectedLinkColor";
-		internal const string UnselectedLinkWidth = "UnselectedLinkWidth";
+		private  const string UnselectedLinkWidth = "UnselectedLinkWidth";
 		internal const string SelectedLinkColor   = "SelectedLinkColor";
-		internal const string SelectedLinkWidth   = "SelectedLinkWidth";
+		private  const string SelectedLinkWidth   = "SelectedLinkWidth";
 
 		internal const string WallColor           = "WallColor";
-		internal const string WallWidth           = "WallWidth";
+		private  const string WallWidth           = "WallWidth";
 		internal const string ContentColor        = "ContentColor";
 
 		internal const string GridLineColor       = "GridLineColor";
-		internal const string GridLineWidth       = "GridLineWidth";
+		private  const string GridLineWidth       = "GridLineWidth";
 
 		internal const string UnselectedNodeColor = "UnselectedNodeColor";
 		internal const string SelectedNodeColor   = "SelectedNodeColor";
 		internal const string SpawnNodeColor      = "SpawnNodeColor";
-		internal const string NodeOpacity         = "NodeOpacity";
+		private  const string NodeOpacity         = "NodeOpacity";
 
 		/// <summary>
 		/// Loads default settings for RouteView in TopRouteView screens.
@@ -1217,7 +1303,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// Gets the wall-color for use by the Help screen.
 		/// </summary>
 		/// <returns></returns>
-		internal Dictionary<string, Pen> GetWallPen()
+		internal Dictionary<string, Pen> GetWallPens()
 		{
 			return _routePanel.RoutePens;
 		}
@@ -1226,7 +1312,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// Gets the content-color for use by the Help screen.
 		/// </summary>
 		/// <returns></returns>
-		internal Dictionary<string, SolidBrush> GetContentBrush()
+		internal Dictionary<string, SolidBrush> GetContentBrushes()
 		{
 			return _routePanel.RouteBrushes;
 		}

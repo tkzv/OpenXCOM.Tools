@@ -388,21 +388,21 @@ namespace MapView
 
 
 		#region Settings
-		const string MapView             = "MapView";
-		const string Main                = "Main";
+		private const string MapView             = "MapView";
+		private const string Main                = "Main";
 
-		const string Animation           = "Animation";
-		const string Doors               = "Doors";
-		const string SaveWindowPositions = "SaveWindowPositions";
-//		const string SaveOnExit          = "SaveOnExit";
+		private const string Animation           = "Animation";
+		private const string Doors               = "Doors";
+		private const string SaveWindowPositions = "SaveWindowPositions";
+//		private const string SaveOnExit          = "SaveOnExit";
 
-		const string ShowGrid            = "ShowGrid";
-		const string GridLayerColor      = "GridLayerColor";
-		const string GridLayerOpacity    = "GridLayerOpacity";
-		const string GridLineColor       = "GridLineColor";
-		const string GridLineWidth       = "GridLineWidth";
+		private const string ShowGrid            = "ShowGrid";
+		private const string GridLayerColor      = "GridLayerColor";
+		private const string GridLayerOpacity    = "GridLayerOpacity";
+		private const string GridLineColor       = "GridLineColor";
+		private const string GridLineWidth       = "GridLineWidth";
 
-		const string GraySelection       = "GraySelection";
+		private const string GraySelection       = "GraySelection";
 
 
 		private void LoadSettings()

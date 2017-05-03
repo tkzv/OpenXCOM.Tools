@@ -540,7 +540,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		private string BuildTitleString(int id, int mcd)
 		{
 			var dep = GetDepLabel();
-			return "Tile View - id: " + id + "  mcd: " + mcd + "  file: " + (dep ?? "unknown");
+			return "Tile View - id " + id + "  mcd " + mcd + "  file " + (dep ?? "unknown");
 		}
 
 		/// <summary>

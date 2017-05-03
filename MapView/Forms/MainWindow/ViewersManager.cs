@@ -78,11 +78,11 @@ namespace MapView.Forms.MainWindow
 		private void SetAsObserver(string regkey, Form f)
 		{
 			//LogFile.WriteLine("SetAsObserver regkey= " + regkey);
-			var fobserver = f as IMapObserverProvider; // TopView, RouteView, TileView only.
+			var fobserver = f as IMapObserverProvider; // TopViewForm, RouteViewForm, TileViewForm only.
 			if (fobserver != null)
 			{
 				//LogFile.WriteLine(". is IMapObserverProvider");
-				var fcontrol = fobserver.ObserverControl0;
+				var fcontrol = fobserver.ObserverControl0; // ie. TopView, RouteView, TileView.
 				fcontrol.LoadControl0Settings();
 
 				var regInfo = new DSShared.Windows.RegistryInfo(f, regkey); // subscribe to Load and Closing events.

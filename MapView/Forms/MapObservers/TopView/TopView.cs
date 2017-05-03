@@ -239,19 +239,19 @@ namespace MapView.Forms.MapObservers.TopViews
 		internal const string NorthColor        = "NorthColor";
 		internal const string ContentColor      = "ContentColor";
 
-		internal const string WestWidth         = "WestWidth";
-		internal const string NorthWidth        = "NorthWidth";
+		private  const string WestWidth         = "WestWidth";
+		private  const string NorthWidth        = "NorthWidth";
 
 		internal const string SelectorColor     = "SelectorColor";
 		internal const string SelectorWidth     = "SelectorWidth";
 
 		internal const string SelectedColor     = "SelectedColor";
-		internal const string SelectedWidth     = "SelectedWidth";
+		private  const string SelectedWidth     = "SelectedWidth";
 
-		internal const string SelectedPartColor = "SelectedPartColor";
+		private const string SelectedPartColor = "SelectedPartColor";
 
 		internal const string GridColor         = "GridColor";
-		internal const string GridWidth         = "GridWidth";
+		private  const string GridWidth         = "GridWidth";
 
 //		internal const string TileMinHeight     = "TileMinHeight";
 

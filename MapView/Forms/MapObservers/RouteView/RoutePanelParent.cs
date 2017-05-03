@@ -154,7 +154,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			MainViewUnderlay.Instance.MainViewOverlay.Refresh();	// For some whack reason, this is needed in order to refresh
 		}															// MainView's selector iff a Map has just been loaded *and*
-																	// the route-panel is clicked at location (0,0).
+																	// RouteView is clicked at location (0,0).
 
 		protected override void OnResize(EventArgs e)
 		{

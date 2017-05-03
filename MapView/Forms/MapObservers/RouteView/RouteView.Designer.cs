@@ -246,7 +246,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelSelectedPos.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelSelectedPos.Location = new System.Drawing.Point(20, 15);
 			this.labelSelectedPos.Name = "labelSelectedPos";
-			this.labelSelectedPos.Size = new System.Drawing.Size(90, 25);
+			this.labelSelectedPos.Size = new System.Drawing.Size(90, 20);
 			this.labelSelectedPos.TabIndex = 0;
 			this.labelSelectedPos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
@@ -258,9 +258,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.gbSpawnData.Controls.Add(this.cbSpawnWeight);
 			this.gbSpawnData.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.gbSpawnData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.gbSpawnData.Location = new System.Drawing.Point(0, 140);
+			this.gbSpawnData.Location = new System.Drawing.Point(0, 135);
 			this.gbSpawnData.Name = "gbSpawnData";
-			this.gbSpawnData.Size = new System.Drawing.Size(289, 67);
+			this.gbSpawnData.Size = new System.Drawing.Size(289, 72);
 			this.gbSpawnData.TabIndex = 1;
 			this.gbSpawnData.TabStop = false;
 			this.gbSpawnData.Text = "Spawn data";
@@ -276,11 +276,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// btnPaste
 			// 
+			this.btnPaste.Enabled = false;
 			this.btnPaste.Location = new System.Drawing.Point(145, 15);
 			this.btnPaste.Name = "btnPaste";
 			this.btnPaste.Size = new System.Drawing.Size(65, 30);
 			this.btnPaste.TabIndex = 35;
 			this.btnPaste.Text = "Paste";
+			this.toolTip1.SetToolTip(this.btnPaste, "pastes Patrol data and Spawn data to the selected node");
 			this.btnPaste.Click += new System.EventHandler(this.OnPasteClick);
 			// 
 			// labelMouseOverId
@@ -289,26 +291,30 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelMouseOverId.ForeColor = System.Drawing.Color.Sienna;
 			this.labelMouseOverId.Location = new System.Drawing.Point(200, 15);
 			this.labelMouseOverId.Name = "labelMouseOverId";
-			this.labelMouseOverId.Size = new System.Drawing.Size(80, 25);
+			this.labelMouseOverId.Size = new System.Drawing.Size(80, 20);
 			this.labelMouseOverId.TabIndex = 2;
 			this.labelMouseOverId.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// btnCopy
 			// 
+			this.btnCopy.Enabled = false;
 			this.btnCopy.Location = new System.Drawing.Point(75, 15);
 			this.btnCopy.Name = "btnCopy";
 			this.btnCopy.Size = new System.Drawing.Size(65, 30);
 			this.btnCopy.TabIndex = 34;
 			this.btnCopy.Text = "Copy";
+			this.toolTip1.SetToolTip(this.btnCopy, "copies the selected node");
 			this.btnCopy.Click += new System.EventHandler(this.OnCopyClick);
 			// 
 			// btnDelete
 			// 
+			this.btnDelete.Enabled = false;
 			this.btnDelete.Location = new System.Drawing.Point(215, 15);
 			this.btnDelete.Name = "btnDelete";
 			this.btnDelete.Size = new System.Drawing.Size(65, 30);
 			this.btnDelete.TabIndex = 36;
 			this.btnDelete.Text = "Delete";
+			this.toolTip1.SetToolTip(this.btnDelete, "deletes the selected node");
 			this.btnDelete.Click += new System.EventHandler(this.OnDeleteClick);
 			// 
 			// labelSelectedId
@@ -317,7 +323,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelSelectedId.ForeColor = System.Drawing.Color.Orchid;
 			this.labelSelectedId.Location = new System.Drawing.Point(115, 15);
 			this.labelSelectedId.Name = "labelSelectedId";
-			this.labelSelectedId.Size = new System.Drawing.Size(80, 25);
+			this.labelSelectedId.Size = new System.Drawing.Size(80, 20);
 			this.labelSelectedId.TabIndex = 2;
 			this.labelSelectedId.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
@@ -474,10 +480,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.tsmiConnectType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.tsmiConnectType.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tsmiConnectType.Items.AddRange(new object[] {
-			"Dont connect",
-			"Connect One way",
-			"Connect Two ways"});
 			this.tsmiConnectType.Name = "tsmiConnectType";
 			this.tsmiConnectType.Size = new System.Drawing.Size(154, 20);
 			// 
@@ -562,11 +564,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// btnCut
 			// 
+			this.btnCut.Enabled = false;
 			this.btnCut.Location = new System.Drawing.Point(5, 15);
 			this.btnCut.Name = "btnCut";
 			this.btnCut.Size = new System.Drawing.Size(65, 30);
 			this.btnCut.TabIndex = 37;
 			this.btnCut.Text = "Cut";
+			this.toolTip1.SetToolTip(this.btnCut, "cuts the selected node");
 			this.btnCut.Click += new System.EventHandler(this.OnCutClick);
 			// 
 			// panel2
@@ -590,7 +594,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.gbPatrolData.Controls.Add(this.labelPriority);
 			this.gbPatrolData.Dock = System.Windows.Forms.DockStyle.Top;
 			this.gbPatrolData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.gbPatrolData.Location = new System.Drawing.Point(0, 50);
+			this.gbPatrolData.Location = new System.Drawing.Point(0, 45);
 			this.gbPatrolData.Name = "gbPatrolData";
 			this.gbPatrolData.Size = new System.Drawing.Size(289, 90);
 			this.gbPatrolData.TabIndex = 11;
@@ -624,7 +628,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.gbNodeData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.gbNodeData.Location = new System.Drawing.Point(0, 0);
 			this.gbNodeData.Name = "gbNodeData";
-			this.gbNodeData.Size = new System.Drawing.Size(289, 50);
+			this.gbNodeData.Size = new System.Drawing.Size(289, 45);
 			this.gbNodeData.TabIndex = 1;
 			this.gbNodeData.TabStop = false;
 			this.gbNodeData.Text = "Tile data";

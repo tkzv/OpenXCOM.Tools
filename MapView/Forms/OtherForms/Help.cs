@@ -89,8 +89,8 @@ namespace MapView
 		/// </summary>
 		private void UpdateRouteViewBlobColors()
 		{
-			var penWall      = MapView.Forms.MainWindow.ViewerFormsManager.RouteView.Control.GetWallPen();
-			var brushContent = MapView.Forms.MainWindow.ViewerFormsManager.RouteView.Control.GetContentBrush();
+			var penWall      = MapView.Forms.MainWindow.ViewerFormsManager.RouteView.Control.GetWallPens();
+			var brushContent = MapView.Forms.MainWindow.ViewerFormsManager.RouteView.Control.GetContentBrushes();
 
 			Color color = Color.Empty;
 
@@ -561,7 +561,7 @@ namespace MapView
 			this.label22.Name = "label22";
 			this.label22.Size = new System.Drawing.Size(440, 25);
 			this.label22.TabIndex = 9;
-			this.label22.Text = "Right clicking on the grid will set the selected tile in tileView in the selected" +
+			this.label22.Text = "Right clicking on the grid will set the selected tile in TileView in the selected" +
 	" portion on the bottom.";
 			// 
 			// label11
@@ -611,9 +611,9 @@ namespace MapView
 			this.tpRouteView.Controls.Add(this.label18);
 			this.tpRouteView.Controls.Add(this.label13);
 			this.tpRouteView.Controls.Add(this.label21);
-			this.tpRouteView.Location = new System.Drawing.Point(4, 21);
+			this.tpRouteView.Location = new System.Drawing.Point(4, 22);
 			this.tpRouteView.Name = "tpRouteView";
-			this.tpRouteView.Size = new System.Drawing.Size(446, 251);
+			this.tpRouteView.Size = new System.Drawing.Size(446, 250);
 			this.tpRouteView.TabIndex = 2;
 			this.tpRouteView.Text = "Route View";
 			// 
@@ -714,12 +714,12 @@ namespace MapView
 			// 
 			// label26
 			// 
-			this.label26.Location = new System.Drawing.Point(185, 55);
+			this.label26.Location = new System.Drawing.Point(160, 60);
 			this.label26.Name = "label26";
-			this.label26.Size = new System.Drawing.Size(250, 40);
+			this.label26.Size = new System.Drawing.Size(275, 25);
 			this.label26.TabIndex = 15;
 			this.label26.Text = "note: Help must be closed and re-opened to update any colors that were changed in" +
-	" TileView\'s options (when Help is also open).";
+	" Options.";
 			// 
 			// label25
 			// 

@@ -11,10 +11,7 @@ namespace MapView
 		internal TilesetForm()
 		{
 			InitializeComponent();
-//			_label      =
-//			_pathMaps   =
-//			_pathRoutes = null;	// NOTE: whynot 'blanksPath' also
-		}						// probably because they all default to null.
+		}
 
 		private string _label;
 		internal string TilesetLabel
