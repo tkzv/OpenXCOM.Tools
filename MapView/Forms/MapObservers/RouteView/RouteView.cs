@@ -174,8 +174,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
-		/// <param name="e"></param>
-		public override void OnLocationSelected_Observer(LocationSelectedEventArgs e)
+		/// <param name="args"></param>
+		public override void OnLocationSelected_Observer(LocationSelectedEventArgs args)
 		{
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("RouteView.OnLocationSelected_Observer");
@@ -185,7 +185,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			labelSelectedPos.Text = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
 												/*"Position{0}*/        "c {0}  r {1}",
-												/*Environment.NewLine, */e.Location.Col, e.Location.Row);
+												/*Environment.NewLine, */args.Location.Col, args.Location.Row);
 		}
 
 		/// <summary>

@@ -525,10 +525,10 @@ namespace MapView
 		/// <summary>
 		/// Fires when a location is selected in MainView.
 		/// </summary>
-		/// <param name="e"></param>
-		private void OnLocationSelected_Main(LocationSelectedEventArgs e)
+		/// <param name="args"></param>
+		private void OnLocationSelected_Main(LocationSelectedEventArgs args)
 		{
-			var loc = e.Location;
+			var loc = args.Location;
 			var dragStart = new Point(loc.Col, loc.Row);
 			SetDrag(dragStart, DragEnd);
 
