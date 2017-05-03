@@ -54,7 +54,11 @@ namespace MapView
 			}
 		} */
 
-		public virtual void OnLocationSelected_Observer(XCMapBase sender, LocationSelectedEventArgs e)
+		/// <summary>
+		/// Satisfies IMapObserver. Used by RouteView.
+		/// </summary>
+		/// <param name="e"></param>
+		public virtual void OnLocationSelected_Observer(LocationSelectedEventArgs e)
 		{
 			//XCom.LogFile.WriteLine("");
 			//XCom.LogFile.WriteLine("MapObserverControl0.OnLocationSelected_Observer");

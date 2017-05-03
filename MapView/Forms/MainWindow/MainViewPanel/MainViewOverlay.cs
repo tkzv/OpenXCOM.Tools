@@ -525,9 +525,8 @@ namespace MapView
 		/// <summary>
 		/// Fires when a location is selected in MainView.
 		/// </summary>
-		/// <param name="mapBase"></param>
 		/// <param name="e"></param>
-		private void OnLocationSelected_Main(XCMapBase mapBase, LocationSelectedEventArgs e)
+		private void OnLocationSelected_Main(LocationSelectedEventArgs e)
 		{
 			var loc = e.Location;
 			var dragStart = new Point(loc.Col, loc.Row);

@@ -8,7 +8,7 @@ using System.Drawing.Imaging;
 
 namespace XCom.Interfaces.Base
 {
-	public delegate void LocationSelectedEventHandler(XCMapBase sender, LocationSelectedEventArgs e);
+	public delegate void LocationSelectedEventHandler(LocationSelectedEventArgs e);
 	public delegate void LevelChangedEventHandler(XCMapBase sender, LevelChangedEventArgs e);
 
 
@@ -81,7 +81,7 @@ namespace XCom.Interfaces.Base
 					var args = new LocationSelectedEventArgs(value, tile);
 
 					if (LocationSelectedEvent != null)
-						LocationSelectedEvent(this, args);
+						LocationSelectedEvent(args);
 				}
 			}
 		}

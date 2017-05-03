@@ -79,7 +79,11 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		#region EventCalls
-		public override void OnLocationSelected_Observer(XCMapBase sender, LocationSelectedEventArgs e)
+		/// <summary>
+		/// Inherited from IMapObserver through MapObserverControl0.
+		/// </summary>
+		/// <param name="e"></param>
+		public override void OnLocationSelected_Observer(LocationSelectedEventArgs e)
 		{
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("QuadrantPanel.OnLocationSelected_Observer");

@@ -19,7 +19,7 @@ namespace XCom.Interfaces.Base
 //		{ get; set; }
 
 
-		void OnLocationSelected_Observer(XCMapBase sender, LocationSelectedEventArgs e);
+		void OnLocationSelected_Observer(LocationSelectedEventArgs e);
 
 		void OnLevelChanged_Observer(XCMapBase sender, LevelChangedEventArgs e);
 	}

@@ -223,11 +223,10 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 /*		/// <summary>
-		/// Inherits from IMapObserver.
+		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
-		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		public override void OnLocationSelected_Observer(XCMapBase sender, LocationSelectedEventArgs e)
+		public override void OnLocationSelected_Observer(LocationSelectedEventArgs e)
 		{
 			LogFile.WriteLine("");
 			LogFile.WriteLine("TopViewPanelParent.OnLocationSelected_Observer");

@@ -42,9 +42,8 @@ namespace MapView
 		/// Satisfies IMapObserver. Used by QuadrantPanel but disabled in
 		/// TopViewPanelParent.
 		/// </summary>
-		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		public virtual void OnLocationSelected_Observer(XCMapBase sender, LocationSelectedEventArgs e)
+		public virtual void OnLocationSelected_Observer(LocationSelectedEventArgs e)
 		{
 			//XCom.LogFile.WriteLine("");
 			//XCom.LogFile.WriteLine("MapObserverControl1.OnLocationSelected_Observer");
