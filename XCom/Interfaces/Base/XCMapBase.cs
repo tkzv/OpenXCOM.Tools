@@ -8,9 +8,8 @@ using System.Drawing.Imaging;
 
 namespace XCom.Interfaces.Base
 {
-	public delegate void LevelChangedEventHandler(XCMapBase sender, LevelChangedEventArgs e);
-
 	public delegate void LocationSelectedEventHandler(XCMapBase sender, LocationSelectedEventArgs e);
+	public delegate void LevelChangedEventHandler(XCMapBase sender, LevelChangedEventArgs e);
 
 
 	/// <summary>
@@ -18,8 +17,8 @@ namespace XCom.Interfaces.Base
 	/// </summary>
 	public class XCMapBase
 	{
-		public event LevelChangedEventHandler LevelChangedEvent;
 		public event LocationSelectedEventHandler LocationSelectedEvent;
+		public event LevelChangedEventHandler LevelChangedEvent;
 
 
 		private const int HalfWidth  = 16;

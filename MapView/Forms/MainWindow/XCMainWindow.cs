@@ -83,24 +83,23 @@ namespace MapView
 
 			LogFile.WriteLine("Environment cached.");
 
-//			string dir = SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory);
-			var infoViewers  = new PathInfo(dir, "MapViewers", "yml");
+			var fileViewers  = new PathInfo(dir, "MapViewers", "yml");
 
-			var infoSettings = new PathInfo(dir, "MVSettings", "cfg");
-			var infoPaths    = new PathInfo(dir, "Paths",      "cfg");
-			var infoMapEdit  = new PathInfo(dir, "MapEdit",    "cfg");
-			var infoImages   = new PathInfo(dir, "Images",     "cfg");
+			var fileSettings = new PathInfo(dir, "MVSettings", "cfg");
+			var filePaths    = new PathInfo(dir, "Paths",      "cfg");
+			var fileMapEdit  = new PathInfo(dir, "MapEdit",    "cfg");
+			var fileImages   = new PathInfo(dir, "Images",     "cfg");
 
-			share.SetShare(PathInfo.MapViewers, infoViewers);
+			share.SetShare(PathInfo.MapViewers, fileViewers);
 
-			share.SetShare(PathInfo.SettingsFile, infoSettings);
-			share.SetShare(PathInfo.PathsFile,    infoPaths);
-			share.SetShare(PathInfo.MapEditFile,  infoMapEdit);
-			share.SetShare(PathInfo.ImagesFile,   infoImages);
+			share.SetShare(PathInfo.SettingsFile, fileSettings);
+			share.SetShare(PathInfo.PathsFile,    filePaths);
+			share.SetShare(PathInfo.MapEditFile,  fileMapEdit);
+			share.SetShare(PathInfo.ImagesFile,   fileImages);
 			LogFile.WriteLine("PathInfo cached.");
 
 
-			if (!infoPaths.FileExists()) // check if Paths.cfg exists yet
+			if (!filePaths.FileExists()) // check if Paths.cfg exists yet
 			{
 				using (var f = new InstallationForm())
 					if (f.ShowDialog(this) != DialogResult.OK)
@@ -112,7 +111,7 @@ namespace MapView
 				LogFile.WriteLine("Paths.Cfg file exists.");
 
 
-			if (!infoViewers.FileExists())
+			if (!fileViewers.FileExists()) // check if MapViewers.yml exists yet
 			{
 				CreateViewersFile();
 				LogFile.WriteLine("Window configuration file created.");
@@ -163,6 +162,7 @@ namespace MapView
 															// when OnSettingsChange() runs ....
 
 			_mainViewUnderlay = MainViewUnderlay.Instance;
+			_mainViewUnderlay.Dock = DockStyle.Fill;
 			LogFile.WriteLine("MainView panel instantiated.");
 
 
@@ -194,7 +194,7 @@ namespace MapView
 
 
 			GameInfo.ParseLine += ParseLine; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
-			InitGameInfo(infoPaths);
+			InitGameInfo(filePaths);
 			LogFile.WriteLine("GameInfo initialized.");
 
 
@@ -205,8 +205,6 @@ namespace MapView
 
 			MainViewUnderlay.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
-
-			_mainViewUnderlay.Dock = DockStyle.Fill;
 
 			tvMaps.TreeViewNodeSorter = StringComparer.OrdinalIgnoreCase;
 
@@ -248,9 +246,9 @@ namespace MapView
 			InitList();
 			LogFile.WriteLine("Tilesets created and loaded to tree panel.");
 
-			if (infoSettings.FileExists())
+			if (fileSettings.FileExists())
 			{
-				_settingsManager.Load(infoSettings.FullPath);
+				_settingsManager.Load(fileSettings.FullPath);
 				LogFile.WriteLine("User settings loaded.");
 			}
 			else
