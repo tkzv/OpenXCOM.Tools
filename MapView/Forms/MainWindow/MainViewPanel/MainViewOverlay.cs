@@ -538,9 +538,8 @@ namespace MapView
 		/// <summary>
 		/// Fires when the map level changes in MainView.
 		/// </summary>
-		/// <param name="mapBase"></param>
-		/// <param name="e"></param>
-		private void OnLevelChanged_Main(XCMapBase mapBase, LevelChangedEventArgs e)
+		/// <param name="args"></param>
+		private void OnLevelChanged_Main(LevelChangedEventArgs args)
 		{
 			Refresh();
 		}

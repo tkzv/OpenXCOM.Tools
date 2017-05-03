@@ -191,9 +191,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		public override void OnLevelChanged_Observer(XCMapBase sender, LevelChangedEventArgs e)
+		/// <param name="args"></param>
+		public override void OnLevelChanged_Observer(LevelChangedEventArgs args)
 		{
 			DeselectNode();
 			UpdateNodeInformation();

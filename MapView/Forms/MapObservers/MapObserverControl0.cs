@@ -66,7 +66,11 @@ namespace MapView
 			Refresh();
 		}
 
-		public virtual void OnLevelChanged_Observer(XCMapBase sender, LevelChangedEventArgs e)
+		/// <summary>
+		/// Satisfied IMapObserver.
+		/// </summary>
+		/// <param name="args"></param>
+		public virtual void OnLevelChanged_Observer(LevelChangedEventArgs args)
 		{
 			Refresh();
 		}

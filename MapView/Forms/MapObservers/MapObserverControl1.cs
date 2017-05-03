@@ -55,9 +55,8 @@ namespace MapView
 		/// Satisfies IMapObserver. Used by QuadrantPanel and does not exist in
 		/// TopViewPanelParent.
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		public virtual void OnLevelChanged_Observer(XCMapBase sender, LevelChangedEventArgs e)
+		/// <param name="args"></param>
+		public virtual void OnLevelChanged_Observer(LevelChangedEventArgs args)
 		{
 //			Refresh();
 		}

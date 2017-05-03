@@ -93,12 +93,16 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh();
 		}
 
-		public override void OnLevelChanged_Observer(XCMapBase sender, LevelChangedEventArgs e)
+		/// <summary>
+		/// Inherited from IMapObserver through MapObserverControl0.
+		/// </summary>
+		/// <param name="args"></param>
+		public override void OnLevelChanged_Observer(LevelChangedEventArgs args)
 		{
 			if (_location != null)
 			{
 				_tile = MapBase[_location.Row, _location.Col] as XCMapTile;
-				_location.Lev = e.Level;
+				_location.Lev = args.Level;
 			}
 			Refresh();
 		}

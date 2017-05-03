@@ -21,7 +21,7 @@ namespace XCom.Interfaces.Base
 
 		void OnLocationSelected_Observer(LocationSelectedEventArgs args);
 
-		void OnLevelChanged_Observer(XCMapBase sender, LevelChangedEventArgs e);
+		void OnLevelChanged_Observer(LevelChangedEventArgs args);
 	}
 
 

@@ -9,7 +9,7 @@ using System.Drawing.Imaging;
 namespace XCom.Interfaces.Base
 {
 	public delegate void LocationSelectedEventHandler(LocationSelectedEventArgs e);
-	public delegate void LevelChangedEventHandler(XCMapBase sender, LevelChangedEventArgs e);
+	public delegate void LevelChangedEventHandler(LevelChangedEventArgs e);
 
 
 	/// <summary>
@@ -40,7 +40,7 @@ namespace XCom.Interfaces.Base
 					_level = value;
 
 					if (LevelChangedEvent != null)
-						LevelChangedEvent(this, new LevelChangedEventArgs(value));
+						LevelChangedEvent(new LevelChangedEventArgs(value));
 				}
 			}
 		}
@@ -156,7 +156,7 @@ namespace XCom.Interfaces.Base
 				var args = new LevelChangedEventArgs(--_level);
 
 				if (LevelChangedEvent != null)
-					LevelChangedEvent(this, args);
+					LevelChangedEvent(args);
 			}
 		}
 
@@ -171,7 +171,7 @@ namespace XCom.Interfaces.Base
 				var args = new LevelChangedEventArgs(_level + 1);
 
 				if (LevelChangedEvent != null)
-					LevelChangedEvent(this, args);
+					LevelChangedEvent(args);
 			}
 		}
 
