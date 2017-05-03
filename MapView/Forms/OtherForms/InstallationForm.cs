@@ -126,33 +126,34 @@ namespace MapView
 			// Or install the dirs/configs anyway and allow the user to set things up in the PathsEditor.
 			// Otherwise an exception will be thrown when XCMainWindow cTor tries to instantiate the CursorSprite.
 			// what's the CursorSprite used for anyway -> the cursor looks like a windows cursor.
+			// note: It's used to indicate the dragStart and dragEnd tiles.
 			const string Pck = @"\UFOGRAPH\CURSOR.PCK";
 			const string Tab = @"\UFOGRAPH\CURSOR.TAB";
 			if (   (File.Exists(tbUfo.Text  + Pck) && File.Exists(tbUfo.Text  + Tab))
 				|| (File.Exists(tbTftd.Text + Pck) && File.Exists(tbTftd.Text + Tab)))
 			{
-				var info = (PathInfo)SharedSpace.Instance[PathInfo.PathsFile];
-				info.CreateDirectory();			// create a dir for Paths.Cfg
+				var pathPaths = (PathInfo)SharedSpace.Instance[PathInfo.PathsFile];
+				pathPaths.CreateDirectory();	// create a dir for Paths.Cfg
 
-				var infoTerrains = (PathInfo)SharedSpace.Instance[PathInfo.MapEditFile];
-				var infoImages   = (PathInfo)SharedSpace.Instance[PathInfo.ImagesFile];
+				var pathMapEdit = (PathInfo)SharedSpace.Instance[PathInfo.MapEditFile];
+				pathMapEdit.CreateDirectory();	// create a dir for MapEdit.Cfg
 
-				infoTerrains.CreateDirectory();	// create a dir for MapEdit.Cfg
-				infoImages.CreateDirectory();	// create a dir for Images.Cfg
+				var pathImages  = (PathInfo)SharedSpace.Instance[PathInfo.ImagesFile];
+				pathImages.CreateDirectory();	// create a dir for Images.Cfg
 												// psst. All three dirs are going to be the same: appdir\"settings"
 
 				// 'pfe' = path+file+extension
-				string pfeTerrains = infoTerrains.FullPath;
-				string pfeImages   = infoImages.FullPath;
+				string pfeMapEdit = pathMapEdit.FullPath;
+				string pfeImages  = pathImages.FullPath;
 
-				using (var sw = new StreamWriter(new FileStream(info.FullPath, FileMode.Create))) // NOTE: will overwrite Path.cfg if it exists.
+				using (var sw = new StreamWriter(new FileStream(pathPaths.FullPath, FileMode.Create))) // NOTE: will overwrite Path.cfg if it exists.
 				{
 					sw.WriteLine("${ufo}:"  + ((!String.IsNullOrEmpty(tbUfo.Text))  ? tbUfo.Text
 																					: String.Empty));
 					sw.WriteLine("${tftd}:" + ((!String.IsNullOrEmpty(tbTftd.Text)) ? tbTftd.Text
 																					: String.Empty));
 
-					sw.WriteLine("mapdata:" + pfeTerrains);
+					sw.WriteLine("mapdata:" + pfeMapEdit);
 					sw.WriteLine("images:"  + pfeImages);
 
 					sw.WriteLine("useBlanks:false");
@@ -194,7 +195,7 @@ namespace MapView
 
 				_vars["##RunPath##"] = SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory);
 
-				using (var fs = new FileStream(pfeTerrains, FileMode.Create))	// wipe/create MapEdit.Cfg
+				using (var fs = new FileStream(pfeMapEdit, FileMode.Create))	// wipe/create MapEdit.Cfg
 				{}
 
 				using (var fs = new FileStream(pfeImages, FileMode.Create))		// wipe/create Images.Cfg
@@ -204,7 +205,7 @@ namespace MapView
 				{
 					using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
 													.GetManifestResourceStream("MapView._Embedded.MapEditUFO.cfg")))
-					using (var fs = new FileStream(pfeTerrains, FileMode.Append))
+					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
 					using (var sw = new StreamWriter(fs))
 						Write(sr, sw); // write UFO data to MapEdit.Cfg
 
@@ -219,7 +220,7 @@ namespace MapView
 				{
 					using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
 													.GetManifestResourceStream("MapView._Embedded.MapEditTFTD.cfg")))
-					using (var fs = new FileStream(pfeTerrains, FileMode.Append))
+					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
 					using (var sw = new StreamWriter(fs))
 					{
 						Write(sr, sw); // write TFTD data to MapEdit.Cfg

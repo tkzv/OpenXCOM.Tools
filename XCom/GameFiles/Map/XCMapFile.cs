@@ -194,13 +194,13 @@ namespace XCom
 			var node = RouteFile.Add(
 								(byte)location.Row,
 								(byte)location.Col,		// TODO:
-								(byte)location.Lev);	// The screwy XCMapBase.Down() will add an extra pip to 'Level'
+								(byte)location.Lev);	// The screwy XCMapBase.LevelDown() will add an extra pip to 'Lev'
 														// in its LevelChangedEventArgs, which will get passed into here
 														// through QuadrantPanel(sic).OnLevelChanged_Observer(), so I'll
 														// have to start tests by saving .RMP files to find out if that
 														// is the correct way to do things.
 														//
-														// Note that XCMapBase.Up() does not have this vagary ....
+														// Note that XCMapBase.LevelUp() does not have this vagary ....
 
 			return (((XCMapTile)this[node.Row, node.Col, node.Lev]).Node = node);
 		}

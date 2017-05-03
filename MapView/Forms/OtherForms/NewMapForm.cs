@@ -5,75 +5,66 @@ namespace MapView
 {
 	internal sealed class NewMapForm
 		:
-		System.Windows.Forms.Form
+			System.Windows.Forms.Form
 	{
-		private System.Windows.Forms.TextBox txtRows;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.TextBox txtCols;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.TextBox txtHeight;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.TextBox txtMapName;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Button btnOk;
-
-		private System.ComponentModel.Container components = null;
-
-
-		private string _name;
+		#region Fields & Properties
+		private string _label;
+		internal string MapLabel
+		{
+			get { return _label; }
+		}
 
 		private byte _cols;
-		private byte _rows;
-		private byte _height;
-
-
-		public NewMapForm()
-		{
-			InitializeComponent();
-			_name = null;
-		}
-
-
-		public string MapName
-		{
-			get { return _name; }
-		}
-
-		public byte MapCols
+		internal byte MapCols
 		{
 			get { return _cols; }
 		}
 
-		public byte MapRows
+		private byte _rows;
+		internal byte MapRows
 		{
 			get { return _rows; }
 		}
 
-		public byte MapHeight
+		private byte _levs;
+		internal byte MapHeight
 		{
-			get { return _height; }
+			get { return _levs; }
 		}
+		#endregion
 
-		private void btnOk_Click(object sender, System.EventArgs e)
+
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		internal NewMapForm()
+		{
+			InitializeComponent();
+		}
+		#endregion
+
+
+		#region EventCalls
+		private void btnOk_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				_name = txtMapName.Text;
+				_label = txtMapName.Text;
 
-				_cols   = byte.Parse(txtCols.Text,   System.Globalization.CultureInfo.InvariantCulture);
-				_rows   = byte.Parse(txtRows.Text,   System.Globalization.CultureInfo.InvariantCulture);
-				_height = byte.Parse(txtHeight.Text, System.Globalization.CultureInfo.InvariantCulture);
+				_cols = byte.Parse(txtCols.Text,   System.Globalization.CultureInfo.InvariantCulture);
+				_rows = byte.Parse(txtRows.Text,   System.Globalization.CultureInfo.InvariantCulture);
+				_levs = byte.Parse(txtHeight.Text, System.Globalization.CultureInfo.InvariantCulture);
 
-				if (_cols % 10 == 0 && _rows % 10 == 0 && _height > 0
-					&& !String.IsNullOrEmpty(_name))
+				if (_cols % 10 == 0 && _rows % 10 == 0 && _levs > 0
+					&& !String.IsNullOrEmpty(_label))
 				{
 					Close();
 				}
 			}
 			catch {} // TODO: that.
 		}
+		#endregion
 
 
 		#region Windows Form Designer generated code
@@ -230,5 +221,19 @@ namespace MapView
 
 		}
 		#endregion
+
+		private System.ComponentModel.Container components = null;
+
+		private System.Windows.Forms.TextBox txtRows;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.TextBox txtCols;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.TextBox txtHeight;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.TextBox txtMapName;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Button btnOk;
 	}
 }

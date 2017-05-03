@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 
-using Microsoft.Win32;
+//using Microsoft.Win32;
 
 using XCom;
 using XCom.Interfaces;
@@ -463,8 +463,8 @@ namespace MapView
 //					addTileset(tileset.Name);
 					tvMaps.Nodes.Add(tileset.Name);
 
-					tbMapsMaps.Text = tileset.MapPath;
-					tbMapsRoutes.Text  = tileset.RoutePath;
+					tbMapsMaps.Text   = tileset.MapPath;
+					tbMapsRoutes.Text = tileset.RoutePath;
 
 //					saveMapedit();
 				}
@@ -521,14 +521,14 @@ namespace MapView
 			{
 				f.ShowDialog(this);
 
-				if (f.MapName != null)
+				if (f.MapLabel != null)
 				{
 					if (tvMaps.SelectedNode.Parent != null) // add to here
 					{
-						string path = tbMapsMaps.Text + f.MapName + XCMapFile.MapExt;
-						if (File.Exists(path))
+						string pfe = tbMapsMaps.Text + f.MapLabel + XCMapFile.MapExt;
+						if (File.Exists(pfe))
 						{
-							using (var fdialog = new ChoiceDialog(path))
+							using (var fdialog = new ChoiceDialog(pfe))
 							{
 								fdialog.ShowDialog(this);
 	
@@ -538,12 +538,12 @@ namespace MapView
 						}
 
 						XCMapFile.CreateMap(
-										File.OpenWrite(path),
+										File.OpenWrite(pfe),
 										f.MapRows,
 										f.MapCols,
 										f.MapHeight);
 
-						using (var fs = File.OpenWrite(tbMapsRoutes.Text + f.MapName + RouteNodeCollection.RouteExt)) // TODO: wtf.
+						using (var fs = File.OpenWrite(tbMapsRoutes.Text + f.MapLabel + RouteNodeCollection.RouteExt)) // TODO: wtf.
 						{}
 
 						Tileset tileset;
@@ -552,17 +552,17 @@ namespace MapView
 						if (tvMaps.SelectedNode.Parent.Parent == null)
 						{
 							tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[tvMaps.SelectedNode.Parent.Text];
-							tvMaps.SelectedNode.Nodes.Add(f.MapName);
+							tvMaps.SelectedNode.Nodes.Add(f.MapLabel);
 							label = tvMaps.SelectedNode.Text;
 						}
 						else
 						{
 							tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[tvMaps.SelectedNode.Parent.Parent.Text];
-							tvMaps.SelectedNode.Parent.Nodes.Add(f.MapName);
+							tvMaps.SelectedNode.Parent.Nodes.Add(f.MapLabel);
 							label = tvMaps.SelectedNode.Parent.Text;
 						}
 
-						tileset.AddMap(f.MapName, label);
+						tileset.AddMap(f.MapLabel, label);
 
 //						saveMapedit();
 					}
