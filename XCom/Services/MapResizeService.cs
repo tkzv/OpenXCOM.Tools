@@ -5,32 +5,32 @@ namespace XCom.Services
 {
 	internal static class MapResizeService
 	{
-		internal static MapTileList ResizeMap(
+		internal static MapTileList ResizeMapDimensions(
 				int rPost,
 				int cPost,
-				int hPost,
+				int lPost,
 				MapSize sizePre,
 				MapTileList tileListPre,
 				bool toCeiling)
 		{
 			if (   rPost > 0
 				&& cPost > 0
-				&& hPost > 0)
+				&& lPost > 0)
 			{
-				var tileListPost = new MapTileList(rPost, cPost, hPost);
+				var tileListPost = new MapTileList(rPost, cPost, lPost);
 
-				for (int h = 0; h != hPost; ++h)
+				for (int l = 0; l != lPost; ++l)
 					for (int r = 0; r != rPost; ++r)
 						for (int c = 0; c != cPost; ++c)
-							tileListPost[r, c, h] = XCMapTile.BlankTile;
+							tileListPost[r, c, l] = XCMapTile.BlankTile;
 
-				int levelPost;
 				int levelPre;
+				int levelPost;
 
 				for (int
-						h = 0;
-						h != hPost && h < sizePre.Levs;
-						++h)
+						l = 0;
+						l != lPost && l < sizePre.Levs;
+						++l)
 					for (int
 							r = 0;
 							r != rPost && r < sizePre.Rows;
@@ -42,13 +42,13 @@ namespace XCom.Services
 						{
 							if (toCeiling)
 							{
-								levelPost = hPost        - h - 1;
-								levelPre  = sizePre.Levs - h - 1;
+								levelPost = lPost        - l - 1;
+								levelPre  = sizePre.Levs - l - 1;
 							}
 							else
 							{
-								levelPost = h;
-								levelPre  = h;
+								levelPost = l;
+								levelPre  = l;
 							}
 							tileListPost[r, c, levelPost] = tileListPre[r, c, levelPre];
 						}

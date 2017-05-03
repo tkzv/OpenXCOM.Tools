@@ -227,7 +227,7 @@
     <Compile Include="Forms\OtherForms\ByteView_.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\ChangeMapSizeForm.cs">
+    <Compile Include="Forms\OtherForms\MapResizeForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\OtherForms\ChoiceDialog.cs">
@@ -343,8 +343,8 @@
     <EmbeddedResource Include="Forms\McdViewer\McdViewerForm.resx">
       <DependentUpon>McdViewerForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\ChangeMapSizeForm.resx">
-      <DependentUpon>ChangeMapSizeForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\OtherForms\MapResizeForm.resx">
+      <DependentUpon>MapResizeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\ChoiceDialog.resx">
       <DependentUpon>ChoiceDialog.cs</DependentUpon>

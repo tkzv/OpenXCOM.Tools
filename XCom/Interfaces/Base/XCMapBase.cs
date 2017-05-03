@@ -147,44 +147,43 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Changes the '_level' property and fires a LevelChanged event.
+		/// Changes the 'Level' property and fires a LevelChanged event.
 		/// </summary>
-		public void Up()
+		public void LevelUp()
 		{
 			if (_level > 0)
 			{
-				var args = new LevelChangedEventArgs(--_level);
+				--_level;
 
 				if (LevelChangedEvent != null)
-					LevelChangedEvent(args);
+					LevelChangedEvent(new LevelChangedEventArgs(_level));
 			}
 		}
 
 		/// <summary>
-		/// Changes the '_level' property and fires a LevelChanged event.
+		/// Changes the 'Level' property and fires a LevelChanged event.
 		/// </summary>
-		public void Down()
+		public void LevelDown()
 		{
 			if (_level < MapSize.Levs - 1)
 			{
-				++_level; // TODO: wait a second !
-				var args = new LevelChangedEventArgs(_level + 1);
+				++_level;
 
 				if (LevelChangedEvent != null)
-					LevelChangedEvent(args);
+					LevelChangedEvent(new LevelChangedEventArgs(_level + 1)); // TODO: wait a second !
 			}
 		}
 
-		public virtual void ResizeTo(	// NOTE: This doesn't handle Routes or node-checking
-				int rPost,				// which XCMapFile.ResizeTo() does.
-				int cPost,
-				int lPost,
+		public virtual void MapResize(	// NOTE: This doesn't handle Routes or node-checking
+				int r,					// which XCMapFile.ResizeTo() does.
+				int c,
+				int l,
 				bool toCeiling)
 		{
 //			var tileList = MapResizeService.ResizeMap(
-//												rPost,
-//												cPost,
-//												lPost,
+//												r,
+//												c,
+//												l,
 //												MapSize,
 //												MapTiles,
 //												toCeiling);
@@ -193,9 +192,9 @@ namespace XCom.Interfaces.Base
 //				MapChanged = true;
 //
 //				MapTiles = tileList;
-//				MapSize  = new MapSize(rPost, cPost, lPost);
+//				MapSize  = new MapSize(r, c, l);
 //
-//				if (lPost > 0) // assuage FxCop re 'possible' underflow.
+//				if (l > 0) // assuage FxCop re 'possible' underflow.
 //					_level = hPost - 1;
 //			}
 		}

@@ -187,17 +187,22 @@ namespace XCom
 			return null;
 		}
 
-		public RouteNode AddRouteNode(MapLocation loc)
+		public RouteNode AddRouteNode(MapLocation location)
 		{
 			MapChanged = true;
 
 			var node = RouteFile.Add(
-								(byte)loc.Row,
-								(byte)loc.Col,
-								(byte)loc.Lev);
-			((XCMapTile)this[node.Row, node.Col, node.Lev]).Node = node;
+								(byte)location.Row,
+								(byte)location.Col,		// TODO:
+								(byte)location.Lev);	// The screwy XCMapBase.Down() will add an extra pip to 'Level'
+														// in its LevelChangedEventArgs, which will get passed into here
+														// through QuadrantPanel(sic).OnLevelChanged_Observer(), so I'll
+														// have to start tests by saving .RMP files to find out if that
+														// is the correct way to do things.
+														//
+														// Note that XCMapBase.Up() does not have this vagary ....
 
-			return node;
+			return (((XCMapTile)this[node.Row, node.Col, node.Lev]).Node = node);
 		}
 
 		/// <summary>
@@ -276,44 +281,42 @@ namespace XCom
 			}
 		}
 
-		public override void ResizeTo(
-				int rPost,
-				int cPost,
-				int lPost,
+		public override void MapResize(
+				int r,
+				int c,
+				int l,
 				bool toCeiling)
 		{
-			var tileList = MapResizeService.ResizeMap(
-												rPost,
-												cPost,
-												lPost,
-												MapSize,
-												MapTiles,
-												toCeiling);
+			var tileList = MapResizeService.ResizeMapDimensions(
+															r, c, l,
+															MapSize,
+															MapTiles,
+															toCeiling);
 			if (tileList != null)
 			{
 				MapChanged = true;
 
-				if (toCeiling && lPost != MapSize.Levs) // update Routes
+				if (toCeiling && l != MapSize.Levs) // update Routes
 				{
-					int d = lPost - MapSize.Levs;
+					int delta = l - MapSize.Levs;
 					foreach (RouteNode node in RouteFile)
 					{
 //						if (hPost < MapSize.Height)
-//							node.Height = node.Height + d;
+//							node.Height = node.Height + delta;
 //						else
-						node.Lev += d;
+						node.Lev += delta;
 					}
 				}
 
-				if (   cPost < MapSize.Cols // delete route-nodes outside the new bounds
-					|| rPost < MapSize.Rows
-					|| lPost < MapSize.Levs)
+				if (   c < MapSize.Cols // delete route-nodes outside the new bounds
+					|| r < MapSize.Rows
+					|| l < MapSize.Levs)
 				{
-					RouteFile.CheckNodeBounds(cPost, rPost, lPost);
+					RouteFile.CheckNodeBounds(c, r, l);
 				}
 
 				MapTiles = tileList;
-				MapSize  = new MapSize(rPost, cPost, lPost);
+				MapSize  = new MapSize(r, c, l);
 
 				Level = MapSize.Levs - 1;
 			}

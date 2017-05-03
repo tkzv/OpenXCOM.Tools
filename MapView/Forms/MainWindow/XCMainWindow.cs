@@ -935,12 +935,12 @@ namespace MapView
 		{
 			if (_mainViewUnderlay.MainViewOverlay.MapBase != null)
 			{
-				using (var f = new ChangeMapSizeForm())
+				using (var f = new MapResizeForm())
 				{
 					f.MapBase = _mainViewUnderlay.MainViewOverlay.MapBase;
 					if (f.ShowDialog(this) == DialogResult.OK)
 					{
-						f.MapBase.ResizeTo(
+						f.MapBase.MapResize(
 										f.Rows,
 										f.Cols,
 										f.Levs,

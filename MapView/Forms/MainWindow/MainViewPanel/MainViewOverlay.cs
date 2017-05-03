@@ -334,8 +334,8 @@ namespace MapView
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			base.OnMouseWheel(e);
-			if      (e.Delta < 0) _mapBase.Up();
-			else if (e.Delta > 0) _mapBase.Down();
+			if      (e.Delta < 0) _mapBase.LevelUp();
+			else if (e.Delta > 0) _mapBase.LevelDown();
 		}
 
 		private bool _isMouseDrag;

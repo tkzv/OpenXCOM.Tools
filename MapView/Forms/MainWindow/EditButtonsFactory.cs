@@ -155,16 +155,16 @@ namespace MapView.Forms.MainWindow
 				tsb.Enabled = true;
 		}
 
-		private void OnDownClick(object sender, EventArgs e)
-		{
-			if (MainViewUnderlay.Instance.MainViewOverlay.MapBase != null)
-				MainViewUnderlay.Instance.MainViewOverlay.MapBase.Down();
-		}
-
 		private void OnUpClick(object sender, EventArgs e)
 		{
 			if (MainViewUnderlay.Instance.MainViewOverlay.MapBase != null)
-				MainViewUnderlay.Instance.MainViewOverlay.MapBase.Up();
+				MainViewUnderlay.Instance.MainViewOverlay.MapBase.LevelUp();
+		}
+
+		private void OnDownClick(object sender, EventArgs e)
+		{
+			if (MainViewUnderlay.Instance.MainViewOverlay.MapBase != null)
+				MainViewUnderlay.Instance.MainViewOverlay.MapBase.LevelDown();
 		}
 	}
 }
