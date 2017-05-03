@@ -201,7 +201,7 @@ namespace MapView
 			_viewersManager.ManageViewers();
 
 
-			ViewerFormsManager.TileView.Control.PckSaveEvent += OnPckSaveEvent;
+			ViewerFormsManager.TileView.Control.PckSavedEvent += OnPckSavedEvent;
 
 			MainViewUnderlay.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
@@ -779,7 +779,7 @@ namespace MapView
 		/// <summary>
 		/// Reloads the map when a save is done in PckView (via TileView).
 		/// </summary>
-		private void OnPckSaveEvent()
+		private void OnPckSavedEvent()
 		{
 			LoadSelectedMap();
 		}

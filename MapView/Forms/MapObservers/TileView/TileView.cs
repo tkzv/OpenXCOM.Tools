@@ -28,7 +28,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <summary>
 		/// Fires if a save was done in PckView (via TileView).
 		/// </summary>
-		internal event MethodInvoker PckSaveEvent;
+		internal event MethodInvoker PckSavedEvent;
 		#endregion
 
 
@@ -176,8 +176,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <summary>
 		/// Changes the currently selected quadrant in the QuadrantPanel when
 		/// a tile is selected in TileView.
-		/// That is, fires 'TopView.Control.SelectQuadrant' through the
-		/// 'Observer0TileSelectedEvent'.
+		/// That is, fires 'TopView.Control.SelectQuadrant' through
+		/// 'TileSelectedEvent_Observer0'.
 		/// </summary>
 		/// <param name="tile"></param>
 		private void SelectQuadrant(TileBase tile)
@@ -497,7 +497,7 @@ namespace MapView.Forms.MapObservers.TileViews
 								GameInfo.ImageInfo.Images[dep].ClearMcdTable();
 								GameInfo.ClearPckCache(imageInfo.Path, imageInfo.Label);
 
-								OnMapChanged();
+								PckSaved();
 							}
 						}
 
@@ -521,9 +521,9 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <summary>
 		/// Raised when a save is done in PckView.
 		/// </summary>
-		private void OnMapChanged()
+		private void PckSaved()
 		{
-			var handler = PckSaveEvent;
+			var handler = PckSavedEvent;
 			if (handler != null)
 				handler();
 		}

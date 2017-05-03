@@ -410,7 +410,7 @@ namespace MapView
 		internal Point DragStart
 		{
 			get { return _dragStart; }
-			set
+			private set
 			{
 				_dragStart = value;
 
@@ -428,7 +428,7 @@ namespace MapView
 		internal Point DragEnd
 		{
 			get { return _dragEnd; }
-			set
+			private set
 			{
 				_dragEnd = value;
 

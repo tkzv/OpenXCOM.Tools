@@ -29,12 +29,6 @@ namespace MapView.Forms.MapObservers.TopViews
 		private int _cursorCol = -1;
 		private int _cursorRow = -1;
 		
-//		internal void ResetCursorPosition()
-//		{
-//			_cursorCol = -1;
-//			_cursorRow = -1;
-//		}
-
 		private DrawBlobService _blobService = new DrawBlobService();
 		internal protected DrawBlobService BlobService
 		{
