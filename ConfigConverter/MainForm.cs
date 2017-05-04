@@ -63,10 +63,7 @@ namespace ConfigConverter
 								0);
 			}
 		}
-		#endregion
 
-
-		#region Methods
 		/// <summary>
 		/// Converts the MapEdit configuration file to YAML format.
 		/// </summary>
@@ -106,7 +103,6 @@ namespace ConfigConverter
 				while ((line = sr.ReadLine()) != null)
 				{
 					line = line.Trim();
-
 					DSShared.DSLogFile.WriteLine("line= " + line);
 
 					if (line.StartsWith("Tileset", StringComparison.Ordinal))
@@ -116,7 +112,6 @@ namespace ConfigConverter
 						while ((line = sr.ReadLine()) != null)
 						{
 							line = line.Trim();
-
 							DSShared.DSLogFile.WriteLine(". line= " + line);
 
 							if (line.Contains("end"))
@@ -131,7 +126,6 @@ namespace ConfigConverter
 									while ((line = sr.ReadLine()) != null)
 									{
 										line = line.Trim();
-
 										DSShared.DSLogFile.WriteLine(". . line= " + line);
 
 										if (line.Contains("$")) // deps and blocks are using aliases
@@ -158,7 +152,6 @@ namespace ConfigConverter
 
 													while (String.IsNullOrEmpty(line))
 														line = sr.ReadLine().Trim();
-
 													DSShared.DSLogFile.WriteLine(". . . line= " + line);
 
 													if (line.Contains("end"))
@@ -186,7 +179,6 @@ namespace ConfigConverter
 
 												while (String.IsNullOrEmpty(line))
 													line = sr.ReadLine().Trim();
-
 												DSShared.DSLogFile.WriteLine(". . . line= " + line);
 
 												if (line.Contains("end"))

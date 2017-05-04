@@ -19,6 +19,28 @@ namespace MapView.Forms.MapObservers.RouteViews
 		Soldier		Soldier
 	*/
 
+/*
+	IMPORTANT NOTE: the RouteView control still contains:
+		menuStrip1 (Visible=FALSE)
+		tscbConnectType
+		tsmiEditMenu
+		- tsmiOptions
+		- tsmiMakeAllNodeRank0
+		tsmiExtraHeight
+		tstbExtraHeight
+
+	But all those have been superceded by:
+
+		tsMain
+		tscbConnectionType
+		tsddbEdit
+		- tsmiOptions2
+		- tsmiAllNodesRank0
+
+	Reason: a toolstrip works a bit better than a menuitem along the top;
+	and 'ExtraHeight' is pending removal.
+*/
+
 	internal sealed partial class RouteView
 		:
 			MapObserverControl0
@@ -105,7 +127,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			InitializeComponent();
 
-			this.tsmiConnectType.Items.AddRange(new object[]
+			tscbConnectionType.Items.AddRange(new object[]
 			{
 				DontConnect,
 				OneWayConnect,
@@ -349,10 +371,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <returns></returns>
 		private ConnectNodeType GetConnectorType()
 		{
-			if (tsmiConnectType.Text == OneWayConnect)
+			if (tscbConnectionType.Text == OneWayConnect)
 				return ConnectNodeType.ConnectOneWay;
 
-			if (tsmiConnectType.Text == TwoWayConnect)
+			if (tscbConnectionType.Text == TwoWayConnect)
 				return ConnectNodeType.ConnectTwoWays;
 
 			return ConnectNodeType.ConnectNone;
@@ -1093,7 +1115,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 //			_mapFile.MapChanged |= !_loadingMap;
 		}
 
-		private void OnMakeAllNodeRank0Click(object sender, EventArgs e)
+		private void OnAllNodeSpawnRank0Click(object sender, EventArgs e)
 		{
 			var count = 0;
 			foreach (RouteNode node in _mapFile.RouteFile)
@@ -1109,24 +1131,27 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				MessageBox.Show(
 							count + " nodes were changed.",
-							"Node Fix",
+							"All nodes spawn Rank 0",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Information,
 							MessageBoxDefaultButton.Button1,
 							0);
 			}
 			else
-			{
 				MessageBox.Show(
 							"All nodes are already 0 rank.",
-							"Node Fix",
+							"All nodes spawn Rank 0",
 							MessageBoxButtons.OK,
-							MessageBoxIcon.Warning,
+							MessageBoxIcon.Asterisk,
 							MessageBoxDefaultButton.Button1,
 							0);
-			}
 		}
 
+		private void OnConnectDropDownClosed(object sender, EventArgs e)
+		{
+			pRoutes.Select();	// take focus off the stupid combobox. Tks.
+		}						// NOTE: sometimes it still stays "highlighted"
+								// but at least it's no longer "selected".
 
 		#region Settings
 		private const string Links = "Links";
@@ -1158,7 +1183,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		protected internal override void LoadControl0Settings()
 		{
-			tsmiConnectType.SelectedIndex = 0;
+			tscbConnectionType.SelectedIndex = 0;
 
 			var pens    = _routePanel.RoutePens;
 			var brushes = _routePanel.RouteBrushes;

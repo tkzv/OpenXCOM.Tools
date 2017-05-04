@@ -19,14 +19,13 @@
 			base.Dispose(disposing);
 		}
 
-		#region Windows Form Designer generated code
-
 		// The #develop designer is going to delete this. Copy it back in at the
 		// top of InitializeComponent().
 		/*
 			this.TopViewControl = new MapView.Forms.MapObservers.TopViews.TopView();
 		*/
 
+		#region Windows Form Designer generated code
 		/// <summary>
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.

@@ -87,6 +87,7 @@
 			// tsMain
 			// 
 			this.tsMain.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.tsMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.tsddbMcd,
 			this.tsddbPck,
@@ -95,7 +96,7 @@
 			this.tsMain.Name = "tsMain";
 			this.tsMain.Size = new System.Drawing.Size(640, 25);
 			this.tsMain.TabIndex = 1;
-			this.tsMain.Text = "toolStrip1";
+			this.tsMain.Text = "tsMain";
 			// 
 			// tsddbMcd
 			// 
@@ -141,7 +142,7 @@
 			// tsmiEditPck
 			// 
 			this.tsmiEditPck.Name = "tsmiEditPck";
-			this.tsmiEditPck.Size = new System.Drawing.Size(152, 22);
+			this.tsmiEditPck.Size = new System.Drawing.Size(116, 22);
 			this.tsmiEditPck.Text = "Edit PCK";
 			this.tsmiEditPck.Click += new System.EventHandler(this.OnPckEditorClick);
 			// 

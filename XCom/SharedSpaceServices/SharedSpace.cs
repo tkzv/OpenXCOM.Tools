@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using XCom.Interfaces;
+
+//using XCom.Interfaces;
 
 
 namespace XCom
@@ -9,23 +10,21 @@ namespace XCom
 	{
 		private static SharedSpace _instance;
 
-		private readonly Dictionary<string, object> _share;
+		private readonly Dictionary<string, object> _share = new Dictionary<string, object>();
 
 		public const string ApplicationDirectory = "ApplicationDirectory";
 		public const string SettingsDirectory    = "SettingsDirectory";
 
-		public const string CustomDirectory   = "CustomDirectory"; // for PckView ->
-		public const string Palettes          = "Palettes";
-		public const string ImageTypes        = "ImageTypes";
+		public const string Palettes        = "Palettes"; // for PckView ->
+//		public const string CustomDirectory = "CustomDirectory";
+//		public const string ImageTypes      = "ImageTypes";
 
-		public const string CursorFile  = "cursorFile";
-		public const string Cursor      = "CURSOR";
+		public const string CursorFile = "cursorFile";
+		public const string Cursor     = "CURSOR";
 
 
-		public SharedSpace()
-		{
-			_share = new Dictionary<string, object>();
-		}
+//		public SharedSpace()
+//		{}
 
 
 		public static SharedSpace Instance
@@ -47,7 +46,7 @@ namespace XCom
 		/// <param name="key">the key to look for</param>
 		/// <param name="value">the object to add if the current value doesn't
 		/// exist or is null</param>
-		/// <returns>the value associated with the key as an object</returns>
+		/// <returns>the value associated with the key as an object (default null)</returns>
 		public object SetShare(string key, object value = null)
 		{
 			if (!_share.ContainsKey(key))
@@ -73,24 +72,24 @@ namespace XCom
 			return (string)_share[key];
 		}
 
-		public int GetIntegralValue(string key) // not used.
-		{
-			return (int)_share[key];
-		}
+//		public int GetIntegralValue(string key) // not used.
+//		{
+//			return (int)_share[key];
+//		}
 
-		public double GetDouble(string key) // not used.
-		{
-			return (double)_share[key];
-		}
+//		public double GetDouble(string key) // not used.
+//		{
+//			return (double)_share[key];
+//		}
 
-		public List<XCImageFile> GetImageModList()
-		{
-			return (List<XCImageFile>)_share[ImageTypes];
-		}
+//		public List<XCImageFile> GetImageModList()
+//		{
+//			return (List<XCImageFile>)_share[ImageTypes];
+//		}
 
-		public Dictionary<string, Palette> GetPaletteTable()
-		{
-			return (Dictionary<string, Palette>)_share[Palettes];
-		}
+//		public Dictionary<string, Palette> GetPaletteTable()
+//		{
+//			return (Dictionary<string, Palette>)_share[Palettes];
+//		}
 	}
 }

@@ -77,29 +77,28 @@ namespace MapView
 									SharedSpace.SettingsDirectory,
 									Path.Combine(Environment.CurrentDirectory, "settings"))
 							  .ToString();
-
-			// I think this is needed only for PckView. so I'll assume 'PckViewForm' can handle it.
-//			share.AllocateObject(SharedSpace.CustomDirectory, Environment.CurrentDirectory + @"\custom");
-
 			LogFile.WriteLine("Environment cached.");
 
-			var fileViewers  = new PathInfo(dir, "MapViewers", "yml");
 
-			var fileSettings = new PathInfo(dir, "MVSettings", "cfg");
-			var filePaths    = new PathInfo(dir, "Paths",      "cfg");
-			var fileMapEdit  = new PathInfo(dir, "MapEdit",    "cfg");
-			var fileImages   = new PathInfo(dir, "Images",     "cfg");
+			var pathViewerPositions = new PathInfo(dir, "MapViewers", "yml");
+			share.SetShare(PathInfo.MapViewers, pathViewerPositions);
 
-			share.SetShare(PathInfo.MapViewers, fileViewers);
+			var pathSettings = new PathInfo(dir, "MVSettings", "cfg");
+			share.SetShare(PathInfo.SettingsFile, pathSettings);
 
-			share.SetShare(PathInfo.SettingsFile, fileSettings);
-			share.SetShare(PathInfo.PathsFile,    filePaths);
-			share.SetShare(PathInfo.MapEditFile,  fileMapEdit);
-			share.SetShare(PathInfo.ImagesFile,   fileImages);
+			var pathPaths = new PathInfo(dir, "Paths", "cfg");
+			share.SetShare(PathInfo.PathsFile, pathPaths);
+
+			var pathMapEdit = new PathInfo(dir, "MapEdit", "cfg");
+			share.SetShare(PathInfo.MapEditFile, pathMapEdit);
+
+			var pathImages = new PathInfo(dir, "Images", "cfg");
+			share.SetShare(PathInfo.ImagesFile, pathImages);
+
 			LogFile.WriteLine("PathInfo cached.");
 
 
-			if (!filePaths.FileExists()) // check if Paths.cfg exists yet
+			if (!pathPaths.FileExists()) // check if Paths.cfg exists yet
 			{
 				using (var f = new InstallationForm())
 					if (f.ShowDialog(this) != DialogResult.OK)
@@ -111,7 +110,7 @@ namespace MapView
 				LogFile.WriteLine("Paths.Cfg file exists.");
 
 
-			if (!fileViewers.FileExists()) // check if MapViewers.yml exists yet
+			if (!pathViewerPositions.FileExists()) // check if MapViewers.yml exists yet
 			{
 				CreateViewersFile();
 				LogFile.WriteLine("Window configuration file created.");
@@ -147,8 +146,8 @@ namespace MapView
 
 
 			// jijack: These two events keep getting deleted in my designer:
-			tvMaps.BeforeSelect += OnMapSelect;
-			tvMaps.AfterSelect  += OnMapSelected;
+			tvMaps.BeforeSelect += OnMapTreeSelect;
+			tvMaps.AfterSelect  += OnMapTreeSelected;
 			// welcome to your new home
 
 			_instance = this;
@@ -156,7 +155,8 @@ namespace MapView
 
 			_settingsManager = new SettingsManager(); // goes before LoadSettings()
 
-			Settings = new Settings();
+			Settings = new Settings(); // NOTE: Settings hold Options. And should probly be called 'Options'.
+
 			LoadSettings();									// TODO: check if this should go after the managers load
 			LogFile.WriteLine("MainView Settings loaded.");	// since managers might be re-instantiating needlessly
 															// when OnSettingsChange() runs ....
@@ -184,17 +184,17 @@ namespace MapView
 			_mainMenusManager.PopulateMenus(consoleShare.GetConsole(), Settings);
 			LogFile.WriteLine("MainView menus populated.");
 
-			ViewerFormsManager.HideViewersManager = _mainMenusManager.CreateShowAllManager();
+			ViewerFormsManager.HideViewersManager = _mainMenusManager.CreateShowHideManager(); // subsidiary viewers hide when PckView is invoked from TileView.
 			LogFile.WriteLine("HideViewersManager created.");
 
 
 			ViewerFormsManager.EditFactory = new EditButtonsFactory(_mainViewUnderlay);
 			ViewerFormsManager.Initialize();
-			LogFile.WriteLine("MainWindowsManager initialized.");
+			LogFile.WriteLine("ViewerFormsManager initialized.");
 
 
 			GameInfo.ParseLine += ParseLine; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
-			InitGameInfo(filePaths);
+			InitGameInfo(pathPaths);
 			LogFile.WriteLine("GameInfo initialized.");
 
 
@@ -246,9 +246,9 @@ namespace MapView
 			InitList();
 			LogFile.WriteLine("Tilesets created and loaded to tree panel.");
 
-			if (fileSettings.FileExists())
+			if (pathSettings.FileExists())
 			{
-				_settingsManager.Load(fileSettings.FullPath);
+				_settingsManager.Load(pathSettings.FullPath);
 				LogFile.WriteLine("User settings loaded.");
 			}
 			else
@@ -309,15 +309,16 @@ namespace MapView
 			switch (line.Keyword.ToUpperInvariant())
 			{
 				case "CURSOR":
-					if (line.Value.EndsWith(@"\", StringComparison.Ordinal))
-						SharedSpace.Instance.SetShare(
-													SharedSpace.CursorFile,
-													line.Value + SharedSpace.Cursor);
-					else
-						SharedSpace.Instance.SetShare(
-													SharedSpace.CursorFile,
-													line.Value + @"\" + SharedSpace.Cursor);
+				{
+					string directorySeparator = String.Empty;
+					if (!line.Value.EndsWith(@"\", StringComparison.Ordinal))
+						directorySeparator = @"\";
+
+					SharedSpace.Instance.SetShare(
+											SharedSpace.CursorFile,
+											line.Value + directorySeparator + SharedSpace.Cursor);
 					break;
+				}
 
 //				case "LOGFILE":
 //					try
@@ -750,7 +751,7 @@ namespace MapView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnMapSelect(object sender, CancelEventArgs e)
+		private void OnMapTreeSelect(object sender, CancelEventArgs e)
 		{
 			if (NotifySave() == DialogResult.Cancel)
 			{
@@ -768,7 +769,7 @@ namespace MapView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnMapSelected(object sender, TreeViewEventArgs e)
+		private void OnMapTreeSelected(object sender, TreeViewEventArgs e)
 		{
 			tvMaps.SelectedNode.BackColor = Color.Gold;
 			LoadSelectedMap();

@@ -72,12 +72,15 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			SuspendLayout();
 
+			quadrants.SelectedQuadrant = QuadrantType.Ground;
+
+
 			_topViewPanel = new TopViewPanel();
 			_topViewPanel.Dock = DockStyle.Fill;
 //			_topViewPanel.Width  = 100;//pMain.Width;
 //			_topViewPanel.Height = 100;//pMain.Height;
 
-			pMain.AutoScroll = true;
+//			pMain.AutoScroll = true;
 			pMain.Controls.Add(_topViewPanel);
 
 			pMain.Resize += (sender, e) => _topViewPanel.ResizeObserver(pMain.Width, pMain.Height);

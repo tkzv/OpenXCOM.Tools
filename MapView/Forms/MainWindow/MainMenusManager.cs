@@ -190,7 +190,7 @@ namespace MapView.Forms.MainWindow
 									   : null;
 		}
 
-		internal ShowHideManager CreateShowAllManager()
+		internal ShowHideManager CreateShowHideManager()
 		{
 			return new ShowHideManager(_allForms, _allItems);
 		}
