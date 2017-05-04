@@ -80,6 +80,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			set { _showOverlay = value; }
 		}
 
+		private bool _showPriorityBars = true; // cf. RouteView.LoadControl0Settings()
+		internal bool ShowPriorityBars
+		{
+			get { return _showPriorityBars; }
+			set { _showPriorityBars = value; }
+		}
+
 
 		#region cTor
 		/// <summary>

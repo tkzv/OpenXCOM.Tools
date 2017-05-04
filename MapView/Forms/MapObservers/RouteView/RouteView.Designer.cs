@@ -26,6 +26,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RouteView));
 			this.cbLink5Dest = new System.Windows.Forms.ComboBox();
 			this.cbLink4Dest = new System.Windows.Forms.ComboBox();
@@ -44,14 +45,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelPriority = new System.Windows.Forms.Label();
 			this.labelSpawnRank = new System.Windows.Forms.Label();
 			this.labelUnitType = new System.Windows.Forms.Label();
-			this.labelSelectedPos = new System.Windows.Forms.Label();
+			this.lblSelectedPosition = new System.Windows.Forms.Label();
 			this.gbSpawnData = new System.Windows.Forms.GroupBox();
 			this.cbSpawnWeight = new System.Windows.Forms.ComboBox();
 			this.btnPaste = new System.Windows.Forms.Button();
-			this.labelMouseOverId = new System.Windows.Forms.Label();
+			this.lblOverId = new System.Windows.Forms.Label();
 			this.btnCopy = new System.Windows.Forms.Button();
 			this.btnDelete = new System.Windows.Forms.Button();
-			this.labelSelectedId = new System.Windows.Forms.Label();
+			this.lblSelectedId = new System.Windows.Forms.Label();
 			this.tbLink5Dist = new System.Windows.Forms.TextBox();
 			this.tbLink4Dist = new System.Windows.Forms.TextBox();
 			this.tbLink3Dist = new System.Windows.Forms.TextBox();
@@ -68,12 +69,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsMain = new System.Windows.Forms.ToolStrip();
 			this.tscbConnectionType = new System.Windows.Forms.ToolStripComboBox();
 			this.tsddbEdit = new System.Windows.Forms.ToolStripDropDownButton();
-			this.tsmiOptions2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmiOptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiAllNodesRank0 = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.tscbConnectType = new System.Windows.Forms.ToolStripComboBox();
 			this.tsmiEditMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiOptions = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmiOptions1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiMakeAllNodeRank0 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiExtraHeight = new System.Windows.Forms.ToolStripMenuItem();
 			this.tstbExtraHeight = new System.Windows.Forms.ToolStripTextBox();
@@ -86,6 +87,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbAttack = new System.Windows.Forms.ComboBox();
 			this.labelAttack = new System.Windows.Forms.Label();
 			this.gbNodeData = new System.Windows.Forms.GroupBox();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.gbSpawnData.SuspendLayout();
 			this.tsMain.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -188,6 +190,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbPriority.Name = "cbPriority";
 			this.cbPriority.Size = new System.Drawing.Size(130, 20);
 			this.cbPriority.TabIndex = 8;
+			this.toolTip1.SetToolTip(this.cbPriority, "patrol priority");
 			this.cbPriority.SelectedIndexChanged += new System.EventHandler(this.OnPatrolPrioritySelectedIndexChanged);
 			// 
 			// cbSpawnRank
@@ -196,6 +199,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbSpawnRank.Name = "cbSpawnRank";
 			this.cbSpawnRank.Size = new System.Drawing.Size(130, 20);
 			this.cbSpawnRank.TabIndex = 7;
+			this.toolTip1.SetToolTip(this.cbSpawnRank, "faction or rank (if aLiens) that may spawn here. Nodes for aLiens outside their U" +
+		"FO or base should be set to 0");
 			this.cbSpawnRank.SelectedIndexChanged += new System.EventHandler(this.OnSpawnRankSelectedIndexChanged);
 			// 
 			// cbUnitType
@@ -204,6 +209,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbUnitType.Name = "cbUnitType";
 			this.cbUnitType.Size = new System.Drawing.Size(130, 20);
 			this.cbUnitType.TabIndex = 6;
+			this.toolTip1.SetToolTip(this.cbUnitType, "characteristics of units that may patrol the node");
 			this.cbUnitType.SelectedIndexChanged += new System.EventHandler(this.OnUnitTypeSelectedIndexChanged);
 			// 
 			// labelSpawnWeight
@@ -214,6 +220,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelSpawnWeight.TabIndex = 5;
 			this.labelSpawnWeight.Text = "Weight";
 			this.labelSpawnWeight.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.toolTip1.SetToolTip(this.labelSpawnWeight, "chance that an aLien will spawn here");
 			// 
 			// labelPriority
 			// 
@@ -223,6 +230,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelPriority.TabIndex = 3;
 			this.labelPriority.Text = "Priority";
 			this.labelPriority.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.toolTip1.SetToolTip(this.labelPriority, "patrol priority");
 			// 
 			// labelSpawnRank
 			// 
@@ -232,6 +240,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelSpawnRank.TabIndex = 2;
 			this.labelSpawnRank.Text = "Rank";
 			this.labelSpawnRank.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.toolTip1.SetToolTip(this.labelSpawnRank, "faction or rank (if aLiens) that may spawn here. Nodes for aLiens outside their U" +
+		"FO or base should be set to 0");
 			// 
 			// labelUnitType
 			// 
@@ -241,15 +251,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelUnitType.TabIndex = 1;
 			this.labelUnitType.Text = "Unit Type";
 			this.labelUnitType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.toolTip1.SetToolTip(this.labelUnitType, "characteristics of units that may patrol the node");
 			// 
-			// labelSelectedPos
+			// lblSelectedPosition
 			// 
-			this.labelSelectedPos.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelSelectedPos.Location = new System.Drawing.Point(15, 15);
-			this.labelSelectedPos.Name = "labelSelectedPos";
-			this.labelSelectedPos.Size = new System.Drawing.Size(90, 20);
-			this.labelSelectedPos.TabIndex = 0;
-			this.labelSelectedPos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.lblSelectedPosition.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblSelectedPosition.Location = new System.Drawing.Point(15, 15);
+			this.lblSelectedPosition.Name = "lblSelectedPosition";
+			this.lblSelectedPosition.Size = new System.Drawing.Size(90, 20);
+			this.lblSelectedPosition.TabIndex = 0;
+			this.lblSelectedPosition.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// gbSpawnData
 			// 
@@ -272,6 +283,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbSpawnWeight.Name = "cbSpawnWeight";
 			this.cbSpawnWeight.Size = new System.Drawing.Size(130, 20);
 			this.cbSpawnWeight.TabIndex = 10;
+			this.toolTip1.SetToolTip(this.cbSpawnWeight, "chance that an aLien will spawn here");
 			this.cbSpawnWeight.SelectedIndexChanged += new System.EventHandler(this.OnSpawnWeightSelectedIndexChanged);
 			// 
 			// btnPaste
@@ -282,17 +294,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnPaste.Size = new System.Drawing.Size(65, 30);
 			this.btnPaste.TabIndex = 35;
 			this.btnPaste.Text = "Paste";
+			this.toolTip1.SetToolTip(this.btnPaste, "pastes Patrol data and Spawn data to the selected node");
 			this.btnPaste.Click += new System.EventHandler(this.OnPasteClick);
 			// 
-			// labelMouseOverId
+			// lblOverId
 			// 
-			this.labelMouseOverId.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelMouseOverId.ForeColor = System.Drawing.Color.Sienna;
-			this.labelMouseOverId.Location = new System.Drawing.Point(200, 15);
-			this.labelMouseOverId.Name = "labelMouseOverId";
-			this.labelMouseOverId.Size = new System.Drawing.Size(80, 20);
-			this.labelMouseOverId.TabIndex = 2;
-			this.labelMouseOverId.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.lblOverId.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblOverId.ForeColor = System.Drawing.Color.Sienna;
+			this.lblOverId.Location = new System.Drawing.Point(200, 15);
+			this.lblOverId.Name = "lblOverId";
+			this.lblOverId.Size = new System.Drawing.Size(80, 20);
+			this.lblOverId.TabIndex = 2;
+			this.lblOverId.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// btnCopy
 			// 
@@ -302,6 +315,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnCopy.Size = new System.Drawing.Size(65, 30);
 			this.btnCopy.TabIndex = 34;
 			this.btnCopy.Text = "Copy";
+			this.toolTip1.SetToolTip(this.btnCopy, "copies the selected node");
 			this.btnCopy.Click += new System.EventHandler(this.OnCopyClick);
 			// 
 			// btnDelete
@@ -312,17 +326,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnDelete.Size = new System.Drawing.Size(65, 30);
 			this.btnDelete.TabIndex = 36;
 			this.btnDelete.Text = "Delete";
+			this.toolTip1.SetToolTip(this.btnDelete, "deletes the selected node");
 			this.btnDelete.Click += new System.EventHandler(this.OnDeleteClick);
 			// 
-			// labelSelectedId
+			// lblSelectedId
 			// 
-			this.labelSelectedId.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelSelectedId.ForeColor = System.Drawing.Color.Orchid;
-			this.labelSelectedId.Location = new System.Drawing.Point(115, 15);
-			this.labelSelectedId.Name = "labelSelectedId";
-			this.labelSelectedId.Size = new System.Drawing.Size(80, 20);
-			this.labelSelectedId.TabIndex = 2;
-			this.labelSelectedId.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.lblSelectedId.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblSelectedId.ForeColor = System.Drawing.Color.Orchid;
+			this.lblSelectedId.Location = new System.Drawing.Point(115, 15);
+			this.lblSelectedId.Name = "lblSelectedId";
+			this.lblSelectedId.Size = new System.Drawing.Size(80, 20);
+			this.lblSelectedId.TabIndex = 2;
+			this.lblSelectedId.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// tbLink5Dist
 			// 
@@ -459,7 +474,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsddbEdit.AutoToolTip = false;
 			this.tsddbEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.tsddbEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.tsmiOptions2,
+			this.tsmiOptions,
 			this.tsmiAllNodesRank0});
 			this.tsddbEdit.Font = new System.Drawing.Font("Verdana", 7F);
 			this.tsddbEdit.Image = ((System.Drawing.Image)(resources.GetObject("tsddbEdit.Image")));
@@ -468,12 +483,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsddbEdit.Size = new System.Drawing.Size(38, 22);
 			this.tsddbEdit.Text = "Edit";
 			// 
-			// tsmiOptions2
+			// tsmiOptions
 			// 
-			this.tsmiOptions2.Name = "tsmiOptions2";
-			this.tsmiOptions2.Size = new System.Drawing.Size(165, 22);
-			this.tsmiOptions2.Text = "Options";
-			this.tsmiOptions2.Click += new System.EventHandler(this.OnOptionsClick);
+			this.tsmiOptions.Name = "tsmiOptions";
+			this.tsmiOptions.Size = new System.Drawing.Size(165, 22);
+			this.tsmiOptions.Text = "Options";
+			this.tsmiOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
 			// tsmiAllNodesRank0
 			// 
@@ -507,19 +522,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// tsmiEditMenu
 			// 
 			this.tsmiEditMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.tsmiOptions,
+			this.tsmiOptions1,
 			this.tsmiMakeAllNodeRank0});
 			this.tsmiEditMenu.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tsmiEditMenu.Name = "tsmiEditMenu";
 			this.tsmiEditMenu.Size = new System.Drawing.Size(37, 20);
 			this.tsmiEditMenu.Text = "Edit";
 			// 
-			// tsmiOptions
+			// tsmiOptions1
 			// 
-			this.tsmiOptions.Name = "tsmiOptions";
-			this.tsmiOptions.Size = new System.Drawing.Size(199, 22);
-			this.tsmiOptions.Text = "Options";
-			this.tsmiOptions.Click += new System.EventHandler(this.OnOptionsClick);
+			this.tsmiOptions1.Name = "tsmiOptions1";
+			this.tsmiOptions1.Size = new System.Drawing.Size(199, 22);
+			this.tsmiOptions1.Text = "Options";
+			this.tsmiOptions1.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
 			// tsmiMakeAllNodeRank0
 			// 
@@ -615,6 +630,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnCut.Size = new System.Drawing.Size(65, 30);
 			this.btnCut.TabIndex = 37;
 			this.btnCut.Text = "Cut";
+			this.toolTip1.SetToolTip(this.btnCut, "cuts the selected node");
 			this.btnCut.Click += new System.EventHandler(this.OnCutClick);
 			// 
 			// panel2
@@ -651,6 +667,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbAttack.Name = "cbAttack";
 			this.cbAttack.Size = new System.Drawing.Size(130, 20);
 			this.cbAttack.TabIndex = 8;
+			this.toolTip1.SetToolTip(this.cbAttack, "attacts an aLien to shoot at XCom base tiles");
 			this.cbAttack.SelectedIndexChanged += new System.EventHandler(this.OnBaseAttackSelectedIndexChanged);
 			// 
 			// labelAttack
@@ -661,12 +678,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelAttack.TabIndex = 3;
 			this.labelAttack.Text = "Attack Base";
 			this.labelAttack.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.toolTip1.SetToolTip(this.labelAttack, "attacts an aLien to shoot at XCom base tiles");
 			// 
 			// gbNodeData
 			// 
-			this.gbNodeData.Controls.Add(this.labelMouseOverId);
-			this.gbNodeData.Controls.Add(this.labelSelectedPos);
-			this.gbNodeData.Controls.Add(this.labelSelectedId);
+			this.gbNodeData.Controls.Add(this.lblOverId);
+			this.gbNodeData.Controls.Add(this.lblSelectedPosition);
+			this.gbNodeData.Controls.Add(this.lblSelectedId);
 			this.gbNodeData.Dock = System.Windows.Forms.DockStyle.Top;
 			this.gbNodeData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.gbNodeData.Location = new System.Drawing.Point(0, 0);
@@ -675,6 +693,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.gbNodeData.TabIndex = 1;
 			this.gbNodeData.TabStop = false;
 			this.gbNodeData.Text = "Tile data";
+			// 
+			// toolTip1
+			// 
+			this.toolTip1.AutoPopDelay = 10000;
+			this.toolTip1.InitialDelay = 300;
+			this.toolTip1.ReshowDelay = 100;
+			this.toolTip1.UseAnimation = false;
 			// 
 			// RouteView
 			// 
@@ -703,7 +728,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 		#endregion
 
-		private System.Windows.Forms.Label labelSelectedPos;
+		private System.Windows.Forms.Label lblSelectedPosition;
 		private System.Windows.Forms.Label labelUnitType;
 		private System.Windows.Forms.ComboBox cbUnitType;
 		private System.Windows.Forms.ComboBox cbSpawnRank;
@@ -735,12 +760,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.TextBox tbLink3Dist;
 		private System.Windows.Forms.TextBox tbLink4Dist;
 		private System.Windows.Forms.TextBox tbLink5Dist;
-		private System.Windows.Forms.Label labelSelectedId;
+		private System.Windows.Forms.Label lblSelectedId;
 		private System.Windows.Forms.ComboBox cbSpawnWeight;
-		private System.Windows.Forms.Label labelMouseOverId;
+		private System.Windows.Forms.Label lblOverId;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem tsmiEditMenu;
-		private System.Windows.Forms.ToolStripMenuItem tsmiOptions;
+		private System.Windows.Forms.ToolStripMenuItem tsmiOptions1;
 		private System.Windows.Forms.Button btnPaste;
 		private System.Windows.Forms.Button btnCopy;
 		private System.Windows.Forms.ToolStripComboBox tscbConnectType;
@@ -759,7 +784,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.ToolStrip tsMain;
 		private System.Windows.Forms.ToolStripComboBox tscbConnectionType;
 		private System.Windows.Forms.ToolStripDropDownButton tsddbEdit;
-		private System.Windows.Forms.ToolStripMenuItem tsmiOptions2;
+		private System.Windows.Forms.ToolStripMenuItem tsmiOptions;
 		private System.Windows.Forms.ToolStripMenuItem tsmiAllNodesRank0;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }

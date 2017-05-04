@@ -290,8 +290,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_brushSpawn.Color      = Color.FromArgb(Opacity, _brushSpawn.Color);
 
 
-			var startX = Origin.X;
-			var startY = Origin.Y;
+			int startX = Origin.X;
+			int startY = Origin.Y;
 
 			for (int r = 0; r != MapFile.MapSize.Rows; ++r)
 			{
@@ -350,42 +350,74 @@ namespace MapView.Forms.MapObservers.RouteViews
 									default:
 										if (MapFile.RouteFile[link.Destination] != null)
 										{
-											if (MapFile.RouteFile[link.Destination].Lev < MapFile.Level) // link going up, vertical line
-												_graphics.DrawLine(
-																RoutePens[RouteView.UnselectedLinkColor],
-																x, y,
-																x, y + DrawAreaHeight * 2);
-											else if (MapFile.RouteFile[link.Destination].Lev > MapFile.Level) // link going down, horizontal line
-												_graphics.DrawLine(
-																RoutePens[RouteView.UnselectedLinkColor],
-																x - DrawAreaWidth, y + DrawAreaHeight,
-																x + DrawAreaWidth, y + DrawAreaHeight);
+											int levelDestination = MapFile.RouteFile[link.Destination].Lev;
+											if (levelDestination != MapFile.Level)
+											{
+//												_graphics.DrawLine( // start w/ a horizontal line in the tile-lozenge
+//																RoutePens[RouteView.UnselectedLinkColor],
+//																x - DrawAreaWidth, y + DrawAreaHeight,
+//																x + DrawAreaWidth, y + DrawAreaHeight);
+
+												if (levelDestination < MapFile.Level) // draw arrow up.
+												{
+													_graphics.DrawLine( // start w/ a vertical line in the tile-lozenge
+																	RoutePens[RouteView.UnselectedLinkColor],
+																	x, y,
+																	x, y + DrawAreaHeight * 2);
+													_graphics.DrawLine(
+																	RoutePens[RouteView.UnselectedLinkColor],
+																	x, y,
+																	x - DrawAreaWidth, y + DrawAreaHeight);
+													_graphics.DrawLine(
+																	RoutePens[RouteView.UnselectedLinkColor],
+																	x, y,
+																	x + DrawAreaWidth, y + DrawAreaHeight);
+												}
+												else if (levelDestination > MapFile.Level) // draw arrow down.
+												{
+													_graphics.DrawLine( // start w/ a horizontal line in the tile-lozenge
+																	RoutePens[RouteView.UnselectedLinkColor],
+																	x - DrawAreaWidth, y + DrawAreaHeight,
+																	x + DrawAreaWidth, y + DrawAreaHeight);
+													_graphics.DrawLine(
+																	RoutePens[RouteView.UnselectedLinkColor],
+																	x, y + DrawAreaHeight * 2,
+																	x - DrawAreaWidth, y + DrawAreaHeight);
+													_graphics.DrawLine(
+																	RoutePens[RouteView.UnselectedLinkColor],
+																	x, y + DrawAreaHeight * 2,
+																	x + DrawAreaWidth, y + DrawAreaHeight);
+												}
+											}
 										}
 										break;
 								}
 							}
 
-//							if (DrawAreaHeight >= NODE_VAL_MAX)
-//							{
-							int infoboxX = x - DrawAreaWidth / 2 - 2; // -2 to prevent drawing over the link-going-up indicator when panel is small sized
-							int infoboxY = y + DrawAreaHeight - NodeValMax / 2;
+							if (ShowPriorityBars)
+							{
+//								if (DrawAreaHeight >= NODE_VAL_MAX)
+//								{
+								int infoboxX = x - DrawAreaWidth / 2 - 2;			// -2 to prevent drawing over the link-going-up
+								int infoboxY = y + DrawAreaHeight - NodeValMax / 2;	//    indicator when panel is small sized
 
-							var nodePatrolPriority = (int)node.Priority;
-							DrawImportanceMeter(
-											infoboxX,
-											infoboxY,
-											nodePatrolPriority,
-											NodeValMax,
-											Brushes.DeepSkyBlue); //CornflowerBlue
+								var nodePatrolPriority = (int)node.Priority;
+								DrawImportanceMeter(
+												infoboxX,
+												infoboxY,
+												nodePatrolPriority,
+												NodeValMax,
+												Brushes.DeepSkyBlue); //CornflowerBlue
 
-							var nodeSpawnWeight = (int)node.SpawnWeight;
-							DrawImportanceMeter(
-											infoboxX + 3,
-											infoboxY,
-											nodeSpawnWeight,
-											NodeValMax,
-											Brushes.LightCoral); //IndianRed
-//							}
+								var nodeSpawnWeight = (int)node.SpawnWeight;
+								DrawImportanceMeter(
+												infoboxX + 3,
+												infoboxY,
+												nodeSpawnWeight,
+												NodeValMax,
+												Brushes.LightCoral); //IndianRed
+//								}
+							}
 						}
 					}
 				}

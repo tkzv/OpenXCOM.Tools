@@ -37,8 +37,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		- tsmiOptions2
 		- tsmiAllNodesRank0
 
-	Reason: a toolstrip works a bit better than a menuitem along the top;
-	and 'ExtraHeight' is pending removal.
+	Reason: a toolstrip works a bit better than a menustrip along the top and it
+	maintains consistency with the other viewers; also, 'ExtraHeight' is pending
+	removal.
 */
 
 	internal sealed partial class RouteView
@@ -204,10 +205,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
 
-			labelSelectedPos.Text = String.Format(
+			lblSelectedPosition.Text = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
-												/*"Position{0}*/        "c {0}  r {1}",
-												/*Environment.NewLine, */args.Location.Col, args.Location.Row);
+												"c {0}  r {1}",
+												args.Location.Col, args.Location.Row);
 		}
 
 		/// <summary>
@@ -260,10 +261,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var tile = _routePanel.GetTile(args.X, args.Y);
 			if (tile != null && tile.Node != null)
 			{
-				labelMouseOverId.Text = "Over " + tile.Node.Index;
+				lblOverId.Text = "Over " + tile.Node.Index;
 			}
 			else
-				labelMouseOverId.Text = String.Empty;
+				lblOverId.Text = String.Empty;
 
 			_routePanel.Pos = new Point(args.X, args.Y);
 			_routePanel.Refresh(); // mouseover refresh for RouteView.
@@ -407,7 +408,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			if (_nodeSelected == null)
 			{
-				labelSelectedId.Text = String.Empty;
+				lblSelectedId.Text = String.Empty;
 
 				gbNodeData.Enabled   =
 				gbPatrolData.Enabled =
@@ -445,7 +446,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 			else
 			{
-				labelSelectedId.Text = "Selected " + _nodeSelected.Index;
+				lblSelectedId.Text = "Selected " + _nodeSelected.Index;
 
 				gbNodeData.Enabled   =
 				gbPatrolData.Enabled =
@@ -1176,6 +1177,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private  const string NodeOpacity         = "NodeOpacity";
 
 		private  const string ShowOverlay         = "ShowOverlay";
+		private  const string ShowPriorityBars    = "ShowPriorityBars";
 
 
 		/// <summary>
@@ -1192,6 +1194,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var pc = new ValueChangedEventHandler(OnPenColorChanged);
 			var pw = new ValueChangedEventHandler(OnPenWidthChanged);
 			var oc = new ValueChangedEventHandler(OnNodeOpacityChanged);
+			var sp = new ValueChangedEventHandler(OnShowPriorityChanged);
 			var so = new ValueChangedEventHandler(OnShowOverlayChanged);
 
 			var pen = new Pen(new SolidBrush(Color.OrangeRed), 2);
@@ -1302,6 +1305,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 							oc);
 
 			Settings.AddSetting(
+							ShowPriorityBars,
+							true,
+							"True to show patrol-priority and spawn-weight bars",
+							Nodes,
+							sp);
+
+			Settings.AddSetting(
 							ShowOverlay,
 							true,
 							"True to show mouse-over information",
@@ -1311,7 +1321,20 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnBrushColorChanged(object sender, string key, object val)
 		{
-			_routePanel.RouteBrushes[key].Color = (Color)val;
+			var color = (Color)val;
+			_routePanel.RouteBrushes[key].Color = color;
+
+			switch (key)
+			{
+				case SelectedNodeColor:
+					lblSelectedPosition.ForeColor =
+					lblSelectedId.ForeColor       = color;
+					break;
+				case UnselectedNodeColor:
+					lblOverId.ForeColor = color;
+					break;
+			}
+
 			Refresh();
 		}
 
@@ -1336,6 +1359,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private void OnShowOverlayChanged(object sender, string key, object val)
 		{
 			_routePanel.ShowOverlay = (bool)val;
+			Refresh();
+		}
+
+		private void OnShowPriorityChanged(object sender, string key, object val)
+		{
+			_routePanel.ShowPriorityBars = (bool)val;
 			Refresh();
 		}
 
