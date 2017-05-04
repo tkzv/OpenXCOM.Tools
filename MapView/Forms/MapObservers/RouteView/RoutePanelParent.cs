@@ -32,15 +32,24 @@ namespace MapView.Forms.MapObservers.RouteViews
 		protected Point ClickPoint
 		{ get; set; }
 
+		/// <summary>
+		/// The top-left point of the panel.
+		/// </summary>
 		protected Point Origin
 		{ get; set; }
 
 		private int _drawAreaWidth = 8;
+		/// <summary>
+		/// Half the horizontal width of a tile-lozenge.
+		/// </summary>
 		protected int DrawAreaWidth
 		{
 			get { return _drawAreaWidth; }
 		}
 		private int _drawAreaHeight = 4;
+		/// <summary>
+		/// Half the vertical height of a tile-lozenge.
+		/// </summary>
 		protected int DrawAreaHeight
 		{
 			get { return _drawAreaHeight; }
@@ -57,11 +66,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 			get { return _brushes; }
 		}
 
-		private int _opacity = 255;
+		private int _opacity = 255; // cf. RouteView.LoadControl0Settings()
 		internal int Opacity
 		{
 			get { return _opacity; }
 			set { _opacity = value.Clamp(0, 255); }
+		}
+
+		private bool _showOverlay = true; // cf. RouteView.LoadControl0Settings()
+		internal bool ShowOverlay
+		{
+			get { return _showOverlay; }
+			set { _showOverlay = value; }
 		}
 
 

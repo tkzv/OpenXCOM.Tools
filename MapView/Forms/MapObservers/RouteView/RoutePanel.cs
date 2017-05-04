@@ -53,12 +53,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (MapFile != null)
 			{
 				DrawWallsAndContent();
+				DrawGridLines();
+
 				DrawUnselectedLink();
 				DrawSelectedLink();
-				DrawNodes();
-				DrawGridLines();
+				DrawNodes(); // + node importance meters.
+
 				DrawRose();
-				DrawInfoOverlay();
+
+				if (ShowOverlay)
+					DrawInfoOverlay();
 			}
 //			}
 //			catch (Exception ex)
@@ -344,21 +348,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 										break;
 
 									default:
-										if (   MapFile.RouteFile[link.Destination] != null
-											&& MapFile.RouteFile[link.Destination].Lev < MapFile.Level)
+										if (MapFile.RouteFile[link.Destination] != null)
 										{
-											_graphics.DrawLine(
-															RoutePens[RouteView.UnselectedLinkColor],
-															x, y,
-															x, y + DrawAreaHeight * 2);
-										}
-										else if (MapFile.RouteFile[link.Destination] != null
-											&&   MapFile.RouteFile[link.Destination].Lev > MapFile.Level)
-										{
-											_graphics.DrawLine(
-															RoutePens[RouteView.UnselectedLinkColor],
-															x - DrawAreaWidth, y + DrawAreaHeight,
-															x + DrawAreaWidth, y + DrawAreaHeight);
+											if (MapFile.RouteFile[link.Destination].Lev < MapFile.Level) // link going up, vertical line
+												_graphics.DrawLine(
+																RoutePens[RouteView.UnselectedLinkColor],
+																x, y,
+																x, y + DrawAreaHeight * 2);
+											else if (MapFile.RouteFile[link.Destination].Lev > MapFile.Level) // link going down, horizontal line
+												_graphics.DrawLine(
+																RoutePens[RouteView.UnselectedLinkColor],
+																x - DrawAreaWidth, y + DrawAreaHeight,
+																x + DrawAreaWidth, y + DrawAreaHeight);
 										}
 										break;
 								}
@@ -366,24 +367,24 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 //							if (DrawAreaHeight >= NODE_VAL_MAX)
 //							{
-							int infoboxX = x - DrawAreaWidth / 2;
+							int infoboxX = x - DrawAreaWidth / 2 - 2; // -2 to prevent drawing over the link-going-up indicator when panel is small sized
 							int infoboxY = y + DrawAreaHeight - NodeValMax / 2;
 
 							var nodePatrolPriority = (int)node.Priority;
 							DrawImportanceMeter(
-									infoboxX,
-									infoboxY,
-									nodePatrolPriority,
-									NodeValMax,
-									Brushes.CornflowerBlue);
+											infoboxX,
+											infoboxY,
+											nodePatrolPriority,
+											NodeValMax,
+											Brushes.DeepSkyBlue); //CornflowerBlue
 
 							var nodeSpawnWeight = (int)node.SpawnWeight;
 							DrawImportanceMeter(
-									infoboxX + 3,
-									infoboxY,
-									nodeSpawnWeight,
-									NodeValMax,
-									Brushes.Firebrick);
+											infoboxX + 3,
+											infoboxY,
+											nodeSpawnWeight,
+											NodeValMax,
+											Brushes.LightCoral); //IndianRed
 //							}
 						}
 					}
@@ -409,7 +410,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				Brush color)
 		{
 			_graphics.FillRectangle(
-								Brushes.Gray,
+								Brushes.WhiteSmoke,
 								boxX, boxY,
 								3, NodeValMax);
 			_graphics.DrawRectangle(
@@ -500,7 +501,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				var pt = GetTileCoordinates(_pos.X, _pos.Y);
 				const string textTile1 = "position";
-				string textTile2 = "c " + pt.X + " r " + pt.Y;
+				string textTile2 = "c " + pt.X + "  r " + pt.Y;
 
 //				int textWidth1 = TextRenderer.MeasureText(textTile1, font).Width;
 				int textWidth1 = (int)_graphics.MeasureString(textTile1, _fontOverlay).Width;
@@ -558,13 +559,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 					// time to move to a higher .NET framework.
 				}
 
-				const int Sep = 0;
+				const int Separator = 0;
 
 //				int textHeight = TextRenderer.MeasureText("X", font).Height;
 				int textHeight = (int)_graphics.MeasureString("X", _fontOverlay).Height;
 				var overlay = new Rectangle(
-										_pos.X + 18,                       _pos.Y,
-										textWidth1 + Sep + textWidth2 + 8, textHeight + 8);
+										_pos.X + 18, _pos.Y,
+										textWidth1 + Separator + textWidth2 + 8, textHeight + 8);
 
 				if (tile.Node != null)
 					overlay.Height += textHeight * 4;
@@ -575,9 +576,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				if (overlay.Y + overlay.Height > ClientRectangle.Height)
 					overlay.Y = _pos.Y - overlay.Height;
 
-				_graphics.FillRectangle(new SolidBrush(Color.FromArgb(160, Color.Black)), overlay);
+				_graphics.FillRectangle(new SolidBrush(Color.FromArgb(180, Color.DarkBlue)), overlay);
 				_graphics.FillRectangle(
-									new SolidBrush(Color.FromArgb(160, Color.White)),
+									new SolidBrush(Color.FromArgb(120, Color.Linen)),
 									overlay.X + 2,
 									overlay.Y + 2,
 									overlay.Width  - 4,
@@ -596,7 +597,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 								textTile2,
 								_fontOverlay,
 								Brushes.Yellow,
-								textLeft + textWidth1 + Sep,
+								textLeft + textWidth1 + Separator,
 								textTop);
 
 				if (tile.Node != null)
@@ -611,7 +612,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 									textOver2,
 									_fontOverlay,
 									Brushes.Yellow,
-									textLeft + textWidth1 + Sep,
+									textLeft + textWidth1 + Separator,
 									textTop  + textHeight);
 
 					_graphics.DrawString(
@@ -624,7 +625,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 									textPriority2,
 									_fontOverlay,
 									Brushes.Yellow,
-									textLeft + textWidth1 + Sep,
+									textLeft + textWidth1 + Separator,
 									textTop  + textHeight * 2);
 
 					_graphics.DrawString(
@@ -637,7 +638,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 									textSpawn2,
 									_fontOverlay,
 									Brushes.Yellow,
-									textLeft + textWidth1 + Sep,
+									textLeft + textWidth1 + Separator,
 									textTop  + textHeight * 3);
 
 					_graphics.DrawString(
@@ -650,7 +651,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 									textWeight2,
 									_fontOverlay,
 									Brushes.Yellow,
-									textLeft + textWidth1 + Sep,
+									textLeft + textWidth1 + Separator,
 									textTop  + textHeight * 4);
 				}
 			}

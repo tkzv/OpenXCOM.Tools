@@ -1150,6 +1150,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		internal const string SpawnNodeColor      = "SpawnNodeColor";
 		private  const string NodeOpacity         = "NodeOpacity";
 
+		private  const string ShowOverlay         = "ShowOverlay";
+
+
 		/// <summary>
 		/// Loads default settings for RouteView in TopRouteView screens.
 		/// </summary>
@@ -1164,6 +1167,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var pc = new ValueChangedEventHandler(OnPenColorChanged);
 			var pw = new ValueChangedEventHandler(OnPenWidthChanged);
 			var oc = new ValueChangedEventHandler(OnNodeOpacityChanged);
+			var so = new ValueChangedEventHandler(OnShowOverlayChanged);
 
 			var pen = new Pen(new SolidBrush(Color.OrangeRed), 2);
 			pens[UnselectedLinkColor] = pen;
@@ -1271,6 +1275,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 							"Opacity of node colors (0..255)",
 							Nodes,
 							oc);
+
+			Settings.AddSetting(
+							ShowOverlay,
+							true,
+							"True to show mouse-over information",
+							View,
+							so);
 		}
 
 		private void OnBrushColorChanged(object sender, string key, object val)
@@ -1296,6 +1307,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_routePanel.Opacity = (int)val;
 			Refresh();
 		}
+
+		private void OnShowOverlayChanged(object sender, string key, object val)
+		{
+			_routePanel.ShowOverlay = (bool)val;
+			Refresh();
+		}
+
 
 		/// <summary>
 		/// Gets the wall-color for use by the Help screen.

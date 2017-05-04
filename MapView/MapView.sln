@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PckView", "..\PckView\PckVi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YamlDotNet", "..\YamlDotNet\YamlDotNet.csproj", "{BF32DE1B-6276-4341-B212-F8862ADBBA7A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigConverter", "..\ConfigConverter\ConfigConverter.csproj", "{C11B825C-2B21-42AE-8FE3-088A547AD9A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,6 +86,18 @@ Global
 		{BF32DE1B-6276-4341-B212-F8862ADBBA7A}.Release|Mixed Platforms.Build.0 = Release|Mixed Platforms
 		{BF32DE1B-6276-4341-B212-F8862ADBBA7A}.Release|x86.ActiveCfg = Release|x86
 		{BF32DE1B-6276-4341-B212-F8862ADBBA7A}.Release|x86.Build.0 = Release|x86
+		{C11B825C-2B21-42AE-8FE3-088A547AD9A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C11B825C-2B21-42AE-8FE3-088A547AD9A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C11B825C-2B21-42AE-8FE3-088A547AD9A2}.Debug|Mixed Platforms.ActiveCfg = Debug|Mixed Platforms
+		{C11B825C-2B21-42AE-8FE3-088A547AD9A2}.Debug|Mixed Platforms.Build.0 = Debug|Mixed Platforms
+		{C11B825C-2B21-42AE-8FE3-088A547AD9A2}.Debug|x86.ActiveCfg = Debug|x86
+		{C11B825C-2B21-42AE-8FE3-088A547AD9A2}.Debug|x86.Build.0 = Debug|x86
+		{C11B825C-2B21-42AE-8FE3-088A547AD9A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C11B825C-2B21-42AE-8FE3-088A547AD9A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C11B825C-2B21-42AE-8FE3-088A547AD9A2}.Release|Mixed Platforms.ActiveCfg = Release|Mixed Platforms
+		{C11B825C-2B21-42AE-8FE3-088A547AD9A2}.Release|Mixed Platforms.Build.0 = Release|Mixed Platforms
+		{C11B825C-2B21-42AE-8FE3-088A547AD9A2}.Release|x86.ActiveCfg = Release|x86
+		{C11B825C-2B21-42AE-8FE3-088A547AD9A2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

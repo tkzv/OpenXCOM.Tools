@@ -202,7 +202,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbUnitType.Name = "cbUnitType";
 			this.cbUnitType.Size = new System.Drawing.Size(130, 20);
 			this.cbUnitType.TabIndex = 6;
-			this.toolTip1.SetToolTip(this.cbUnitType, "characteristics of units that may use the node");
+			this.toolTip1.SetToolTip(this.cbUnitType, "characteristics of units that may patrol the node");
 			this.cbUnitType.SelectedIndexChanged += new System.EventHandler(this.OnUnitTypeSelectedIndexChanged);
 			// 
 			// labelSpawnWeight
@@ -607,7 +607,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbAttack.Name = "cbAttack";
 			this.cbAttack.Size = new System.Drawing.Size(130, 20);
 			this.cbAttack.TabIndex = 8;
-			this.toolTip1.SetToolTip(this.cbAttack, "attacts an aLien to shoot at xcom base tiles");
+			this.toolTip1.SetToolTip(this.cbAttack, "attacts an aLien to shoot at XCom base tiles");
 			this.cbAttack.SelectedIndexChanged += new System.EventHandler(this.OnBaseAttackSelectedIndexChanged);
 			// 
 			// labelAttack
