@@ -37,6 +37,7 @@ namespace MapView
 		:
 			Form
 	{
+		#region Fields & Properties
 		private readonly MainViewUnderlay      _mainViewUnderlay; // has static functs.
 
 		private readonly ViewersManager        _viewersManager;
@@ -52,6 +53,13 @@ namespace MapView
 			get { return _settingsManager["MainWindow"]; }
 			set { _settingsManager["MainWindow"] = value; }
 		}
+
+		private static XCMainWindow _instance;
+		internal static XCMainWindow Instance
+		{
+			get { return _instance; }
+		}
+		#endregion
 
 
 		#region cTor
@@ -193,8 +201,9 @@ namespace MapView
 			LogFile.WriteLine("ViewerFormsManager initialized.");
 
 
-			GameInfo.ParseLine += ParseLine; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
-			InitGameInfo(pathPaths);
+//			GameInfo.ParseConfigLineEvent += OnParseConfigLine;
+			InitializeGameInfo(pathPaths);
+//			GameInfo.ParseConfigLineEvent -= OnParseConfigLine;
 			LogFile.WriteLine("GameInfo initialized.");
 
 
@@ -243,7 +252,7 @@ namespace MapView
 			}
 			LogFile.WriteLine("Cursor loaded.");
 
-			InitList();
+			PopulateMapTree();
 			LogFile.WriteLine("Tilesets created and loaded to tree panel.");
 
 			if (pathSettings.FileExists())
@@ -255,8 +264,10 @@ namespace MapView
 				LogFile.WriteLine("User settings NOT loaded - no settings file to load.");
 
 
-			OnResize(null);
 			Closing += OnCloseSaveRegistry;
+
+			OnResize(null);
+
 
 			_loadingProgress = new LoadingForm();
 			XCBitmap.LoadingEvent += _loadingProgress.HandleProgress;
@@ -293,30 +304,28 @@ namespace MapView
 		#endregion
 
 
-		private static void InitGameInfo(PathInfo filePaths)
+		private static void InitializeGameInfo(PathInfo pathInfo)
 		{
-			GameInfo.Init(Palette.UfoBattle, filePaths);
+			GameInfo.Initialize(Palette.UfoBattle, pathInfo);
 		}
 
-		private static XCMainWindow _instance;
-		internal static XCMainWindow Instance
-		{
-			get { return _instance; }
-		}
-
-		private void ParseLine(KeyvalPair line, Varidia vars)
+/*		private void OnParseConfigLine(KeyvalPair line, Varidia vars)
 		{
 			switch (line.Keyword.ToUpperInvariant())
 			{
-				case "CURSOR":
+				case "CURSOR": // NOTE: moved to GameInfo.InitializeGameInfo()
 				{
 					string directorySeparator = String.Empty;
 					if (!line.Value.EndsWith(@"\", StringComparison.Ordinal))
 						directorySeparator = @"\";
 
-					SharedSpace.Instance.SetShare(
-											SharedSpace.CursorFile,
-											line.Value + directorySeparator + SharedSpace.Cursor);
+					LogFile.WriteLine("");
+					LogFile.WriteLine("XCMainWindow.OnParseConfigLine");
+					LogFile.WriteLine(". key= " + SharedSpace.CursorFile);
+					LogFile.WriteLine(". val= " + line.Value + directorySeparator + SharedSpace.Cursor);
+//					SharedSpace.Instance.SetShare(
+//											SharedSpace.CursorFile,
+//											line.Value + directorySeparator + SharedSpace.Cursor);
 					break;
 				}
 
@@ -330,6 +339,41 @@ namespace MapView
 //						Console.WriteLine("Could not parse logfile line.");
 //					}
 //					break;
+
+			}
+		} */
+
+		private void PopulateMapTree()
+		{
+			tvMaps.Nodes.Clear();
+
+			foreach (string key in GameInfo.TilesetInfo.Tilesets.Keys)
+				AddMapGroup(GameInfo.TilesetInfo.Tilesets[key]);
+		}
+
+		private void AddMapGroup(TilesetBase tileset)
+		{
+			var node = new SortableTreeNode(tileset.Name);
+			node.Tag = tileset;
+			tvMaps.Nodes.Add(node);
+
+			foreach (string key in tileset.Subsets.Keys)
+			{
+				var treeGroup = new SortableTreeNode(key);
+				treeGroup.Tag = tileset.Subsets[key];
+				node.Nodes.Add(treeGroup);
+
+				AddMapNodes(treeGroup, tileset.Subsets[key]);
+			}
+		}
+
+		private static void AddMapNodes(TreeNode tn, IDictionary<string, MapDesc> maps)
+		{
+			foreach (string key in maps.Keys)
+			{
+				var node = new SortableTreeNode(key);
+				node.Tag = maps[key];
+				tn.Nodes.Add(node);
 			}
 		}
 
@@ -349,40 +393,6 @@ namespace MapView
 				return (node != null) ? String.CompareOrdinal(Text, node.Text)
 									  : -1;
 			}
-		}
-
-		private static void AddMaps(TreeNode tn, IDictionary<string, MapDesc> maps)
-		{
-			foreach (string key in maps.Keys)
-			{
-				var node = new SortableTreeNode(key);
-				node.Tag = maps[key];
-				tn.Nodes.Add(node);
-			}
-		}
-
-		private void AddTileset(TilesetBase tileset)
-		{
-			var node = new SortableTreeNode(tileset.Name);
-			node.Tag = tileset;
-			tvMaps.Nodes.Add(node);
-
-			foreach (string key in tileset.Subsets.Keys)
-			{
-				var group = new SortableTreeNode(key);
-				group.Tag = tileset.Subsets[key];
-				node.Nodes.Add(group);
-
-				AddMaps(group, tileset.Subsets[key]);
-			}
-		}
-
-		private void InitList()
-		{
-			tvMaps.Nodes.Clear();
-
-			foreach (string key in GameInfo.TilesetInfo.Tilesets.Keys)
-				AddTileset(GameInfo.TilesetInfo.Tilesets[key]);
 		}
 
 
@@ -741,8 +751,12 @@ namespace MapView
 				f.ShowDialog();
 
 			var pathInfo = (PathInfo)share;
-			InitGameInfo(pathInfo);
-			InitList();
+
+//			GameInfo.ParseConfigLineEvent += OnParseConfigLine;
+			InitializeGameInfo(pathInfo);
+//			GameInfo.ParseConfigLineEvent -= OnParseConfigLine;
+
+			PopulateMapTree();
 		}
 
 		/// <summary>

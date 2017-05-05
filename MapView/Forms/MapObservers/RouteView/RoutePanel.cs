@@ -353,11 +353,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 											int levelDestination = MapFile.RouteFile[link.Destination].Lev;
 											if (levelDestination != MapFile.Level)
 											{
-//												_graphics.DrawLine( // start w/ a horizontal line in the tile-lozenge
-//																RoutePens[RouteView.UnselectedLinkColor],
-//																x - DrawAreaWidth, y + DrawAreaHeight,
-//																x + DrawAreaWidth, y + DrawAreaHeight);
-
 												if (levelDestination < MapFile.Level) // draw arrow up.
 												{
 													_graphics.DrawLine( // start w/ a vertical line in the tile-lozenge
@@ -373,7 +368,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 																	x, y,
 																	x + DrawAreaWidth, y + DrawAreaHeight);
 												}
-												else if (levelDestination > MapFile.Level) // draw arrow down.
+												else //if (levelDestination > MapFile.Level) // draw arrow down.
 												{
 													_graphics.DrawLine( // start w/ a horizontal line in the tile-lozenge
 																	RoutePens[RouteView.UnselectedLinkColor],

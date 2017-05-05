@@ -9,28 +9,28 @@ namespace XCom
 		public const byte ExitWest  = 0xFB;
 
 
-		public Link(byte id, byte dist, byte type)
+		internal Link(byte id, byte distance, byte type)
 		{
 			Destination = id;
-			Distance = dist;
+			Distance = distance;
 			UsableType = (UnitType)type;
 		}
 
 
 		/// <summary>
-		/// Gets or sets the index of the destination node.
+		/// Gets/Sets the index of the destination node.
 		/// </summary>
 		public byte Destination
 		{ get; set; }
 
 		/// <summary>
-		/// Gets or sets the distance to the destination node.
+		/// Gets/Sets the distance to the destination node.
 		/// </summary>
 		public byte Distance
 		{ get; set; }
 
 		/// <summary>
-		/// Gets or sets the unit type that can use this link.
+		/// Gets/Sets the unit type that can use this link.
 		/// </summary>
 		public UnitType UsableType
 		{ get; set; }

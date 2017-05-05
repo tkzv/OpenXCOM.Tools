@@ -474,7 +474,7 @@ namespace MapView.Forms.MapObservers.TileViews
 					}
 					else
 					{
-						_showHideManager.HideAll();
+						_showHideManager.HideViewers();
 
 						using (var f = new PckViewForm())
 						{
@@ -501,7 +501,7 @@ namespace MapView.Forms.MapObservers.TileViews
 							}
 						}
 
-						_showHideManager.RestoreAll();
+						_showHideManager.RestoreViewers();
 					}
 				}
 			}

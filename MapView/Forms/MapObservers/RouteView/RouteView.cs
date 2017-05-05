@@ -410,6 +410,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				lblSelectedId.Text = String.Empty;
 
+				btnCut.Enabled    =
+				btnCopy.Enabled   =
+				btnPaste.Enabled  =
+				btnDelete.Enabled = false;
+
 				gbNodeData.Enabled   =
 				gbPatrolData.Enabled =
 				gbSpawnData.Enabled  =
@@ -1334,7 +1339,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 					lblOverId.ForeColor = color;
 					break;
 			}
-
 			Refresh();
 		}
 
@@ -1356,15 +1360,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 			Refresh();
 		}
 
-		private void OnShowOverlayChanged(object sender, string key, object val)
-		{
-			_routePanel.ShowOverlay = (bool)val;
-			Refresh();
-		}
-
 		private void OnShowPriorityChanged(object sender, string key, object val)
 		{
 			_routePanel.ShowPriorityBars = (bool)val;
+			Refresh();
+		}
+
+		private void OnShowOverlayChanged(object sender, string key, object val)
+		{
+			_routePanel.ShowOverlay = (bool)val;
 			Refresh();
 		}
 

@@ -25,7 +25,7 @@ namespace MapView.Forms.MainWindow
 		/// <summary>
 		/// Hides the viewers when opening the PckView in TileView.
 		/// </summary>
-		internal void HideAll()
+		internal void HideViewers()
 		{
 			_items = new List<MenuItem>();
 			foreach (var it in _allItems)
@@ -44,7 +44,7 @@ namespace MapView.Forms.MainWindow
 		/// <summary>
 		/// Shows the viewers when closing the PckView in TileView.
 		/// </summary>
-		internal void RestoreAll()
+		internal void RestoreViewers()
 		{
 			foreach (var f in _forms)
 			{

@@ -49,14 +49,20 @@ namespace XCom
 		/// <returns>the value associated with the key as an object (default null)</returns>
 		public object SetShare(string key, object value = null)
 		{
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("SharedSpace.SetShare key= " + key);
+
 			if (!_share.ContainsKey(key))
 			{
+				//LogFile.WriteLine(". key not set -> set key");
 				_share.Add(key, value);
 			}
 			else if (_share[key] == null)
 			{
+				//LogFile.WriteLine(". key set null -> set key");
 				_share[key] = value;
 			}
+			//else LogFile.WriteLine(". key set -> return val");
 
 			return _share[key];
 		}

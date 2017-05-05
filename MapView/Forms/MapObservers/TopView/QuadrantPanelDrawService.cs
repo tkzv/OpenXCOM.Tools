@@ -307,7 +307,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				g.FillRectangle(
 							new SolidBrush(Pens[TopView.WestColor].Color),
 							new RectangleF(
-										StartX + QuadWidthTotal * 2,
+										StartX + QuadWidthTotal,
 										StartY + QuadHeight + MarginVert + Font.Height + 1,
 										QuadWidth + 1,
 										5));
@@ -315,7 +315,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				g.FillRectangle(
 							new SolidBrush(Pens[TopView.NorthColor].Color),
 							new RectangleF(
-										StartX + QuadWidthTotal,
+										StartX + QuadWidthTotal * 2,
 										StartY + QuadHeight + MarginVert + Font.Height + 1,
 										QuadWidth + 1,
 										5));
