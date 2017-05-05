@@ -59,7 +59,7 @@ namespace DSShared.Windows
 	/// <summary>
 	/// Specifies how the outline of the collapsible splitter is drawn
 	/// </summary>
-	public enum DotStyles
+	public enum DotStyle
 	{
 		/// <summary>
 		/// </summary>
@@ -69,7 +69,7 @@ namespace DSShared.Windows
 		XP,
 		/// <summary>
 		/// </summary>
-		Win9x,
+		Win9X,
 		/// <summary>
 		/// </summary>
 		DoubleDots,
@@ -116,7 +116,7 @@ namespace DSShared.Windows
 		private bool expandParentForm = false;
 		private bool useAnimations = false;
 		private bool hot = false;
-		private DotStyles dotStyle = DotStyles.Mozilla;
+		private DotStyle dotStyle = DotStyle.Mozilla;
 		private int hotZoneArea = 115;
 //		private int offX = 2;
 		private const int offY = 3;
@@ -135,7 +135,7 @@ namespace DSShared.Windows
 		private SplitterState currentState;
 		private int animationDelay = 20;
 		private int animationStep  = 20;
-		private Brush backBrush;
+//		private Brush backBrush;
 		private Pen backPen;
 
 		private static Pen hotPen               = new Pen(hotColor, 1);
@@ -165,7 +165,7 @@ namespace DSShared.Windows
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 
-			backBrush = new SolidBrush(BackColor);
+//			backBrush = new SolidBrush(BackColor);
 			backPen = new Pen(BackColor, 1);
 			hotArea = new Rectangle(
 								0, (Height - hotZoneArea) / 2,
@@ -183,9 +183,9 @@ namespace DSShared.Windows
 		/// </summary>
 		/// <value>The dot style.</value>
 		[Category("Custom Appearance"),
-		DefaultValue(DotStyles.Mozilla),
+		DefaultValue(DotStyle.Mozilla),
 		Description("Dot style drawn on the hotzone")]
-		public DotStyles DotStyle
+		public DotStyle DotStyle
 		{
 			get { return dotStyle; }
 			set
@@ -210,7 +210,7 @@ namespace DSShared.Windows
 			set
 			{
 				base.BackColor = value;
-				backBrush = new SolidBrush(value);
+//				backBrush = new SolidBrush(value);
 				backPen = new Pen(value, 1);
 			}
 		}
@@ -791,7 +791,7 @@ namespace DSShared.Windows
 
 				switch (dotStyle) // Visual Styles added in version 1.1
 				{
-					case DotStyles.Mozilla:
+					case DotStyle.Mozilla:
 						while (y < hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace))
 						{
 							g.DrawLine( // light dot
@@ -826,7 +826,7 @@ namespace DSShared.Windows
 						}
 						break;
 
-					case DotStyles.DoubleDots:
+					case DotStyle.DoubleDots:
 						while (y < hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace))
 						{
 							g.DrawRectangle( // light dot
@@ -858,7 +858,7 @@ namespace DSShared.Windows
 						}
 						break;
 
-					case DotStyles.Win9x:
+					case DotStyle.Win9X:
 						g.DrawLine(
 								controlLightLightPen,
 								x,
@@ -885,7 +885,7 @@ namespace DSShared.Windows
 								hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace));
 						break;
 
-					case DotStyles.XP:
+					case DotStyle.XP:
 						dotSpace = 5;
 						while (y < hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace))
 						{
@@ -924,7 +924,7 @@ namespace DSShared.Windows
 						}
 						break;
 
-					case DotStyles.Lines:
+					case DotStyle.Lines:
 						dotSpace = 2;
 						while (y < hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace))
 						{
@@ -1042,7 +1042,7 @@ namespace DSShared.Windows
 				// Visual Styles added in version 1.1
 				switch (dotStyle)
 				{
-					case DotStyles.Mozilla:
+					case DotStyle.Mozilla:
 						for (int i = 0; i < 30; i++)
 						{
 							g.DrawLine( // light dot
@@ -1075,7 +1075,7 @@ namespace DSShared.Windows
 						}
 						break;
 
-					case DotStyles.DoubleDots:
+					case DotStyle.DoubleDots:
 						for (int i = 0; i < 30; i++)
 						{
 							g.DrawRectangle( // light dot
@@ -1106,7 +1106,7 @@ namespace DSShared.Windows
 						}
 						break;
 
-					case DotStyles.Win9x:
+					case DotStyle.Win9X:
 						g.DrawLine(
 								new Pen(SystemColors.ControlLightLight),
 								x,
@@ -1133,7 +1133,7 @@ namespace DSShared.Windows
 								y + 2);
 						break;
 
-					case DotStyles.XP:
+					case DotStyle.XP:
 						for (int i = 0; i < 18; i++)
 						{
 							g.DrawRectangle( // light dot
@@ -1169,7 +1169,7 @@ namespace DSShared.Windows
 						}
 						break;
 
-					case DotStyles.Lines:
+					case DotStyle.Lines:
 						for (int i = 0; i < 44; i++)
 							g.DrawLine(
 									new Pen(SystemColors.ControlDark),

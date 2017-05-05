@@ -12,7 +12,7 @@ using YamlDotNet.Serialization;			// write values
 
 namespace DSShared.Windows
 {
-	/// <summary>
+/*	/// <summary>
 	/// Delegate for use in the saving and loading events raised in the
 	/// RegistryInfo class.
 	/// </summary>
@@ -20,7 +20,7 @@ namespace DSShared.Windows
 	/// <param name="e"></param>
 //	public delegate void EventHandler<RegistryEventArgs>(object sender, RegistryEventArgs e);
 	public delegate void RegistryEventHandler(object sender, RegistryEventArgs e);
-
+*/
 
 	/// <summary>
 	/// A class to help facilitate the saving and loading of values into the
@@ -31,7 +31,7 @@ namespace DSShared.Windows
 //		public const string SoftwareRegistry = "Software";
 //		public const string MapViewRegistry  = "MapView";
 
-		private readonly object _obj;
+		private readonly object _value;
 		private readonly string _regkey;
 
 		private readonly Dictionary<string, PropertyInfo> _infoDictionary = new Dictionary<string, PropertyInfo>();
@@ -56,14 +56,14 @@ namespace DSShared.Windows
 		/// <summary>
 		/// Main cTor. Uses the specified string as a registry key.
 		/// </summary>
-		/// <param name="obj">the object to save/load values into the registry</param>
+		/// <param name="value">the object to save/load values into the registry</param>
 		/// <param name="regkey">the name of the registry key to save/load</param>
-		public RegistryInfo(object obj, string regkey)
+		public RegistryInfo(object value, string regkey)
 		{
-			_obj = obj;
+			_value  = value;
 			_regkey = regkey;
 
-			var f = obj as Form;
+			var f = value as Form;
 			if (f != null)
 			{
 				f.StartPosition = FormStartPosition.Manual;
@@ -90,7 +90,7 @@ namespace DSShared.Windows
 		/// <param name="keys">the keys of the properties to be saved/loaded</param>
 		public void AddProperty(params string[] keys)
 		{
-			var type = _obj.GetType();
+			var type = _value.GetType();
 
 			PropertyInfo info;
 			foreach (string key in keys)
@@ -159,7 +159,7 @@ namespace DSShared.Windows
 //				if (_infoDictionary.ContainsKey(key)) // it'll be there, i trust. yeah right
 //				{
 				val = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
-				_infoDictionary[key].SetValue(_obj, val, null);
+				_infoDictionary[key].SetValue(_value, val, null);
 //				}
 			}
 		}
@@ -199,7 +199,7 @@ namespace DSShared.Windows
 		{
 			//DSLogFile.WriteLine("OnClose _regkey= " + _regkey);
 
-			var f = _obj as Form;
+			var f = _value as Form;
 			if (f != null)
 			{
 				f.WindowState = FormWindowState.Normal;
@@ -255,10 +255,10 @@ namespace DSShared.Windows
 									{
 										TopView = new
 										{
-											Left   = _infoDictionary["Left"].GetValue(_obj, null),
-											Top    = _infoDictionary["Top"].GetValue(_obj, null),
-											Width  = _infoDictionary["Width"].GetValue(_obj, null),
-											Height = _infoDictionary["Height"].GetValue(_obj, null)
+											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+											Width  = _infoDictionary["Width"] .GetValue(_value, null),
+											Height = _infoDictionary["Height"].GetValue(_value, null)
 										},
 									};
 									break;
@@ -270,10 +270,10 @@ namespace DSShared.Windows
 									{
 										RouteView = new
 										{
-											Left   = _infoDictionary["Left"].GetValue(_obj, null),
-											Top    = _infoDictionary["Top"].GetValue(_obj, null),
-											Width  = _infoDictionary["Width"].GetValue(_obj, null),
-											Height = _infoDictionary["Height"].GetValue(_obj, null)
+											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+											Width  = _infoDictionary["Width"] .GetValue(_value, null),
+											Height = _infoDictionary["Height"].GetValue(_value, null)
 										},
 									};
 									break;
@@ -285,10 +285,10 @@ namespace DSShared.Windows
 									{
 										TopRouteView = new
 										{
-											Left   = _infoDictionary["Left"].GetValue(_obj, null),
-											Top    = _infoDictionary["Top"].GetValue(_obj, null),
-											Width  = _infoDictionary["Width"].GetValue(_obj, null),
-											Height = _infoDictionary["Height"].GetValue(_obj, null)
+											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+											Width  = _infoDictionary["Width"] .GetValue(_value, null),
+											Height = _infoDictionary["Height"].GetValue(_value, null)
 										},
 									};
 									break;
@@ -300,10 +300,10 @@ namespace DSShared.Windows
 									{
 										TileView = new
 										{
-											Left   = _infoDictionary["Left"].GetValue(_obj, null),
-											Top    = _infoDictionary["Top"].GetValue(_obj, null),
-											Width  = _infoDictionary["Width"].GetValue(_obj, null),
-											Height = _infoDictionary["Height"].GetValue(_obj, null)
+											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+											Width  = _infoDictionary["Width"] .GetValue(_value, null),
+											Height = _infoDictionary["Height"].GetValue(_value, null)
 										},
 									};
 									break;
@@ -315,10 +315,10 @@ namespace DSShared.Windows
 									{
 										Console = new
 										{
-											Left   = _infoDictionary["Left"].GetValue(_obj, null),
-											Top    = _infoDictionary["Top"].GetValue(_obj, null),
-											Width  = _infoDictionary["Width"].GetValue(_obj, null),
-											Height = _infoDictionary["Height"].GetValue(_obj, null)
+											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+											Width  = _infoDictionary["Width"] .GetValue(_value, null),
+											Height = _infoDictionary["Height"].GetValue(_value, null)
 										},
 									};
 									break;
@@ -330,10 +330,10 @@ namespace DSShared.Windows
 									{
 										Options = new
 										{
-											Left   = _infoDictionary["Left"].GetValue(_obj, null),
-											Top    = _infoDictionary["Top"].GetValue(_obj, null),
-											Width  = _infoDictionary["Width"].GetValue(_obj, null),
-											Height = _infoDictionary["Height"].GetValue(_obj, null)
+											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+											Width  = _infoDictionary["Width"] .GetValue(_value, null),
+											Height = _infoDictionary["Height"].GetValue(_value, null)
 										},
 									};
 									break;
@@ -345,10 +345,10 @@ namespace DSShared.Windows
 									{
 										PckView = new
 										{
-											Left   = _infoDictionary["Left"].GetValue(_obj, null),
-											Top    = _infoDictionary["Top"].GetValue(_obj, null),
-											Width  = _infoDictionary["Width"].GetValue(_obj, null),
-											Height = _infoDictionary["Height"].GetValue(_obj, null)
+											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+											Width  = _infoDictionary["Width"] .GetValue(_value, null),
+											Height = _infoDictionary["Height"].GetValue(_value, null)
 										},
 									};
 									break;
@@ -370,6 +370,8 @@ namespace DSShared.Windows
 //			}
 			}
 		}
+	}
+}
 
 /*		/// <summary>
 		/// Saves values to the registry on the Closing events of various forms.
@@ -472,35 +474,43 @@ namespace DSShared.Windows
 			get { return _regKey; }
 			set { _regKey = value; }
 		} */
-	}
 
 
-	/// <summary>
-	/// EventArgs for saving and loading events. Used only to load/save TopView's
-	/// visible-quadrant-types, to be specific.
-	/// </summary>
-	public class RegistryEventArgs
-		:
-			EventArgs
-	{
-		private readonly string _key;
-		public string Key
-		{
-			get { return _key; }
-		}
+//	/// <summary>
+//	/// EventArgs for saving and loading events. Used only to load/save TopView's
+//	/// visible-quadrant-types, to be specific.
+//	/// </summary>
+//	public class RegistryEventArgs
+//		:
+//			EventArgs
+//	{
+//		private readonly string _key;
+//		public string Key
+//		{
+//			get { return _key; }
+//		}
+//
+//		private readonly bool _val;
+//		public bool Value
+//		{
+//			get { return _val; }
+//		}
+//
+//		internal RegistryEventArgs(string key, bool val)
+//		{
+//			_key = key;
+//			_val = val;
+//		}
 
-		private readonly bool _val;
-		public bool Value
-		{
-			get { return _val; }
-		}
-
-		internal RegistryEventArgs(string key, bool val)
-		{
-			_key = key;
-			_val = val;
-		}
-
+//		/// <summary>
+//		/// cTor
+//		/// </summary>
+//		/// <param name="regkey">registry key that has been opened for reading
+//		/// and writing to</param>
+//		internal RegistryEventArgs(RegistryKey regkey)
+//		{
+//			_regkey = regkey;
+//		}
 
 
 //		private readonly RegistryKey _regkey;
@@ -512,16 +522,3 @@ namespace DSShared.Windows
 //		{
 //			get { return _regkey; }
 //		}
-//
-//
-//		/// <summary>
-//		/// cTor
-//		/// </summary>
-//		/// <param name="regkey">registry key that has been opened for reading
-//		/// and writing to</param>
-//		internal RegistryEventArgs(RegistryKey regkey)
-//		{
-//			_regkey = regkey;
-//		}
-	}
-}

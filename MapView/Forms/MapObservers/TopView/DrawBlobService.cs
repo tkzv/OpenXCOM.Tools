@@ -126,13 +126,13 @@ namespace MapView.Forms.MapObservers.TopViews
 				case BlobType.Floor:
 					SetContentPath(x, y);
 					g.FillPath(
-							tool.LightBrush,
+							tool.BrushLight,
 							_content);
 					break;
 
 				case BlobType.NorthFence:
 					g.DrawLine(
-							tool.LightPen,
+							tool.PenLight,
 							ptTop,
 							ptRight);
 					break;
@@ -152,7 +152,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 				case BlobType.WestFence:
 					g.DrawLine(
-							tool.LightPen,
+							tool.PenLight,
 							ptTop,
 							ptLeft);
 					break;
@@ -278,7 +278,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					start,
 					Point.Add(start, xy));
 			g.DrawLine(
-					tool.LightPen,
+					tool.PenLight,
 					Point.Add(start, xy),
 					pt);
 			g.DrawLine(

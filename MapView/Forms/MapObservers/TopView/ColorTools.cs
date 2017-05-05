@@ -8,30 +8,27 @@ namespace MapView.Forms.MapObservers.TopViews
 		:
 			IDisposable
 	{
-		#region Fields
+		#region Fields & Properties
 		private readonly Pen _pen;
-		private readonly Pen _penLight;
-		private readonly SolidBrush _brush;
-		private readonly SolidBrush _brushLight;
-		#endregion
-
-		#region Properties
 		internal Pen Pen
 		{
 			get { return _pen; }
 		}
 
-		internal Pen LightPen
+		private readonly Pen _penLight;
+		internal Pen PenLight
 		{
 			get { return _penLight; }
 		}
 
+		private readonly SolidBrush _brush;
 		internal Brush Brush
 		{
 			get { return _brush; }
 		}
 
-		internal Brush LightBrush
+		private readonly SolidBrush _brushLight;
+		internal Brush BrushLight
 		{
 			get { return _brushLight; }
 		}
