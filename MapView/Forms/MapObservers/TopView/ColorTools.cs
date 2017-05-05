@@ -1,11 +1,12 @@
+using System;
 using System.Drawing;
 
 
 namespace MapView.Forms.MapObservers.TopViews
 {
-	// Warning CA1001: Implement IDisposable on 'SolidPenBrush' because it
-	// creates members of the following IDisposable types: 'Pen', 'SolidBrush'.
 	internal sealed class ColorTools
+		:
+			IDisposable
 	{
 		#region Fields
 		private readonly Pen _pen;
@@ -62,21 +63,19 @@ namespace MapView.Forms.MapObservers.TopViews
 		#endregion
 
 
-/*		// MS example of IDisposable:
-		// https://msdn.microsoft.com/en-us/library/ms182172.aspx
-		protected virtual void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				// dispose managed resources
-				<resource>.Close();
-			}
-			// free native resources
-		}
+		/// <summary>
+		/// This isn't really necessary since the Pens and Brushes last the
+		/// lifetime of the app. But FxCop gets antsy ....
+		/// NOTE: Dispose() is never called. cf DrawBlobService.
+		/// </summary>
 		public void Dispose()
 		{
-			Dispose(true);
+			_pen.Dispose();
+			_penLight.Dispose();
+			_brush.Dispose();
+			_brushLight.Dispose();
+
 			GC.SuppressFinalize(this);
-		} */
+		}
 	}
 }

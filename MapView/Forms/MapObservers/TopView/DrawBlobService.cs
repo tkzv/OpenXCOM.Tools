@@ -37,8 +37,10 @@ namespace MapView.Forms.MapObservers.TopViews
 	/// <summary>
 	/// Draws floor- and wall- and content- blobs for RouteView and TopView.
 	/// </summary>
-	internal sealed class DrawBlobService	// Warning CA1001: Implement IDisposable on 'DrawContentService' because
-	{										// it creates members of the following IDisposable types: 'GraphicsPath'.
+	internal sealed class DrawBlobService
+		:
+			IDisposable
+	{
 		#region Fields & Properties
 		private readonly GraphicsPath _floor   = new GraphicsPath();
 		private readonly GraphicsPath _content = new GraphicsPath();
@@ -285,6 +287,20 @@ namespace MapView.Forms.MapObservers.TopViews
 					end);
 		}
 		#endregion
+
+
+		/// <summary>
+		/// This isn't really necessary since the GraphicsPath's last the
+		/// lifetime of the app. But FxCop gets antsy ....
+		/// NOTE: Dispose() is never called. cf ColorTools.
+		/// </summary>
+		public void Dispose()
+		{
+			_floor.Dispose();
+			_content.Dispose();
+
+			GC.SuppressFinalize(this);
+		}
 	}
 
 

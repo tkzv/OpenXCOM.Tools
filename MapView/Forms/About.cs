@@ -13,7 +13,7 @@ namespace MapView
 		:
 			Form
 	{
-		public About()
+		internal About()
 		{
 			InitializeComponent();
 
@@ -38,6 +38,9 @@ namespace MapView
 
 		private void OnShown(object sender, EventArgs e)
 		{
+			string usage = String.Format("{0:n0}", GC.GetTotalMemory(false));
+			Text += " - " + usage + " bytes";
+
 			_size = new Size(Width, Height);
 
 			_locBase =

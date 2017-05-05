@@ -36,29 +36,26 @@ namespace XCom
 				//LogFile.WriteLine("[1]GameInfo.Init parse Paths.cfg");
 				while ((keyval = vars.ReadLine()) != null) // parse Paths.Cfg; will not return lines that start '$' (or whitespace lines)
 				{
-					//LogFile.WriteLine(". [1]iter Paths.cfg keyVal= " + keyVal.Keyword);
+					//LogFile.WriteLine(". [1]iter Paths.cfg keyval= " + keyval.Keyword);
 					switch (keyval.Keyword.ToUpperInvariant())
 					{
 						case "MAPDATA": // ref to MapEdit.Cfg
-							//LogFile.WriteLine(". [1]Paths.cfg MAPDATA keyVal.Value= " + keyVal.Value);
+							//LogFile.WriteLine(". [1]Paths.cfg MAPDATA keyval.Value= " + keyval.Value);
 							_tilesetDesc = new TilesetDesc(keyval.Value, vars); // this is spooky, not a delightful way.
 							break;
 
 						case "IMAGES": // ref to Images.Cfg
-							//LogFile.WriteLine(". [1]Paths.cfg IMAGES keyVal.Value= " + keyVal.Value);
+							//LogFile.WriteLine(". [1]Paths.cfg IMAGES keyval.Value= " + keyval.Value);
 							_imageInfo = new ImageInfo(keyval.Value, vars);
 							break;
 
 						case "CURSOR":
 						{
+							//LogFile.WriteLine(". [1]Paths.cfg CURSOR keyval.Value= " + keyval.Value);
 							string directorySeparator = String.Empty;
 							if (!keyval.Value.EndsWith(@"\", StringComparison.Ordinal))
 								directorySeparator = @"\";
 
-							//LogFile.WriteLine("");
-							//LogFile.WriteLine("GameInfo.Initialize");
-							//LogFile.WriteLine(". key= " + SharedSpace.CursorFile);
-							//LogFile.WriteLine(". val= " + keyval.Value + directorySeparator + SharedSpace.Cursor);
 							SharedSpace.Instance.SetShare(
 													SharedSpace.CursorFile,
 													keyval.Value + directorySeparator + SharedSpace.Cursor);

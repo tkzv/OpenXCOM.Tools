@@ -212,9 +212,9 @@ namespace MapView
 
 			ViewerFormsManager.TileView.Control.PckSavedEvent += OnPckSavedEvent;
 
-			MainViewUnderlay.AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
-
-
+			MainViewUnderlay.AnimationUpdateEvent += OnAnimationUpdate;	// FIX: "Subscription to static events without unsubscription may cause memory leaks."
+																		// NOTE: it's not really a problem, since both publisher and subscriber are expected to
+																		// live the lifetime of the app. And this class, XCMainWindow, never re-instantiates.
 			tvMaps.TreeViewNodeSorter = StringComparer.OrdinalIgnoreCase;
 
 			tscPanel.ContentPanel.Controls.Add(_mainViewUnderlay);
@@ -319,13 +319,9 @@ namespace MapView
 					if (!line.Value.EndsWith(@"\", StringComparison.Ordinal))
 						directorySeparator = @"\";
 
-					LogFile.WriteLine("");
-					LogFile.WriteLine("XCMainWindow.OnParseConfigLine");
-					LogFile.WriteLine(". key= " + SharedSpace.CursorFile);
-					LogFile.WriteLine(". val= " + line.Value + directorySeparator + SharedSpace.Cursor);
-//					SharedSpace.Instance.SetShare(
-//											SharedSpace.CursorFile,
-//											line.Value + directorySeparator + SharedSpace.Cursor);
+					SharedSpace.Instance.SetShare(
+											SharedSpace.CursorFile,
+											line.Value + directorySeparator + SharedSpace.Cursor);
 					break;
 				}
 
