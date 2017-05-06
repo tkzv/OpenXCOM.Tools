@@ -30,14 +30,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private ColorTools _toolContent;
 
 		private Graphics     _graphics;
-		private GraphicsPath _layerFill = new GraphicsPath();
+		private GraphicsPath _nodeFill = new GraphicsPath();
+
+		private RouteNode _nodeSelected;
 		#endregion
 
-
-//		public void Calculate()
-//		{
-//			OnResize(null);
-//		}
 
 		/// <summary>
 		/// You know the drill ... Paint it, Black
@@ -48,16 +45,35 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			_graphics = e.Graphics;
 
-//			try // TODO: why do i get the impression that many of the try/catch blocks can and should be replaced w/ standard code.
+//			try // TODO: i get the impression that many of the try/catch blocks can and should be replaced w/ standard code.
 //			{
 			if (MapFile != null)
 			{
 				DrawWallsAndContent();
+
+				if (ClickPoint.X > -1 && ClickPoint.Y > -1)
+				{
+					_nodeSelected = ((XCMapTile)MapFile[ClickPoint.Y, ClickPoint.X]).Node;
+				}
+				else
+					_nodeSelected = null;
+
+				DrawUnselectedLinks();
+
+				if (_nodeSelected != null)
+					DrawLinkLines(
+							Origin.X + (ClickPoint.X - ClickPoint.Y)     * DrawAreaWidth,
+							Origin.Y + (ClickPoint.X + ClickPoint.Y + 1) * DrawAreaHeight,
+							_nodeSelected,
+							RoutePens[RouteView.SelectedLinkColor],
+							true);
+
+				DrawNodes();
+
 				DrawGridLines();
 
-				DrawUnselectedLink();
-				DrawSelectedLink();
-				DrawNodes(); // + node importance meters.
+				if (ShowPriorityBars)
+					DrawNodeImportanceMeters();
 
 				DrawRose();
 
@@ -130,12 +146,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		/// <summary>
-		/// Draws an unselected link-line.
+		/// Draws unselected link-lines.
 		/// </summary>
-		private void DrawUnselectedLink()
+		private void DrawUnselectedLinks()
 		{
 			var pen = RoutePens[RouteView.UnselectedLinkColor];
 
+			RouteNode node = null;
 			for (int
 					rSrc = 0,
 						x = Origin.X,
@@ -154,54 +171,25 @@ namespace MapView.Forms.MapObservers.RouteViews
 							xSrc += DrawAreaWidth,
 							ySrc += DrawAreaHeight)
 				{
-					if (MapFile[rSrc, cSrc] != null)
+					if (MapFile[rSrc, cSrc] != null
+						&& (node = ((XCMapTile)MapFile[rSrc, cSrc]).Node) != null
+						&& (_nodeSelected == null || !_nodeSelected.Equals(node)))
 					{
-						var node = ((XCMapTile)MapFile[rSrc, cSrc]).Node;
-						if (node != null)
-						{
-//							_layerFill.Reset();
-//							_layerFill.AddLine(
-//											x,                 y,
-//											x + DrawAreaWidth, y + DrawAreaHeight);
-//							_layerFill.AddLine(
-//											x + DrawAreaWidth, y + DrawAreaHeight,
-//											x,                 y + DrawAreaHeight * 2);
-//							_layerFill.AddLine(
-//											x,                 y + DrawAreaHeight * 2,
-//											x - DrawAreaWidth, y + DrawAreaHeight);
-//							_layerFill.CloseFigure();
-
-							DrawLinkLine(xSrc, ySrc, node, pen, false);
-						}
+						DrawLinkLines(xSrc, ySrc, node, pen, false);
 					}
 				}
 			}
 		}
 
 		/// <summary>
-		/// Draws a selected link-line.
+		/// Draws link-lines for a given node.
 		/// </summary>
-		private void DrawSelectedLink()
-		{
-			int cSrc = ClickPoint.X;
-			int rSrc = ClickPoint.Y;
-
-			if (cSrc > -1 && rSrc > -1)
-			{
-				var node = ((XCMapTile)MapFile[rSrc, cSrc]).Node;
-				if (node != null)
-				{
-					int xSrc = Origin.X + (cSrc - rSrc)     * DrawAreaWidth;
-					int ySrc = Origin.Y + (cSrc + rSrc + 1) * DrawAreaHeight;
-
-					var pen = RoutePens[RouteView.SelectedLinkColor];
-
-					DrawLinkLine(xSrc, ySrc, node, pen, true);
-				}
-			}
-		}
-
-		private void DrawLinkLine(
+		/// <param name="xSrc"></param>
+		/// <param name="ySrc"></param>
+		/// <param name="node"></param>
+		/// <param name="pen"></param>
+		/// <param name="selected"></param>
+		private void DrawLinkLines(
 				int xSrc,
 				int ySrc,
 				RouteNode node,
@@ -212,6 +200,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			int yDst;
 			int yOffset = (!selected) ? DrawAreaHeight
 									  : 0;
+
+			RouteNode nodeDst = null;
 
 			for (int i = 0; i != RouteNode.LinkSlots; ++i)
 			{
@@ -243,14 +233,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 						break;
 
 					default:
-						if (   MapFile.RouteFile[link.Destination] != null
-							&& MapFile.RouteFile[link.Destination].Lev == MapFile.Level)
+						if ((nodeDst = MapFile.RouteFile[link.Destination]) != null
+							&& nodeDst.Lev == MapFile.Level
+							&& (_nodeSelected == null || !_nodeSelected.Equals(nodeDst)))
 						{
-							int cDst = MapFile.RouteFile[link.Destination].Col;
-							int rDst = MapFile.RouteFile[link.Destination].Row;
-
-							xDst = Origin.X + (cDst - rDst)     * DrawAreaWidth;
-							yDst = Origin.Y + (cDst + rDst + 1) * DrawAreaHeight;
+							xDst = Origin.X + (nodeDst.Col - nodeDst.Row)     * DrawAreaWidth;
+							yDst = Origin.Y + (nodeDst.Col + nodeDst.Row + 1) * DrawAreaHeight;
 						}
 						break;
 				}
@@ -263,8 +251,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-
-		private const int NodeValMax = 12;
 
 		private bool _brushes;
 		private SolidBrush _brushSelected;
@@ -285,7 +271,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				_brushSpawn      = RouteBrushes[RouteView.SpawnNodeColor];
 			}
 
-			_brushSelected.Color   = Color.FromArgb(Opacity, _brushSelected.Color);
+			_brushSelected.Color   = Color.FromArgb(Opacity, _brushSelected.Color); // NOTE: these colors change depending on Options.
 			_brushUnselected.Color = Color.FromArgb(Opacity, _brushUnselected.Color);
 			_brushSpawn.Color      = Color.FromArgb(Opacity, _brushSpawn.Color);
 
@@ -310,29 +296,29 @@ namespace MapView.Forms.MapObservers.RouteViews
 						var node = tile.Node;
 						if (node != null)
 						{
-							_layerFill.Reset();
-							_layerFill.AddLine(
+							_nodeFill.Reset();
+							_nodeFill.AddLine(
 											x,                 y,
 											x + DrawAreaWidth, y + DrawAreaHeight);
-							_layerFill.AddLine(
+							_nodeFill.AddLine(
 											x + DrawAreaWidth, y + DrawAreaHeight,
 											x,                 y + DrawAreaHeight * 2);
-							_layerFill.AddLine(
+							_nodeFill.AddLine(
 											x,                 y + DrawAreaHeight * 2,
 											x - DrawAreaWidth, y + DrawAreaHeight);
-							_layerFill.CloseFigure();
+							_nodeFill.CloseFigure();
 
 
 							if (r == ClickPoint.Y && c == ClickPoint.X)
 							{
-								_graphics.FillPath(_brushSelected, _layerFill);
+								_graphics.FillPath(_brushSelected, _nodeFill);
 							}
 							else if (node.SpawnWeight != SpawnUsage.NoSpawn)
 							{
-								_graphics.FillPath(_brushSpawn, _layerFill);
+								_graphics.FillPath(_brushSpawn, _nodeFill);
 							}
 							else
-								_graphics.FillPath(_brushUnselected, _layerFill);
+								_graphics.FillPath(_brushUnselected, _nodeFill);
 
 
 							for (int i = 0; i != RouteNode.LinkSlots; ++i)
@@ -388,31 +374,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 										break;
 								}
 							}
-
-							if (ShowPriorityBars)
-							{
-//								if (DrawAreaHeight >= NODE_VAL_MAX)
-//								{
-								int infoboxX = x - DrawAreaWidth / 2 - 2;			// -2 to prevent drawing over the link-going-up
-								int infoboxY = y + DrawAreaHeight - NodeValMax / 2;	//    indicator when panel is small sized
-
-								var nodePatrolPriority = (int)node.Priority;
-								DrawImportanceMeter(
-												infoboxX,
-												infoboxY,
-												nodePatrolPriority,
-												NodeValMax,
-												Brushes.DeepSkyBlue); //CornflowerBlue
-
-								var nodeSpawnWeight = (int)node.SpawnWeight;
-								DrawImportanceMeter(
-												infoboxX + 3,
-												infoboxY,
-												nodeSpawnWeight,
-												NodeValMax,
-												Brushes.LightCoral); //IndianRed
-//								}
-							}
 						}
 					}
 				}
@@ -422,7 +383,88 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		/// <summary>
-		/// Helper for DrawNodes().
+		/// Draws the grid-lines.
+		/// </summary>
+		private void DrawGridLines()
+		{
+			var map = MapFile;
+
+			for (int i = 0; i <= map.MapSize.Rows; ++i)
+				_graphics.DrawLine(
+								RoutePens[RouteView.GridLineColor],
+								Origin.X - i * DrawAreaWidth,
+								Origin.Y + i * DrawAreaHeight,
+								Origin.X + ((map.MapSize.Cols - i) * DrawAreaWidth),
+								Origin.Y + ((map.MapSize.Cols + i) * DrawAreaHeight));
+
+			for (int i = 0; i <= map.MapSize.Cols; ++i)
+				_graphics.DrawLine(
+								RoutePens[RouteView.GridLineColor],
+								Origin.X + i * DrawAreaWidth,
+								Origin.Y + i * DrawAreaHeight,
+							   (Origin.X + i * DrawAreaWidth)  - map.MapSize.Rows * DrawAreaWidth,
+							   (Origin.Y + i * DrawAreaHeight) + map.MapSize.Rows * DrawAreaHeight);
+		}
+
+
+		private const int NodeValMax = 12;
+
+		/// <summary>
+		/// Draws the node importance bars.
+		/// </summary>
+		private void DrawNodeImportanceMeters()
+		{
+			int startX = Origin.X;
+			int startY = Origin.Y;
+
+			for (int r = 0; r != MapFile.MapSize.Rows; ++r)
+			{
+				for (int
+						c = 0,
+							x = startX,
+							y = startY;
+						c != MapFile.MapSize.Cols;
+						++c,
+							x += DrawAreaWidth,
+							y += DrawAreaHeight)
+				{
+					var tile = MapFile[r, c] as XCMapTile;
+					if (tile != null)
+					{
+						var node = tile.Node;
+						if (node != null)
+						{
+//								if (DrawAreaHeight >= NodeValMax)
+//								{
+								int infoboxX = x - DrawAreaWidth / 2 - 2;			// -2 to prevent drawing over the link-going-up
+								int infoboxY = y + DrawAreaHeight - NodeValMax / 2;	//    vertical line indicator when panel is small sized.
+
+								int nodePatrolPriority = (int)node.Priority;
+								DrawImportanceMeter(
+												infoboxX,
+												infoboxY,
+												nodePatrolPriority,
+												NodeValMax,
+												Brushes.DeepSkyBlue); //CornflowerBlue
+
+								int nodeSpawnWeight = (int)node.SpawnWeight;
+								DrawImportanceMeter(
+												infoboxX + 3,
+												infoboxY,
+												nodeSpawnWeight,
+												NodeValMax,
+												Brushes.LightCoral); //IndianRed
+//								}
+						}
+					}
+				}
+				startX -= DrawAreaWidth;
+				startY += DrawAreaHeight;
+			}
+		}
+
+		/// <summary>
+		/// Helper for DrawNodeImportanceMeters().
 		/// </summary>
 		/// <param name="boxX"></param>
 		/// <param name="boxY"></param>
@@ -458,64 +500,41 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		/// <summary>
-		/// Draws the grid-lines.
-		/// </summary>
-		private void DrawGridLines()
-		{
-			var map = MapFile;
 
-			for (int i = 0; i <= map.MapSize.Rows; ++i)
-				_graphics.DrawLine(
-								RoutePens[RouteView.GridLineColor],
-								Origin.X - i * DrawAreaWidth,
-								Origin.Y + i * DrawAreaHeight,
-								Origin.X + ((map.MapSize.Cols - i) * DrawAreaWidth),
-								Origin.Y + ((map.MapSize.Cols + i) * DrawAreaHeight));
-
-			for (int i = 0; i <= map.MapSize.Cols; ++i)
-				_graphics.DrawLine(
-								RoutePens[RouteView.GridLineColor],
-								Origin.X + i * DrawAreaWidth,
-								Origin.Y + i * DrawAreaHeight,
-							   (Origin.X + i * DrawAreaWidth)  - map.MapSize.Rows * DrawAreaWidth,
-							   (Origin.Y + i * DrawAreaHeight) + map.MapSize.Rows * DrawAreaHeight);
-		}
+		private const int RoseMarginX = 25;
+		private const int RoseMarginY = 5;
 
 		/// <summary>
 		/// Draws the compass-rose.
 		/// </summary>
 		private void DrawRose()
 		{
-			const int PAD_HORI = 25;
-			const int PAD_VERT =  5;
-			
 			_graphics.DrawString(
 							"W",
 							_fontRose,
 							Brushes.Black,
-							PAD_HORI,
-							PAD_VERT);
+							RoseMarginX,
+							RoseMarginY);
 			_graphics.DrawString(
 							"N",
 							_fontRose,
 							Brushes.Black,
-//							Width - TextRenderer.MeasureText("N", _fontRose).Width - PAD_HORI,
-							Width - (int)_graphics.MeasureString("N", _fontRose).Width - PAD_HORI,
-							PAD_VERT);
+//							Width - TextRenderer.MeasureText("N", _fontRose).Width - RoseMarginX,
+							Width - (int)_graphics.MeasureString("N", _fontRose).Width - RoseMarginX,
+							RoseMarginY);
 			_graphics.DrawString(
 							"S",
 							_fontRose,
 							Brushes.Black,
-							PAD_HORI,
-							Height - _fontRose.Height - PAD_VERT);
+							RoseMarginX,
+							Height - _fontRose.Height - RoseMarginY);
 			_graphics.DrawString(
 							"E",
 							_fontRose,
 							Brushes.Black,
-//							Width  - TextRenderer.MeasureText("E", _fontRose).Width - PAD_HORI,
-							Width  - (int)_graphics.MeasureString("E", _fontRose).Width - PAD_HORI,
-							Height - _fontRose.Height - PAD_VERT);
+//							Width  - TextRenderer.MeasureText("E", _fontRose).Width - RoseMarginX,
+							Width  - (int)_graphics.MeasureString("E", _fontRose).Width - RoseMarginX,
+							Height - _fontRose.Height - RoseMarginY);
 		}
 
 		/// <summary>

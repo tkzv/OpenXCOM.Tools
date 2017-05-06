@@ -151,8 +151,8 @@ namespace XCom
 
 		public override bool Equals(object obj)
 		{
-			var node = obj as RouteNode;
-			return (node == null || Index == node.Index);
+			var other = obj as RouteNode;
+			return (other == null || Index == other.Index);
 		}
 
 		public override int GetHashCode()
