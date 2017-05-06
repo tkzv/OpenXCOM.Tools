@@ -25,8 +25,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		NorthWallWindow,
 		WestWallWindow,
 		Floor,
-		NorthFence,
-		WestFence,
+		NorthWallFence,
+		WestWallFence,
 		NorthwestCorner,
 		NortheastCorner,
 		SouthwestCorner,
@@ -62,7 +62,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		#region Methods
 		/// <summary>
-		/// Draws floor-blobs for TopView.
+		/// Draws floor-blobs for TopView only; floors are not drawn for
+		/// RouteView.
 		/// </summary>
 		internal void DrawFloor(
 				Graphics g,
@@ -103,7 +104,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			var ptTop   = new Point(
 								x,
-								(y > int.MaxValue - Margin) ? int.MaxValue : y + Margin); // <- FxCop ...
+								(y > Int32.MaxValue - Margin) ? Int32.MaxValue : y + Margin); // <- FxCop ...
 			var ptBot   = new Point(
 								x,
 								y + (HalfHeight * 2) - Margin);
@@ -130,7 +131,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							_content);
 					break;
 
-				case BlobType.NorthFence:
+				case BlobType.NorthWallFence:
 					g.DrawLine(
 							tool.PenLight,
 							ptTop,
@@ -150,7 +151,7 @@ namespace MapView.Forms.MapObservers.TopViews
 								Point.Add(ptRight, new Size(-10, 4)));
 					break;
 
-				case BlobType.WestFence:
+				case BlobType.WestWallFence:
 					g.DrawLine(
 							tool.PenLight,
 							ptTop,
@@ -293,11 +294,14 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// This isn't really necessary since the GraphicsPath's last the
 		/// lifetime of the app. But FxCop gets antsy ....
 		/// NOTE: Dispose() is never called. cf ColorTools.
+		/// WARNING: This is NOT a robust implementation perhaps. But it
+		/// satisifes the core of the matter and could likely be used for
+		/// further development if that's ever required.
 		/// </summary>
 		public void Dispose()
 		{
-			_floor.Dispose();
-			_content.Dispose();
+			if (_floor   != null) _floor  .Dispose();
+			if (_content != null) _content.Dispose();
 
 			GC.SuppressFinalize(this);
 		}
@@ -319,6 +323,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <summary>
 		/// Gets the BlobType of a given tile for drawing its blob in TopView
 		/// and/or RouteView.
+		/// NOTE: The checks are not robust; the return BlobType is just a guess
+		/// based on what LoFTs have been assigned (externally) to a given tile.
 		/// </summary>
 		/// <remarks>http://www.ufopaedia.org/index.php/LOFTEMPS.DAT</remarks>
 		/// <param name="tile"></param>
@@ -334,6 +340,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				if (CheckFloor())
 					return BlobType.Floor;
 
+
 				// East
 				if (CheckAllAreInGroup(new[]{ 24, 26 }))//, 28, 30, 32, 34 }))
 					return BlobType.EastWall;
@@ -341,6 +348,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				// South
 				if (CheckAllAreInGroup(new[]{ 23, 25 }))//, 27, 29, 31, 33 }))
 					return BlobType.SouthWall;
+
 
 				// North ->
 				if (CheckAnyIsLoft(38)
@@ -352,11 +360,12 @@ namespace MapView.Forms.MapObservers.TopViews
 				if (CheckAnyIsLoft(0)
 					&& CheckAllAreInGroup(new[]{ 0, 8, 10, 12, 14, 38, 39, 77 })) // 40,41
 				{
-					return BlobType.NorthFence;
+					return BlobType.NorthWallFence;
 				}
 
 				if (CheckAllAreInGroup(new[]{ 8, 10, 12, 14 }))//, 16, 18, 20, 21 }))
 					return BlobType.NorthWall;
+
 
 				// West ->
 				if (CheckAnyIsLoft(37)
@@ -368,11 +377,12 @@ namespace MapView.Forms.MapObservers.TopViews
 				if (CheckAnyIsLoft(0)
 					&& CheckAllAreInGroup(new[]{ 0, 7, 9, 11, 13, 37, 39, 76 })) // 40,41
 				{
-					return BlobType.WestFence;
+					return BlobType.WestWallFence;
 				}
 
 				if (CheckAllAreInGroup(new[]{ 7, 9, 11, 13 }))//, 15, 17, 19, 22 }))
 					return BlobType.WestWall;
+
 
 				// diagonals ->
 				if (CheckAllAreLoft(35))
@@ -380,6 +390,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 				if (CheckAllAreLoft(36))
 					return BlobType.NortheastSouthwest;
+
 
 				// corners ->
 				if (CheckAllAreInGroup(new[]{ 39, 40, 41, 103 })) // 102,101

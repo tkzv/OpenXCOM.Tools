@@ -13,9 +13,9 @@ namespace MapView.Forms.MapObservers.TopViews
 			TopViewPanelParent
 	{
 		#region Fields & Properties
-		private ColorTools _colorWest;
-		private ColorTools _colorNorth;
-		private ColorTools _colorContent;
+		private ColorTools _toolWest;
+		private ColorTools _toolNorth;
+		private ColorTools _toolContent;
 
 		internal ToolStripMenuItem Ground
 		{ get; set; }
@@ -100,7 +100,6 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		#region Methods
-//		internal protected override void DrawTileBlobs(
 		internal void DrawTileBlobs(
 				MapTileBase tile,
 				Graphics g,
@@ -108,14 +107,14 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			var mapTile = (XCMapTile)tile;
 
-			if (_colorWest == null)
-				_colorWest = new ColorTools(TopPens[TopView.WestColor]);
+			if (_toolWest == null)
+				_toolWest = new ColorTools(TopPens[TopView.WestColor]);
 
-			if (_colorNorth == null)
-				_colorNorth = new ColorTools(TopPens[TopView.NorthColor]);
+			if (_toolNorth == null)
+				_toolNorth = new ColorTools(TopPens[TopView.NorthColor]);
 
-			if (_colorContent == null)
-				_colorContent = new ColorTools(TopBrushes[TopView.ContentColor], _colorNorth.Pen.Width);
+			if (_toolContent == null)
+				_toolContent = new ColorTools(TopBrushes[TopView.ContentColor], _toolNorth.Pen.Width);
 
 
 			if (Ground.Checked && mapTile.Ground != null)
@@ -127,21 +126,21 @@ namespace MapView.Forms.MapObservers.TopViews
 			if (Content.Checked && mapTile.Content != null)
 				BlobService.DrawContent(
 									g,
-									_colorContent,
+									_toolContent,
 									x, y,
 									mapTile.Content);
 
 			if (West.Checked && mapTile.West != null)
 				BlobService.DrawContent(
 									g,
-									_colorWest,
+									_toolWest,
 									x, y,
 									mapTile.West);
 
 			if (North.Checked && mapTile.North != null)
 				BlobService.DrawContent(
 									g,
-									_colorNorth,
+									_toolNorth,
 									x, y,
 									mapTile.North);
 		}

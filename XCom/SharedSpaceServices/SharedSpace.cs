@@ -45,8 +45,8 @@ namespace XCom
 		/// </summary>
 		/// <param name="key">the key to look for</param>
 		/// <param name="value">the object to add if the current value doesn't
-		/// exist or is null</param>
-		/// <returns>the value associated with the key as an object (default null)</returns>
+		/// exist or is null (default null)</param>
+		/// <returns>the value associated with the key as an object</returns>
 		public object SetShare(string key, object value = null)
 		{
 			//LogFile.WriteLine("");
