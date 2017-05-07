@@ -19,16 +19,26 @@ namespace MapView.Forms.MapObservers.TopViews
 			MapObserverControl1
 	{
 		#region Fields & Properties
-		private int _offX;
-		private int _offY;
-
 		private readonly GraphicsPath _lozSelector = new GraphicsPath(); // mouse-over cursor lozenge
 		private readonly GraphicsPath _lozSelected = new GraphicsPath(); // selected tile or tiles being drag-selected
 //		private readonly GraphicsPath _lozSel      = new GraphicsPath();
 
-		private int _cursorCol = -1;
-		private int _cursorRow = -1;
+		[Browsable(false), DefaultValue(null)]
+		internal protected Dictionary<string, Pen> TopPens // question: why can TopView access this
+		{ get; set; }
+
+		[Browsable(false), DefaultValue(null)]
+		internal protected Dictionary<string, SolidBrush> TopBrushes // question: why can TopView access this
+		{ get; set; }
+
+
+		private int _col = -1; // these track the location of the mouse-cursor
+		private int _row = -1;
 		
+		private int _xOffset;
+		private int _yOffset;
+
+
 		private DrawBlobService _blobService = new DrawBlobService();
 		internal protected DrawBlobService BlobService
 		{
@@ -48,13 +58,13 @@ namespace MapView.Forms.MapObservers.TopViews
 		#endregion
 
 
-		#region cTor
-		/// <summary>
-		/// cTor. Instantiated only as the parent of TopViewPanel.
-		/// </summary>
-		internal protected TopViewPanelParent()
-		{}
-		#endregion
+//		#region cTor
+//		/// <summary>
+//		/// cTor. Instantiated only as the parent of TopViewPanel.
+//		/// </summary>
+//		internal protected TopViewPanelParent()
+//		{}
+//		#endregion
 
 
 		[Browsable(false), DefaultValue(null)]
@@ -63,10 +73,10 @@ namespace MapView.Forms.MapObservers.TopViews
 			set
 			{
 				base.MapBase = value;
-//				_blobService.HalfWidth = 7; // TODO: 7 ... inits to 8 in DrawContentService.
-				_blobService.HalfWidth = 8;
-				ResizeObserver(Parent.Width, Parent.Height);
 
+				_blobService.HalfWidth = 8;
+
+				ResizeObserver(Parent.Width, Parent.Height);
 				Refresh();
 			}
 		}
@@ -81,54 +91,54 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			if (MapBase != null)
 			{
-				int hWidth  = _blobService.HalfWidth;
-				int hHeight = _blobService.HalfHeight;
+				int halfWidth  = _blobService.HalfWidth;
+				int halfHeight = _blobService.HalfHeight;
 				
-				int curWidth = hWidth;
+				int curWidth = halfWidth;
 
-				width  -= hWidth; // don't clip the bottom or right tips of the big-lozenge.
-				height -= hHeight;
+				width  -= halfWidth; // don't clip the bottom or right tips of the big-lozenge.
+				height -= halfHeight;
 
 
 				if (MapBase.MapSize.Rows > 0 || MapBase.MapSize.Cols > 0) // safety vs. div-by-0
 				{
 					if (height > width / 2) // use width
 					{
-						hWidth = width / (MapBase.MapSize.Rows + MapBase.MapSize.Cols);
+						halfWidth = width / (MapBase.MapSize.Rows + MapBase.MapSize.Cols);
 
-						if (hWidth % 2 != 0)
-							--hWidth;
+						if (halfWidth % 2 != 0)
+							--halfWidth;
 
-						hHeight = hWidth / 2;
+						halfHeight = halfWidth / 2;
 					}
 					else // use height
 					{
-						hHeight = height / (MapBase.MapSize.Rows + MapBase.MapSize.Cols);
-						hWidth  = hHeight * 2;
+						halfHeight = height / (MapBase.MapSize.Rows + MapBase.MapSize.Cols);
+						halfWidth  = halfHeight * 2;
 					}
 				}
 
-//				if (hHeight < _lozHeightMin)
+//				if (halfHeight < _lozHeightMin)
 //				{
-//					hWidth  = _lozHeightMin * 2;
-//					hHeight = _lozHeightMin;
+//					halfWidth  = _lozHeightMin * 2;
+//					halfHeight = _lozHeightMin;
 //				}
-				if (hHeight < 1)
+				if (halfHeight < 1)
 				{
-					hHeight = 1;
-					hWidth  = 2;
+					halfHeight = 1;
+					halfWidth  = 2;
 				}
 
-				_blobService.HalfWidth  = hWidth;
-				_blobService.HalfHeight = hHeight;
+				_blobService.HalfWidth  = halfWidth;
+				_blobService.HalfHeight = halfHeight;
 
-				_offX = 4 + MapBase.MapSize.Rows * hWidth;
-				_offY = 4;
+				_xOffset = 4 + MapBase.MapSize.Rows * halfWidth;
+				_yOffset = 4;
 
-				if (curWidth != hWidth)
+				if (curWidth != halfWidth)
 				{
-					Width  = 8 + (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * hWidth;
-					Height = 8 + (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * hHeight;
+					Width  = 8 + (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * halfWidth;
+					Height = 8 + (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * halfHeight;
 
 					Refresh();
 				}
@@ -138,38 +148,38 @@ namespace MapView.Forms.MapObservers.TopViews
 		protected override void OnResize(EventArgs e)
 		{
 			base.OnResize(e);
-			SetSelectedBorder();
+			PathSelectedLozenge();
 		}
 
 		internal protected void OnMouseDrag()
 		{
-			SetSelectedBorder();
+			PathSelectedLozenge();
 		}
 
 		/// <summary>
 		/// Sets the graphics-path for a lozenge-border around all tiles that
 		/// are selected or being selected.
 		/// </summary>
-		internal void SetSelectedBorder()
+		internal void PathSelectedLozenge()
 		{
 			var dragStart = GetDragStart();
 			var dragEnd   = GetDragEnd();
 
-			int hWidth  = _blobService.HalfWidth;
-			int hHeight = _blobService.HalfHeight;
+			int halfWidth  = _blobService.HalfWidth;
+			int halfHeight = _blobService.HalfHeight;
 
 			var p1 = new Point(
-							_offX + (dragStart.X - dragStart.Y) * hWidth,
-							_offY + (dragStart.X + dragStart.Y) * hHeight);
+							_xOffset + (dragStart.X - dragStart.Y) * halfWidth,
+							_yOffset + (dragStart.X + dragStart.Y) * halfHeight);
 			var p2 = new Point(
-							_offX + (dragEnd.X - dragStart.Y) * hWidth + hWidth,
-							_offY + (dragEnd.X + dragStart.Y) * hHeight + hHeight);
+							_xOffset + (dragEnd.X - dragStart.Y) * halfWidth  + halfWidth,
+							_yOffset + (dragEnd.X + dragStart.Y) * halfHeight + halfHeight);
 			var p3 = new Point(
-							_offX + (dragEnd.X - dragEnd.Y) * hWidth,
-							_offY + (dragEnd.X + dragEnd.Y) * hHeight + hHeight + hHeight);
+							_xOffset + (dragEnd.X - dragEnd.Y) * halfWidth,
+							_yOffset + (dragEnd.X + dragEnd.Y) * halfHeight + halfHeight * 2);
 			var p4 = new Point(
-							_offX + (dragStart.X - dragEnd.Y) * hWidth - hWidth,
-							_offY + (dragStart.X + dragEnd.Y) * hHeight + hHeight);
+							_xOffset + (dragStart.X - dragEnd.Y) * halfWidth  - halfWidth,
+							_yOffset + (dragStart.X + dragEnd.Y) * halfHeight + halfHeight);
 
 			_lozSelected.Reset();
 			_lozSelected.AddLine(p1, p2);
@@ -213,15 +223,6 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 
-		[Browsable(false), DefaultValue(null)]
-		internal protected Dictionary<string, SolidBrush> TopBrushes // question: why can TopView access this
-		{ get; set; }
-
-		[Browsable(false), DefaultValue(null)]
-		internal protected Dictionary<string, Pen> TopPens // question: why can TopView access this
-		{ get; set; }
-
-
 /*		/// <summary>
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
@@ -234,22 +235,22 @@ namespace MapView.Forms.MapObservers.TopViews
 			var pt = e.MapLocation;
 //			Text = "c " + pt.Col + "  r " + pt.Row; // I don't think this actually prints anywhere.
 
-			var hWidth  = _drawService.HalfWidth;
-			var hHeight = _drawService.HalfHeight;
+			var halfWidth  = _drawService.HalfWidth;
+			var halfHeight = _drawService.HalfHeight;
 
-			int xc = (pt.Col - pt.Row) * hWidth;
-			int yc = (pt.Col + pt.Row) * hHeight;
+			int xc = (pt.Col - pt.Row) * halfWidth;
+			int yc = (pt.Col + pt.Row) * halfHeight;
 
 			_lozSel.Reset();
 			_lozSel.AddLine(
 					xc, yc,
-					xc + hWidth, yc + hHeight);
+					xc + halfWidth, yc + halfHeight);
 			_lozSel.AddLine(
-					xc + hWidth, yc + hHeight,
-					xc, yc + 2 * hHeight);
+					xc + halfWidth, yc + halfHeight,
+					xc, yc + 2 * halfHeight);
 			_lozSel.AddLine(
-					xc, yc + 2 * hHeight,
-					xc - hWidth, yc + hHeight);
+					xc, yc + 2 * halfHeight,
+					xc - halfWidth, yc + halfHeight);
 			_lozSel.CloseFigure();
 
 			OnMouseDrag();
@@ -266,17 +267,17 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			if (MapBase != null)
 			{
-				int hWidth  = _blobService.HalfWidth;
-				int hHeight = _blobService.HalfHeight;
+				int halfWidth  = _blobService.HalfWidth;
+				int halfHeight = _blobService.HalfHeight;
 
 				for (int
 						r = 0,
-							startX = _offX,
-							startY = _offY;
+							startX = _xOffset,
+							startY = _yOffset;
 						r != MapBase.MapSize.Rows;
 						++r,
-							startX -= hWidth,
-							startY += hHeight)
+							startX -= halfWidth,
+							startY += halfHeight)
 				{
 					for (int
 							c = 0,
@@ -284,8 +285,8 @@ namespace MapView.Forms.MapObservers.TopViews
 								y = startY;
 							c != MapBase.MapSize.Cols;
 							++c,
-								x += hWidth,
-								y += hHeight)
+								x += halfWidth,
+								y += halfHeight)
 					{
 						var mapTile = MapBase[r, c] as MapTileBase;
 						if (mapTile != null)
@@ -296,31 +297,30 @@ namespace MapView.Forms.MapObservers.TopViews
 				for (int i = 0; i <= MapBase.MapSize.Rows; ++i)
 					backBuffer.DrawLine(
 									TopPens[TopView.GridColor],
-									_offX - i * hWidth,
-									_offY + i * hHeight,
-									(MapBase.MapSize.Cols - i) * hWidth  + _offX,
-									(MapBase.MapSize.Cols + i) * hHeight + _offY);
+									_xOffset - i * halfWidth,
+									_yOffset + i * halfHeight,
+									(MapBase.MapSize.Cols - i) * halfWidth  + _xOffset,
+									(MapBase.MapSize.Cols + i) * halfHeight + _yOffset);
 
 				for (int i = 0; i <= MapBase.MapSize.Cols; ++i)
 					backBuffer.DrawLine(
 									TopPens[TopView.GridColor],
-									_offX + i * hWidth,
-									_offY + i * hHeight,
-									i * hWidth  - MapBase.MapSize.Rows * hWidth  + _offX,
-									i * hHeight + MapBase.MapSize.Rows * hHeight + _offY);
+									_xOffset + i * halfWidth,
+									_yOffset + i * halfHeight,
+									i * halfWidth  - MapBase.MapSize.Rows * halfWidth  + _xOffset,
+									i * halfHeight + MapBase.MapSize.Rows * halfHeight + _yOffset);
 
 				if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick)
 					backBuffer.DrawPath(TopPens[TopView.SelectedColor], _lozSelected);
 
-				if (   _cursorCol > -1
-					&& _cursorRow > -1
-					&& _cursorCol < MapBase.MapSize.Cols
-					&& _cursorRow < MapBase.MapSize.Rows)
+				if (   _col > -1
+					&& _row > -1
+					&& _col < MapBase.MapSize.Cols
+					&& _row < MapBase.MapSize.Rows)
 				{
-					int x = (_cursorCol - _cursorRow) * hWidth  + _offX;
-					int y = (_cursorCol + _cursorRow) * hHeight + _offY;
-
-					SetSelectorPath(x, y);
+					PathSelectorLozenge(
+									(_col - _row) * halfWidth  + _xOffset,
+									(_col + _row) * halfHeight + _yOffset);
 					backBuffer.DrawPath(TopPens[TopView.SelectorColor], _lozSelector);
 				}
 			}
@@ -333,21 +333,21 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		private void SetSelectorPath(int x, int y)
+		private void PathSelectorLozenge(int x, int y)
 		{
-			int hWidth  = _blobService.HalfWidth;
-			int hHeight = _blobService.HalfHeight;
+			int halfWidth  = _blobService.HalfWidth;
+			int halfHeight = _blobService.HalfHeight;
 
 			_lozSelector.Reset();
 			_lozSelector.AddLine(
-						x, y,
-						x + hWidth, y + hHeight);
+						x,             y,
+						x + halfWidth, y + halfHeight);
 			_lozSelector.AddLine(
-						x + hWidth, y + hHeight,
-						x, y + 2 * hHeight);
+						x + halfWidth, y + halfHeight,
+						x,             y + halfHeight * 2);
 			_lozSelector.AddLine(
-						x, y + 2 * hHeight,
-						x - hWidth, y + hHeight);
+						x,             y + halfHeight * 2,
+						x - halfWidth, y + halfHeight);
 			_lozSelector.CloseFigure();
 		}
 
@@ -356,11 +356,11 @@ namespace MapView.Forms.MapObservers.TopViews
 			// 16 is half the width of the diamond
 			// 24 is the distance from the top of the diamond to the very top of the image
 
-			double hWidth  = (double)_blobService.HalfWidth;
-			double hHeight = (double)_blobService.HalfHeight;
+			double halfWidth  = (double)_blobService.HalfWidth;
+			double halfHeight = (double)_blobService.HalfHeight;
 
-			double x1 =  (x          / (hWidth * 2)) + (y / (hHeight * 2));
-			double x2 = -(x - y * 2) / (hWidth * 2);
+			double x1 =  (x          / (halfWidth * 2)) + (y / (halfHeight * 2));
+			double x2 = -(x - y * 2) / (halfWidth * 2);
 
 			return new Point(
 						(int)Math.Floor(x1),
@@ -375,8 +375,8 @@ namespace MapView.Forms.MapObservers.TopViews
 			if (MapBase != null)
 			{
 				var pt = ConvertCoordsDiamond(
-											e.X - _offX,
-											e.Y - _offY);
+											e.X - _xOffset,
+											e.Y - _yOffset);
 				if (   pt.Y >= 0 && pt.Y < MainViewUnderlay.Instance.MapBase.MapSize.Rows
 					&& pt.X >= 0 && pt.X < MainViewUnderlay.Instance.MapBase.MapSize.Cols)
 				{
@@ -403,18 +403,18 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			var ptCursor = ConvertCoordsDiamond(
-											e.X - _offX,
-											e.Y - _offY);
-			if (ptCursor.X != _cursorCol || ptCursor.Y != _cursorRow)
+			var pt = ConvertCoordsDiamond(
+										e.X - _xOffset,
+										e.Y - _yOffset);
+			if (pt.X != _col || pt.Y != _row)
 			{
-				_cursorCol = ptCursor.X;
-				_cursorRow = ptCursor.Y;
+				_col = pt.X;
+				_row = pt.Y;
 
 				if (_isMouseDrag)
 				{
 					var overlay = MainViewUnderlay.Instance.MainViewOverlay;
-					overlay.SetDrag(overlay.DragStart, ptCursor);
+					overlay.SetDrag(overlay.DragStart, pt);
 				}
 
 				Refresh(); // mouseover refresh for TopView.

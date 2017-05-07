@@ -76,7 +76,7 @@ namespace MapView
 					_dragStart = new Point(-1, -1);
 					_dragEnd   = new Point(-1, -1);
 
-					ViewerFormsManager.TopView.Control.TopViewPanel.SetSelectedBorder();
+					ViewerFormsManager.TopView.Control.TopViewPanel.PathSelectedLozenge();
 				}
 			}
 		}
@@ -538,11 +538,7 @@ namespace MapView
 			_row = args.Location.Row;
 			_lev = args.Location.Lev;
 
-			var loc = args.Location;
-			var dragStart = new Point(
-									_col,
-									_row);
-			SetDrag(dragStart, DragEnd);
+			SetDrag(new Point(_col, _row), DragEnd);
 
 			XCMainWindow.Instance.StatusBarPrintPosition(_col, _row, _lev);
 		}

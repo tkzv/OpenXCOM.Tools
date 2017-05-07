@@ -49,6 +49,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 //			{
 			if (MapFile != null)
 			{
+				_blobService.HalfWidth  = DrawAreaWidth;
+				_blobService.HalfHeight = DrawAreaHeight;
+
 				DrawWallsAndContent();
 
 				if (ClickPoint.X > -1 && ClickPoint.Y > -1)
@@ -106,15 +109,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (_toolContent == null)
 				_toolContent = new ColorTools(RouteBrushes[RouteView.ContentColor], _toolWall.Pen.Width);
 
-			_blobService.HalfWidth  = DrawAreaWidth;
-			_blobService.HalfHeight = DrawAreaHeight;
 
-			var mapFile = MapFile;
+			XCMapTile tile = null;
 			for (int
 					r = 0,
 						startX = Origin.X,
 						startY = Origin.Y;
-					r != mapFile.MapSize.Rows;
+					r != MapFile.MapSize.Rows;
 					++r,
 						startX -= DrawAreaWidth,
 						startY += DrawAreaHeight)
@@ -123,14 +124,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 						c = 0,
 							x = startX,
 							y = startY;
-						c != mapFile.MapSize.Cols;
+						c != MapFile.MapSize.Cols;
 						++c,
 							x += DrawAreaWidth,
 							y += DrawAreaHeight)
 				{
-					if (mapFile[r, c] != null)
+					if (MapFile[r, c] != null)
 					{
-						var tile = (XCMapTile)mapFile[r, c];
+						tile = MapFile[r, c] as XCMapTile;
 
 						if (tile.Content != null)
 							_blobService.DrawContent(_graphics, _toolContent, x, y, tile.Content);

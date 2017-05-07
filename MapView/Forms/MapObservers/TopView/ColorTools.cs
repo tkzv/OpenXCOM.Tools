@@ -70,8 +70,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			var colorLight = Color.FromArgb(50, brush.Color);
 
-			_pen        = new Pen(brush.Color);
-			_pen.Width  = width;
+			_pen        = new Pen(brush.Color, width);
 			_penLight   = new Pen(colorLight, width);
 
 			_brush      = brush;

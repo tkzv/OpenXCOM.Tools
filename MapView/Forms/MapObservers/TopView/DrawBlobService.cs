@@ -35,7 +35,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 	/// <summary>
-	/// Draws floor- and wall- and content- blobs for RouteView and TopView.
+	/// Draws floor- and wall- and content- blobs for TopView and RouteView.
 	/// </summary>
 	internal sealed class DrawBlobService
 		:
@@ -86,7 +86,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 
-		private const int Offset = 4;
+		private const int Offset = 4; // offset the blobs from the grid-lines a bit.
 
 		/// <summary>
 		/// Draws wall- and content- blobs for RouteView and TopView.
@@ -118,14 +118,14 @@ namespace MapView.Forms.MapObservers.TopViews
 			switch (BlobTypeService.GetBlobType(tile))
 			{
 				case BlobType.Content:
-					SetContentPath(x, y);
+					PathContent(x, y);
 					g.FillPath(
 							tool.Brush,
 							_content);
 					break;
 
 				case BlobType.Floor:
-					SetContentPath(x, y);
+					PathContent(x, y);
 					g.FillPath(
 							tool.BrushLight,
 							_content);
@@ -245,7 +245,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		private void SetContentPath(int x, int y)
+		private void PathContent(int x, int y)
 		{
 			int w = HalfWidth  / 2;
 			int h = HalfHeight / 2;
@@ -385,9 +385,11 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 				// diagonals ->
+//				if (CheckAllAreLoftExcludeFloor(35))
 				if (CheckAllAreLoft(35))
 					return BlobType.NorthwestSoutheast;
 
+//				if (CheckAllAreLoftExcludeFloor(36))
 				if (CheckAllAreLoft(36))
 					return BlobType.NortheastSouthwest;
 
@@ -468,6 +470,25 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			return true;
 		}
+
+//		private static bool CheckAllAreLoftExcludeFloor(int necessary)
+//		{
+//			int length = _loftList.Count;
+//			for (int layer = 0; layer != length; ++layer)
+//			{
+//				switch (layer)
+//				{
+//					case 0:
+//						break;
+//
+//					default:
+//						if (_loftList[layer] != necessary)
+//							return false;
+//						break;
+//				}
+//			}
+//			return true;
+//		}
 
 		/// <summary>
 		/// Checks if any entry in '_loftList' matches 'necessary'.
