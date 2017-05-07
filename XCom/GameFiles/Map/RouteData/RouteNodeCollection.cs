@@ -202,16 +202,21 @@ namespace XCom
 	};
 
 
+	/// <summary>
+	/// This class reads, saves, and generally manages all the information in a
+	/// .RMP file. It's like the parent of RouteNode.
+	/// </summary>
 	public sealed class RouteNodeCollection
 		:
 			IEnumerable<RouteNode>
 	{
+		#region Fields
 		private readonly List<RouteNode> _nodes;
 
 		public const string RouteExt = ".RMP";
 
-		private readonly string _baseName;
-		private readonly string _basePath;
+		private readonly string _file;
+		private readonly string _path;
 
 
 		public static readonly object[] UnitRankUfo =
@@ -254,66 +259,16 @@ namespace XCom
 			new EnumString("9:Spawn",    XCom.SpawnUsage.Spawn9),
 			new EnumString("10:Spawn",   XCom.SpawnUsage.Spawn10)
 		};
-
-
-		#region cTor
-		/// <summary>
-		/// cTor.
-		/// </summary>
-		/// <param name="baseName"></param>
-		/// <param name="basePath"></param>
-		internal RouteNodeCollection(string baseName, string basePath)
-		{
-			_baseName = baseName;
-			_basePath = basePath;
-
-			_nodes = new List<RouteNode>();
-
-			string pathfilext = basePath + baseName + RouteExt;
-			if (File.Exists(pathfilext))
-			{
-				using (var bs = new BufferedStream(File.OpenRead(pathfilext)))
-				{
-					for (byte i = 0; i < bs.Length / 24; ++i)
-					{
-						var data = new byte[24];
-						bs.Read(data, 0, 24);
-						_nodes.Add(new RouteNode(i, data));
-					}
-				}
-			}
-		}
 		#endregion
 
 
-		/// <summary>
-		/// Saves the .RMP file.
-		/// </summary>
-		internal void Save()
-		{
-			using (var fs = File.Create(_basePath + _baseName + RouteExt))
-			{
-				for (int i = 0; i != _nodes.Count; ++i)
-					_nodes[i].Save(fs); // -> RouteNode.Save() writes the node-data
-			}
-		}
-
-		IEnumerator<RouteNode> IEnumerable<RouteNode>.GetEnumerator()
-		{
-			return _nodes.GetEnumerator();
-		}
-
-		public IEnumerator GetEnumerator()
-		{
-			return _nodes.GetEnumerator();
-		}
-
-		public RouteNode this[int i]
+		#region Properties
+		public RouteNode this[int id]
 		{
 			get
 			{
-				if (i > -1 && i < _nodes.Count)
-					return _nodes[i];
+				if (id > -1 && id < _nodes.Count)
+					return _nodes[id];
 
 				return null;
 			}
@@ -326,8 +281,94 @@ namespace XCom
 
 //		public byte ExtraHeight
 //		{ get; set; }
+		#endregion
 
-		public void Delete(RouteNode node)
+
+		#region cTor
+		/// <summary>
+		/// cTor. Reads the .RMP file and adds its data as RouteNodes to a List.
+		/// </summary>
+		/// <param name="file"></param>
+		/// <param name="path"></param>
+		internal RouteNodeCollection(string file, string path)
+		{
+			_nodes = new List<RouteNode>();
+
+			_file = file;
+			_path = path;
+
+			string pfe = path + file + RouteExt;
+			if (File.Exists(pfe))
+			{
+				using (var bs = new BufferedStream(File.OpenRead(pfe)))
+				{
+					for (byte id = 0; id < bs.Length / 24; ++id)
+					{
+						var bindata = new byte[24];
+						bs.Read(bindata, 0, 24);
+
+						_nodes.Add(new RouteNode(id, bindata));
+					}
+				}
+			}
+		}
+		#endregion
+
+
+		#region Interface requirements
+		/// <summary>
+		/// Gets an enumerator for the node-list.
+		/// </summary>
+		/// <returns></returns>
+		IEnumerator<RouteNode> IEnumerable<RouteNode>.GetEnumerator()
+		{
+			return _nodes.GetEnumerator();
+		}
+
+		/// <summary>
+		/// Gets another enumerator for the node-list.
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerator GetEnumerator()
+		{
+			return _nodes.GetEnumerator();
+		}
+		#endregion
+
+
+		#region Methods
+		/// <summary>
+		/// Saves the .RMP file.
+		/// </summary>
+		internal void Save()
+		{
+			using (var fs = File.Create(_path + _file + RouteExt))
+			{
+				for (int i = 0; i != _nodes.Count; ++i)
+					_nodes[i].Save(fs); // -> RouteNode.Save() writes the node-data
+			}
+		}
+
+		/// <summary>
+		/// Adds a node to the node-list.
+		/// </summary>
+		/// <param name="row"></param>
+		/// <param name="col"></param>
+		/// <param name="lev"></param>
+		/// <returns></returns>
+		internal RouteNode AddNode(byte row, byte col, byte lev)
+		{
+			var node = new RouteNode((byte)_nodes.Count, row, col, lev);
+			_nodes.Add(node);
+
+			return node;
+		}
+
+		/// <summary>
+		/// Deletes a node from the node-list.
+		/// </summary>
+		/// <param name="node">the node to delete</param>
+		public void DeleteNode(RouteNode node)
 		{
 			int nodeId = node.Index;
 
@@ -354,14 +395,6 @@ namespace XCom
 			}
 		}
 
-		internal RouteNode Add(byte row, byte col, byte lev)
-		{
-			var node = new RouteNode((byte)_nodes.Count, row, col, lev);
-			_nodes.Add(node);
-
-			return node;
-		}
-
 		/// <summary>
 		/// Checks for and if necessary deletes nodes that are outside of a
 		/// Map's x/y/z bounds. See also RouteCheckService.CheckNodeBounds().
@@ -378,9 +411,17 @@ namespace XCom
 					deletions.Add(node);
 
 			foreach (var entry in deletions)
-				Delete(entry);
+				DeleteNode(entry);
 		}
 
+		/// <summary>
+		/// Checks of a given node is outside the Map boundaries.
+		/// </summary>
+		/// <param name="node"></param>
+		/// <param name="cols"></param>
+		/// <param name="rows"></param>
+		/// <param name="levs"></param>
+		/// <returns></returns>
 		internal static bool IsOutsideMap(
 				RouteNode node,
 				int cols,
@@ -400,5 +441,6 @@ namespace XCom
 //
 //			return null;
 //		}
+		#endregion
 	}
 }

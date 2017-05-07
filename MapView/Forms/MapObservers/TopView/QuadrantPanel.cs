@@ -102,10 +102,10 @@ namespace MapView.Forms.MapObservers.TopViews
 			if (_location != null)
 			{
 				_tile = MapBase[_location.Row, _location.Col] as XCMapTile;
-				_location.Lev = args.Level;	// why is this done in 'QuadrantPanel'
-			}								// why does it appear to affect only route-node height
-			Refresh();						// why does XCMapBase.LevelDown() add an extra level whereas XCMapBase.LevelUp() doesn't subtract an extra level
-		}									// why is down up and up down.
+				_location.Lev = args.Level;
+			}
+			Refresh();
+		}
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{

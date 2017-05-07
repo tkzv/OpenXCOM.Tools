@@ -6,7 +6,6 @@ namespace XCom
 	public sealed class RouteNode
 	{
 		#region rmprec
-
 /*		typedef struct rmprec
 		{
 			unsigned char row;
@@ -24,10 +23,10 @@ namespace XCom
 			unsigned char type5;				// 0=Don't use 1=Use most of the time...2+
 		= Use less and less often, 0 thru A observed
 		} RmpRec; */
-
 		#endregion
 
 
+		#region Fields & Properties
 		public const int LinkSlots = 5;
 
 
@@ -76,34 +75,51 @@ namespace XCom
 		/// </summary>
 		public byte Index
 		{ get; set; }
+		#endregion
 
 
-		internal RouteNode(byte id, byte[] data)
+		#region cTors
+		/// <summary>
+		/// cTor1. Creates a node from binary data.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="bindata"></param>
+		internal RouteNode(byte id, byte[] bindata)
 		{
 			Index = id;
 
-			_row = data[0];
-			_col = data[1];
-			Lev  = data[2]; // NOTE: auto-converts to int-type.
+			_row = bindata[0]; // note that x & y are switched in the RMP-file.
+			_col = bindata[1];
+			Lev  = bindata[2]; // NOTE: auto-converts to int-type.
+
+			// NOTE: 'bindata[3]' is not used.
 
 			_links = new Link[LinkSlots];
 
-			int x = 4;
+			int offset = 4;
 			for (int i = 0; i != LinkSlots; ++i)
 			{
 				_links[i] = new Link(
-									data[x],
-									data[x + 1],
-									data[x + 2]);
-				x += 3;
+									bindata[offset], // note that x & y are switched in the RMP-file.
+									bindata[offset + 1],
+									bindata[offset + 2]);
+				offset += 3;
 			}
 
-			UsableType  = (UnitType)data[19];
-			SpawnRank   = data[20];
-			Priority    = (NodeImportance)data[21];
-			Attack      = (BaseModuleAttack)data[22];
-			SpawnWeight = (SpawnUsage)data[23];
+			UsableType  = (UnitType)bindata[19];
+			SpawnRank   = bindata[20];
+			Priority    = (NodeImportance)bindata[21];
+			Attack      = (BaseModuleAttack)bindata[22];
+			SpawnWeight = (SpawnUsage)bindata[23];
 		}
+
+		/// <summary>
+		/// cTor2. Creates a node based on rcl.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="row"></param>
+		/// <param name="col"></param>
+		/// <param name="lev"></param>
 		internal RouteNode(byte id, byte row, byte col, byte lev)
 		{
 			Index = id;
@@ -122,8 +138,10 @@ namespace XCom
 			Attack      = BaseModuleAttack.Zero;
 			SpawnWeight = SpawnUsage.NoSpawn;
 		}
+		#endregion
 
 
+		#region Methods
 		/// <summary>
 		/// Writes data to the stream provided by RouteNodeCollection.Save().
 		/// </summary>
@@ -169,5 +187,6 @@ namespace XCom
 //		{
 //			return _links[id];
 //		}
+		#endregion
 	}
 }

@@ -26,10 +26,6 @@ using YamlDotNet.Serialization;			// write values
 
 namespace MapView
 {
-//	public delegate void MapChangedDelegate(object sender, SetMapEventArgs e);
-//	public delegate void StringDelegate(object sender, string args);
-
-
 	/// <summary>
 	/// Instantiates a MainView screen as the basis for all user-interaction.
 	/// </summary>
@@ -46,6 +42,7 @@ namespace MapView
 
 		private readonly LoadingForm           _loadingProgress;
 		private readonly ConsoleWarningHandler _warningHandler;
+
 
 		private readonly SettingsManager _settingsManager;
 		private Settings Settings
@@ -815,9 +812,9 @@ namespace MapView
 				RouteCheckService.CheckNodeBounds(mapBase);
 
 				tsslMap.Text = desc.Label;
-
 				tsslDimensions.Text = (mapBase != null) ? mapBase.MapSize.ToString()
 														: "size: n/a";
+				tsslPosition.Text = String.Empty;
 
 				Settings[Doors].Value = false; // toggle off door-animations; not sure that this is necessary to do.
 				miDoors.Checked = false;
@@ -1062,12 +1059,12 @@ namespace MapView
 			Refresh();
 		}
 
-		internal void StatusBarPrintPosition(int col, int row)
+		internal void StatusBarPrintPosition(int col, int row, int lev)
 		{
 			tsslPosition.Text = string.Format(
 											System.Globalization.CultureInfo.CurrentCulture,
-											"c {0}  r {1}",
-											col, row);
+											"c {0}  r {1}  L {2}",
+											col, row, lev);
 		}
 
 

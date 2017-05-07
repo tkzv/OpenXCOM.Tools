@@ -20,28 +20,8 @@ namespace XCom.Interfaces.Base
 
 
 		void OnLocationSelected_Observer(LocationSelectedEventArgs args);
-
 		void OnLevelChanged_Observer(LevelChangedEventArgs args);
 	}
-
-
-/*	/// <summary>
-	/// EventArgs with an XCMapBase for when a SetMap event fires.
-	/// </summary>
-	public class SetMapEventArgs
-		:
-			EventArgs
-	{
-		private readonly XCMapBase _mapBase;
-		public XCMapBase Map
-		{
-			get { return _mapBase; }
-		}
-		internal SetMapEventArgs(XCMapBase mapBase)
-		{
-			_mapBase = mapBase;
-		}
-	} */
 
 
 	/// <summary>

@@ -15,13 +15,18 @@ namespace MapView
 	{
 		private readonly IErrorHandler _errorHandler;
 
-
+		/// <summary>
+		/// Initialize handler for unhandled exceptions.
+		/// </summary>
 		public Startup()
 		{
 			_errorHandler = new ErrorWindowAdapter();
 		}
 
 
+		/// <summary>
+		/// Let's run this puppy.
+		/// </summary>
 		public void RunProgram()
 		{
 			Application.EnableVisualStyles();
@@ -30,8 +35,6 @@ namespace MapView
 			try
 			{
 				var mainWindow = new XCMainWindow();
-
-//				mainWindow.SendMessage += new StringDelegate(mw_SendMessage);
 
 				Application.Run(mainWindow);
 
@@ -55,10 +58,5 @@ namespace MapView
 		{
 			_errorHandler.HandleException(e.Exception);
 		}
-
-//		void mw_SendMessage(object sender, string args)
-//		{
-//			Console.WriteLine("External command: " + args);
-//		}
 	}
 }

@@ -65,7 +65,7 @@ namespace XCom.Interfaces.Base
 
 		private MapLocation _location;
 		/// <summary>
-		/// Gets/Sets the current selected location. Setting the location will
+		/// Gets/Sets the currently selected location. Setting the location will
 		/// fire a LocationSelected event.
 		/// </summary>
 		public MapLocation Location
@@ -114,8 +114,8 @@ namespace XCom.Interfaces.Base
 		/// <returns></returns>
 		public MapTileBase this[int row, int col]
 		{
-			get { return this[row, col, _level]; }
-			set { this[row, col, _level] = value; }
+			get { return this[row, col, Level]; }
+			set { this[row, col, Level] = value; }
 		}
 		/// <summary>
 		/// Gets/Sets a MapTile using a MapLocation.
@@ -151,12 +151,12 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public void LevelUp()
 		{
-			if (_level > 0)
+			if (Level > 0)
 			{
-				--_level;
+				--Level;
 
 				if (LevelChangedEvent != null)
-					LevelChangedEvent(new LevelChangedEventArgs(_level));
+					LevelChangedEvent(new LevelChangedEventArgs(Level));
 			}
 		}
 
@@ -165,39 +165,28 @@ namespace XCom.Interfaces.Base
 		/// </summary>
 		public void LevelDown()
 		{
-			if (_level < MapSize.Levs - 1)
+			if (Level < MapSize.Levs - 1)
 			{
-				++_level;
+				++Level;
 
 				if (LevelChangedEvent != null)
-					LevelChangedEvent(new LevelChangedEventArgs(_level + 1)); // TODO: wait a second !
+					LevelChangedEvent(new LevelChangedEventArgs(Level));
 			}
 		}
 
+		/// <summary>
+		/// Forwards the call to XCMapFile.
+		/// </summary>
+		/// <param name="rows"></param>
+		/// <param name="cols"></param>
+		/// <param name="levs"></param>
+		/// <param name="ceiling"></param>
 		public virtual void MapResize(	// NOTE: This doesn't handle Routes or node-checking
-				int r,					// which XCMapFile.ResizeTo() does.
-				int c,
-				int l,
-				bool toCeiling)
-		{
-//			var tileList = MapResizeService.ResizeMap(
-//												r,
-//												c,
-//												l,
-//												MapSize,
-//												MapTiles,
-//												toCeiling);
-//			if (tileList != null)
-//			{
-//				MapChanged = true;
-//
-//				MapTiles = tileList;
-//				MapSize  = new MapSize(r, c, l);
-//
-//				if (l > 0) // assuage FxCop re 'possible' underflow.
-//					_level = hPost - 1;
-//			}
-		}
+				int rows,				// which XCMapFile.ResizeTo() does.
+				int cols,
+				int levs,
+				bool ceiling)
+		{}
 
 		/// <summary>
 		/// Not generic enough to call with custom derived classes other than
@@ -213,36 +202,45 @@ namespace XCom.Interfaces.Base
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
 			var b = XCBitmap.MakeBitmap(
 								rowPlusCols * (PckImage.Width / 2),
-								(MapSize.Levs - _level) * 24 + rowPlusCols * 8,
+								(MapSize.Levs - Level) * 24 + rowPlusCols * 8,
 								palette.Colors);
 
 			var start = new Point(
 								(MapSize.Rows - 1) * (PckImage.Width / 2),
-								-(24 * _level));
+								-(24 * Level));
 
 			int i = 0;
 			if (MapTiles != null)
 			{
-				for (int l = MapSize.Levs - 1; l >= _level; --l)
+				for (int lev = MapSize.Levs - 1; lev >= Level; --lev)
 				{
 					for (int
-							r = 0, startX = start.X, startY = start.Y + l * 24;
-							r != MapSize.Rows;
-							++r, startX -= HalfWidth, startY += HalfHeight)
+							row = 0,
+								startX = start.X,
+								startY = start.Y + lev * 24;
+							row != MapSize.Rows;
+							++row,
+								startX -= HalfWidth,
+								startY += HalfHeight)
 					{
 						for (int
-								c = 0, x = startX, y = startY;
-								c != MapSize.Cols;
-								++c, x += HalfWidth, y += HalfHeight, ++i)
+								col = 0,
+									x = startX,
+									y = startY;
+								col != MapSize.Cols;
+								++col,
+									x += HalfWidth,
+									y += HalfHeight,
+									++i)
 						{
-							var tiles = this[r, c, l].UsedTiles;
+							var tiles = this[row, col, lev].UsedTiles;
 							foreach (var tileBase in tiles)
 							{
 								var tile = (XCTile)tileBase;
 								XCBitmap.Draw(tile[0].Image, b, x, y - tile.Record.TileOffset);
 							}
 
-							XCBitmap.FireLoadingEvent(i, (MapSize.Levs - _level) * MapSize.Rows * MapSize.Cols);
+							XCBitmap.FireLoadingEvent(i, (MapSize.Levs - Level) * MapSize.Rows * MapSize.Cols);
 						}
 					}
 				}
@@ -262,11 +260,11 @@ namespace XCom.Interfaces.Base
 
 		private Palette GetFirstGroundPalette()
 		{
-			for (int l = 0; l != MapSize.Levs; ++l)
-				for (int r = 0; r != MapSize.Rows; ++r)
-					for (int c = 0; c != MapSize.Cols; ++c)
+			for (int lev = 0; lev != MapSize.Levs; ++lev)
+				for (int row = 0; row != MapSize.Rows; ++row)
+					for (int col = 0; col != MapSize.Cols; ++col)
 					{
-						var tile = (XCMapTile)this[r, c, l];
+						var tile = (XCMapTile)this[row, col, lev];
 						if (tile.Ground != null)
 							return tile.Ground[0].Palette;
 					}

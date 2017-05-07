@@ -11,10 +11,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		:
 			EventArgs
 	{
-		internal MapLocation ClickLocation
+		internal MapLocation ClickedLocation
 		{ get; set; }
 
-		internal MapTileBase ClickTile
+		internal MapTileBase ClickedTile
 		{ get; set; }
 
 		internal MouseEventArgs MouseEventArgs

@@ -82,10 +82,10 @@ namespace XCom
 					}
 					catch
 					{
-						for (int l = 0; l != MapSize.Levs; ++l)
-							for (int r = 0; r != MapSize.Rows; ++r)
-								for (int c = 0; c != MapSize.Cols; ++c)
-									this[r, c, l].DrawAbove = true;
+						for (int lev = 0; lev != MapSize.Levs; ++lev)
+							for (int row = 0; row != MapSize.Rows; ++row)
+								for (int col = 0; col != MapSize.Cols; ++col)
+									this[row, col, lev].DrawAbove = true;
 						throw;
 					}
 				}
@@ -112,16 +112,16 @@ namespace XCom
 				MapTiles = new MapTileList(rows, cols, levs);
 				MapSize  = new MapSize(rows, cols, levs);
 
-				for (int l = 0; l != levs; ++l)
-					for (int r = 0; r != rows; ++r)
-						for (int c = 0; c != cols; ++c)
+				for (int lev = 0; lev != levs; ++lev)
+					for (int row = 0; row != rows; ++row)
+						for (int col = 0; col != cols; ++col)
 						{
 							int q1 = bs.ReadByte();
 							int q2 = bs.ReadByte();
 							int q3 = bs.ReadByte();
 							int q4 = bs.ReadByte();
 
-							this[r, c, l] = CreateTile(tiles, q1, q2, q3, q4);
+							this[row, col, lev] = CreateTile(tiles, q1, q2, q3, q4);
 						}
 
 //				if (bs.Position < bs.Length)
@@ -145,25 +145,25 @@ namespace XCom
 
 		private void CalculateDrawAbove()
 		{
-			for (int l = MapSize.Levs - 1; l > -1; --l)
-				for (int r = 0; r < MapSize.Rows - 2; ++r)
-					for (int c = 0; c < MapSize.Cols - 2; ++c)
-						if (this[r, c, l] != null && l - 1 > -1)		// TODO: should probably be "l-1 > 0"
+			for (int lev = MapSize.Levs - 1; lev > -1; --lev)
+				for (int row = 0; row < MapSize.Rows - 2; ++row)
+					for (int col = 0; col < MapSize.Cols - 2; ++col)
+						if (this[row, col, lev] != null && lev - 1 > -1)	// TODO: should probably be "lev-1 > 0"
 						{
-							var tile = (XCMapTile)this[r, c, l - 1];	// TODO: ... because "l-1"
+							var tile = (XCMapTile)this[row, col, lev - 1];	// TODO: ... because "lev-1"
 
-							if (   tile != null							// TODO: doesn't happen anyway.
-								&& tile.Ground != null										// top
-								&& ((XCMapTile)this[r + 1, c,     l - 1]).Ground != null	// south
-								&& ((XCMapTile)this[r + 2, c,     l - 1]).Ground != null
-								&& ((XCMapTile)this[r + 1, c + 1, l - 1]).Ground != null	// southeast
-								&& ((XCMapTile)this[r + 2, c + 1, l - 1]).Ground != null
-								&& ((XCMapTile)this[r + 2, c + 2, l - 1]).Ground != null
-								&& ((XCMapTile)this[r,     c + 1, l - 1]).Ground != null	// east
-								&& ((XCMapTile)this[r,     c + 2, l - 1]).Ground != null
-								&& ((XCMapTile)this[r + 1, c + 2, l - 1]).Ground != null)
+							if (   tile != null								// TODO: doesn't happen anyway.
+								&& tile.Ground != null											// top
+								&& ((XCMapTile)this[row + 1, col,     lev - 1]).Ground != null	// south
+								&& ((XCMapTile)this[row + 2, col,     lev - 1]).Ground != null
+								&& ((XCMapTile)this[row + 1, col + 1, lev - 1]).Ground != null	// southeast
+								&& ((XCMapTile)this[row + 2, col + 1, lev - 1]).Ground != null
+								&& ((XCMapTile)this[row + 2, col + 2, lev - 1]).Ground != null
+								&& ((XCMapTile)this[row,     col + 1, lev - 1]).Ground != null	// east
+								&& ((XCMapTile)this[row,     col + 2, lev - 1]).Ground != null
+								&& ((XCMapTile)this[row + 1, col + 2, lev - 1]).Ground != null)
 							{
-								this[r, c, l].DrawAbove = false;
+								this[row, col, lev].DrawAbove = false;
 							}
 						}
 		}
@@ -191,16 +191,10 @@ namespace XCom
 		{
 			MapChanged = true;
 
-			var node = RouteFile.Add(
-								(byte)location.Row,
-								(byte)location.Col,		// TODO:
-								(byte)location.Lev);	// The screwy XCMapBase.LevelDown() will add an extra pip to 'Lev'
-														// in its LevelChangedEventArgs, which will get passed into here
-														// through QuadrantPanel(sic).OnLevelChanged_Observer(), so I'll
-														// have to start tests by saving .RMP files to find out if that
-														// is the correct way to do things.
-														//
-														// Note that XCMapBase.LevelUp() does not have this vagary ....
+			var node = RouteFile.AddNode(
+									(byte)location.Row,
+									(byte)location.Col,
+									(byte)location.Lev);
 
 			return (((XCMapTile)this[node.Row, node.Col, node.Lev]).Node = node);
 		}
@@ -224,9 +218,9 @@ namespace XCom
 				bw.Write(cols);
 				bw.Write(levs);
 
-				for (int l = 0; l != levs; ++l)
-					for (int r = 0; r != rows; ++r)
-						for (int c = 0; c != cols; ++c)
+				for (int lev = 0; lev != levs; ++lev)
+					for (int row = 0; row != rows; ++row)
+						for (int col = 0; col != cols; ++col)
 							bw.Write((int)0);
 			}
 		}
@@ -250,11 +244,11 @@ namespace XCom
 				fs.WriteByte((byte)MapSize.Cols); // - says this header is "height, width and depth (in that order)"
 				fs.WriteByte((byte)MapSize.Levs);
 
-				for (int l = 0; l != MapSize.Levs; ++l)
-					for (int r = 0; r != MapSize.Rows; ++r)
-						for (int c = 0; c != MapSize.Cols; ++c)
+				for (int lev = 0; lev != MapSize.Levs; ++lev)
+					for (int row = 0; row != MapSize.Rows; ++row)
+						for (int col = 0; col != MapSize.Cols; ++col)
 						{
-							var tile = this[r, c, l] as XCMapTile;
+							var tile = this[row, col, lev] as XCMapTile;
 
 							if (tile.Ground == null)
 								fs.WriteByte(0);
@@ -281,42 +275,51 @@ namespace XCom
 			}
 		}
 
+		/// <summary>
+		/// Resizes the current Map.
+		/// </summary>
+		/// <param name="rows">total rows in the new Map</param>
+		/// <param name="cols">total columns in the new Map</param>
+		/// <param name="levs">total levels in the new Map</param>
+		/// <param name="ceiling">true to add extra levels above the top level,
+		/// false to add extra levels below the ground level - but only if a
+		/// height difference is found for either case</param>
 		public override void MapResize(
-				int r,
-				int c,
-				int l,
-				bool toCeiling)
+				int rows,
+				int cols,
+				int levs,
+				bool ceiling)
 		{
 			var tileList = MapResizeService.ResizeMapDimensions(
-															r, c, l,
+															rows, cols, levs,
 															MapSize,
 															MapTiles,
-															toCeiling);
+															ceiling);
 			if (tileList != null)
 			{
 				MapChanged = true;
 
-				if (toCeiling && l != MapSize.Levs) // update Routes
+				if (levs != MapSize.Levs && ceiling) // update Routes
 				{
-					int delta = l - MapSize.Levs;
-					foreach (RouteNode node in RouteFile)
+					int delta = levs - MapSize.Levs;		// NOTE: map levels are reversed
+					foreach (RouteNode node in RouteFile)	// so adding levels to the ceiling needs to push the existing nodes down.
 					{
-//						if (hPost < MapSize.Height)
-//							node.Height = node.Height + delta;
+//						if (levs < MapSize.Levs)
+//							node.Lev = node.Lev + delta;
 //						else
 						node.Lev += delta;
 					}
 				}
 
-				if (   c < MapSize.Cols // delete route-nodes outside the new bounds
-					|| r < MapSize.Rows
-					|| l < MapSize.Levs)
+				if (   cols < MapSize.Cols // check for and ask if user wants to delete any route-nodes outside the new bounds
+					|| rows < MapSize.Rows
+					|| levs < MapSize.Levs)
 				{
-					RouteFile.CheckNodeBounds(c, r, l);
+					RouteFile.CheckNodeBounds(cols, rows, levs);
 				}
 
 				MapTiles = tileList;
-				MapSize  = new MapSize(r, c, l);
+				MapSize  = new MapSize(rows, cols, levs);
 
 				Level = MapSize.Levs - 1;
 			}

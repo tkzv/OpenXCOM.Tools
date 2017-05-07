@@ -46,7 +46,7 @@ namespace XCom.GameFiles.Map.RouteData
 						mapFile.MapChanged = true;
 
 						foreach (var node in invalid)
-							mapFile.RouteFile.Delete(node);
+							mapFile.RouteFile.DeleteNode(node);
 					}
 				}
 			}

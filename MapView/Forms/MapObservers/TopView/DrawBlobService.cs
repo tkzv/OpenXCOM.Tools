@@ -86,7 +86,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 
-		private const int Margin = 4;
+		private const int Offset = 4;
 
 		/// <summary>
 		/// Draws wall- and content- blobs for RouteView and TopView.
@@ -104,15 +104,15 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			var ptTop   = new Point(
 								x,
-								(y > Int32.MaxValue - Margin) ? Int32.MaxValue : y + Margin); // <- FxCop ...
+								(y > Int32.MaxValue - Offset) ? Int32.MaxValue : y + Offset); // <- FxCop ...
 			var ptBot   = new Point(
 								x,
-								y + (HalfHeight * 2) - Margin);
+								y + (HalfHeight * 2) - Offset);
 			var ptLeft  = new Point(
-								x - HalfWidth + (Margin * 2),
+								x - HalfWidth + (Offset * 2),
 								y + HalfHeight);
 			var ptRight = new Point(
-								x + HalfWidth - (Margin * 2),
+								x + HalfWidth - (Offset * 2),
 								y + HalfHeight);
 
 			switch (BlobTypeService.GetBlobType(tile))
@@ -147,8 +147,8 @@ namespace MapView.Forms.MapObservers.TopViews
 					if (BlobTypeService.IsDoor(tile))
 						g.DrawLine(
 								tool.Pen,
-								ptTop,
-								Point.Add(ptRight, new Size(-10, 4)));
+								x + HalfWidth, y,
+								x,             y + HalfHeight);
 					break;
 
 				case BlobType.WestWallFence:
@@ -167,8 +167,8 @@ namespace MapView.Forms.MapObservers.TopViews
 					if (BlobTypeService.IsDoor(tile))
 						g.DrawLine(
 								tool.Pen,
-								Point.Add(ptTop, new Size(6, 8)),
-								ptLeft);
+								x - HalfWidth, y,
+								x,             y + HalfHeight);
 					break;
 
 				case BlobType.NorthWallWindow:
@@ -218,29 +218,29 @@ namespace MapView.Forms.MapObservers.TopViews
 				case BlobType.NorthwestCorner:
 					g.DrawLine(
 							tool.Pen,
-							Point.Add(ptTop, new Size(-4, 0)),
-							Point.Add(ptTop, new Size( 4, 0)));
+							Point.Add(ptTop, new Size(-Offset,              0)),
+							Point.Add(ptTop, new Size( Offset + Offset / 2, 0)));
 					break;
 
 				case BlobType.NortheastCorner:
 					g.DrawLine(
 							tool.Pen,
-							Point.Add(ptRight, new Size(0, -4)),
-							Point.Add(ptRight, new Size(0,  4)));
+							Point.Add(ptRight, new Size(0, -Offset)),
+							Point.Add(ptRight, new Size(0,  Offset)));
 					break;
 
 				case BlobType.SoutheastCorner:
 					g.DrawLine(
 							tool.Pen,
-							Point.Add(ptBot, new Size(-4, 0)),
-							Point.Add(ptBot, new Size( 4, 0)));
+							Point.Add(ptBot, new Size(-Offset,              0)),
+							Point.Add(ptBot, new Size( Offset + Offset / 2, 0)));
 					break;
 
 				case BlobType.SouthwestCorner:
 					g.DrawLine(
 							tool.Pen,
-							Point.Add(ptLeft, new Size(0, -4)),
-							Point.Add(ptLeft, new Size(0,  4)));
+							Point.Add(ptLeft, new Size(0, -Offset)),
+							Point.Add(ptLeft, new Size(0,  Offset)));
 					break;
 			}
 		}

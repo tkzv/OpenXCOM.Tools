@@ -69,6 +69,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private const string DontConnect   = "DontConnect";
 		private const string OneWayConnect = "OneWayConnect";
 		private const string TwoWayConnect = "TwoWayConnect";
+
+		private int _col; // these are used only to print the clicked location info.
+		private int _row;
+		private int _lev;
 		#endregion
 
 
@@ -138,8 +142,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_routePanel = new RoutePanel();
 			_routePanel.Dock = DockStyle.Fill;
 			_routePanel.RoutePanelClickedEvent += OnRoutePanelClicked;
-			_routePanel.MouseMove += OnRoutePanelMouseMove;
-			_routePanel.KeyDown += OnKeyDown;
+			_routePanel.MouseMove              += OnRoutePanelMouseMove;
+			_routePanel.KeyDown                += OnKeyDown;
 			pRoutes.Controls.Add(_routePanel);
 
 			var unitTypes = new object[]
@@ -205,10 +209,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
 
-			lblSelectedPosition.Text = String.Format(
-												System.Globalization.CultureInfo.InvariantCulture,
-												"c {0}  r {1}",
-												args.Location.Col, args.Location.Row);
+			_col = args.Location.Col;
+			_row = args.Location.Row;
+			_lev = args.Location.Lev;
+			PrintSelectedLocation();
 		}
 
 		/// <summary>
@@ -217,10 +221,24 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="args"></param>
 		public override void OnLevelChanged_Observer(LevelChangedEventArgs args)
 		{
+			_lev = args.Level;
+			PrintSelectedLocation();
+
 			DeselectNode();
 			UpdateNodeInformation();
 
 			Refresh();
+		}
+
+		/// <summary>
+		/// Prints the currently selected location to the panel.
+		/// </summary>
+		private void PrintSelectedLocation()
+		{
+			lblSelectedPosition.Text = String.Format(
+												System.Globalization.CultureInfo.InvariantCulture,
+												"c {0}  r {1}  L {2}",
+												_col, _row, _lev);
 		}
 
 
@@ -281,10 +299,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			if (_nodeSelected == null)
 			{
-				if ((_nodeSelected = ((XCMapTile)args.ClickTile).Node) == null
+				if ((_nodeSelected = ((XCMapTile)args.ClickedTile).Node) == null
 					&& args.MouseEventArgs.Button == MouseButtons.Right)
 				{
-					_nodeSelected = _mapFile.AddRouteNode(args.ClickLocation);
+					_nodeSelected = _mapFile.AddRouteNode(args.ClickedLocation);
 				}
 
 				if (_nodeSelected != null)
@@ -292,7 +310,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 			else // if a node is already selected ...
 			{
-				var node = ((XCMapTile)args.ClickTile).Node;
+				var node = ((XCMapTile)args.ClickedTile).Node;
 
 				if (node != null && !node.Equals(_nodeSelected)) // NOTE: a null node "Equals" any valid node ....
 				{
@@ -306,7 +324,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					if (args.MouseEventArgs.Button == MouseButtons.Right)
 					{
-						node = _mapFile.AddRouteNode(args.ClickLocation);
+						node = _mapFile.AddRouteNode(args.ClickedLocation);
 						ConnectNode(node);
 					}
 
@@ -545,11 +563,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			_loadingGui = false;
 		}
-
-//		public void SetMap(object sender, SetMapEventArgs args)
-//		{
-//			Map = args.Map;
-//		}
 
 		private void OnUnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -1014,7 +1027,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				_mapFile.MapChanged = true;
 
-				_mapFile.RouteFile.Delete(_nodeSelected);
+				_mapFile.RouteFile.DeleteNode(_nodeSelected);
 
 				((XCMapTile)_mapFile[_nodeSelected.Row,
 									 _nodeSelected.Col,

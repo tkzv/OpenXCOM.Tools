@@ -9,7 +9,7 @@ using XCom;
 namespace MapView.Forms.MapObservers.RouteViews
 {
 	/// <summary>
-	/// A base class for RoutePanel.
+	/// The base class for RoutePanel.
 	/// </summary>
 	internal class RoutePanelParent
 		:
@@ -160,11 +160,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 						var args = new RoutePanelClickedEventArgs();
 						args.MouseEventArgs = e;
-						args.ClickTile = tile;
-						args.ClickLocation = new MapLocation(
-														ClickPoint.Y,
-														ClickPoint.X,
-														_mapFile.Level);
+						args.ClickedTile = tile;
+						args.ClickedLocation = new MapLocation(
+															ClickPoint.Y,
+															ClickPoint.X,
+															_mapFile.Level);
 						RoutePanelClickedEvent(this, args);
 
 						Refresh();

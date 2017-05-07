@@ -36,8 +36,8 @@ namespace XCom
 		{
 			return String.Format(
 							System.Globalization.CultureInfo.CurrentCulture,
-							"{0},{1},{2}",
-							_rows, _cols, _levs);
+							"{0}, {1}, {2}",
+							_cols, _rows, _levs);
 		}
 
 		#region Satisfy FxCop CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes
