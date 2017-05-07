@@ -232,13 +232,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		/// <summary>
 		/// Prints the currently selected location to the panel.
+		/// NOTE: The displayed level is inverted here.
 		/// </summary>
 		private void PrintSelectedLocation()
 		{
 			lblSelectedPosition.Text = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
 												"c {0}  r {1}  L {2}",
-												_col, _row, _lev);
+												_col, _row, _mapFile.MapSize.Levs - _lev);
 		}
 
 

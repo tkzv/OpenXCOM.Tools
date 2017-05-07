@@ -313,10 +313,8 @@ namespace MapView.Forms.MapObservers.TopViews
 				if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick)
 					backBuffer.DrawPath(TopPens[TopView.SelectedColor], _lozSelected);
 
-				if (   _col > -1
-					&& _row > -1
-					&& _col < MapBase.MapSize.Cols
-					&& _row < MapBase.MapSize.Rows)
+				if (   _col > -1 && _col < MapBase.MapSize.Cols
+					&& _row > -1 && _row < MapBase.MapSize.Rows)
 				{
 					PathSelectorLozenge(
 									(_col - _row) * halfWidth  + _xOffset,

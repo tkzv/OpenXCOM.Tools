@@ -1059,6 +1059,13 @@ namespace MapView
 			Refresh();
 		}
 
+		/// <summary>
+		/// Prints the currently selected location to the status bar.
+		/// NOTE: The 'lev' should be inverted before it's passed in.
+		/// </summary>
+		/// <param name="col"></param>
+		/// <param name="row"></param>
+		/// <param name="lev"></param>
 		internal void StatusBarPrintPosition(int col, int row, int lev)
 		{
 			tsslPosition.Text = string.Format(

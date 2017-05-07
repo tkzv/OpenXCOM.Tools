@@ -264,6 +264,8 @@ namespace MapView
 			{
 				_mapBase.MapChanged = true;
 
+				XCMapTile tile     = null;
+				XCMapTile tileCopy = null;
 				for (int
 						row = DragStart.Y;
 						row != _mapBase.MapSize.Rows && (row - DragStart.Y) < _copied.GetLength(0);
@@ -273,16 +275,14 @@ namespace MapView
 							col != _mapBase.MapSize.Cols && (col - DragStart.X) < _copied.GetLength(1);
 							++col)
 					{
-						var tile = _mapBase[row, col] as XCMapTile;
-						if (tile != null)
+						if ((tile = _mapBase[row, col] as XCMapTile) != null)
 						{
-							var copyTile = _copied[row - DragStart.Y, col - DragStart.X] as XCMapTile;
-							if (copyTile != null)
+							if ((tileCopy = _copied[row - DragStart.Y, col - DragStart.X] as XCMapTile) != null)
 							{
-								tile.Ground  = copyTile.Ground;
-								tile.Content = copyTile.Content;
-								tile.West    = copyTile.West;
-								tile.North   = copyTile.North;
+								tile.Ground  = tileCopy.Ground;
+								tile.Content = tileCopy.Content;
+								tile.West    = tileCopy.West;
+								tile.North   = tileCopy.North;
 							}
 						}
 					}
@@ -310,8 +310,10 @@ namespace MapView
 
 				var tileView = ViewerFormsManager.TileView.Control;
 				for (int col = start.X; col <= end.X; ++col)
-					for (int row = start.Y; row <= end.Y; ++row)
-						((XCMapTile)_mapBase[row, col])[quadType] = tileView.SelectedTile;
+				for (int row = start.Y; row <= end.Y; ++row)
+				{
+					((XCMapTile)_mapBase[row, col])[quadType] = tileView.SelectedTile;
+				}
 
 				RefreshViewers();
 			}
@@ -540,7 +542,10 @@ namespace MapView
 
 			SetDrag(new Point(_col, _row), DragEnd);
 
-			XCMainWindow.Instance.StatusBarPrintPosition(_col, _row, _lev);
+			XCMainWindow.Instance.StatusBarPrintPosition(
+													_col,
+													_row,
+													_mapBase.MapSize.Levs - _lev);
 		}
 
 		/// <summary>
@@ -550,8 +555,10 @@ namespace MapView
 		private void OnLevelChanged_Main(LevelChangedEventArgs args)
 		{
 			_lev = args.Level;
-			XCMainWindow.Instance.StatusBarPrintPosition(_col, _row, _lev);
-
+			XCMainWindow.Instance.StatusBarPrintPosition(
+													_col,
+													_row,
+													_mapBase.MapSize.Levs - _lev);
 			Refresh();
 		}
 

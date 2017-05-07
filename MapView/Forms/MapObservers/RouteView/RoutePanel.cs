@@ -547,8 +547,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (tile != null)
 			{
 				var pt = GetTileCoordinates(_pos.X, _pos.Y);
-				const string textTile1 = "position";
-				string textTile2 = "c " + pt.X + "  r " + pt.Y;
+				const string textTile1 = ""; // "position" or "location" or ... "pos" or "loc" ...
+				string textTile2 = "c " + pt.X + "  r " + pt.Y + "  L " + (MapFile.MapSize.Levs - MapFile.Level);
 
 //				int textWidth1 = TextRenderer.MeasureText(textTile1, font).Width;
 				int textWidth1 = (int)_graphics.MeasureString(textTile1, _fontOverlay).Width;
