@@ -9,15 +9,9 @@ namespace MapView
 {
 	internal sealed class MainViewUnderlay
 		:
-			Panel
+			Panel // god I hate these double-panels!!!! cf. MainViewOverlay
 	{
 		#region Fields & Properties
-		private MainViewOverlay _mainViewOverlay;
-		internal MainViewOverlay MainViewOverlay
-		{
-			get { return _mainViewOverlay; }
-		}
-
 		private static MainViewUnderlay _instance;
 		internal static MainViewUnderlay Instance
 		{
@@ -30,13 +24,77 @@ namespace MapView
 			}
 		}
 
-		internal XCMapBase MapBase
+		private MainViewOverlay _mainViewOverlay;
+		internal MainViewOverlay MainViewOverlay
 		{
-			get { return _mainViewOverlay.MapBase; }
+			get { return _mainViewOverlay; }
 		}
 
-		private readonly HScrollBar _scrollBarHori;
-		private readonly VScrollBar _scrollBarVert;
+		private XCMapBase _mapBase;
+		internal XCMapBase MapBase
+		{
+			get { return _mapBase; }
+			set
+			{
+				XCom.LogFile.WriteLine("MainViewUnderlay.MapBase set");
+
+				MainViewOverlay.MapBase = value;
+
+				if (_mapBase != null)
+				{
+					_mapBase.LocationSelectedEvent -= MainViewOverlay.OnLocationSelected_Main;	// WARNING: if the overlay ever gets removed from the Control
+					_mapBase.LevelChangedEvent     -= MainViewOverlay.OnLevelChanged_Main;		// by the code in the cTor, this will likely go defunct. Or not.
+				}
+
+				if ((_mapBase = value) != null)
+				{
+					_mapBase.LocationSelectedEvent += MainViewOverlay.OnLocationSelected_Main;
+					_mapBase.LevelChangedEvent     += MainViewOverlay.OnLevelChanged_Main;
+
+					SetOverlaySize();
+
+//					DragStart = _dragStart;	// this might be how to give drags their legitimate
+//					DragEnd   = _dragEnd;	// values after initialization to Point(-1/-1).
+				}
+
+				OnResize(EventArgs.Empty);
+			}
+		}
+
+
+		private int _halfWidth;
+		internal int HalfWidth
+		{
+			set
+			{
+				_halfWidth                =
+				MainViewOverlay.HalfWidth = value; // pass it on to Overlay.
+			}
+		}
+
+		private int _halfHeight;
+		internal int HalfHeight
+		{
+			set
+			{
+				_halfHeight                =
+				MainViewOverlay.HalfHeight = value; // pass it on to Overlay.
+			}
+		}
+
+
+		private readonly HScrollBar _scrollBarH;
+		private readonly VScrollBar _scrollBarV;
+
+		internal int GetVBarWidth()
+		{
+			return _scrollBarV.Width;
+		}
+
+		internal int GetHBarHeight()
+		{
+			return _scrollBarH.Height;
+		}
 		#endregion
 
 
@@ -48,158 +106,253 @@ namespace MapView
 		{
 			AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
-			_scrollBarHori = new HScrollBar();
-			_scrollBarVert = new VScrollBar();
+			_scrollBarH = new HScrollBar();
+			_scrollBarV = new VScrollBar();
 
-			_scrollBarHori.Scroll += OnHorizontalScroll;
-			_scrollBarHori.Dock = DockStyle.Bottom;
+			_scrollBarH.Dock = DockStyle.Bottom;
+			_scrollBarH.Scroll += OnHorizontalScroll;
 
-			_scrollBarVert.Scroll += OnVerticalScroll;
-			_scrollBarVert.Dock = DockStyle.Right;
+			_scrollBarV.Dock = DockStyle.Right;
+			_scrollBarV.Scroll += OnVerticalScroll;
 
-			Controls.AddRange(new Control[]{ _scrollBarVert, _scrollBarHori });
+			Controls.AddRange(new Control[]{ _scrollBarV, _scrollBarH });
 
-			var mainView = new MainViewOverlay();
-			if (_mainViewOverlay != null)
-			{
-				mainView.MapBase = _mainViewOverlay.MapBase;
-				Controls.Remove(_mainViewOverlay);
-			}
-			_mainViewOverlay = mainView;
 
-			_mainViewOverlay.Location = new Point(0, 0);
-			_mainViewOverlay.BorderStyle = BorderStyle.Fixed3D;
+//			var mainViewOverlay = new MainViewOverlay(); // what's this for.
+//			if (_mainViewOverlay != null)
+//			{
+//				mainViewOverlay.MapBase = _mainViewOverlay.MapBase;
+//				Controls.Remove(_mainViewOverlay);
+//			}
+//			_mainViewOverlay = mainViewOverlay;
 
-			_scrollBarVert.Minimum = 0;
-			_scrollBarVert.Value = _scrollBarVert.Minimum;
-
-			_mainViewOverlay.Width = ClientSize.Width - _scrollBarVert.Width - 1;
+			_mainViewOverlay = new MainViewOverlay();
+			_mainViewOverlay.SetMainViewUnderlay(this);
 
 			Controls.Add(_mainViewOverlay);
+
+
+			XCom.LogFile.WriteLine("");
+			XCom.LogFile.WriteLine("MainViewUnderlay cTor");
+			XCom.LogFile.WriteLine(". underlay.Width= " + Width);
+			XCom.LogFile.WriteLine(". underlayHeight= " + Height);
+
+			XCom.LogFile.WriteLine(". underlay client.Width= " + ClientSize.Width);
+			XCom.LogFile.WriteLine(". underlay client.Height= " + ClientSize.Height);
+
+			XCom.LogFile.WriteLine(". overlay.Width= " + _mainViewOverlay.Width);
+			XCom.LogFile.WriteLine(". overlay.Height= " + _mainViewOverlay.Height);
+
+			XCom.LogFile.WriteLine(". overlay client.Width= " + _mainViewOverlay.ClientSize.Width);
+			XCom.LogFile.WriteLine(". overlay client.Height= " + _mainViewOverlay.ClientSize.Height);
 		}
 		#endregion
 
 
 		#region EventCalls
-		internal void OnCut(object sender, EventArgs e)
-		{
-			_mainViewOverlay.Copy();
-			_mainViewOverlay.ClearSelection();
-		}
-
-		internal void OnCopy(object sender, EventArgs e)
-		{
-			_mainViewOverlay.Copy();
-		}
-
-		internal void OnPaste(object sender, EventArgs e)
-		{
-			_mainViewOverlay.Paste();
-		}
-
-		internal void OnFill(object sender, EventArgs e)
-		{
-			_mainViewOverlay.Fill();
-		}
-
-		private void OnAnimationUpdate(object sender, EventArgs e)
-		{
-			_mainViewOverlay.Refresh();
-		}
-
 		/// <summary>
-		/// Forces an OnResize event for this Panel.
+		/// Forces an OnResize event for this Panel. Grants access for
+		/// XCMainWindow to place a call.
 		/// </summary>
-		internal void ForceResize()
+		internal void FireResize()
 		{
 			OnResize(EventArgs.Empty);
 		}
 
 		protected override void OnResize(EventArgs eventargs)
 		{
+			XCom.LogFile.WriteLine("");
+			XCom.LogFile.WriteLine("MainViewUnderlay.OnResize");
+
+			XCom.LogFile.WriteLine("underlay.Width= " + Width);
+			XCom.LogFile.WriteLine("underlay.Height= " + Height);
+
+			XCom.LogFile.WriteLine("underlay client.Width= " + ClientSize.Width);
+			XCom.LogFile.WriteLine("underlay client.Height= " + ClientSize.Height);
+
+			XCom.LogFile.WriteLine("overlay.Width= " + MainViewOverlay.Width);
+			XCom.LogFile.WriteLine("overlay.Height= " + MainViewOverlay.Height);
+
+			XCom.LogFile.WriteLine("overlay client.Width= " + MainViewOverlay.ClientSize.Width);
+			XCom.LogFile.WriteLine("overlay client.Height= " + MainViewOverlay.ClientSize.Height);
+
+
+
 			base.OnResize(eventargs);
 
-			if (Globals.AutoPckImageScale)
-				SetPanelSize();
-
-			_scrollBarVert.Value = _scrollBarVert.Minimum;
-			_scrollBarHori.Value = _scrollBarHori.Minimum;
+			_scrollBarV.Value =
+			_scrollBarH.Value = 0;
 
 			OnVerticalScroll(null, null);
 			OnHorizontalScroll(null, null);
 
-//			int h = 0;
-//			int w = 0;
-
-			_scrollBarVert.Visible = (_mainViewOverlay.Height > ClientSize.Height);
-			if (_scrollBarVert.Visible)
+			_scrollBarV.Visible = (MainViewOverlay.Height > ClientSize.Height);
+			if (_scrollBarV.Visible)
 			{
-				_scrollBarVert.Maximum = _mainViewOverlay.Height - ClientSize.Height + _scrollBarHori.Height;
-//				w = _scrollBarVert.Width;
+				_scrollBarV.Maximum = Math.Max(
+											MainViewOverlay.Height - ClientSize.Height + _scrollBarH.Height,
+											0);
 			}
 			else
-				_scrollBarHori.Width = ClientSize.Width;
+				_scrollBarH.Width = ClientSize.Width;
 
-			_scrollBarHori.Visible = (_mainViewOverlay.Width > ClientSize.Width);
-			if (_scrollBarHori.Visible)
+			_scrollBarH.Visible = (MainViewOverlay.Width > ClientSize.Width);
+			if (_scrollBarH.Visible)
 			{
-				_scrollBarHori.Maximum = Math.Max(
-											_mainViewOverlay.Width - ClientSize.Width + _scrollBarVert.Width,
-											_scrollBarHori.Minimum);
-//				h = _scrollBarHori.Height;
+				_scrollBarH.Maximum = Math.Max(
+											MainViewOverlay.Width - ClientSize.Width + _scrollBarV.Width,
+											0);
 			}
 			else
-				_scrollBarVert.Height = ClientSize.Height;
+				_scrollBarV.Height = ClientSize.Height;
 
-//			_mapView.Viewable = new Size(Width - w, Height - h);
-			_mainViewOverlay.Refresh();
+
+			if (Globals.AutoScale)
+			{
+				SetScale();
+				SetOverlaySize();
+			}
+
+			MainViewOverlay.Refresh();
+			XCom.LogFile.WriteLine("MainViewUnderlay.OnResize EXIT");
 		}
+
+		/// <summary>
+		/// Sets the scale-factor if AutoScale.
+		/// </summary>
+		internal void SetScale()
+		{
+			XCom.LogFile.WriteLine("");
+			XCom.LogFile.WriteLine("MainViewUnderlay.SetScale");
+
+			var normal = GetOverlaySizeRequired(1);
+			Globals.Scale = Math.Min(
+								(double)Width  / normal.Width,
+								(double)Height / normal.Height);
+			Globals.Scale.Clamp(
+							Globals.ScaleMinimum,
+							Globals.ScaleMaximum);
+
+			XCom.LogFile.WriteLine(". scale set to= " + Globals.Scale);
+		}
+
+		/// <summary>
+		/// Gets the required x/y size in pixels for the current MapBase as a
+		/// lozenge. Also sets the 'Origin' point and the half-width/height vals.
+		/// </summary>
+		/// <param name="scale">the current scaling factor</param>
+		/// <returns></returns>
+		internal Size GetOverlaySizeRequired(double scale)
+		{
+			XCom.LogFile.WriteLine("");
+			XCom.LogFile.WriteLine("MainViewUnderlay.GetOverlaySizeRequired");
+
+			if (MapBase != null)
+			{
+				XCom.LogFile.WriteLine(". scale= " + Globals.Scale);
+
+				_halfWidth  = (int)(MainViewOverlay.HalfWidthConst  * scale);
+				_halfHeight = (int)(MainViewOverlay.HalfHeightConst * scale);
+
+				if (_halfHeight > _halfWidth / 2) // use width
+				{
+					if (_halfWidth % 2 != 0)
+						--_halfWidth;
+
+					_halfHeight = _halfWidth / 2;
+				}
+				else // use height
+				{
+					_halfWidth = _halfHeight * 2;
+				}
+
+				HalfWidth  = _halfWidth; // set half-width/height for the Overlay.
+				HalfHeight = _halfHeight;
+
+
+				MainViewOverlay.Origin = new Point((MapBase.MapSize.Rows - 1) * _halfWidth, 0);
+
+				int width  = (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * _halfWidth;
+				int height =  MapBase.MapSize.Levs * _halfHeight * 3
+						   + (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * _halfHeight;
+
+				XCom.LogFile.WriteLine(". width= " + width);
+				XCom.LogFile.WriteLine(". height= " + height);
+
+				return new Size(width, height);
+			}
+
+			XCom.LogFile.WriteLine(". RET size empty.");
+			return Size.Empty;
+		}
+
+		/// <summary>
+		/// Sets this Panel to the size of the current Map including scaling.
+		/// </summary>
+		internal void SetOverlaySize()
+		{
+			XCom.LogFile.WriteLine("");
+			XCom.LogFile.WriteLine("MainViewUnderlay.SetOverlaySize");
+
+			if (MapBase != null)
+			{
+				XCom.LogFile.WriteLine(". scale= " + Globals.Scale);
+				var sized = GetOverlaySizeRequired(Globals.Scale);
+
+				MainViewOverlay.Width  = sized.Width  + _halfWidth; // don't cover half a lozenge at bottom or right sides.
+				MainViewOverlay.Height = sized.Height + _halfHeight;
+
+				XCom.LogFile.WriteLine(". Width= " + Width);
+				XCom.LogFile.WriteLine(". Height= " + Height);
+
+				XCMainWindow.Instance.StatusBarPrintScale();
+			}
+		}
+
 
 		private void OnVerticalScroll(object sender, ScrollEventArgs e)
 		{
-			_mainViewOverlay.Location = new Point(
-											_mainViewOverlay.Left,
-											-(_scrollBarVert.Value) + 1);
-			_mainViewOverlay.Refresh();
+			//XCom.LogFile.WriteLine("OnVerticalScroll overlay.Left= " + MainViewOverlay.Left);
+			MainViewOverlay.Location = new Point(
+												MainViewOverlay.Left,
+												1 - _scrollBarV.Value);
+			MainViewOverlay.Refresh();
 		}
 
 		private void OnHorizontalScroll(object sender, ScrollEventArgs e)
 		{
-			_mainViewOverlay.Location = new Point(
-											-(_scrollBarHori.Value),
-											_mainViewOverlay.Top);
-			_mainViewOverlay.Refresh();
-		}
-		#endregion
-
-
-		#region Methods
-		internal void SetMapBase(XCMapBase mapBase)
-		{
-			_mainViewOverlay.MapBase = mapBase; // TODO: Select the *panel*
-
-			OnResize(null);
+			//XCom.LogFile.WriteLine("OnVerticalScroll overlay.Top= " + MainViewOverlay.Top);
+			MainViewOverlay.Location = new Point(
+												-_scrollBarH.Value,
+												MainViewOverlay.Top);
+			MainViewOverlay.Refresh();
 		}
 
-		/// <summary>
-		/// Sets the scale-factor and the Panel-size.
-		/// </summary>
-		internal void SetPanelSize()
+
+		internal void OnCut(object sender, EventArgs e)
 		{
-			if (Globals.AutoPckImageScale)
-			{
-				var size = _mainViewOverlay.GetPanelSizeRequired(1.0);
+			MainViewOverlay.Copy();
+			MainViewOverlay.ClearSelection();
+		}
 
-				var width  = Width  / (double)size.Width;
-				var height = Height / (double)size.Height;
+		internal void OnCopy(object sender, EventArgs e)
+		{
+			MainViewOverlay.Copy();
+		}
 
-				Globals.PckImageScale = (width > height) ? height
-														 : width;
-				Globals.PckImageScale.Clamp(
-										Globals.MinPckImageScale,
-										Globals.MaxPckImageScale);
-			}
-			_mainViewOverlay.SetPanelSize();
+		internal void OnPaste(object sender, EventArgs e)
+		{
+			MainViewOverlay.Paste();
+		}
+
+		internal void OnFill(object sender, EventArgs e)
+		{
+			MainViewOverlay.FillSelectedTiles();
+		}
+
+		private void OnAnimationUpdate(object sender, EventArgs e)
+		{
+			MainViewOverlay.Refresh();
 		}
 		#endregion
 

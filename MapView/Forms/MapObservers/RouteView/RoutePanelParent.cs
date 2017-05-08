@@ -18,8 +18,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		public event EventHandler<RoutePanelClickedEventArgs> RoutePanelClickedEvent;
 
 
+		#region Fields & Properties
 		private XCMapFile _mapFile;
-		internal XCMapFile MapFile
+		internal protected XCMapFile MapFile
 		{
 			get { return _mapFile; }
 			set
@@ -29,20 +30,20 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		protected Point ClickPoint
+		internal protected Point ClickPoint
 		{ get; set; }
 
 		/// <summary>
 		/// The top-left point of the panel.
 		/// </summary>
-		protected Point Origin
+		internal protected Point Origin
 		{ get; set; }
 
 		private int _drawAreaWidth = 8;
 		/// <summary>
 		/// Half the horizontal width of a tile-lozenge.
 		/// </summary>
-		protected int DrawAreaWidth
+		internal protected int DrawAreaWidth
 		{
 			get { return _drawAreaWidth; }
 		}
@@ -50,42 +51,43 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Half the vertical height of a tile-lozenge.
 		/// </summary>
-		protected int DrawAreaHeight
+		internal protected int DrawAreaHeight
 		{
 			get { return _drawAreaHeight; }
 		}
 
 		private readonly Dictionary<string, Pen> _pens = new Dictionary<string, Pen>();
-		internal Dictionary<string, Pen> RoutePens
+		internal protected Dictionary<string, Pen> RoutePens
 		{
 			get { return _pens; }
 		}
 		private readonly Dictionary<string, SolidBrush> _brushes = new Dictionary<string, SolidBrush>();
-		internal Dictionary<string, SolidBrush> RouteBrushes
+		internal protected Dictionary<string, SolidBrush> RouteBrushes
 		{
 			get { return _brushes; }
 		}
 
 		private int _opacity = 255; // cf. RouteView.LoadControl0Settings()
-		internal int Opacity
+		internal protected int Opacity
 		{
 			get { return _opacity; }
 			set { _opacity = value.Clamp(0, 255); }
 		}
 
 		private bool _showOverlay = true; // cf. RouteView.LoadControl0Settings()
-		internal bool ShowOverlay
+		internal protected bool ShowOverlay
 		{
 			get { return _showOverlay; }
 			set { _showOverlay = value; }
 		}
 
 		private bool _showPriorityBars = true; // cf. RouteView.LoadControl0Settings()
-		internal bool ShowPriorityBars
+		internal protected bool ShowPriorityBars
 		{
 			get { return _showPriorityBars; }
 			set { _showPriorityBars = value; }
 		}
+		#endregion
 
 
 		#region cTor
@@ -102,83 +104,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
-		/// <summary>
-		/// Gets the tile contained at (x,y) in local screen coordinates.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <returns>null if (x,y) is an invalid location for a tile</returns>
-		internal protected XCMapTile GetTile(int x, int y)	// question: why can RouteView access this
-		{													// it's 'protected'
-			if (_mapFile != null)
-			{
-				Point pt = ConvertCoordsDiamond(x, y);
-				if (   pt.Y >= 0 && pt.Y < _mapFile.MapSize.Rows
-					&& pt.X >= 0 && pt.X < _mapFile.MapSize.Cols)
-				{
-					return (XCMapTile)_mapFile[pt.Y, pt.X];
-				}
-			}
-			return null;
-		}
-
-		internal protected Point GetTileCoordinates(int x, int y)
-		{
-			Point pt = ConvertCoordsDiamond(x, y);
-			if (   pt.Y >= 0 && pt.Y < _mapFile.MapSize.Rows
-				&& pt.X >= 0 && pt.X < _mapFile.MapSize.Cols)
-			{
-				return pt;
-			}
-			return new Point(-1, -1);
-		}
-
-		internal protected void ClearClickPoint()
-		{
-			ClickPoint = new Point(-1, -1);
-		}
-
-		protected override void OnMouseDown(MouseEventArgs e)
-		{
-			if (_mapFile != null && RoutePanelClickedEvent != null)
-			{
-				var pt = ConvertCoordsDiamond(e.X, e.Y);
-				if (   pt.Y >= 0 && pt.Y < _mapFile.MapSize.Rows
-					&& pt.X >= 0 && pt.X < _mapFile.MapSize.Cols)
-				{
-					var tile = _mapFile[pt.Y, pt.X];
-					if (tile != null)
-					{
-						ClickPoint = pt;
-
-						_mapFile.Location = new MapLocation(
-														ClickPoint.Y,
-														ClickPoint.X,
-														_mapFile.Level);
-
-						MainViewUnderlay.Instance.MainViewOverlay.SetDrag(pt, pt);
-
-						var args = new RoutePanelClickedEventArgs();
-						args.MouseEventArgs = e;
-						args.ClickedTile = tile;
-						args.ClickedLocation = new MapLocation(
-															ClickPoint.Y,
-															ClickPoint.X,
-															_mapFile.Level);
-						RoutePanelClickedEvent(this, args);
-
-						Refresh();
-					}
-				}
-			}
-		}
-
-		protected override void OnMouseUp(MouseEventArgs e)
-		{
-			MainViewUnderlay.Instance.MainViewOverlay.Refresh();	// For some whack reason, this is needed in order to refresh
-		}															// MainView's selector iff a Map has just been loaded *and*
-																	// RouteView is clicked at location (0,0).
-
+		#region EventCalls
 		protected override void OnResize(EventArgs e)
 		{
 			if (_mapFile != null)
@@ -203,18 +129,97 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private Point ConvertCoordsDiamond(int ptX, int ptY)
+		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			int x = ptX - Origin.X;
-			int y = ptY - Origin.Y;
+			if (_mapFile != null && RoutePanelClickedEvent != null)
+			{
+				var loc = GetTileLocation(e.X, e.Y);
+				if (loc.X != -1)
+				{
+//					var tile = _mapFile[loc.Y, loc.X];
+//					if (tile != null) // this had better not be null ...
+//					{
+					ClickPoint = loc;
 
-			double x1 = ((double)x / (_drawAreaWidth  * 2))
-					  + ((double)y / (_drawAreaHeight * 2));
-			double x2 = -((double)x - (double)y * 2) / (_drawAreaWidth * 2);
+					_mapFile.Location = new MapLocation(
+													loc.Y,
+													loc.X,
+													_mapFile.Level);
 
-			return new Point(
-						(int)Math.Floor(x1),
-						(int)Math.Floor(x2));
+					MainViewUnderlay.Instance.MainViewOverlay.FireMouseDrag(loc, loc);
+
+					var args = new RoutePanelClickedEventArgs();
+					args.MouseEventArgs  = e;
+					args.ClickedTile     = _mapFile[loc.Y, loc.X];
+//					args.ClickedTile     = tile;
+					args.ClickedLocation = new MapLocation(
+														loc.Y,
+														loc.X,
+														_mapFile.Level);
+					RoutePanelClickedEvent(this, args);
+
+					Refresh();
+				}
+//				}
+			}
 		}
+
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			MainViewUnderlay.Instance.MainViewOverlay.Refresh();	// For some whack reason, this is needed in order to refresh
+		}															// MainView's selector iff a Map has just been loaded *and*
+																	// RouteView is clicked at location (0,0).
+		#endregion
+
+
+		#region Methods
+		internal protected void ClearClickPoint()
+		{
+			ClickPoint = new Point(-1, -1);
+		}
+
+		/// <summary>
+		/// Gets the tile contained at (x,y) in local screen coordinates.
+		/// </summary>
+		/// <param name="x">the x-position of the mouse-cursor</param>
+		/// <param name="y">the y-position of the mouse-cursor</param>
+		/// <returns>null if (x,y) is an invalid location for a tile</returns>
+		internal protected XCMapTile GetTile(int x, int y)
+		{
+			var loc = GetTileLocation(x, y);
+			return (loc.X != -1) ? _mapFile[loc.Y, loc.X] as XCMapTile
+								 : null;
+		}
+
+		/// <summary>
+		/// Gets the location of the mouse-cursor.
+		/// </summary>
+		/// <param name="x">the x-position of the mouse-cursor</param>
+		/// <param name="y">the y-position of the mouse-cursor</param>
+		/// <returns></returns>
+		internal protected Point GetTileLocation(int x, int y)
+		{
+			if (_mapFile != null)
+			{
+				x -= Origin.X;
+				y -= Origin.Y;
+
+				double xd = ((double)x / (_drawAreaWidth  * 2))
+						  + ((double)y / (_drawAreaHeight * 2));
+				double yd = ((double)y * 2 - (double)x) / (_drawAreaWidth * 2);
+
+				var point = new Point(
+									(int)Math.Floor(xd),
+									(int)Math.Floor(yd));
+
+				if (   point.Y > -1 && point.Y < _mapFile.MapSize.Rows
+					&& point.X > -1 && point.X < _mapFile.MapSize.Cols)
+				{
+					return point;
+				}
+			}
+			return new Point(-1, -1);
+		}
+		#endregion
 	}
 }

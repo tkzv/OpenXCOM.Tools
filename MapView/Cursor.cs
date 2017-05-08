@@ -69,8 +69,8 @@ namespace MapView
 			g.DrawImage(
 					image,
 					x, y,
-					(int)(image.Width  * Globals.PckImageScale),
-					(int)(image.Height * Globals.PckImageScale));
+					(int)(image.Width  * Globals.Scale),
+					(int)(image.Height * Globals.Scale));
 		}
 
 		/// <summary>
@@ -120,8 +120,8 @@ namespace MapView
 			g.DrawImage(
 					image,
 					x, y,
-					(int)(image.Width  * Globals.PckImageScale),
-					(int)(image.Height * Globals.PckImageScale));
+					(int)(image.Width  * Globals.Scale),
+					(int)(image.Height * Globals.Scale));
 		}
 		#endregion
 	}

@@ -53,6 +53,7 @@ namespace MapView
 			this.tvMaps = new System.Windows.Forms.TreeView();
 			this.sfdSaveDialog = new System.Windows.Forms.SaveFileDialog();
 			this.ssMain = new System.Windows.Forms.StatusStrip();
+			this.tsslScale = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tsslMap = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tsslDimensions = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tsslPosition = new System.Windows.Forms.ToolStripStatusLabel();
@@ -123,7 +124,7 @@ namespace MapView
 			// 
 			this.miResize.Index = 4;
 			this.miResize.Text = "Resize map";
-			this.miResize.Click += new System.EventHandler(this.OnResizeClick);
+			this.miResize.Click += new System.EventHandler(this.OnMapResizeClick);
 			// 
 			// miHq
 			// 
@@ -218,7 +219,7 @@ namespace MapView
 			this.tvMaps.Dock = System.Windows.Forms.DockStyle.Left;
 			this.tvMaps.Location = new System.Drawing.Point(0, 0);
 			this.tvMaps.Name = "tvMaps";
-			this.tvMaps.Size = new System.Drawing.Size(249, 454);
+			this.tvMaps.Size = new System.Drawing.Size(180, 454);
 			this.tvMaps.TabIndex = 0;
 			// 
 			// sfdSaveDialog
@@ -231,14 +232,24 @@ namespace MapView
 			// 
 			this.ssMain.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.ssMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.tsslScale,
 			this.tsslMap,
 			this.tsslDimensions,
 			this.tsslPosition});
-			this.ssMain.Location = new System.Drawing.Point(257, 432);
+			this.ssMain.Location = new System.Drawing.Point(188, 432);
 			this.ssMain.Name = "ssMain";
-			this.ssMain.Size = new System.Drawing.Size(375, 22);
+			this.ssMain.Size = new System.Drawing.Size(444, 22);
 			this.ssMain.TabIndex = 2;
 			this.ssMain.Text = "statusStrip1";
+			// 
+			// tsslScale
+			// 
+			this.tsslScale.AutoSize = false;
+			this.tsslScale.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+			this.tsslScale.Name = "tsslScale";
+			this.tsslScale.Size = new System.Drawing.Size(90, 17);
 			// 
 			// tsslMap
 			// 
@@ -248,7 +259,7 @@ namespace MapView
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
 			this.tsslMap.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tsslMap.Name = "tsslMap";
-			this.tsslMap.Size = new System.Drawing.Size(180, 17);
+			this.tsslMap.Size = new System.Drawing.Size(159, 17);
 			this.tsslMap.Spring = true;
 			// 
 			// tsslDimensions
@@ -279,19 +290,19 @@ namespace MapView
 			// tscPanel.ContentPanel
 			// 
 			this.tscPanel.ContentPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-			this.tscPanel.ContentPanel.Size = new System.Drawing.Size(375, 407);
+			this.tscPanel.ContentPanel.Size = new System.Drawing.Size(444, 407);
 			this.tscPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			// 
 			// tscPanel.LeftToolStripPanel
 			// 
 			this.tscPanel.LeftToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.tscPanel.Location = new System.Drawing.Point(257, 0);
+			this.tscPanel.Location = new System.Drawing.Point(188, 0);
 			this.tscPanel.Name = "tscPanel";
 			// 
 			// tscPanel.RightToolStripPanel
 			// 
 			this.tscPanel.RightToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.tscPanel.Size = new System.Drawing.Size(375, 432);
+			this.tscPanel.Size = new System.Drawing.Size(444, 432);
 			this.tscPanel.TabIndex = 4;
 			// 
 			// tscPanel.TopToolStripPanel
@@ -360,13 +371,13 @@ namespace MapView
 			this.tsbAutoZoom.Name = "tsbAutoZoom";
 			this.tsbAutoZoom.Size = new System.Drawing.Size(23, 22);
 			this.tsbAutoZoom.Text = "Auto Zoom";
-			this.tsbAutoZoom.Click += new System.EventHandler(this.OnAutoZoomClick);
+			this.tsbAutoZoom.Click += new System.EventHandler(this.OnZoomAutoScaleClick);
 			// 
 			// csSplitter
 			// 
 			this.csSplitter.BorderStyle3D = System.Windows.Forms.Border3DStyle.Flat;
 			this.csSplitter.ControlToHide = this.tvMaps;
-			this.csSplitter.Location = new System.Drawing.Point(249, 0);
+			this.csSplitter.Location = new System.Drawing.Point(180, 0);
 			this.csSplitter.MinimumSize = new System.Drawing.Size(5, 5);
 			this.csSplitter.Name = "cSplitList";
 			this.csSplitter.Size = new System.Drawing.Size(8, 454);
@@ -437,6 +448,7 @@ namespace MapView
 		private System.Windows.Forms.ToolStripButton tsbZoomIn;
 		private System.Windows.Forms.ToolStripButton tsbZoomOut;
 		private System.Windows.Forms.ToolStripButton tsbAutoZoom;
+		private System.Windows.Forms.ToolStripStatusLabel tsslScale;
 
 		#endregion
 	}

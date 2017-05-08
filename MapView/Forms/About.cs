@@ -38,8 +38,12 @@ namespace MapView
 
 		private void OnShown(object sender, EventArgs e)
 		{
-			string before = String.Format("{0:n0}", GC.GetTotalMemory(false));
-//			string after  = String.Format("{0:n0}", GC.GetTotalMemory(true));
+			string before = String.Format(
+										System.Globalization.CultureInfo.CurrentCulture,
+										"{0:n0}", GC.GetTotalMemory(false));
+//			string after  = String.Format(
+//										System.Globalization.CultureInfo.CurrentCulture,
+//										"{0:n0}", GC.GetTotalMemory(true));
 
 //			Text += " - " + before + " \u2192 " + after + " bytes"; // '\u2192' = right arrow.
 			Text += " - " + before + " bytes allocated";

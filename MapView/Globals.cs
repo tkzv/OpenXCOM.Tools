@@ -5,21 +5,24 @@ namespace MapView
 {
 	internal static class Globals
 	{
-		internal const double MinPckImageScale = 0.3;
-		internal const double MaxPckImageScale = 2.0;
+		internal const double ScaleMinimum = 0.3;
+		internal const double ScaleMaximum = 2.2;
 
-		private static double _pckImageScale = 1.0;
-		internal static double PckImageScale
+		private static double _scale = 1.0;
+		/// <summary>
+		/// The scale-factor for sprites and clicks in MainView only.
+		/// </summary>
+		internal static double Scale
 		{
-			get { return _pckImageScale; }
-			set { _pckImageScale = value; }
+			get { return _scale; }
+			set { _scale = value; }
 		}
 
-		private static bool _autoPckImageScale = true;
-		internal static bool AutoPckImageScale
+		private static bool _autoScale = true;
+		internal static bool AutoScale
 		{
-			get { return _autoPckImageScale; }
-			set { _autoPckImageScale = value; }
+			get { return _autoScale; }
+			set { _autoScale = value; }
 		}
 
 //		public static readonly string RegistryKey = "MapView";

@@ -285,7 +285,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			else
 				lblOverId.Text = String.Empty;
 
-			_routePanel.Pos = new Point(args.X, args.Y);
+			_routePanel.CursorPosition = new Point(args.X, args.Y);
 			_routePanel.Refresh(); // mouseover refresh for RouteView.
 		}
 

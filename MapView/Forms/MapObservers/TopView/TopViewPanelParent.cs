@@ -12,7 +12,7 @@ using XCom.Interfaces.Base;
 namespace MapView.Forms.MapObservers.TopViews
 {
 	/// <summary>
-	/// A base class for TopViewPanel.
+	/// The base class for TopViewPanel.
 	/// </summary>
 	internal class TopViewPanelParent
 		:
@@ -24,18 +24,18 @@ namespace MapView.Forms.MapObservers.TopViews
 //		private readonly GraphicsPath _lozSel      = new GraphicsPath();
 
 		[Browsable(false), DefaultValue(null)]
-		internal protected Dictionary<string, Pen> TopPens // question: why can TopView access this
+		internal protected Dictionary<string, Pen> TopPens
 		{ get; set; }
 
 		[Browsable(false), DefaultValue(null)]
-		internal protected Dictionary<string, SolidBrush> TopBrushes // question: why can TopView access this
+		internal protected Dictionary<string, SolidBrush> TopBrushes
 		{ get; set; }
 
 
 		private int _col = -1; // these track the location of the mouse-cursor
 		private int _row = -1;
 		
-		private int _xOffset;
+		private int _xOffset; // these track the offset between the panel border and the grid.
 		private int _yOffset;
 
 
@@ -46,8 +46,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 //		private int _lozHeightMin = 4;
-//		internal protected int TileLozengeHeight	// question: why can TopView access this
-//		{											// it's 'protected'
+//		internal protected int TileLozengeHeight
+//		{
 //			get { return _lozHeightMin; }
 //			set
 //			{
@@ -270,6 +270,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				int halfWidth  = _blobService.HalfWidth;
 				int halfHeight = _blobService.HalfHeight;
 
+				// draw tile-blobs ->
 				for (int
 						r = 0,
 							startX = _xOffset,
@@ -294,31 +295,35 @@ namespace MapView.Forms.MapObservers.TopViews
 					}
 				}
 
-				for (int i = 0; i <= MapBase.MapSize.Rows; ++i)
+				// draw grid-lines ->
+				for (int i = 0; i <= MapBase.MapSize.Rows; ++i) // draw horizontal grid-lines (ie. upperleft to lowerright)
 					backBuffer.DrawLine(
 									TopPens[TopView.GridColor],
 									_xOffset - i * halfWidth,
 									_yOffset + i * halfHeight,
-									(MapBase.MapSize.Cols - i) * halfWidth  + _xOffset,
-									(MapBase.MapSize.Cols + i) * halfHeight + _yOffset);
+									_xOffset + (MapBase.MapSize.Cols - i) * halfWidth,
+									_yOffset + (MapBase.MapSize.Cols + i) * halfHeight);
 
-				for (int i = 0; i <= MapBase.MapSize.Cols; ++i)
+				for (int i = 0; i <= MapBase.MapSize.Cols; ++i) // draw vertical grid-lines (ie. lowerleft to upperright)
 					backBuffer.DrawLine(
 									TopPens[TopView.GridColor],
 									_xOffset + i * halfWidth,
 									_yOffset + i * halfHeight,
-									i * halfWidth  - MapBase.MapSize.Rows * halfWidth  + _xOffset,
-									i * halfHeight + MapBase.MapSize.Rows * halfHeight + _yOffset);
+									_xOffset + i * halfWidth  - MapBase.MapSize.Rows * halfWidth,
+									_yOffset + i * halfHeight + MapBase.MapSize.Rows * halfHeight);
 
+
+				// draw tiles-selected lozenge ->
 				if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick)
 					backBuffer.DrawPath(TopPens[TopView.SelectedColor], _lozSelected);
 
+				// draw the selector lozenge ->
 				if (   _col > -1 && _col < MapBase.MapSize.Cols
 					&& _row > -1 && _row < MapBase.MapSize.Rows)
 				{
 					PathSelectorLozenge(
-									(_col - _row) * halfWidth  + _xOffset,
-									(_col + _row) * halfHeight + _yOffset);
+									_xOffset + (_col - _row) * halfWidth,
+									_yOffset + (_col + _row) * halfHeight);
 					backBuffer.DrawPath(TopPens[TopView.SelectorColor], _lozSelector);
 				}
 			}
@@ -386,7 +391,7 @@ namespace MapView.Forms.MapObservers.TopViews
 													MapBase.Level);
 
 					_isMouseDrag = true;
-					MainViewUnderlay.Instance.MainViewOverlay.SetDrag(pt, pt);
+					MainViewUnderlay.Instance.MainViewOverlay.FireMouseDrag(pt, pt);
 				}
 			}
 		}
@@ -412,7 +417,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				if (_isMouseDrag)
 				{
 					var overlay = MainViewUnderlay.Instance.MainViewOverlay;
-					overlay.SetDrag(overlay.DragStart, pt);
+					overlay.FireMouseDrag(overlay.DragStart, pt);
 				}
 
 				Refresh(); // mouseover refresh for TopView.

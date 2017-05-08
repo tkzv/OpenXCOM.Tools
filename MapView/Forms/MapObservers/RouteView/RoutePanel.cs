@@ -15,9 +15,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			RoutePanelParent
 	{
 		#region Fields & Properties
-		private Point _pos = new Point(-1, -1);
-		public Point Pos
+		private Point _pos = new Point(-1, -1); // TODO: use 'null' instead of (-1,-1) here and elsewhere.
+		/// <summary>
+		/// Tracks the screen-position of the mouse cursor.
+		/// </summary>
+		public Point CursorPosition
 		{
+			get { return _pos; }
 			set { _pos = value; }
 		}
 
@@ -52,7 +56,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				_blobService.HalfWidth  = DrawAreaWidth;
 				_blobService.HalfHeight = DrawAreaHeight;
 
-				DrawWallsAndContent();
+				DrawBlobs();
 
 				if (ClickPoint.X > -1 && ClickPoint.Y > -1)
 				{
@@ -61,7 +65,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				else
 					_nodeSelected = null;
 
-				DrawUnselectedLinks();
+				DrawLinks();
 
 				if (_nodeSelected != null)
 					DrawLinkLines(
@@ -101,7 +105,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Draws any wall and/or content indicators.
 		/// </summary>
-		private void DrawWallsAndContent()
+		private void DrawBlobs()
 		{
 			if (_toolWall == null)
 				_toolWall = new ColorTools(RoutePens[RouteView.WallColor]);
@@ -149,7 +153,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Draws unselected link-lines.
 		/// </summary>
-		private void DrawUnselectedLinks()
+		private void DrawLinks()
 		{
 			var pen = RoutePens[RouteView.UnselectedLinkColor];
 
@@ -543,10 +547,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void DrawInfoOverlay()
 		{
-			var tile = GetTile(_pos.X, _pos.Y);
+			var tile = GetTile(CursorPosition.X, CursorPosition.Y);
 			if (tile != null)
 			{
-				var pt = GetTileCoordinates(_pos.X, _pos.Y);
+				var pt = GetTileLocation(CursorPosition.X, CursorPosition.Y);
 				const string textTile1 = ""; // "position" or "location" or ... "pos" or "loc" ...
 				string textTile2 = "c " + pt.X + "  r " + pt.Y + "  L " + (MapFile.MapSize.Levs - MapFile.Level);
 
@@ -611,17 +615,17 @@ namespace MapView.Forms.MapObservers.RouteViews
 //				int textHeight = TextRenderer.MeasureText("X", font).Height;
 				int textHeight = (int)_graphics.MeasureString("X", _fontOverlay).Height;
 				var overlay = new Rectangle(
-										_pos.X + 18, _pos.Y,
+										CursorPosition.X + 18, CursorPosition.Y,
 										textWidth1 + Separator + textWidth2 + 8, textHeight + 8);
 
 				if (tile.Node != null)
 					overlay.Height += textHeight * 4;
 
 				if (overlay.X + overlay.Width > ClientRectangle.Width)
-					overlay.X = _pos.X - overlay.Width - 8;
+					overlay.X = CursorPosition.X - overlay.Width - 8;
 
 				if (overlay.Y + overlay.Height > ClientRectangle.Height)
-					overlay.Y = _pos.Y - overlay.Height;
+					overlay.Y = CursorPosition.Y - overlay.Height;
 
 				_graphics.FillRectangle(new SolidBrush(Color.FromArgb(180, Color.DarkBlue)), overlay);
 				_graphics.FillRectangle(
