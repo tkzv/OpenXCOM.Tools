@@ -31,7 +31,7 @@ namespace XCom
 				_pal = value;
 
 				foreach (XCImage image in this)
-					image.Image.Palette = _pal.Colors;
+					image.Sprite.Palette = _pal.Colors;
 			}
 		}
 

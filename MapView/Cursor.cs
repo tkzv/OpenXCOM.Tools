@@ -36,7 +36,7 @@ namespace MapView
 			_pckPack = pckPack;
 
 			foreach (PckImage image in pckPack)
-				image.Image.MakeTransparent(pckPack.Pal.Transparent);
+				image.Sprite.MakeTransparent(pckPack.Pal.Transparent);
 		}
 		#endregion
 
@@ -69,7 +69,7 @@ namespace MapView
 				id = 0;
 			} */
 
-			var image = _pckPack[id].Image;
+			var image = _pckPack[id].Sprite;
 			g.DrawImage(
 					image,
 					x, y,
@@ -126,7 +126,7 @@ namespace MapView
 				}
 			} */
 
-			var image = _pckPack[id].Image;
+			var image = _pckPack[id].Sprite;
 			g.DrawImage(
 					image,
 					x, y,

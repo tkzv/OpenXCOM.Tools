@@ -305,7 +305,7 @@ namespace MapView.Forms.MapObservers.TileViews
 							g.FillRectangle((SolidBrush)_specialTypeBrushes[specialType], rect);
 
 						g.DrawImage(											// then draw the sprite itself
-								tile[MainViewUnderlay.AniStep].Image,
+								tile[MainViewUnderlay.AniStep].Sprite,
 								left + SpriteMargin,
 								top  + SpriteMargin - tile.Record.TileOffset);
 
@@ -325,7 +325,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 						if (Globals.ExtraTiles != null)
 							g.DrawImage(
-									Globals.ExtraTiles[0].Image,
+									Globals.ExtraTiles[0].Sprite,
 									left, top);
 					}
 

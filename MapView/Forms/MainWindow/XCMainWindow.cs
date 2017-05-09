@@ -1043,7 +1043,7 @@ namespace MapView
 			tsbAutoZoom.Checked = false;
 
 			_mainViewUnderlay.SetOverlaySize();
-			_mainViewUnderlay.UpdateView();
+			_mainViewUnderlay.UpdateScrollers();
 
 			Refresh();
 		}
@@ -1057,10 +1057,8 @@ namespace MapView
 			{
 				_mainViewUnderlay.SetScale();
 				_mainViewUnderlay.SetOverlaySize();
-				_mainViewUnderlay.UpdateView();
-
-				Refresh();
 			}
+			_mainViewUnderlay.UpdateScrollers();
 		}
 
 		/// <summary>

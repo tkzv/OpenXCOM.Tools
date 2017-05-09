@@ -237,7 +237,7 @@ namespace XCom.Interfaces.Base
 							foreach (var tileBase in tiles)
 							{
 								var tile = (XCTile)tileBase;
-								XCBitmap.Draw(tile[0].Image, b, x, y - tile.Record.TileOffset);
+								XCBitmap.Draw(tile[0].Sprite, b, x, y - tile.Record.TileOffset);
 							}
 
 							XCBitmap.FireLoadingEvent(i, (MapSize.Levs - Level) * MapSize.Rows * MapSize.Cols);

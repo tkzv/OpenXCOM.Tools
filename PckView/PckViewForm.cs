@@ -201,7 +201,7 @@ namespace PckView
 					sfdBmpSingle.FileName = _viewPanel.SpritePack.Label + selected.Image.FileId;
 
 					if (sfdBmpSingle.ShowDialog() == DialogResult.OK)
-						XCBitmap.Save(sfdBmpSingle.FileName, selected.Image.Image);
+						XCBitmap.Save(sfdBmpSingle.FileName, selected.Image.Sprite);
 				}
 			}
 		}
@@ -291,7 +291,7 @@ namespace PckView
 				var selected = _viewPanel.SelectedSprites[_viewPanel.SelectedSprites.Count - 1];
 				if (selected != null)
 				{
-					_editor.Image = selected.Image.Clone();
+					_editor.Sprite = selected.Image.Clone();
 
 					if (!_editor.Visible)
 					{
@@ -590,7 +590,7 @@ namespace PckView
 																System.Globalization.CultureInfo.InvariantCulture,
 																"{0:" + zeros + "}",
 																xc.FileId) + "." + ext,
-								xc.Image);
+								xc.Sprite);
 						//Console.WriteLine("---");
 						progress.Value = xc.FileId;
 					}

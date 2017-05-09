@@ -28,9 +28,9 @@ namespace PckView
 			}
 		}
 
-		internal XCImage Image
+		internal XCImage Sprite
 		{
-			set { _editorPanel.Image = value; }
+			set { _editorPanel.Sprite = value; }
 		}
 		#endregion
 

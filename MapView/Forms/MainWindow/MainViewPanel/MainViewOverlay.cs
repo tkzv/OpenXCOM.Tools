@@ -258,7 +258,8 @@ namespace MapView
 				for (int col = start.X; col <= end.X; ++col)
 				for (int row = start.Y; row <= end.Y; ++row)
 				{
-					_copied[row - start.Y, col - start.X] = MapBase[row, col];
+					_copied[row - start.Y,
+							col - start.X] = MapBase[row, col];
 				}
 			}
 		}
@@ -282,7 +283,8 @@ namespace MapView
 					{
 						if ((tile = MapBase[row, col] as XCMapTile) != null)
 						{
-							if ((tileCopy = _copied[row - DragStart.Y, col - DragStart.X] as XCMapTile) != null)
+							if ((tileCopy = _copied[row - DragStart.Y,
+													col - DragStart.X] as XCMapTile) != null)
 							{
 								tile.Ground  = tileCopy.Ground;
 								tile.Content = tileCopy.Content;
@@ -527,6 +529,10 @@ namespace MapView
 
 
 		#region Draw
+		/// <summary>
+		/// Draws the Map in MainView.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
@@ -590,16 +596,14 @@ namespace MapView
 													HalfWidth,
 													HalfHeight);
 
-							if (lev == MapBase.Level || MapBase[row, col, lev].DrawAbove)
+							if (lev == MapBase.Level || MapBase[row, col, lev].DrawAbove) // TODO: investigate DrawAbove.
 							{
 								var tile = (XCMapTile)MapBase[row, col, lev];
-								if (_graySelection && FirstClick
-									&& (isClicked || dragRect.IntersectsWith(tileRect)))
-								{
-									DrawTileGray(tile, x, y);
-								}
-								else
-									DrawTile(tile, x, y);
+
+								bool isGray = FirstClick && lev == MapBase.Level && _graySelection
+										   && (isClicked || dragRect.IntersectsWith(tileRect));
+
+								DrawTile(tile, x, y, isGray);
 							}
 
 							if (FirstClick && isClicked && Cuboid != null)
@@ -633,6 +637,9 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// Draws the grid-lines and the grid-sheet.
+		/// </summary>
 		private void DrawGrid()
 		{
 			int x = Origin.X + HalfWidth;
@@ -676,94 +683,88 @@ namespace MapView
 								y + y1 + HalfHeight * i);
 		}
 
-//		private static void DrawTile(
+		/// <summary>
+		/// Draws the tileparts in the Tile.
+		/// </summary>
+		/// <param name="tile"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="isGray"></param>
 		private void DrawTile(
 				XCMapTile tile,
-				int x, int y)
-		{
-			var topView = ViewerFormsManager.TopView.Control;
-
-			if (topView.GroundVisible)
-			{
-				var baseTile = tile.Ground;
-				if (baseTile != null)
-					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
-			}
-
-			if (topView.WestVisible)
-			{
-				var baseTile = tile.West;
-				if (baseTile != null)
-					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
-			}
-
-			if (topView.NorthVisible)
-			{
-				var baseTile = tile.North;
-				if (baseTile != null)
-					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
-			}
-
-			if (topView.ContentVisible)
-			{
-				var baseTile = tile.Content;
-				if (baseTile != null)
-					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
-			}
-		}
-
-//		private static void DrawTileGray(
-		private void DrawTileGray(
-				XCMapTile tile,
-				int x, int y)
-		{
-			var topView = ViewerFormsManager.TopView.Control;
-
-			if (topView.GroundVisible)
-			{
-				var baseTile = tile.Ground;
-				if (baseTile != null)
-					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
-			}
-
-			if (topView.WestVisible)
-			{
-				var baseTile = tile.West;
-				if (baseTile != null)
-					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
-			}
-
-			if (topView.NorthVisible)
-			{
-				var baseTile = tile.North;
-				if (baseTile != null)
-					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
-			}
-
-			if (topView.ContentVisible)
-			{
-				var baseTile = tile.Content;
-				if (baseTile != null)
-					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
-			}
-		}
-
-//		private static void DrawTileSprite(
-		private void DrawTileSprite(
 				int x, int y,
-				TileBase tile,
-				Image sprite)
+				bool isGray)
 		{
-			_graphics.DrawImage(
-							sprite,
-							x,
-							(int)(y - tile.Record.TileOffset * Globals.Scale),
-							HalfWidth  * 2, // NOTE: the values for width and height are based on a sprite that's 32x40.
-							HalfHeight * 5);
-//							(int)(sprite.Width  * Globals.Scale),
-//							(int)(sprite.Height * Globals.Scale));
+			// NOTE: The width and height args are based on a sprite that's 32x40.
+			// Going back to a universal sprite-size would do this:
+			//   (int)(sprite.Width  * Globals.Scale)
+			//   (int)(sprite.Height * Globals.Scale)
+			// with its attendent consequences.
+
+			TileBase tileBase = null;
+
+			var topView = ViewerFormsManager.TopView.Control;
+			if (topView.GroundVisible)
+			{
+				if ((tileBase = tile.Ground) != null)
+				{
+					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
+										  : tileBase[MainViewUnderlay.AniStep].Sprite;
+					_graphics.DrawImage(
+									sprite,
+									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale), // TODO: use a factor of HalfHeight ....
+									HalfWidth  * 2,
+									HalfHeight * 5);
+				}
+			}
+
+			if (topView.WestVisible)
+			{
+				if ((tileBase = tile.West) != null)
+				{
+					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
+										  : tileBase[MainViewUnderlay.AniStep].Sprite;
+					_graphics.DrawImage(
+									sprite,
+									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale),
+									HalfWidth  * 2,
+									HalfHeight * 5);
+				}
+			}
+
+			if (topView.NorthVisible)
+			{
+				if ((tileBase = tile.North) != null)
+				{
+					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
+										  : tileBase[MainViewUnderlay.AniStep].Sprite;
+					_graphics.DrawImage(
+									sprite,
+									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale),
+									HalfWidth  * 2,
+									HalfHeight * 5);
+				}
+			}
+
+			if (topView.ContentVisible)
+			{
+				if ((tileBase = tile.Content) != null)
+				{
+					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
+										  : tileBase[MainViewUnderlay.AniStep].Sprite;
+					_graphics.DrawImage(
+									sprite,
+									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale),
+									HalfWidth  * 2,
+									HalfHeight * 5);
+				}
+			}
 		}
 
+		/// <summary>
+		/// Draws a red lozenge around any selected Tiles.
+		/// </summary>
+		/// <param name="dragRect"></param>
 		private void DrawSelectedLozenge(Rectangle dragRect)
 		{
 			var top    = GetScreenCoordinates(new Point(dragRect.X,     dragRect.Y));

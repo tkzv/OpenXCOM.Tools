@@ -462,7 +462,7 @@ namespace PckView
 									_spriteHeight - 1);
 
 					g.DrawImage(
-							SpritePack[id].Image,
+							SpritePack[id].Sprite,
 							tileX * _spriteWidth  + SpriteMargin,
 							tileY * _spriteHeight + SpriteMargin + _startY);
 				}

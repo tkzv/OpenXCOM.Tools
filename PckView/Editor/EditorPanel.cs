@@ -12,14 +12,13 @@ namespace PckView
 		:
 			Panel
 	{
-		#region Properties
-
-		private XCImage _image;
-		internal XCImage Image
+		#region Fields & Properties
+		private XCImage _sprite;
+		internal XCImage Sprite
 		{
 			set
 			{
-				_image = value;
+				_sprite = value;
 				Refresh();
 			}
 		}
@@ -30,9 +29,9 @@ namespace PckView
 			set
 			{
 				_palette = value;
-				if (_image != null)
+				if (_sprite != null)
 				{
-					_image.Image.Palette = _palette.Colors;
+					_sprite.Sprite.Palette = _palette.Colors;
 					Refresh();
 				}
 			}
@@ -48,12 +47,35 @@ namespace PckView
 			}
 		}
 
+		private const int Square = 1;
+
+		private int _scale = 10;
+		internal int ScaleFactor
+		{
+			set
+			{
+				_scale = value;
+				Refresh();
+			}
+		}
+		#endregion
+
+
+		#region Static
+		internal static int PreferredWidth
+		{
+			get { return PckImage.Width * 10; }
+		}
+
+		internal static int PreferredHeight
+		{
+			get { return PckImage.Height * 10; }
+		}
 		#endregion
 
 
 		#region cTor
-
-		internal EditorPanel(XCImage image)
+		internal EditorPanel(XCImage sprite)
 		{
 			// form level code to fix flicker
 //			protected override CreateParams CreateParams
@@ -84,8 +106,11 @@ namespace PckView
 				   | ControlStyles.ResizeRedraw, true);
 //			UpdateStyles();
 
-			_image = image;
+			_sprite = sprite;
 		}
+		#endregion
+
+
 //		For the form resize Events (onResizeBegin & on ResizeEnd) use the following code:
 //
 //		protected override void OnResizeBegin(EventArgs e) 
@@ -100,55 +125,25 @@ namespace PckView
 //			base.OnResizeEnd(e);
 //		}
 
-		#endregion
 
-
-		#region Static
-
-		internal static int PreferredWidth
-		{
-			get { return PckImage.Width * 10; }
-		}
-
-		internal static int PreferredHeight
-		{
-			get { return PckImage.Height * 10; }
-		}
-
-		#endregion
-
-
-		#region Events
-
-		private const int Square = 1;
-
-		private int _scale = 10;
-		internal int ScaleFactor
-		{
-			set
-			{
-				_scale = value;
-				Refresh();
-			}
-		}
-
+		#region EventCalls
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			var g = e.Graphics;
 
-			int width  = _image.Image.Width;
-			int height = _image.Image.Height;
+			int width  = _sprite.Sprite.Width;
+			int height = _sprite.Sprite.Height;
 
 			int factor = Square * _scale;
 
 			for (int y = 0; y != height; ++y)
-				for (int x = 0; x != width; ++x)
-					g.FillRectangle(
-								new SolidBrush(_image.Image.GetPixel(x, y)),
-								x * factor,
-								y * factor,
-								    factor,
-								    factor);
+			for (int x = 0; x != width; ++x)
+				g.FillRectangle(
+							new SolidBrush(_sprite.Sprite.GetPixel(x, y)),
+							x * factor,
+							y * factor,
+								factor,
+								factor);
 
 			if (_grid)
 			{
@@ -169,7 +164,6 @@ namespace PckView
 							y     * factor);
 			}
 		}
-
 		#endregion
 	}
 }

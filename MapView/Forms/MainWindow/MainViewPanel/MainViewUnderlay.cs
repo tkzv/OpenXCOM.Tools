@@ -175,18 +175,22 @@ namespace MapView
 				SetScale();
 				SetOverlaySize();
 			}
-			UpdateView();
+			UpdateScrollers();
 
-			MainViewOverlay.Refresh();
 			XCom.LogFile.WriteLine("MainViewUnderlay.OnResize EXIT");
 		}
 
-		internal void UpdateView()
+		internal void UpdateScrollers()
 		{
 			if (Globals.AutoScale)
 			{
 				_scrollBarV.Visible =
 				_scrollBarH.Visible = false;
+
+				_scrollBarV.Value =
+				_scrollBarH.Value = 0;
+
+				MainViewOverlay.Location = new Point(0, 0);
 			}
 			else
 			{
@@ -216,6 +220,8 @@ namespace MapView
 				OnScrollVert(null, null);
 				OnScrollHori(null, null);
 			}
+
+			MainViewOverlay.Refresh();
 		}
 
 		/// <summary>
