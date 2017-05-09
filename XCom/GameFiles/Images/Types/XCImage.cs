@@ -96,7 +96,7 @@ namespace XCom.Interfaces
 
 			// TODO: this arbitrary Clone() method should probably be disallowed:
 			return (Sprite != null) ? new XCImage((Bitmap)Sprite.Clone(), FileId)
-								   : null;
+								 	: null;
 
 		}
 
