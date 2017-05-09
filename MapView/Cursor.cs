@@ -50,11 +50,15 @@ namespace MapView
 		/// <param name="y"></param>
 //		/// <param name="over"></param>
 		/// <param name="topLevel"></param>
+		/// <param name="halfWidth"></param>
+		/// <param name="halfHeight"></param>
 		internal void DrawCursorBack(
 				Graphics g,
 				int x, int y,
 //				bool over, // always false.
-				bool topLevel)
+				bool topLevel,
+				int halfWidth,
+				int halfHeight)
 		{
 			int id = (topLevel) ? 0
 								: 2;
@@ -69,8 +73,10 @@ namespace MapView
 			g.DrawImage(
 					image,
 					x, y,
-					(int)(image.Width  * Globals.Scale),
-					(int)(image.Height * Globals.Scale));
+					halfWidth  * 2, // NOTE: the values for width and height are based on a sprite that's 32x40.
+					halfHeight * 5);
+//					(int)(image.Width  * Globals.Scale),
+//					(int)(image.Height * Globals.Scale));
 		}
 
 		/// <summary>
@@ -82,12 +88,16 @@ namespace MapView
 //		/// <param name="aniStep"></param>
 //		/// <param name="over"></param>
 		/// <param name="topLevel"></param>
+		/// <param name="halfWidth"></param>
+		/// <param name="halfHeight"></param>
 		internal void DrawCursorFront(
 				Graphics g,
 				int x, int y,
 //				int aniStep,
 //				bool over, // always false.
-				bool topLevel)
+				bool topLevel,
+				int halfWidth,
+				int halfHeight)
 		{
 			int id = (topLevel) ? 3
 								: 5;
@@ -120,8 +130,10 @@ namespace MapView
 			g.DrawImage(
 					image,
 					x, y,
-					(int)(image.Width  * Globals.Scale),
-					(int)(image.Height * Globals.Scale));
+					halfWidth  * 2, // NOTE: the values for width and height are based on a sprite that's 32x40.
+					halfHeight * 5);
+//					(int)(image.Width  * Globals.Scale),
+//					(int)(image.Height * Globals.Scale));
 		}
 		#endregion
 	}

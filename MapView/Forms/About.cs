@@ -28,7 +28,12 @@ namespace MapView
 #else
 			lblVersion.Text += " kL_r";
 #endif
-			lblVersion.Text += Environment.NewLine + Environment.NewLine + "2017";
+
+			lblVersion.Text += Environment.NewLine + Environment.NewLine
+							+ String.Format(
+										System.Globalization.CultureInfo.CurrentCulture,
+										"{0:yyyy MMM d} {0:HH}:{0:mm}:{0:ss} {0:zzz}",
+										DateTime.Now);
 		}
 
 		private Point _locBase;

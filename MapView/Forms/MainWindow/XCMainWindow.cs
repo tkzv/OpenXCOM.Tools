@@ -221,29 +221,30 @@ namespace MapView
 			tsEdit.Enabled = false;
 
 
+			PckSpriteCollection cuboid = null;
 			try
 			{
-				PckSpriteCollection cursor = GameInfo.CachePckPack(
-															SharedSpace.Instance.GetString(SharedSpace.CursorFile),
-															String.Empty,
-															2,
-															Palette.UfoBattle);
-				_mainViewUnderlay.MainViewOverlay.SetCursor(new CursorSprite(cursor));
+				cuboid = GameInfo.CachePckPack(
+											SharedSpace.Instance.GetString(SharedSpace.CursorFile),
+											String.Empty,
+											2,
+											Palette.UfoBattle);
+				_mainViewUnderlay.MainViewOverlay.Cuboid = new CursorSprite(cuboid);
 			}
 			catch
 			{
 				try
 				{
-					PckSpriteCollection cursor = GameInfo.CachePckPack(
-																SharedSpace.Instance.GetString(SharedSpace.CursorFile),
-																String.Empty,
-																4,
-																Palette.TftdBattle);
-					_mainViewUnderlay.MainViewOverlay.SetCursor(new CursorSprite(cursor));
+					cuboid = GameInfo.CachePckPack(
+												SharedSpace.Instance.GetString(SharedSpace.CursorFile),
+												String.Empty,
+												4,
+												Palette.TftdBattle);
+					_mainViewUnderlay.MainViewOverlay.Cuboid = new CursorSprite(cuboid);
 				}
 				catch
 				{
-					_mainViewUnderlay.Cursor = null;
+					_mainViewUnderlay.Cursor = null; // NOTE: this is the system cursor, NOT the cuboid-sprite.
 					throw; // TODO: there's got to be a better way to do that ....
 				}
 				throw;
@@ -264,11 +265,10 @@ namespace MapView
 
 			Closing += OnCloseSaveRegistry;
 
-//			OnResize(null);
-
 
 			_loadingProgress = new LoadingForm();
-			XCBitmap.LoadingEvent += _loadingProgress.HandleProgress;
+			XCBitmap.LoadingEvent += _loadingProgress.HandleProgress; // TODO: fix or remove that.
+
 
 			// I should rewrite the hq2x wrapper for .NET sometime -- not the code it's pretty insane
 //			if (!File.Exists("hq2xa.dll"))
@@ -816,6 +816,7 @@ namespace MapView
 				tsslDimensions.Text = (mapBase != null) ? mapBase.MapSize.ToString()
 														: "size: n/a";
 				tsslPosition.Text = String.Empty;
+				ViewerFormsManager.RouteView.Control.ClearSelectedLocation();
 
 				Settings[Doors].Value = false; // toggle off door-animations; not sure that this is necessary to do.
 				miDoors.Checked = false;
@@ -932,14 +933,6 @@ namespace MapView
 //			}
 		}
 
-//		private void OnDoorsClick(object sender, EventArgs e)
-//		{
-//			miDoors.Checked = !miDoors.Checked;
-//			foreach (XCTile tile in _mainViewPanel.MapBase.Tiles)
-//				if (tile.Record.UfoDoor || tile.Record.HumanDoor)
-//					tile.SetAnimationSprites(miDoors.Checked, tile.Record.UfoDoor);
-//		}
-
 		private void OnMapResizeClick(object sender, EventArgs e)
 		{
 			if (_mainViewUnderlay.MainViewOverlay.MapBase != null)
@@ -954,13 +947,14 @@ namespace MapView
 										f.Cols,
 										f.Levs,
 										f.CeilingChecked);
-						_mainViewUnderlay.FireResize();
+						_mainViewUnderlay.ResizeUnderlay();
 					}
 				}
 			}
 		}
 
-		private bool _windowFlag = false;
+
+		private bool _windowFlag;
 
 		private void OnMainWindowActivated(object sender, EventArgs e)
 		{
@@ -1019,7 +1013,7 @@ namespace MapView
 		}
 
 
-		private const double ScaleDelta = 0.1;
+		private const double ScaleDelta = 0.125;
 
 		private void OnZoomInClick(object sender, EventArgs e)
 		{
@@ -1028,7 +1022,7 @@ namespace MapView
 				Globals.Scale += Math.Min(
 										Globals.ScaleMaximum - Globals.Scale,
 										ScaleDelta);
-				Zoom(false);
+				Zoom();
 			}
 		}
 
@@ -1039,31 +1033,34 @@ namespace MapView
 				Globals.Scale -= Math.Min(
 										Globals.Scale - Globals.ScaleMinimum,
 										ScaleDelta);
-				Zoom(false);
+				Zoom();
 			}
 		}
 
-		private void OnZoomAutoScaleClick(object sender, EventArgs e)
+		private void Zoom()
+		{
+			Globals.AutoScale   =
+			tsbAutoZoom.Checked = false;
+
+			_mainViewUnderlay.SetOverlaySize();
+			_mainViewUnderlay.UpdateView();
+
+			Refresh();
+		}
+
+		private void OnAutoScaleClick(object sender, EventArgs e)
 		{
 			Globals.AutoScale   = 
 			tsbAutoZoom.Checked = !tsbAutoZoom.Checked;
 
-			Zoom(true);
-		}
-
-		private void Zoom(bool isAuto)
-		{
-			if (!isAuto) // turn off AutoScale
+			if (Globals.AutoScale)
 			{
-				Globals.AutoScale   =
-				tsbAutoZoom.Checked = false;
-			}
-			else
 				_mainViewUnderlay.SetScale();
+				_mainViewUnderlay.SetOverlaySize();
+				_mainViewUnderlay.UpdateView();
 
-			_mainViewUnderlay.SetOverlaySize();
-
-			Refresh();
+				Refresh();
+			}
 		}
 
 		/// <summary>
@@ -1075,10 +1072,11 @@ namespace MapView
 		/// <param name="lev"></param>
 		internal void StatusBarPrintPosition(int col, int row, int lev)
 		{
-			tsslPosition.Text = String.Format(
-											System.Globalization.CultureInfo.CurrentCulture,
-											"c {0}  r {1}  L {2}",
-											col, row, lev);
+			if (_mainViewUnderlay.MainViewOverlay.FirstClick)
+				tsslPosition.Text = String.Format(
+												System.Globalization.CultureInfo.CurrentCulture,
+												"c {0}  r {1}  L {2}",
+												col, row, lev);
 		}
 
 		internal void StatusBarPrintScale()

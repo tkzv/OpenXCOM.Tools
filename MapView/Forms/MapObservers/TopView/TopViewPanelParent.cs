@@ -383,15 +383,15 @@ namespace MapView.Forms.MapObservers.TopViews
 				if (   pt.Y >= 0 && pt.Y < MainViewUnderlay.Instance.MapBase.MapSize.Rows
 					&& pt.X >= 0 && pt.X < MainViewUnderlay.Instance.MapBase.MapSize.Cols)
 				{
-					MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
-
-					MapBase.Location = new MapLocation(
-													pt.Y,
-													pt.X,
-													MapBase.Level);
-
-					_isMouseDrag = true;
-					MainViewUnderlay.Instance.MainViewOverlay.FireMouseDrag(pt, pt);
+//					MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;	// as long as MainViewOverlay.OnLocationSelected_Main()
+																					// fires before the subsidiary viewers' OnLocationSelected_Observer()
+					MapBase.Location = new MapLocation(								// functions fire, FirstClick is set okay by the former.
+													pt.Y,							// See also, RouteView.OnLocationSelected_Observer()
+													pt.X,							// ps. The FirstClick flag for TopView should be set either in 
+													MapBase.Level);					// this class's OnLocationSelected_Observer() handler or even
+																					// QuadrantPanel.OnLocationSelected_Observer() ... anyway.
+					_isMouseDrag = true;												// or better: Make a flag of it in XCMapBase where Location is actually
+					MainViewUnderlay.Instance.MainViewOverlay.FireMouseDrag(pt, pt);	// set and all these OnLocationSelected events really fire out of!
 				}
 			}
 		}

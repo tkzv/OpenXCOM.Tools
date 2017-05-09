@@ -47,7 +47,7 @@ namespace PckView
 			// 
 			this.lblVersion.Location = new System.Drawing.Point(5, 65);
 			this.lblVersion.Name = "lblVersion";
-			this.lblVersion.Size = new System.Drawing.Size(285, 14);
+			this.lblVersion.Size = new System.Drawing.Size(285, 15);
 			this.lblVersion.TabIndex = 3;
 			this.lblVersion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
@@ -64,7 +64,7 @@ namespace PckView
 			// 
 			this.lblBuildConfig.Location = new System.Drawing.Point(5, 95);
 			this.lblBuildConfig.Name = "lblBuildConfig";
-			this.lblBuildConfig.Size = new System.Drawing.Size(285, 14);
+			this.lblBuildConfig.Size = new System.Drawing.Size(285, 15);
 			this.lblBuildConfig.TabIndex = 5;
 			this.lblBuildConfig.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 

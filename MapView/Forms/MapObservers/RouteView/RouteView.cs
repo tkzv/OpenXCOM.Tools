@@ -207,10 +207,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("RouteView.OnLocationSelected_Observer");
 
-			MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
-
-			_col = args.Location.Col;
-			_row = args.Location.Row;
+//			MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;	// as long as MainViewOverlay.OnLocationSelected_Main()
+																			// fires before the subsidiary viewers' OnLocationSelected_Observer()
+			_col = args.Location.Col;										// functions fire, FirstClick is set okay by the former.
+			_row = args.Location.Row;										// See also, TopViewPanelParent.OnLocationSelected_Observer()
 			_lev = args.Location.Lev;
 			PrintSelectedLocation();
 		}
@@ -236,10 +236,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void PrintSelectedLocation()
 		{
-			lblSelectedPosition.Text = String.Format(
-												System.Globalization.CultureInfo.InvariantCulture,
-												"c {0}  r {1}  L {2}",
-												_col, _row, _mapFile.MapSize.Levs - _lev);
+			if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick)
+				lblSelectedPosition.Text = String.Format(
+													System.Globalization.CultureInfo.InvariantCulture,
+													"c {0}  r {1}  L {2}",
+													_col, _row, _mapFile.MapSize.Levs - _lev);
+		}
+
+		/// <summary>
+		/// Clears the selected location text when another Map loads.
+		/// </summary>
+		internal void ClearSelectedLocation()
+		{
+			lblSelectedPosition.Text = String.Empty;
 		}
 
 

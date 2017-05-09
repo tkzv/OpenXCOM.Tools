@@ -6,7 +6,7 @@ namespace MapView
 	internal static class Globals
 	{
 		internal const double ScaleMinimum = 0.3;
-		internal const double ScaleMaximum = 2.2;
+		internal const double ScaleMaximum = 3.0;
 
 		private static double _scale = 1.0;
 		/// <summary>

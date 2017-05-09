@@ -80,9 +80,13 @@ namespace MapView
 		private int _lev;
 
 
-		private CursorSprite _cursor;
+		internal CursorSprite Cuboid
+		{ private get; set; }
+
 
 		private GraphicsPath _layerFill = new GraphicsPath();
+
+		private Graphics _graphics;
 
 		private Brush _brushLayer;
 
@@ -189,12 +193,7 @@ namespace MapView
 		#endregion
 
 
-		internal void SetCursor(CursorSprite cursor)
-		{
-			_cursor = cursor;
-			Refresh();
-		}
-
+		#region Editor
 		private void OnEditKeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control)
@@ -253,11 +252,14 @@ namespace MapView
 				var start = GetDragStart();
 				var end   = GetDragEnd();
 
-				_copied = new MapTileBase[end.Y - start.Y + 1, end.X - start.X + 1];
+				_copied = new MapTileBase[end.Y - start.Y + 1,
+										  end.X - start.X + 1];
 
 				for (int col = start.X; col <= end.X; ++col)
-					for (int row = start.Y; row <= end.Y; ++row)
-						_copied[row - start.Y, col - start.X] = MapBase[row, col];
+				for (int row = start.Y; row <= end.Y; ++row)
+				{
+					_copied[row - start.Y, col - start.X] = MapBase[row, col];
+				}
 			}
 		}
 
@@ -331,7 +333,10 @@ namespace MapView
 
 			// TODO: refresh TopRouteView (both Top & Route panels) also.
 		}
+		#endregion
 
+
+		#region Mouse & Drag-points
 		/// <summary>
 		/// Scrolls the z-axis for MainView.
 		/// </summary>
@@ -360,8 +365,6 @@ namespace MapView
 				if (   dragStart.X > -1 && dragStart.X < MapBase.MapSize.Cols
 					&& dragStart.Y > -1 && dragStart.Y < MapBase.MapSize.Rows)
 				{
-					FirstClick = true;
-
 					_isMouseDrag = true;
 					FireMouseDrag(dragStart, dragStart);
 
@@ -482,6 +485,8 @@ namespace MapView
 						Math.Max(DragStart.X, DragEnd.X), // wft: is dragend not dragend ...
 						Math.Max(DragStart.Y, DragEnd.Y));
 		}
+		#endregion
+
 
 		/// <summary>
 		/// Fires when a location is selected in MainView.
@@ -489,6 +494,11 @@ namespace MapView
 		/// <param name="args"></param>
 		internal void OnLocationSelected_Main(LocationSelectedEventArgs args)
 		{
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("MainViewOverlay.OnLocationSelected_Main");
+
+			FirstClick = true;
+
 			_col = args.Location.Col;
 			_row = args.Location.Row;
 			_lev = args.Location.Lev;
@@ -515,28 +525,16 @@ namespace MapView
 			Refresh();
 		}
 
+
+		#region Draw
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
 
-			// indicate the reserved width for the scrollbars.
-			var pen = new Pen(SystemColors.ControlLight, 1);
-			int xBar = _mainViewUnderlay.GetVBarWidth();
-			int yBar = _mainViewUnderlay.GetHBarHeight();
-			e.Graphics.DrawLine(
-							pen,
-							Right - xBar, 0,
-							Right - xBar, ClientSize.Height - yBar);
-			e.Graphics.DrawLine(
-							pen,
-							0,                       Bottom - yBar,
-							ClientSize.Width - xBar, Bottom - yBar);
-
+			_graphics = e.Graphics;
 
 			if (MapBase != null)
 			{
-				var g = e.Graphics;
-
 				var dragRect = new Rectangle(new Point(0, 0), new Size(0, 0));
 				if (FirstClick)
 				{
@@ -558,7 +556,7 @@ namespace MapView
 					--lev)
 				{
 					if (_showGrid && lev == MapBase.Level)
-						DrawGrid(lev, g);
+						DrawGrid();
 
 					for (int
 							row = 0,
@@ -583,12 +581,14 @@ namespace MapView
 							bool isClicked = (col == DragStart.X && row == DragStart.Y)
 										  || (col == DragEnd.X   && row == DragEnd.Y);
 
-							if (FirstClick && isClicked && _cursor != null)
-								_cursor.DrawCursorBack(
-													g,
-													x + 1, y - 3,
+							if (FirstClick && isClicked && Cuboid != null)
+								Cuboid.DrawCursorBack(
+													_graphics,
+													x + 1, y - 1,
 //													false,
-													lev == MapBase.Level);
+													lev == MapBase.Level,
+													HalfWidth,
+													HalfHeight);
 
 							if (lev == MapBase.Level || MapBase[row, col, lev].DrawAbove)
 							{
@@ -596,30 +596,44 @@ namespace MapView
 								if (_graySelection && FirstClick
 									&& (isClicked || dragRect.IntersectsWith(tileRect)))
 								{
-									DrawTileGray(g, tile, x, y);
+									DrawTileGray(tile, x, y);
 								}
 								else
-									DrawTile(g, tile, x, y);
+									DrawTile(tile, x, y);
 							}
 
-							if (FirstClick && isClicked && _cursor != null)
-								_cursor.DrawCursorFront(
-													g,
-													x + 1, y - 3,
+							if (FirstClick && isClicked && Cuboid != null)
+								Cuboid.DrawCursorFront(
+													_graphics,
+													x + 1, y - 1,
 //													MainViewUnderlay.AniStep,
 //													false,
-													lev == MapBase.Level);
+													lev == MapBase.Level,
+													HalfWidth,
+													HalfHeight);
 						}
 					}
 				}
 
 //				if (_drawSelectionBox) // always false.
 				if (FirstClick && !_graySelection)
-					DrawSelectedLozenge(g, MapBase.Level, dragRect);
+					DrawSelectedLozenge(dragRect);
+
+
+				// draw a light border around this Overlay so not insane go.
+				var pen = new Pen(SystemColors.ControlLight, 1);
+				_graphics.DrawLine(
+								pen,
+								Right - 1, Top,
+								Right - 1, Height);
+				_graphics.DrawLine(
+								pen,
+								Left,  Bottom - 1,
+								Width, Bottom - 1);
 			}
 		}
 
-		private void DrawGrid(int lev, Graphics g)
+		private void DrawGrid()
 		{
 			int x = Origin.X + HalfWidth;
 			int y = Origin.Y + HalfHeight * (MapBase.Level + 1) * 3;
@@ -642,28 +656,28 @@ namespace MapView
 			_layerFill.AddLine(pt2, pt3);
 			_layerFill.CloseFigure();
 
-			g.FillPath(_brushLayer, _layerFill); // the grid-sheet
+			_graphics.FillPath(_brushLayer, _layerFill); // the grid-sheet
 
 			// draw the grid-lines ->
 			for (int i = 0; i <= MapBase.MapSize.Rows; ++i)
-				g.DrawLine(
-						_penGrid,
-						x - HalfWidth  * i,
-						y + HalfHeight * i,
-						x + (MapBase.MapSize.Cols - i) * HalfWidth,
-						y + (MapBase.MapSize.Cols + i) * HalfHeight);
+				_graphics.DrawLine(
+								_penGrid,
+								x - HalfWidth  * i,
+								y + HalfHeight * i,
+								x + (MapBase.MapSize.Cols - i) * HalfWidth,
+								y + (MapBase.MapSize.Cols + i) * HalfHeight);
 
 			for (int i = 0; i <= MapBase.MapSize.Cols; ++i)
-				g.DrawLine(
-						_penGrid,
-						x + HalfWidth  * i,
-						y + HalfHeight * i,
-						x - x1 + HalfWidth  * i,
-						y + y1 + HalfHeight * i);
+				_graphics.DrawLine(
+								_penGrid,
+								x + HalfWidth  * i,
+								y + HalfHeight * i,
+								x - x1 + HalfWidth  * i,
+								y + y1 + HalfHeight * i);
 		}
 
-		private static void DrawTile(
-				Graphics g,
+//		private static void DrawTile(
+		private void DrawTile(
 				XCMapTile tile,
 				int x, int y)
 		{
@@ -673,33 +687,33 @@ namespace MapView
 			{
 				var baseTile = tile.Ground;
 				if (baseTile != null)
-					DrawTileSprite(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
+					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
 			}
 
 			if (topView.WestVisible)
 			{
 				var baseTile = tile.West;
 				if (baseTile != null)
-					DrawTileSprite(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
+					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
 			}
 
 			if (topView.NorthVisible)
 			{
 				var baseTile = tile.North;
 				if (baseTile != null)
-					DrawTileSprite(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
+					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
 			}
 
 			if (topView.ContentVisible)
 			{
 				var baseTile = tile.Content;
 				if (baseTile != null)
-					DrawTileSprite(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
+					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Image);
 			}
 		}
 
-		private static void DrawTileGray(
-				Graphics g,
+//		private static void DrawTileGray(
+		private void DrawTileGray(
 				XCMapTile tile,
 				int x, int y)
 		{
@@ -709,54 +723,53 @@ namespace MapView
 			{
 				var baseTile = tile.Ground;
 				if (baseTile != null)
-					DrawTileSprite(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
+					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
 			}
 
 			if (topView.WestVisible)
 			{
 				var baseTile = tile.West;
 				if (baseTile != null)
-					DrawTileSprite(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
+					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
 			}
 
 			if (topView.NorthVisible)
 			{
 				var baseTile = tile.North;
 				if (baseTile != null)
-					DrawTileSprite(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
+					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
 			}
 
 			if (topView.ContentVisible)
 			{
 				var baseTile = tile.Content;
 				if (baseTile != null)
-					DrawTileSprite(g, x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
+					DrawTileSprite(x, y, baseTile, baseTile[MainViewUnderlay.AniStep].Gray);
 			}
 		}
 
-		private static void DrawTileSprite(
-				Graphics g,
+//		private static void DrawTileSprite(
+		private void DrawTileSprite(
 				int x, int y,
 				TileBase tile,
 				Image sprite)
 		{
-			g.DrawImage(
-					sprite,
-					x,
-					(int)(y - tile.Record.TileOffset * Globals.Scale),
-					(int)(sprite.Width  * Globals.Scale),
-					(int)(sprite.Height * Globals.Scale));
+			_graphics.DrawImage(
+							sprite,
+							x,
+							(int)(y - tile.Record.TileOffset * Globals.Scale),
+							HalfWidth  * 2, // NOTE: the values for width and height are based on a sprite that's 32x40.
+							HalfHeight * 5);
+//							(int)(sprite.Width  * Globals.Scale),
+//							(int)(sprite.Height * Globals.Scale));
 		}
 
-		private void DrawSelectedLozenge(
-				Graphics g,
-				int level,
-				Rectangle dragRect)
+		private void DrawSelectedLozenge(Rectangle dragRect)
 		{
-			var top    = GetScreenCoordinates(new Point(dragRect.X,     dragRect.Y),      level);
-			var right  = GetScreenCoordinates(new Point(dragRect.Right, dragRect.Y),      level);
-			var bottom = GetScreenCoordinates(new Point(dragRect.Right, dragRect.Bottom), level);
-			var left   = GetScreenCoordinates(new Point(dragRect.Left,  dragRect.Bottom), level);
+			var top    = GetScreenCoordinates(new Point(dragRect.X,     dragRect.Y));
+			var right  = GetScreenCoordinates(new Point(dragRect.Right, dragRect.Y));
+			var bottom = GetScreenCoordinates(new Point(dragRect.Right, dragRect.Bottom));
+			var left   = GetScreenCoordinates(new Point(dragRect.Left,  dragRect.Bottom));
 
 			top.X    += HalfWidth;
 			right.X  += HalfWidth;
@@ -767,21 +780,23 @@ namespace MapView
 												 : 3;
 			var pen = new Pen(Color.FromArgb(60, Color.Red), penWidth);
 
-			g.DrawLine(pen, top,    right);
-			g.DrawLine(pen, right,  bottom);
-			g.DrawLine(pen, bottom, left);
-			g.DrawLine(pen, left,   top);
+			_graphics.DrawLine(pen, top,    right);
+			_graphics.DrawLine(pen, right,  bottom);
+			_graphics.DrawLine(pen, bottom, left);
+			_graphics.DrawLine(pen, left,   top);
 		}
+		#endregion
 
+
+		#region Coordinate conversion
 		/// <summary>
 		/// Converts a point from tile-location to screen-coordinates.
 		/// </summary>
 		/// <param name="point">the x/y-position of a tile</param>
-		/// <param name="level">the current level</param>
 		/// <returns></returns>
-		private Point GetScreenCoordinates(Point point, int level)
+		private Point GetScreenCoordinates(Point point)
 		{
-			int verticalOffset = HalfHeight * (level + 1) * 3;
+			int verticalOffset = HalfHeight * (MapBase.Level + 1) * 3;
 			return new Point(
 							Origin.X + (point.X - point.Y) * HalfWidth,
 							Origin.Y + (point.X + point.Y) * HalfHeight + verticalOffset);
@@ -811,5 +826,6 @@ namespace MapView
 						(int)Math.Floor(x1),
 						(int)Math.Floor(y1));
 		}
+		#endregion
 	}
 }

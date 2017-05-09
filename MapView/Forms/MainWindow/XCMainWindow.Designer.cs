@@ -259,7 +259,7 @@ namespace MapView
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
 			this.tsslMap.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tsslMap.Name = "tsslMap";
-			this.tsslMap.Size = new System.Drawing.Size(159, 17);
+			this.tsslMap.Size = new System.Drawing.Size(107, 17);
 			this.tsslMap.Spring = true;
 			// 
 			// tsslDimensions
@@ -269,7 +269,7 @@ namespace MapView
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
 			this.tsslDimensions.Name = "tsslDimensions";
-			this.tsslDimensions.Size = new System.Drawing.Size(80, 17);
+			this.tsslDimensions.Size = new System.Drawing.Size(90, 17);
 			// 
 			// tsslPosition
 			// 
@@ -278,7 +278,7 @@ namespace MapView
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
 			this.tsslPosition.Name = "tsslPosition";
-			this.tsslPosition.Size = new System.Drawing.Size(100, 17);
+			this.tsslPosition.Size = new System.Drawing.Size(110, 17);
 			// 
 			// tscPanel
 			// 
@@ -371,7 +371,7 @@ namespace MapView
 			this.tsbAutoZoom.Name = "tsbAutoZoom";
 			this.tsbAutoZoom.Size = new System.Drawing.Size(23, 22);
 			this.tsbAutoZoom.Text = "Auto Zoom";
-			this.tsbAutoZoom.Click += new System.EventHandler(this.OnZoomAutoScaleClick);
+			this.tsbAutoZoom.Click += new System.EventHandler(this.OnAutoScaleClick);
 			// 
 			// csSplitter
 			// 

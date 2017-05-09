@@ -466,7 +466,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.tscbConnectionType.Font = new System.Drawing.Font("Verdana", 7F);
 			this.tscbConnectionType.Name = "tscbConnectionType";
-			this.tscbConnectionType.Size = new System.Drawing.Size(121, 25);
+			this.tscbConnectionType.Size = new System.Drawing.Size(120, 25);
 			this.tscbConnectionType.DropDownClosed += new System.EventHandler(this.OnConnectDropDownClosed);
 			// 
 			// tsddbEdit

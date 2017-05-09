@@ -85,16 +85,6 @@ namespace MapView
 
 		private readonly HScrollBar _scrollBarH;
 		private readonly VScrollBar _scrollBarV;
-
-		internal int GetVBarWidth()
-		{
-			return _scrollBarV.Width;
-		}
-
-		internal int GetHBarHeight()
-		{
-			return _scrollBarH.Height;
-		}
 		#endregion
 
 
@@ -106,17 +96,13 @@ namespace MapView
 		{
 			AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
 
-			_scrollBarH = new HScrollBar();
 			_scrollBarV = new VScrollBar();
-
-			_scrollBarH.Dock = DockStyle.Bottom;
-			_scrollBarH.Scroll += OnHorizontalScroll;
-
 			_scrollBarV.Dock = DockStyle.Right;
-			_scrollBarV.Scroll += OnVerticalScroll;
+			_scrollBarV.Scroll += OnScrollVert;
 
-			Controls.AddRange(new Control[]{ _scrollBarV, _scrollBarH });
-
+			_scrollBarH = new HScrollBar();
+			_scrollBarH.Dock = DockStyle.Bottom;
+			_scrollBarH.Scroll += OnScrollHori;
 
 //			var mainViewOverlay = new MainViewOverlay(); // what's this for.
 //			if (_mainViewOverlay != null)
@@ -129,7 +115,12 @@ namespace MapView
 			_mainViewOverlay = new MainViewOverlay();
 			_mainViewOverlay.SetMainViewUnderlay(this);
 
-			Controls.Add(_mainViewOverlay);
+			Controls.AddRange(new Control[]
+			{
+				_scrollBarV,
+				_scrollBarH,
+				_mainViewOverlay
+			});
 
 
 			XCom.LogFile.WriteLine("");
@@ -152,9 +143,9 @@ namespace MapView
 		#region EventCalls
 		/// <summary>
 		/// Forces an OnResize event for this Panel. Grants access for
-		/// XCMainWindow to place a call.
+		/// XCMainWindow to place a call or two.
 		/// </summary>
-		internal void FireResize()
+		internal void ResizeUnderlay()
 		{
 			OnResize(EventArgs.Empty);
 		}
@@ -177,48 +168,58 @@ namespace MapView
 			XCom.LogFile.WriteLine("overlay client.Height= " + MainViewOverlay.ClientSize.Height);
 
 
-
 			base.OnResize(eventargs);
-
-			_scrollBarV.Value =
-			_scrollBarH.Value = 0;
-
-			OnVerticalScroll(null, null);
-			OnHorizontalScroll(null, null);
-
-			_scrollBarV.Visible = (MainViewOverlay.Height > ClientSize.Height);
-			if (_scrollBarV.Visible)
-			{
-				_scrollBarV.Maximum = Math.Max(
-											MainViewOverlay.Height - ClientSize.Height + _scrollBarH.Height,
-											0);
-			}
-			else
-				_scrollBarH.Width = ClientSize.Width;
-
-			_scrollBarH.Visible = (MainViewOverlay.Width > ClientSize.Width);
-			if (_scrollBarH.Visible)
-			{
-				_scrollBarH.Maximum = Math.Max(
-											MainViewOverlay.Width - ClientSize.Width + _scrollBarV.Width,
-											0);
-			}
-			else
-				_scrollBarV.Height = ClientSize.Height;
-
 
 			if (Globals.AutoScale)
 			{
 				SetScale();
 				SetOverlaySize();
 			}
+			UpdateView();
 
 			MainViewOverlay.Refresh();
 			XCom.LogFile.WriteLine("MainViewUnderlay.OnResize EXIT");
 		}
 
+		internal void UpdateView()
+		{
+			if (Globals.AutoScale)
+			{
+				_scrollBarV.Visible =
+				_scrollBarH.Visible = false;
+			}
+			else
+			{
+				_scrollBarV.Visible = (MainViewOverlay.Height > ClientSize.Height);
+				if (_scrollBarV.Visible)
+				{
+					_scrollBarV.Maximum = Math.Max(
+												MainViewOverlay.Height - ClientSize.Height + _scrollBarH.Height,
+												0);
+				}
+//				else
+//					_scrollBarH.Width = ClientSize.Width;
+	
+				_scrollBarH.Visible = (MainViewOverlay.Width > ClientSize.Width);
+				if (_scrollBarH.Visible)
+				{
+					_scrollBarH.Maximum = Math.Max(
+												MainViewOverlay.Width - ClientSize.Width + _scrollBarV.Width,
+												0);
+				}
+//				else
+//					_scrollBarV.Height = ClientSize.Height;
+	
+				_scrollBarV.Value = Math.Min(_scrollBarV.Value, _scrollBarV.Maximum);
+				_scrollBarH.Value = Math.Min(_scrollBarH.Value, _scrollBarH.Maximum);
+	
+				OnScrollVert(null, null);
+				OnScrollHori(null, null);
+			}
+		}
+
 		/// <summary>
-		/// Sets the scale-factor if AutoScale.
+		/// Sets the scale-factor. Is used only if AutoScale=TRUE.
 		/// </summary>
 		internal void SetScale()
 		{
@@ -229,11 +230,34 @@ namespace MapView
 			Globals.Scale = Math.Min(
 								(double)Width  / normal.Width,
 								(double)Height / normal.Height);
-			Globals.Scale.Clamp(
-							Globals.ScaleMinimum,
-							Globals.ScaleMaximum);
+			Globals.Scale = Globals.Scale.Clamp(
+											Globals.ScaleMinimum,
+											Globals.ScaleMaximum);
 
 			XCom.LogFile.WriteLine(". scale set to= " + Globals.Scale);
+		}
+
+		/// <summary>
+		/// Sets this Panel to the size of the current Map including scaling.
+		/// </summary>
+		internal void SetOverlaySize()
+		{
+			XCom.LogFile.WriteLine("");
+			XCom.LogFile.WriteLine("MainViewUnderlay.SetOverlaySize");
+
+			if (MapBase != null)
+			{
+				XCom.LogFile.WriteLine(". scale= " + Globals.Scale);
+				var required = GetOverlaySizeRequired(Globals.Scale);
+
+				MainViewOverlay.Width  = required.Width  + 2; // don't clip lozenge-tips at right or bottom edges.
+				MainViewOverlay.Height = required.Height + 2;
+
+				XCom.LogFile.WriteLine(". set overlay.Width= " + MainViewOverlay.Width);
+				XCom.LogFile.WriteLine(". set overlay.Height= " + MainViewOverlay.Height);
+
+				XCMainWindow.Instance.StatusBarPrintScale();
+			}
 		}
 
 		/// <summary>
@@ -273,8 +297,8 @@ namespace MapView
 				MainViewOverlay.Origin = new Point((MapBase.MapSize.Rows - 1) * _halfWidth, 0);
 
 				int width  = (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * _halfWidth;
-				int height =  MapBase.MapSize.Levs * _halfHeight * 3
-						   + (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * _halfHeight;
+				int height = (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * _halfHeight
+						   +  MapBase.MapSize.Levs * _halfHeight * 3;
 
 				XCom.LogFile.WriteLine(". width= " + width);
 				XCom.LogFile.WriteLine(". height= " + height);
@@ -286,40 +310,17 @@ namespace MapView
 			return Size.Empty;
 		}
 
-		/// <summary>
-		/// Sets this Panel to the size of the current Map including scaling.
-		/// </summary>
-		internal void SetOverlaySize()
-		{
-			XCom.LogFile.WriteLine("");
-			XCom.LogFile.WriteLine("MainViewUnderlay.SetOverlaySize");
 
-			if (MapBase != null)
-			{
-				XCom.LogFile.WriteLine(". scale= " + Globals.Scale);
-				var sized = GetOverlaySizeRequired(Globals.Scale);
-
-				MainViewOverlay.Width  = sized.Width  + _halfWidth; // don't cover half a lozenge at bottom or right sides.
-				MainViewOverlay.Height = sized.Height + _halfHeight;
-
-				XCom.LogFile.WriteLine(". Width= " + Width);
-				XCom.LogFile.WriteLine(". Height= " + Height);
-
-				XCMainWindow.Instance.StatusBarPrintScale();
-			}
-		}
-
-
-		private void OnVerticalScroll(object sender, ScrollEventArgs e)
+		private void OnScrollVert(object sender, ScrollEventArgs e)
 		{
 			//XCom.LogFile.WriteLine("OnVerticalScroll overlay.Left= " + MainViewOverlay.Left);
 			MainViewOverlay.Location = new Point(
 												MainViewOverlay.Left,
-												1 - _scrollBarV.Value);
+												-_scrollBarV.Value);
 			MainViewOverlay.Refresh();
 		}
 
-		private void OnHorizontalScroll(object sender, ScrollEventArgs e)
+		private void OnScrollHori(object sender, ScrollEventArgs e)
 		{
 			//XCom.LogFile.WriteLine("OnVerticalScroll overlay.Top= " + MainViewOverlay.Top);
 			MainViewOverlay.Location = new Point(
