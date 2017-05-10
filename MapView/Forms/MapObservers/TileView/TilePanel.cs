@@ -31,7 +31,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		private const int SpriteMargin = 2;
 		private const int SpriteWidth  = 32 + SpriteMargin * 2;
-		private const int SpriteHeight = 40 + SpriteMargin * 2;
+		private const int SpriteHeight = 40 + SpriteMargin * 2; // PckImage.Height
 
 		private const int _largeChange = SpriteHeight;	// apparently .NET won't return an accurate value
 														// for LargeChange unless the scrollbar is visible.
@@ -55,22 +55,19 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				if (_tiles != null && _tiles.Length != 0)
 				{
-					_tilesX = (Width - _scrollBar.Width - 1) / SpriteWidth; // reserve width for the scrollbar.
-
-					if (_tilesX != 0)	// <- happens when minimizing the TileView form.
-					{					// NOTE: that could be intercepted and disallowed w/
-										// 'if (WindowState != FormWindowState.Minimized)' in the OnResize().
-						if (_tilesX > _tiles.Length)
-							_tilesX = _tiles.Length;
+					_tilesX = (Width - TableOffset - _scrollBar.Width - 1) / SpriteWidth;	// reserve width for the scrollbar.
+					if (_tilesX != 0)														// <- happens when minimizing the TileView form.
+					{																		// NOTE: that could be intercepted and disallowed w/
+						if (_tilesX > _tiles.Length)										// 'if (WindowState != FormWindowState.Minimized)'
+							_tilesX = _tiles.Length;										// in the OnResize().
 
 						int extra = 0;
 						if (_tiles.Length % _tilesX != 0)
 							extra = 1;
 
-						return (_tiles.Length / _tilesX + extra) * SpriteHeight;
+						return (_tiles.Length / _tilesX + extra) * SpriteHeight + TableOffset;
 					}
 				}
-
 				_tilesX = 1;
 				return 0;
 			}
@@ -113,7 +110,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// The owner of the object is TileView.
 		/// </summary>
 		/// <param name="brushes"></param>
-		internal static void SetSpecialPropertyColors(Hashtable brushes)
+		internal static void SetSpecialPropertyBrushes(Hashtable brushes)
 		{
 			_specialTypeBrushes = brushes;
 		}
@@ -221,7 +218,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				}
 				else if (e.Delta < 0)
 				{
-					if (_scrollBar.Value + (_scrollBar.LargeChange - 1) + _scrollBar.LargeChange > _scrollBar.Maximum)
+					if (_scrollBar.Value + _scrollBar.LargeChange + (_scrollBar.LargeChange - 1) > _scrollBar.Maximum)
 						_scrollBar.Value = _scrollBar.Maximum - (_scrollBar.LargeChange - 1);
 					else
 						_scrollBar.Value += _scrollBar.LargeChange;
@@ -275,6 +272,14 @@ namespace MapView.Forms.MapObservers.TileViews
 			return -1;
 		}
 
+
+		private const string Door = "door";
+
+		private static bool Inited;
+		private static int TextWidth;
+
+		private const int TableOffset = 2;
+
 		/// <summary>
 		/// this.Fill(black)
 		/// </summary>
@@ -292,14 +297,18 @@ namespace MapView.Forms.MapObservers.TileViews
 				int top;
 				int left;
 
-				const string door = "door";
-//				int textWidth1 = TextRenderer.MeasureText(door, Font).Width;	// =30
-				int textWidth2 = (int)graphics.MeasureString(door, Font).Width;	// =24
+				if (!Inited)
+				{
+					Inited = true;
+
+//					TextWidth = TextRenderer.MeasureText(Door, Font).Width;		// =30
+					TextWidth = (int)graphics.MeasureString(Door, Font).Width;	// =24
+				}
 
 				foreach (var tile in _tiles)
 				{
-					left = x * SpriteWidth;
-					top  = y * SpriteHeight + _startY;
+					left = SpriteWidth  * x + TableOffset;
+					top  = SpriteHeight * y + TableOffset + _startY;
 
 					var rect = new Rectangle(
 										left, top,
@@ -320,11 +329,11 @@ namespace MapView.Forms.MapObservers.TileViews
 						// QuadrantPanelDrawService.Draw().
 						if (tile.Record.HumanDoor || tile.Record.UfoDoor)		// finally print "door" if it's a door
 							graphics.DrawString(
-											door,
+											Door,
 											Font,
 											_brushBlack,
-											left + (SpriteWidth  - textWidth2) / 2,
-											top  +  SpriteHeight - Font.Height); // PckImage.Height
+											left + (SpriteWidth  - TextWidth) / 2,
+											top  +  SpriteHeight - Font.Height);
 					}
 					else // draw the eraser ->
 					{
@@ -348,32 +357,32 @@ namespace MapView.Forms.MapObservers.TileViews
 //									_width  + _space,
 //									_height + _space)
 
-				int height = TableHeight;
-
-				for (int i = 0; i <= _tilesX; ++i)
-					graphics.DrawLine(
-									_penBlack,
-									i * SpriteWidth, _startY,
-									i * SpriteWidth, _startY + height);
-
-				for (int i = 0; i <= height; i += SpriteHeight)
-					graphics.DrawLine(
-									_penBlack,
-									0,                     _startY + i,
-									_tilesX * SpriteWidth, _startY + i);
-
-				graphics.DrawRectangle(
-									_penRed,
-									_id % _tilesX * SpriteWidth,
-									_startY + _id / _tilesX * SpriteHeight,
-									SpriteWidth, SpriteHeight);
-
-
 				if (!_scrollBar.Visible) // indicate the reserved width for scrollbar.
 					graphics.DrawLine(
 									_penControlLight,
-									Width - _scrollBar.Width, 0,
-									Width - _scrollBar.Width, Height);
+									Width - _scrollBar.Width - 1, 0,
+									Width - _scrollBar.Width - 1, Height);
+
+				int height = TableHeight;
+
+				for (int i = 0; i <= _tilesX; ++i)							// draw vertical lines
+					graphics.DrawLine(
+									_penBlack,
+									TableOffset + SpriteWidth * i, TableOffset + _startY,
+									TableOffset + SpriteWidth * i, /*TableOffset +*/ _startY + height);
+
+				for (int i = 0; i <= height; i += SpriteHeight)				// draw horizontal lines
+					graphics.DrawLine(
+									_penBlack,
+									TableOffset,                         TableOffset + _startY + i,
+									TableOffset + SpriteWidth * _tilesX, TableOffset + _startY + i);
+
+				graphics.DrawRectangle(										// draw selected rectangle
+									_penRed,
+									TableOffset + _id % _tilesX * SpriteWidth,
+									TableOffset + _id / _tilesX * SpriteHeight + _startY,
+									SpriteWidth, SpriteHeight);
+
 			}
 		}
 
@@ -439,14 +448,14 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			int tileY = _id / _tilesX;
 
-			int cutoff = tileY * SpriteHeight;
+			int cutoff = SpriteHeight * tileY;
 			if (cutoff < -_startY)		// <- check cutoff high
 			{
 				_scrollBar.Value = cutoff;
 			}
 			else						// <- check cutoff low
 			{
-				cutoff = (tileY + 1) * SpriteHeight - Height;
+				cutoff = SpriteHeight * (tileY + 1) - Height + TableOffset + 1;
 				if (cutoff > -_startY)
 				{
 					_scrollBar.Value = cutoff;

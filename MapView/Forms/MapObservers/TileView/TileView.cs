@@ -156,7 +156,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		/// <summary>
 		/// Fires when a tile is selected. Passes an event to
-		/// TileSelecteEvent_Observer0.
+		/// 'TileSelecteEvent_Observer0'.
 		/// </summary>
 		/// <param name="tile"></param>
 		private void OnTileSelected(TileBase tile)
@@ -302,7 +302,7 @@ namespace MapView.Forms.MapObservers.TileViews
 								"TileBackgroundColors",	// this identifies what Option category the setting appears under.
 								OnSpecialPropertyColorChanged);
 			}
-			TilePanel.SetSpecialPropertyColors(_brushesSpecial);
+			TilePanel.SetSpecialPropertyBrushes(_brushesSpecial);
 
 			VolutarSettingService.LoadSettings(Settings);
 		}
