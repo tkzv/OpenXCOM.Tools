@@ -57,14 +57,18 @@ namespace MapView.Forms.MapObservers.TileViews
 				{
 					_tilesX = (Width - _scrollBar.Width - 1) / SpriteWidth; // reserve width for the scrollbar.
 
-					if (_tilesX > _tiles.Length)
-						_tilesX = _tiles.Length;
+					if (_tilesX != 0)	// <- happens when minimizing the TileView form.
+					{					// NOTE: that could be intercepted and disallowed w/
+										// 'if (WindowState != FormWindowState.Minimized)' in the OnResize().
+						if (_tilesX > _tiles.Length)
+							_tilesX = _tiles.Length;
 
-					int extra = 0;
-					if (_tiles.Length % _tilesX != 0)
-						extra = 1;
+						int extra = 0;
+						if (_tiles.Length % _tilesX != 0)
+							extra = 1;
 
-					return (_tiles.Length / _tilesX + extra) * SpriteHeight;
+						return (_tiles.Length / _tilesX + extra) * SpriteHeight;
+					}
 				}
 
 				_tilesX = 1;

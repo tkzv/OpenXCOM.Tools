@@ -297,17 +297,17 @@ namespace MapView.Forms.MapObservers.TopViews
 			_topPens.Add(GridColor, penGrid);
 			_topPens.Add(GridWidth, penGrid);
 
-			ValueChangedEventHandler bc = OnBrushChanged;
-			ValueChangedEventHandler pc = OnPenColorChanged;
-			ValueChangedEventHandler pw = OnPenWidthChanged;
+			OptionChangedEventHandler bc = OnBrushChanged;
+			OptionChangedEventHandler pc = OnPenColorChanged;
+			OptionChangedEventHandler pw = OnPenWidthChanged;
 //			ValueChangedEventHandler dh = OnDiamondHeight;
 
-			Settings.AddSetting(FloorColor,        Color.BurlyWood,                 "Color of the floor tile indicator",           Tile,   bc);
-			Settings.AddSetting(WestColor,         Color.Khaki,                     "Color of the west tile indicator",            Tile,   pc);
-			Settings.AddSetting(NorthColor,        Color.Wheat,                     "Color of the north tile indicator",           Tile,   pc);
-			Settings.AddSetting(ContentColor,      Color.MediumSeaGreen,            "Color of the content tile indicator",         Tile,   bc);
-			Settings.AddSetting(WestWidth,         3,                               "Width of the west tile indicator in pixels",  Tile,   pw);
-			Settings.AddSetting(NorthWidth,        3,                               "Width of the north tile indicator in pixels", Tile,   pw);
+			Settings.AddSetting(FloorColor,        Color.BurlyWood,                 "Color of the floor tile indicator",           Tile,     bc);
+			Settings.AddSetting(WestColor,         Color.Khaki,                     "Color of the west tile indicator",            Tile,     pc);
+			Settings.AddSetting(NorthColor,        Color.Wheat,                     "Color of the north tile indicator",           Tile,     pc);
+			Settings.AddSetting(ContentColor,      Color.MediumSeaGreen,            "Color of the content tile indicator",         Tile,     bc);
+			Settings.AddSetting(WestWidth,         3,                               "Width of the west tile indicator in pixels",  Tile,     pw);
+			Settings.AddSetting(NorthWidth,        3,                               "Width of the north tile indicator in pixels", Tile,     pw);
 
 			Settings.AddSetting(SelectorColor,     Color.Black,                     "Color of the mouse-over indicator",           Selector, pc);
 			Settings.AddSetting(SelectorWidth,     2,                               "Width of the mouse-over indicator in pixels", Selector, pw);
@@ -315,9 +315,9 @@ namespace MapView.Forms.MapObservers.TopViews
 			Settings.AddSetting(SelectedWidth,     2,                               "Width of the selection line in pixels",       Selector, pw);
 			Settings.AddSetting(SelectedTypeColor, Color.LightBlue,                 "Background color of the selected tiletype",   Selector, bc);
 
-			Settings.AddSetting(GridColor,         Color.Black,                     "Color of the grid lines",                     Grid,   pc);
-			Settings.AddSetting(GridWidth,         1,                               "Width of the grid lines in pixels",           Grid,   pw);
-//			Settings.AddSetting(TileMinHeight,     _topViewPanel.TileLozengeHeight, "Minimum height of the grid tiles in pixels",  Grid,   dh);
+			Settings.AddSetting(GridColor,         Color.Black,                     "Color of the grid lines",                     Grid,     pc);
+			Settings.AddSetting(GridWidth,         1,                               "Width of the grid lines in pixels",           Grid,     pw);
+//			Settings.AddSetting(TileMinHeight,     _topViewPanel.TileLozengeHeight, "Minimum height of the grid tiles in pixels",  Grid,     dh);
 
 			QuadrantsPanel.Pens   =
 			_topViewPanel.TopPens = _topPens;

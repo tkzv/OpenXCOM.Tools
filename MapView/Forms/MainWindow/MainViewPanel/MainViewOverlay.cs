@@ -166,27 +166,56 @@ namespace MapView
 
 		// NOTE: Options don't like floats afaict, hence this workaround w/
 		// 'SpriteDarkness' and 'SpriteDarknessF' ->
-
-		private int _spriteDarkness = 33; // initial val for sprite darkness
-		public int SpriteDarkness // public for Reflection.
+		private int _spriteDarkness = 33;	// initial val for sprite darkness Option
+		public int SpriteDarkness			// <- public for Reflection.
 		{
 			get { return _spriteDarkness; }
 			set
 			{
 				_spriteDarkness = value.Clamp(10, 100);
-				SpriteDarknessF = _spriteDarkness * 0.03f;
+				SpriteDarknessLocal = _spriteDarkness * 0.03f;
 			}
 		}
-		private float _spriteDarknessF = 1.0f; // initial val for sprite darkness float
-		private float SpriteDarknessF
+		private float _spriteDarknessLocal = 1.0f; // initial val for local sprite darkness
+		private float SpriteDarknessLocal
 		{
-			get { return _spriteDarknessF; }
+			get { return _spriteDarknessLocal; }
 			set
 			{
-				_spriteDarknessF = value;
+				_spriteDarknessLocal = value;
 				Refresh();
 			}
 		}
+
+		// NOTE: Options don't like enums afaict, hence this workaround w/
+		// 'Interpolation' and 'InterpolationLocal' ->
+		private int _interpolation;	// 0 = initial val for interpolation Option
+		public int Interpolation	// <- public for Reflection.
+		{
+			get { return _interpolation; }
+			set
+			{
+				_interpolation = value.Clamp(0, 7);
+				_interpolationLocal = (InterpolationMode)_interpolation;
+				Refresh();	// NOTE: refresh needs to go here rather than in InterpolationLocal
+			}				// for some whack reason.
+		}
+		private InterpolationMode _interpolationLocal = InterpolationMode.Default; // initial val for local interpolation
+		private InterpolationMode InterpolationLocal
+		{
+			get { return _interpolationLocal; }
+			set { _interpolationLocal = value; }
+		}
+//		Invalid				// -1
+//		Default				//  0
+//		Low					//  1
+//		High				//  2
+//		Bilinear			//  3
+//		Bicubic				//  4
+//		NearestNeighbor		//  5
+//		HighQualityBilinear	//  6
+//		HighQualityBicubic	//  7
+
 
 		/// <summary>
 		/// If true draws a translucent red box around selected tiles ->
@@ -564,48 +593,30 @@ namespace MapView
 		{
 			base.OnPaint(e);
 
-			_graphics = e.Graphics;
-			_graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-//			_graphics.SmoothingMode = SmoothingMode.HighQuality;
-			_spriteAttributes.SetGamma(SpriteDarknessF, System.Drawing.Imaging.ColorAdjustType.Bitmap);
-
-			InterpolationMode interpolate = InterpolationMode.Default; // TODO: put in Options.
-
-			const int testInterpolation = 1; // just for switching the test.
-			switch (testInterpolation)
-			{
-				case 1:
-					interpolate = InterpolationMode.HighQualityBicubic;
-					break;
-				case 2:
-					interpolate = InterpolationMode.High;
-					break;
-				case 3:
-					interpolate = InterpolationMode.HighQualityBilinear;
-					break;
-				case 4:
-					interpolate = InterpolationMode.Low;
-					break;
-				case 5:
-					interpolate = InterpolationMode.NearestNeighbor;
-					break;
-
-				// NOTE: don't want to use Bicubic or Bilinear since MSDN says
-				// they won't work too good when shrinking too far.
-			}
-			_graphics.InterpolationMode = interpolate;
-
-			// Image Processing using C# - https://www.codeproject.com/Articles/33838/Image-Processing-using-C
-			// ColorMatrix Guide - https://docs.rainmeter.net/tips/colormatrix-guide/
-
-//	using (ImageAttributes wrapMode = new ImageAttributes()) // for problems with rings ... shouldn't happen here.
-//	{
-//		wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-//		g.DrawImage(input, rect, 0, 0, input.Width, input.Height, GraphicsUnit.Pixel, wrapMode);
-//	}
-
 			if (MapBase != null)
 			{
+				LogFile.WriteLine("overlay OnPaint");
+
+				_graphics = e.Graphics;
+				_graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+//				_graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+				_spriteAttributes.SetGamma(SpriteDarknessLocal, System.Drawing.Imaging.ColorAdjustType.Bitmap);
+
+				_graphics.InterpolationMode = InterpolationLocal;
+				// NOTE: don't want to use Bicubic or Bilinear since MSDN says
+				// they won't work too good when shrinking too far.
+
+				// Image Processing using C# - https://www.codeproject.com/Articles/33838/Image-Processing-using-C
+				// ColorMatrix Guide - https://docs.rainmeter.net/tips/colormatrix-guide/
+	
+				//	using (ImageAttributes wrapMode = new ImageAttributes()) // for problems with rings ... shouldn't happen here.
+				//	{
+				//		wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+				//		g.DrawImage(input, rect, 0, 0, input.Width, input.Height, GraphicsUnit.Pixel, wrapMode);
+				//	}
+
+
 				var dragRect = new Rectangle(new Point(0, 0), new Size(0, 0));
 				if (FirstClick)
 				{

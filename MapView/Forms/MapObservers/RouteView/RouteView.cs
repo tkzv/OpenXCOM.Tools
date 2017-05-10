@@ -1220,12 +1220,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var pens    = _routePanel.RoutePens;
 			var brushes = _routePanel.RouteBrushes;
 
-			var bc = new ValueChangedEventHandler(OnBrushColorChanged);
-			var pc = new ValueChangedEventHandler(OnPenColorChanged);
-			var pw = new ValueChangedEventHandler(OnPenWidthChanged);
-			var oc = new ValueChangedEventHandler(OnNodeOpacityChanged);
-			var sp = new ValueChangedEventHandler(OnShowPriorityChanged);
-			var so = new ValueChangedEventHandler(OnShowOverlayChanged);
+			var bc = new OptionChangedEventHandler(OnBrushColorChanged);
+			var pc = new OptionChangedEventHandler(OnPenColorChanged);
+			var pw = new OptionChangedEventHandler(OnPenWidthChanged);
+			var oc = new OptionChangedEventHandler(OnNodeOpacityChanged);
+			var sp = new OptionChangedEventHandler(OnShowPriorityChanged);
+			var so = new OptionChangedEventHandler(OnShowOverlayChanged);
 
 			var pen = new Pen(new SolidBrush(Color.OrangeRed), 2);
 			pens[UnselectedLinkColor] = pen;

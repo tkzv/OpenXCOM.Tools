@@ -410,7 +410,8 @@ namespace MapView
 
 		private const string GraySelection       = "GraySelection";
 
-		private const string SpriteDarkness    = "SpriteDarkness";
+		private const string SpriteDarkness      = "SpriteDarkness";
+		private const string Interpolation       = "Interpolation";
 
 
 		private void LoadSettings()
@@ -465,7 +466,7 @@ namespace MapView
 //				keySoftware.Close();
 //			}
 
-			var handler = new ValueChangedEventHandler(OnSettingChange);
+			var handler = new OptionChangedEventHandler(OnSettingChange);
 
 			Settings.AddSetting(
 							Animation,
@@ -527,6 +528,22 @@ namespace MapView
 							SpriteDarkness,
 							MainViewUnderlay.Instance.MainViewOverlay.SpriteDarkness,
 							"The darkness of the tile sprites (10..100)",
+							Sprites,
+							null, MainViewUnderlay.Instance.MainViewOverlay);
+
+			string desc = "The technique used for resizing sprites (0..7)" + Environment.NewLine
+						+ "0 - default"                                    + Environment.NewLine
+						+ "1 - low (default)"                              + Environment.NewLine
+						+ "2 - high"                                       + Environment.NewLine
+						+ "3 - bilinear (default)"                         + Environment.NewLine
+						+ "4 - bicubic"                                    + Environment.NewLine
+						+ "5 - nearest neighbor"                           + Environment.NewLine
+						+ "6 - high quality bilinear"                      + Environment.NewLine
+						+ "7 - high quality bicubic";
+			Settings.AddSetting(
+							Interpolation,
+							MainViewUnderlay.Instance.MainViewOverlay.Interpolation,
+							desc,
 							Sprites,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
 
@@ -608,6 +625,10 @@ namespace MapView
 
 				case SpriteDarkness:
 					MainViewUnderlay.Instance.MainViewOverlay.SpriteDarkness = (int)val;
+					break;
+
+				case Interpolation:
+					MainViewUnderlay.Instance.MainViewOverlay.Interpolation = (int)val;
 					break;
 
 				// NOTE: 'GraySelection' is handled. reasons ...

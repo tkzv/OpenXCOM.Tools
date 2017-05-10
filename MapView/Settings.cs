@@ -8,7 +8,7 @@ using XCom;
 
 namespace MapView
 {
-	internal delegate void ValueChangedEventHandler(object sender, string key, object value);
+	internal delegate void OptionChangedEventHandler(object sender, string key, object value);
 
 	internal delegate string ConvertObjectHandler(object value);
 
@@ -111,7 +111,7 @@ namespace MapView
 		/// <param name="value">start value of the property</param>
 		/// <param name="desc">property description</param>
 		/// <param name="category">property category</param>
-		/// <param name="valueChangedEvent">event handler to receive the
+		/// <param name="optionChangedEvent">event handler to receive the
 		/// PropertyValueChanged event</param>
 		/// <param name="target">the object that will receive the changed
 		/// property values: an internal event handler will be created and the
@@ -122,7 +122,7 @@ namespace MapView
 				object value,
 				string desc,
 				string category,
-				ValueChangedEventHandler valueChangedEvent = null,
+				OptionChangedEventHandler optionChangedEvent = null,
 				object target = null)
 		{
 			key = key.Replace(" ", String.Empty);
@@ -140,14 +140,14 @@ namespace MapView
 				setting.Description = desc;
 			}
 
-			if (valueChangedEvent != null)
+			if (optionChangedEvent != null)
 			{
-				setting.ValueChangedEvent += valueChangedEvent;
+				setting.OptionChangedEvent += optionChangedEvent;
 			}
 			else if (target != null)
 			{
 				_propertiesDictionary[key] = new Property(target, key);
-				this[key].ValueChangedEvent += OnValueChanged;
+				this[key].OptionChangedEvent += OnOptionChanged;
 			}
 		}
 
@@ -170,7 +170,7 @@ namespace MapView
 			return _settingsDictionary[key];
 		}
 
-		private void OnValueChanged(object sender, string key, object val)
+		private void OnOptionChanged(object sender, string key, object val)
 		{
 //			System.Windows.Forms.PropertyValueChangedEventArgs pe = (System.Windows.Forms.PropertyValueChangedEventArgs)e;
 			_propertiesDictionary[key].SetValue(val);
@@ -212,7 +212,7 @@ namespace MapView
 	/// </summary>
 	public sealed class Setting
 	{
-		internal event ValueChangedEventHandler ValueChangedEvent;
+		internal event OptionChangedEventHandler OptionChangedEvent;
 
 
 		private static Dictionary<Type, ParseString> _converters;
@@ -277,6 +277,12 @@ namespace MapView
 		}
 
 
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="desc"></param>
+		/// <param name="category"></param>
 		internal Setting(object value, string desc, string category)
 		{
 			_value = value;
@@ -316,14 +322,14 @@ namespace MapView
 
 		internal void doUpdate(string key, object value) // FxCop CA1030:UseEventsWhereAppropriate
 		{
-			if (ValueChangedEvent != null)
-				ValueChangedEvent(this, key, value);
+			if (OptionChangedEvent != null)
+				OptionChangedEvent(this, key, value);
 		}
 
 		internal void doUpdate(string key) // FxCop CA1030:UseEventsWhereAppropriate
 		{
-			if (ValueChangedEvent != null)
-				ValueChangedEvent(this, key, _value);
+			if (OptionChangedEvent != null)
+				OptionChangedEvent(this, key, _value);
 		}
 	}
 
