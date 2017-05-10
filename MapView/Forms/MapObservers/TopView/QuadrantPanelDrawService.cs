@@ -133,36 +133,48 @@ namespace MapView.Forms.MapObservers.TopViews
 				ContentWidth = (int)graphics.MeasureString(Content, Font).Width;
 			}
 
+			var topView = ViewerFormsManager.TopView.Control;
+
 			// fill the background of the selected quadrant type
-			// NOTE: the selected quadrant will be re-filled with DarkGray
-			// if that quadrant's visibility has been toggled off.
 			switch (selectedQuadrant)
 			{
 				case QuadrantType.Ground:
-					graphics.FillPath(Brush, _pathFloor);
+					if (topView.GroundVisible)
+						graphics.FillPath(Brush, _pathFloor);
 					break;
 
 				case QuadrantType.West:
-					graphics.FillPath(Brush, _pathWest);
+					if (topView.WestVisible)
+						graphics.FillPath(Brush, _pathWest);
 					break;
 
 				case QuadrantType.North:
-					graphics.FillPath(Brush, _pathNorth);
+					if (topView.NorthVisible)
+						graphics.FillPath(Brush, _pathNorth);
 					break;
 
 				case QuadrantType.Content:
-					graphics.FillPath(Brush, _pathContent);
+					if (topView.ContentVisible)
+						graphics.FillPath(Brush, _pathContent);
 					break;
 			}
 
-
-			// draw the Sprites
-			var topView = ViewerFormsManager.TopView.Control;
-
-			// Ground ->
+			// fill the background of !Visible quads incl/ the selected-quad
 			if (!topView.GroundVisible)
 				graphics.FillPath(System.Drawing.Brushes.DarkGray, _pathFloor);
 
+			if (!topView.WestVisible)
+				graphics.FillPath(System.Drawing.Brushes.DarkGray, _pathWest);
+
+			if (!topView.NorthVisible)
+				graphics.FillPath(System.Drawing.Brushes.DarkGray, _pathNorth);
+
+			if (!topView.ContentVisible)
+				graphics.FillPath(System.Drawing.Brushes.DarkGray, _pathContent);
+
+
+			// draw the Sprites
+			// Ground ->
 			if (tile != null && tile.Ground != null)
 			{
 				graphics.DrawImage(
@@ -179,11 +191,7 @@ namespace MapView.Forms.MapObservers.TopViews
 								StartX,
 								StartY);
 
-
 			// Westwall ->
-			if (!topView.WestVisible)
-				graphics.FillPath(System.Drawing.Brushes.DarkGray, _pathWest);
-
 			if (tile != null && tile.West != null)
 			{
 				graphics.DrawImage(
@@ -200,11 +208,7 @@ namespace MapView.Forms.MapObservers.TopViews
 								StartX + QuadWidthTotal,
 								StartY);
 
-
 			// Northwall ->
-			if (!topView.NorthVisible)
-				graphics.FillPath(System.Drawing.Brushes.DarkGray, _pathNorth);
-
 			if (tile != null && tile.North != null)
 			{
 				graphics.DrawImage(
@@ -221,11 +225,7 @@ namespace MapView.Forms.MapObservers.TopViews
 								StartX + QuadWidthTotal * 2,
 								StartY);
 
-
 			// Content ->
-			if (!topView.ContentVisible)
-				graphics.FillPath(System.Drawing.Brushes.DarkGray, _pathContent);
-
 			if (tile != null && tile.Content != null)
 			{
 				graphics.DrawImage(
