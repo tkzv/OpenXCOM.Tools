@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 using MapView.Forms.MainWindow;
@@ -87,6 +88,7 @@ namespace MapView
 		private GraphicsPath _layerFill = new GraphicsPath();
 
 		private Graphics _graphics;
+		private ImageAttributes _spriteAttributes = new ImageAttributes();
 
 		private Brush _brushLayer;
 
@@ -157,6 +159,31 @@ namespace MapView
 			set
 			{
 				_graySelection = value;
+				Refresh();
+			}
+		}
+
+
+		// NOTE: Options don't like floats afaict, hence this workaround w/
+		// 'SpriteDarkness' and 'SpriteDarknessF' ->
+
+		private int _spriteDarkness = 33; // initial val for sprite darkness
+		public int SpriteDarkness // public for Reflection.
+		{
+			get { return _spriteDarkness; }
+			set
+			{
+				_spriteDarkness = value.Clamp(10, 100);
+				SpriteDarknessF = _spriteDarkness * 0.03f;
+			}
+		}
+		private float _spriteDarknessF = 1.0f; // initial val for sprite darkness float
+		private float SpriteDarknessF
+		{
+			get { return _spriteDarknessF; }
+			set
+			{
+				_spriteDarknessF = value;
 				Refresh();
 			}
 		}
@@ -538,6 +565,25 @@ namespace MapView
 			base.OnPaint(e);
 
 			_graphics = e.Graphics;
+			_spriteAttributes.SetGamma(SpriteDarknessF, System.Drawing.Imaging.ColorAdjustType.Bitmap);
+
+//			_graphics.InterpolationMode = InterpolationMode.High;
+//			_graphics.InterpolationMode = InterpolationMode.HighQualityBicubic; // TODO: put in Options.
+
+//			_graphics.InterpolationMode = InterpolationMode.HighQualityBilinear;
+//			_graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+
+// PixelOffsetMode property to HighQuality
+
+//	using (ImageAttributes wrapMode = new ImageAttributes())
+//	{
+//		wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+//		g.DrawImage(input, rect, 0, 0, input.Width, input.Height, GraphicsUnit.Pixel, wrapMode);
+//	}
+
+// bitmapGraphics.CompositingMode = CompositingMode.SourceCopy;
+
+
 
 			if (MapBase != null)
 			{
@@ -683,6 +729,10 @@ namespace MapView
 								y + y1 + HalfHeight * i);
 		}
 
+
+		private const int SpriteWidth  = 32;
+		private const int SpriteHeight = 40;
+
 		/// <summary>
 		/// Draws the tileparts in the Tile.
 		/// </summary>
@@ -710,11 +760,11 @@ namespace MapView
 				{
 					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
 										  : tileBase[MainViewUnderlay.AniStep].Sprite;
-					_graphics.DrawImage(
-									sprite,
-									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale), // TODO: use a factor of HalfHeight ....
-									HalfWidth  * 2,
-									HalfHeight * 5);
+					DrawSprite(
+							sprite,
+							new Rectangle(
+									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale),
+									HalfWidth * 2, HalfHeight * 5));
 				}
 			}
 
@@ -724,11 +774,11 @@ namespace MapView
 				{
 					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
 										  : tileBase[MainViewUnderlay.AniStep].Sprite;
-					_graphics.DrawImage(
-									sprite,
+					DrawSprite(
+							sprite,
+							new Rectangle(
 									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale),
-									HalfWidth  * 2,
-									HalfHeight * 5);
+									HalfWidth * 2, HalfHeight * 5));
 				}
 			}
 
@@ -738,11 +788,11 @@ namespace MapView
 				{
 					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
 										  : tileBase[MainViewUnderlay.AniStep].Sprite;
-					_graphics.DrawImage(
-									sprite,
+					DrawSprite(
+							sprite,
+							new Rectangle(
 									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale),
-									HalfWidth  * 2,
-									HalfHeight * 5);
+									HalfWidth * 2, HalfHeight * 5));
 				}
 			}
 
@@ -752,14 +802,101 @@ namespace MapView
 				{
 					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
 										  : tileBase[MainViewUnderlay.AniStep].Sprite;
-					_graphics.DrawImage(
-									sprite,
+					DrawSprite(
+							sprite,
+							new Rectangle(
 									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale),
-									HalfWidth  * 2,
-									HalfHeight * 5);
+									HalfWidth * 2, HalfHeight * 5));
 				}
 			}
 		}
+
+		/// <summary>
+		/// Draws a tilepart's sprite.
+		/// </summary>
+		/// <param name="sprite"></param>
+		/// <param name="rect"></param>
+		private void DrawSprite(Image sprite, Rectangle rect)
+		{
+			_graphics.DrawImage(
+							sprite,
+							rect,
+							0, 0, SpriteWidth, SpriteHeight,
+							GraphicsUnit.Pixel,
+							_spriteAttributes);
+		}
+
+
+		// http://stackoverflow.com/questions/35520464/remove-darkness-in-capturing-image-background-in-winform-c-sharp#answer-35523191
+/*		public static Bitmap ApplyGamma(Bitmap sprite, float g) //, float c
+		{
+			var sprite0 = new Bitmap(sprite.Width, sprite.Height);
+
+			using (Graphics graphics = Graphics.FromImage(sprite0))
+			{
+//				var colorMatrix = new System.Drawing.Imaging.ColorMatrix(new float[][] 
+//				{
+//					new float[] {c, 0, 0, 0, 0},
+//					new float[] {0, c, 0, 0, 0},
+//					new float[] {0, 0, c, 0, 0},
+//					new float[] {0, 0, 0, 1, 0},
+//					new float[] {0, 0, 0, 0, 1}
+//				});
+
+
+				var attributes = new System.Drawing.Imaging.ImageAttributes();
+
+//				attributes.SetColorMatrix(
+//										colorMatrix,
+//										System.Drawing.Imaging.ColorMatrixFlag.Default,
+//										System.Drawing.Imaging.ColorAdjustType.Bitmap);
+
+				attributes.SetGamma(g, System.Drawing.Imaging.ColorAdjustType.Bitmap);
+
+				graphics.DrawImage(
+								sprite,
+								new Rectangle(0, 0, sprite.Width, sprite.Height),
+								0, 0,
+								sprite.Width, sprite.Height,
+								GraphicsUnit.Pixel,
+								attributes);
+			}
+			return sprite0;
+		}
+*/
+		// https://www.codeproject.com/Articles/33838/Image-Processing-using-C
+		// kL_note: looks like a great article on Image Processing.
+/*		public void SetGamma(double red, double green, double blue)
+		{
+			Bitmap temp = (Bitmap)_currentBitmap;
+				Bitmap bmap = (Bitmap)temp.Clone();
+				Color c;
+				byte[] redGamma = CreateGammaArray(red);
+				byte[] greenGamma = CreateGammaArray(green);
+				byte[] blueGamma = CreateGammaArray(blue);
+				for (int i = 0; i < bmap.Width; i++)
+				{
+						for (int j = 0; j < bmap.Height; j++)
+						{
+							c = bmap.GetPixel(i, j);
+							bmap.SetPixel(i, j, Color.FromArgb(redGamma[c.R],
+							greenGamma[c.G], blueGamma[c.B]));
+						}
+				}
+				_currentBitmap = (Bitmap)bmap.Clone();
+		}
+		
+		private byte[] CreateGammaArray(double color)
+		{
+				byte[] gammaArray = new byte[256];
+				for (int i = 0; i < 256; ++i)
+				{
+						gammaArray[i] = (byte)Math.Min(255,
+						(int)((255.0 * Math.Pow(i / 255.0, 1.0 / color)) + 0.5));
+				}
+				return gammaArray;
+		}
+*/
 
 		/// <summary>
 		/// Draws a red lozenge around any selected Tiles.

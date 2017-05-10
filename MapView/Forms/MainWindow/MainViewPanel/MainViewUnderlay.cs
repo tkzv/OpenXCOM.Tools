@@ -180,6 +180,22 @@ namespace MapView
 			XCom.LogFile.WriteLine("MainViewUnderlay.OnResize EXIT");
 		}
 
+		/// <summary>
+		/// A workaround for maximizing the parent-form. See notes at
+		/// XCMainWindow.OnResize(). Note that this workaround pertains only to
+		/// cases when AutoScale=FALSE.
+		/// </summary>
+		internal void ResetScrollers()
+		{
+			_scrollBarV.Value =
+			_scrollBarH.Value = 0;
+
+			MainViewOverlay.Location = new Point(0, 0);
+		}
+
+		/// <summary>
+		/// Handles the scroll-bars.
+		/// </summary>
 		internal void UpdateScrollers()
 		{
 			if (Globals.AutoScale)
@@ -201,9 +217,12 @@ namespace MapView
 												MainViewOverlay.Height - ClientSize.Height + _scrollBarH.Height,
 												0);
 				}
-//				else
+/*				else
+				{
+					MainViewOverlay.Location = new Point(0, 0);
 //					_scrollBarH.Width = ClientSize.Width;
-	
+				}*/
+
 				_scrollBarH.Visible = (MainViewOverlay.Width > ClientSize.Width);
 				if (_scrollBarH.Visible)
 				{
@@ -211,12 +230,15 @@ namespace MapView
 												MainViewOverlay.Width - ClientSize.Width + _scrollBarV.Width,
 												0);
 				}
-//				else
+/*				else
+				{
+					MainViewOverlay.Location = new Point(0, 0);
 //					_scrollBarV.Height = ClientSize.Height;
-	
+				} */
+
 				_scrollBarV.Value = Math.Min(_scrollBarV.Value, _scrollBarV.Maximum);
 				_scrollBarH.Value = Math.Min(_scrollBarH.Value, _scrollBarH.Maximum);
-	
+
 				OnScrollVert(null, null);
 				OnScrollHori(null, null);
 			}

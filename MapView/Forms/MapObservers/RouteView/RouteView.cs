@@ -1183,10 +1183,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 								// but at least it's no longer "selected".
 
 		#region Settings
+		// headers
 		private const string Links = "Links";
 		private const string View  = "View";
 		private const string Nodes = "Nodes";
 
+		// options
 		internal const string UnselectedLinkColor = "UnselectedLinkColor";
 		private  const string UnselectedLinkWidth = "UnselectedLinkWidth";
 		internal const string SelectedLinkColor   = "SelectedLinkColor";

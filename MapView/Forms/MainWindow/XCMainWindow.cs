@@ -391,9 +391,12 @@ namespace MapView
 
 
 		#region Settings
+		// headers
+		private const string Global              = "Global";
 		private const string MapView             = "MapView";
-		private const string Main                = "Main";
+		private const string Sprites             = "Sprites";
 
+		// options
 		private const string Animation           = "Animation";
 		private const string Doors               = "Doors";
 		private const string SaveWindowPositions = "SaveWindowPositions";
@@ -406,6 +409,8 @@ namespace MapView
 		private const string GridLineWidth       = "GridLineWidth";
 
 		private const string GraySelection       = "GraySelection";
+
+		private const string SpriteDarkness    = "SpriteDarkness";
 
 
 		private void LoadSettings()
@@ -466,19 +471,19 @@ namespace MapView
 							Animation,
 							MainViewUnderlay.IsAnimated,
 							"If true the sprites will animate",
-							Main,
+							Global,
 							handler);
 			Settings.AddSetting(
 							Doors,
 							false,
 							"If true the doors will animate",
-							Main,
+							Global,
 							handler);
 			Settings.AddSetting(
 							SaveWindowPositions,
 							true, //PathsEditor.SaveRegistry,
 							"If true the window positions and sizes will be saved",
-							Main,
+							Global,
 							handler);
 
 			Settings.AddSetting(
@@ -516,6 +521,13 @@ namespace MapView
 							MainViewUnderlay.Instance.MainViewOverlay.GraySelection,
 							"If true the selection area will show up in gray",
 							MapView,
+							null, MainViewUnderlay.Instance.MainViewOverlay);
+
+			Settings.AddSetting(
+							SpriteDarkness,
+							MainViewUnderlay.Instance.MainViewOverlay.SpriteDarkness,
+							"The darkness of the tile sprites (10..100)",
+							Sprites,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
 
 //			Settings.AddSetting(
@@ -592,6 +604,10 @@ namespace MapView
 
 				case GridLineWidth:
 					MainViewUnderlay.Instance.MainViewOverlay.GridLineWidth = (int)val;
+					break;
+
+				case SpriteDarkness:
+					MainViewUnderlay.Instance.MainViewOverlay.SpriteDarkness = (int)val;
 					break;
 
 				// NOTE: 'GraySelection' is handled. reasons ...
@@ -971,6 +987,24 @@ namespace MapView
 
 				_windowFlag = false;
 			}
+		}
+
+		protected override void OnResize(EventArgs e)
+		{
+			base.OnResize(e);
+
+			// NOTE: if the form is maximized with scrollbars visible
+			// and the new size doesn't need scrollbars but
+			// the map was offset, the scrollbars disappear
+			// but the map is still offset. So fix it.
+			//
+			// TODO: this is a workaround.
+			// It simply relocates the overlay to the origin, but it should
+			// try to maintain focus on a selected tile for cases when the
+			// form is maximized *and the overlay still needs* scrollbars.
+
+			if (WindowState == FormWindowState.Maximized)
+				_mainViewUnderlay.ResetScrollers();
 		}
 
 		private void OnInfoClick(object sender, EventArgs e)
