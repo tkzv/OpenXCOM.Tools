@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 using MapView.Forms.MainWindow;
 
@@ -11,16 +13,18 @@ namespace MapView.Forms.MapObservers.TopViews
 	internal sealed class QuadrantPanelDrawService
 	{
 		#region Fields
-		private const int QuadWidth  = 32;
-		private const int QuadHeight = 40;
+		private const int SpriteWidth  = 32; // PckImage.Width
+		private const int SpriteHeight = 40; // PckImage.Height
 
 		private const int MarginHori = 5;
 		private const int MarginVert = 3;
 
-		internal const int QuadWidthTotal = QuadWidth + MarginHori * 2;
+		internal const int QuadWidthTotal = SpriteWidth + MarginHori * 2;
 
 		internal const int StartX = 26;
-		private  const int StartY = 2;
+		private  const int StartY =  3;
+
+		private const int SwatchHeight = 5;
 
 		// NOTE: keep the door-string and its placement consistent with
 		// TilePanel.OnPaint().
@@ -56,6 +60,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		{ get; set; }
 		#endregion
 
+		private readonly GraphicsPath _pathFloor   = new GraphicsPath();
+		private readonly GraphicsPath _pathWest    = new GraphicsPath();
+		private readonly GraphicsPath _pathNorth   = new GraphicsPath();
+		private readonly GraphicsPath _pathContent = new GraphicsPath();
+
 
 		#region cTor
 		/// <summary>
@@ -63,69 +72,86 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		internal QuadrantPanelDrawService()
 		{
-			Brush = new SolidBrush(Color.LightBlue);
 			Font  = new Font("Comic Sans MS", 7);
+			Brush = new SolidBrush(Color.LightBlue);
+
+			// cache each quadrant's rectangular bounding path
+			for (int i = 0; i != 4; ++i)
+			{
+				var path = new GraphicsPath();
+
+				path = new System.Drawing.Drawing2D.GraphicsPath();
+				var p0 = new Point(
+								StartX + QuadWidthTotal * i - 1,
+								StartY);
+				var p1 = new Point(
+								StartX + QuadWidthTotal * i + SpriteWidth + 1,
+								StartY);
+				var p2 = new Point(
+								StartX + QuadWidthTotal * i + SpriteWidth + 1,
+								StartY + SpriteHeight + 1);
+				var p3 = new Point(
+								StartX + QuadWidthTotal * i,
+								StartY + SpriteHeight + 1);
+				var p4 = new Point(
+								StartX + QuadWidthTotal * i,
+								StartY);
+
+				path.AddLine(p0, p1); // NOTE: 'p4' appears to be needed since the origin of 'p0'
+				path.AddLine(p1, p2); // does not get drawn.
+				path.AddLine(p2, p3);
+				path.AddLine(p3, p4); // NOTE: try DrawRectangle() it's even worse.
+
+				switch (i)
+				{
+					case 0: _pathFloor   = path; break;
+					case 1: _pathWest    = path; break;
+					case 2: _pathNorth   = path; break;
+					case 3: _pathContent = path; break;
+				}
+			}
+
+
 		}
 		#endregion
 
 
 		#region Methods
 		internal void Draw(
-				Graphics g,
-				XCMapTile mapTile,
+				Graphics graphics,
+				XCMapTile tile,
 				QuadrantType selectedQuadrant)
 		{
 			if (!Inited)
 			{
 				Inited = true;
 
-				DoorWidth    = (int)g.MeasureString(Door,    Font).Width;
-
-				FloorWidth   = (int)g.MeasureString(Floor,   Font).Width;
-				WestWidth    = (int)g.MeasureString(West,    Font).Width;
-				NorthWidth   = (int)g.MeasureString(North,   Font).Width;
-				ContentWidth = (int)g.MeasureString(Content, Font).Width;
+				DoorWidth    = (int)graphics.MeasureString(Door,    Font).Width;
+				FloorWidth   = (int)graphics.MeasureString(Floor,   Font).Width;
+				WestWidth    = (int)graphics.MeasureString(West,    Font).Width;
+				NorthWidth   = (int)graphics.MeasureString(North,   Font).Width;
+				ContentWidth = (int)graphics.MeasureString(Content, Font).Width;
 			}
 
 			// fill the background of the selected quadrant type
 			// NOTE: the selected quadrant will be re-filled with DarkGray
-			// if user has toggled that quadrant's visibility off.
+			// if that quadrant's visibility has been toggled off.
 			switch (selectedQuadrant)
 			{
 				case QuadrantType.Ground:
-					g.FillRectangle(
-								Brush,
-								StartX,
-								StartY,
-								QuadWidth  + 1,
-								QuadHeight + 2);
+					graphics.FillPath(Brush, _pathFloor);
 					break;
 
 				case QuadrantType.West:
-					g.FillRectangle(
-								Brush,
-								StartX + QuadWidthTotal,
-								StartY,
-								QuadWidth  + 1,
-								QuadHeight + 2);
+					graphics.FillPath(Brush, _pathWest);
 					break;
 
 				case QuadrantType.North:
-					g.FillRectangle(
-								Brush,
-								StartX + QuadWidthTotal * 2,
-								StartY,
-								QuadWidth  + 1,
-								QuadHeight + 2);
+					graphics.FillPath(Brush, _pathNorth);
 					break;
 
 				case QuadrantType.Content:
-					g.FillRectangle(
-								Brush,
-								StartX + QuadWidthTotal * 3,
-								StartY,
-								QuadWidth  + 1,
-								QuadHeight + 2);
+					graphics.FillPath(Brush, _pathContent);
 					break;
 			}
 
@@ -133,201 +159,196 @@ namespace MapView.Forms.MapObservers.TopViews
 			// draw the Sprites
 			var topView = ViewerFormsManager.TopView.Control;
 
-			if (!topView.GroundVisible) // Ground
-				g.FillRectangle(
-							System.Drawing.Brushes.DarkGray,
-							StartX,
-							StartY,
-							QuadWidth  + 1,
-							QuadHeight + 2);
+			// Ground ->
+			if (!topView.GroundVisible)
+				graphics.FillPath(System.Drawing.Brushes.DarkGray, _pathFloor);
 
-			if (mapTile != null && mapTile.Ground != null)
+			if (tile != null && tile.Ground != null)
 			{
-				g.DrawImage(
-							mapTile.Ground[MainViewUnderlay.AniStep].Sprite,
-							StartX,
-							StartY - mapTile.Ground.Record.TileOffset);
+				graphics.DrawImage(
+								tile.Ground[MainViewUnderlay.AniStep].Sprite,
+								StartX,
+								StartY - tile.Ground.Record.TileOffset);
 
-				if (mapTile.Ground.Record.HumanDoor || mapTile.Ground.Record.UfoDoor)
-					g.DrawString(
-							Door,
-							Font,
-							System.Drawing.Brushes.Black,
-							StartX + (QuadWidth  - DoorWidth) / 2,
-							StartY +  QuadHeight - Font.Height + PrintOffsetY); // PckImage.Height
+				if (tile.Ground.Record.HumanDoor || tile.Ground.Record.UfoDoor)
+					DrawDoorString(graphics, QuadrantType.Ground);
 			}
 			else
-				g.DrawImage(
-							Globals.ExtraTiles[3].Sprite,
-							StartX,
-							StartY);
+				graphics.DrawImage(
+								Globals.ExtraTiles[3].Sprite,
+								StartX,
+								StartY);
 
 
-			if (!topView.WestVisible) // Westwall
-				g.FillRectangle(
-							System.Drawing.Brushes.DarkGray,
-							StartX + QuadWidthTotal,
-							StartY,
-							QuadWidth  + 1,
-							QuadHeight + 2);
+			// Westwall ->
+			if (!topView.WestVisible)
+				graphics.FillPath(System.Drawing.Brushes.DarkGray, _pathWest);
 
-			if (mapTile != null && mapTile.West != null)
+			if (tile != null && tile.West != null)
 			{
-				g.DrawImage(
-							mapTile.West[MainViewUnderlay.AniStep].Sprite,
-							StartX + QuadWidthTotal,
-							StartY - mapTile.West.Record.TileOffset);
+				graphics.DrawImage(
+								tile.West[MainViewUnderlay.AniStep].Sprite,
+								StartX + QuadWidthTotal,
+								StartY - tile.West.Record.TileOffset);
 
-				if (mapTile.West.Record.HumanDoor || mapTile.West.Record.UfoDoor)
-					g.DrawString(
-							Door,
-							Font,
-							System.Drawing.Brushes.Black,
-							StartX + (QuadWidth  - DoorWidth) / 2 + QuadWidthTotal,
-							StartY +  QuadHeight - Font.Height + PrintOffsetY); // PckImage.Height
+				if (tile.West.Record.HumanDoor || tile.West.Record.UfoDoor)
+					DrawDoorString(graphics, QuadrantType.West);
 			}
 			else
-				g.DrawImage(
-							Globals.ExtraTiles[1].Sprite,
-							StartX + QuadWidthTotal,
-							StartY);
+				graphics.DrawImage(
+								Globals.ExtraTiles[1].Sprite,
+								StartX + QuadWidthTotal,
+								StartY);
 
 
-			if (!topView.NorthVisible) // Northwall
-				g.FillRectangle(
-							System.Drawing.Brushes.DarkGray,
-							StartX + QuadWidthTotal * 2,
-							StartY,
-							QuadWidth  + 1,
-							QuadHeight + 2);
+			// Northwall ->
+			if (!topView.NorthVisible)
+				graphics.FillPath(System.Drawing.Brushes.DarkGray, _pathNorth);
 
-			if (mapTile != null && mapTile.North != null)
+			if (tile != null && tile.North != null)
 			{
-				g.DrawImage(
-							mapTile.North[MainViewUnderlay.AniStep].Sprite,
-							StartX + QuadWidthTotal * 2,
-							StartY - mapTile.North.Record.TileOffset);
+				graphics.DrawImage(
+								tile.North[MainViewUnderlay.AniStep].Sprite,
+								StartX + QuadWidthTotal * 2,
+								StartY - tile.North.Record.TileOffset);
 
-				if (mapTile.North.Record.HumanDoor || mapTile.North.Record.UfoDoor)
-					g.DrawString(
-							Door,
-							Font,
-							System.Drawing.Brushes.Black,
-							StartX + (QuadWidth  - DoorWidth) / 2 + QuadWidthTotal * 2,
-							StartY +  QuadHeight - Font.Height + PrintOffsetY); // PckImage.Height
+				if (tile.North.Record.HumanDoor || tile.North.Record.UfoDoor)
+					DrawDoorString(graphics, QuadrantType.North);
 			}
 			else
-				g.DrawImage(
-							Globals.ExtraTiles[2].Sprite,
-							StartX + QuadWidthTotal * 2,
-							StartY);
+				graphics.DrawImage(
+								Globals.ExtraTiles[2].Sprite,
+								StartX + QuadWidthTotal * 2,
+								StartY);
 
 
-			if (!topView.ContentVisible) // Content
-				g.FillRectangle(
-							System.Drawing.Brushes.DarkGray,
-							StartX + QuadWidthTotal * 3,
-							StartY,
-							QuadWidth  + 1,
-							QuadHeight + 2);
+			// Content ->
+			if (!topView.ContentVisible)
+				graphics.FillPath(System.Drawing.Brushes.DarkGray, _pathContent);
 
-			if (mapTile != null && mapTile.Content != null)
+			if (tile != null && tile.Content != null)
 			{
-				g.DrawImage(
-							mapTile.Content[MainViewUnderlay.AniStep].Sprite,
-							StartX + QuadWidthTotal * 3,
-							StartY - mapTile.Content.Record.TileOffset);
+				graphics.DrawImage(
+								tile.Content[MainViewUnderlay.AniStep].Sprite,
+								StartX + QuadWidthTotal * 3,
+								StartY - tile.Content.Record.TileOffset);
 
-				if (mapTile.Content.Record.HumanDoor || mapTile.Content.Record.UfoDoor)
-					g.DrawString(
-							Door,
-							Font,
-							System.Drawing.Brushes.Black,
-							StartX + (QuadWidth  - DoorWidth) / 2 + QuadWidthTotal * 3,
-							StartY +  QuadHeight - Font.Height + PrintOffsetY); // PckImage.Height
+				if (tile.Content.Record.HumanDoor || tile.Content.Record.UfoDoor)
+					DrawDoorString(graphics, QuadrantType.Content);
 			}
 			else
-				g.DrawImage(
-							Globals.ExtraTiles[4].Sprite,
-							StartX + QuadWidthTotal * 3,
-							StartY);
+				graphics.DrawImage(
+								Globals.ExtraTiles[4].Sprite,
+								StartX + QuadWidthTotal * 3,
+								StartY);
 
 
 			// draw each quadrant's bounding rectangle
-			for (int i = 0; i != 4; ++i)
-				g.DrawRectangle(
-							System.Drawing.Pens.Black,
-							StartX - 1 + QuadWidthTotal * i,
-							StartY - 1,
-							QuadWidth  + 2,
-							QuadHeight + 2);
+			graphics.DrawPath(System.Drawing.Pens.Black, _pathFloor);
+			graphics.DrawPath(System.Drawing.Pens.Black, _pathWest);
+			graphics.DrawPath(System.Drawing.Pens.Black, _pathNorth);
+			graphics.DrawPath(System.Drawing.Pens.Black, _pathContent);
 
 
-			// draw the label under each quadrant
-			g.DrawString(
-					Floor,
-					Font,
-					System.Drawing.Brushes.Black,
-					StartX + (QuadWidth  - FloorWidth) / 2,
-					StartY +  QuadHeight + MarginVert);
-
-			g.DrawString(
-					West,
-					Font,
-					System.Drawing.Brushes.Black,
-					StartX + (QuadWidth  - WestWidth) / 2 + QuadWidthTotal,
-					StartY +  QuadHeight + MarginVert);
-
-			g.DrawString(
-					North,
-					Font,
-					System.Drawing.Brushes.Black,
-					StartX + (QuadWidth  - NorthWidth) / 2 + QuadWidthTotal * 2,
-					StartY +  QuadHeight + MarginVert);
-
-			g.DrawString(
-					Content,
-					Font,
-					System.Drawing.Brushes.Black,
-					StartX + (QuadWidth  - ContentWidth) / 2 + QuadWidthTotal * 3,
-					StartY +  QuadHeight + MarginVert);
+			// draw the quad-type label under each quadrant
+			DrawTypeString(graphics, QuadrantType.Ground);
+			DrawTypeString(graphics, QuadrantType.West);
+			DrawTypeString(graphics, QuadrantType.North);
+			DrawTypeString(graphics, QuadrantType.Content);
 
 
-			// fill the color-tip under each quadrant
+			// fill the color-swatch under each quadrant-label
 			if (Brushes != null && Pens != null)
 			{
-				g.FillRectangle(
-							Brushes[TopView.FloorColor],
-							new RectangleF(
-										StartX,
-										StartY + QuadHeight + MarginVert + Font.Height + 1,
-										QuadWidth + 1,
-										5));
-
-				g.FillRectangle(
-							new SolidBrush(Pens[TopView.WestColor].Color),
-							new RectangleF(
-										StartX + QuadWidthTotal,
-										StartY + QuadHeight + MarginVert + Font.Height + 1,
-										QuadWidth + 1,
-										5));
-
-				g.FillRectangle(
-							new SolidBrush(Pens[TopView.NorthColor].Color),
-							new RectangleF(
-										StartX + QuadWidthTotal * 2,
-										StartY + QuadHeight + MarginVert + Font.Height + 1,
-										QuadWidth + 1,
-										5));
-
-				g.FillRectangle(
-							Brushes[TopView.ContentColor],
-							new RectangleF(
-										StartX + QuadWidthTotal * 3,
-										StartY + QuadHeight + MarginVert + Font.Height + 1,
-										QuadWidth + 1,
-										5));
+				FillSwatchColor(graphics, QuadrantType.Ground);
+				FillSwatchColor(graphics, QuadrantType.West);
+				FillSwatchColor(graphics, QuadrantType.North);
+				FillSwatchColor(graphics, QuadrantType.Content);
 			}
+		}
+
+		/// <summary>
+		/// Draws the "door" string if applicable.
+		/// </summary>
+		private void DrawDoorString(Graphics graphics, QuadrantType quadType)
+		{
+			graphics.DrawString(
+							Door,
+							Font,
+							System.Drawing.Brushes.Black,
+							StartX + (SpriteWidth  - DoorWidth) / 2 + QuadWidthTotal * (int)quadType + 1,
+							StartY +  SpriteHeight - Font.Height + PrintOffsetY);
+		}
+
+		/// <summary>
+		/// Draws the type of quadrant under its rectangle.
+		/// </summary>
+		/// <param name="graphics"></param>
+		/// <param name="quadType"></param>
+		private void DrawTypeString(Graphics graphics, QuadrantType quadType)
+		{
+			string type = String.Empty;
+			int width = 0;
+
+			switch (quadType)
+			{
+				case QuadrantType.Ground:
+					type  = Floor;
+					width = FloorWidth;
+					break;
+				case QuadrantType.West:
+					type  = West;
+					width = WestWidth;
+					break;
+				case QuadrantType.North:
+					type  = North;
+					width = NorthWidth;
+					break;
+				case QuadrantType.Content:
+					type  = Content;
+					width = ContentWidth;
+					break;
+			}
+
+			graphics.DrawString(
+							type,
+							Font,
+							System.Drawing.Brushes.Black,
+							StartX + (SpriteWidth  - width) / 2 + QuadWidthTotal * (int)quadType + 1,
+							StartY +  SpriteHeight + MarginVert);
+		}
+
+		/// <summary>
+		/// Fills the swatch under a given quadrant.
+		/// </summary>
+		/// <param name="graphics"></param>
+		/// <param name="quadType"></param>
+		private void FillSwatchColor(Graphics graphics, QuadrantType quadType)
+		{
+			SolidBrush brush = null;
+			switch (quadType)
+			{
+				case QuadrantType.Ground:
+					brush = Brushes[TopView.FloorColor];
+					break;
+				case QuadrantType.West:
+					brush = new SolidBrush(Pens[TopView.WestColor].Color);
+					break;
+				case QuadrantType.North:
+					brush = new SolidBrush(Pens[TopView.NorthColor].Color);
+					break;
+				case QuadrantType.Content:
+					brush = Brushes[TopView.ContentColor];
+					break;
+			}
+
+			graphics.FillRectangle(
+								brush,
+								new RectangleF(
+											StartX + QuadWidthTotal * (int)quadType,
+											StartY + SpriteHeight + MarginVert + Font.Height + 1,
+											SpriteWidth,
+											SwatchHeight));
 		}
 		#endregion
 	}

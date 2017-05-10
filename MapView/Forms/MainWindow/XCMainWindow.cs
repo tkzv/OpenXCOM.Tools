@@ -392,9 +392,9 @@ namespace MapView
 
 		#region Settings
 		// headers
-		private const string Global              = "Global";
-		private const string MapView             = "MapView";
-		private const string Sprites             = "Sprites";
+		private const string Global  = "Global";
+		private const string MapView = "MapView";
+		private const string Sprites = "Sprites";
 
 		// options
 		private const string Animation           = "Animation";
@@ -477,7 +477,8 @@ namespace MapView
 			Settings.AddSetting(
 							Doors,
 							false,
-							"If true the doors will animate",
+							"If true the doors will animate if Animation is also on - if"
+							+ " Animation is false the doors will show their alternate tile",
 							Global,
 							handler);
 			Settings.AddSetting(

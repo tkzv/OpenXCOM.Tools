@@ -19,6 +19,7 @@ namespace XCom
 		:
 			MapTileBase
 	{
+		#region Fields & Properties
 		private TileBase _ground;
 		public TileBase Ground
 		{
@@ -47,22 +48,8 @@ namespace XCom
 			set { ChangeMapQuadrant(QuadrantType.Content, value); }
 		}
 
-
-		internal XCMapTile(
-				TileBase ground,
-				TileBase west,
-				TileBase north,
-				TileBase content)
-		{
-			_ground  = ground;
-			_west    = west;
-			_north   = north;
-			_content = content;
-
-			Blank = false; // <- not needed.
-			DrawAbove = true;
-		}
-
+		public bool Blank
+		{ get; set; }
 
 		public static XCMapTile BlankTile
 		{
@@ -73,9 +60,6 @@ namespace XCom
 				return tile;
 			}
 		}
-
-		public bool Blank
-		{ get; set; }
 
 		public TileBase this[QuadrantType quad]
 		{
@@ -111,7 +95,27 @@ namespace XCom
 				return tileList.ToArray();
 			}
 		}
+		#endregion
 
+
+		#region cTor
+		internal XCMapTile(
+				TileBase ground,
+				TileBase west,
+				TileBase north,
+				TileBase content)
+		{
+			_ground  = ground;
+			_west    = west;
+			_north   = north;
+			_content = content;
+
+			DrawAbove = true;
+		}
+		#endregion
+
+
+		#region Methods
 		private void ChangeMapQuadrant(QuadrantType quad, TileBase tile)
 		{
 			switch (quad)
@@ -122,5 +126,6 @@ namespace XCom
 				case QuadrantType.Content: _content = tile; break;
 			}
 		}
+		#endregion
 	}
 }

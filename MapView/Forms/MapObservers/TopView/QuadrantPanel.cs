@@ -120,7 +120,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 					SetSelected(e.Button, e.Clicks);
 
-					if (e.Button == MouseButtons.Right) // see SetSelected() above^
+					if (e.Button == MouseButtons.Right) // see SetSelected()
 					{
 						MainViewUnderlay.Instance.MainViewOverlay.Refresh();
 						ViewerFormsManager.TopView.Refresh();
@@ -132,6 +132,10 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
+		/// <summary>
+		/// Passes the draw-function on to QuadrantPanelDrawService.
+		/// </summary>
+		/// <param name="graphics"></param>
 		protected override void RenderGraphics(Graphics graphics)
 		{
 			_drawService.Draw(graphics, _tile, SelectedQuadrant);

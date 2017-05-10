@@ -206,16 +206,6 @@ namespace MapView
 			get { return _interpolationLocal; }
 			set { _interpolationLocal = value; }
 		}
-//		Invalid				// -1
-//		Default				//  0
-//		Low					//  1
-//		High				//  2
-//		Bilinear			//  3
-//		Bicubic				//  4
-//		NearestNeighbor		//  5
-//		HighQualityBilinear	//  6
-//		HighQualityBicubic	//  7
-
 
 		/// <summary>
 		/// If true draws a translucent red box around selected tiles
@@ -602,8 +592,6 @@ namespace MapView
 				_spriteAttributes.SetGamma(SpriteDarknessLocal, System.Drawing.Imaging.ColorAdjustType.Bitmap); // TODO: laggy ....
 
 				_graphics.InterpolationMode = InterpolationLocal;
-				// NOTE: don't want to use Bicubic or Bilinear since MSDN says
-				// they won't work too good when shrinking too far.
 
 				// Image Processing using C# - https://www.codeproject.com/Articles/33838/Image-Processing-using-C
 				// ColorMatrix Guide - https://docs.rainmeter.net/tips/colormatrix-guide/

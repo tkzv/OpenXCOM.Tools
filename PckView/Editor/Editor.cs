@@ -44,13 +44,13 @@ namespace PckView
 		internal Editor(PckImage image)
 		{
 			_trackBar = new TrackBar();
-			_trackBar.AutoSize = false;
-			_trackBar.Height = 23;
-			_trackBar.Minimum = 1;
-			_trackBar.Maximum = 10;
-			_trackBar.Value = 9;
-			_trackBar.LargeChange = 1;
-			_trackBar.BackColor = Color.Silver;
+			_trackBar.AutoSize    = false;
+			_trackBar.Height      = 23;
+			_trackBar.Minimum     =  1;
+			_trackBar.Maximum     = 10;
+			_trackBar.Value       = 10;
+			_trackBar.LargeChange =  1;
+			_trackBar.BackColor   = Color.Silver;
 			_trackBar.Scroll += OnTrackScroll;
 
 			_editorPanel = new EditorPanel(image);

@@ -140,7 +140,7 @@ namespace PckView
 			int factor = Square * _scale;
 
 			for (int y = 0; y != height; ++y)
-			for (int x = 0; x != width; ++x)
+			for (int x = 0; x != width;  ++x)
 				graphics.FillRectangle(
 									new SolidBrush(_sprite.Sprite.GetPixel(x, y)),
 									x * factor,
