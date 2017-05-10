@@ -571,7 +571,7 @@ namespace MapView
 
 			InterpolationMode interpolate = InterpolationMode.Default; // TODO: put in Options.
 
-			const int testInterpolation = 0; // just for switching the test.
+			const int testInterpolation = 1; // just for switching the test.
 			switch (testInterpolation)
 			{
 				case 1:
@@ -782,7 +782,7 @@ namespace MapView
 					DrawSprite(
 							sprite,
 							new Rectangle(
-									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale),
+									x, y - tileBase.Record.TileOffset * HalfHeight / HalfHeightConst,
 									HalfWidth * 2, HalfHeight * 5));
 				}
 			}
@@ -796,7 +796,7 @@ namespace MapView
 					DrawSprite(
 							sprite,
 							new Rectangle(
-									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale),
+									x, y - tileBase.Record.TileOffset * HalfHeight / HalfHeightConst,
 									HalfWidth * 2, HalfHeight * 5));
 				}
 			}
@@ -810,7 +810,7 @@ namespace MapView
 					DrawSprite(
 							sprite,
 							new Rectangle(
-									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale),
+									x, y - tileBase.Record.TileOffset * HalfHeight / HalfHeightConst,
 									HalfWidth * 2, HalfHeight * 5));
 				}
 			}
@@ -824,7 +824,7 @@ namespace MapView
 					DrawSprite(
 							sprite,
 							new Rectangle(
-									x, y - (int)(tileBase.Record.TileOffset * Globals.Scale),
+									x, y - tileBase.Record.TileOffset * HalfHeight / HalfHeightConst,
 									HalfWidth * 2, HalfHeight * 5));
 				}
 			}

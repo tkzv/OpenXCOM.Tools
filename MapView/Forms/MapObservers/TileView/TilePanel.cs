@@ -290,7 +290,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 				const string door = "door";
 //				int textWidth1 = TextRenderer.MeasureText(door, Font).Width;	// =30
-				int textWidth2 = (int)graphics.MeasureString(door, Font).Width;		// =24
+				int textWidth2 = (int)graphics.MeasureString(door, Font).Width;	// =24
 
 				foreach (var tile in _tiles)
 				{
@@ -307,20 +307,20 @@ namespace MapView.Forms.MapObservers.TileViews
 						if (_specialTypeBrushes.ContainsKey(specialType))
 							graphics.FillRectangle((SolidBrush)_specialTypeBrushes[specialType], rect);
 
-						graphics.DrawImage(											// then draw the sprite itself
-								tile[MainViewUnderlay.AniStep].Sprite,
-								left + SpriteMargin,
-								top  + SpriteMargin - tile.Record.TileOffset);
+						graphics.DrawImage(										// then draw the sprite itself
+										tile[MainViewUnderlay.AniStep].Sprite,
+										left + SpriteMargin,
+										top  + SpriteMargin - tile.Record.TileOffset);
 
 						// NOTE: keep the door-string and its placement consistent with
 						// QuadrantPanelDrawService.Draw().
 						if (tile.Record.HumanDoor || tile.Record.UfoDoor)		// finally print "door" if it's a door
 							graphics.DrawString(
-									door,
-									Font,
-									_brushBlack,
-									left + (SpriteWidth  - textWidth2) / 2,
-									top  +  SpriteHeight - Font.Height); // PckImage.Height
+											door,
+											Font,
+											_brushBlack,
+											left + (SpriteWidth  - textWidth2) / 2,
+											top  +  SpriteHeight - Font.Height); // PckImage.Height
 					}
 					else // draw the eraser ->
 					{
@@ -328,8 +328,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 						if (Globals.ExtraTiles != null)
 							graphics.DrawImage(
-									Globals.ExtraTiles[0].Sprite,
-									left, top);
+											Globals.ExtraTiles[0].Sprite,
+											left, top);
 					}
 
 					x = (x + 1) % _tilesX;
@@ -337,39 +337,39 @@ namespace MapView.Forms.MapObservers.TileViews
 						y++;
 				}
 
-//				g.DrawRectangle(
-//							_brush,
-//							(_sel % _across) * (_width + _space),
-//							_startY + (_sel / _across) * (_height + _space),
-//							_width  + _space,
-//							_height + _space)
+//				graphics.DrawRectangle(
+//									_brush,
+//									(_sel % _across) * (_width + _space),
+//									_startY + (_sel / _across) * (_height + _space),
+//									_width  + _space,
+//									_height + _space)
 
 				int height = TableHeight;
 
 				for (int i = 0; i <= _tilesX; ++i)
 					graphics.DrawLine(
-							_penBlack,
-							i * SpriteWidth, _startY,
-							i * SpriteWidth, _startY + height);
+									_penBlack,
+									i * SpriteWidth, _startY,
+									i * SpriteWidth, _startY + height);
 
 				for (int i = 0; i <= height; i += SpriteHeight)
 					graphics.DrawLine(
-							_penBlack,
-							0,                     _startY + i,
-							_tilesX * SpriteWidth, _startY + i);
+									_penBlack,
+									0,                     _startY + i,
+									_tilesX * SpriteWidth, _startY + i);
 
 				graphics.DrawRectangle(
-							_penRed,
-							_id % _tilesX * SpriteWidth,
-							_startY + _id / _tilesX * SpriteHeight,
-							SpriteWidth, SpriteHeight);
+									_penRed,
+									_id % _tilesX * SpriteWidth,
+									_startY + _id / _tilesX * SpriteHeight,
+									SpriteWidth, SpriteHeight);
 
 
 				if (!_scrollBar.Visible) // indicate the reserved width for scrollbar.
 					graphics.DrawLine(
-							_penControlLight,
-							Width - _scrollBar.Width, 0,
-							Width - _scrollBar.Width, Height);
+									_penControlLight,
+									Width - _scrollBar.Width, 0,
+									Width - _scrollBar.Width, Height);
 			}
 		}
 
