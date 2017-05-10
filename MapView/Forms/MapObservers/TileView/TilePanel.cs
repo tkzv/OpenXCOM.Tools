@@ -262,10 +262,10 @@ namespace MapView.Forms.MapObservers.TileViews
 		private int GetTileUnderCursor(MouseEventArgs e)
 		{
 			if (_tiles != null && _tiles.Length != 0
-				&& e.X < SpriteWidth * _tilesX) // not out of bounds to right
+				&& e.X < SpriteWidth * _tilesX + TableOffset / 2) // not out of bounds to right
 			{
-				int tileX =  e.X            / SpriteWidth;
-				int tileY = (e.Y - _startY) / SpriteHeight;
+				int tileX = (e.X - TableOffset / 2)           / SpriteWidth;
+				int tileY = (e.Y - TableOffset / 2 - _startY) / SpriteHeight;
 
 				return tileX + tileY * _tilesX;
 			}
