@@ -92,8 +92,8 @@ namespace MapView
 
 		private Brush _brushLayer;
 
-		private Color _colorLayer = Color.MediumVioletRed; // initial color for the grid-layer
-		public Color GridLayerColor // public for Reflection.
+		private Color _colorLayer = Color.MediumVioletRed;							// initial color for the grid-layer Option
+		public Color GridLayerColor													// <- public for Reflection.
 		{
 			get { return _colorLayer; }
 			set
@@ -104,8 +104,8 @@ namespace MapView
 			}
 		}
 
-		private int _opacity = 200; // initial opacity for the grid-layer
-		public int GridLayerOpacity // public for Reflection.
+		private int _opacity = 200;													// initial opacity for the grid-layer Option
+		public int GridLayerOpacity													// <- public for Reflection.
 		{
 			get { return _opacity; }
 			set
@@ -116,8 +116,8 @@ namespace MapView
 			}
 		}
 
-		private Pen _penGrid = new Pen(Brushes.Black, 1); // initial pen for grid-lines
-		public Color GridLineColor // public for Reflection.
+		private Pen _penGrid = new Pen(Brushes.Black, 1);							// initial pen for grid-lines Option
+		public Color GridLineColor													// <- public for Reflection.
 		{
 			get { return _penGrid.Color; }
 			set
@@ -126,7 +126,7 @@ namespace MapView
 				Refresh();
 			}
 		}
-		public int GridLineWidth // public for Reflection.
+		public int GridLineWidth													// <- public for Reflection.
 		{
 			get { return (int)_penGrid.Width; }
 			set
@@ -136,8 +136,8 @@ namespace MapView
 			}
 		}
 
-		private bool _showGrid = true; // initial val for show-grid
-		public bool ShowGrid // public for Reflection.
+		private bool _showGrid = true;												// initial val for show-grid Option
+		public bool ShowGrid														// <- public for Reflection.
 		{
 			get { return _showGrid; }
 			set
@@ -147,13 +147,13 @@ namespace MapView
 			}
 		}
 
-		private bool _graySelection = true; // initial val for gray-selection
+		private bool _graySelection = true;											// initial val for gray-selection Option
 		// NOTE: Remove suppression for Release cfg.
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
 		"CA1811:AvoidUncalledPrivateCode",
 		Justification = "Because the setter is called dynamically w/ Reflection" +
 		"or other: not only is it used it needs to be public.")]
-		public bool GraySelection // public for Reflection.
+		public bool GraySelection													// <- public for Reflection.
 		{
 			get { return _graySelection; }
 			set
@@ -165,9 +165,9 @@ namespace MapView
 
 
 		// NOTE: Options don't like floats afaict, hence this workaround w/
-		// 'SpriteDarkness' and 'SpriteDarknessF' ->
-		private int _spriteDarkness = 33;	// initial val for sprite darkness Option
-		public int SpriteDarkness			// <- public for Reflection.
+		// 'SpriteDarkness' and 'SpriteDarknessLocal' ->
+		private int _spriteDarkness = 33;											// initial val for sprite darkness Option
+		public int SpriteDarkness													// <- public for Reflection.
 		{
 			get { return _spriteDarkness; }
 			set
@@ -176,7 +176,7 @@ namespace MapView
 				SpriteDarknessLocal = _spriteDarkness * 0.03f;
 			}
 		}
-		private float _spriteDarknessLocal = 1.0f; // initial val for local sprite darkness
+		private float _spriteDarknessLocal = 1.0f;									// initial val for local sprite darkness
 		private float SpriteDarknessLocal
 		{
 			get { return _spriteDarknessLocal; }
@@ -189,8 +189,8 @@ namespace MapView
 
 		// NOTE: Options don't like enums afaict, hence this workaround w/
 		// 'Interpolation' and 'InterpolationLocal' ->
-		private int _interpolation;	// 0 = initial val for interpolation Option
-		public int Interpolation	// <- public for Reflection.
+		private int _interpolation;													// 0 = initial val for interpolation Option
+		public int Interpolation													// <- public for Reflection.
 		{
 			get { return _interpolation; }
 			set
@@ -200,7 +200,7 @@ namespace MapView
 				Refresh();	// NOTE: refresh needs to go here rather than in InterpolationLocal
 			}				// for some whack reason.
 		}
-		private InterpolationMode _interpolationLocal = InterpolationMode.Default; // initial val for local interpolation
+		private InterpolationMode _interpolationLocal = InterpolationMode.Default;	// initial val for local interpolation
 		private InterpolationMode InterpolationLocal
 		{
 			get { return _interpolationLocal; }
@@ -218,8 +218,8 @@ namespace MapView
 
 
 		/// <summary>
-		/// If true draws a translucent red box around selected tiles ->
-		/// superceded by using GraySelection(false) property.
+		/// If true draws a translucent red box around selected tiles
+		/// -> superceded by using GraySelection(false) property.
 		/// </summary>
 //		private bool _drawSelectionBox;
 //		public bool DrawSelectionBox
@@ -595,13 +595,11 @@ namespace MapView
 
 			if (MapBase != null)
 			{
-				LogFile.WriteLine("overlay OnPaint");
-
 				_graphics = e.Graphics;
 				_graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 //				_graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-				_spriteAttributes.SetGamma(SpriteDarknessLocal, System.Drawing.Imaging.ColorAdjustType.Bitmap);
+				_spriteAttributes.SetGamma(SpriteDarknessLocal, System.Drawing.Imaging.ColorAdjustType.Bitmap); // TODO: laggy ....
 
 				_graphics.InterpolationMode = InterpolationLocal;
 				// NOTE: don't want to use Bicubic or Bilinear since MSDN says
@@ -609,12 +607,6 @@ namespace MapView
 
 				// Image Processing using C# - https://www.codeproject.com/Articles/33838/Image-Processing-using-C
 				// ColorMatrix Guide - https://docs.rainmeter.net/tips/colormatrix-guide/
-	
-				//	using (ImageAttributes wrapMode = new ImageAttributes()) // for problems with rings ... shouldn't happen here.
-				//	{
-				//		wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-				//		g.DrawImage(input, rect, 0, 0, input.Width, input.Height, GraphicsUnit.Pixel, wrapMode);
-				//	}
 
 
 				var dragRect = new Rectangle(new Point(0, 0), new Size(0, 0));
@@ -855,78 +847,6 @@ namespace MapView
 							GraphicsUnit.Pixel,
 							_spriteAttributes);
 		}
-
-
-		// http://stackoverflow.com/questions/35520464/remove-darkness-in-capturing-image-background-in-winform-c-sharp#answer-35523191
-/*		public static Bitmap ApplyGamma(Bitmap sprite, float g) //, float c
-		{
-			var sprite0 = new Bitmap(sprite.Width, sprite.Height);
-
-			using (Graphics graphics = Graphics.FromImage(sprite0))
-			{
-//				var colorMatrix = new System.Drawing.Imaging.ColorMatrix(new float[][] 
-//				{
-//					new float[] {c, 0, 0, 0, 0},
-//					new float[] {0, c, 0, 0, 0},
-//					new float[] {0, 0, c, 0, 0},
-//					new float[] {0, 0, 0, 1, 0},
-//					new float[] {0, 0, 0, 0, 1}
-//				});
-
-
-				var attributes = new System.Drawing.Imaging.ImageAttributes();
-
-//				attributes.SetColorMatrix(
-//										colorMatrix,
-//										System.Drawing.Imaging.ColorMatrixFlag.Default,
-//										System.Drawing.Imaging.ColorAdjustType.Bitmap);
-
-				attributes.SetGamma(g, System.Drawing.Imaging.ColorAdjustType.Bitmap);
-
-				graphics.DrawImage(
-								sprite,
-								new Rectangle(0, 0, sprite.Width, sprite.Height),
-								0, 0,
-								sprite.Width, sprite.Height,
-								GraphicsUnit.Pixel,
-								attributes);
-			}
-			return sprite0;
-		}
-*/
-		// https://www.codeproject.com/Articles/33838/Image-Processing-using-C
-		// kL_note: looks like a great article on Image Processing.
-/*		public void SetGamma(double red, double green, double blue)
-		{
-			Bitmap temp = (Bitmap)_currentBitmap;
-				Bitmap bmap = (Bitmap)temp.Clone();
-				Color c;
-				byte[] redGamma = CreateGammaArray(red);
-				byte[] greenGamma = CreateGammaArray(green);
-				byte[] blueGamma = CreateGammaArray(blue);
-				for (int i = 0; i < bmap.Width; i++)
-				{
-						for (int j = 0; j < bmap.Height; j++)
-						{
-							c = bmap.GetPixel(i, j);
-							bmap.SetPixel(i, j, Color.FromArgb(redGamma[c.R],
-							greenGamma[c.G], blueGamma[c.B]));
-						}
-				}
-				_currentBitmap = (Bitmap)bmap.Clone();
-		}
-		
-		private byte[] CreateGammaArray(double color)
-		{
-				byte[] gammaArray = new byte[256];
-				for (int i = 0; i < 256; ++i)
-				{
-						gammaArray[i] = (byte)Math.Min(255,
-						(int)((255.0 * Math.Pow(i / 255.0, 1.0 / color)) + 0.5));
-				}
-				return gammaArray;
-		}
-*/
 
 		/// <summary>
 		/// Draws a red lozenge around any selected Tiles.

@@ -36,7 +36,7 @@ namespace MapView
 			get { return _mapBase; }
 			set
 			{
-				XCom.LogFile.WriteLine("MainViewUnderlay.MapBase set");
+				//XCom.LogFile.WriteLine("MainViewUnderlay.MapBase set");
 
 				MainViewOverlay.MapBase = value;
 
@@ -123,19 +123,19 @@ namespace MapView
 			});
 
 
-			XCom.LogFile.WriteLine("");
-			XCom.LogFile.WriteLine("MainViewUnderlay cTor");
-			XCom.LogFile.WriteLine(". underlay.Width= " + Width);
-			XCom.LogFile.WriteLine(". underlayHeight= " + Height);
-
-			XCom.LogFile.WriteLine(". underlay client.Width= " + ClientSize.Width);
-			XCom.LogFile.WriteLine(". underlay client.Height= " + ClientSize.Height);
-
-			XCom.LogFile.WriteLine(". overlay.Width= " + _mainViewOverlay.Width);
-			XCom.LogFile.WriteLine(". overlay.Height= " + _mainViewOverlay.Height);
-
-			XCom.LogFile.WriteLine(". overlay client.Width= " + _mainViewOverlay.ClientSize.Width);
-			XCom.LogFile.WriteLine(". overlay client.Height= " + _mainViewOverlay.ClientSize.Height);
+//			XCom.LogFile.WriteLine("");
+//			XCom.LogFile.WriteLine("MainViewUnderlay cTor");
+//			XCom.LogFile.WriteLine(". underlay.Width= " + Width);
+//			XCom.LogFile.WriteLine(". underlayHeight= " + Height);
+//
+//			XCom.LogFile.WriteLine(". underlay client.Width= " + ClientSize.Width);
+//			XCom.LogFile.WriteLine(". underlay client.Height= " + ClientSize.Height);
+//
+//			XCom.LogFile.WriteLine(". overlay.Width= " + _mainViewOverlay.Width);
+//			XCom.LogFile.WriteLine(". overlay.Height= " + _mainViewOverlay.Height);
+//
+//			XCom.LogFile.WriteLine(". overlay client.Width= " + _mainViewOverlay.ClientSize.Width);
+//			XCom.LogFile.WriteLine(". overlay client.Height= " + _mainViewOverlay.ClientSize.Height);
 		}
 		#endregion
 
@@ -152,20 +152,20 @@ namespace MapView
 
 		protected override void OnResize(EventArgs eventargs)
 		{
-			XCom.LogFile.WriteLine("");
-			XCom.LogFile.WriteLine("MainViewUnderlay.OnResize");
-
-			XCom.LogFile.WriteLine("underlay.Width= " + Width);
-			XCom.LogFile.WriteLine("underlay.Height= " + Height);
-
-			XCom.LogFile.WriteLine("underlay client.Width= " + ClientSize.Width);
-			XCom.LogFile.WriteLine("underlay client.Height= " + ClientSize.Height);
-
-			XCom.LogFile.WriteLine("overlay.Width= " + MainViewOverlay.Width);
-			XCom.LogFile.WriteLine("overlay.Height= " + MainViewOverlay.Height);
-
-			XCom.LogFile.WriteLine("overlay client.Width= " + MainViewOverlay.ClientSize.Width);
-			XCom.LogFile.WriteLine("overlay client.Height= " + MainViewOverlay.ClientSize.Height);
+//			XCom.LogFile.WriteLine("");
+//			XCom.LogFile.WriteLine("MainViewUnderlay.OnResize");
+//
+//			XCom.LogFile.WriteLine("underlay.Width= " + Width);
+//			XCom.LogFile.WriteLine("underlay.Height= " + Height);
+//
+//			XCom.LogFile.WriteLine("underlay client.Width= " + ClientSize.Width);
+//			XCom.LogFile.WriteLine("underlay client.Height= " + ClientSize.Height);
+//
+//			XCom.LogFile.WriteLine("overlay.Width= " + MainViewOverlay.Width);
+//			XCom.LogFile.WriteLine("overlay.Height= " + MainViewOverlay.Height);
+//
+//			XCom.LogFile.WriteLine("overlay client.Width= " + MainViewOverlay.ClientSize.Width);
+//			XCom.LogFile.WriteLine("overlay client.Height= " + MainViewOverlay.ClientSize.Height);
 
 
 			base.OnResize(eventargs);
@@ -177,7 +177,7 @@ namespace MapView
 			}
 			UpdateScrollers();
 
-			XCom.LogFile.WriteLine("MainViewUnderlay.OnResize EXIT");
+//			XCom.LogFile.WriteLine("MainViewUnderlay.OnResize EXIT");
 		}
 
 		/// <summary>
@@ -251,8 +251,8 @@ namespace MapView
 		/// </summary>
 		internal void SetScale()
 		{
-			XCom.LogFile.WriteLine("");
-			XCom.LogFile.WriteLine("MainViewUnderlay.SetScale");
+			//XCom.LogFile.WriteLine("");
+			//XCom.LogFile.WriteLine("MainViewUnderlay.SetScale");
 
 			var normal = GetOverlaySizeRequired(1);
 			Globals.Scale = Math.Min(
@@ -262,7 +262,7 @@ namespace MapView
 											Globals.ScaleMinimum,
 											Globals.ScaleMaximum);
 
-			XCom.LogFile.WriteLine(". scale set to= " + Globals.Scale);
+			//XCom.LogFile.WriteLine(". scale set to= " + Globals.Scale);
 		}
 
 		/// <summary>
@@ -270,22 +270,22 @@ namespace MapView
 		/// </summary>
 		internal void SetOverlaySize()
 		{
-			XCom.LogFile.WriteLine("");
-			XCom.LogFile.WriteLine("MainViewUnderlay.SetOverlaySize");
+			//XCom.LogFile.WriteLine("");
+			//XCom.LogFile.WriteLine("MainViewUnderlay.SetOverlaySize");
 
 			if (MapBase != null)
 			{
-				XCom.LogFile.WriteLine(". scale= " + Globals.Scale);
+				//XCom.LogFile.WriteLine(". scale= " + Globals.Scale);
 				var required = GetOverlaySizeRequired(Globals.Scale);
 
 				MainViewOverlay.Width  = required.Width  + 2; // don't clip lozenge-tips at right or bottom edges.
-				MainViewOverlay.Height = required.Height + 2;
+				MainViewOverlay.Height = required.Height + 2; // TODO: needs to be further adjusted
 
-				XCom.LogFile.WriteLine(". set overlay.Width= " + MainViewOverlay.Width);
-				XCom.LogFile.WriteLine(". set overlay.Height= " + MainViewOverlay.Height);
+				//XCom.LogFile.WriteLine(". set overlay.Width= " + MainViewOverlay.Width);
+				//XCom.LogFile.WriteLine(". set overlay.Height= " + MainViewOverlay.Height);
 
-				XCMainWindow.Instance.StatusBarPrintScale();
-			}
+				XCMainWindow.Instance.StatusBarPrintScale();	// TODO: The scale shown is changing based on
+			}													// underlay size rather than overlay size. Etc.
 		}
 
 		/// <summary>
@@ -296,12 +296,12 @@ namespace MapView
 		/// <returns></returns>
 		internal Size GetOverlaySizeRequired(double scale)
 		{
-			XCom.LogFile.WriteLine("");
-			XCom.LogFile.WriteLine("MainViewUnderlay.GetOverlaySizeRequired");
+			//XCom.LogFile.WriteLine("");
+			//XCom.LogFile.WriteLine("MainViewUnderlay.GetOverlaySizeRequired");
 
 			if (MapBase != null)
 			{
-				XCom.LogFile.WriteLine(". scale= " + Globals.Scale);
+				//XCom.LogFile.WriteLine(". scale= " + Globals.Scale);
 
 				_halfWidth  = (int)(MainViewOverlay.HalfWidthConst  * scale);
 				_halfHeight = (int)(MainViewOverlay.HalfHeightConst * scale);
@@ -328,13 +328,13 @@ namespace MapView
 				int height = (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * _halfHeight
 						   +  MapBase.MapSize.Levs * _halfHeight * 3;
 
-				XCom.LogFile.WriteLine(". width= " + width);
-				XCom.LogFile.WriteLine(". height= " + height);
+				//XCom.LogFile.WriteLine(". width= " + width);
+				//XCom.LogFile.WriteLine(". height= " + height);
 
 				return new Size(width, height);
 			}
 
-			XCom.LogFile.WriteLine(". RET size empty.");
+			//XCom.LogFile.WriteLine(". RET size empty.");
 			return Size.Empty;
 		}
 
@@ -429,12 +429,6 @@ namespace MapView
 		{
 			get { return (_timer != null && _timer.Enabled); }
 		}
-
-/*		public static int Interval
-		{
-			get { return _timer.Interval; }
-			set { _timer.Interval = value; }
-		} */
 
 		internal static int AniStep
 		{
