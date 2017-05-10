@@ -565,25 +565,44 @@ namespace MapView
 			base.OnPaint(e);
 
 			_graphics = e.Graphics;
+			_graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+//			_graphics.SmoothingMode = SmoothingMode.HighQuality;
 			_spriteAttributes.SetGamma(SpriteDarknessF, System.Drawing.Imaging.ColorAdjustType.Bitmap);
 
-//			_graphics.InterpolationMode = InterpolationMode.High;
-//			_graphics.InterpolationMode = InterpolationMode.HighQualityBicubic; // TODO: put in Options.
+			InterpolationMode interpolate = InterpolationMode.Default; // TODO: put in Options.
 
-//			_graphics.InterpolationMode = InterpolationMode.HighQualityBilinear;
-//			_graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+			const int testInterpolation = 0; // just for switching the test.
+			switch (testInterpolation)
+			{
+				case 1:
+					interpolate = InterpolationMode.HighQualityBicubic;
+					break;
+				case 2:
+					interpolate = InterpolationMode.High;
+					break;
+				case 3:
+					interpolate = InterpolationMode.HighQualityBilinear;
+					break;
+				case 4:
+					interpolate = InterpolationMode.Low;
+					break;
+				case 5:
+					interpolate = InterpolationMode.NearestNeighbor;
+					break;
 
-// PixelOffsetMode property to HighQuality
+				// NOTE: don't want to use Bicubic or Bilinear since MSDN says
+				// they won't work too good when shrinking too far.
+			}
+			_graphics.InterpolationMode = interpolate;
 
-//	using (ImageAttributes wrapMode = new ImageAttributes())
+			// Image Processing using C# - https://www.codeproject.com/Articles/33838/Image-Processing-using-C
+			// ColorMatrix Guide - https://docs.rainmeter.net/tips/colormatrix-guide/
+
+//	using (ImageAttributes wrapMode = new ImageAttributes()) // for problems with rings ... shouldn't happen here.
 //	{
 //		wrapMode.SetWrapMode(WrapMode.TileFlipXY);
 //		g.DrawImage(input, rect, 0, 0, input.Width, input.Height, GraphicsUnit.Pixel, wrapMode);
 //	}
-
-// bitmapGraphics.CompositingMode = CompositingMode.SourceCopy;
-
-
 
 			if (MapBase != null)
 			{

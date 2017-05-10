@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 
@@ -45,7 +46,11 @@ namespace DSShared.Windows
 //										Border3DStyle.Flat);
 //			}
 //			else
-			RenderGraphics(e.Graphics);
+
+			var graphics = e.Graphics;
+			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+//			graphics.SmoothingMode = SmoothingMode.HighQuality;
+			RenderGraphics(graphics);
 		}
 		#endregion
 
@@ -54,7 +59,7 @@ namespace DSShared.Windows
 		/// <summary>
 		/// Shunts rendering off to TopViewPanelParent and QuadrantPanel.
 		/// </summary>
-		protected virtual void RenderGraphics(Graphics backBuffer)
+		protected virtual void RenderGraphics(Graphics graphics)
 		{}
 		#endregion
 	}

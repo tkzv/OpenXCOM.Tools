@@ -132,9 +132,9 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		protected override void RenderGraphics(Graphics backBuffer)
+		protected override void RenderGraphics(Graphics graphics)
 		{
-			_drawService.Draw(backBuffer, _tile, SelectedQuadrant);
+			_drawService.Draw(graphics, _tile, SelectedQuadrant);
 		}
 		#endregion
 

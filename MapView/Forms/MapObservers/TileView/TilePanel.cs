@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 using XCom;
@@ -278,7 +279,9 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			if (_tiles != null && _tiles.Length != 0)
 			{
-				var g = e.Graphics;
+				var graphics = e.Graphics;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+//				graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 				int x = 0;
 				int y = 0;
@@ -287,7 +290,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 				const string door = "door";
 //				int textWidth1 = TextRenderer.MeasureText(door, Font).Width;	// =30
-				int textWidth2 = (int)g.MeasureString(door, Font).Width;		// =24
+				int textWidth2 = (int)graphics.MeasureString(door, Font).Width;		// =24
 
 				foreach (var tile in _tiles)
 				{
@@ -302,9 +305,9 @@ namespace MapView.Forms.MapObservers.TileViews
 					{
 						string specialType = tile.Record.TargetType.ToString();	// first fill Special Property color
 						if (_specialTypeBrushes.ContainsKey(specialType))
-							g.FillRectangle((SolidBrush)_specialTypeBrushes[specialType], rect);
+							graphics.FillRectangle((SolidBrush)_specialTypeBrushes[specialType], rect);
 
-						g.DrawImage(											// then draw the sprite itself
+						graphics.DrawImage(											// then draw the sprite itself
 								tile[MainViewUnderlay.AniStep].Sprite,
 								left + SpriteMargin,
 								top  + SpriteMargin - tile.Record.TileOffset);
@@ -312,7 +315,7 @@ namespace MapView.Forms.MapObservers.TileViews
 						// NOTE: keep the door-string and its placement consistent with
 						// QuadrantPanelDrawService.Draw().
 						if (tile.Record.HumanDoor || tile.Record.UfoDoor)		// finally print "door" if it's a door
-							g.DrawString(
+							graphics.DrawString(
 									door,
 									Font,
 									_brushBlack,
@@ -321,10 +324,10 @@ namespace MapView.Forms.MapObservers.TileViews
 					}
 					else // draw the eraser ->
 					{
-						g.FillRectangle(Brushes.AliceBlue, rect);
+						graphics.FillRectangle(Brushes.AliceBlue, rect);
 
 						if (Globals.ExtraTiles != null)
-							g.DrawImage(
+							graphics.DrawImage(
 									Globals.ExtraTiles[0].Sprite,
 									left, top);
 					}
@@ -344,18 +347,18 @@ namespace MapView.Forms.MapObservers.TileViews
 				int height = TableHeight;
 
 				for (int i = 0; i <= _tilesX; ++i)
-					g.DrawLine(
+					graphics.DrawLine(
 							_penBlack,
 							i * SpriteWidth, _startY,
 							i * SpriteWidth, _startY + height);
 
 				for (int i = 0; i <= height; i += SpriteHeight)
-					g.DrawLine(
+					graphics.DrawLine(
 							_penBlack,
 							0,                     _startY + i,
 							_tilesX * SpriteWidth, _startY + i);
 
-				g.DrawRectangle(
+				graphics.DrawRectangle(
 							_penRed,
 							_id % _tilesX * SpriteWidth,
 							_startY + _id / _tilesX * SpriteHeight,
@@ -363,7 +366,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 
 				if (!_scrollBar.Visible) // indicate the reserved width for scrollbar.
-					g.DrawLine(
+					graphics.DrawLine(
 							_penControlLight,
 							Width - _scrollBar.Width, 0,
 							Width - _scrollBar.Width, Height);

@@ -48,6 +48,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			_graphics = e.Graphics;
+			_graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+//			_graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 //			try // TODO: i get the impression that many of the try/catch blocks can and should be replaced w/ standard code.
 //			{

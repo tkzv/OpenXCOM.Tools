@@ -2,6 +2,7 @@
 using System.Collections.Generic;		// List
 using System.Collections.ObjectModel;	// ReadOnlyCollection
 using System.Drawing;					// Pens, Brushes
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;				// Panel
 
 using XCom;								// Palette, XCImageCollection
@@ -418,30 +419,32 @@ namespace PckView
 
 			if (SpritePack != null && SpritePack.Count != 0)
 			{
-				var g = e.Graphics;
+				var graphics = e.Graphics;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+//				graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 				for (int tileX = 0; tileX <= _tilesX; ++tileX) // draw vertical lines
-					g.DrawLine(
-							_penBlack,
-							new Point(tileX * _spriteWidth,          _startY),
-							new Point(tileX * _spriteWidth, Height - _startY));
+					graphics.DrawLine(
+									_penBlack,
+									new Point(tileX * _spriteWidth,          _startY),
+									new Point(tileX * _spriteWidth, Height - _startY));
 
 				int tilesY = SpritePack.Count / _tilesX;
 				if (SpritePack.Count % _tilesX != 0)
 					++tilesY;
 
 				for (int tileY = 0; tileY <= tilesY; ++tileY) // draw horizontal lines
-					g.DrawLine(
-							_penBlack,
-							new Point(0,                      tileY * _spriteHeight + _startY),
-							new Point(_spriteWidth * _tilesX, tileY * _spriteHeight + _startY));
+					graphics.DrawLine(
+									_penBlack,
+									new Point(0,                      tileY * _spriteHeight + _startY),
+									new Point(_spriteWidth * _tilesX, tileY * _spriteHeight + _startY));
 
 
 				if (!_scrollBar.Visible) // indicate the reserved width for scrollbar.
-					g.DrawLine(
-							_penControlLight,
-							Width - _scrollBar.Width, 0,
-							Width - _scrollBar.Width, Height);
+					graphics.DrawLine(
+									_penControlLight,
+									Width - _scrollBar.Width, 0,
+									Width - _scrollBar.Width, Height);
 
 
 				var selected = new List<int>(); // track currently selected spriteIds.
@@ -454,17 +457,17 @@ namespace PckView
 					int tileY = id / _tilesX;
 
 					if (selected.Contains(id))
-						g.FillRectangle(
-									_brushCrimson,
-									tileX * _spriteWidth  + 1,
-									tileY * _spriteHeight + 1 + _startY,
-									_spriteWidth  - 1,
-									_spriteHeight - 1);
+						graphics.FillRectangle(
+											_brushCrimson,
+											tileX * _spriteWidth  + 1,
+											tileY * _spriteHeight + 1 + _startY,
+											_spriteWidth  - 1,
+											_spriteHeight - 1);
 
-					g.DrawImage(
-							SpritePack[id].Sprite,
-							tileX * _spriteWidth  + SpriteMargin,
-							tileY * _spriteHeight + SpriteMargin + _startY);
+					graphics.DrawImage(
+									SpritePack[id].Sprite,
+									tileX * _spriteWidth  + SpriteMargin,
+									tileY * _spriteHeight + SpriteMargin + _startY);
 				}
 			}
 		}

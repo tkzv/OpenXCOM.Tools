@@ -117,6 +117,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			switch (BlobTypeService.GetBlobType(tile))
 			{
+				// content ->
 				case BlobType.Content:
 					PathContent(x, y);
 					g.FillPath(
@@ -124,6 +125,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							_content);
 					break;
 
+				// floor ->
 				case BlobType.Floor:
 					PathContent(x, y);
 					g.FillPath(
@@ -131,6 +133,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							_content);
 					break;
 
+				// walls ->
 				case BlobType.NorthWallFence:
 					g.DrawLine(
 							tool.PenLight,
@@ -201,6 +204,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							ptRight);
 					break;
 
+				// diagonals ->
 				case BlobType.NorthwestSoutheast:
 					g.DrawLine(
 							tool.Pen,
@@ -215,10 +219,11 @@ namespace MapView.Forms.MapObservers.TopViews
 							ptRight);
 					break;
 
+				// corners ->
 				case BlobType.NorthwestCorner:
 					g.DrawLine(
 							tool.Pen,
-							Point.Add(ptTop, new Size(-Offset,              0)),
+							Point.Add(ptTop, new Size(-Offset - Offset / 2, 0)),
 							Point.Add(ptTop, new Size( Offset + Offset / 2, 0)));
 					break;
 
@@ -232,7 +237,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				case BlobType.SoutheastCorner:
 					g.DrawLine(
 							tool.Pen,
-							Point.Add(ptBot, new Size(-Offset,              0)),
+							Point.Add(ptBot, new Size(-Offset - Offset / 2, 0)),
 							Point.Add(ptBot, new Size( Offset + Offset / 2, 0)));
 					break;
 

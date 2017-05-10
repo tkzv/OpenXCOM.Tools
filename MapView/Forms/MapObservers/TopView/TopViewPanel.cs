@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 using XCom;
@@ -82,7 +83,12 @@ namespace MapView.Forms.MapObservers.TopViews
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			ControlPaint.DrawBorder3D(e.Graphics, ClientRectangle, Border3DStyle.Etched);
+
+			var graphics = e.Graphics;
+			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+//			graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+			ControlPaint.DrawBorder3D(graphics, ClientRectangle, Border3DStyle.Etched);
 		}
 
 		protected override void OnMouseDown(MouseEventArgs e)

@@ -702,28 +702,30 @@ namespace DSShared.Windows
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			Graphics g = e.Graphics;
-			
+			var graphics = e.Graphics;
+			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+//			graphics.SmoothingMode = SmoothingMode.HighQuality;
+
 			/********** Vertical splitter ********/
 			if (Dock == DockStyle.Left || Dock == DockStyle.Right)
 			{
 				if (hot)
-					g.FillRectangle(hotBrush,hotArea);
+					graphics.FillRectangle(hotBrush,hotArea);
 //				else
 //					g.FillRectangle(backBrush, hotArea);
 
-				g.DrawLine( // draw the top & bottom lines for our control image
-						controlDarkPen,
-						hotArea.X,
-						hotArea.Y,
-						hotArea.X + hotArea.Width,
-						hotArea.Y);
-				g.DrawLine(
-						controlDarkPen,
-						hotArea.X,
-						hotArea.Y + hotArea.Height,
-						hotArea.X + hotArea.Width,
-						hotArea.Y + hotArea.Height);
+				graphics.DrawLine( // draw the top & bottom lines for our control image
+								controlDarkPen,
+								hotArea.X,
+								hotArea.Y,
+								hotArea.X + hotArea.Width,
+								hotArea.Y);
+				graphics.DrawLine(
+								controlDarkPen,
+								hotArea.X,
+								hotArea.Y + hotArea.Height,
+								hotArea.X + hotArea.Width,
+								hotArea.Y + hotArea.Height);
 
 				if (Enabled && controlToHide != null)
 				{
@@ -781,7 +783,7 @@ namespace DSShared.Windows
 									hotArea.Y + hotArea.Height - (offY + tHeight / 2));
 						leftRight.CloseFigure();
 					}
-					g.FillPath(controlDarkBrush,leftRight);
+					graphics.FillPath(controlDarkBrush,leftRight);
 				}
 
 
@@ -794,33 +796,33 @@ namespace DSShared.Windows
 					case DotStyle.Mozilla:
 						while (y < hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace))
 						{
-							g.DrawLine( // light dot
-									controlLightLightPen,
-									x,
-									y,
-									x + 1,
-									y + 1);
-							g.DrawLine( // dark dot
-									controlDarkDarkPen,
-									x + 1,
-									y + 1,
-									x + 2,
-									y + 2);
+							graphics.DrawLine( // light dot
+											controlLightLightPen,
+											x,
+											y,
+											x + 1,
+											y + 1);
+							graphics.DrawLine( // dark dot
+											controlDarkDarkPen,
+											x + 1,
+											y + 1,
+											x + 2,
+											y + 2);
 
 							if (hot) // overdraw the background color as we actually drew 2px diagonal lines, not just dots
-								g.DrawLine(
-										hotPen,
-										x + 2,
-										y + 1,
-										x + 2,
-										y + 2);
+								graphics.DrawLine(
+											hotPen,
+											x + 2,
+											y + 1,
+											x + 2,
+											y + 2);
 							else
-								g.DrawLine(
-										backPen,
-										x + 2,
-										y + 1,
-										x + 2,
-										y + 2);
+								graphics.DrawLine(
+											backPen,
+											x + 2,
+											y + 1,
+											x + 2,
+											y + 2);
 
 							y += dotSpace;
 						}
@@ -829,96 +831,96 @@ namespace DSShared.Windows
 					case DotStyle.DoubleDots:
 						while (y < hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace))
 						{
-							g.DrawRectangle( // light dot
-										controlLightLightPen,
-										x,
-										y + 1,
-										1,
-										1);
-							g.DrawRectangle( // dark dot
-										controlDarkPen,
-										x - 1,
-										y,
-										1,
-										1);
+							graphics.DrawRectangle( // light dot
+												controlLightLightPen,
+												x,
+												y + 1,
+												1,
+												1);
+							graphics.DrawRectangle( // dark dot
+												controlDarkPen,
+												x - 1,
+												y,
+												1,
+												1);
 							y += dotSpace;
-							g.DrawRectangle( // light dot
-										controlLightLightPen,
-										x + 2,
-										y + 1,
-										1,
-										1);
-							g.DrawRectangle( // dark dot
-										controlDarkPen,
-										x + 1,
-										y,
-										1,
-										1);
+							graphics.DrawRectangle( // light dot
+												controlLightLightPen,
+												x + 2,
+												y + 1,
+												1,
+												1);
+							graphics.DrawRectangle( // dark dot
+												controlDarkPen,
+												x + 1,
+												y,
+												1,
+												1);
 							y += dotSpace;
 						}
 						break;
 
 					case DotStyle.Win9X:
-						g.DrawLine(
-								controlLightLightPen,
-								x,
-								y,
-								x + 2,
-								y);
-						g.DrawLine(
-								controlLightLightPen,
-								x,
-								y,
-								x,
-								hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace));
-						g.DrawLine(
-								controlDarkPen,
-								x + 2,
-								y,
-								x + 2,
-								hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace));
-						g.DrawLine(
-								controlDarkPen,
-								x,
-								hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace),
-								x + 2,
-								hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace));
+						graphics.DrawLine(
+										controlLightLightPen,
+										x,
+										y,
+										x + 2,
+										y);
+						graphics.DrawLine(
+										controlLightLightPen,
+										x,
+										y,
+										x,
+										hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace));
+						graphics.DrawLine(
+										controlDarkPen,
+										x + 2,
+										y,
+										x + 2,
+										hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace));
+						graphics.DrawLine(
+									controlDarkPen,
+									x,
+									hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace),
+									x + 2,
+									hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace));
 						break;
 
 					case DotStyle.XP:
 						dotSpace = 5;
 						while (y < hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace))
 						{
-							g.DrawRectangle( // light dot
-										controlLightPen,
-										x,
-										y,
-										2,
-										2);
-							g.DrawRectangle( // light light dot
-										controlLightLightPen,
-										x + 1,
-										y + 1,
-										1,
-										1);
-							g.DrawRectangle( // dark dark dot
-										controlDarkDarkPen,
-										x,
-										y,
-										1,
-										1);
-							g.DrawLine( // dark fill
-									controlDarkPen,
-									x,
-									y,
-									x,
-									y + 1);
-							g.DrawLine(
-									controlDarkPen,
-									x,
-									y,
-									x + 1,
-									y);
+							graphics.DrawRectangle( // light dot
+											controlLightPen,
+											x,
+											y,
+											2,
+											2);
+							graphics.DrawRectangle( // light light dot
+											controlLightLightPen,
+											x + 1,
+											y + 1,
+											1,
+											1);
+							graphics.DrawRectangle( // dark dark dot
+											controlDarkDarkPen,
+											x,
+											y,
+											1,
+											1);
+							graphics.DrawLine( // dark fill
+											controlDarkPen,
+											x,
+											y,
+											x,
+											y + 1);
+							graphics.DrawLine(
+											controlDarkPen,
+											x,
+											y,
+											x + 1,
+											y);
 
 							y += dotSpace;
 						}
@@ -928,12 +930,12 @@ namespace DSShared.Windows
 						dotSpace = 2;
 						while (y < hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace))
 						{
-							g.DrawLine(
-									controlDarkDarkPen,
-									x,
-									y,
-									x + 2,
-									y);
+							graphics.DrawLine(
+											controlDarkDarkPen,
+											x,
+											y,
+											x + 2,
+											y);
 							y += dotSpace;
 						}
 						break;
@@ -942,22 +944,22 @@ namespace DSShared.Windows
 			else if (Dock == DockStyle.Top || Dock == DockStyle.Bottom) // Horizontal Splitter support added in v1.2
 			{
 				if (hot) // draw the background color for our control image
-					g.FillRectangle(new SolidBrush(hotColor), hotArea);
+					graphics.FillRectangle(new SolidBrush(hotColor), hotArea);
 				else
-					g.FillRectangle(new SolidBrush(BackColor), hotArea);
+					graphics.FillRectangle(new SolidBrush(BackColor), hotArea);
 
-				g.DrawLine( // draw the left & right lines for our control image
-						new Pen(SystemColors.ControlDark, 1),
-						hotArea.X,
-						hotArea.Y + 1,
-						hotArea.X,
-						hotArea.Y + hotArea.Height - 2);
-				g.DrawLine(
-						new Pen(SystemColors.ControlDark, 1),
-						hotArea.X + hotArea.Width,
-						hotArea.Y + 1,
-						hotArea.X + hotArea.Width,
-						hotArea.Y + hotArea.Height - 2);
+				graphics.DrawLine( // draw the left & right lines for our control image
+								new Pen(SystemColors.ControlDark, 1),
+								hotArea.X,
+								hotArea.Y + 1,
+								hotArea.X,
+								hotArea.Y + hotArea.Height - 2);
+				graphics.DrawLine(
+								new Pen(SystemColors.ControlDark, 1),
+								hotArea.X + hotArea.Width,
+								hotArea.Y + 1,
+								hotArea.X + hotArea.Width,
+								hotArea.Y + hotArea.Height - 2);
 
 //				if (Enabled && controlToHide != null)
 //				{
@@ -1045,144 +1047,144 @@ namespace DSShared.Windows
 					case DotStyle.Mozilla:
 						for (int i = 0; i < 30; i++)
 						{
-							g.DrawLine( // light dot
-									new Pen(SystemColors.ControlLightLight),
-									x + (i * 3),
-									y,
-									x + 1 + (i * 3),
-									y + 1);
-							g.DrawLine( // dark dot
-									new Pen(SystemColors.ControlDarkDark),
-									x + 1 + (i * 3),
-									y + 1,
-									x + 2 + (i * 3),
-									y + 2);
+							graphics.DrawLine( // light dot
+											new Pen(SystemColors.ControlLightLight),
+											x + (i * 3),
+											y,
+											x + 1 + (i * 3),
+											y + 1);
+							graphics.DrawLine( // dark dot
+											new Pen(SystemColors.ControlDarkDark),
+											x + 1 + (i * 3),
+											y + 1,
+											x + 2 + (i * 3),
+											y + 2);
 
 							if (hot) // overdraw the background color as we actually drew 2px diagonal lines, not just dots
-								g.DrawLine(
-										new Pen(hotColor),
-										x + 1 + (i * 3),
-										y + 2,
-										x + 2 + (i * 3),
-										y + 2);
+								graphics.DrawLine(
+											new Pen(hotColor),
+											x + 1 + (i * 3),
+											y + 2,
+											x + 2 + (i * 3),
+											y + 2);
 							else
-								g.DrawLine(
-										new Pen(BackColor),
-										x + 1 + (i * 3),
-										y + 2,
-										x + 2 + (i * 3),
-										y + 2);
+								graphics.DrawLine(
+											new Pen(BackColor),
+											x + 1 + (i * 3),
+											y + 2,
+											x + 2 + (i * 3),
+											y + 2);
 						}
 						break;
 
 					case DotStyle.DoubleDots:
 						for (int i = 0; i < 30; i++)
 						{
-							g.DrawRectangle( // light dot
-										new Pen(SystemColors.ControlLightLight),
-										x + 1 + (i * 3),
-										y,
-										1,
-										1);
-							g.DrawRectangle( // dark dot
-										new Pen(SystemColors.ControlDark),
-										x + (i * 3),
-										y - 1,
-										1,
-										1);
+							graphics.DrawRectangle( // light dot
+												new Pen(SystemColors.ControlLightLight),
+												x + 1 + (i * 3),
+												y,
+												1,
+												1);
+							graphics.DrawRectangle( // dark dot
+												new Pen(SystemColors.ControlDark),
+												x + (i * 3),
+												y - 1,
+												1,
+												1);
 							i++;
-							g.DrawRectangle( // light dot
-										new Pen(SystemColors.ControlLightLight),
-										x + 1 + (i * 3),
-										y + 2,
-										1,
-										1);
-							g.DrawRectangle( // dark dot
-										new Pen(SystemColors.ControlDark),
-										x + (i * 3),
-										y + 1,
-										1,
-										1);
+							graphics.DrawRectangle( // light dot
+												new Pen(SystemColors.ControlLightLight),
+												x + 1 + (i * 3),
+												y + 2,
+												1,
+												1);
+							graphics.DrawRectangle( // dark dot
+												new Pen(SystemColors.ControlDark),
+												x + (i * 3),
+												y + 1,
+												1,
+												1);
 						}
 						break;
 
 					case DotStyle.Win9X:
-						g.DrawLine(
-								new Pen(SystemColors.ControlLightLight),
-								x,
-								y,
-								x,
-								y + 2);
-						g.DrawLine(
-								new Pen(SystemColors.ControlLightLight),
-								x,
-								y,
-								x + 88,
-								y);
-						g.DrawLine(
-								new Pen(SystemColors.ControlDark),
-								x,
-								y + 2,
-								x + 88,
-								y + 2);
-						g.DrawLine(
-								new Pen(SystemColors.ControlDark),
-								x + 88,
-								y,
-								x + 88,
-								y + 2);
+						graphics.DrawLine(
+										new Pen(SystemColors.ControlLightLight),
+										x,
+										y,
+										x,
+										y + 2);
+						graphics.DrawLine(
+										new Pen(SystemColors.ControlLightLight),
+										x,
+										y,
+										x + 88,
+										y);
+						graphics.DrawLine(
+										new Pen(SystemColors.ControlDark),
+										x,
+										y + 2,
+										x + 88,
+										y + 2);
+						graphics.DrawLine(
+										new Pen(SystemColors.ControlDark),
+										x + 88,
+										y,
+										x + 88,
+										y + 2);
 						break;
 
 					case DotStyle.XP:
 						for (int i = 0; i < 18; i++)
 						{
-							g.DrawRectangle( // light dot
-										new Pen(SystemColors.ControlLight),
-										x + (i * 5),
-										y,
-										2,
-										2);
-							g.DrawRectangle( // light light dot
-										new Pen(SystemColors.ControlLightLight),
-										x + 1 + (i * 5),
-										y + 1,
-										1,
-										1);
-							g.DrawRectangle( // dark dark dot
-										new Pen(SystemColors.ControlDarkDark),
-										x + (i * 5),
-										y,
-										1,
-										1);
-							g.DrawLine( // dark fill
-									new Pen(SystemColors.ControlDark),
-									x + (i * 5),
-									y,
-									x + (i * 5) + 1,
-									y);
-							g.DrawLine(
-									new Pen(SystemColors.ControlDark),
-									x + (i * 5),
-									y,
-									x + (i * 5),
-									y + 1);
+							graphics.DrawRectangle( // light dot
+											new Pen(SystemColors.ControlLight),
+											x + (i * 5),
+											y,
+											2,
+											2);
+							graphics.DrawRectangle( // light light dot
+											new Pen(SystemColors.ControlLightLight),
+											x + 1 + (i * 5),
+											y + 1,
+											1,
+											1);
+							graphics.DrawRectangle( // dark dark dot
+											new Pen(SystemColors.ControlDarkDark),
+											x + (i * 5),
+											y,
+											1,
+											1);
+							graphics.DrawLine( // dark fill
+											new Pen(SystemColors.ControlDark),
+											x + (i * 5),
+											y,
+											x + (i * 5) + 1,
+											y);
+							graphics.DrawLine(
+											new Pen(SystemColors.ControlDark),
+											x + (i * 5),
+											y,
+											x + (i * 5),
+											y + 1);
 						}
 						break;
 
 					case DotStyle.Lines:
 						for (int i = 0; i < 44; i++)
-							g.DrawLine(
-									new Pen(SystemColors.ControlDark),
-									x + (i * 2),
-									y,
-									x + (i * 2),
-									y + 2);
+							graphics.DrawLine(
+											new Pen(SystemColors.ControlDark),
+											x + (i * 2),
+											y,
+											x + (i * 2),
+											y + 2);
 						break;
 				}
 			}
 
 //			if (borderStyle != System.Windows.Forms.Border3DStyle.Flat)
-			ControlPaint.DrawBorder3D(e.Graphics, ClientRectangle, borderStyle);
+			ControlPaint.DrawBorder3D(graphics, ClientRectangle, borderStyle);
 		}
 
 		// This creates a point array to draw a arrow-like polygon

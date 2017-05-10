@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 using XCom;
@@ -19,7 +20,7 @@ namespace PckView
 
 		private Palette _palette;
 
-		private const int Pad = 0; // well, you know ...
+		private const int Marginalia = 0; // well, you know ...
 
 		private int _width  = 15;
 		private int _height = 10;
@@ -53,21 +54,21 @@ namespace PckView
 
 		protected override void OnResize(EventArgs eventargs)
 		{
-			_width  = (Width  / Across) - 2 * Pad;
-			_height = (Height / Across) - 2 * Pad;
+			_width  = (Width  / Across) - Marginalia * 2;
+			_height = (Height / Across) - Marginalia * 2;
 
-			_clickX = (_id % Across) * (_width  + 2 * Pad);
-			_clickY = (_id / Across) * (_height + 2 * Pad);
+			_clickX = (_id % Across) * (_width  + Marginalia * 2);
+			_clickY = (_id / Across) * (_height + Marginalia * 2);
 
 			Refresh();
 		}
 
 		private void OnMouseDown(object sender, MouseEventArgs e)
 		{
-			_clickX = (e.X / (_width  + 2 * Pad)) * (_width  + 2 * Pad);
-			_clickY = (e.Y / (_height + 2 * Pad)) * (_height + 2 * Pad);
+			_clickX = (e.X / (_width  + Marginalia * 2)) * (_width  + Marginalia * 2);
+			_clickY = (e.Y / (_height + Marginalia * 2)) * (_height + Marginalia * 2);
 
-			_id = (e.X / (_width + 2 * Pad)) + (e.Y / (_height + 2 * Pad)) * Across;
+			_id = (e.X / (_width + Marginalia * 2)) + (e.Y / (_height + Marginalia * 2)) * Across;
 
 			if (PaletteIndexChangedEvent != null && _id < 256)
 			{
@@ -94,27 +95,33 @@ namespace PckView
 
 			if (_palette != null)
 			{
-				Graphics g = e.Graphics;
+				var graphics = e.Graphics;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+//				graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 				for (int
-						i = 0, y = Pad;
+						i = 0,
+							y = Marginalia;
 						i < Across;
-						++i, y += _height + Pad * 2)
+						++i,
+							y += _height + Marginalia * 2)
 					for (int
-							j = 0, x = Pad;
+							j = 0,
+								x = Marginalia;
 							j < Across;
-							++j, x += _width + Pad * 2)
+							++j,
+								x += _width + Marginalia * 2)
 					{
-						g.FillRectangle(new SolidBrush(
-													_palette[i * Across + j]),
-													x, y,
-													_width, _height);
+						graphics.FillRectangle(new SolidBrush(
+															_palette[i * Across + j]),
+															x, y,
+															_width, _height);
 					}
 
-				g.DrawRectangle(
-							Pens.Red,
-							_clickX, _clickY,
-							_width + Pad * 2 - 1, _height + Pad * 2 - 1);
+				graphics.DrawRectangle(
+									Pens.Red,
+									_clickX, _clickY,
+									_width + Marginalia * 2 - 1, _height + Marginalia * 2 - 1);
 			}
 		}
 	}

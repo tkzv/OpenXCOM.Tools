@@ -66,9 +66,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private readonly List<object> _linksList = new List<object>();
 
-		private const string DontConnect   = "DontConnect";
-		private const string OneWayConnect = "OneWayConnect";
-		private const string TwoWayConnect = "TwoWayConnect";
+		private const string DontConnect   = " DontConnect"; // NOTE: the space is 'cause ComboBox entries don't get a Margin property.
+		private const string OneWayConnect = " OneWayConnect";
+		private const string TwoWayConnect = " TwoWayConnect";
 
 		private int _col; // these are used only to print the clicked location info.
 		private int _row;

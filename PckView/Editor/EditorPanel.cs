@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 using XCom;
@@ -129,7 +130,9 @@ namespace PckView
 		#region EventCalls
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			var g = e.Graphics;
+			var graphics = e.Graphics;
+			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+//			graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 			int width  = _sprite.Sprite.Width;
 			int height = _sprite.Sprite.Height;
@@ -138,30 +141,30 @@ namespace PckView
 
 			for (int y = 0; y != height; ++y)
 			for (int x = 0; x != width; ++x)
-				g.FillRectangle(
-							new SolidBrush(_sprite.Sprite.GetPixel(x, y)),
-							x * factor,
-							y * factor,
-								factor,
-								factor);
+				graphics.FillRectangle(
+									new SolidBrush(_sprite.Sprite.GetPixel(x, y)),
+									x * factor,
+									y * factor,
+										factor,
+										factor);
 
 			if (_grid)
 			{
 				for (int x = 0; x != width + 1; ++x)
-					g.DrawLine(
-							Pens.Black,
-							x      * factor,
-							0,
-							x      * factor,
-							height * factor);
+					graphics.DrawLine(
+									Pens.Black,
+									x      * factor,
+									0,
+									x      * factor,
+									height * factor);
 
 				for (int y = 0; y != height + 1; ++y)
-					g.DrawLine(
-							Pens.Black,
-							0,
-							y     * factor,
-							width * factor,
-							y     * factor);
+					graphics.DrawLine(
+									Pens.Black,
+									0,
+									y     * factor,
+									width * factor,
+									y     * factor);
 			}
 		}
 		#endregion

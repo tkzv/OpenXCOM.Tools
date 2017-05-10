@@ -261,9 +261,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		// NOTE: there is no OnLevelChanged_Observer for TopView.
 
 
-		protected override void RenderGraphics(Graphics backBuffer)
+		protected override void RenderGraphics(Graphics graphics)
 		{
-			backBuffer.FillRectangle(SystemBrushes.Control, ClientRectangle);
+			graphics.FillRectangle(SystemBrushes.Control, ClientRectangle);
 
 			if (MapBase != null)
 			{
@@ -291,13 +291,13 @@ namespace MapView.Forms.MapObservers.TopViews
 					{
 						var mapTile = MapBase[r, c] as MapTileBase;
 						if (mapTile != null)
-							((TopViewPanel)this).DrawTileBlobs(mapTile, backBuffer, x, y);
+							((TopViewPanel)this).DrawTileBlobs(mapTile, graphics, x, y);
 					}
 				}
 
 				// draw grid-lines ->
 				for (int i = 0; i <= MapBase.MapSize.Rows; ++i) // draw horizontal grid-lines (ie. upperleft to lowerright)
-					backBuffer.DrawLine(
+					graphics.DrawLine(
 									TopPens[TopView.GridColor],
 									_xOffset - i * halfWidth,
 									_yOffset + i * halfHeight,
@@ -305,7 +305,7 @@ namespace MapView.Forms.MapObservers.TopViews
 									_yOffset + (MapBase.MapSize.Cols + i) * halfHeight);
 
 				for (int i = 0; i <= MapBase.MapSize.Cols; ++i) // draw vertical grid-lines (ie. lowerleft to upperright)
-					backBuffer.DrawLine(
+					graphics.DrawLine(
 									TopPens[TopView.GridColor],
 									_xOffset + i * halfWidth,
 									_yOffset + i * halfHeight,
@@ -315,7 +315,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 				// draw tiles-selected lozenge ->
 				if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick)
-					backBuffer.DrawPath(TopPens[TopView.SelectedColor], _lozSelected);
+					graphics.DrawPath(TopPens[TopView.SelectedColor], _lozSelected);
 
 				// draw the selector lozenge ->
 				if (   _col > -1 && _col < MapBase.MapSize.Cols
@@ -324,7 +324,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					PathSelectorLozenge(
 									_xOffset + (_col - _row) * halfWidth,
 									_yOffset + (_col + _row) * halfHeight);
-					backBuffer.DrawPath(TopPens[TopView.SelectorColor], _lozSelector);
+					graphics.DrawPath(TopPens[TopView.SelectorColor], _lozSelector);
 				}
 			}
 		}
@@ -356,9 +356,6 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private Point ConvertCoordsDiamond(int x, int y)
 		{
-			// 16 is half the width of the diamond
-			// 24 is the distance from the top of the diamond to the very top of the image
-
 			double halfWidth  = (double)_blobService.HalfWidth;
 			double halfHeight = (double)_blobService.HalfHeight;
 
