@@ -32,7 +32,7 @@ namespace PckView
 				_palette = value;
 				if (_sprite != null)
 				{
-					_sprite.Sprite.Palette = _palette.Colors;
+					_sprite.Image.Palette = _palette.Colors;
 					Refresh();
 				}
 			}
@@ -134,15 +134,15 @@ namespace PckView
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 //			graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-			int width  = _sprite.Sprite.Width;
-			int height = _sprite.Sprite.Height;
+			int width  = _sprite.Image.Width;
+			int height = _sprite.Image.Height;
 
 			int factor = Square * _scale;
 
 			for (int y = 0; y != height; ++y)
 			for (int x = 0; x != width;  ++x)
 				graphics.FillRectangle(
-									new SolidBrush(_sprite.Sprite.GetPixel(x, y)),
+									new SolidBrush(_sprite.Image.GetPixel(x, y)),
 									x * factor,
 									y * factor,
 										factor,

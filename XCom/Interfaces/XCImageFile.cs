@@ -12,24 +12,24 @@ namespace XCom.Interfaces
 	/// collections. This class should not be instantiated directly. Objects
 	/// from derived classes will be created and tracked on startup.
 	/// </summary>
-	public class XCImageFile
+	public sealed class XCImageFile
 //		: IAssemblyLoadable, IDialogFilter
 	{
-		private Palette _palDefault = Palette.UfoBattle;
+		private readonly Palette _palDefault = Palette.UfoBattle;
 		/// <summary>
 		/// Defines the initial palette for the sprites.
 		/// </summary>
 		public Palette DefaultPalette
 		{
 			get { return _palDefault; }
-			protected set { _palDefault = value; }
+//			protected set { _palDefault = value; }
 		}
 
 		/// <summary>
 		/// Image size that will be loaded.
 		/// </summary>
 		public System.Drawing.Size ImageSize
-		{ get; protected set; }
+		{ get; private set; }
 
 		/// <summary>
 		/// It is not recommended to instantiate objects of this type directly.
@@ -43,13 +43,13 @@ namespace XCom.Interfaces
 			ImageSize = new System.Drawing.Size(width, height);
 //			_brief = this.GetType().ToString();
 		}
-		/// <summary>
+/*		/// <summary>
 		/// Creates an object of this class with width and height of 0.
 		/// </summary>
 		public XCImageFile()
 			:
 				this(0, 0)
-		{}
+		{} */
 	}
 
 /*		private XCFileOptions _fileOptions = new XCFileOptions();

@@ -201,7 +201,7 @@ namespace PckView
 					sfdBmpSingle.FileName = _viewPanel.SpritePack.Label + selected.Image.FileId;
 
 					if (sfdBmpSingle.ShowDialog() == DialogResult.OK)
-						XCBitmap.Save(sfdBmpSingle.FileName, selected.Image.Sprite);
+						XCBitmap.Save(sfdBmpSingle.FileName, selected.Image.Image);
 				}
 			}
 		}
@@ -590,7 +590,7 @@ namespace PckView
 																System.Globalization.CultureInfo.InvariantCulture,
 																"{0:" + zeros + "}",
 																xc.FileId) + "." + ext,
-								xc.Sprite);
+								xc.Image);
 						//Console.WriteLine("---");
 						progress.Value = xc.FileId;
 					}

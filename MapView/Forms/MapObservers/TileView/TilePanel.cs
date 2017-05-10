@@ -312,7 +312,7 @@ namespace MapView.Forms.MapObservers.TileViews
 							graphics.FillRectangle((SolidBrush)_specialTypeBrushes[specialType], rect);
 
 						graphics.DrawImage(										// then draw the sprite itself
-										tile[MainViewUnderlay.AniStep].Sprite,
+										tile[MainViewUnderlay.AniStep].Image,
 										left + SpriteMargin,
 										top  + SpriteMargin - tile.Record.TileOffset);
 
@@ -332,7 +332,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 						if (Globals.ExtraTiles != null)
 							graphics.DrawImage(
-											Globals.ExtraTiles[0].Sprite,
+											Globals.ExtraTiles[0].Image,
 											left, top);
 					}
 

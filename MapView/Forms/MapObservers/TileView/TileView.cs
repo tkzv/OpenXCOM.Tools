@@ -127,8 +127,9 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		#region EventCalls
 		/// <summary>
-		/// Focuses the selected panel, updates the quadrant and MCD-info if
-		/// applicable.
+		/// Fires when a tab is clicked.
+		/// Focuses the selected page/panel, updates the quadrant and MCD-info
+		/// if applicable.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -153,6 +154,11 @@ namespace MapView.Forms.MapObservers.TileViews
 				_mcdInfoForm.UpdateData(record);
 		}
 
+		/// <summary>
+		/// Fires when a tile is selected. Passes an event to
+		/// TileSelecteEvent_Observer0.
+		/// </summary>
+		/// <param name="tile"></param>
 		private void OnTileSelected(TileBase tile)
 		{
 			var f = FindForm();

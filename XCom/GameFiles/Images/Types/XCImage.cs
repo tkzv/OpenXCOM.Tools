@@ -12,7 +12,7 @@ namespace XCom.Interfaces
 		public int FileId
 		{ get; set; }
 
-		public Bitmap Sprite
+		public Bitmap Image
 		{ get; protected set; }
 
 		public Bitmap SpriteGray
@@ -26,8 +26,8 @@ namespace XCom.Interfaces
 			{
 				_palette = value;
 
-				if (Sprite != null)
-					Sprite.Palette = _palette.Colors;
+				if (Image != null)
+					Image.Palette = _palette.Colors;
 			}
 		}
 
@@ -53,7 +53,7 @@ namespace XCom.Interfaces
 			_palette = pal;
 
 			if (pal != null)
-				Sprite = XCBitmap.MakeBitmap8(
+				Image = XCBitmap.MakeBitmap8(
 										width,
 										height,
 										bindata,
@@ -61,7 +61,7 @@ namespace XCom.Interfaces
 		}
 		private XCImage(Bitmap image, int id)
 		{
-			Sprite  = image;
+			Image = image;
 			FileId = id;
 		}
 //		public XCImage()
@@ -88,14 +88,14 @@ namespace XCom.Interfaces
 
 				return new XCImage(
 								bindata,
-								Sprite.Width,
-								Sprite.Height,
+								Image.Width,
+								Image.Height,
 								_palette,
 								FileId);
 			}
 
 			// TODO: this arbitrary Clone() method should probably be disallowed:
-			return (Sprite != null) ? new XCImage((Bitmap)Sprite.Clone(), FileId)
+			return (Image != null) ? new XCImage((Bitmap)Image.Clone(), FileId)
 								 	: null;
 
 		}

@@ -769,7 +769,7 @@ namespace MapView
 				if ((tileBase = tile.Ground) != null)
 				{
 					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
-										  : tileBase[MainViewUnderlay.AniStep].Sprite;
+										  : tileBase[MainViewUnderlay.AniStep].Image;
 					DrawSprite(
 							sprite,
 							new Rectangle(
@@ -783,7 +783,7 @@ namespace MapView
 				if ((tileBase = tile.West) != null)
 				{
 					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
-										  : tileBase[MainViewUnderlay.AniStep].Sprite;
+										  : tileBase[MainViewUnderlay.AniStep].Image;
 					DrawSprite(
 							sprite,
 							new Rectangle(
@@ -797,7 +797,7 @@ namespace MapView
 				if ((tileBase = tile.North) != null)
 				{
 					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
-										  : tileBase[MainViewUnderlay.AniStep].Sprite;
+										  : tileBase[MainViewUnderlay.AniStep].Image;
 					DrawSprite(
 							sprite,
 							new Rectangle(
@@ -811,7 +811,7 @@ namespace MapView
 				if ((tileBase = tile.Content) != null)
 				{
 					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
-										  : tileBase[MainViewUnderlay.AniStep].Sprite;
+										  : tileBase[MainViewUnderlay.AniStep].Image;
 					DrawSprite(
 							sprite,
 							new Rectangle(

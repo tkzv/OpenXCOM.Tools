@@ -101,7 +101,7 @@ namespace XCom
 			}
 			Bindata = _expanded;
 		
-			Sprite = XCBitmap.MakeBitmap8(
+			Image = XCBitmap.MakeBitmap8(
 										Width,
 										Height,
 										_expanded,
@@ -142,8 +142,8 @@ namespace XCom
 						{
 							flag = false;
 
-							binData.Add((byte)(count / image.Sprite.Width));	// # of initial rows to skip
-							count     = (byte)(count % image.Sprite.Width);		// current position in the transparent row
+							binData.Add((byte)(count / image.Image.Width));	// # of initial rows to skip
+							count     = (byte)(count % image.Image.Width);		// current position in the transparent row
 							//Console.WriteLine("count, lines: {0}, cells {1}", count/PckImage.IMAGE_WIDTH, count%PckImage.IMAGE_WIDTH);
 						}
 

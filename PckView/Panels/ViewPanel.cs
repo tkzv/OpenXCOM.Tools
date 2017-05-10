@@ -465,7 +465,7 @@ namespace PckView
 											_spriteHeight - 1);
 
 					graphics.DrawImage(
-									SpritePack[id].Sprite,
+									SpritePack[id].Image,
 									tileX * _spriteWidth  + SpriteMargin,
 									tileY * _spriteHeight + SpriteMargin + _startY);
 				}
