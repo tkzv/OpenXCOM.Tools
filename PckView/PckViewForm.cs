@@ -43,6 +43,17 @@ namespace PckView
 
 		public bool SavedFile
 		{ get; private set; }
+
+		public string SelectedPalette
+		{
+			get { return _palette.Label; }
+			set
+			{
+				foreach (Palette pal in _paletteDictionary.Keys)
+					if (pal.Label.Equals(value))
+						OnPaletteClick(_paletteDictionary[pal], null);
+			}
+		}
 		#endregion
 
 
@@ -129,37 +140,6 @@ namespace PckView
 		#endregion
 
 
-		private void OnSpritePackChanged(SpritePackChangedEventArgs e)
-		{
-			bool enabled = (e.Sprites != null);
-			miSaveAs.Enabled          =
-			miTransparentMenu.Enabled =
-			miBytesMenu.Enabled       =
-			miPaletteMenu.Enabled     = enabled;
-		}
-
-		private void OnSpriteClick(object sender, EventArgs e)
-		{
-			if (   _viewPanel.SelectedSprites != null // isSelected
-				&& _viewPanel.SelectedSprites.Count > 0)
-			{
-				_miEdit.Enabled   = true;
-//				_miSave.Enabled   =
-//				_miDelete.Enabled = true;
-
-				var selected = _viewPanel.SelectedSprites[_viewPanel.SelectedSprites.Count - 1];
-				BytesFormHelper.ReloadBytes(selected);
-			}
-			else // selected is null
-			{
-				_miEdit.Enabled   = false;
-//				_miSave.Enabled   =
-//				_miDelete.Enabled = false;
-
-				BytesFormHelper.ReloadBytes(null);
-			}
-		}
-
 		private ContextMenu ViewerContextMenu()
 		{
 			var menu = new ContextMenu();
@@ -189,6 +169,52 @@ namespace PckView
 			_miEdit.Enabled = false;
 
 			return menu;
+		}
+
+		private MenuItem AddPalette(Palette pal, Menu it)
+		{
+			var itPal = new MenuItem(pal.Label);
+			itPal.Tag = pal;
+			it.MenuItems.Add(itPal);
+
+			itPal.Click += OnPaletteClick;
+			_paletteDictionary[pal] = itPal;
+
+			((Dictionary<string, Palette>)_share[SharedSpace.Palettes])[pal.Label] = pal;
+			return itPal;
+		}
+
+
+		#region EventCalls
+		private void OnSpritePackChanged(SpritePackChangedEventArgs e)
+		{
+			bool enabled = (e.Sprites != null);
+			miSaveAs.Enabled          =
+			miTransparentMenu.Enabled =
+			miBytesMenu.Enabled       =
+			miPaletteMenu.Enabled     = enabled;
+		}
+
+		private void OnSpriteClick(object sender, EventArgs e)
+		{
+			if (   _viewPanel.SelectedSprites != null // isSelected
+				&& _viewPanel.SelectedSprites.Count > 0)
+			{
+				_miEdit.Enabled   = true;
+//				_miSave.Enabled   =
+//				_miDelete.Enabled = true;
+
+				var selected = _viewPanel.SelectedSprites[_viewPanel.SelectedSprites.Count - 1];
+				BytesFormHelper.ReloadBytes(selected);
+			}
+			else // selected is null
+			{
+				_miEdit.Enabled   = false;
+//				_miSave.Enabled   =
+//				_miDelete.Enabled = false;
+
+				BytesFormHelper.ReloadBytes(null);
+			}
 		}
 
 		private void OnSpriteSaveClick(object sender, EventArgs e) // disabled in BuildViewerContextMenu()
@@ -318,30 +344,6 @@ namespace PckView
 
 			e.Cancel = true;
 			_editor.Hide();
-		}
-
-		public string SelectedPalette
-		{
-			get { return _palette.Label; }
-			set
-			{
-				foreach (Palette pal in _paletteDictionary.Keys)
-					if (pal.Label.Equals(value))
-						OnPaletteClick(_paletteDictionary[pal], null);
-			}
-		}
-
-		private MenuItem AddPalette(Palette pal, Menu it)
-		{
-			var itPal = new MenuItem(pal.Label);
-			itPal.Tag = pal;
-			it.MenuItems.Add(itPal);
-
-			itPal.Click += OnPaletteClick;
-			_paletteDictionary[pal] = itPal;
-
-			((Dictionary<string, Palette>)_share[SharedSpace.Palettes])[pal.Label] = pal;
-			return itPal;
 		}
 
 		private void OnPaletteClick(object sender, EventArgs e)
@@ -683,5 +685,6 @@ namespace PckView
 			if (miBytes.Checked)
 				BytesFormHelper.CloseBytes();
 		}
+		#endregion
 	}
 }

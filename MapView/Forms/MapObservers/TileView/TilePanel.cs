@@ -234,7 +234,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			Focus();
 
-			int id = GetTileUnderCursor(e);
+			int id = GetOverId(e);
 			if (id != -1 && id < _tiles.Length)
 			{
 				_id = id;
@@ -253,19 +253,19 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		protected override void OnMouseDoubleClick(MouseEventArgs e)
 		{
-			int id = GetTileUnderCursor(e);
+			int id = GetOverId(e);
 
 			if (id != -1 && id < _tiles.Length)
 				MapView.Forms.MainWindow.ViewerFormsManager.TileView.Control.OnMcdInfoClick(null, null);
 		}
 
-		private int GetTileUnderCursor(MouseEventArgs e)
+		private int GetOverId(MouseEventArgs e)
 		{
 			if (_tiles != null && _tiles.Length != 0
-				&& e.X < SpriteWidth * _tilesX + TableOffset / 2) // not out of bounds to right
+				&& e.X < SpriteWidth * _tilesX + TableOffset - 1) // not out of bounds to right
 			{
-				int tileX = (e.X - TableOffset / 2)           / SpriteWidth;
-				int tileY = (e.Y - TableOffset / 2 - _startY) / SpriteHeight;
+				int tileX = (e.X - TableOffset + 1)           / SpriteWidth;
+				int tileY = (e.Y - TableOffset + 1 - _startY) / SpriteHeight;
 
 				return tileX + tileY * _tilesX;
 			}

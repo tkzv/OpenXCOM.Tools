@@ -22,9 +22,9 @@ namespace PckView
 
 
 		#region Fields & Properties
+		private readonly VScrollBar _scrollBar;
+		private readonly StatusBar  _statusBar;
 
-		private VScrollBar     _scrollBar;
-		private StatusBar      _statusBar;
 		private StatusBarPanel _statusTileSelected;
 		private StatusBarPanel _statusTileOver;
 
@@ -177,7 +177,11 @@ namespace PckView
 		protected override void OnResize(EventArgs eventargs)
 		{
 			base.OnResize(eventargs);
+
 			UpdateScrollbar(false);
+
+			if (_selectedSprites.Count != 0)
+				ScrollToTile(_selectedSprites[0].Id);
 		}
 
 		/// <summary>
@@ -193,7 +197,7 @@ namespace PckView
 				if (resetTrack)
 					_scrollBar.Value = 0;
 
-				range = TableHeight + _largeChange - Height - _statusBar.Height;
+				range = TableOffsetVert + TableHeight + _largeChange - Height - _statusBar.Height;
 				if (range < _largeChange)
 					range = 0;
 			}
@@ -212,7 +216,7 @@ namespace PckView
 				// On 2nd thought always reserve width for the scrollbar.
 				// So user can increase/decrease the Height of the window
 				// without the tiles re-arranging.
-				tilesX = (Width - _scrollBar.Width - 1) / _spriteWidth;
+				tilesX = (Width - TableOffsetHori - _scrollBar.Width - 1) / _spriteWidth;
 
 				if (tilesX > SpritePack.Count)
 					tilesX = SpritePack.Count;
@@ -273,10 +277,10 @@ namespace PckView
 
 			if (SpritePack != null && SpritePack.Count != 0)
 			{
-				if (e.X < _spriteWidth * _tilesX) // not out of bounds to right
+				if (e.X < _spriteWidth * _tilesX + TableOffsetHori - 1) // not out of bounds to right
 				{
-					int tileX =  e.X            / _spriteWidth;
-					int tileY = (e.Y - _startY) / _spriteHeight;
+					int tileX = (e.X - TableOffsetHori + 1)           / _spriteWidth;
+					int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _spriteHeight;
 
 					int id = tileX + tileY * _tilesX;
 					if (id < SpritePack.Count) // not out of bounds below
@@ -312,6 +316,8 @@ namespace PckView
 
 						OnSpriteClick(id);
 						clearSelected = false;
+
+						ScrollToTile(id);
 					}
 				}
 			}
@@ -336,14 +342,10 @@ namespace PckView
 
 			if (SpritePack != null && SpritePack.Count != 0)
 			{
-				if ( e.X > _spriteWidth * _tilesX - 1) // out of bounds to right
+				if (e.X < _spriteWidth * _tilesX + TableOffsetHori - 1) // not out of bounds to right
 				{
-					OnSpriteOver(-1);
-				}
-				else
-				{
-					int tileX =  e.X            / _spriteWidth;
-					int tileY = (e.Y - _startY) / _spriteHeight;
+					int tileX = (e.X - TableOffsetHori + 1)           / _spriteWidth;
+					int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _spriteHeight;
 
 					if (tileX != _overX || tileY != _overY)
 					{
@@ -357,6 +359,8 @@ namespace PckView
 						OnSpriteOver(id);
 					}
 				}
+				else
+					OnSpriteOver(-1);
 			}
 		}
 
@@ -369,10 +373,7 @@ namespace PckView
 		private void OnSpriteOver(int spriteId)
 		{
 			if (spriteId == -1)
-			{
-				_overX =
-				_overY = -1;
-			}
+				_overX = _overY = -1;
 
 			_idOver = spriteId;
 			PrintStatus();
@@ -409,6 +410,10 @@ namespace PckView
 												"Over {0}", over);
 		}
 
+
+		private const int TableOffsetHori = 3; // deal w/ PixelOffsetMode.
+		private const int TableOffsetVert = 2; // deal w/ PixelOffsetMode.
+
 		/// <summary>
 		/// Let's draw this puppy.
 		/// </summary>
@@ -423,28 +428,12 @@ namespace PckView
 				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 //				graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-				for (int tileX = 0; tileX <= _tilesX; ++tileX) // draw vertical lines
-					graphics.DrawLine(
-									_penBlack,
-									new Point(tileX * _spriteWidth,          _startY),
-									new Point(tileX * _spriteWidth, Height - _startY));
-
-				int tilesY = SpritePack.Count / _tilesX;
-				if (SpritePack.Count % _tilesX != 0)
-					++tilesY;
-
-				for (int tileY = 0; tileY <= tilesY; ++tileY) // draw horizontal lines
-					graphics.DrawLine(
-									_penBlack,
-									new Point(0,                      tileY * _spriteHeight + _startY),
-									new Point(_spriteWidth * _tilesX, tileY * _spriteHeight + _startY));
-
 
 				if (!_scrollBar.Visible) // indicate the reserved width for scrollbar.
 					graphics.DrawLine(
 									_penControlLight,
-									Width - _scrollBar.Width, 0,
-									Width - _scrollBar.Width, Height);
+									Width - _scrollBar.Width - 1, 0,
+									Width - _scrollBar.Width - 1, Height);
 
 
 				var selected = new List<int>(); // track currently selected spriteIds.
@@ -459,16 +448,47 @@ namespace PckView
 					if (selected.Contains(id))
 						graphics.FillRectangle(
 											_brushCrimson,
-											tileX * _spriteWidth  + 1,
-											tileY * _spriteHeight + 1 + _startY,
-											_spriteWidth  - 1,
-											_spriteHeight - 1);
+											TableOffsetHori + tileX * _spriteWidth,
+											TableOffsetVert + tileY * _spriteHeight + _startY,
+											TableOffsetHori + _spriteWidth  - SpriteMargin * 2,
+											TableOffsetVert + _spriteHeight - SpriteMargin - 1);
 
 					graphics.DrawImage(
 									SpritePack[id].Image,
-									tileX * _spriteWidth  + SpriteMargin,
-									tileY * _spriteHeight + SpriteMargin + _startY);
+									TableOffsetHori + tileX * _spriteWidth  + SpriteMargin,
+									TableOffsetVert + tileY * _spriteHeight + SpriteMargin + _startY);
 				}
+
+
+				graphics.FillRectangle(
+									new SolidBrush(_penBlack.Color),
+									TableOffsetHori - 1,
+									TableOffsetVert + _startY - 1,
+									1, 1); // so bite me.
+
+				for (int tileX = 0; tileX <= _tilesX; ++tileX) // draw vertical lines
+					graphics.DrawLine(
+									_penBlack,
+									new Point(
+											TableOffsetHori + _spriteWidth * tileX,
+											TableOffsetVert + _startY),
+									new Point(
+											TableOffsetHori + _spriteWidth * tileX,
+											TableOffsetVert - _startY + Height));
+
+				int tilesY = SpritePack.Count / _tilesX;
+				if (SpritePack.Count % _tilesX != 0)
+					++tilesY;
+
+				for (int tileY = 0; tileY <= tilesY; ++tileY) // draw horizontal lines
+					graphics.DrawLine(
+									_penBlack,
+									new Point(
+											TableOffsetHori,
+											TableOffsetVert + _spriteHeight * tileY + _startY),
+									new Point(
+											TableOffsetHori + _spriteWidth * _tilesX,
+											TableOffsetVert + _spriteHeight * tileY + _startY));
 			}
 		}
 		#endregion
@@ -520,6 +540,29 @@ namespace PckView
 				}
 			}
 		}
+
+		/// <summary>
+		/// Checks if a selected tile is fully visible in the view-panel and
+		/// scrolls the table to show it if not.
+		/// </summary>
+		private void ScrollToTile(int id)
+		{
+			int tileY = id / _tilesX;
+
+			int cutoff = _spriteHeight * tileY;
+			if (cutoff < -_startY)		// <- check cutoff high
+			{
+				_scrollBar.Value = cutoff;
+			}
+			else						// <- check cutoff low
+			{
+				cutoff = _spriteHeight * (tileY + 1) - Height + _statusBar.Height + TableOffsetVert + 1;
+				if (cutoff > -_startY)
+				{
+					_scrollBar.Value = cutoff;
+				}
+			}
+		}
 		#endregion
 
 /*		private void tileChooser_SelectedIndexChanged(object sender, EventArgs e)
@@ -531,30 +574,28 @@ namespace PckView
 			scroll_Scroll(null, null);
 		} */
 
-/*		internal void Hq2x()
-		{
-			_collection.HQ2X();
-		} */
-/*		internal void Hq2x()
-		{
-			_viewPanel.Hq2x();
-		} */
+//		internal void Hq2x()
+//		{
+//			_collection.HQ2X();
+//		}
+//		internal void Hq2x()
+//		{
+//			_viewPanel.Hq2x();
+//		}
 
-/*		/// <summary>
-		/// Saves a bitmap as an 8-bit image.
-		/// </summary>
-		/// <param name="file"></param>
-		/// <param name="pal"></param>
-		public void SaveBMP(string file, Palette pal)
-		{
-			Bmp.SendToSaver(file, _collection, pal, numAcross(), 1);
-		} */
+//		/// <summary>
+//		/// Saves a bitmap as an 8-bit image.
+//		/// </summary>
+//		/// <param name="file"></param>
+//		/// <param name="pal"></param>
+//		public void SaveBMP(string file, Palette pal)
+//		{
+//			Bmp.SendToSaver(file, _collection, pal, numAcross(), 1);
+//		}
 	}
 
 
-
-	#region SpritePackChanged event handler & args
-
+	#region SpritePackChanged args
 	/// <summary>
 	/// EventArgs for SpritePackChangedEvent.
 	/// </summary>
