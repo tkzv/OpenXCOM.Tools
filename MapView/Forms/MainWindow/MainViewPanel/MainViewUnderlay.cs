@@ -82,6 +82,8 @@ namespace MapView
 			}
 		}
 
+		private const int OffsetX = 2; // these track the offset between the panel border
+		private const int OffsetY = 2; // and the lozenge-tip.
 
 		private readonly HScrollBar _scrollBarH;
 		private readonly VScrollBar _scrollBarV;
@@ -265,10 +267,10 @@ namespace MapView
 			//XCom.LogFile.WriteLine("");
 			//XCom.LogFile.WriteLine("MainViewUnderlay.SetScale");
 
-			var normal = GetOverlaySizeRequired(1);
+			var required = GetRequiredOverlaySize(1);
 			Globals.Scale = Math.Min(
-								(double)Width  / normal.Width,
-								(double)Height / normal.Height);
+									(double)(Width  - OffsetX) / required.Width,
+									(double)(Height - OffsetY) / required.Height);
 			Globals.Scale = Globals.Scale.Clamp(
 											Globals.ScaleMinimum,
 											Globals.ScaleMaximum);
@@ -287,16 +289,14 @@ namespace MapView
 			if (MapBase != null)
 			{
 				//XCom.LogFile.WriteLine(". scale= " + Globals.Scale);
-				var required = GetOverlaySizeRequired(Globals.Scale);
+				var required = GetRequiredOverlaySize(Globals.Scale);
 
-				MainViewOverlay.Width  = required.Width  + 2; // don't clip lozenge-tips at right or bottom edges.
-				MainViewOverlay.Height = required.Height + 2; // TODO: needs to be further adjusted
+				MainViewOverlay.Width  = required.Width;//  + 2; // don't clip lozenge-tips at right or bottom edges.
+				MainViewOverlay.Height = required.Height;// + 2; // TODO: needs to be further adjusted
 
 				//XCom.LogFile.WriteLine(". set overlay.Width= " + MainViewOverlay.Width);
 				//XCom.LogFile.WriteLine(". set overlay.Height= " + MainViewOverlay.Height);
-
-				XCMainWindow.Instance.StatusBarPrintScale();	// TODO: The scale shown is changing based on
-			}													// underlay size rather than overlay size. Etc.
+			}
 		}
 
 		/// <summary>
@@ -305,10 +305,10 @@ namespace MapView
 		/// </summary>
 		/// <param name="scale">the current scaling factor</param>
 		/// <returns></returns>
-		internal Size GetOverlaySizeRequired(double scale)
+		private Size GetRequiredOverlaySize(double scale)
 		{
 			//XCom.LogFile.WriteLine("");
-			//XCom.LogFile.WriteLine("MainViewUnderlay.GetOverlaySizeRequired");
+			//XCom.LogFile.WriteLine("MainViewUnderlay.GetRequiredOverlaySize");
 
 			if (MapBase != null)
 			{
@@ -319,6 +319,8 @@ namespace MapView
 
 				if (_halfHeight > _halfWidth / 2) // use width
 				{
+					//XCom.LogFile.WriteLine(". use width");
+
 					if (_halfWidth % 2 != 0)
 						--_halfWidth;
 
@@ -326,6 +328,8 @@ namespace MapView
 				}
 				else // use height
 				{
+					//XCom.LogFile.WriteLine(". use height");
+
 					_halfWidth = _halfHeight * 2;
 				}
 
@@ -333,7 +337,9 @@ namespace MapView
 				HalfHeight = _halfHeight;
 
 
-				MainViewOverlay.Origin = new Point((MapBase.MapSize.Rows - 1) * _halfWidth, 0);
+				MainViewOverlay.Origin = new Point(
+												OffsetX + (MapBase.MapSize.Rows - 1) * _halfWidth,
+												OffsetY);
 
 				int width  = (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * _halfWidth;
 				int height = (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * _halfHeight
@@ -342,7 +348,13 @@ namespace MapView
 				//XCom.LogFile.WriteLine(". width= " + width);
 				//XCom.LogFile.WriteLine(". height= " + height);
 
-				return new Size(width, height);
+				Globals.Scale = (double)_halfWidth / MainViewOverlay.HalfWidthConst;
+				XCMainWindow.Instance.StatusBarPrintScale();
+				//XCom.LogFile.WriteLine(". set scale= " + Globals.Scale);
+
+				return new Size(
+							OffsetX * 2 + width,
+							OffsetY * 2 + height);
 			}
 
 			//XCom.LogFile.WriteLine(". RET size empty.");
