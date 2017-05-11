@@ -108,7 +108,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		#region Methods
 		internal void DrawTileBlobs(
 				MapTileBase tile,
-				Graphics g,
+				Graphics graphics,
 				int x, int y)
 		{
 			var mapTile = (XCMapTile)tile;
@@ -125,27 +125,27 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			if (Ground.Checked && mapTile.Ground != null)
 				BlobService.DrawFloor(
-									g,
+									graphics,
 									TopBrushes[TopView.FloorColor],
 									x, y);
 
 			if (Content.Checked && mapTile.Content != null)
 				BlobService.DrawContent(
-									g,
+									graphics,
 									_toolContent,
 									x, y,
 									mapTile.Content);
 
 			if (West.Checked && mapTile.West != null)
 				BlobService.DrawContent(
-									g,
+									graphics,
 									_toolWest,
 									x, y,
 									mapTile.West);
 
 			if (North.Checked && mapTile.North != null)
 				BlobService.DrawContent(
-									g,
+									graphics,
 									_toolNorth,
 									x, y,
 									mapTile.North);

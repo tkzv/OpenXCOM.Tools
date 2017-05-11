@@ -141,6 +141,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			_routePanel = new RoutePanel();
 			_routePanel.Dock = DockStyle.Fill;
+//			_routePanel.BorderStyle = BorderStyle.FixedSingle;
 			_routePanel.RoutePanelClickedEvent += OnRoutePanelClicked;
 			_routePanel.MouseMove              += OnRoutePanelMouseMove;
 			_routePanel.KeyDown                += OnKeyDown;

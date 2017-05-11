@@ -596,6 +596,19 @@ namespace MapView
 				// Image Processing using C# - https://www.codeproject.com/Articles/33838/Image-Processing-using-C
 				// ColorMatrix Guide - https://docs.rainmeter.net/tips/colormatrix-guide/
 
+				ControlPaint.DrawBorder3D(_graphics, ClientRectangle, Border3DStyle.Etched);
+
+				// draw a light border around this Overlay so not insane go.
+//				var pen = new Pen(SystemColors.ControlLight, 1);
+//				_graphics.DrawLine(
+//								pen,
+//								Right - 1, Top,
+//								Right - 1, Height);
+//				_graphics.DrawLine(
+//								pen,
+//								Left,  Bottom - 1,
+//								Width, Bottom - 1);
+
 
 				var dragRect = new Rectangle(new Point(0, 0), new Size(0, 0));
 				if (FirstClick)
@@ -678,18 +691,6 @@ namespace MapView
 //				if (_drawSelectionBox) // always false.
 				if (FirstClick && !_graySelection)
 					DrawSelectedLozenge(dragRect);
-
-
-				// draw a light border around this Overlay so not insane go.
-				var pen = new Pen(SystemColors.ControlLight, 1);
-				_graphics.DrawLine(
-								pen,
-								Right - 1, Top,
-								Right - 1, Height);
-				_graphics.DrawLine(
-								pen,
-								Left,  Bottom - 1,
-								Width, Bottom - 1);
 			}
 		}
 

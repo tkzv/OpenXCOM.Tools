@@ -18,7 +18,6 @@ namespace MapView
 			IMapObserver
 	{
 		#region IMapObserver requirements
-
 		private readonly Dictionary<string, IMapObserver> _observersDictionary = new Dictionary<string, IMapObserver>();
 		public Dictionary<string, IMapObserver> MoreObservers
 		{
@@ -74,7 +73,6 @@ namespace MapView
 		{
 			Refresh();
 		}
-
 		#endregion
 
 
@@ -82,6 +80,7 @@ namespace MapView
 		{ get; set; }
 
 
+		#region cTor
 		/// <summary>
 		/// Invoked by TopView, TileView, RouteView.
 		/// </summary>
@@ -89,6 +88,7 @@ namespace MapView
 		{
 			Settings = new Settings();
 		}
+		#endregion
 
 
 		internal protected virtual void LoadControl0Settings()

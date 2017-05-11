@@ -51,6 +51,29 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 //			_graphics.SmoothingMode = SmoothingMode.HighQuality;
 
+
+			ControlPaint.DrawBorder3D(_graphics, ClientRectangle, Border3DStyle.Etched);
+
+			// draw a light border around this panel.
+//			var pen = new Pen(SystemColors.ControlLight, 1);
+//			_graphics.DrawLine(
+//							pen,
+//							Left + 1, Top + 1,
+//							Right,    Top + 1);
+//			_graphics.DrawLine(
+//							pen,
+//							Right, Top + 1,
+//							Right, Bottom);
+//			_graphics.DrawLine(
+//							pen,
+//							Left + 1, Bottom,
+//							Right,    Bottom);
+//			_graphics.DrawLine(
+//							pen,
+//							Left + 1, Top + 1,
+//							Left + 1, Bottom);
+
+
 //			try // TODO: i get the impression that many of the try/catch blocks can and should be replaced w/ standard code.
 //			{
 			if (MapFile != null)

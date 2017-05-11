@@ -50,6 +50,7 @@ namespace DSShared.Windows
 			var graphics = e.Graphics;
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 //			graphics.SmoothingMode = SmoothingMode.HighQuality;
+
 			RenderGraphics(graphics);
 		}
 		#endregion

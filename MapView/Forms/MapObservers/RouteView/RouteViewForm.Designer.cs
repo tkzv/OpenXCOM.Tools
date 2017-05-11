@@ -47,11 +47,12 @@
 			this.Controls.Add(this.RouteViewControl);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.KeyPreview = true;
-			this.MinimumSize = new System.Drawing.Size(640, 480);
+			this.MinimumSize = new System.Drawing.Size(585, 465);
 			this.Name = "RouteViewForm";
 			this.ShowInTaskbar = false;
 			this.Text = "Waypoint View";
 			this.ResumeLayout(false);
+
 		}
 		#endregion
 

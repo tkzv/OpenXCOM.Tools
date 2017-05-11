@@ -141,6 +141,17 @@ namespace MapView
 
 
 		#region EventCalls
+//		protected override void OnPaint(PaintEventArgs e)
+//		{
+//			base.OnPaint(e);
+//
+//			var graphics = e.Graphics;
+//			graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+////			graphics.SmoothingMode = SmoothingMode.HighQuality;
+//
+//			ControlPaint.DrawBorder3D(graphics, ClientRectangle, Border3DStyle.Etched);
+//		}
+
 		/// <summary>
 		/// Forces an OnResize event for this Panel. Grants access for
 		/// XCMainWindow to place a call or two.

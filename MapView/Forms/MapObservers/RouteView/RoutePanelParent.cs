@@ -56,6 +56,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			get { return _drawAreaHeight; }
 		}
 
+		private const int OffsetX = 2; // these track the offset between the panel border
+		private const int OffsetY = 2; // and the lozenge-tip.
+
+
 		private readonly Dictionary<string, Pen> _pens = new Dictionary<string, Pen>();
 		internal protected Dictionary<string, Pen> RoutePens
 		{
@@ -109,9 +113,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (_mapFile != null)
 			{
-				if (Height > Width / 2) // use width
+				int width  = Width  - OffsetX * 2;
+				int height = Height - OffsetY * 2;
+
+				if (height > width / 2) // use width
 				{
-					_drawAreaWidth = Width / (_mapFile.MapSize.Rows + _mapFile.MapSize.Cols + 1);
+					_drawAreaWidth = width / (_mapFile.MapSize.Rows + _mapFile.MapSize.Cols);
 
 					if (_drawAreaWidth % 2 != 0)
 						--_drawAreaWidth;
@@ -120,11 +127,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 				}
 				else // use height
 				{
-					_drawAreaHeight = Height / (_mapFile.MapSize.Rows + _mapFile.MapSize.Cols);
+					_drawAreaHeight = height / (_mapFile.MapSize.Rows + _mapFile.MapSize.Cols);
 					_drawAreaWidth  = _drawAreaHeight * 2;
 				}
 
-				Origin = new Point(_mapFile.MapSize.Rows * _drawAreaWidth, 0);
+				Origin = new Point( // offset the left and top edges to account for the 3d panel border
+								OffsetX + _mapFile.MapSize.Rows * _drawAreaWidth,
+								OffsetY);
 				Refresh();
 			}
 		}
@@ -149,7 +158,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					MainViewUnderlay.Instance.MainViewOverlay.FireMouseDrag(loc, loc);
 
 					var args = new RoutePanelClickedEventArgs();
-					args.MouseEventArgs  = e;
+					args.MouseEventArgs  = e; // used only to get the Button by RouteView.OnRoutePanelClicked()
 					args.ClickedTile     = _mapFile[loc.Y, loc.X];
 //					args.ClickedTile     = tile;
 					args.ClickedLocation = new MapLocation(

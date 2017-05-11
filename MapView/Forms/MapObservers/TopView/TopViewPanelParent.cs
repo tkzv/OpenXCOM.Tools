@@ -34,9 +34,13 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private int _col = -1; // these track the location of the mouse-cursor
 		private int _row = -1;
-		
-		private int _xOffset; // these track the offset between the panel border and the grid.
-		private int _yOffset;
+
+		private const int OffsetX = 2; // these are the offsets between the
+		private const int OffsetY = 2; // panel border and the lozenge-tip(s).
+
+		private int _xOffset;	// since the lozenge is drawn with its Origin at 0,0 of the
+								// panel, the entire lozenge needs to be displaced to the right.
+		private int _yOffset;	// But this isn't really used.
 
 
 		private DrawBlobService _blobService = new DrawBlobService();
@@ -81,9 +85,23 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
+		#region cTor
 		/// <summary>
-		/// Called by the main panel's resize event. See TopView. Also fired by
-		/// TileLozengeHeight set change, or by a straight MapBase set change.
+		/// cTor.
+		/// </summary>
+		internal TopViewPanelParent()
+		{
+			SetStyle(ControlStyles.OptimizedDoubleBuffer
+				   | ControlStyles.AllPaintingInWmPaint
+				   | ControlStyles.UserPaint
+				   | ControlStyles.ResizeRedraw, true);
+		}
+		#endregion
+
+
+		/// <summary>
+		/// Called by TopView's resize event. Also fired by TileLozengeHeight
+		/// change, or by a straight MapBase change.
 		/// </summary>
 		/// <param name="width">the width to resize to</param>
 		/// <param name="height">the height to resize to</param>
@@ -94,11 +112,10 @@ namespace MapView.Forms.MapObservers.TopViews
 				int halfWidth  = _blobService.HalfWidth;
 				int halfHeight = _blobService.HalfHeight;
 				
-				int curWidth = halfWidth;
+				int halfWidthPre = halfWidth;
 
-				width  -= halfWidth; // don't clip the bottom or right tips of the big-lozenge.
-				height -= halfHeight;
-
+				width  -= OffsetX * 2; // don't clip the right or bottom tip of the big-lozenge.
+				height -= OffsetY * 2;
 
 				if (MapBase.MapSize.Rows > 0 || MapBase.MapSize.Cols > 0) // safety vs. div-by-0
 				{
@@ -132,13 +149,13 @@ namespace MapView.Forms.MapObservers.TopViews
 				_blobService.HalfWidth  = halfWidth;
 				_blobService.HalfHeight = halfHeight;
 
-				_xOffset = 4 + MapBase.MapSize.Rows * halfWidth;
-				_yOffset = 4;
+				_xOffset = OffsetX + MapBase.MapSize.Rows * halfWidth;
+				_yOffset = OffsetY;
 
-				if (curWidth != halfWidth)
+				if (halfWidthPre != halfWidth)
 				{
-					Width  = 8 + (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * halfWidth;
-					Height = 8 + (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * halfHeight;
+					Width  = (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * halfWidth;
+					Height = (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * halfHeight;
 
 					Refresh();
 				}
@@ -148,6 +165,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		protected override void OnResize(EventArgs e)
 		{
 			base.OnResize(e);
+
 			PathSelectedLozenge();
 		}
 
@@ -261,6 +279,10 @@ namespace MapView.Forms.MapObservers.TopViews
 		// NOTE: there is no OnLevelChanged_Observer for TopView.
 
 
+		/// <summary>
+		/// Overrides DoubleBufferControl.RenderGraphics() - ie, OnPaint().
+		/// </summary>
+		/// <param name="graphics"></param>
 		protected override void RenderGraphics(Graphics graphics)
 		{
 			graphics.FillRectangle(SystemBrushes.Control, ClientRectangle);
