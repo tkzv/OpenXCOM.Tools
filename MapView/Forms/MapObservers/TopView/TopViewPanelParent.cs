@@ -168,23 +168,23 @@ namespace MapView.Forms.MapObservers.TopViews
 			int halfWidth  = _blobService.HalfWidth;
 			int halfHeight = _blobService.HalfHeight;
 
-			var p1 = new Point(
+			var p0 = new Point(
 							_xOffset + (dragStart.X - dragStart.Y) * halfWidth,
 							_yOffset + (dragStart.X + dragStart.Y) * halfHeight);
-			var p2 = new Point(
+			var p1 = new Point(
 							_xOffset + (dragEnd.X - dragStart.Y) * halfWidth  + halfWidth,
 							_yOffset + (dragEnd.X + dragStart.Y) * halfHeight + halfHeight);
-			var p3 = new Point(
+			var p2 = new Point(
 							_xOffset + (dragEnd.X - dragEnd.Y) * halfWidth,
 							_yOffset + (dragEnd.X + dragEnd.Y) * halfHeight + halfHeight * 2);
-			var p4 = new Point(
+			var p3 = new Point(
 							_xOffset + (dragStart.X - dragEnd.Y) * halfWidth  - halfWidth,
 							_yOffset + (dragStart.X + dragEnd.Y) * halfHeight + halfHeight);
 
 			_lozSelected.Reset();
+			_lozSelected.AddLine(p0, p1);
 			_lozSelected.AddLine(p1, p2);
 			_lozSelected.AddLine(p2, p3);
-			_lozSelected.AddLine(p3, p4);
 			_lozSelected.CloseFigure();
 
 			Refresh();

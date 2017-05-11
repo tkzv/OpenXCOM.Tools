@@ -78,9 +78,6 @@ namespace MapView.Forms.MapObservers.TopViews
 			// cache each quadrant's rectangular bounding path
 			for (int i = 0; i != 4; ++i)
 			{
-				var path = new GraphicsPath();
-
-				path = new System.Drawing.Drawing2D.GraphicsPath();
 				var p0 = new Point(
 								StartX + QuadWidthTotal * i - 1,
 								StartY);
@@ -97,6 +94,8 @@ namespace MapView.Forms.MapObservers.TopViews
 								StartX + QuadWidthTotal * i,
 								StartY);
 
+				var path = new GraphicsPath();
+
 				path.AddLine(p0, p1); // NOTE: 'p4' appears to be needed since the origin of 'p0'
 				path.AddLine(p1, p2); // does not get drawn.
 				path.AddLine(p2, p3);
@@ -110,8 +109,6 @@ namespace MapView.Forms.MapObservers.TopViews
 					case 3: _pathContent = path; break;
 				}
 			}
-
-
 		}
 		#endregion
 

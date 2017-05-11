@@ -74,8 +74,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							Origin.X + (ClickPoint.X - ClickPoint.Y)     * DrawAreaWidth,
 							Origin.Y + (ClickPoint.X + ClickPoint.Y + 1) * DrawAreaHeight,
 							_nodeSelected,
-							RoutePens[RouteView.SelectedLinkColor],
-							true);
+							RoutePens[RouteView.SelectedLinkColor]);
 
 				DrawNodes();
 
@@ -195,13 +194,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="ySrc"></param>
 		/// <param name="node"></param>
 		/// <param name="pen"></param>
-		/// <param name="selected"></param>
+		/// <param name="selected">(default true)</param>
 		private void DrawLinkLines(
 				int xSrc,
 				int ySrc,
 				RouteNode node,
 				Pen pen,
-				bool selected)
+				bool selected = true)
 		{
 			int xDst;
 			int yDst;
@@ -354,12 +353,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 																	x, y + DrawAreaHeight * 2);
 													_graphics.DrawLine(
 																	RoutePens[RouteView.UnselectedLinkColor],
-																	x, y,
-																	x - DrawAreaWidth, y + DrawAreaHeight);
+																	x + 2,                 y,
+																	x + 2 - DrawAreaWidth, y + DrawAreaHeight);
 													_graphics.DrawLine(
 																	RoutePens[RouteView.UnselectedLinkColor],
-																	x, y,
-																	x + DrawAreaWidth, y + DrawAreaHeight);
+																	x - 2,                 y,
+																	x - 2 + DrawAreaWidth, y + DrawAreaHeight);
 												}
 												else //if (levelDestination > MapFile.Level) // draw arrow down.
 												{
@@ -369,12 +368,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 																	x + DrawAreaWidth, y + DrawAreaHeight);
 													_graphics.DrawLine(
 																	RoutePens[RouteView.UnselectedLinkColor],
-																	x, y + DrawAreaHeight * 2,
-																	x - DrawAreaWidth, y + DrawAreaHeight);
+																	x + 2,                 y + DrawAreaHeight * 2,
+																	x + 2 - DrawAreaWidth, y + DrawAreaHeight);
 													_graphics.DrawLine(
 																	RoutePens[RouteView.UnselectedLinkColor],
-																	x, y + DrawAreaHeight * 2,
-																	x + DrawAreaWidth, y + DrawAreaHeight);
+																	x - 2,                 y + DrawAreaHeight * 2,
+																	x - 2 + DrawAreaWidth, y + DrawAreaHeight);
 												}
 											}
 										}
@@ -451,7 +450,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 												infoboxX,
 												infoboxY,
 												nodePatrolPriority,
-												NodeValMax,
 												Brushes.DeepSkyBlue); //CornflowerBlue
 
 								int nodeSpawnWeight = (int)node.SpawnWeight;
@@ -459,7 +457,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 												infoboxX + 3,
 												infoboxY,
 												nodeSpawnWeight,
-												NodeValMax,
 												Brushes.LightCoral); //IndianRed
 //								}
 						}
@@ -473,38 +470,48 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Helper for DrawNodeImportanceMeters().
 		/// </summary>
-		/// <param name="boxX"></param>
-		/// <param name="boxY"></param>
+		/// <param name="infoboxX"></param>
+		/// <param name="infoboxY"></param>
 		/// <param name="value"></param>
-		/// <param name="max"></param>
 		/// <param name="color"></param>
 		private void DrawImportanceMeter(
-				int boxX,
-				int boxY,
+				int infoboxX,
+				int infoboxY,
 				int value,
-				int max,
 				Brush color)
 		{
-			_graphics.FillRectangle(
-								Brushes.WhiteSmoke,
-								boxX, boxY,
-								3, NodeValMax);
-			_graphics.DrawRectangle(
-								Pens.Black,
-								boxX, boxY,
-								3, NodeValMax);
+			var p0 = new Point(
+							infoboxX - 1, // ...
+							infoboxY);
+			var p1 = new Point(
+							infoboxX + 3,
+							infoboxY);
+			var p2 = new Point(
+							infoboxX + 3,
+							infoboxY + NodeValMax - 1);
+			var p3 = new Point(
+							infoboxX,
+							infoboxY + NodeValMax - 1);
+			var p4 = new Point(
+							infoboxX,
+							infoboxY);
+
+			var path = new GraphicsPath();
+
+			path.AddLine(p0, p1);
+			path.AddLine(p1, p2);
+			path.AddLine(p2, p3);
+			path.AddLine(p3, p4);
+
+			_graphics.FillPath(Brushes.WhiteSmoke, path); // fill background.
 
 			if (value > 0)
-			{
-				value = (value > max) ? NodeValMax
-									  : (int)(Math.Ceiling((double)value / max * NodeValMax));
 				_graphics.FillRectangle(
 									color,
-									boxX + 1,
-									boxY + (NodeValMax - value) - 1,
-									2,
-									value + 1);
-			}
+									infoboxX, infoboxY + NodeValMax - value - 2,
+									2, value);
+
+			_graphics.DrawPath(Pens.Black, path); // draw borders.
 		}
 
 
