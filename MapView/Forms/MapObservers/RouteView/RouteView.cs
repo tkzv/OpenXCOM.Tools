@@ -85,7 +85,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			set
 			{
 				base.MapBase = value;
-				_mapFile = (XCMapFile)value;
+				_mapFile     = value as XCMapFile;
 
 //				_loadingMap = true;
 //				try
@@ -141,7 +141,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			_routePanel = new RoutePanel();
 			_routePanel.Dock = DockStyle.Fill;
-//			_routePanel.BorderStyle = BorderStyle.FixedSingle;
 			_routePanel.RoutePanelClickedEvent += OnRoutePanelClicked;
 			_routePanel.MouseMove              += OnRoutePanelMouseMove;
 			_routePanel.KeyDown                += OnKeyDown;
@@ -191,6 +190,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			cbLink4Dest.DropDownStyle = ComboBoxStyle.DropDownList;
 			cbLink5Dest.DropDownStyle = ComboBoxStyle.DropDownList;
 
+			tbLink1Dist.ReadOnly = true; // TODO: change distance textboxes to labels ->
+			tbLink2Dist.ReadOnly = true;
+			tbLink3Dist.ReadOnly = true;
+			tbLink4Dist.ReadOnly = true;
+			tbLink5Dist.ReadOnly = true;
+
 			cbSpawnWeight.Items.AddRange(RouteNodeCollection.SpawnUsage);
 			cbSpawnWeight.DropDownStyle = ComboBoxStyle.DropDownList;
 
@@ -199,6 +204,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
+		#region EventCalls inherited from IMapObserver/MapObserverControl0
 		/// <summary>
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
@@ -230,6 +236,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			Refresh();
 		}
+		#endregion
+
 
 		/// <summary>
 		/// Prints the currently selected location to the panel.
@@ -258,7 +266,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnOptionsClick(object sender, EventArgs e)
 		{
-			var it = (ToolStripMenuItem)sender;
+			var it = sender as ToolStripMenuItem;
 			if (!it.Checked)
 			{
 				it.Checked = true;
@@ -575,54 +583,73 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_loadingGui = false;
 		}
 
+
 		private void OnUnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
+			{
+				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+
 				_nodeSelected.UsableType = (UnitType)cbUnitType.SelectedItem;
+			}
 		}
 
 		private void OnPatrolPrioritySelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 			{
+				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+
 				_nodeSelected.Priority = (NodeImportance)cbPriority.SelectedItem;
-				Refresh();
+				Refresh(); // update the importance bar
 			}
 		}
 
 		private void OnBaseAttackSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
+			{
+				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+
 				_nodeSelected.Attack = (BaseModuleAttack)cbAttack.SelectedItem;
+			}
 		}
 
 		private void OnSpawnRankSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
+			{
+				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+
 				_nodeSelected.SpawnRank = (byte)((EnumString)cbSpawnRank.SelectedItem).Enum;
+			}
 		}
 
 		private void OnSpawnWeightSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 			{
+				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+
 				_nodeSelected.SpawnWeight = (SpawnUsage)((EnumString)cbSpawnWeight.SelectedItem).Enum;
-				Refresh();
+				Refresh(); // update the importance bar
 			}
 		}
 
-		private void cbLink_SelectedIndexChanged(
+
+		private void LinkDestinationSelectedIndexChanged(
 				ComboBox sender,
-				int linkId,
+				int slotId,
 				Control textBox)
 		{
 			if (!_loadingGui)
 			{
-				var selId = sender.SelectedItem as byte?;
-				if (!selId.HasValue)
-					selId = (byte?)(sender.SelectedItem as LinkType?);
+				var dst = sender.SelectedItem as byte?;
 
-				if (!selId.HasValue)
+				if (!dst.HasValue)
+					dst = (byte?)(sender.SelectedItem as LinkType?);
+
+				if (!dst.HasValue)
 				{
 					MessageBox.Show(
 								this,
@@ -637,17 +664,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					try
 					{
-						_nodeSelected[linkId].Destination = selId.Value;
-						if (_nodeSelected[linkId].Destination < Link.ExitWest)
+						_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+
+						_nodeSelected[slotId].Destination = dst.Value;
+						if (_nodeSelected[slotId].Destination < Link.ExitWest)
 						{
-							var node = _mapFile.RouteFile[_nodeSelected[linkId].Destination];
-							_nodeSelected[linkId].Distance = CalculateLinkDistance(
+							var node = _mapFile.RouteFile[_nodeSelected[slotId].Destination];
+							_nodeSelected[slotId].Distance = CalculateLinkDistance(
 																				_nodeSelected,
 																				node,
 																				textBox);
 						}
 						else
-							_nodeSelected[linkId].Distance = 0;
+							_nodeSelected[slotId].Distance = 0;
 					}
 					catch (Exception ex)
 					{
@@ -709,7 +738,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink1DestSelectedIndexChanged(object sender, EventArgs e)
 		{
-			cbLink_SelectedIndexChanged(cbLink1Dest, 0, tbLink1Dist);
+			LinkDestinationSelectedIndexChanged(cbLink1Dest, 0, tbLink1Dist);
 		}
 
 		private void OnLink1DestLeave(object sender, EventArgs e)
@@ -719,7 +748,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink2DestSelectedIndexChanged(object sender, EventArgs e)
 		{
-			cbLink_SelectedIndexChanged(cbLink2Dest, 1, tbLink2Dist);
+			LinkDestinationSelectedIndexChanged(cbLink2Dest, 1, tbLink2Dist);
 		}
 
 		private void OnLink2DestLeave(object sender, EventArgs e)
@@ -729,7 +758,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink3DestSelectedIndexChanged(object sender, EventArgs e)
 		{
-			cbLink_SelectedIndexChanged(cbLink3Dest, 2, tbLink3Dist);
+			LinkDestinationSelectedIndexChanged(cbLink3Dest, 2, tbLink3Dist);
 		}
 
 		private void OnLink3DestLeave(object sender, EventArgs e)
@@ -739,7 +768,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink4DestSelectedIndexChanged(object sender, EventArgs e)
 		{
-			cbLink_SelectedIndexChanged(cbLink4Dest, 3, tbLink4Dist);
+			LinkDestinationSelectedIndexChanged(cbLink4Dest, 3, tbLink4Dist);
 		}
 
 		private void OnLink4DestLeave(object sender, EventArgs e)
@@ -749,7 +778,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink5DestSelectedIndexChanged(object sender, EventArgs e)
 		{
-			cbLink_SelectedIndexChanged(cbLink5Dest, 4, tbLink5Dist);
+			LinkDestinationSelectedIndexChanged(cbLink5Dest, 4, tbLink5Dist);
 		}
 
 		private void OnLink5DestLeave(object sender, EventArgs e)
@@ -757,10 +786,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 //			cbLink_Leave(cbLink5, 4); // don't do any node-linking OnLeave unless i vet it first.
 		}
 
+
 		private void OnLink1UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingGui)
 			{
+				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+
 				_nodeSelected[0].UsableType = (UnitType)cbLink1UnitType.SelectedItem;
 				Refresh();
 			}
@@ -770,6 +802,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingGui)
 			{
+				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+
 				_nodeSelected[1].UsableType = (UnitType)cbLink2UnitType.SelectedItem;
 				Refresh();
 			}
@@ -779,6 +813,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingGui)
 			{
+				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+
 				_nodeSelected[2].UsableType = (UnitType)cbLink3UnitType.SelectedItem;
 				Refresh();
 			}
@@ -788,6 +824,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingGui)
 			{
+				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+
 				_nodeSelected[3].UsableType = (UnitType)cbLink4UnitType.SelectedItem;
 				Refresh();
 			}
@@ -797,179 +835,189 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingGui)
 			{
+				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+
 				_nodeSelected[4].UsableType = (UnitType)cbLink5UnitType.SelectedItem;
 				Refresh();
 			}
 		}
 
+
+		// NOTE: about distance. It's not used for anything IG and will be
+		// calculated automatically if and when a destination node is specified
+		// in any given link-slot. ->
+		//
+		// The distance textboxes have been flagged readonly in the cTor (and
+		// should be changed to labels).
+
 		private void OnLink1DistKeyDown(object sender, KeyEventArgs e)
 		{
-			switch (e.KeyCode)
-			{
-				case Keys.Enter:
-					try
-					{
-						_nodeSelected[0].Distance = byte.Parse(tbLink1Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
-					}
-					catch
-					{
-						tbLink1Dist.Text = _nodeSelected[0].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
-						throw;
-					}
-					break;
-			}
+//			switch (e.KeyCode)
+//			{
+//				case Keys.Enter:
+//					try
+//					{
+//						_nodeSelected[0].Distance = byte.Parse(tbLink1Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
+//					}
+//					catch
+//					{
+//						tbLink1Dist.Text = _nodeSelected[0].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
+//						throw;
+//					}
+//					break;
+//			}
 		}
 
 		private void OnLink1DistLeave(object sender, EventArgs e)
 		{
-			if (_nodeSelected != null)
-			{
-				try
-				{
-					_nodeSelected[0].Distance = byte.Parse(tbLink1Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
-				}
-				catch
-				{
-					tbLink1Dist.Text = _nodeSelected[0].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
-					throw;
-				}
-			}
+//			if (_nodeSelected != null)
+//			{
+//				try
+//				{
+//					_nodeSelected[0].Distance = byte.Parse(tbLink1Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
+//				}
+//				catch
+//				{
+//					tbLink1Dist.Text = _nodeSelected[0].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
+//					throw;
+//				}
+//			}
 		}
 
 		private void OnLink2DistKeyDown(object sender, KeyEventArgs e)
 		{
-			switch (e.KeyCode)
-			{
-				case Keys.Enter:
-					try
-					{
-						_nodeSelected[1].Distance = byte.Parse(tbLink2Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
-					}
-					catch
-					{
-						tbLink2Dist.Text = _nodeSelected[1].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
-						throw;
-					}
-					break;
-			}
+//			switch (e.KeyCode)
+//			{
+//				case Keys.Enter:
+//					try
+//					{
+//						_nodeSelected[1].Distance = byte.Parse(tbLink2Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
+//					}
+//					catch
+//					{
+//						tbLink2Dist.Text = _nodeSelected[1].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
+//						throw;
+//					}
+//					break;
+//			}
 		}
 
 		private void OnLink2DistLeave(object sender, EventArgs e)
 		{
-			if (_nodeSelected != null)
-			{
-				try
-				{
-					_nodeSelected[1].Distance = byte.Parse(tbLink2Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
-				}
-				catch
-				{
-					tbLink2Dist.Text = _nodeSelected[1].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
-					throw;
-				}
-			}
+//			if (_nodeSelected != null)
+//			{
+//				try
+//				{
+//					_nodeSelected[1].Distance = byte.Parse(tbLink2Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
+//				}
+//				catch
+//				{
+//					tbLink2Dist.Text = _nodeSelected[1].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
+//					throw;
+//				}
+//			}
 		}
 
 		private void OnLink3DistKeyDown(object sender, KeyEventArgs e)
 		{
-			switch (e.KeyCode)
-			{
-				case Keys.Enter:
-					try
-					{
-						_nodeSelected[2].Distance = byte.Parse(tbLink3Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
-					}
-					catch
-					{
-						tbLink3Dist.Text = _nodeSelected[2].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
-						throw;
-					}
-					break;
-			}
+//			switch (e.KeyCode)
+//			{
+//				case Keys.Enter:
+//					try
+//					{
+//						_nodeSelected[2].Distance = byte.Parse(tbLink3Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
+//					}
+//					catch
+//					{
+//						tbLink3Dist.Text = _nodeSelected[2].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
+//						throw;
+//					}
+//					break;
+//			}
 		}
 
 		private void OnLink3DistLeave(object sender, EventArgs e)
 		{
-			if (_nodeSelected != null)
-			{
-				try
-				{
-					_nodeSelected[2].Distance = byte.Parse(tbLink3Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
-				}
-				catch
-				{
-					tbLink3Dist.Text = _nodeSelected[2].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
-					throw;
-				}
-			}
+//			if (_nodeSelected != null)
+//			{
+//				try
+//				{
+//					_nodeSelected[2].Distance = byte.Parse(tbLink3Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
+//				}
+//				catch
+//				{
+//					tbLink3Dist.Text = _nodeSelected[2].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
+//					throw;
+//				}
+//			}
 		}
 
 		private void OnLink4DistKeyDown(object sender, KeyEventArgs e)
 		{
-			switch (e.KeyCode)
-			{
-				case Keys.Enter:
-					try
-					{
-						_nodeSelected[3].Distance = byte.Parse(tbLink4Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
-					}
-					catch
-					{
-						tbLink4Dist.Text = _nodeSelected[3].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
-						throw;
-					}
-					break;
-			}
+//			switch (e.KeyCode)
+//			{
+//				case Keys.Enter:
+//					try
+//					{
+//						_nodeSelected[3].Distance = byte.Parse(tbLink4Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
+//					}
+//					catch
+//					{
+//						tbLink4Dist.Text = _nodeSelected[3].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
+//						throw;
+//					}
+//					break;
+//			}
 		}
 
 		private void OnLink4DistLeave(object sender, EventArgs e)
 		{
-			if (_nodeSelected != null)
-			{
-				try
-				{
-					_nodeSelected[3].Distance = byte.Parse(tbLink4Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
-				}
-				catch
-				{
-					tbLink4Dist.Text = _nodeSelected[3].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
-					throw;
-				}
-			}
+//			if (_nodeSelected != null)
+//			{
+//				try
+//				{
+//					_nodeSelected[3].Distance = byte.Parse(tbLink4Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
+//				}
+//				catch
+//				{
+//					tbLink4Dist.Text = _nodeSelected[3].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
+//					throw;
+//				}
+//			}
 		}
 
 		private void OnLink5DistKeyDown(object sender, KeyEventArgs e)
 		{
-			switch (e.KeyCode)
-			{
-				case Keys.Enter:
-					try
-					{
-						_nodeSelected[4].Distance = byte.Parse(tbLink5Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
-					}
-					catch
-					{
-						tbLink5Dist.Text = _nodeSelected[4].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
-						throw;
-					}
-					break;
-			}
+//			switch (e.KeyCode)
+//			{
+//				case Keys.Enter:
+//					try
+//					{
+//						_nodeSelected[4].Distance = byte.Parse(tbLink5Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
+//					}
+//					catch
+//					{
+//						tbLink5Dist.Text = _nodeSelected[4].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
+//						throw;
+//					}
+//					break;
+//			}
 		}
 
 		private void OnLink5DistLeave(object sender, EventArgs e)
 		{
-			if (_nodeSelected != null)
-			{
-				try
-				{
-					_nodeSelected[4].Distance = byte.Parse(tbLink5Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
-				}
-				catch
-				{
-					tbLink5Dist.Text = _nodeSelected[4].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
-					throw;
-				}
-			}
+//			if (_nodeSelected != null)
+//			{
+//				try
+//				{
+//					_nodeSelected[4].Distance = byte.Parse(tbLink5Dist.Text, System.Globalization.CultureInfo.InvariantCulture);
+//				}
+//				catch
+//				{
+//					tbLink5Dist.Text = _nodeSelected[4].Distance.ToString(System.Globalization.CultureInfo.InvariantCulture);
+//					throw;
+//				}
+//			}
 		}
 
 

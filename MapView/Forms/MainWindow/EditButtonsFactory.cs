@@ -137,7 +137,7 @@ namespace MapView.Forms.MainWindow
 			tsbFill.Size = new Size(25, 25);
 			tsbFill.Text = "Fill";
 			tsbFill.ToolTipText = "Fill";
-			tsbFill.Click += _mainViewPanel.OnFill;
+			tsbFill.Click += _mainViewPanel.OnFillSelectedTiles;
 			tsbUp.Image    = Resources.up;
 			tsbDown.Image  = Resources.down;
 			tsbCut.Image   = Resources.cut;

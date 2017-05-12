@@ -143,17 +143,6 @@ namespace MapView
 
 
 		#region EventCalls
-//		protected override void OnPaint(PaintEventArgs e)
-//		{
-//			base.OnPaint(e);
-//
-//			var graphics = e.Graphics;
-//			graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-////			graphics.SmoothingMode = SmoothingMode.HighQuality;
-//
-//			ControlPaint.DrawBorder3D(graphics, ClientRectangle, Border3DStyle.Etched);
-//		}
-
 		/// <summary>
 		/// Forces an OnResize event for this Panel. Grants access for
 		/// XCMainWindow to place a call or two.
@@ -291,8 +280,8 @@ namespace MapView
 				//XCom.LogFile.WriteLine(". scale= " + Globals.Scale);
 				var required = GetRequiredOverlaySize(Globals.Scale);
 
-				MainViewOverlay.Width  = required.Width;//  + 2; // don't clip lozenge-tips at right or bottom edges.
-				MainViewOverlay.Height = required.Height;// + 2; // TODO: needs to be further adjusted
+				MainViewOverlay.Width  = required.Width;
+				MainViewOverlay.Height = required.Height;
 
 				//XCom.LogFile.WriteLine(". set overlay.Width= " + MainViewOverlay.Width);
 				//XCom.LogFile.WriteLine(". set overlay.Height= " + MainViewOverlay.Height);
@@ -397,7 +386,7 @@ namespace MapView
 			MainViewOverlay.Paste();
 		}
 
-		internal void OnFill(object sender, EventArgs e)
+		internal void OnFillSelectedTiles(object sender, EventArgs e)
 		{
 			MainViewOverlay.FillSelectedTiles();
 		}

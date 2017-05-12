@@ -56,8 +56,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			get { return _drawAreaHeight; }
 		}
 
-		private const int OffsetX = 2; // these track the offset between the panel border
-		private const int OffsetY = 2; // and the lozenge-tip.
+		internal protected const int OffsetX = 2; // these track the offset between the panel border
+		internal protected const int OffsetY = 2; // and the lozenge-tip.
 
 
 		private readonly Dictionary<string, Pen> _pens = new Dictionary<string, Pen>();
@@ -201,7 +201,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		/// <summary>
-		/// Gets the location of the mouse-cursor.
+		/// Converts a position from screen-coordinates to tile-location.
 		/// </summary>
 		/// <param name="x">the x-position of the mouse-cursor</param>
 		/// <param name="y">the y-position of the mouse-cursor</param>

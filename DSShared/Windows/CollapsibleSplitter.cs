@@ -698,7 +698,8 @@ namespace DSShared.Windows
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.Paint"></see> event.
 		/// </summary>
-		/// <param name="e">A <see cref="T:System.Windows.Forms.PaintEventArgs"></see> that contains the event data.</param>
+		/// <param name="e">A <see cref="T:System.Windows.Forms.PaintEventArgs"></see>
+		/// that contains the event data.</param>
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);

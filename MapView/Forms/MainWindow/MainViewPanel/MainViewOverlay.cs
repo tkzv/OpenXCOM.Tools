@@ -589,7 +589,7 @@ namespace MapView
 				_graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 //				_graphics.SmoothingMode = SmoothingMode.HighQuality;
 
-				_spriteAttributes.SetGamma(SpriteDarknessLocal, System.Drawing.Imaging.ColorAdjustType.Bitmap); // TODO: laggy ....
+				_spriteAttributes.SetGamma(SpriteDarknessLocal, ColorAdjustType.Bitmap); // TODO: laggy ... perhaps.
 
 				_graphics.InterpolationMode = InterpolationLocal;
 
@@ -597,17 +597,6 @@ namespace MapView
 				// ColorMatrix Guide - https://docs.rainmeter.net/tips/colormatrix-guide/
 
 				ControlPaint.DrawBorder3D(_graphics, ClientRectangle, Border3DStyle.Etched);
-
-				// draw a light border around this Overlay so not insane go.
-//				var pen = new Pen(SystemColors.ControlLight, 1);
-//				_graphics.DrawLine(
-//								pen,
-//								Right - 1, Top,
-//								Right - 1, Height);
-//				_graphics.DrawLine(
-//								pen,
-//								Left,  Bottom - 1,
-//								Width, Bottom - 1);
 
 
 				var dragRect = new Rectangle(new Point(0, 0), new Size(0, 0));
@@ -838,7 +827,8 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Draws a red lozenge around any selected Tiles.
+		/// Draws a red lozenge around any selected Tiles if the option to draw
+		/// selected tiles in grayscale is FALSE.
 		/// </summary>
 		/// <param name="dragRect"></param>
 		private void DrawSelectedLozenge(Rectangle dragRect)
@@ -887,13 +877,13 @@ namespace MapView
 		/// <returns></returns>
 		private Point GetTileLocation(int x, int y)
 		{
-			double halfWidth  = (double)HalfWidth;
-			double halfHeight = (double)HalfHeight;
+			double halfWidth  = HalfWidth;
+			double halfHeight = HalfHeight;
 
 			double verticalOffset = (MapBase.Level + 1) * 3;
 
-			double xd = Math.Floor((double)x - (double)Origin.X - halfWidth);					// x=0 is the axis from the top to the bottom of the map-lozenge.
-			double yd = Math.Floor((double)y - (double)Origin.Y - halfHeight * verticalOffset);	// y=0 is measured from the top of the map-lozenge downward.
+			double xd = Math.Floor(x - Origin.X - halfWidth);					// x=0 is the axis from the top to the bottom of the map-lozenge.
+			double yd = Math.Floor(y - Origin.Y - halfHeight * verticalOffset);	// y=0 is measured from the top of the map-lozenge downward.
 
 			double x1 = xd / (halfWidth  * 2)
 					  + yd / (halfHeight * 2);
