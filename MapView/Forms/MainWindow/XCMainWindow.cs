@@ -1011,24 +1011,6 @@ namespace MapView
 			}
 		}
 
-		protected override void OnResize(EventArgs e)
-		{
-			base.OnResize(e);
-
-			// NOTE: if the form is maximized with scrollbars visible
-			// and the new size doesn't need scrollbars but
-			// the map was offset, the scrollbars disappear
-			// but the map is still offset. So fix it.
-			//
-			// TODO: this is a workaround.
-			// It simply relocates the overlay to the origin, but it should
-			// try to maintain focus on a selected tile for cases when the
-			// form is maximized *and the overlay still needs* scrollbars.
-
-			if (WindowState == FormWindowState.Maximized)
-				_mainViewUnderlay.ResetScrollers();
-		}
-
 		private void OnInfoClick(object sender, EventArgs e)
 		{
 			if (_mainViewUnderlay.MapBase != null)
@@ -1140,7 +1122,6 @@ namespace MapView
 										"scale {0:0.00}",
 										Globals.Scale);
 		}
-
 
 		/// <summary>
 		/// Transposes all the default viewer positions and sizes from the

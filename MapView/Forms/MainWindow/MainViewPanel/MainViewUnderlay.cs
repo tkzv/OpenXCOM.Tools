@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 using XCom.Interfaces.Base;
@@ -143,6 +144,26 @@ namespace MapView
 
 
 		#region EventCalls
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			base.OnPaint(e);
+
+			// indicate reserved space for scroll-bars.
+			var graphics = e.Graphics;
+			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+//			graphics.SmoothingMode = SmoothingMode.HighQuality;
+
+			var pen = new Pen(SystemColors.ControlLight, 1);
+			graphics.DrawLine(
+							pen,
+							Width - OffsetX - _scrollBarV.Width - 1, OffsetY,
+							Width - OffsetX - _scrollBarV.Width - 1, Height - _scrollBarH.Height - OffsetY - 1);
+			graphics.DrawLine(
+							pen,
+							OffsetX,                                 Height - _scrollBarH.Height - OffsetY - 1,
+							Width - OffsetX - _scrollBarV.Width - 1, Height - _scrollBarH.Height - OffsetY - 1);
+		}
+
 		/// <summary>
 		/// Forces an OnResize event for this Panel. Grants access for
 		/// XCMainWindow to place a call or two.
@@ -179,21 +200,32 @@ namespace MapView
 			}
 			UpdateScrollers();
 
+			Refresh(); // updates the reserved scroll indicators.
+
 //			XCom.LogFile.WriteLine("MainViewUnderlay.OnResize EXIT");
 		}
 
-		/// <summary>
+/*		/// <summary>
 		/// A workaround for maximizing the parent-form. See notes at
 		/// XCMainWindow.OnResize(). Note that this workaround pertains only to
 		/// cases when AutoScale=FALSE.
 		/// </summary>
 		internal void ResetScrollers()
 		{
+			// NOTE: if the form is enlarged with scrollbars visible and the
+			// new size doesn't need scrollbars but the map was offset, the
+			// scrollbars disappear but the map is still offset. So fix it.
+			//
+			// TODO: this is a workaround.
+			// It simply relocates the overlay to the origin, but it should try
+			// to maintain focus on a selected tile for cases when the form is
+			// enlarged *and the overlay still needs* one of the scrollbars.
+
 			_scrollBarV.Value =
 			_scrollBarH.Value = 0;
 
 			MainViewOverlay.Location = new Point(0, 0);
-		}
+		} */
 
 		/// <summary>
 		/// Handles the scroll-bars.
@@ -218,12 +250,16 @@ namespace MapView
 					_scrollBarV.Maximum = Math.Max(
 												MainViewOverlay.Height - ClientSize.Height + _scrollBarH.Height,
 												0);
+					_scrollBarV.Value = Math.Min(
+												_scrollBarV.Value,
+												_scrollBarV.Maximum);
+					OnScrollVert(null, null);
 				}
-/*				else
+				else
 				{
-					MainViewOverlay.Location = new Point(0, 0);
-//					_scrollBarH.Width = ClientSize.Width;
-				}*/
+					_scrollBarV.Value = 0;
+					MainViewOverlay.Location = new Point(Left, 0);
+				}
 
 				_scrollBarH.Visible = (MainViewOverlay.Width > ClientSize.Width);
 				if (_scrollBarH.Visible)
@@ -231,18 +267,16 @@ namespace MapView
 					_scrollBarH.Maximum = Math.Max(
 												MainViewOverlay.Width - ClientSize.Width + _scrollBarV.Width,
 												0);
+					_scrollBarH.Value = Math.Min(
+												_scrollBarH.Value,
+												_scrollBarH.Maximum);
+					OnScrollHori(null, null);
 				}
-/*				else
+				else
 				{
-					MainViewOverlay.Location = new Point(0, 0);
-//					_scrollBarV.Height = ClientSize.Height;
-				} */
-
-				_scrollBarV.Value = Math.Min(_scrollBarV.Value, _scrollBarV.Maximum);
-				_scrollBarH.Value = Math.Min(_scrollBarH.Value, _scrollBarH.Maximum);
-
-				OnScrollVert(null, null);
-				OnScrollHori(null, null);
+					_scrollBarH.Value = 0;
+					MainViewOverlay.Location = new Point(0, Top);
+				}
 			}
 
 			MainViewOverlay.Refresh();
@@ -342,8 +376,8 @@ namespace MapView
 				//XCom.LogFile.WriteLine(". set scale= " + Globals.Scale);
 
 				return new Size(
-							OffsetX * 2 + width,
-							OffsetY * 2 + height);
+							OffsetX * 2 + width,//  + _scrollBarV.Width,
+							OffsetY * 2 + height);// + _scrollBarH.Height);
 			}
 
 			//XCom.LogFile.WriteLine(". RET size empty.");

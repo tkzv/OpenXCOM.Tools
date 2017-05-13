@@ -61,7 +61,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private XCMapFile _mapFile;
 		private RouteNode _nodeSelected;
 
-		private bool _loadingGui;
+		private bool _loadNode;
 //		private bool _loadingMap;
 
 		private readonly List<object> _linksList = new List<object>();
@@ -143,6 +143,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_routePanel.Dock = DockStyle.Fill;
 			_routePanel.RoutePanelClickedEvent += OnRoutePanelClicked;
 			_routePanel.MouseMove              += OnRoutePanelMouseMove;
+			_routePanel.MouseLeave             += OnRoutePanelMouseLeave;
 			_routePanel.KeyDown                += OnKeyDown;
 			pRoutes.Controls.Add(_routePanel);
 
@@ -163,12 +164,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			cbLink4UnitType.Items.AddRange(unitTypes);
 			cbLink5UnitType.Items.AddRange(unitTypes);
 
-			cbUnitType.DropDownStyle = ComboBoxStyle.DropDownList;
+			cbUnitType.DropDownStyle      =
 
-			cbLink1UnitType.DropDownStyle = ComboBoxStyle.DropDownList;
-			cbLink2UnitType.DropDownStyle = ComboBoxStyle.DropDownList;
-			cbLink3UnitType.DropDownStyle = ComboBoxStyle.DropDownList;
-			cbLink4UnitType.DropDownStyle = ComboBoxStyle.DropDownList;
+			cbLink1UnitType.DropDownStyle =
+			cbLink2UnitType.DropDownStyle =
+			cbLink3UnitType.DropDownStyle =
+			cbLink4UnitType.DropDownStyle =
 			cbLink5UnitType.DropDownStyle = ComboBoxStyle.DropDownList;
 
 			cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);
@@ -182,18 +183,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 			foreach (var value in Enum.GetValues(typeof(BaseModuleAttack)))
 				cbAttack.Items.Add(value);
 
-			cbAttack.DropDownStyle = ComboBoxStyle.DropDownList;
+			cbAttack.DropDownStyle    =
 
-			cbLink1Dest.DropDownStyle = ComboBoxStyle.DropDownList;
-			cbLink2Dest.DropDownStyle = ComboBoxStyle.DropDownList;
-			cbLink3Dest.DropDownStyle = ComboBoxStyle.DropDownList;
-			cbLink4Dest.DropDownStyle = ComboBoxStyle.DropDownList;
+			cbLink1Dest.DropDownStyle =
+			cbLink2Dest.DropDownStyle =
+			cbLink3Dest.DropDownStyle =
+			cbLink4Dest.DropDownStyle =
 			cbLink5Dest.DropDownStyle = ComboBoxStyle.DropDownList;
 
-			tbLink1Dist.ReadOnly = true; // TODO: change distance textboxes to labels ->
-			tbLink2Dist.ReadOnly = true;
-			tbLink3Dist.ReadOnly = true;
-			tbLink4Dist.ReadOnly = true;
+			tbLink1Dist.ReadOnly = // TODO: change distance textboxes to labels ->
+			tbLink2Dist.ReadOnly =
+			tbLink3Dist.ReadOnly =
+			tbLink4Dist.ReadOnly =
 			tbLink5Dist.ReadOnly = true;
 
 			cbSpawnWeight.Items.AddRange(RouteNodeCollection.SpawnUsage);
@@ -304,6 +305,17 @@ namespace MapView.Forms.MapObservers.RouteViews
 				lblOverId.Text = String.Empty;
 
 			_routePanel.CursorPosition = new Point(args.X, args.Y);
+			_routePanel.Refresh(); // mouseover refresh for RouteView.
+		}
+
+		/// <summary>
+		/// Hides the info-overlay when the mouse leaves this control.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnRoutePanelMouseLeave(object sender, EventArgs e)
+		{
+			_routePanel.CursorPosition = new Point(-1, -1);
 			_routePanel.Refresh(); // mouseover refresh for RouteView.
 		}
 
@@ -436,12 +448,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void UpdateNodeInformation()
 		{
-			_loadingGui = true;
+			_loadNode = true;
 
 			gbNodeData.SuspendLayout();
 			gbPatrolData.SuspendLayout();
 			gbSpawnData.SuspendLayout();
 			gbLinkData.SuspendLayout();
+			gbNodeEditor.SuspendLayout();
 
 			if (_nodeSelected == null)
 			{
@@ -455,7 +468,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				gbNodeData.Enabled   =
 				gbPatrolData.Enabled =
 				gbSpawnData.Enabled  =
-				gbLinkData.Enabled   = false;
+				gbLinkData.Enabled   =
+				gbNodeEditor.Enabled = false;
 
 				cbUnitType.SelectedItem = UnitType.Any;
 				cbPriority.SelectedItem = NodeImportance.Zero;
@@ -468,23 +482,23 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				cbSpawnWeight.SelectedItem = RouteNodeCollection.SpawnUsage[(int)SpawnUsage.NoSpawn];
 
-				cbLink1Dest.SelectedItem = LinkType.NotUsed;
-				cbLink2Dest.SelectedItem = LinkType.NotUsed;
-				cbLink3Dest.SelectedItem = LinkType.NotUsed;
-				cbLink4Dest.SelectedItem = LinkType.NotUsed;
+				cbLink1Dest.SelectedItem = // TODO: figure out why these show blank and not "NotUsed"
+				cbLink2Dest.SelectedItem = // when the app loads its first map.
+				cbLink3Dest.SelectedItem =
+				cbLink4Dest.SelectedItem =
 				cbLink5Dest.SelectedItem = LinkType.NotUsed;
 
-				cbLink1UnitType.SelectedItem = UnitType.Any;
-				cbLink2UnitType.SelectedItem = UnitType.Any;
-				cbLink3UnitType.SelectedItem = UnitType.Any;
-				cbLink4UnitType.SelectedItem = UnitType.Any;
+				cbLink1UnitType.SelectedItem =
+				cbLink2UnitType.SelectedItem =
+				cbLink3UnitType.SelectedItem =
+				cbLink4UnitType.SelectedItem =
 				cbLink5UnitType.SelectedItem = UnitType.Any;
 
-				tbLink1Dist.Text = "0";
-				tbLink2Dist.Text = "0";
-				tbLink3Dist.Text = "0";
-				tbLink4Dist.Text = "0";
-				tbLink5Dist.Text = "0";
+				tbLink1Dist.Text =
+				tbLink2Dist.Text =
+				tbLink3Dist.Text =
+				tbLink4Dist.Text =
+				tbLink5Dist.Text = String.Empty;
 			}
 			else
 			{
@@ -493,7 +507,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				gbNodeData.Enabled   =
 				gbPatrolData.Enabled =
 				gbSpawnData.Enabled  =
-				gbLinkData.Enabled   = true;
+				gbLinkData.Enabled   =
+				gbNodeEditor.Enabled = true;
 
 
 				cbUnitType.SelectedItem = _nodeSelected.UsableType;
@@ -568,25 +583,45 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbLink4UnitType.SelectedItem = _nodeSelected[3].UsableType;
 				cbLink5UnitType.SelectedItem = _nodeSelected[4].UsableType;
 
-				tbLink1Dist.Text = Convert.ToString(_nodeSelected[0].Distance, System.Globalization.CultureInfo.InvariantCulture);
-				tbLink2Dist.Text = Convert.ToString(_nodeSelected[1].Distance, System.Globalization.CultureInfo.InvariantCulture);
-				tbLink3Dist.Text = Convert.ToString(_nodeSelected[2].Distance, System.Globalization.CultureInfo.InvariantCulture);
-				tbLink4Dist.Text = Convert.ToString(_nodeSelected[3].Distance, System.Globalization.CultureInfo.InvariantCulture);
-				tbLink5Dist.Text = Convert.ToString(_nodeSelected[4].Distance, System.Globalization.CultureInfo.InvariantCulture);
+				if (_nodeSelected[0].Destination == Link.NotUsed)
+					tbLink1Dist.Text = String.Empty;
+				else
+					tbLink1Dist.Text = Convert.ToString(_nodeSelected[0].Distance, System.Globalization.CultureInfo.InvariantCulture);
+
+				if (_nodeSelected[1].Destination == Link.NotUsed)
+					tbLink2Dist.Text = String.Empty;
+				else
+					tbLink2Dist.Text = Convert.ToString(_nodeSelected[1].Distance, System.Globalization.CultureInfo.InvariantCulture);
+
+				if (_nodeSelected[2].Destination == Link.NotUsed)
+					tbLink3Dist.Text = String.Empty;
+				else
+					tbLink3Dist.Text = Convert.ToString(_nodeSelected[2].Distance, System.Globalization.CultureInfo.InvariantCulture);
+
+				if (_nodeSelected[3].Destination == Link.NotUsed)
+					tbLink4Dist.Text = String.Empty;
+				else
+					tbLink4Dist.Text = Convert.ToString(_nodeSelected[3].Distance, System.Globalization.CultureInfo.InvariantCulture);
+
+				if (_nodeSelected[4].Destination == Link.NotUsed)
+					tbLink5Dist.Text = String.Empty;
+				else
+					tbLink5Dist.Text = Convert.ToString(_nodeSelected[4].Distance, System.Globalization.CultureInfo.InvariantCulture);
 			}
 
 			gbNodeData.ResumeLayout();
 			gbPatrolData.ResumeLayout();
 			gbSpawnData.ResumeLayout();
 			gbLinkData.ResumeLayout();
+			gbNodeEditor.ResumeLayout();
 
-			_loadingGui = false;
+			_loadNode = false;
 		}
 
 
 		private void OnUnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadingGui)
+			if (!_loadNode)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -596,7 +631,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnPatrolPrioritySelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadingGui)
+			if (!_loadNode)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -607,7 +642,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnBaseAttackSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadingGui)
+			if (!_loadNode)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -617,7 +652,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnSpawnRankSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadingGui)
+			if (!_loadNode)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -627,7 +662,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnSpawnWeightSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadingGui)
+			if (!_loadNode)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -642,7 +677,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				int slotId,
 				Control textBox)
 		{
-			if (!_loadingGui)
+			if (!_loadNode)
 			{
 				var dst = sender.SelectedItem as byte?;
 
@@ -662,34 +697,45 @@ namespace MapView.Forms.MapObservers.RouteViews
 				}
 				else
 				{
-					try
-					{
-						_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+//					try
+//					{
+					_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
-						_nodeSelected[slotId].Destination = dst.Value;
-						if (_nodeSelected[slotId].Destination < Link.ExitWest)
-						{
+					switch (_nodeSelected[slotId].Destination = dst.Value)
+					{
+						case Link.NotUsed:
+							_nodeSelected[slotId].Distance = 0;
+							textBox.Text = String.Empty;
+							break;
+						case Link.ExitWest:
+						case Link.ExitNorth:
+						case Link.ExitEast:
+						case Link.ExitSouth:
+							_nodeSelected[slotId].Distance = 0;
+							textBox.Text = "0";
+							break;
+
+						default:
 							var node = _mapFile.RouteFile[_nodeSelected[slotId].Destination];
 							_nodeSelected[slotId].Distance = CalculateLinkDistance(
 																				_nodeSelected,
 																				node,
 																				textBox);
-						}
-						else
-							_nodeSelected[slotId].Distance = 0;
+							break;
 					}
-					catch (Exception ex)
-					{
-						MessageBox.Show(
-									this,
-									ex.Message,
-									"Exception",
-									MessageBoxButtons.OK,
-									MessageBoxIcon.Error,
-									MessageBoxDefaultButton.Button1,
-									0);
-						throw;
-					}
+//					}
+//					catch (Exception ex)
+//					{
+//						MessageBox.Show(
+//									this,
+//									ex.Message,
+//									"Exception",
+//									MessageBoxButtons.OK,
+//									MessageBoxIcon.Error,
+//									MessageBoxDefaultButton.Button1,
+//									0);
+//						throw;
+//					}
 					Refresh();
 				}
 			}
@@ -789,7 +835,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink1UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadingGui)
+			if (!_loadNode)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -800,7 +846,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink2UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadingGui)
+			if (!_loadNode)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -811,7 +857,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink3UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadingGui)
+			if (!_loadNode)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -822,7 +868,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink4UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadingGui)
+			if (!_loadNode)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -833,7 +879,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink5UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadingGui)
+			if (!_loadNode)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -1043,14 +1089,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				var nodeText = string.Format(
 										System.Globalization.CultureInfo.InvariantCulture,
-										"{0}|{1}|{2}|{3}|{4}|{5}",
+										"{0}{6}{1}{6}{2}{6}{3}{6}{4}{6}{5}",
 										NodeCopyPrefix,
 										cbUnitType.SelectedIndex,
-										cbSpawnRank.SelectedIndex,
 										cbPriority.SelectedIndex,
 										cbAttack.SelectedIndex,
-										cbSpawnWeight.SelectedIndex);
-										// TODO: include Link info ... perhaps.
+										cbSpawnRank.SelectedIndex,
+										cbSpawnWeight.SelectedIndex,
+										NodeCopySeparator); // TODO: include Link info ... perhaps.
 				Clipboard.SetText(nodeText);
 			}
 			else
@@ -1062,16 +1108,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (_nodeSelected != null)
 			{
 				var nodeData = Clipboard.GetText().Split(NodeCopySeparator);
-				if (nodeData[0] == NodeCopyPrefix)
+				if (nodeData[0] == NodeCopyPrefix)// TODO: include Link info ... perhaps.
 				{
 					_mapFile.MapChanged = true;
 
 					cbUnitType.SelectedIndex    = Int32.Parse(nodeData[1], System.Globalization.CultureInfo.InvariantCulture);
-					cbSpawnRank.SelectedIndex   = Int32.Parse(nodeData[2], System.Globalization.CultureInfo.InvariantCulture);
-					cbPriority.SelectedIndex    = Int32.Parse(nodeData[3], System.Globalization.CultureInfo.InvariantCulture);
-					cbAttack.SelectedIndex      = Int32.Parse(nodeData[4], System.Globalization.CultureInfo.InvariantCulture);
+					cbPriority.SelectedIndex    = Int32.Parse(nodeData[2], System.Globalization.CultureInfo.InvariantCulture);
+					cbAttack.SelectedIndex      = Int32.Parse(nodeData[3], System.Globalization.CultureInfo.InvariantCulture);
+					cbSpawnRank.SelectedIndex   = Int32.Parse(nodeData[4], System.Globalization.CultureInfo.InvariantCulture);
 					cbSpawnWeight.SelectedIndex = Int32.Parse(nodeData[5], System.Globalization.CultureInfo.InvariantCulture);
-					// TODO: include Link info ... perhaps.
 				}
 				else
 					ShowDialogAsterisk("The data on the clipboard is not a node.");

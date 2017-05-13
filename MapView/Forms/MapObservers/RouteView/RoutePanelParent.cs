@@ -174,10 +174,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
-		{
-			MainViewUnderlay.Instance.MainViewOverlay.Refresh();	// For some whack reason, this is needed in order to refresh
-		}															// MainView's selector iff a Map has just been loaded *and*
-																	// RouteView is clicked at location (0,0).
+		{															// For some whack reason, this is needed in order to refresh
+			MainViewUnderlay.Instance.MainViewOverlay.Refresh();	// MainView's selector iff a Map has just been loaded *and*
+		}															// RouteView is clicked at location (0,0).
 		#endregion
 
 
