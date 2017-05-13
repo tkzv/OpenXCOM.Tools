@@ -26,7 +26,6 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.RouteViewControl = new MapView.Forms.MapObservers.RouteViews.RouteView();
 			this.SuspendLayout();
 			// 
 			// RouteViewControl
@@ -47,7 +46,7 @@
 			this.Controls.Add(this.RouteViewControl);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.KeyPreview = true;
-			this.MinimumSize = new System.Drawing.Size(585, 465);
+			this.MinimumSize = new System.Drawing.Size(582, 465);
 			this.Name = "RouteViewForm";
 			this.ShowInTaskbar = false;
 			this.Text = "Waypoint View";

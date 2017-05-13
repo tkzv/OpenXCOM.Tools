@@ -397,7 +397,7 @@ namespace MapView
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximumSize = new System.Drawing.Size(640, 480);
 			this.Menu = this.mmMain;
-			this.MinimumSize = new System.Drawing.Size(600, 400);
+			this.MinimumSize = new System.Drawing.Size(538, 295);
 			this.Name = "XCMainWindow";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Map Editor";

@@ -11,6 +11,7 @@ namespace MapView.Forms.MapObservers.TileViews
 	{
 		internal TileViewForm()
 		{
+			TileViewControl = new TileView();
 			InitializeComponent();
 
 			Activated += OnActivated;

@@ -83,8 +83,11 @@ namespace MapView
 			}
 		}
 
-		private const int OffsetX = 2; // these track the offset between the panel border
-		private const int OffsetY = 2; // and the lozenge-tip.
+		private const int OffsetX = 2;	// these track the offset between the panel border
+		private const int OffsetY = 2;	// and the lozenge-tips. NOTE: they are used for
+										// both the underlay and the overlay, which currently
+										// have the same border sizes; if one or the other
+										// changes then their offsets would have to be separated.
 
 		private readonly HScrollBar _scrollBarH;
 		private readonly VScrollBar _scrollBarV;
@@ -156,12 +159,12 @@ namespace MapView
 			var pen = new Pen(SystemColors.ControlLight, 1);
 			graphics.DrawLine(
 							pen,
-							Width - OffsetX - _scrollBarV.Width - 1, OffsetY,
-							Width - OffsetX - _scrollBarV.Width - 1, Height - _scrollBarH.Height - OffsetY - 1);
+							Width - _scrollBarV.Width - OffsetX - 1, OffsetY,
+							Width - _scrollBarV.Width - OffsetX - 1, Height - _scrollBarH.Height - OffsetY - 1);
 			graphics.DrawLine(
 							pen,
 							OffsetX,                                 Height - _scrollBarH.Height - OffsetY - 1,
-							Width - OffsetX - _scrollBarV.Width - 1, Height - _scrollBarH.Height - OffsetY - 1);
+							Width - _scrollBarV.Width - OffsetX - 1, Height - _scrollBarH.Height - OffsetY - 1);
 		}
 
 		/// <summary>
@@ -244,11 +247,14 @@ namespace MapView
 			}
 			else
 			{
-				_scrollBarV.Visible = (MainViewOverlay.Height > ClientSize.Height);
+				_scrollBarV.Visible = (MainViewOverlay.Height > ClientSize.Height + OffsetY);
 				if (_scrollBarV.Visible)
 				{
 					_scrollBarV.Maximum = Math.Max(
-												MainViewOverlay.Height - ClientSize.Height + _scrollBarH.Height,
+												MainViewOverlay.Height
+													- ClientSize.Height
+													+ _scrollBarH.Height
+													+ OffsetY * 4, // '*4' - top & bottom Underlay + top & bottom Overlay borders
 												0);
 					_scrollBarV.Value = Math.Min(
 												_scrollBarV.Value,
@@ -261,11 +267,14 @@ namespace MapView
 					MainViewOverlay.Location = new Point(Left, 0);
 				}
 
-				_scrollBarH.Visible = (MainViewOverlay.Width > ClientSize.Width);
+				_scrollBarH.Visible = (MainViewOverlay.Width > ClientSize.Width + OffsetX);
 				if (_scrollBarH.Visible)
 				{
 					_scrollBarH.Maximum = Math.Max(
-												MainViewOverlay.Width - ClientSize.Width + _scrollBarV.Width,
+												MainViewOverlay.Width
+													- ClientSize.Width
+													+ _scrollBarV.Width
+													+ OffsetX * 4, // '*4' - left & right Underlay + left & right Overlay borders
 												0);
 					_scrollBarH.Value = Math.Min(
 												_scrollBarH.Value,

@@ -10,6 +10,7 @@ namespace MapView.Forms.MapObservers.TopViews
 	{
 		internal TopViewForm()
 		{
+			TopViewControl = new TopView();
 			InitializeComponent();
 		}
 

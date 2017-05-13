@@ -61,7 +61,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private XCMapFile _mapFile;
 		private RouteNode _nodeSelected;
 
-		private bool _loadNode;
+		private bool _loadingInfo;
 //		private bool _loadingMap;
 
 		private readonly List<object> _linksList = new List<object>();
@@ -448,7 +448,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void UpdateNodeInformation()
 		{
-			_loadNode = true;
+			_loadingInfo = true;
 
 			gbNodeData.SuspendLayout();
 			gbPatrolData.SuspendLayout();
@@ -615,13 +615,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			gbLinkData.ResumeLayout();
 			gbNodeEditor.ResumeLayout();
 
-			_loadNode = false;
+			_loadingInfo = false;
 		}
 
 
 		private void OnUnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadNode)
+			if (!_loadingInfo)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -631,7 +631,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnPatrolPrioritySelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadNode)
+			if (!_loadingInfo)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -642,7 +642,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnBaseAttackSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadNode)
+			if (!_loadingInfo)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -652,7 +652,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnSpawnRankSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadNode)
+			if (!_loadingInfo)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -662,7 +662,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnSpawnWeightSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadNode)
+			if (!_loadingInfo)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -677,7 +677,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				int slotId,
 				Control textBox)
 		{
-			if (!_loadNode)
+			if (!_loadingInfo)
 			{
 				var dst = sender.SelectedItem as byte?;
 
@@ -835,7 +835,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink1UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadNode)
+			if (!_loadingInfo)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -846,7 +846,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink2UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadNode)
+			if (!_loadingInfo)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -857,7 +857,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink3UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadNode)
+			if (!_loadingInfo)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -868,7 +868,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink4UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadNode)
+			if (!_loadingInfo)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
@@ -879,7 +879,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink5UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadNode)
+			if (!_loadingInfo)
 			{
 				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
