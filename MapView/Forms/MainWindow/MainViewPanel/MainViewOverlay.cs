@@ -71,7 +71,13 @@ namespace MapView
 					_dragStart = new Point(-1, -1);
 					_dragEnd   = new Point(-1, -1);
 
-					ViewerFormsManager.TopView.Control.TopViewPanel.PathSelectedLozenge();
+					// clear the selected tile on TopView
+//					ViewerFormsManager.TopView.Control.TopViewPanel.PathSelectedLozenge();
+//					ViewerFormsManager.TopView.Control.TopViewPanel.Refresh();
+
+					// clear the selected tile for RouteView also
+					ViewerFormsManager.RouteView.Control.RoutePanel.SetSelectedTile(-1, -1); // NOTE: does not understand 'dragStart/dragEnd' like TopView does.
+//					ViewerFormsManager.RouteView.Control.RoutePanel.PathSelectedLozenge();
 				}
 			}
 		}
@@ -281,8 +287,8 @@ namespace MapView
 				var end   = GetDragEnd();
 	
 				for (int col = start.X; col <= end.X; ++col)
-					for (int row = start.Y; row <= end.Y; ++row)
-						MapBase[row, col] = XCMapTile.BlankTile;
+				for (int row = start.Y; row <= end.Y; ++row)
+					MapBase[row, col] = XCMapTile.BlankTile; // TODO: why is this deleting Route NODES.
 
 				RefreshViewers();
 			}
@@ -414,13 +420,19 @@ namespace MapView
 					&& dragStart.Y > -1 && dragStart.Y < MapBase.MapSize.Rows)
 				{
 					_isMouseDrag = true;
-					FireMouseDrag(dragStart, dragStart);
+					DragSelect(dragStart, dragStart);
 
 					MapBase.Location = new MapLocation(
 													dragStart.Y,
 													dragStart.X,
 													MapBase.Level);
 					Refresh();
+
+					// update the selected tile for RouteView (no drags allowed on RouteView however)
+					// NOTE: TopView understands drags and updates auto.
+					var routePanel = ViewerFormsManager.RouteView.Control.RoutePanel;
+					routePanel.SetSelectedTile(dragStart.X, dragStart.Y);
+					routePanel.Refresh();
 				}
 			}
 		}
@@ -442,11 +454,18 @@ namespace MapView
 		{
 			if (MapBase != null)
 			{
-				var loc = GetTileLocation(e.X, e.Y);
-				if (loc.X != DragEnd.X || loc.Y != DragEnd.Y)
+				var location = GetTileLocation(e.X, e.Y);
+				if (location.X != DragEnd.X || location.Y != DragEnd.Y)
 				{
 					if (_isMouseDrag)
-						FireMouseDrag(DragStart, loc);
+					{
+						DragSelect(DragStart, location);
+
+						// clear the selected lozenge on RouteView (no drags for RouteView)
+						var routePanel = ViewerFormsManager.RouteView.Control.RoutePanel;
+						routePanel.SetSelectedTile(-1, -1);
+						routePanel.Refresh();
+					}
 
 					Refresh(); // mouseover refresh for MainView.
 				}
@@ -494,7 +513,7 @@ namespace MapView
 		/// </summary>
 		/// <param name="dragStart"></param>
 		/// <param name="dragEnd"></param>
-		internal void FireMouseDrag(Point dragStart, Point dragEnd)
+		internal void DragSelect(Point dragStart, Point dragEnd)
 		{
 			if (DragStart != dragStart || DragEnd != dragEnd)
 			{
@@ -551,7 +570,7 @@ namespace MapView
 			_row = args.Location.Row;
 			_lev = args.Location.Lev;
 
-			FireMouseDrag(new Point(_col, _row), DragEnd);
+			DragSelect(new Point(_col, _row), DragEnd);
 
 			XCMainWindow.Instance.StatusBarPrintPosition(
 													_col,

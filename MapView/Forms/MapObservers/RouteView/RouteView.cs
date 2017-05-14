@@ -55,6 +55,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		#region Fields
 		private readonly RoutePanel _routePanel;
+		internal RoutePanel RoutePanel
+		{
+			get { return _routePanel; }
+		}
 
 		private Panel pRoutes;
 
@@ -305,7 +309,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				lblOverId.Text = String.Empty;
 
 			_routePanel.CursorPosition = new Point(args.X, args.Y);
-			_routePanel.Refresh(); // mouseover refresh for RouteView.
+			_routePanel.Refresh(); // 3nd mouseover refresh for RouteView. See OnRoutePanelMouseLeave(), RoutePanelParent.OnMouseMove()
 		}
 
 		/// <summary>
@@ -316,7 +320,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private void OnRoutePanelMouseLeave(object sender, EventArgs e)
 		{
 			_routePanel.CursorPosition = new Point(-1, -1);
-			_routePanel.Refresh(); // mouseover refresh for RouteView.
+			_routePanel.Refresh(); // 3rd mouseover refresh for RouteView. See OnRoutePanelMouseMove(), RoutePanelParent.OnMouseMove()
 		}
 
 		/// <summary>

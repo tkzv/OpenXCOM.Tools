@@ -25,6 +25,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			set { _pos = value; }
 		}
 
+		private readonly GraphicsPath _lozSelector = new GraphicsPath(); // mouse-over cursor lozenge
+		private readonly GraphicsPath _lozSelected = new GraphicsPath(); // clicked tile lozenge
+
 		private readonly DrawBlobService _blobService = new DrawBlobService();
 
 		private readonly Font _fontOverlay = new Font("Verdana", 7F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
@@ -83,6 +86,24 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				DrawGridLines();
 
+				if (_overCol != -1) // draw the selector lozenge
+				{
+					PathSelectorLozenge(
+									Origin.X + (_overCol - _overRow) * DrawAreaWidth,
+									Origin.Y + (_overCol + _overRow) * DrawAreaHeight);
+					_graphics.DrawPath(
+									new Pen(Color.Black, 2), // TODO: use TopPens[TopView.SelectorColor]
+									_lozSelector);
+				}
+
+				if (_selectedCol != -1)
+				{
+					PathSelectedLozenge(); // TODO: cache that.
+					_graphics.DrawPath(
+									new Pen(Color.RoyalBlue, 2), // TODO: use TopPens[TopView.SelectorColor] or other.
+									_lozSelected);
+				}
+
 				if (ShowPriorityBars)
 					DrawNodeImportanceMeters();
 
@@ -102,6 +123,68 @@ namespace MapView.Forms.MapObservers.RouteViews
 //							8, 8);
 //				throw;
 //			}
+		}
+
+		/// <summary>
+		/// Sets the graphics-path for a lozenge-border around the tile that
+		/// is currently mouse-overed.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		private void PathSelectorLozenge(int x, int y)
+		{
+			int halfWidth  = _blobService.HalfWidth;
+			int halfHeight = _blobService.HalfHeight;
+
+			var p0 = new Point(x,             y);
+			var p1 = new Point(x + halfWidth, y + halfHeight);
+			var p2 = new Point(x,             y + halfHeight * 2);
+			var p3 = new Point(x - halfWidth, y + halfHeight);
+
+			_lozSelector.Reset();
+			_lozSelector.AddLine(p0, p1);
+			_lozSelector.AddLine(p1, p2);
+			_lozSelector.AddLine(p2, p3);
+			_lozSelector.CloseFigure();
+		}
+
+		/// <summary>
+		/// Sets the graphics-path for a lozenge-border around the tile at the
+		/// current 'ClickPoint'.
+		/// </summary>
+		internal void PathSelectedLozenge()
+		{
+			int halfWidth  = _blobService.HalfWidth;
+			int halfHeight = _blobService.HalfHeight;
+
+			var p0 = new Point(
+							Origin.X + (_selectedCol - _selectedRow) * halfWidth,
+							Origin.Y + (_selectedCol + _selectedRow) * halfHeight);
+			var p1 = new Point(
+							Origin.X + (_selectedCol - _selectedRow) * halfWidth  + halfWidth,
+							Origin.Y + (_selectedCol + _selectedRow) * halfHeight + halfHeight);
+			var p2 = new Point(
+							Origin.X + (_selectedCol - _selectedRow) * halfWidth,
+							Origin.Y + (_selectedCol + _selectedRow) * halfHeight + halfHeight * 2);
+			var p3 = new Point(
+							Origin.X + (_selectedCol - _selectedRow) * halfWidth  - halfWidth,
+							Origin.Y + (_selectedCol + _selectedRow) * halfHeight + halfHeight);
+
+			_lozSelected.Reset();
+			_lozSelected.AddLine(p0, p1);
+			_lozSelected.AddLine(p1, p2);
+			_lozSelected.AddLine(p2, p3);
+			_lozSelected.CloseFigure();
+		}
+
+		internal void SetSelectedTile(int x, int y)
+		{
+			_selectedCol = x;
+			_selectedRow = y;
+
+			if (x != -1)
+				PathSelectedLozenge();
 		}
 
 
@@ -290,19 +373,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 			int startX = Origin.X;
 			int startY = Origin.Y;
 
-			for (int r = 0; r != MapFile.MapSize.Rows; ++r)
+			for (int row = 0; row != MapFile.MapSize.Rows; ++row)
 			{
 				for (int
-						c = 0,
+						col = 0,
 							x = startX,
 							y = startY;
-						c != MapFile.MapSize.Cols;
-						++c,
+						col != MapFile.MapSize.Cols;
+						++col,
 							x += DrawAreaWidth,
 							y += DrawAreaHeight)
 				{
-					var tile = MapFile[r, c] as XCMapTile;
-					if (tile != null)
+					var tile = MapFile[row, col] as XCMapTile;	// NOTE: XCMapBase has the current level stored and uses
+					if (tile != null)							// it to return only tiles on the correct level here.
 					{
 						var node = tile.Node;
 						if (node != null)
@@ -320,7 +403,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							_nodeFill.CloseFigure();
 
 
-							if (r == ClickPoint.Y && c == ClickPoint.X)
+							if (row == ClickPoint.Y && col == ClickPoint.X)
 							{
 								_graphics.FillPath(_brushSelected, _nodeFill);
 							}
@@ -332,7 +415,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 								_graphics.FillPath(_brushUnselected, _nodeFill);
 
 
-							for (int i = 0; i != RouteNode.LinkSlots; ++i)
+							for (int i = 0; i != RouteNode.LinkSlots; ++i) // check for and if applicable draw the up/down indicators.
 							{
 								var link = node[i] as Link;
 								switch (link.Destination)

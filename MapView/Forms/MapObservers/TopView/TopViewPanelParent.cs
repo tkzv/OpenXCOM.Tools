@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
+using MapView.Forms.MainWindow;
+
 using XCom;
 using XCom.Interfaces.Base;
 
@@ -38,9 +40,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		private const int OffsetX = 2; // these are the offsets between the
 		private const int OffsetY = 2; // panel border and the lozenge-tip(s).
 
-		private int _xOffset;	// since the lozenge is drawn with its Origin at 0,0 of the
+		private int _originX;	// since the lozenge is drawn with its Origin at 0,0 of the
 								// panel, the entire lozenge needs to be displaced to the right.
-		private int _yOffset;	// But this isn't really used.
+		private int _originY;	// But this isn't really used. It's set to 'OffsetY' and stays that way.
 
 
 		private DrawBlobService _blobService = new DrawBlobService();
@@ -149,8 +151,8 @@ namespace MapView.Forms.MapObservers.TopViews
 				_blobService.HalfWidth  = halfWidth;
 				_blobService.HalfHeight = halfHeight;
 
-				_xOffset = OffsetX + MapBase.MapSize.Rows * halfWidth;
-				_yOffset = OffsetY;
+				_originX = OffsetX + MapBase.MapSize.Rows * halfWidth;
+				_originY = OffsetY;
 
 				if (halfWidthPre != halfWidth)
 				{
@@ -187,17 +189,17 @@ namespace MapView.Forms.MapObservers.TopViews
 			int halfHeight = _blobService.HalfHeight;
 
 			var p0 = new Point(
-							_xOffset + (dragStart.X - dragStart.Y) * halfWidth,
-							_yOffset + (dragStart.X + dragStart.Y) * halfHeight);
+							_originX + (dragStart.X - dragStart.Y) * halfWidth,
+							_originY + (dragStart.X + dragStart.Y) * halfHeight);
 			var p1 = new Point(
-							_xOffset + (dragEnd.X - dragStart.Y) * halfWidth  + halfWidth,
-							_yOffset + (dragEnd.X + dragStart.Y) * halfHeight + halfHeight);
+							_originX + (dragEnd.X - dragStart.Y) * halfWidth  + halfWidth,
+							_originY + (dragEnd.X + dragStart.Y) * halfHeight + halfHeight);
 			var p2 = new Point(
-							_xOffset + (dragEnd.X - dragEnd.Y) * halfWidth,
-							_yOffset + (dragEnd.X + dragEnd.Y) * halfHeight + halfHeight * 2);
+							_originX + (dragEnd.X - dragEnd.Y) * halfWidth,
+							_originY + (dragEnd.X + dragEnd.Y) * halfHeight + halfHeight * 2);
 			var p3 = new Point(
-							_xOffset + (dragStart.X - dragEnd.Y) * halfWidth  - halfWidth,
-							_yOffset + (dragStart.X + dragEnd.Y) * halfHeight + halfHeight);
+							_originX + (dragStart.X - dragEnd.Y) * halfWidth  - halfWidth,
+							_originY + (dragStart.X + dragEnd.Y) * halfHeight + halfHeight);
 
 			_lozSelected.Reset();
 			_lozSelected.AddLine(p0, p1);
@@ -295,8 +297,8 @@ namespace MapView.Forms.MapObservers.TopViews
 				// draw tile-blobs ->
 				for (int
 						r = 0,
-							startX = _xOffset,
-							startY = _yOffset;
+							startX = _originX,
+							startY = _originY;
 						r != MapBase.MapSize.Rows;
 						++r,
 							startX -= halfWidth,
@@ -321,33 +323,33 @@ namespace MapView.Forms.MapObservers.TopViews
 				for (int i = 0; i <= MapBase.MapSize.Rows; ++i) // draw horizontal grid-lines (ie. upperleft to lowerright)
 					graphics.DrawLine(
 									TopPens[TopView.GridColor],
-									_xOffset - i * halfWidth,
-									_yOffset + i * halfHeight,
-									_xOffset + (MapBase.MapSize.Cols - i) * halfWidth,
-									_yOffset + (MapBase.MapSize.Cols + i) * halfHeight);
+									_originX - i * halfWidth,
+									_originY + i * halfHeight,
+									_originX + (MapBase.MapSize.Cols - i) * halfWidth,
+									_originY + (MapBase.MapSize.Cols + i) * halfHeight);
 
 				for (int i = 0; i <= MapBase.MapSize.Cols; ++i) // draw vertical grid-lines (ie. lowerleft to upperright)
 					graphics.DrawLine(
 									TopPens[TopView.GridColor],
-									_xOffset + i * halfWidth,
-									_yOffset + i * halfHeight,
-									_xOffset + i * halfWidth  - MapBase.MapSize.Rows * halfWidth,
-									_yOffset + i * halfHeight + MapBase.MapSize.Rows * halfHeight);
+									_originX + i * halfWidth,
+									_originY + i * halfHeight,
+									_originX + i * halfWidth  - MapBase.MapSize.Rows * halfWidth,
+									_originY + i * halfHeight + MapBase.MapSize.Rows * halfHeight);
 
-
-				// draw tiles-selected lozenge ->
-				if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick)
-					graphics.DrawPath(TopPens[TopView.SelectedColor], _lozSelected);
 
 				// draw the selector lozenge ->
 				if (   _col > -1 && _col < MapBase.MapSize.Cols
 					&& _row > -1 && _row < MapBase.MapSize.Rows)
 				{
 					PathSelectorLozenge(
-									_xOffset + (_col - _row) * halfWidth,
-									_yOffset + (_col + _row) * halfHeight);
+									_originX + (_col - _row) * halfWidth,
+									_originY + (_col + _row) * halfHeight);
 					graphics.DrawPath(TopPens[TopView.SelectorColor], _lozSelector);
 				}
+
+				// draw tiles-selected lozenge ->
+				if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick)
+					graphics.DrawPath(TopPens[TopView.SelectedColor], _lozSelected);
 			}
 		}
 
@@ -363,26 +365,32 @@ namespace MapView.Forms.MapObservers.TopViews
 			int halfWidth  = _blobService.HalfWidth;
 			int halfHeight = _blobService.HalfHeight;
 
+			var p0 = new Point(x, y);
+			var p1 = new Point(x + halfWidth, y + halfHeight);
+			var p2 = new Point(x,             y + halfHeight * 2);
+			var p3 = new Point(x - halfWidth, y + halfHeight);
+
 			_lozSelector.Reset();
-			_lozSelector.AddLine(
-						x,             y,
-						x + halfWidth, y + halfHeight);
-			_lozSelector.AddLine(
-						x + halfWidth, y + halfHeight,
-						x,             y + halfHeight * 2);
-			_lozSelector.AddLine(
-						x,             y + halfHeight * 2,
-						x - halfWidth, y + halfHeight);
+			_lozSelector.AddLine(p0, p1);
+			_lozSelector.AddLine(p1, p2);
+			_lozSelector.AddLine(p2, p3);
 			_lozSelector.CloseFigure();
 		}
 
-		private Point ConvertCoordsDiamond(int x, int y)
+		/// <summary>
+		/// Converts a position from screen-coordinates to tile-location.
+		/// </summary>
+		/// <param name="x">the x-position of the mouse-cursor</param>
+		/// <param name="y">the y-position of the mouse-cursor</param>
+		/// <returns></returns>
+		private Point GetTileLocation(int x, int y)
 		{
-			double halfWidth  = (double)_blobService.HalfWidth;
-			double halfHeight = (double)_blobService.HalfHeight;
+			double halfWidth  = _blobService.HalfWidth;
+			double halfHeight = _blobService.HalfHeight;
 
-			double x1 =  (x          / (halfWidth * 2)) + (y / (halfHeight * 2));
-			double x2 = -(x - y * 2) / (halfWidth * 2);
+			double x1 = x / (halfWidth  * 2)
+					  + y / (halfHeight * 2);
+			double x2 = (y * 2 - x) / (halfWidth * 2);
 
 			return new Point(
 						(int)Math.Floor(x1),
@@ -396,21 +404,28 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			if (MapBase != null)
 			{
-				var pt = ConvertCoordsDiamond(
-											e.X - _xOffset,
-											e.Y - _yOffset);
-				if (   pt.Y >= 0 && pt.Y < MainViewUnderlay.Instance.MapBase.MapSize.Rows
-					&& pt.X >= 0 && pt.X < MainViewUnderlay.Instance.MapBase.MapSize.Cols)
+				var location = GetTileLocation(
+											e.X - _originX,
+											e.Y - _originY);
+				if (   location.Y > -1 && location.Y < MainViewUnderlay.Instance.MapBase.MapSize.Rows
+					&& location.X > -1 && location.X < MainViewUnderlay.Instance.MapBase.MapSize.Cols)
 				{
 //					MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;	// as long as MainViewOverlay.OnLocationSelected_Main()
 																					// fires before the subsidiary viewers' OnLocationSelected_Observer()
 					MapBase.Location = new MapLocation(								// functions fire, FirstClick is set okay by the former.
-													pt.Y,							// See also, RouteView.OnLocationSelected_Observer()
-													pt.X,							// ps. The FirstClick flag for TopView should be set either in 
+													location.Y,						// See also, RouteView.OnLocationSelected_Observer()
+													location.X,						// ps. The FirstClick flag for TopView should be set either in 
 													MapBase.Level);					// this class's OnLocationSelected_Observer() handler or even
 																					// QuadrantPanel.OnLocationSelected_Observer() ... anyway.
-					_isMouseDrag = true;												// or better: Make a flag of it in XCMapBase where Location is actually
-					MainViewUnderlay.Instance.MainViewOverlay.FireMouseDrag(pt, pt);	// set and all these OnLocationSelected events really fire out of!
+					_isMouseDrag = true;											// or better: Make a flag of it in XCMapBase where Location is actually
+					MainViewUnderlay.Instance.MainViewOverlay.DragSelect(			// set and all these OnLocationSelected events really fire out of!
+																	location,
+																	location);
+
+					// update the selected tile for RouteView also (no drags allowed on RouteView however)
+					var routePanel = ViewerFormsManager.RouteView.Control.RoutePanel;
+					routePanel.SetSelectedTile(location.X, location.Y);
+					routePanel.Refresh();
 				}
 			}
 		}
@@ -425,9 +440,9 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			var pt = ConvertCoordsDiamond(
-										e.X - _xOffset,
-										e.Y - _yOffset);
+			var pt = GetTileLocation(
+									e.X - _originX,
+									e.Y - _originY);
 			if (pt.X != _col || pt.Y != _row)
 			{
 				_col = pt.X;
@@ -436,7 +451,12 @@ namespace MapView.Forms.MapObservers.TopViews
 				if (_isMouseDrag)
 				{
 					var overlay = MainViewUnderlay.Instance.MainViewOverlay;
-					overlay.FireMouseDrag(overlay.DragStart, pt);
+					overlay.DragSelect(overlay.DragStart, pt);
+
+					// clear the selected lozenge on RouteView (no drags for RouteView)
+					var routePanel = ViewerFormsManager.RouteView.Control.RoutePanel;
+					routePanel.SetSelectedTile(-1, -1);
+					routePanel.Refresh();
 				}
 
 				Refresh(); // mouseover refresh for TopView.

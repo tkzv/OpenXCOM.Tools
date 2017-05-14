@@ -247,6 +247,7 @@ namespace MapView
 			}
 			else
 			{
+				// TODO: scrollbars jiggery-pokery needed.
 				_scrollBarV.Visible = (MainViewOverlay.Height > ClientSize.Height + OffsetY);
 				if (_scrollBarV.Visible)
 				{
@@ -254,7 +255,7 @@ namespace MapView
 												MainViewOverlay.Height
 													- ClientSize.Height
 													+ _scrollBarH.Height
-													+ OffsetY * 4, // '*4' - top & bottom Underlay + top & bottom Overlay borders
+													+ OffsetY * 4, // <- top & bottom Underlay + top & bottom Overlay borders
 												0);
 					_scrollBarV.Value = Math.Min(
 												_scrollBarV.Value,
@@ -274,7 +275,7 @@ namespace MapView
 												MainViewOverlay.Width
 													- ClientSize.Width
 													+ _scrollBarV.Width
-													+ OffsetX * 4, // '*4' - left & right Underlay + left & right Overlay borders
+													+ OffsetX * 4, // <- left & right Underlay + left & right Overlay borders
 												0);
 					_scrollBarH.Value = Math.Min(
 												_scrollBarH.Value,

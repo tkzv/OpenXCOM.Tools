@@ -59,6 +59,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 		internal protected const int OffsetX = 2; // these track the offset between the panel border
 		internal protected const int OffsetY = 2; // and the lozenge-tip.
 
+		internal protected int _overCol = -1; // these track the location of the mouse-cursor
+		internal protected int _overRow = -1; // NOTE: could be subsumed into 'RoutePanel.CursorPosition'
+
+		internal protected int _selectedCol = -1;	// these track the currently clicked/selected location
+		internal protected int _selectedRow = -1;	// NOTE: could be subsumed into 'ClickPoint' except that
+													// these need to persist while the ClickPoint gets (-1,-1)
+													// to clear the info-overlay.
 
 		private readonly Dictionary<string, Pen> _pens = new Dictionary<string, Pen>();
 		internal protected Dictionary<string, Pen> RoutePens
@@ -111,14 +118,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#region EventCalls
 		protected override void OnResize(EventArgs e)
 		{
-			if (_mapFile != null)
+			if (MapFile != null)
 			{
 				int width  = Width  - OffsetX * 2;
 				int height = Height - OffsetY * 2;
 
 				if (height > width / 2) // use width
 				{
-					_drawAreaWidth = width / (_mapFile.MapSize.Rows + _mapFile.MapSize.Cols);
+					_drawAreaWidth = width / (MapFile.MapSize.Rows + MapFile.MapSize.Cols);
 
 					if (_drawAreaWidth % 2 != 0)
 						--_drawAreaWidth;
@@ -127,12 +134,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 				}
 				else // use height
 				{
-					_drawAreaHeight = height / (_mapFile.MapSize.Rows + _mapFile.MapSize.Cols);
+					_drawAreaHeight = height / (MapFile.MapSize.Rows + MapFile.MapSize.Cols);
 					_drawAreaWidth  = _drawAreaHeight * 2;
 				}
 
 				Origin = new Point( // offset the left and top edges to account for the 3d panel border
-								OffsetX + _mapFile.MapSize.Rows * _drawAreaWidth,
+								OffsetX + MapFile.MapSize.Rows * _drawAreaWidth,
 								OffsetY);
 				Refresh();
 			}
@@ -140,31 +147,38 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (_mapFile != null && RoutePanelClickedEvent != null)
+			if (MapFile != null && RoutePanelClickedEvent != null)
 			{
-				var loc = GetTileLocation(e.X, e.Y);
-				if (loc.X != -1)
+				var location = GetTileLocation(e.X, e.Y);
+				if (location.X != -1)
 				{
-//					var tile = _mapFile[loc.Y, loc.X];
+//					var tile = MapFile[loc.Y, loc.X];
 //					if (tile != null) // this had better not be null ...
 //					{
-					ClickPoint = loc;
+					_selectedCol = location.X;
+					_selectedRow = location.Y;
 
-					_mapFile.Location = new MapLocation(
-													loc.Y,
-													loc.X,
-													_mapFile.Level);
 
-					MainViewUnderlay.Instance.MainViewOverlay.FireMouseDrag(loc, loc);
+					ClickPoint = location;
+
+					MapFile.Location = new MapLocation(
+													location.Y,
+													location.X,
+													MapFile.Level);
+
+					MainViewUnderlay.Instance.MainViewOverlay.DragSelect(location, location);
 
 					var args = new RoutePanelClickedEventArgs();
 					args.MouseEventArgs  = e; // used only to get the Button by RouteView.OnRoutePanelClicked()
-					args.ClickedTile     = _mapFile[loc.Y, loc.X];
+
+					args.ClickedTile     = MapFile[location.Y, location.X];
 //					args.ClickedTile     = tile;
-					args.ClickedLocation = new MapLocation(
-														loc.Y,
-														loc.X,
-														_mapFile.Level);
+
+					args.ClickedLocation = MapFile.Location; // WARNING: keep an eye on that. Ie, don't let 'args' change 'MapFile.Location' wantonly.
+//					args.ClickedLocation = new MapLocation(
+//														loc.Y,
+//														loc.X,
+//														MapFile.Level);
 					RoutePanelClickedEvent(this, args);
 
 					Refresh();
@@ -177,6 +191,24 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{															// For some whack reason, this is needed in order to refresh
 			MainViewUnderlay.Instance.MainViewOverlay.Refresh();	// MainView's selector iff a Map has just been loaded *and*
 		}															// RouteView is clicked at location (0,0).
+
+		/// <summary>
+		/// Tracks x/y location for the mouseover lozenge.
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e); // required to fire RouteView.OnRoutePanelMouseMove()
+
+			var location = GetTileLocation(e.X, e.Y);
+			if (location.X != _overCol || location.Y != _overRow)
+			{
+				_overCol = location.X;
+				_overRow = location.Y;
+
+				Refresh(); // 3nd mouseover refresh for RouteView. See RouteView.OnRoutePanelMouseMove(), RouteView.OnRoutePanelMouseLeave()
+			}
+		}
 		#endregion
 
 
@@ -195,7 +227,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		internal protected XCMapTile GetTile(int x, int y)
 		{
 			var loc = GetTileLocation(x, y);
-			return (loc.X != -1) ? _mapFile[loc.Y, loc.X] as XCMapTile
+			return (loc.X != -1) ? MapFile[loc.Y, loc.X] as XCMapTile
 								 : null;
 		}
 
@@ -207,21 +239,21 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <returns></returns>
 		internal protected Point GetTileLocation(int x, int y)
 		{
-			if (_mapFile != null)
+			if (MapFile != null)
 			{
 				x -= Origin.X;
 				y -= Origin.Y;
 
-				double xd = ((double)x / (_drawAreaWidth  * 2))
-						  + ((double)y / (_drawAreaHeight * 2));
-				double yd = ((double)y * 2 - (double)x) / (_drawAreaWidth * 2);
+				double xd = (double)x / (_drawAreaWidth  * 2)
+						  + (double)y / (_drawAreaHeight * 2);
+				double yd = ((double)y * 2 - x) / (_drawAreaWidth * 2);
 
 				var point = new Point(
 									(int)Math.Floor(xd),
 									(int)Math.Floor(yd));
 
-				if (   point.Y > -1 && point.Y < _mapFile.MapSize.Rows
-					&& point.X > -1 && point.X < _mapFile.MapSize.Cols)
+				if (   point.Y > -1 && point.Y < MapFile.MapSize.Rows
+					&& point.X > -1 && point.X < MapFile.MapSize.Cols)
 				{
 					return point;
 				}

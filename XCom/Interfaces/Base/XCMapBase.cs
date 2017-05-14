@@ -21,8 +21,9 @@ namespace XCom.Interfaces.Base
 		public event LevelChangedEventHandler LevelChangedEvent;
 
 
-		private const int HalfWidth  = 16;
-		private const int HalfHeight =  8;
+		#region Fields & Properties
+		private const int HalfWidthConst  = 16;
+		private const int HalfHeightConst =  8;
 
 		private int _level;
 		/// <summary>
@@ -125,6 +126,7 @@ namespace XCom.Interfaces.Base
 			get { return this[loc.Row, loc.Col, loc.Lev]; }
 			set { this[loc.Row, loc.Col, loc.Lev] = value; }
 		}
+		#endregion
 
 
 		#region cTor
@@ -141,6 +143,7 @@ namespace XCom.Interfaces.Base
 		#endregion
 
 
+		#region Methods
 		public virtual void Save()
 		{
 //			throw new InvalidOperationException("XCMapBase: Save() is not implemented."); // ... odd ....
@@ -220,8 +223,8 @@ namespace XCom.Interfaces.Base
 								startY = start.Y + lev * 24;
 							row != MapSize.Rows;
 							++row,
-								startX -= HalfWidth,
-								startY += HalfHeight)
+								startX -= HalfWidthConst,
+								startY += HalfHeightConst)
 					{
 						for (int
 								col = 0,
@@ -229,14 +232,14 @@ namespace XCom.Interfaces.Base
 									y = startY;
 								col != MapSize.Cols;
 								++col,
-									x += HalfWidth,
-									y += HalfHeight,
+									x += HalfWidthConst,
+									y += HalfHeightConst,
 									++i)
 						{
 							var tiles = this[row, col, lev].UsedTiles;
 							foreach (var tileBase in tiles)
 							{
-								var tile = (XCTile)tileBase;
+								var tile = tileBase as XCTile;
 								XCBitmap.Draw(tile[0].Image, b, x, y - tile.Record.TileOffset);
 							}
 
@@ -271,5 +274,6 @@ namespace XCom.Interfaces.Base
 
 			return null;
 		}
+		#endregion
 	}
 }
