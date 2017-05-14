@@ -5,23 +5,23 @@ using XCom.Interfaces;
 
 namespace XCom
 {
-	public sealed class XCTile
+	public sealed class XCTilepart
 		:
-			XCom.Interfaces.Base.TileBase
+			XCom.Interfaces.Base.TilepartBase
 	{
 		private readonly PckSpriteCollection _pckPack;
 
-		public XCTile Dead
+		public XCTilepart Dead
 		{ get; set; }
 
-		private XCTile _alternate;
-		internal XCTile Alternate
+		private XCTilepart _alternate;
+		internal XCTilepart Alternate
 		{
 			set { _alternate = value; }
 		}
 
 
-		internal XCTile(
+		internal XCTilepart(
 				int id,
 				PckSpriteCollection pckPack,
 				McdRecord record)

@@ -11,7 +11,7 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.TileViews
 {
-	internal delegate void TileSelectedEventHandler(TileBase tile);
+	internal delegate void TileSelectedEventHandler(TilepartBase part);
 
 
 	/// <summary>
@@ -25,7 +25,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 
 		#region Fields & Properties
-		private TileBase[] _tiles;
+		private TilepartBase[] _parts;
 
 		private readonly VScrollBar _scrollBar;
 
@@ -53,19 +53,19 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			get // TODO: calculate and cache this value in the OnResize and loading events.
 			{
-				if (_tiles != null && _tiles.Length != 0)
+				if (_parts != null && _parts.Length != 0)
 				{
 					_tilesX = (Width - TableOffset - _scrollBar.Width - 1) / SpriteWidth;	// reserve width for the scrollbar.
 					if (_tilesX != 0)														// <- happens when minimizing the TileView form.
 					{																		// NOTE: that could be intercepted and disallowed w/
-						if (_tilesX > _tiles.Length)										// 'if (WindowState != FormWindowState.Minimized)'
-							_tilesX = _tiles.Length;										// in the OnResize().
+						if (_tilesX > _parts.Length)										// 'if (WindowState != FormWindowState.Minimized)'
+							_tilesX = _parts.Length;										// in the OnResize().
 
 						int extra = 0;
-						if (_tiles.Length % _tilesX != 0)
+						if (_parts.Length % _tilesX != 0)
 							extra = 1;
 
-						return (_tiles.Length / _tilesX + extra) * SpriteHeight + TableOffset;
+						return (_parts.Length / _tilesX + extra) * SpriteHeight + TableOffset;
 					}
 				}
 				_tilesX = 1;
@@ -78,12 +78,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// Sets the selected-tile-id when a valid QuadrantPanel quad is
 		/// double-clicked.
 		/// </summary>
-		internal TileBase TileSelected
+		internal TilepartBase TileSelected
 		{
 			get
 			{
-				if (_id > -1 && _id < _tiles.Length)
-					return _tiles[_id];
+				if (_id > -1 && _id < _parts.Length)
+					return _parts[_id];
 
 				return null;
 			}
@@ -162,7 +162,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		private void OnScrollBarValueChanged(object sender, EventArgs e)
 		{
-			if (_tiles != null && _tiles.Length != 0)
+			if (_parts != null && _parts.Length != 0)
 			{
 				_startY = -_scrollBar.Value;
 				Refresh();
@@ -181,7 +181,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			base.OnResize(eventargs);
 
 			int range = 0;
-			if (_tiles != null && _tiles.Length != 0)
+			if (_parts != null && _parts.Length != 0)
 			{
 				if (_resetTrack)
 				{
@@ -235,7 +235,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			Focus();
 
 			int id = GetOverId(e);
-			if (id != -1 && id < _tiles.Length)
+			if (id != -1 && id < _parts.Length)
 			{
 				_id = id;
 
@@ -255,13 +255,13 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			int id = GetOverId(e);
 
-			if (id != -1 && id < _tiles.Length)
+			if (id != -1 && id < _parts.Length)
 				MapView.Forms.MainWindow.ViewerFormsManager.TileView.Control.OnMcdInfoClick(null, null);
 		}
 
 		private int GetOverId(MouseEventArgs e)
 		{
-			if (_tiles != null && _tiles.Length != 0
+			if (_parts != null && _parts.Length != 0
 				&& e.X < SpriteWidth * _tilesX + TableOffset - 1) // not out of bounds to right
 			{
 				int tileX = (e.X - TableOffset + 1)           / SpriteWidth;
@@ -286,7 +286,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			if (_tiles != null && _tiles.Length != 0)
+			if (_parts != null && _parts.Length != 0)
 			{
 				var graphics = e.Graphics;
 				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
@@ -305,7 +305,7 @@ namespace MapView.Forms.MapObservers.TileViews
 					TextWidth = (int)graphics.MeasureString(Door, Font).Width;	// =24
 				}
 
-				foreach (var tile in _tiles)
+				foreach (var tile in _parts)
 				{
 					left = SpriteWidth  * x + TableOffset;
 					top  = SpriteHeight * y + TableOffset + _startY;
@@ -399,40 +399,40 @@ namespace MapView.Forms.MapObservers.TileViews
 
 
 		#region Methods
-		internal void SetTiles(IList<TileBase> tiles)
+		internal void SetTiles(IList<TilepartBase> parts)
 		{
-			if (tiles != null)// && _tiles.Length != 0)	// NOTE: This check for Length should be enough
+			if (parts != null)// && _tiles.Length != 0)	// NOTE: This check for Length should be enough
 			{											// to cover all other checks for Length==0.
 				if (_quadType == TileType.All)			// Except that the eraser needs to be added anyway ....
 				{
-					_tiles = new TileBase[tiles.Count + 1];
-					_tiles[0] = null;
+					_parts = new TilepartBase[parts.Count + 1];
+					_parts[0] = null;
 
-					for (int i = 0; i != tiles.Count; ++i)
-						_tiles[i + 1] = tiles[i];
+					for (int i = 0; i != parts.Count; ++i)
+						_parts[i + 1] = parts[i];
 				}
 				else
 				{
 					int qtyTiles = 0;
 
-					for (int i = 0; i != tiles.Count; ++i)
-						if (tiles[i].Record.TileType == _quadType)
+					for (int i = 0; i != parts.Count; ++i)
+						if (parts[i].Record.TileType == _quadType)
 							++qtyTiles;
 
-					_tiles = new TileBase[qtyTiles + 1];
-					_tiles[0] = null;
+					_parts = new TilepartBase[qtyTiles + 1];
+					_parts[0] = null;
 
-					for (int i = 0, j = 1; i != tiles.Count; ++i)
-						if (tiles[i].Record.TileType == _quadType)
-							_tiles[j++] = tiles[i];
+					for (int i = 0, j = 1; i != parts.Count; ++i)
+						if (parts[i].Record.TileType == _quadType)
+							_parts[j++] = parts[i];
 				}
 
-				if (_id >= _tiles.Length)
+				if (_id >= _parts.Length)
 					_id = 0;
 			}
 			else
 			{
-				_tiles = null;
+				_parts = null;
 				_id = 0;
 			}
 

@@ -356,6 +356,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void DrawNodes()
 		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("RoutePanel.DrawNodes");
+
 			if (!_brushes)
 			{
 				_brushes = true;
@@ -365,7 +368,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				_brushSpawn      = RouteBrushes[RouteView.SpawnNodeColor];
 			}
 
-			_brushSelected.Color   = Color.FromArgb(Opacity, _brushSelected.Color); // NOTE: these colors change depending on Options.
+			_brushSelected.Color   = Color.FromArgb(Opacity, _brushSelected.Color); // NOTE: the opacity changes depending on Options.
 			_brushUnselected.Color = Color.FromArgb(Opacity, _brushUnselected.Color);
 			_brushSpawn.Color      = Color.FromArgb(Opacity, _brushSpawn.Color);
 
@@ -384,12 +387,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 							x += DrawAreaWidth,
 							y += DrawAreaHeight)
 				{
+					if (col == 4 && row == 4) LogFile.WriteLine(". c= " + col + " r= " + row);
+
 					var tile = MapFile[row, col] as XCMapTile;	// NOTE: XCMapBase has the current level stored and uses
 					if (tile != null)							// it to return only tiles on the correct level here.
 					{
+						if (col == 4 && row == 4) LogFile.WriteLine(". . tile VALID");
+
 						var node = tile.Node;
 						if (node != null)
 						{
+							if (col == 4 && row == 4) LogFile.WriteLine(". . . node VALID");
+
 							_nodeFill.Reset();
 							_nodeFill.AddLine(
 											x,                 y,

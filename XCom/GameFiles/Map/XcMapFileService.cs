@@ -22,7 +22,7 @@ namespace XCom
 		{
 			if (desc != null && File.Exists(desc.FilePath))
 			{
-				var tiles = new List<TileBase>();
+				var parts = new List<TilepartBase>();
 				var info = GameInfo.ImageInfo;
 
 				foreach (string dep in desc.Dependencies)
@@ -31,8 +31,8 @@ namespace XCom
 					if (tileInfo != null)
 					{
 						var MCD = tileInfo.GetRecordsByPalette(desc.Palette, _tileFactory);
-						foreach (XCTile tile in MCD)
-							tiles.Add(tile);
+						foreach (XCTilepart part in MCD)
+							parts.Add(part);
 					}
 				}
 
@@ -41,7 +41,7 @@ namespace XCom
 									desc.Label,
 									desc.MapPath,
 									desc.BlankPath,
-									tiles,
+									parts,
 									desc.Dependencies,
 									RMP);
 				return MAP;

@@ -57,7 +57,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
-		private System.Collections.Generic.IList<TileBase> Tiles
+		private System.Collections.Generic.IList<TilepartBase> Tiles
 		{
 			set
 			{
@@ -69,7 +69,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		internal TileBase SelectedTile
+		internal TilepartBase SelectedTile
 		{
 			get { return _panels[tcTileTypes.SelectedIndex].TileSelected; }
 			set
@@ -158,17 +158,17 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// Fires when a tile is selected. Passes an event to
 		/// 'TileSelecteEvent_Observer0'.
 		/// </summary>
-		/// <param name="tile"></param>
-		private void OnTileSelected(TileBase tile)
+		/// <param name="part"></param>
+		private void OnTileSelected(TilepartBase part)
 		{
 			var f = FindForm();
 
 			McdRecord record = null;
 
-			if (tile != null)
+			if (part != null)
 			{
-				f.Text = BuildTitleString(tile.TileListId, tile.Id);
-				record = tile.Record;
+				f.Text = BuildTitleString(part.TileListId, part.Id);
+				record = part.Record;
 			}
 			else
 				f.Text = "Tile View";
@@ -176,7 +176,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			if (_mcdInfoForm != null)
 				_mcdInfoForm.UpdateData(record);
 
-			SelectQuadrant(tile);
+			SelectQuadrant(part);
 		}
 
 		/// <summary>
@@ -185,12 +185,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// That is, fires 'TopView.Control.SelectQuadrant' through
 		/// 'TileSelectedEvent_Observer0'.
 		/// </summary>
-		/// <param name="tile"></param>
-		private void SelectQuadrant(TileBase tile)
+		/// <param name="part"></param>
+		private void SelectQuadrant(TilepartBase part)
 		{
 			var handler = TileSelectedEvent_Observer0;
 			if (handler != null)
-				handler(tile);
+				handler(part);
 		}
 		#endregion
 

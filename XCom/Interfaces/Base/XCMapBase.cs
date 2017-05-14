@@ -58,10 +58,10 @@ namespace XCom.Interfaces.Base
 		internal MapTileList MapTiles
 		{ get; set; }
 
-		private readonly List<TileBase> _tiles;
-		public List<TileBase> Tiles
+		private readonly List<TilepartBase> _parts;
+		public List<TilepartBase> Tiles
 		{
-			get { return _tiles; }
+			get { return _parts; }
 		}
 
 		private MapLocation _location;
@@ -134,11 +134,11 @@ namespace XCom.Interfaces.Base
 		/// cTor. Instantiated only as the parent of XCMapFile.
 		/// </summary>
 		/// <param name="label"></param>
-		/// <param name="tiles"></param>
-		protected XCMapBase(string label, List<TileBase> tiles)
+		/// <param name="parts"></param>
+		protected XCMapBase(string label, List<TilepartBase> parts)
 		{
 			Label = label;
-			_tiles = tiles;
+			_parts = parts;
 		}
 		#endregion
 
@@ -236,11 +236,11 @@ namespace XCom.Interfaces.Base
 									y += HalfHeightConst,
 									++i)
 						{
-							var tiles = this[row, col, lev].UsedTiles;
-							foreach (var tileBase in tiles)
+							var usedParts = this[row, col, lev].UsedTiles;
+							foreach (var usedPart in usedParts)
 							{
-								var tile = tileBase as XCTile;
-								XCBitmap.Draw(tile[0].Image, b, x, y - tile.Record.TileOffset);
+								var part = usedPart as XCTilepart;
+								XCBitmap.Draw(part[0].Image, b, x, y - part.Record.TileOffset);
 							}
 
 							XCBitmap.FireLoadingEvent(i, (MapSize.Levs - Level) * MapSize.Rows * MapSize.Cols);

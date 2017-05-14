@@ -590,8 +590,8 @@ namespace MapView
 					{
 						if (_mainViewUnderlay.MapBase != null) // NOTE: MapBase is null on MapView load.
 						{
-							foreach (XCTile tile in _mainViewUnderlay.MapBase.Tiles)
-								tile.SetDoorToAlternateSprite();
+							foreach (XCTilepart part in _mainViewUnderlay.MapBase.Tiles)
+								part.SetDoorToAlternateSprite();
 
 							Refresh();
 						}
@@ -873,8 +873,8 @@ namespace MapView
 		{
 			if (_mainViewUnderlay.MapBase != null) // NOTE: MapBase is null on MapView load.
 			{
-				foreach (XCTile tile in _mainViewUnderlay.MapBase.Tiles)
-					tile.SetDoorSprites(animate);
+				foreach (XCTilepart part in _mainViewUnderlay.MapBase.Tiles)
+					part.SetDoorSprites(animate);
 
 				Refresh();
 			}

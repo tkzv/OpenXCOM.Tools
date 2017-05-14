@@ -80,9 +80,9 @@ namespace MapView
 								++parts;
 								Count(tile.Ground, recordsTable, spritesTable);
 
-								var tilePart = tile.Ground as XCTile;
-								if (tilePart != null)
-									Count(tilePart.Dead, recordsTable, spritesTable);
+								var part = tile.Ground as XCTilepart;
+								if (part != null)
+									Count(part.Dead, recordsTable, spritesTable);
 							}
 
 							if (tile.West != null)
@@ -90,9 +90,9 @@ namespace MapView
 								++parts;
 								Count(tile.West, recordsTable, spritesTable);
 
-								var tilePart = tile.West as XCTile;
-								if (tilePart != null)
-									Count(tilePart.Dead, recordsTable, spritesTable);
+								var part = tile.West as XCTilepart;
+								if (part != null)
+									Count(part.Dead, recordsTable, spritesTable);
 							}
 
 							if (tile.North != null)
@@ -100,9 +100,9 @@ namespace MapView
 								++parts;
 								Count(tile.North, recordsTable, spritesTable);
 
-								var tilePart = tile.North as XCTile;
-								if (tilePart != null)
-									Count(tilePart.Dead, recordsTable, spritesTable);
+								var part = tile.North as XCTilepart;
+								if (part != null)
+									Count(part.Dead, recordsTable, spritesTable);
 							}
 
 							if (tile.Content != null)
@@ -110,9 +110,9 @@ namespace MapView
 								++parts;
 								Count(tile.Content, recordsTable, spritesTable);
 
-								var tilePart = tile.Content as XCTile;
-								if (tilePart != null)
-									Count(tilePart.Dead, recordsTable, spritesTable);
+								var part = tile.Content as XCTilepart;
+								if (part != null)
+									Count(part.Dead, recordsTable, spritesTable);
 							}
 
 							++pBar.Value;
@@ -141,15 +141,15 @@ namespace MapView
 		}
 
 		private static void Count(
-				TileBase tile,
+				TilepartBase part,
 				IDictionary recordsTable,
 				IDictionary spritesTable)
 		{
-			if (tile != null)
+			if (part != null)
 			{
-				recordsTable[tile.Record.Id] = true;
+				recordsTable[part.Record.Id] = true;
 
-				var images = tile.Images;
+				var images = part.Images;
 				foreach (PckImage image in images)
 					spritesTable[image.StaticId] = true;
 			}

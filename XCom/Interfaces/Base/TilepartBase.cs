@@ -6,7 +6,7 @@ namespace XCom.Interfaces.Base
 	/// <summary>
 	/// Provides all the necessary information to animate a tilepart. No it doesn't.
 	/// </summary>
-	public class TileBase
+	public class TilepartBase
 	{
 		/// <summary>
 		/// The object that has information about the IG mechanics of this tile.
@@ -24,15 +24,15 @@ namespace XCom.Interfaces.Base
 		/// <summary>
 		/// Gets an image at the specified animation frame.
 		/// </summary>
-		/// <param name="i"></param>
+		/// <param name="id"></param>
 		/// <returns></returns>
-		public XCImage this[int i]
+		public XCImage this[int id]
 		{
-			get { return Images[i]; }
+			get { return Images[id]; }
 		}
 
 		/// <summary>
-		/// This is the ID unique to this TileBase after it has been loaded.
+		/// This is the ID unique to this TilepartBase after it has been loaded.
 		/// </summary>
 		public int Id
 		{ get; protected set; }
@@ -48,7 +48,7 @@ namespace XCom.Interfaces.Base
 		/// Instantiates a blank tile.
 		/// </summary>
 		/// <param name="id"></param>
-		internal TileBase(int id)
+		internal TilepartBase(int id)
 		{
 			Id = id;
 			TileListId = -1;

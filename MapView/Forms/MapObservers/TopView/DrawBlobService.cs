@@ -95,12 +95,12 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <param name="tool"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		/// <param name="tile"></param>
+		/// <param name="part"></param>
 		internal void DrawContent(
 				Graphics g,
 				ColorTools tool,
 				int x, int y,
-				TileBase tile)
+				TilepartBase part)
 		{
 			var ptTop   = new Point(
 								x,
@@ -115,7 +115,7 @@ namespace MapView.Forms.MapObservers.TopViews
 								x + HalfWidth - (Offset * 2),
 								y + HalfHeight);
 
-			switch (BlobTypeService.GetBlobType(tile))
+			switch (BlobTypeService.GetBlobType(part))
 			{
 				// content ->
 				case BlobType.Content:
@@ -147,7 +147,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							ptTop,
 							ptRight);
 
-					if (BlobTypeService.IsDoor(tile))
+					if (BlobTypeService.IsDoor(part))
 						g.DrawLine(
 								tool.Pen,
 								x + HalfWidth, y,
@@ -167,7 +167,7 @@ namespace MapView.Forms.MapObservers.TopViews
 							ptTop,
 							ptLeft);
 
-					if (BlobTypeService.IsDoor(tile))
+					if (BlobTypeService.IsDoor(part))
 						g.DrawLine(
 								tool.Pen,
 								x - HalfWidth, y,
@@ -332,11 +332,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// based on what LoFTs have been assigned (externally) to a given tile.
 		/// </summary>
 		/// <remarks>http://www.ufopaedia.org/index.php/LOFTEMPS.DAT</remarks>
-		/// <param name="tile"></param>
+		/// <param name="part"></param>
 		/// <returns></returns>
-		internal static BlobType GetBlobType(TileBase tile)
+		internal static BlobType GetBlobType(TilepartBase part)
 		{
-			var record = tile.Record;
+			var record = part.Record;
 			if (record != null)
 			{
 				_loftList = record.GetLoftList();
@@ -521,11 +521,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <summary>
 		/// Checks if a tilepart is either a standard door or a ufo door.
 		/// </summary>
-		/// <param name="tile"></param>
+		/// <param name="part"></param>
 		/// <returns></returns>
-		internal static bool IsDoor(TileBase tile)
+		internal static bool IsDoor(TilepartBase part)
 		{
-			var record = tile.Record;
+			var record = part.Record;
 			if (record != null
 				&& (record.HumanDoor || record.UfoDoor))
 			{

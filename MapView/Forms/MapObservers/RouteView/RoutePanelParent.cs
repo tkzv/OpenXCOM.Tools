@@ -60,12 +60,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 		internal protected const int OffsetY = 2; // and the lozenge-tip.
 
 		internal protected int _overCol = -1; // these track the location of the mouse-cursor
-		internal protected int _overRow = -1; // NOTE: could be subsumed into 'RoutePanel.CursorPosition'
+		internal protected int _overRow = -1; // NOTE: could be subsumed into 'RoutePanel.CursorPosition' except ... see note below.
 
 		internal protected int _selectedCol = -1;	// these track the currently clicked/selected location
 		internal protected int _selectedRow = -1;	// NOTE: could be subsumed into 'ClickPoint' except that
 													// these need to persist while the ClickPoint gets (-1,-1)
-													// to clear the info-overlay.
+													// to clear the info-overlay. or other ...
 
 		private readonly Dictionary<string, Pen> _pens = new Dictionary<string, Pen>();
 		internal protected Dictionary<string, Pen> RoutePens

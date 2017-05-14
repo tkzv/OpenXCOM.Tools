@@ -20,29 +20,29 @@ namespace XCom
 			MapTileBase
 	{
 		#region Fields & Properties
-		private TileBase _ground;
-		public TileBase Ground
+		private TilepartBase _ground;
+		public TilepartBase Ground
 		{
 			get { return _ground; }
 			set { ChangeMapQuadrant(QuadrantType.Ground, value); }
 		}
 
-		private TileBase _west;
-		public TileBase West
+		private TilepartBase _west;
+		public TilepartBase West
 		{
 			get { return _west; }
 			set { ChangeMapQuadrant(QuadrantType.West, value); }
 		}
 
-		private TileBase _north;
-		public TileBase North
+		private TilepartBase _north;
+		public TilepartBase North
 		{
 			get { return _north; }
 			set { ChangeMapQuadrant(QuadrantType.North, value); }
 		}
 
-		private TileBase _content;
-		public TileBase Content
+		private TilepartBase _content;
+		public TilepartBase Content
 		{
 			get { return _content; }
 			set { ChangeMapQuadrant(QuadrantType.Content, value); }
@@ -61,7 +61,7 @@ namespace XCom
 			}
 		}
 
-		public TileBase this[QuadrantType quad]
+		public TilepartBase this[QuadrantType quad]
 		{
 			get
 			{
@@ -81,18 +81,18 @@ namespace XCom
 		public RouteNode Node
 		{ get; set; }
 
-		public override TileBase[] UsedTiles
+		public override TilepartBase[] UsedTiles
 		{
 			get
 			{
-				var tileList = new List<TileBase>();
+				var partList = new List<TilepartBase>();
 
-				if (Ground  != null) tileList.Add(Ground);
-				if (West    != null) tileList.Add(West);
-				if (North   != null) tileList.Add(North);
-				if (Content != null) tileList.Add(Content);
+				if (Ground  != null) partList.Add(Ground);
+				if (West    != null) partList.Add(West);
+				if (North   != null) partList.Add(North);
+				if (Content != null) partList.Add(Content);
 
-				return tileList.ToArray();
+				return partList.ToArray();
 			}
 		}
 		#endregion
@@ -100,10 +100,10 @@ namespace XCom
 
 		#region cTor
 		internal XCMapTile(
-				TileBase ground,
-				TileBase west,
-				TileBase north,
-				TileBase content)
+				TilepartBase ground,
+				TilepartBase west,
+				TilepartBase north,
+				TilepartBase content)
 		{
 			_ground  = ground;
 			_west    = west;
@@ -116,14 +116,14 @@ namespace XCom
 
 
 		#region Methods
-		private void ChangeMapQuadrant(QuadrantType quad, TileBase tile)
+		private void ChangeMapQuadrant(QuadrantType quad, TilepartBase part)
 		{
 			switch (quad)
 			{
-				case QuadrantType.Ground:  _ground  = tile; break;
-				case QuadrantType.West:    _west    = tile; break;
-				case QuadrantType.North:   _north   = tile; break;
-				case QuadrantType.Content: _content = tile; break;
+				case QuadrantType.Ground:  _ground  = part; break;
+				case QuadrantType.West:    _west    = part; break;
+				case QuadrantType.North:   _north   = part; break;
+				case QuadrantType.Content: _content = part; break;
 			}
 		}
 		#endregion

@@ -64,11 +64,11 @@ namespace MapView.Forms.MainWindow
 		/// Changes the selected quadrant in the QuadrantPanel when a tilepart
 		/// is selected in TileView.
 		/// </summary>
-		/// <param name="tile"></param>
-		private static void OnTileSelected_Observer0(TileBase tile)
+		/// <param name="part"></param>
+		private static void OnTileSelected_Observer0(TilepartBase part)
 		{
-			if (tile != null && tile.Record != null)
-				TopView.Control.SelectQuadrant(tile.Record.TileType);
+			if (part != null && part.Record != null)
+				TopView.Control.SelectQuadrant(part.Record.TileType);
 		}
 
 		internal void SetObservers(XCMapBase mapBase)

@@ -6,7 +6,7 @@ namespace XCom.GameFiles.Map
 {
 	public sealed class XCTileFactory
 	{
-		internal XCTile[] CreateTiles(
+		internal XCTilepart[] CreateTiles(
 				string file,
 				string dir,
 				PckSpriteCollection pckPack)
@@ -17,40 +17,40 @@ namespace XCom.GameFiles.Map
 
 			using (var bs = new BufferedStream(File.OpenRead(dir + file + ".MCD")))
 			{
-//				var tiles = new XCTile[(((int)bs.Length) / Total) - diff];
-				var tiles = new XCTile[(int)bs.Length / Total]; // TODO: Error if this don't work out right.
+//				var tiles = new XCTilepart[(((int)bs.Length) / Total) - diff];
+				var parts = new XCTilepart[(int)bs.Length / Total]; // TODO: Error if this don't work out right.
 
-				for (int id = 0; id != tiles.Length; ++id)
+				for (int id = 0; id != parts.Length; ++id)
 				{
 					var bindata = new byte[Total];
 					bs.Read(bindata, 0, Total);
 					var record = McdRecordFactory.CreateRecord(bindata);
 
-					var tile = new XCTile(id, pckPack, record); //, tiles); // NOTE: Tiles is not used.
+					var part = new XCTilepart(id, pckPack, record); //, tiles); // NOTE: Tiles is not used.
 
-					tiles[id] = tile;
+					parts[id] = part;
 				}
 
-				for (int id = 0; id != tiles.Length; ++id)
+				for (int id = 0; id != parts.Length; ++id)
 				{
-					tiles[id].Dead = GetDeadTile(file, id, tiles[id].Record, tiles);
-					tiles[id].Alternate = GetAlternateTile(file, id, tiles[id].Record, tiles); // TODO: check if the Alternate gets counted by MapInfoForm
+					parts[id].Dead = GetDeadPart(file, id, parts[id].Record, parts);
+					parts[id].Alternate = GetAlternatePart(file, id, parts[id].Record, parts); // TODO: check if the Alternate gets counted by MapInfoForm
 				}
 
-				return tiles;
+				return parts;
 			}
 		}
 
-		private XCTile GetDeadTile(
+		private XCTilepart GetDeadPart(
 				string file,
 				int id,
 				McdRecord record,
-				XCTile[] tiles)
+				XCTilepart[] parts)
 		{
 			if (record.DieTile != 0)
 			{
-				if (record.DieTile < tiles.Length)
-					return tiles[record.DieTile];
+				if (record.DieTile < parts.Length)
+					return parts[record.DieTile];
 
 				HandleWarning(String.Format(
 										System.Globalization.CultureInfo.CurrentCulture,
@@ -58,21 +58,21 @@ namespace XCom.GameFiles.Map
 										file,
 										id,
 										record.Alt_MCD,
-										tiles.Length));
+										parts.Length));
 			}
 			return null;
 		}
 
-		private XCTile GetAlternateTile(
+		private XCTilepart GetAlternatePart(
 				string file,
 				int id,
 				McdRecord record,
-				XCTile[] tiles)
+				XCTilepart[] parts)
 		{
 			if (record.Alt_MCD != 0) // || record.HumanDoor || record.UfoDoor
 			{
-				if (record.Alt_MCD < tiles.Length)
-					return tiles[record.Alt_MCD];
+				if (record.Alt_MCD < parts.Length)
+					return parts[record.Alt_MCD];
 
 				HandleWarning(String.Format(
 										System.Globalization.CultureInfo.CurrentCulture,
@@ -80,7 +80,7 @@ namespace XCom.GameFiles.Map
 										file,
 										id,
 										record.Alt_MCD,
-										tiles.Length));
+										parts.Length));
 			}
 			return null;
 		}

@@ -6,11 +6,11 @@ namespace XCom
 {
 	public class McdRecordCollection
 		:
-			ReadOnlyCollection<XCTile>
+			ReadOnlyCollection<XCTilepart>
 	{
-		internal McdRecordCollection(XCTile[] tiles)
+		internal McdRecordCollection(XCTilepart[] parts)
 			:
-				base(tiles)
+				base(parts)
 		{}
 	}
 }

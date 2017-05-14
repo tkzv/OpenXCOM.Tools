@@ -164,7 +164,7 @@
     <Compile Include="GameFiles\Map\EnumString.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Map\XCTile.cs">
+    <Compile Include="GameFiles\Map\XCTilepart.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FileDesc\TilesetDesc.cs">
@@ -188,7 +188,7 @@
     <Compile Include="Interfaces\Base\MapDesc.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\Base\TileBase.cs" />
+    <Compile Include="Interfaces\Base\TilepartBase.cs" />
     <Compile Include="Interfaces\Base\TilesetBase.cs">
       <SubType>Code</SubType>
     </Compile>

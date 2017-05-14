@@ -39,18 +39,18 @@ namespace XCom
 		/// <param name="file"></param>
 		/// <param name="path"></param>
 		/// <param name="blankPath"></param>
-		/// <param name="tiles"></param>
+		/// <param name="parts"></param>
 		/// <param name="dependencies"></param>
 		/// <param name="routeFile"></param>
 		internal XCMapFile(
 				string file,
 				string path,
 				string blankPath,
-				List<TileBase> tiles,
+				List<TilepartBase> parts,
 				string[] dependencies,
 				RouteNodeCollection routeFile)
 			:
-				base(file, tiles)
+				base(file, parts)
 		{
 			_file = file;
 			_path = path;
@@ -65,10 +65,10 @@ namespace XCom
 				throw new FileNotFoundException(pfe);
 			}
 
-			for (int i = 0; i != tiles.Count; ++i)
-				tiles[i].TileListId = i;
+			for (int i = 0; i != parts.Count; ++i)
+				parts[i].TileListId = i;
 
-			ReadMapFile(File.OpenRead(pfe), tiles);
+			ReadMapFile(File.OpenRead(pfe), parts);
 
 			SetupRoutes(routeFile);
 
@@ -101,7 +101,7 @@ namespace XCom
 
 
 		#region Methods
-		private void ReadMapFile(Stream str, List<TileBase> tiles)
+		private void ReadMapFile(Stream str, List<TilepartBase> parts)
 		{
 			using (var bs = new BufferedStream(str))
 			{
@@ -121,7 +121,7 @@ namespace XCom
 							int q3 = bs.ReadByte();
 							int q4 = bs.ReadByte();
 
-							this[row, col, lev] = CreateTile(tiles, q1, q2, q3, q4);
+							this[row, col, lev] = CreateTile(parts, q1, q2, q3, q4);
 						}
 
 //				if (bs.Position < bs.Length)
@@ -168,7 +168,7 @@ namespace XCom
 						}
 		}
 
-		public string GetDepLabel(TileBase tile)
+		public string GetDepLabel(TilepartBase part)
 		{
 			int id = -1;
 
@@ -177,7 +177,7 @@ namespace XCom
 				if (tile1.Id == 0)
 					++id;
 
-				if (tile1 == tile)
+				if (tile1 == part)
 					break;
 			}
 
@@ -326,7 +326,7 @@ namespace XCom
 		}
 
 		private XCMapTile CreateTile(
-				IList<TileBase> tiles,
+				IList<TilepartBase> parts,
 				int q1,
 				int q2,
 				int q3,
@@ -334,16 +334,16 @@ namespace XCom
 		{
 			try
 			{
-				var a = (q1 > 1) ? (XCTile)tiles[q1 - 2]
+				var a = (q1 > 1) ? (XCTilepart)parts[q1 - 2]
 								 : null;
 	
-				var b = (q2 > 1) ? (XCTile)tiles[q2 - 2]
+				var b = (q2 > 1) ? (XCTilepart)parts[q2 - 2]
 								 : null;
 	
-				var c = (q3 > 1) ? (XCTile)tiles[q3 - 2]
+				var c = (q3 > 1) ? (XCTilepart)parts[q3 - 2]
 								 : null;
 	
-				var d = (q4 > 1) ? (XCTile)tiles[q4 - 2]
+				var d = (q4 > 1) ? (XCTilepart)parts[q4 - 2]
 								 : null;
 	
 				return new XCMapTile(a, b, c, d);
@@ -359,7 +359,7 @@ namespace XCom
 												"XCMapFile.CreateTile()" + Environment.NewLine
 													+ "Invalid value(s) in .MAP file: " + _file + Environment.NewLine
 													+ "indices: " + q1 + "," + q2 + "," + q3 + "," + q4 + Environment.NewLine
-													+ "length: " + tiles.Count + Environment.NewLine
+													+ "length: " + parts.Count + Environment.NewLine
 													+ ex + ":" + ex.Message,
 												"Error",
 												System.Windows.Forms.MessageBoxButtons.OK,

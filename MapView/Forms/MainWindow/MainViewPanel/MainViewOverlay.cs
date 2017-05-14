@@ -288,8 +288,8 @@ namespace MapView
 	
 				for (int col = start.X; col <= end.X; ++col)
 				for (int row = start.Y; row <= end.Y; ++row)
-					MapBase[row, col] = XCMapTile.BlankTile; // TODO: why is this deleting Route NODES.
-
+					MapBase[row, col] = XCMapTile.BlankTile;	// TODO: why is this deleting Route NODES.
+																// because 'BlankTile' is a new'd tile and a node is a variable of the lost tile ....
 				RefreshViewers();
 			}
 		}
@@ -770,61 +770,61 @@ namespace MapView
 			//   (int)(sprite.Height * Globals.Scale)
 			// with its attendent consequences.
 
-			TileBase tileBase = null;
+			TilepartBase part = null;
 
 			var topView = ViewerFormsManager.TopView.Control;
 			if (topView.GroundVisible)
 			{
-				if ((tileBase = tile.Ground) != null)
+				if ((part = tile.Ground) != null)
 				{
-					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
-										  : tileBase[MainViewUnderlay.AniStep].Image;
+					var sprite = (isGray) ? part[MainViewUnderlay.AniStep].SpriteGray
+										  : part[MainViewUnderlay.AniStep].Image;
 					DrawSprite(
 							sprite,
 							new Rectangle(
-									x, y - tileBase.Record.TileOffset * HalfHeight / HalfHeightConst,
+									x, y - part.Record.TileOffset * HalfHeight / HalfHeightConst,
 									HalfWidth * 2, HalfHeight * 5));
 				}
 			}
 
 			if (topView.WestVisible)
 			{
-				if ((tileBase = tile.West) != null)
+				if ((part = tile.West) != null)
 				{
-					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
-										  : tileBase[MainViewUnderlay.AniStep].Image;
+					var sprite = (isGray) ? part[MainViewUnderlay.AniStep].SpriteGray
+										  : part[MainViewUnderlay.AniStep].Image;
 					DrawSprite(
 							sprite,
 							new Rectangle(
-									x, y - tileBase.Record.TileOffset * HalfHeight / HalfHeightConst,
+									x, y - part.Record.TileOffset * HalfHeight / HalfHeightConst,
 									HalfWidth * 2, HalfHeight * 5));
 				}
 			}
 
 			if (topView.NorthVisible)
 			{
-				if ((tileBase = tile.North) != null)
+				if ((part = tile.North) != null)
 				{
-					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
-										  : tileBase[MainViewUnderlay.AniStep].Image;
+					var sprite = (isGray) ? part[MainViewUnderlay.AniStep].SpriteGray
+										  : part[MainViewUnderlay.AniStep].Image;
 					DrawSprite(
 							sprite,
 							new Rectangle(
-									x, y - tileBase.Record.TileOffset * HalfHeight / HalfHeightConst,
+									x, y - part.Record.TileOffset * HalfHeight / HalfHeightConst,
 									HalfWidth * 2, HalfHeight * 5));
 				}
 			}
 
 			if (topView.ContentVisible)
 			{
-				if ((tileBase = tile.Content) != null)
+				if ((part = tile.Content) != null)
 				{
-					var sprite = (isGray) ? tileBase[MainViewUnderlay.AniStep].SpriteGray
-										  : tileBase[MainViewUnderlay.AniStep].Image;
+					var sprite = (isGray) ? part[MainViewUnderlay.AniStep].SpriteGray
+										  : part[MainViewUnderlay.AniStep].Image;
 					DrawSprite(
 							sprite,
 							new Rectangle(
-									x, y - tileBase.Record.TileOffset * HalfHeight / HalfHeightConst,
+									x, y - part.Record.TileOffset * HalfHeight / HalfHeightConst,
 									HalfWidth * 2, HalfHeight * 5));
 				}
 			}
