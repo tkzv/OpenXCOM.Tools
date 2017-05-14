@@ -92,7 +92,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 									Origin.X + (_overCol - _overRow) * DrawAreaWidth,
 									Origin.Y + (_overCol + _overRow) * DrawAreaHeight);
 					_graphics.DrawPath(
-									new Pen(Color.Black, 2), // TODO: use TopPens[TopView.SelectorColor]
+									new Pen( // TODO: make this a separate Option.
+											RoutePens[RouteView.GridLineColor].Color,
+											RoutePens[RouteView.GridLineColor].Width + 1),
 									_lozSelector);
 				}
 
@@ -100,7 +102,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					PathSelectedLozenge(); // TODO: cache that.
 					_graphics.DrawPath(
-									new Pen(Color.RoyalBlue, 2), // TODO: use TopPens[TopView.SelectorColor] or other.
+									new Pen( // TODO: make this a separate Option.
+											RouteBrushes[RouteView.SelectedNodeColor].Color,
+											RoutePens[RouteView.GridLineColor].Width + 1),
 									_lozSelected);
 				}
 
@@ -356,9 +360,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void DrawNodes()
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("RoutePanel.DrawNodes");
-
 			if (!_brushes)
 			{
 				_brushes = true;
@@ -387,18 +388,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 							x += DrawAreaWidth,
 							y += DrawAreaHeight)
 				{
-					if (col == 4 && row == 4) LogFile.WriteLine(". c= " + col + " r= " + row);
-
 					var tile = MapFile[row, col] as XCMapTile;	// NOTE: XCMapBase has the current level stored and uses
 					if (tile != null)							// it to return only tiles on the correct level here.
 					{
-						if (col == 4 && row == 4) LogFile.WriteLine(". . tile VALID");
-
 						var node = tile.Node;
 						if (node != null)
 						{
-							if (col == 4 && row == 4) LogFile.WriteLine(". . . node VALID");
-
 							_nodeFill.Reset();
 							_nodeFill.AddLine(
 											x,                 y,

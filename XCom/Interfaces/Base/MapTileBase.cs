@@ -9,8 +9,8 @@ namespace XCom.Interfaces.Base
 	public abstract class MapTileBase
 	{
 		/// <summary>
-		/// An array of TilepartBase[] in the correct draw order. This array should
-		/// be iterated over when drawing to the screen.</summary>
+		/// An array of TilepartBase[] in the correct draw order. This array
+		/// should be iterated over when drawing to the screen.</summary>
 		public abstract TilepartBase[] UsedTiles
 		{ get; }
 

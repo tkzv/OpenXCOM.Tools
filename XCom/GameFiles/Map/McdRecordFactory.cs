@@ -7,6 +7,9 @@ namespace XCom
 {
 	internal static class McdRecordFactory
 	{
+		// TODO: do some basic checks, like issue a warning if the Die or
+		// Alternate MCD entry is outside the range, etc.
+
 		internal static McdRecord CreateRecord(IList<byte> bindata) // question: why is this a List
 		{
 			var record = new McdRecord();

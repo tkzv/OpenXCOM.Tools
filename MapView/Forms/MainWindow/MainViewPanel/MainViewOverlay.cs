@@ -289,8 +289,8 @@ namespace MapView
 				for (int col = start.X; col <= end.X; ++col)
 				for (int row = start.Y; row <= end.Y; ++row)
 				{
-					var node = ((XCMapTile)MapBase[row, col]).Node; // keep any node that might be on the tile
-					MapBase[row, col] = XCMapTile.BlankTile;
+					var node = ((XCMapTile)MapBase[row, col]).Node; // leave any node(s) that might be on the tile(s)
+					MapBase[row, col] = XCMapTile.VacantTile;
 					((XCMapTile)MapBase[row, col]).Node = node;
 				}
 

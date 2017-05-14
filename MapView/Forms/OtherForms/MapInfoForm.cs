@@ -73,7 +73,7 @@ namespace MapView
 					for (int h = 0; h != mapBase.MapSize.Levs; ++h)
 					{
 						var tile = mapBase[r, c, h] as XCMapTile;
-						if (!tile.Blank)
+						if (!tile.Vacant)
 						{
 							if (tile.Ground != null)
 							{

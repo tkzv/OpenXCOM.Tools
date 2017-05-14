@@ -6,12 +6,12 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
-	public static class BlankFile
+	internal static class BlankFile
 	{
-		public static readonly string BlankExt = ".BLK";
+		internal static readonly string BlankExt = ".BLK";
 
 
-		public static void LoadBlank(
+		internal static void LoadBlank(
 				string file,
 				string path,
 				XCMapBase mapBase)
@@ -29,11 +29,11 @@ namespace XCom
 					{
 						for (int j = i; j < i + inconspicuousVariable; ++j)
 						{
-							int l =  j / (mapBase.MapSize.Rows  * mapBase.MapSize.Cols);
-							int c =  j %  mapBase.MapSize.Cols;
-							int r = (j /  mapBase.MapSize.Cols) - mapBase.MapSize.Rows * l;
+							int lev =  j / (mapBase.MapSize.Rows  * mapBase.MapSize.Cols);
+							int col =  j %  mapBase.MapSize.Cols;
+							int row = (j /  mapBase.MapSize.Cols) - mapBase.MapSize.Rows * lev;
 
-							((XCMapTile)mapBase[r, c, l]).DrawAbove = false;
+							((XCMapTile)mapBase[row, col, lev]).DrawAbove = false;
 						}
 					}
 
@@ -43,7 +43,7 @@ namespace XCom
 			}
 		}
 
-		public static void SaveBlank(
+		internal static void SaveBlank(
 				string file,
 				string path,
 				XCMapBase mapBase)
@@ -55,12 +55,12 @@ namespace XCom
 				bool flip = true;
 				UInt16 i = 0;
 
-				for (int l = 0; l != mapBase.MapSize.Levs; ++l)
-					for (int r = 0; r != mapBase.MapSize.Rows; ++r)
-						for (int c = 0; c != mapBase.MapSize.Cols; ++c)
+				for (int lev = 0; lev != mapBase.MapSize.Levs; ++lev)
+					for (int row = 0; row != mapBase.MapSize.Rows; ++row)
+						for (int col = 0; col != mapBase.MapSize.Cols; ++col)
 						{
-							if (   ( flip &&  ((XCMapTile)mapBase[r, c, l]).DrawAbove)
-								|| (!flip && !((XCMapTile)mapBase[r, c, l]).DrawAbove))
+							if (   ( flip &&  ((XCMapTile)mapBase[row, col, lev]).DrawAbove)
+								|| (!flip && !((XCMapTile)mapBase[row, col, lev]).DrawAbove))
 							{
 								bw.Write(i);
 

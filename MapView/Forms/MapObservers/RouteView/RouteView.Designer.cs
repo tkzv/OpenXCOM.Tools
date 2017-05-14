@@ -71,6 +71,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsddbEdit = new System.Windows.Forms.ToolStripDropDownButton();
 			this.tsmiOptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiAllNodesRank0 = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmiClearLinkData = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.tscbConnectType = new System.Windows.Forms.ToolStripComboBox();
 			this.tsmiEditMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -475,7 +476,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsddbEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.tsddbEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.tsmiOptions,
-			this.tsmiAllNodesRank0});
+			this.tsmiAllNodesRank0,
+			this.tsmiClearLinkData});
 			this.tsddbEdit.Font = new System.Drawing.Font("Verdana", 7F);
 			this.tsddbEdit.Image = ((System.Drawing.Image)(resources.GetObject("tsddbEdit.Image")));
 			this.tsddbEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -496,6 +498,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsmiAllNodesRank0.Size = new System.Drawing.Size(165, 22);
 			this.tsmiAllNodesRank0.Text = "All Nodes Rank 0";
 			this.tsmiAllNodesRank0.Click += new System.EventHandler(this.OnAllNodeSpawnRank0Click);
+			// 
+			// tsmiClearLinkData
+			// 
+			this.tsmiClearLinkData.Name = "tsmiClearLinkData";
+			this.tsmiClearLinkData.Size = new System.Drawing.Size(165, 22);
+			this.tsmiClearLinkData.Text = "Clear Link data";
+			this.tsmiClearLinkData.Click += new System.EventHandler(this.OnClearLinkDataClick);
 			// 
 			// menuStrip1
 			// 
@@ -787,5 +796,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.ToolStripMenuItem tsmiOptions;
 		private System.Windows.Forms.ToolStripMenuItem tsmiAllNodesRank0;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.ToolStripMenuItem tsmiClearLinkData;
 	}
 }

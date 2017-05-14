@@ -31,11 +31,11 @@
 		/// </summary>
 		/// <param name="rows"></param>
 		/// <param name="cols"></param>
-		/// <param name="height"></param>
-		internal MapTileList(int rows, int cols, int height)
+		/// <param name="levs"></param>
+		internal MapTileList(int rows, int cols, int levs)
 		{
-			_tileArray = new MapTileBase[rows * cols * height];
-			_pos       = new MapPosition(rows,  cols,  height);
+			_tileArray = new MapTileBase[rows * cols * levs];
+			_pos       = new MapPosition(rows,  cols,  levs);
 		}
 	}
 }

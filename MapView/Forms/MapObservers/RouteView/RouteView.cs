@@ -378,6 +378,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				var nodeData = Clipboard.GetText().Split(NodeCopySeparator);
 				if (nodeData[0] == NodeCopyPrefix)
 					btnPaste.Enabled = true;
+
+				tsmiClearLinkData.Enabled = true;
 			}
 			else
 			{
@@ -385,6 +387,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				btnCopy.Enabled   =
 				btnPaste.Enabled  =
 				btnDelete.Enabled = false;
+
+				tsmiClearLinkData.Enabled = false;
 			}
 		}
 
@@ -587,30 +591,48 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbLink4UnitType.SelectedItem = _nodeSelected[3].UsableType;
 				cbLink5UnitType.SelectedItem = _nodeSelected[4].UsableType;
 
+
 				if (_nodeSelected[0].Destination == Link.NotUsed)
 					tbLink1Dist.Text = String.Empty;
 				else
-					tbLink1Dist.Text = Convert.ToString(_nodeSelected[0].Distance, System.Globalization.CultureInfo.InvariantCulture);
+				{
+					tbLink1Dist.Text = Convert.ToString(
+													_nodeSelected[0].Distance,
+													System.Globalization.CultureInfo.InvariantCulture)
+									 + GetDistanceSuffix(0);
+				}
 
 				if (_nodeSelected[1].Destination == Link.NotUsed)
 					tbLink2Dist.Text = String.Empty;
 				else
-					tbLink2Dist.Text = Convert.ToString(_nodeSelected[1].Distance, System.Globalization.CultureInfo.InvariantCulture);
+					tbLink2Dist.Text = Convert.ToString(
+													_nodeSelected[1].Distance,
+													System.Globalization.CultureInfo.InvariantCulture)
+									 + GetDistanceSuffix(1);
 
 				if (_nodeSelected[2].Destination == Link.NotUsed)
 					tbLink3Dist.Text = String.Empty;
 				else
-					tbLink3Dist.Text = Convert.ToString(_nodeSelected[2].Distance, System.Globalization.CultureInfo.InvariantCulture);
+					tbLink3Dist.Text = Convert.ToString(
+													_nodeSelected[2].Distance,
+													System.Globalization.CultureInfo.InvariantCulture)
+									 + GetDistanceSuffix(2);
 
 				if (_nodeSelected[3].Destination == Link.NotUsed)
 					tbLink4Dist.Text = String.Empty;
 				else
-					tbLink4Dist.Text = Convert.ToString(_nodeSelected[3].Distance, System.Globalization.CultureInfo.InvariantCulture);
+					tbLink4Dist.Text = Convert.ToString(
+													_nodeSelected[3].Distance,
+													System.Globalization.CultureInfo.InvariantCulture)
+									 + GetDistanceSuffix(3);
 
 				if (_nodeSelected[4].Destination == Link.NotUsed)
 					tbLink5Dist.Text = String.Empty;
 				else
-					tbLink5Dist.Text = Convert.ToString(_nodeSelected[4].Distance, System.Globalization.CultureInfo.InvariantCulture);
+					tbLink5Dist.Text = Convert.ToString(
+													_nodeSelected[4].Distance,
+													System.Globalization.CultureInfo.InvariantCulture)
+									 + GetDistanceSuffix(4);
 			}
 
 			gbNodeData.ResumeLayout();
@@ -620,6 +642,32 @@ namespace MapView.Forms.MapObservers.RouteViews
 			gbNodeEditor.ResumeLayout();
 
 			_loadingInfo = false;
+		}
+
+		/// <summary>
+		/// Gets an up/down suffix for the linked distance from the currently
+		/// selected node, given the link-slot to the destination node. If the
+		/// destination is on the same level as the selected node, a blank
+		/// string is returned.
+		/// </summary>
+		/// <param name="slotId"></param>
+		/// <returns></returns>
+		private string GetDistanceSuffix(int slotId)
+		{
+			if (_nodeSelected[slotId].Destination < Link.ExitWest)
+			{
+				RouteNode nodeDst = _mapFile.RouteFile[_nodeSelected[slotId].Destination];
+
+				if (nodeDst != null)
+				{
+					if (_nodeSelected.Lev > nodeDst.Lev)
+						return " \u2191"; // up arrow // \u21d1 // \u21e7
+
+					if (_nodeSelected.Lev < nodeDst.Lev)
+						return " \u2193"; // down arrow // \u21d3 // \u21e9
+				}
+			}
+			return String.Empty;
 		}
 
 
@@ -724,7 +772,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 							_nodeSelected[slotId].Distance = CalculateLinkDistance(
 																				_nodeSelected,
 																				node,
-																				textBox);
+																				textBox,
+																				slotId);
 							break;
 					}
 //					}
@@ -745,17 +794,28 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private static byte CalculateLinkDistance(
+		/// <summary>
+		/// Calculates the distance between two nodes by Pythagoras.
+		/// </summary>
+		/// <param name="nodeA">a RouteNode</param>
+		/// <param name="nodeB">another RouteNode</param>
+		/// <param name="textBox">the textbox that shows the distance (default null)</param>
+		/// <param name="slotId">the slot of the textbox - not used unless 'textBox'
+		/// is specified (default -1)</param>
+		/// <returns></returns>
+		private byte CalculateLinkDistance(
 				RouteNode nodeA,
 				RouteNode nodeB,
-				Control textBox = null)
+				Control textBox = null,
+				int slotId = 0)
 		{
 			var dist = (byte)Math.Sqrt(
 									Math.Pow(nodeA.Col - nodeB.Col, 2) +
 									Math.Pow(nodeA.Row - nodeB.Row, 2) +
 									Math.Pow(nodeA.Lev - nodeB.Lev, 2));
 			if (textBox != null)
-				textBox.Text = dist.ToString(System.Globalization.CultureInfo.InvariantCulture);
+				textBox.Text = dist.ToString(System.Globalization.CultureInfo.InvariantCulture)
+							 + GetDistanceSuffix(slotId);
 
 			return dist;
 		}
@@ -1173,6 +1233,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			_nodeSelected = null;
 			_routePanel.ClearClickPoint();
+
+			tsmiClearLinkData.Enabled = false;
 		}
 
 		/// <summary>
@@ -1256,6 +1318,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				_mapFile.MapChanged = true;
 
+				UpdateNodeInformation();
+
 				MessageBox.Show(
 							count + " nodes were changed.",
 							"All nodes spawn Rank 0",
@@ -1266,12 +1330,29 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 			else
 				MessageBox.Show(
-							"All nodes are already 0 rank.",
+							"All nodes are already rank 0.",
 							"All nodes spawn Rank 0",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Asterisk,
 							MessageBoxDefaultButton.Button1,
 							0);
+		}
+
+		private void OnClearLinkDataClick(object sender, EventArgs e)
+		{
+			if (_nodeSelected != null)
+			{
+				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+
+				for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
+				{
+					_nodeSelected[slotId].Destination = Link.NotUsed;
+					_nodeSelected[slotId].Distance = 0;
+
+					_nodeSelected[slotId].UsableType = UnitType.Any;
+				}
+				UpdateNodeInformation();
+			}
 		}
 
 		private void OnConnectDropDownClosed(object sender, EventArgs e)

@@ -4,7 +4,8 @@ using System;
 namespace XCom.Interfaces.Base
 {
 	/// <summary>
-	/// Provides all the necessary information to animate a tilepart. No it doesn't.
+	/// Provides all the necessary information to animate a tilepart. No it
+	/// doesn't.
 	/// </summary>
 	public class TilepartBase
 	{

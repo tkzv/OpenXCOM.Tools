@@ -137,35 +137,37 @@ namespace XCom
 
 			foreach (RouteNode node in file)
 			{
-				var baseTile = this[node.Row, node.Col, node.Lev];
-				if (baseTile != null)
-					((XCMapTile)baseTile).Node = node;
+				var tile = this[node.Row, node.Col, node.Lev];
+				if (tile != null)
+					((XCMapTile)tile).Node = node;
 			}
 		}
 
 		private void CalculateDrawAbove()
 		{
 			for (int lev = MapSize.Levs - 1; lev > -1; --lev)
-				for (int row = 0; row < MapSize.Rows - 2; ++row)
-					for (int col = 0; col < MapSize.Cols - 2; ++col)
-						if (this[row, col, lev] != null && lev - 1 > -1)	// TODO: should probably be "lev-1 > 0"
-						{
-							var tile = (XCMapTile)this[row, col, lev - 1];	// TODO: ... because "lev-1"
+			for (int row = 0; row < MapSize.Rows - 2; ++row)
+			for (int col = 0; col < MapSize.Cols - 2; ++col)
+			{
+				if (this[row, col, lev] != null && lev - 1 > -1)	// TODO: should probably be "lev-1 > 0"
+				{
+					var tile = (XCMapTile)this[row, col, lev - 1];	// TODO: ... because "lev-1"
 
-							if (   tile != null								// TODO: doesn't happen anyway.
-								&& tile.Ground != null											// top
-								&& ((XCMapTile)this[row + 1, col,     lev - 1]).Ground != null	// south
-								&& ((XCMapTile)this[row + 2, col,     lev - 1]).Ground != null
-								&& ((XCMapTile)this[row + 1, col + 1, lev - 1]).Ground != null	// southeast
-								&& ((XCMapTile)this[row + 2, col + 1, lev - 1]).Ground != null
-								&& ((XCMapTile)this[row + 2, col + 2, lev - 1]).Ground != null
-								&& ((XCMapTile)this[row,     col + 1, lev - 1]).Ground != null	// east
-								&& ((XCMapTile)this[row,     col + 2, lev - 1]).Ground != null
-								&& ((XCMapTile)this[row + 1, col + 2, lev - 1]).Ground != null)
-							{
-								this[row, col, lev].DrawAbove = false;
-							}
-						}
+					if (   tile != null								// TODO: doesn't happen anyway.
+						&& tile.Ground != null											// top
+						&& ((XCMapTile)this[row + 1, col,     lev - 1]).Ground != null	// south
+						&& ((XCMapTile)this[row + 2, col,     lev - 1]).Ground != null
+						&& ((XCMapTile)this[row + 1, col + 1, lev - 1]).Ground != null	// southeast
+						&& ((XCMapTile)this[row + 2, col + 1, lev - 1]).Ground != null
+						&& ((XCMapTile)this[row + 2, col + 2, lev - 1]).Ground != null
+						&& ((XCMapTile)this[row,     col + 1, lev - 1]).Ground != null	// east
+						&& ((XCMapTile)this[row,     col + 2, lev - 1]).Ground != null
+						&& ((XCMapTile)this[row + 1, col + 2, lev - 1]).Ground != null)
+					{
+						this[row, col, lev].DrawAbove = false;
+					}
+				}
+			}
 		}
 
 		public string GetDepLabel(TilepartBase part)

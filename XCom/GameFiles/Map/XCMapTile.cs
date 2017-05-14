@@ -85,15 +85,15 @@ namespace XCom
 		/// <summary>
 		/// Used only by MapInfoForm.
 		/// </summary>
-		public bool Blank
+		public bool Vacant
 		{ get; set; }
 
-		public static XCMapTile BlankTile
+		public static XCMapTile VacantTile
 		{
 			get
 			{
 				var tile = new XCMapTile(null, null, null, null);
-				tile.Blank = true;
+				tile.Vacant = true;
 				return tile;
 			}
 		}
