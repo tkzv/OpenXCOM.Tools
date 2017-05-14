@@ -48,19 +48,6 @@ namespace XCom
 			set { ChangeMapQuadrant(QuadrantType.Content, value); }
 		}
 
-		public bool Blank
-		{ get; set; }
-
-		public static XCMapTile BlankTile
-		{
-			get
-			{
-				var tile = new XCMapTile(null, null, null, null);
-				tile.Blank = true;
-				return tile;
-			}
-		}
-
 		public TilepartBase this[QuadrantType quad]
 		{
 			get
@@ -74,12 +61,8 @@ namespace XCom
 				}
 				return null;
 			}
-
 			set { ChangeMapQuadrant(quad, value); }
 		}
-
-		public RouteNode Node
-		{ get; set; }
 
 		public override TilepartBase[] UsedTiles
 		{
@@ -93,6 +76,25 @@ namespace XCom
 				if (Content != null) partList.Add(Content);
 
 				return partList.ToArray();
+			}
+		}
+
+		public RouteNode Node
+		{ get; set; }
+
+		/// <summary>
+		/// Used only by MapInfoForm.
+		/// </summary>
+		public bool Blank
+		{ get; set; }
+
+		public static XCMapTile BlankTile
+		{
+			get
+			{
+				var tile = new XCMapTile(null, null, null, null);
+				tile.Blank = true;
+				return tile;
 			}
 		}
 		#endregion

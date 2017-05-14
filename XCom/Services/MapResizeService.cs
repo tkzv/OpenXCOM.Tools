@@ -6,51 +6,51 @@ namespace XCom.Services
 	internal static class MapResizeService
 	{
 		internal static MapTileList ResizeMapDimensions(
-				int rPost,
-				int cPost,
-				int lPost,
+				int rowPost,
+				int colPost,
+				int levPost,
 				MapSize sizePre,
 				MapTileList tileListPre,
 				bool toCeiling)
 		{
-			if (   rPost > 0
-				&& cPost > 0
-				&& lPost > 0)
+			if (   rowPost > 0
+				&& colPost > 0
+				&& levPost > 0)
 			{
-				var tileListPost = new MapTileList(rPost, cPost, lPost);
+				var tileListPost = new MapTileList(rowPost, colPost, levPost);
 
-				for (int l = 0; l != lPost; ++l)
-					for (int r = 0; r != rPost; ++r)
-						for (int c = 0; c != cPost; ++c)
-							tileListPost[r, c, l] = XCMapTile.BlankTile;
+				for (int lev = 0; lev != levPost; ++lev)
+				for (int row = 0; row != rowPost; ++row)
+				for (int col = 0; col != colPost; ++col)
+					tileListPost[row, col, lev] = XCMapTile.BlankTile;
 
 				int levelPre;
 				int levelPost;
 
 				for (int
-						l = 0;
-						l != lPost && l < sizePre.Levs;
-						++l)
+						lev = 0;
+						lev != levPost && lev < sizePre.Levs;
+						++lev)
 					for (int
-							r = 0;
-							r != rPost && r < sizePre.Rows;
-							++r)
+							row = 0;
+							row != rowPost && row < sizePre.Rows;
+							++row)
 						for (int
-								c = 0;
-								c != cPost && c < sizePre.Cols;
-								++c)
+								col = 0;
+								col != colPost && col < sizePre.Cols;
+								++col)
 						{
 							if (toCeiling)
 							{
-								levelPost = lPost        - l - 1;
-								levelPre  = sizePre.Levs - l - 1;
+								levelPost = levPost      - lev - 1;
+								levelPre  = sizePre.Levs - lev - 1;
 							}
 							else
 							{
-								levelPost = l;
-								levelPre  = l;
+								levelPost = lev;
+								levelPre  = lev;
 							}
-							tileListPost[r, c, levelPost] = tileListPre[r, c, levelPre];
+							tileListPost[row, col, levelPost] = tileListPre[row, col, levelPre];
 						}
 
 				return tileListPost;

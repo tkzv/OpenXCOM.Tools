@@ -288,8 +288,12 @@ namespace MapView
 	
 				for (int col = start.X; col <= end.X; ++col)
 				for (int row = start.Y; row <= end.Y; ++row)
-					MapBase[row, col] = XCMapTile.BlankTile;	// TODO: why is this deleting Route NODES.
-																// because 'BlankTile' is a new'd tile and a node is a variable of the lost tile ....
+				{
+					var node = ((XCMapTile)MapBase[row, col]).Node; // keep any node that might be on the tile
+					MapBase[row, col] = XCMapTile.BlankTile;
+					((XCMapTile)MapBase[row, col]).Node = node;
+				}
+
 				RefreshViewers();
 			}
 		}
