@@ -677,6 +677,7 @@ namespace PckView
 
 		private void OnShown(object sender, EventArgs e)
 		{
+			_viewPanel.Select();
 //			_console.Show();
 		}
 

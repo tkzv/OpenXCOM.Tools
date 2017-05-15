@@ -53,7 +53,7 @@ namespace PckView
 				UpdateScrollbar(true);
 
 				Refresh();
-				Focus();
+//				Select(); // done in OnShown() of PckViewForm.
 
 				OnSpriteClick(-1);
 				OnSpriteOver(-1);
