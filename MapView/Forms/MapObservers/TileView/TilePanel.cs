@@ -363,6 +363,12 @@ namespace MapView.Forms.MapObservers.TileViews
 									Width - _scrollBar.Width - 1, 0,
 									Width - _scrollBar.Width - 1, Height);
 
+				graphics.FillRectangle(
+									new SolidBrush(_penBlack.Color),
+									TableOffset - 1,
+									TableOffset + _startY - 1,
+									1, 1); // so bite me.
+
 				int height = TableHeight;
 
 				for (int i = 0; i <= _tilesX; ++i)							// draw vertical lines
