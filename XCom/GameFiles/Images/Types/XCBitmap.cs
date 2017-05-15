@@ -221,7 +221,7 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// MakeBitmap funct.
+		/// Used by XCMapBase.SaveGif()
 		/// </summary>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
@@ -282,6 +282,13 @@ namespace XCom
 			return image;
 		}
 
+		/// <summary>
+		/// Used by XCMapBase.SaveGif()
+		/// </summary>
+		/// <param name="src"></param>
+		/// <param name="dst"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
 		internal static void Draw(
 				Bitmap src,
 				Bitmap dst,
@@ -342,6 +349,12 @@ namespace XCom
 			dst.UnlockBits(destData);
 		}
 
+		/// <summary>
+		/// Used by XCMapBase.SaveGif()
+		/// </summary>
+		/// <param name="src"></param>
+		/// <param name="transparent"></param>
+		/// <returns></returns>
 		internal static Rectangle GetBoundsRect(Bitmap src, int transparent)
 		{
 			var srcRect = new Rectangle(
@@ -411,6 +424,12 @@ namespace XCom
 							cMax - cMin + 3, rMax - rMin + 3);
 		}
 
+		/// <summary>
+		/// Used by XCMapBase.SaveGif()
+		/// </summary>
+		/// <param name="src"></param>
+		/// <param name="bounds"></param>
+		/// <returns></returns>
 		internal static Bitmap Crop(Bitmap src, Rectangle bounds)
 		{
 			//Console.WriteLine(
@@ -473,6 +492,11 @@ namespace XCom
 			return dst;
 		}
 
+		/// <summary>
+		/// Used by XCMapBase.SaveGif()
+		/// </summary>
+		/// <param name="cur"></param>
+		/// <param name="total"></param>
 		internal static void FireLoadingEvent(int cur, int total)
 		{
 			if (LoadingEvent != null)

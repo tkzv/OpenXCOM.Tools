@@ -478,7 +478,8 @@ namespace MapView
 							Doors,
 							false,
 							"If true the doors will animate if Animation is also on - if"
-							+ " Animation is false the doors will show their alternate tile",
+							+ " Animation is false the doors will show their alternate tile."
+							+ " This setting may need to be re-toggled if Animation changes",
 							Global,
 							handler);
 			Settings.AddSetting(
@@ -503,7 +504,7 @@ namespace MapView
 			Settings.AddSetting(
 							GridLayerOpacity,
 							MainViewUnderlay.Instance.MainViewOverlay.GridLayerOpacity,
-							"Opacity of the grid (0..255)",
+							"Opacity of the grid (0..255 default 200)",
 							MapView,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
 			Settings.AddSetting(
@@ -528,19 +529,20 @@ namespace MapView
 			Settings.AddSetting(
 							SpriteDarkness,
 							MainViewUnderlay.Instance.MainViewOverlay.SpriteDarkness,
-							"The darkness of the tile sprites (10..100)",
+							"The darkness of the tile sprites (10..100 default 0 off, unity is 33)"
+							+ " Values outside the range turn sprite shading off",
 							Sprites,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
 
 			string desc = "The technique used for resizing sprites (0..7)" + Environment.NewLine
 						+ "0 - default"                                    + Environment.NewLine
 						+ "1 - low (default)"                              + Environment.NewLine
-						+ "2 - high"                                       + Environment.NewLine
-						+ "3 - bilinear (default)"                         + Environment.NewLine
-						+ "4 - bicubic"                                    + Environment.NewLine
-						+ "5 - nearest neighbor"                           + Environment.NewLine
-						+ "6 - high quality bilinear"                      + Environment.NewLine
-						+ "7 - high quality bicubic";
+						+ "2 - high (recommended)"                         + Environment.NewLine
+						+ "3 - bilinear (defaultiest)"                     + Environment.NewLine
+						+ "4 - bicubic (slowest)"                          + Environment.NewLine
+						+ "5 - nearest neighbor (fastest)"                 + Environment.NewLine
+						+ "6 - high quality bilinear (smoothest)"          + Environment.NewLine
+						+ "7 - high quality bicubic (best in a pig's eye)";
 			Settings.AddSetting(
 							Interpolation,
 							MainViewUnderlay.Instance.MainViewOverlay.Interpolation,

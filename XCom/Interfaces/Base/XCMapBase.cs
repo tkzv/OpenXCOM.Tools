@@ -204,9 +204,9 @@ namespace XCom.Interfaces.Base
 
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
 			var b = XCBitmap.MakeBitmap(
-								rowPlusCols * (PckImage.Width / 2),
-								(MapSize.Levs - Level) * 24 + rowPlusCols * 8,
-								palette.Colors);
+									rowPlusCols * (PckImage.Width / 2),
+									(MapSize.Levs - Level) * 24 + rowPlusCols * 8,
+									palette.Colors);
 
 			var start = new Point(
 								(MapSize.Rows - 1) * (PckImage.Width / 2),

@@ -656,8 +656,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (_nodeSelected[slotId].Destination < Link.ExitWest)
 			{
-				RouteNode nodeDst = _mapFile.RouteFile[_nodeSelected[slotId].Destination];
-
+				var nodeDst = _mapFile.RouteFile[_nodeSelected[slotId].Destination];
 				if (nodeDst != null)
 				{
 					if (_nodeSelected.Lev > nodeDst.Lev)

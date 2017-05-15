@@ -170,27 +170,34 @@ namespace MapView
 		}
 
 
+		private bool _spriteShadeEnabled = true;
+
 		// NOTE: Options don't like floats afaict, hence this workaround w/
 		// 'SpriteDarkness' and 'SpriteDarknessLocal' ->
-		private int _spriteDarkness = 33;											// initial val for sprite darkness Option
+		private int _spriteDarkness;												// 0 = initial val for sprite darkness Option
 		public int SpriteDarkness													// <- public for Reflection.
 		{
 			get { return _spriteDarkness; }
 			set
 			{
-				_spriteDarkness = value.Clamp(10, 100);
-				SpriteDarknessLocal = _spriteDarkness * 0.03f;
+				_spriteDarkness = value;
+
+				if (_spriteDarkness > 9 && _spriteDarkness < 101)
+				{
+					_spriteShadeEnabled = true;
+					SpriteDarknessLocal = _spriteDarkness * 0.03f;
+				}
+				else
+					_spriteShadeEnabled = false;
+
+				Refresh();
 			}
 		}
 		private float _spriteDarknessLocal = 1.0f;									// initial val for local sprite darkness
 		private float SpriteDarknessLocal
 		{
 			get { return _spriteDarknessLocal; }
-			set
-			{
-				_spriteDarknessLocal = value;
-				Refresh();
-			}
+			set { _spriteDarknessLocal = value; }
 		}
 
 		// NOTE: Options don't like enums afaict, hence this workaround w/
@@ -203,8 +210,8 @@ namespace MapView
 			{
 				_interpolation = value.Clamp(0, 7);
 				_interpolationLocal = (InterpolationMode)_interpolation;
-				Refresh();	// NOTE: refresh needs to go here rather than in InterpolationLocal
-			}				// for some whack reason.
+				Refresh();
+			}
 		}
 		private InterpolationMode _interpolationLocal = InterpolationMode.Default;	// initial val for local interpolation
 		private InterpolationMode InterpolationLocal
@@ -609,12 +616,14 @@ namespace MapView
 			if (MapBase != null)
 			{
 				_graphics = e.Graphics;
-				_graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-//				_graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-				_spriteAttributes.SetGamma(SpriteDarknessLocal, ColorAdjustType.Bitmap); // TODO: laggy ... perhaps.
-
 				_graphics.InterpolationMode = InterpolationLocal;
+				_graphics.PixelOffsetMode   = PixelOffsetMode.HighQuality;
+//				_graphics.SmoothingMode     = SmoothingMode.HighQuality;
+
+//				if (!_isMouseDrag
+//					|| (DragStart.X == DragEnd.X && DragStart.Y == DragEnd.Y))
+				if (_spriteShadeEnabled)
+					_spriteAttributes.SetGamma(SpriteDarknessLocal, ColorAdjustType.Bitmap); // TODO: laggy ....
 
 				// Image Processing using C# - https://www.codeproject.com/Articles/33838/Image-Processing-using-C
 				// ColorMatrix Guide - https://docs.rainmeter.net/tips/colormatrix-guide/
@@ -684,7 +693,9 @@ namespace MapView
 								bool isGray = FirstClick && lev == MapBase.Level && _graySelection
 										   && (isClicked || dragRect.IntersectsWith(tileRect));
 
-								DrawTile(tile, x, y, isGray);
+//								if (System.Windows.Forms.Control.MouseButtons != System.Windows.Forms.MouseButtons.Left) // TEST.
+//								if (!_isMouseDrag)
+									DrawTile(tile, x, y, isGray);
 							}
 
 							if (FirstClick && isClicked && Cuboid != null)
@@ -841,12 +852,15 @@ namespace MapView
 		/// <param name="rect"></param>
 		private void DrawSprite(Image sprite, Rectangle rect)
 		{
-			_graphics.DrawImage(
-							sprite,
-							rect,
-							0, 0, SpriteWidth, SpriteHeight,
-							GraphicsUnit.Pixel,
-							_spriteAttributes);
+			if (_spriteShadeEnabled)
+				_graphics.DrawImage(
+								sprite,
+								rect,
+								0, 0, SpriteWidth, SpriteHeight,
+								GraphicsUnit.Pixel,
+								_spriteAttributes);
+			else
+				_graphics.DrawImage(sprite, rect);
 		}
 
 		/// <summary>

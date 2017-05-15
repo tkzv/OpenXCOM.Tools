@@ -12,7 +12,7 @@ namespace XCom
 	{
 //		private int _mapId;
 
-		private const byte TransparentId = 0xFE;
+		private const byte TransparentId = 0xFE; // should that be '0x0'
 
 		private readonly PckSpriteCollection _pckPack;
 		private readonly byte[] _expanded; // i suspect this should be '_scaled'
