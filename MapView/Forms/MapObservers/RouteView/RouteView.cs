@@ -1341,16 +1341,29 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (_nodeSelected != null)
 			{
-				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
-
-				for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
+				if (MessageBox.Show(
+								this,
+								"Are you sure you want to clear the selected node's Link data?"
+									+ " This cannot be undone.",
+								"Warning",
+								MessageBoxButtons.YesNo,
+								MessageBoxIcon.Exclamation,
+								MessageBoxDefaultButton.Button2,
+								0) == DialogResult.Yes)
 				{
-					_nodeSelected[slotId].Destination = Link.NotUsed;
-					_nodeSelected[slotId].Distance = 0;
+					_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
 
-					_nodeSelected[slotId].UsableType = UnitType.Any;
+					for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
+					{
+						_nodeSelected[slotId].Destination = Link.NotUsed;
+						_nodeSelected[slotId].Distance = 0;
+
+						_nodeSelected[slotId].UsableType = UnitType.Any;
+					}
+					UpdateNodeInformation();
+
+					Refresh();
 				}
-				UpdateNodeInformation();
 			}
 		}
 
