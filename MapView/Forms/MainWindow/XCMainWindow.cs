@@ -539,7 +539,7 @@ namespace MapView
 						+ "1 - low (default)"                              + Environment.NewLine
 						+ "2 - high (recommended)"                         + Environment.NewLine
 						+ "3 - bilinear (defaultiest)"                     + Environment.NewLine
-						+ "4 - bicubic (slowest)"                          + Environment.NewLine
+						+ "4 - bicubic (very slow fullscreen)"             + Environment.NewLine
 						+ "5 - nearest neighbor (fastest)"                 + Environment.NewLine
 						+ "6 - high quality bilinear (smoothest)"          + Environment.NewLine
 						+ "7 - high quality bicubic (best in a pig's eye)";

@@ -49,9 +49,6 @@ namespace MapView
 		{ private get; set; }
 
 
-		private Point _dragStart = new Point(-1, -1);
-		private Point _dragEnd   = new Point(-1, -1);
-
 		private bool _firstClick;
 		/// <summary>
 		/// Flag that tells the viewers, including Main, that it's okay to draw
@@ -290,8 +287,8 @@ namespace MapView
 			{
 				MapBase.MapChanged = true;
 
-				var start = GetDragStart();
-				var end   = GetDragEnd();
+				var start = GetCanonicalDragStart();
+				var end   = GetCanonicalDragEnd();
 	
 				for (int col = start.X; col <= end.X; ++col)
 				for (int row = start.Y; row <= end.Y; ++row)
@@ -312,8 +309,8 @@ namespace MapView
 		{
 			if (MapBase != null)
 			{
-				var start = GetDragStart();
-				var end   = GetDragEnd();
+				var start = GetCanonicalDragStart();
+				var end   = GetCanonicalDragEnd();
 
 				_copied = new MapTileBase[end.Y - start.Y + 1,
 										  end.X - start.X + 1];
@@ -367,18 +364,12 @@ namespace MapView
 			{
 				MapBase.MapChanged = true;
 
+				var start = GetCanonicalDragStart();
+				var end   = GetCanonicalDragEnd();
+
 				var quadType = ViewerFormsManager.TopView.Control.QuadrantsPanel.SelectedQuadrant;
-
-				var start = new Point(0, 0);
-				var end   = new Point(0, 0);
-
-				start.X = Math.Min(DragStart.X, DragEnd.X);
-				start.Y = Math.Min(DragStart.Y, DragEnd.Y);
-	
-				end.X = Math.Max(DragStart.X, DragEnd.X);
-				end.Y = Math.Max(DragStart.Y, DragEnd.Y);
-
 				var tileView = ViewerFormsManager.TileView.Control;
+
 				for (int col = start.X; col <= end.X; ++col)
 				for (int row = start.Y; row <= end.Y; ++row)
 				{
@@ -484,7 +475,62 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Gets/Sets the drag-start point. See also 'GetDragStart()'.
+		/// Fires the drag-select event handler.
+		/// </summary>
+		/// <param name="start"></param>
+		/// <param name="end"></param>
+		internal void DragSelect(Point start, Point end)
+		{
+			if (DragStart != start || DragEnd != end)
+			{
+				DragStart = start;
+				DragEnd   = end;
+	
+				if (MouseDragEvent != null)
+					MouseDragEvent();
+
+				// refreshes MainView in realtime iff a drag-select is happening in TopView.
+				// But if the drag-select is done on MainView itself this is not needed to update the selection in realtime.
+				Refresh();	// this refreshes MainView for a click on RouteView
+			}				// unless the click is at location (0,0) *and* the
+		}					// map has just been loaded ... NOTE: a click on
+							// TopView will refresh the MainView selected-tile
+							// by some other other way ... -> TopViewPanelParent.OnMouseUp().
+
+		/// <summary>
+		/// Gets the drag-start point as a lesser value than the drag-end point.
+		/// See 'DragStart'.
+		/// </summary>
+		/// <returns></returns>
+		internal Point GetCanonicalDragStart()
+		{
+			return new Point(
+//						Math.Max(Math.Min(DragStart.X, DragEnd.X), 0),	// NOTE: the bounds should be okay (see DragStart/DragEnd)
+//						Math.Max(Math.Min(DragStart.Y, DragEnd.Y), 0));	// only the Min() is needed.
+						Math.Min(DragStart.X, DragEnd.X),
+						Math.Min(DragStart.Y, DragEnd.Y));
+		}
+
+		/// <summary>
+		/// Gets the drag-end point as a greater value than the drag-start point.
+		/// See 'DragEnd'.
+		/// </summary>
+		/// <returns></returns>
+		internal Point GetCanonicalDragEnd()
+		{
+			return new Point(
+//						Math.Min(Math.Max(DragStart.X, DragEnd.X), MapBase.MapSize.Cols - 1),	// NOTE: the bounds should be okay (see DragStart/DragEnd)
+//						Math.Min(Math.Max(DragStart.Y, DragEnd.Y), MapBase.MapSize.Rows - 1));	// only the Max() is needed.
+						Math.Max(DragStart.X, DragEnd.X),
+						Math.Max(DragStart.Y, DragEnd.Y));
+		}
+
+
+		private Point _dragStart = new Point(-1, -1);
+		private Point _dragEnd   = new Point(-1, -1);
+
+		/// <summary>
+		/// Gets/Sets the drag-start point. See also 'GetCanonicalDragStart()'.
 		/// </summary>
 		internal Point DragStart
 		{
@@ -502,7 +548,7 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Gets/Sets the drag-end point. See also 'GetDragEnd()'.
+		/// Gets/Sets the drag-end point. See also 'GetCanonicalDragEnd()'.
 		/// </summary>
 		internal Point DragEnd
 		{
@@ -517,51 +563,6 @@ namespace MapView
 				if      (_dragEnd.X < 0) _dragEnd.X = 0;
 				else if (_dragEnd.X >= MapBase.MapSize.Cols) _dragEnd.X = MapBase.MapSize.Cols - 1;
 			}
-		}
-
-		/// <summary>
-		/// Fires the drag-select event handler.
-		/// </summary>
-		/// <param name="dragStart"></param>
-		/// <param name="dragEnd"></param>
-		internal void DragSelect(Point dragStart, Point dragEnd)
-		{
-			if (DragStart != dragStart || DragEnd != dragEnd)
-			{
-				DragStart = dragStart;
-				DragEnd   = dragEnd;
-	
-				if (MouseDragEvent != null)
-					MouseDragEvent();
-
-				// refreshes MainView in realtime iff a drag-select is happening in TopView.
-				// But if the drag-select is done on MainView itself this is not needed to update the selection in realtime.
-				Refresh();	// this refreshes MainView for a click on RouteView
-			}				// unless the click is at location (0,0) *and* the
-		}					// map has just been loaded ... NOTE: a click on
-							// TopView will refresh the MainView selected-tile
-							// by some other other way ... -> TopViewPanelParent.OnMouseUp().
-
-		/// <summary>
-		/// Gets the drag-start point. See also 'DragStart'.
-		/// </summary>
-		/// <returns></returns>
-		private Point GetDragStart()
-		{
-			return new Point(
-						Math.Max(Math.Min(DragStart.X, DragEnd.X), 0),	// TODO: these bounds should have been taken care of
-						Math.Max(Math.Min(DragStart.Y, DragEnd.Y), 0));	// unless drag is being gotten right after instantiation ....
-		}
-
-		/// <summary>
-		/// Gets the drag-end point. See also 'DragEnd'.
-		/// </summary>
-		/// <returns></returns>
-		private Point GetDragEnd()
-		{
-			return new Point(
-						Math.Max(DragStart.X, DragEnd.X), // wft: is dragend not dragend ...
-						Math.Max(DragStart.Y, DragEnd.Y));
 		}
 		#endregion
 

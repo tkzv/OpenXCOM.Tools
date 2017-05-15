@@ -182,24 +182,24 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		internal void PathSelectedLozenge()
 		{
-			var dragStart = GetDragStart();
-			var dragEnd   = GetDragEnd();
+			var start = MainViewUnderlay.Instance.MainViewOverlay.GetCanonicalDragStart();
+			var end   = MainViewUnderlay.Instance.MainViewOverlay.GetCanonicalDragEnd();
 
 			int halfWidth  = _blobService.HalfWidth;
 			int halfHeight = _blobService.HalfHeight;
 
 			var p0 = new Point(
-							_originX + (dragStart.X - dragStart.Y) * halfWidth,
-							_originY + (dragStart.X + dragStart.Y) * halfHeight);
+							_originX + (start.X - start.Y) * halfWidth,
+							_originY + (start.X + start.Y) * halfHeight);
 			var p1 = new Point(
-							_originX + (dragEnd.X - dragStart.Y) * halfWidth  + halfWidth,
-							_originY + (dragEnd.X + dragStart.Y) * halfHeight + halfHeight);
+							_originX + (end.X   - start.Y) * halfWidth  + halfWidth,
+							_originY + (end.X   + start.Y) * halfHeight + halfHeight);
 			var p2 = new Point(
-							_originX + (dragEnd.X - dragEnd.Y) * halfWidth,
-							_originY + (dragEnd.X + dragEnd.Y) * halfHeight + halfHeight * 2);
+							_originX + (end.X   - end.Y)   * halfWidth,
+							_originY + (end.X   + end.Y)   * halfHeight + halfHeight * 2);
 			var p3 = new Point(
-							_originX + (dragStart.X - dragEnd.Y) * halfWidth  - halfWidth,
-							_originY + (dragStart.X + dragEnd.Y) * halfHeight + halfHeight);
+							_originX + (start.X - end.Y)   * halfWidth  - halfWidth,
+							_originY + (start.X + end.Y)   * halfHeight + halfHeight);
 
 			_lozSelected.Reset();
 			_lozSelected.AddLine(p0, p1);
@@ -208,38 +208,6 @@ namespace MapView.Forms.MapObservers.TopViews
 			_lozSelected.CloseFigure();
 
 			Refresh();
-		}
-
-		/// <summary>
-		/// Gets the drag-start point. Note that 'MainViewOverlay' will bound the
-		/// point between 0,0 and the map's maximum dimensions (-1) inclusively.
-		/// </summary>
-		/// <returns></returns>
-		private static Point GetDragStart()
-		{
-			return new Point(
-						Math.Min(
-								MainViewUnderlay.Instance.MainViewOverlay.DragStart.X,
-								MainViewUnderlay.Instance.MainViewOverlay.DragEnd.X),
-						Math.Min(
-								MainViewUnderlay.Instance.MainViewOverlay.DragStart.Y,
-								MainViewUnderlay.Instance.MainViewOverlay.DragEnd.Y));
-		}
-
-		/// <summary>
-		/// Gets the drag-end point. Note that 'MainViewOverlay' will bound the
-		/// point between 0,0 and the map's maximum dimensions (-1) inclusively.
-		/// </summary>
-		/// <returns></returns>
-		private static Point GetDragEnd()
-		{
-			return new Point(
-						Math.Max(
-								MainViewUnderlay.Instance.MainViewOverlay.DragStart.X,
-								MainViewUnderlay.Instance.MainViewOverlay.DragEnd.X),
-						Math.Max(
-								MainViewUnderlay.Instance.MainViewOverlay.DragStart.Y,
-								MainViewUnderlay.Instance.MainViewOverlay.DragEnd.Y));
 		}
 
 
