@@ -33,7 +33,7 @@ namespace XCom
 							int col = j %  mapBase.MapSize.Cols;
 							int row = j /  mapBase.MapSize.Cols - mapBase.MapSize.Rows * lev;
 
-							((XCMapTile)mapBase[row, col, lev]).Occulted = false;
+							((XCMapTile)mapBase[row, col, lev]).Occulted = true;
 						}
 					}
 
@@ -59,8 +59,8 @@ namespace XCom
 				for (int row = 0; row != mapBase.MapSize.Rows; ++row)
 				for (int col = 0; col != mapBase.MapSize.Cols; ++col)
 				{
-					if (   ( flip &&  ((XCMapTile)mapBase[row, col, lev]).Occulted)
-						|| (!flip && !((XCMapTile)mapBase[row, col, lev]).Occulted))
+					if (   ( flip && !((XCMapTile)mapBase[row, col, lev]).Occulted)
+						|| (!flip &&  ((XCMapTile)mapBase[row, col, lev]).Occulted))
 					{
 						bw.Write(i);
 
