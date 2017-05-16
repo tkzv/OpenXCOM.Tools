@@ -15,8 +15,9 @@ namespace XCom
 		#region Fields & Properties
 		public static readonly string MapExt = ".MAP";
 
-		private readonly string _file = String.Empty;
-		private readonly string _path = String.Empty;
+		private readonly string _file       = String.Empty;
+		private readonly string _path       = String.Empty;
+		private readonly string _pathOccult = String.Empty;
 
 		private readonly string[] _deps;
 		public string[] Dependencies
@@ -54,6 +55,7 @@ namespace XCom
 		{
 			_file = file;
 			_path = path;
+			_pathOccult = pathOccult;
 
 			_deps = dependencies;
 
@@ -86,16 +88,13 @@ namespace XCom
 //						for (int row = 0; row != MapSize.Rows; ++row)
 //						for (int col = 0; col != MapSize.Cols; ++col)
 //						{
-//							this[row, col, lev].Occulted = false; // default is false.
+//							this[row, col, lev].Occulted = false;
 //						}
 //						throw;
 //					}
 				}
 				else
-				{
 					CalculateOccultations();
-					OccultFile.SaveOccult(_file, pathOccult, this);
-				}
 			}
 			// TODO: throw something here or at least inform the user.
 		}
@@ -145,7 +144,7 @@ namespace XCom
 			}
 		}
 
-		private void CalculateOccultations()
+		public void CalculateOccultations()
 		{
 			for (int lev = MapSize.Levs - 1; lev > -1; --lev)
 			for (int row = 0; row < MapSize.Rows - 2; ++row)
@@ -168,8 +167,11 @@ namespace XCom
 					{
 						this[row, col, lev].Occulted = true;
 					}
+					else
+						this[row, col, lev].Occulted = false;
 				}
 			}
+			OccultFile.SaveOccult(_file, _pathOccult, this);
 		}
 
 		public string GetDepLabel(TilepartBase part)

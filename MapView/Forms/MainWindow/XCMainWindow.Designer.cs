@@ -37,14 +37,15 @@ namespace MapView
 			this.miSaveImage = new System.Windows.Forms.MenuItem();
 			this.miExport = new System.Windows.Forms.MenuItem();
 			this.miResize = new System.Windows.Forms.MenuItem();
+			this.miInfo = new System.Windows.Forms.MenuItem();
 			this.miHq = new System.Windows.Forms.MenuItem();
 			this.miBarHori = new System.Windows.Forms.MenuItem();
 			this.miQuit = new System.Windows.Forms.MenuItem();
-			this.miEdit = new System.Windows.Forms.MenuItem();
+			this.miRegenOccult = new System.Windows.Forms.MenuItem();
+			this.menuEdit = new System.Windows.Forms.MenuItem();
 			this.miPaths = new System.Windows.Forms.MenuItem();
 			this.miOptions = new System.Windows.Forms.MenuItem();
-			this.miInfo = new System.Windows.Forms.MenuItem();
-			this.miAnimation = new System.Windows.Forms.MenuItem();
+			this.menuAnimation = new System.Windows.Forms.MenuItem();
 			this.miOn = new System.Windows.Forms.MenuItem();
 			this.miOff = new System.Windows.Forms.MenuItem();
 			this.miDoors = new System.Windows.Forms.MenuItem();
@@ -74,8 +75,8 @@ namespace MapView
 			// 
 			this.mmMain.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.menuFile,
-			this.miEdit,
-			this.miAnimation,
+			this.menuEdit,
+			this.menuAnimation,
 			this.menuView,
 			this.menuHelp});
 			// 
@@ -88,15 +89,17 @@ namespace MapView
 			this.miSaveImage,
 			this.miExport,
 			this.miResize,
+			this.miInfo,
 			this.miHq,
 			this.miBarHori,
-			this.miQuit});
+			this.miQuit,
+			this.miRegenOccult});
 			this.menuFile.Text = "&File";
 			// 
 			// miOpen
 			// 
 			this.miOpen.Index = 0;
-			this.miOpen.Text = "Open";
+			this.miOpen.Text = "&Open";
 			this.miOpen.Visible = false;
 			this.miOpen.Click += new System.EventHandler(this.OnOpenClick);
 			// 
@@ -110,96 +113,101 @@ namespace MapView
 			// miSaveImage
 			// 
 			this.miSaveImage.Index = 2;
-			this.miSaveImage.Text = "Save Image";
+			this.miSaveImage.Text = "Save &Image";
 			this.miSaveImage.Click += new System.EventHandler(this.OnSaveImageClick);
 			// 
 			// miExport
 			// 
 			this.miExport.Index = 3;
-			this.miExport.Text = "Export";
+			this.miExport.Text = "&Export";
 			this.miExport.Visible = false;
 			this.miExport.Click += new System.EventHandler(this.OnExportClick);
 			// 
 			// miResize
 			// 
 			this.miResize.Index = 4;
-			this.miResize.Text = "Resize map";
+			this.miResize.Text = "&Resize map";
 			this.miResize.Click += new System.EventHandler(this.OnMapResizeClick);
+			// 
+			// miInfo
+			// 
+			this.miInfo.Index = 5;
+			this.miInfo.Text = "&Map Info";
+			this.miInfo.Click += new System.EventHandler(this.OnInfoClick);
 			// 
 			// miHq
 			// 
-			this.miHq.Index = 5;
-			this.miHq.Text = "Hq2x";
+			this.miHq.Index = 6;
+			this.miHq.Text = "Hq&2x";
 			this.miHq.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
 			// miBarHori
 			// 
-			this.miBarHori.Index = 6;
+			this.miBarHori.Index = 7;
 			this.miBarHori.Text = "-";
 			// 
 			// miQuit
 			// 
-			this.miQuit.Index = 7;
+			this.miQuit.Index = 8;
 			this.miQuit.Text = "&Quit";
 			this.miQuit.Click += new System.EventHandler(this.OnQuitClick);
 			// 
-			// miEdit
+			// miRegenOccult
 			// 
-			this.miEdit.Index = 1;
-			this.miEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miRegenOccult.Index = 9;
+			this.miRegenOccult.Text = "Regen &Occult";
+			this.miRegenOccult.Click += new System.EventHandler(this.OnRegenOccultClick);
+			// 
+			// menuEdit
+			// 
+			this.menuEdit.Index = 1;
+			this.menuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miPaths,
-			this.miOptions,
-			this.miInfo});
-			this.miEdit.Text = "Edit";
-			// 
-			// miPaths
-			// 
-			this.miPaths.Index = 0;
-			this.miPaths.Text = "Paths";
-			this.miPaths.Click += new System.EventHandler(this.OnPathsEditorClick);
+			this.miOptions});
+			this.menuEdit.Text = "&Edit";
 			// 
 			// miOptions
 			// 
-			this.miOptions.Index = 1;
-			this.miOptions.Text = "Options";
+			this.miOptions.Index = 0;
+			this.miOptions.Text = "&Options";
 			this.miOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
-			// miInfo
+			// miPaths
 			// 
-			this.miInfo.Index = 2;
-			this.miInfo.Text = "Map Info";
-			this.miInfo.Click += new System.EventHandler(this.OnInfoClick);
+			this.miPaths.Index = 1;
+			this.miPaths.Text = "&Paths";
+			this.miPaths.Click += new System.EventHandler(this.OnPathsEditorClick);
 			// 
-			// miAnimation
+			// menuAnimation
 			// 
-			this.miAnimation.Index = 2;
-			this.miAnimation.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.menuAnimation.Index = 2;
+			this.menuAnimation.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miOn,
 			this.miOff,
 			this.miDoors});
-			this.miAnimation.Text = "&Animation";
-			this.miAnimation.Visible = false;
+			this.menuAnimation.Text = "menuAnimation";
+			this.menuAnimation.Visible = false;
 			// 
 			// miOn
 			// 
 			this.miOn.Checked = true;
 			this.miOn.Index = 0;
 			this.miOn.Shortcut = System.Windows.Forms.Shortcut.F1;
-			this.miOn.Text = "O&n";
+			this.miOn.Text = "miOn";
 			this.miOn.Click += new System.EventHandler(this.OnOnClick);
 			// 
 			// miOff
 			// 
 			this.miOff.Index = 1;
 			this.miOff.Shortcut = System.Windows.Forms.Shortcut.F2;
-			this.miOff.Text = "O&ff";
+			this.miOff.Text = "miOff";
 			this.miOff.Click += new System.EventHandler(this.OnOffClick);
 			// 
 			// miDoors
 			// 
 			this.miDoors.Index = 2;
 			this.miDoors.Shortcut = System.Windows.Forms.Shortcut.F3;
-			this.miDoors.Text = "Doors";
+			this.miDoors.Text = "miDoors";
 			this.miDoors.Click += new System.EventHandler(this.OnToggleDoorsClick);
 			// 
 			// menuView
@@ -211,7 +219,7 @@ namespace MapView
 			// menuHelp
 			// 
 			this.menuHelp.Index = 4;
-			this.menuHelp.Text = "Help";
+			this.menuHelp.Text = "&Help";
 			// 
 			// tvMaps
 			// 
@@ -423,9 +431,9 @@ namespace MapView
 		private System.Windows.Forms.MenuItem miBarHori;
 		private System.Windows.Forms.MenuItem miOn;
 		private System.Windows.Forms.MenuItem miOff;
-		private System.Windows.Forms.MenuItem miAnimation;
+		private System.Windows.Forms.MenuItem menuAnimation;
 		private System.Windows.Forms.MenuItem menuHelp;
-		private System.Windows.Forms.MenuItem miEdit;
+		private System.Windows.Forms.MenuItem menuEdit;
 		private System.Windows.Forms.TreeView tvMaps;
 		private System.Windows.Forms.MenuItem miPaths;
 		private System.Windows.Forms.MenuItem miOptions;
@@ -449,6 +457,7 @@ namespace MapView
 		private System.Windows.Forms.ToolStripButton tsbZoomOut;
 		private System.Windows.Forms.ToolStripButton tsbAutoZoom;
 		private System.Windows.Forms.ToolStripStatusLabel tsslScale;
+		private System.Windows.Forms.MenuItem miRegenOccult;
 
 		#endregion
 	}

@@ -777,6 +777,16 @@ namespace MapView
 			Environment.Exit(0);
 		}
 
+		private void OnRegenOccultClick(object sender, EventArgs e)
+		{
+			var mapFile = MainViewUnderlay.Instance.MapBase as XCMapFile;
+			if (mapFile != null)
+			{
+				mapFile.CalculateOccultations();
+				Refresh();
+			}
+		}
+
 		private void OnPathsEditorClick(object sender, EventArgs e)
 		{
 			var share = SharedSpace.Instance[PathInfo.PathsFile];
