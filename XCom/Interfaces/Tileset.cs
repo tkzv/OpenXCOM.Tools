@@ -19,7 +19,7 @@ namespace XCom.Interfaces
 		public string RoutePath
 		{ get; set; }
 
-		public string BlankPath
+		public string OccultPath
 		{ get; set; }
 
 //		private string[] _ground;
@@ -69,7 +69,10 @@ namespace XCom.Interfaces
 //			_baseStyle = false;
 		}
 
-		protected Tileset(string name, StreamReader sr, Varidia vars)
+		protected Tileset(
+				string name,
+				StreamReader sr,
+				Varidia vars)
 			:
 				this(name)
 		{
@@ -105,10 +108,10 @@ namespace XCom.Interfaces
 						}
 						break;
 
-					case "DLL": // not used. Might want to throw it at default:ParseLine()
+//					case "DLL": // not used. Might want to throw it at default:ParseLine()
 //						string dll = val.Substring(val.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
 //						Console.WriteLine(name + " is in dll " + dll);
-						break;
+//						break;
 
 					case "ROOTPATH":
 						MapPath = val;
@@ -119,41 +122,41 @@ namespace XCom.Interfaces
 						break;
 
 					case "BLANKPATH":
-						BlankPath = val;
+						OccultPath = val;
 						break;
 
-					case "BASESTYLE": // not used. Might want to throw it at default:ParseLine()
+//					case "BASESTYLE": // not used. Might want to throw it at default:ParseLine()
 //						_baseStyle = true;
-						break;
+//						break;
 
-					case "GROUND": // not used. Might want to throw it at default:ParseLine()
+//					case "GROUND": // not used. Might want to throw it at default:ParseLine()
 //						_ground = val.Split(' ');
-						break;
+//						break;
 
-					case "SIZE": // not used. Might want to throw it at default:ParseLine()
+//					case "SIZE": // not used. Might want to throw it at default:ParseLine()
 //						string[] dim = val.Split(',');
 //						int rows   = int.Parse(dim[0], System.Globalization.CultureInfo.InvariantCulture);
 //						int cols   = int.Parse(dim[1], System.Globalization.CultureInfo.InvariantCulture);
 //						int height = int.Parse(dim[2], System.Globalization.CultureInfo.InvariantCulture);
 //
 //						_mapSize = new MapSize(rows, cols, height);
-						break;
+//						break;
 
-					case "LANDMAP": // not used. Might want to throw it at default:ParseLine()
+//					case "LANDMAP": // not used. Might want to throw it at default:ParseLine()
 //						_underwater = false;
-						break;
+//						break;
 
-					case "DEPTH": // not used. Might want to throw it at default:ParseLine()
+//					case "DEPTH": // not used. Might want to throw it at default:ParseLine()
 //						_mapDepth = int.Parse(val, System.Globalization.CultureInfo.InvariantCulture);
-						break;
+//						break;
 
-					case "SCANG": // not used. Might want to throw it at default:ParseLine()
+//					case "SCANG": // not used. Might want to throw it at default:ParseLine()
 //						scanFile = val;
-						break;
+//						break;
 
-					case "LOFTEMP": // not used. Might want to throw it at default:ParseLine()
+//					case "LOFTEMP": // not used. Might want to throw it at default:ParseLine()
 //						loftFile = val;
-						break;
+//						break;
 
 					default:
 						// user-defined keyword
@@ -169,7 +172,7 @@ namespace XCom.Interfaces
 
 		public virtual void ParseLine(
 				string key,
-				string line,
+				string val,
 				StreamReader sr,
 				Varidia vars)
 		{}

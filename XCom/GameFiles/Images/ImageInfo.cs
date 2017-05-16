@@ -10,10 +10,9 @@ namespace XCom
 			FileDesc
 	{
 		#region FileDesc requirements
-
-		public override void Save(string outFile)
+		public override void Save(string pfe)
 		{
-			using (var sw = new StreamWriter(outFile))
+			using (var sw = new StreamWriter(pfe))
 			{
 				var keys = new List<string>(_imagesDictionary.Keys);
 				keys.Sort();

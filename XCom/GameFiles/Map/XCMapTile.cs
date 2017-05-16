@@ -111,8 +111,6 @@ namespace XCom
 			_west    = west;
 			_north   = north;
 			_content = content;
-
-			DrawAbove = true;
 		}
 		#endregion
 

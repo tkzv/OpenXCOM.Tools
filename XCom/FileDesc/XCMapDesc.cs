@@ -13,9 +13,6 @@ namespace XCom
 		internal string MapPath
 		{ get; private set; }
 
-		internal string BlankPath
-		{ get; private set; }
-
 		internal string RoutePath
 		{ get; private set; }
 
@@ -25,6 +22,9 @@ namespace XCom
 					   + Label
 					   + XCMapFile.MapExt; }
 		}
+
+		internal string OccultPath
+		{ get; private set; }
 
 		public string[] Dependencies
 		{ get; set; }
@@ -40,23 +40,23 @@ namespace XCom
 		/// </summary>
 		/// <param name="label"></param>
 		/// <param name="pathMaps"></param>
-		/// <param name="pathBlanks"></param>
 		/// <param name="pathRoutes"></param>
+		/// <param name="pathOccults"></param>
 		/// <param name="deps"></param>
 		/// <param name="pal"></param>
 		public XCMapDesc(
 				string label,
 				string pathMaps,
-				string pathBlanks,
 				string pathRoutes,
+				string pathOccults,
 				string[] deps,
 				Palette pal)
 			:
 				base(label)
 		{
 			MapPath      = pathMaps;
-			BlankPath    = pathBlanks;
 			RoutePath    = pathRoutes;
+			OccultPath   = pathOccults;
 			Dependencies = deps;
 			Palette      = pal;
 //			IsStatic     = false;

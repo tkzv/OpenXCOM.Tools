@@ -463,5 +463,11 @@ copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Release\PckView.exe C:\0xC_kL\edit
     <Optimize>False</Optimize>
     <StartAction>Project</StartAction>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PostBuildEvent>copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Debug\MapView.exe C:\MapView_test\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Debug\DSShared.dll C:\MapView_test\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Debug\XCom.dll C:\MapView_test\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Debug\YamlDotNet.dll C:\MapView_test\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\x86\Debug\PckView.exe C:\MapView_test\
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

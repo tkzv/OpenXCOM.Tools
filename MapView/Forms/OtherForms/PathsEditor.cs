@@ -168,8 +168,9 @@ namespace MapView
 									new XCMapDesc(
 												node.Text,
 												tileset.MapPath,
-												tileset.BlankPath,
-												tileset.RoutePath, new string[]{},
+												tileset.RoutePath,
+												tileset.OccultPath,
+												new string[]{},
 												tileset.Palette),
 									node.Parent.Text);
 					}
@@ -187,9 +188,9 @@ namespace MapView
 				delSub.Enabled = false;
 			}
 
-			tbMapsMaps.Text   = tileset.MapPath;
-			tbMapsRoutes.Text = tileset.RoutePath;
-			tbMapsBlanks.Text = tileset.BlankPath;
+			tbMapsMaps.Text    = tileset.MapPath;
+			tbMapsRoutes.Text  = tileset.RoutePath;
+			tbMapsOccults.Text = tileset.OccultPath;
 
 			cbMapsPalette.SelectedItem = tileset.Palette;
 		}
@@ -459,7 +460,7 @@ namespace MapView
 																		f.TilesetLabel,
 																		f.MapsPath,
 																		f.RoutesPath,
-																		f.BlanksPath);
+																		f.OccultsPath);
 //					addTileset(tileset.Name);
 					tvMaps.Nodes.Add(tileset.Name);
 
@@ -474,7 +475,7 @@ namespace MapView
 		private void cbMapsPalette_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (tvMaps.SelectedNode.Parent == null)
-				getCurrentTileset().Palette = (Palette)cbMapsPalette.SelectedItem;
+				getCurrentTileset().Palette = cbMapsPalette.SelectedItem as Palette;
 		}
 
 		private void OnSubsetClick(object sender, EventArgs e)
@@ -815,8 +816,8 @@ namespace MapView
 			this.lbMapsImagesUsed = new System.Windows.Forms.ListBox();
 			this.lblMapsImagesUsed = new System.Windows.Forms.Label();
 			this.gbMapsTerrain = new System.Windows.Forms.GroupBox();
-			this.lblMapsBlanks = new System.Windows.Forms.Label();
-			this.tbMapsBlanks = new System.Windows.Forms.TextBox();
+			this.lblMapsOccults = new System.Windows.Forms.Label();
+			this.tbMapsOccults = new System.Windows.Forms.TextBox();
 			this.cbMapsPalette = new System.Windows.Forms.ComboBox();
 			this.lblMapsPalette = new System.Windows.Forms.Label();
 			this.lblMapsRoutes = new System.Windows.Forms.Label();
@@ -1065,9 +1066,9 @@ namespace MapView
 			this.tabMaps.Controls.Add(this.tvMaps);
 			this.tabMaps.Controls.Add(this.btnMapsSaveTree);
 			this.tabMaps.Controls.Add(this.btnMapsEditTree);
-			this.tabMaps.Location = new System.Drawing.Point(4, 22);
+			this.tabMaps.Location = new System.Drawing.Point(4, 21);
 			this.tabMaps.Name = "tabMaps";
-			this.tabMaps.Size = new System.Drawing.Size(624, 508);
+			this.tabMaps.Size = new System.Drawing.Size(624, 509);
 			this.tabMaps.TabIndex = 1;
 			this.tabMaps.Text = "Map Files";
 			// 
@@ -1088,7 +1089,7 @@ namespace MapView
 			this.gbMapsBlock.Enabled = false;
 			this.gbMapsBlock.Location = new System.Drawing.Point(240, 170);
 			this.gbMapsBlock.Name = "gbMapsBlock";
-			this.gbMapsBlock.Size = new System.Drawing.Size(385, 340);
+			this.gbMapsBlock.Size = new System.Drawing.Size(385, 341);
 			this.gbMapsBlock.TabIndex = 2;
 			this.gbMapsBlock.TabStop = false;
 			this.gbMapsBlock.Text = "MAP BLOCK";
@@ -1186,8 +1187,8 @@ namespace MapView
 			// 
 			// gbMapsTerrain
 			// 
-			this.gbMapsTerrain.Controls.Add(this.lblMapsBlanks);
-			this.gbMapsTerrain.Controls.Add(this.tbMapsBlanks);
+			this.gbMapsTerrain.Controls.Add(this.lblMapsOccults);
+			this.gbMapsTerrain.Controls.Add(this.tbMapsOccults);
 			this.gbMapsTerrain.Controls.Add(this.cbMapsPalette);
 			this.gbMapsTerrain.Controls.Add(this.lblMapsPalette);
 			this.gbMapsTerrain.Controls.Add(this.lblMapsRoutes);
@@ -1202,22 +1203,22 @@ namespace MapView
 			this.gbMapsTerrain.TabStop = false;
 			this.gbMapsTerrain.Text = "TERRAIN GROUP";
 			// 
-			// lblMapsBlanks
+			// lblMapsOccults
 			// 
-			this.lblMapsBlanks.Location = new System.Drawing.Point(5, 95);
-			this.lblMapsBlanks.Name = "lblMapsBlanks";
-			this.lblMapsBlanks.Size = new System.Drawing.Size(100, 15);
-			this.lblMapsBlanks.TabIndex = 7;
-			this.lblMapsBlanks.Text = "Path to BLK files";
+			this.lblMapsOccults.Location = new System.Drawing.Point(5, 95);
+			this.lblMapsOccults.Name = "lblMapsOccults";
+			this.lblMapsOccults.Size = new System.Drawing.Size(100, 15);
+			this.lblMapsOccults.TabIndex = 7;
+			this.lblMapsOccults.Text = "Path to OTD files";
 			// 
-			// tbMapsBlanks
+			// tbMapsOccults
 			// 
-			this.tbMapsBlanks.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tbMapsOccults.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.tbMapsBlanks.Location = new System.Drawing.Point(5, 112);
-			this.tbMapsBlanks.Name = "tbMapsBlanks";
-			this.tbMapsBlanks.Size = new System.Drawing.Size(373, 19);
-			this.tbMapsBlanks.TabIndex = 6;
+			this.tbMapsOccults.Location = new System.Drawing.Point(5, 112);
+			this.tbMapsOccults.Name = "tbMapsOccults";
+			this.tbMapsOccults.Size = new System.Drawing.Size(373, 19);
+			this.tbMapsOccults.TabIndex = 6;
 			// 
 			// cbMapsPalette
 			// 
@@ -1281,7 +1282,7 @@ namespace MapView
 			this.tvMaps.ContextMenu = this.cmMain;
 			this.tvMaps.Location = new System.Drawing.Point(0, 35);
 			this.tvMaps.Name = "tvMaps";
-			this.tvMaps.Size = new System.Drawing.Size(240, 472);
+			this.tvMaps.Size = new System.Drawing.Size(240, 473);
 			this.tvMaps.TabIndex = 0;
 			this.tvMaps.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvMaps_AfterSelect);
 			// 
@@ -1545,8 +1546,8 @@ namespace MapView
 		private MenuItem addExistingMap;
 		private Button btnMapsEditTree;
 		private MenuItem closeItem;
-		private Label lblMapsBlanks;
-		private TextBox tbMapsBlanks;
+		private Label lblMapsOccults;
+		private TextBox tbMapsOccults;
 		private Button btnMapsCopy;
 		private Button btnMapsPaste;
 		private Label lblPathsInstall;

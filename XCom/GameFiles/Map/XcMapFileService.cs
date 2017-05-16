@@ -40,7 +40,7 @@ namespace XCom
 				var MAP = new XCMapFile(
 									desc.Label,
 									desc.MapPath,
-									desc.BlankPath,
+									desc.OccultPath,
 									parts,
 									desc.Dependencies,
 									RMP);

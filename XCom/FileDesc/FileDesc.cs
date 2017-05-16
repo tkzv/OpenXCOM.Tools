@@ -12,12 +12,16 @@ namespace XCom
 		}
 
 
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="path"></param>
 		protected FileDesc(string path)
 		{
 			_path = path;
 		}
 
 
-		public abstract void Save(string outFile);
+		public abstract void Save(string pfe);
 	}
 }

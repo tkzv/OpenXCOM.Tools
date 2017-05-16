@@ -649,7 +649,7 @@ namespace MapView
 													HalfWidth,
 													HalfHeight);
 
-							if (lev == MapBase.Level || MapBase[row, col, lev].DrawAbove) // TODO: investigate DrawAbove.
+							if (lev == MapBase.Level || !MapBase[row, col, lev].Occulted)
 							{
 								var tile = (XCMapTile)MapBase[row, col, lev];
 

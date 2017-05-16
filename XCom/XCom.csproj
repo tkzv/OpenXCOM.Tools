@@ -135,7 +135,7 @@
     <Compile Include="GameFiles\Images\Types\XCImage.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Map\BlankFile.cs">
+    <Compile Include="GameFiles\Map\OccultFile.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Map\XCMapFile.cs">

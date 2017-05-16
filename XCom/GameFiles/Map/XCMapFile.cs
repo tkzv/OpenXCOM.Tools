@@ -38,14 +38,14 @@ namespace XCom
 		/// </summary>
 		/// <param name="file"></param>
 		/// <param name="path"></param>
-		/// <param name="blankPath"></param>
+		/// <param name="pathOccult"></param>
 		/// <param name="parts"></param>
 		/// <param name="dependencies"></param>
 		/// <param name="routeFile"></param>
 		internal XCMapFile(
 				string file,
 				string path,
-				string blankPath,
+				string pathOccult,
 				List<TilepartBase> parts,
 				string[] dependencies,
 				RouteNodeCollection routeFile)
@@ -72,27 +72,29 @@ namespace XCom
 
 			SetupRoutes(routeFile);
 
-			if (!String.IsNullOrEmpty(blankPath)) // TODO: investigate saving/loading of the Blanks.
+			if (!String.IsNullOrEmpty(pathOccult))
 			{
-				if (File.Exists(blankPath + file + BlankFile.BlankExt))
+				if (File.Exists(pathOccult + file + OccultFile.OccultExt))
 				{
-					try
-					{
-						BlankFile.LoadBlank(file, blankPath, this);
-					}
-					catch
-					{
-						for (int lev = 0; lev != MapSize.Levs; ++lev)
-							for (int row = 0; row != MapSize.Rows; ++row)
-								for (int col = 0; col != MapSize.Cols; ++col)
-									this[row, col, lev].DrawAbove = true;
-						throw;
-					}
+//					try
+//					{
+					OccultFile.LoadOccult(file, pathOccult, this);
+//					}
+//					catch
+//					{
+//						for (int lev = 0; lev != MapSize.Levs; ++lev)
+//						for (int row = 0; row != MapSize.Rows; ++row)
+//						for (int col = 0; col != MapSize.Cols; ++col)
+//						{
+//							this[row, col, lev].Occulted = false; // default is false.
+//						}
+//						throw;
+//					}
 				}
 				else
 				{
-					CalculateDrawAbove();
-					BlankFile.SaveBlank(_file, blankPath, this);
+					CalculateOccultations();
+					OccultFile.SaveOccult(_file, pathOccult, this);
 				}
 			}
 			// TODO: throw something here or at least inform the user.
@@ -113,16 +115,16 @@ namespace XCom
 				MapSize  = new MapSize(rows, cols, levs);
 
 				for (int lev = 0; lev != levs; ++lev)
-					for (int row = 0; row != rows; ++row)
-						for (int col = 0; col != cols; ++col)
-						{
-							int q1 = bs.ReadByte();
-							int q2 = bs.ReadByte();
-							int q3 = bs.ReadByte();
-							int q4 = bs.ReadByte();
+				for (int row = 0; row != rows; ++row)
+				for (int col = 0; col != cols; ++col)
+				{
+					int q1 = bs.ReadByte();
+					int q2 = bs.ReadByte();
+					int q3 = bs.ReadByte();
+					int q4 = bs.ReadByte();
 
-							this[row, col, lev] = CreateTile(parts, q1, q2, q3, q4);
-						}
+					this[row, col, lev] = CreateTile(parts, q1, q2, q3, q4);
+				}
 
 //				if (bs.Position < bs.Length)
 //					RouteFile.ExtraHeight = (byte)bs.ReadByte(); // <- NON-STANDARD <-| See also Save() below_
@@ -143,7 +145,7 @@ namespace XCom
 			}
 		}
 
-		private void CalculateDrawAbove()
+		private void CalculateOccultations()
 		{
 			for (int lev = MapSize.Levs - 1; lev > -1; --lev)
 			for (int row = 0; row < MapSize.Rows - 2; ++row)
@@ -164,7 +166,7 @@ namespace XCom
 						&& ((XCMapTile)this[row,     col + 2, lev - 1]).Ground != null
 						&& ((XCMapTile)this[row + 1, col + 2, lev - 1]).Ground != null)
 					{
-						this[row, col, lev].DrawAbove = false;
+						this[row, col, lev].Occulted = true;
 					}
 				}
 			}
@@ -221,9 +223,11 @@ namespace XCom
 				bw.Write(levs);
 
 				for (int lev = 0; lev != levs; ++lev)
-					for (int row = 0; row != rows; ++row)
-						for (int col = 0; col != cols; ++col)
-							bw.Write((int)0);
+				for (int row = 0; row != rows; ++row)
+				for (int col = 0; col != cols; ++col)
+				{
+					bw.Write((int)0);
+				}
 			}
 		}
 
@@ -247,31 +251,31 @@ namespace XCom
 				fs.WriteByte((byte)MapSize.Levs);
 
 				for (int lev = 0; lev != MapSize.Levs; ++lev)
-					for (int row = 0; row != MapSize.Rows; ++row)
-						for (int col = 0; col != MapSize.Cols; ++col)
-						{
-							var tile = this[row, col, lev] as XCMapTile;
+				for (int row = 0; row != MapSize.Rows; ++row)
+				for (int col = 0; col != MapSize.Cols; ++col)
+				{
+					var tile = this[row, col, lev] as XCMapTile;
 
-							if (tile.Ground == null)
-								fs.WriteByte(0);
-							else
-								fs.WriteByte((byte)(tile.Ground.TileListId + 2)); // why "+2" -> reserved for the 2 Blank tiles.
+					if (tile.Ground == null)
+						fs.WriteByte(0);
+					else
+						fs.WriteByte((byte)(tile.Ground.TileListId + 2)); // why "+2" -> reserved for the 2 Blank tiles.
 
-							if (tile.West == null)
-								fs.WriteByte(0);
-							else
-								fs.WriteByte((byte)(tile.West.TileListId + 2));
+					if (tile.West == null)
+						fs.WriteByte(0);
+					else
+						fs.WriteByte((byte)(tile.West.TileListId + 2));
 
-							if (tile.North == null)
-								fs.WriteByte(0);
-							else
-								fs.WriteByte((byte)(tile.North.TileListId + 2));
+					if (tile.North == null)
+						fs.WriteByte(0);
+					else
+						fs.WriteByte((byte)(tile.North.TileListId + 2));
 
-							if (tile.Content == null)
-								fs.WriteByte(0);
-							else
-								fs.WriteByte((byte)(tile.Content.TileListId + 2));
-						}
+					if (tile.Content == null)
+						fs.WriteByte(0);
+					else
+						fs.WriteByte((byte)(tile.Content.TileListId + 2));
+				}
 
 //				fs.WriteByte(RouteFile.ExtraHeight); // <- NON-STANDARD <-| See also ReadMapFile() above^
 			}

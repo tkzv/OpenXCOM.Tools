@@ -156,7 +156,7 @@ namespace MapView
 					sw.WriteLine("mapdata:" + pfeMapEdit);
 					sw.WriteLine("images:"  + pfeImages);
 
-					sw.WriteLine("useBlanks:false");
+//					sw.WriteLine("useBlanks:false");
 
 					if (!String.IsNullOrEmpty(tbUfo.Text))
 					{
@@ -244,7 +244,10 @@ namespace MapView
 			{
 				MessageBox.Show(
 							this,
-							"A valid UFO or TFTD resource directory must exist (with cursor-sprites in particular).",
+							"A valid UFO or TFTD resource directory must exist with"
+								+ Environment.NewLine + Environment.NewLine
+								+ @" \UFOGRAPH\CURSOR.PCK" + Environment.NewLine
+								+ @" \UFOGRAPH\CURSOR.TAB",
 							"Error",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Error,

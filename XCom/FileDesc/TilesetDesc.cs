@@ -13,13 +13,12 @@ namespace XCom
 			FileDesc
 	{
 		#region FileDesc requirements
-
 		/// <summary>
 		/// WARNING: This doesn't appear to be used but has to be here to
 		/// satisfy inheritance from FileDesc.Save() which is abstract.
 		/// </summary>
-		/// <param name="outFile"></param>
-		public override void Save(string outFile)
+		/// <param name="pfe"></param>
+		public override void Save(string pfe)
 		{
 			var vars = new Varidia("Path"); // iterate thru each tileset, call save on them
 
@@ -30,11 +29,11 @@ namespace XCom
 				{
 					vars.AddKeyvalPair("rootPath",  tileset.MapPath);
 					vars.AddKeyvalPair("rmpPath",   tileset.RoutePath);
-					vars.AddKeyvalPair("blankPath", tileset.BlankPath);
+					vars.AddKeyvalPair("blankPath", tileset.OccultPath);
 				}
 			}
 
-			using (var sw = new StreamWriter(outFile))
+			using (var sw = new StreamWriter(pfe))
 			{
 				foreach (string key in vars.Variables)
 				{
@@ -51,6 +50,7 @@ namespace XCom
 			}
 		}
 		#endregion
+
 
 		private readonly Dictionary<string, TilesetBase> _tilesets;
 		public Dictionary<string, TilesetBase> Tilesets
@@ -154,13 +154,13 @@ namespace XCom
 								string name,
 								string pathMaps,
 								string pathRoutes,
-								string pathBlanks)
+								string pathOccults)
 		{
 			var tileset = new XCTileset(name);
 
-			tileset.MapPath   = pathMaps;
-			tileset.RoutePath = pathRoutes;
-			tileset.BlankPath = pathBlanks;
+			tileset.MapPath    = pathMaps;
+			tileset.RoutePath  = pathRoutes;
+			tileset.OccultPath = pathOccults;
 
 			return (_tilesets[name] = tileset);
 		}

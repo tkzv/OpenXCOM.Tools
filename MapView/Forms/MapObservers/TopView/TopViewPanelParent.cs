@@ -297,8 +297,8 @@ namespace MapView.Forms.MapObservers.TopViews
 			if (MapBase != null)
 			{
 				var start = GetTileLocation(e.X, e.Y);
-				if (   start.Y > -1 && start.Y < MainViewUnderlay.Instance.MapBase.MapSize.Rows
-					&& start.X > -1 && start.X < MainViewUnderlay.Instance.MapBase.MapSize.Cols)
+				if (   start.Y > -1 && start.Y < MapBase.MapSize.Rows
+					&& start.X > -1 && start.X < MapBase.MapSize.Cols)
 				{
 					// as long as MainViewOverlay.OnLocationSelected_Main()
 					// fires before the subsidiary viewers' OnLocationSelected_Observer()

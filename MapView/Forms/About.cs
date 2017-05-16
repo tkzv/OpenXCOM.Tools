@@ -32,7 +32,7 @@ namespace MapView
 			lblVersion.Text += Environment.NewLine + Environment.NewLine
 							+ String.Format(
 										System.Globalization.CultureInfo.CurrentCulture,
-										"{0:yyyy MMM d} {0:HH}:{0:mm}:{0:ss} {0:zzz}",
+										"{0:yyyy MMM d}  {0:HH}:{0:mm}:{0:ss} {0:zzz}",
 										DateTime.Now);
 		}
 

@@ -31,10 +31,10 @@ namespace MapView
 			get { return _pathRoutes; }
 		}
 
-		private string _pathBlanks;
-		internal string BlanksPath
+		private string _pathOccults;
+		internal string OccultsPath
 		{
-			get { return _pathBlanks; }
+			get { return _pathOccults; }
 		}
 
 		private void OnOkClick(object sender, EventArgs e)
@@ -72,11 +72,11 @@ namespace MapView
 							MessageBoxDefaultButton.Button1,
 							0);
 			}
-			else if (String.IsNullOrEmpty(tbBlanks.Text))
+			else if (String.IsNullOrEmpty(tbOccults.Text))
 			{
 				MessageBox.Show(
 							this,
-							"You must have a Blanks path.",
+							"You must have an OTD path.",
 							"Err..",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Exclamation,
@@ -105,11 +105,11 @@ namespace MapView
 							MessageBoxDefaultButton.Button1,
 							0);
 			}
-			else if (!System.IO.Directory.Exists(tbBlanks.Text))
+			else if (!System.IO.Directory.Exists(tbOccults.Text))
 			{
 				MessageBox.Show(
 							this,
-							"Blanks directory " + tbBlanks.Text + " does not exist.",
+							"OTD directory " + tbOccults.Text + " does not exist.",
 							"Err..",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Exclamation,
@@ -118,10 +118,10 @@ namespace MapView
 			}
 			else
 			{
-				_label      = tbLabel.Text;
-				_pathMaps   = tbMaps.Text;
-				_pathRoutes = tbRoutes.Text;
-				_pathBlanks = tbBlanks.Text;
+				_label       = tbLabel.Text;
+				_pathMaps    = tbMaps.Text;
+				_pathRoutes  = tbRoutes.Text;
+				_pathOccults = tbOccults.Text;
 
 				Close();
 			}
@@ -143,12 +143,12 @@ namespace MapView
 				tbRoutes.Text = f.SelectedPath;
 		}
 
-		private void OnFindBlanksClick(object sender, System.EventArgs e)
+		private void OnFindOccultsClick(object sender, System.EventArgs e)
 		{
 			var f = new FolderBrowserDialog();
-			f.Description = "Find BLANKS directory";
+			f.Description = "Find OTD directory";
 			if (f.ShowDialog(this) == DialogResult.OK)
-				tbBlanks.Text = f.SelectedPath;
+				tbOccults.Text = f.SelectedPath;
 		}
 
 
@@ -180,9 +180,9 @@ namespace MapView
 			this.lblMaps = new System.Windows.Forms.Label();
 			this.btnFindMaps = new System.Windows.Forms.Button();
 			this.btnFindRoutes = new System.Windows.Forms.Button();
-			this.btnFindBlanks = new System.Windows.Forms.Button();
-			this.tbBlanks = new System.Windows.Forms.TextBox();
-			this.lblBlanks = new System.Windows.Forms.Label();
+			this.btnFindOccults = new System.Windows.Forms.Button();
+			this.tbOccults = new System.Windows.Forms.TextBox();
+			this.lblOccults = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// lblLabel
@@ -257,37 +257,37 @@ namespace MapView
 			this.btnFindRoutes.Text = "...";
 			this.btnFindRoutes.Click += new System.EventHandler(this.OnFindRoutesClick);
 			// 
-			// btnFindBlanks
+			// btnFindOccults
 			// 
-			this.btnFindBlanks.Location = new System.Drawing.Point(280, 130);
-			this.btnFindBlanks.Name = "btnFindBlanks";
-			this.btnFindBlanks.Size = new System.Drawing.Size(30, 20);
-			this.btnFindBlanks.TabIndex = 11;
-			this.btnFindBlanks.Text = "...";
-			this.btnFindBlanks.Click += new System.EventHandler(this.OnFindBlanksClick);
+			this.btnFindOccults.Location = new System.Drawing.Point(280, 130);
+			this.btnFindOccults.Name = "btnFindOccults";
+			this.btnFindOccults.Size = new System.Drawing.Size(30, 20);
+			this.btnFindOccults.TabIndex = 11;
+			this.btnFindOccults.Text = "...";
+			this.btnFindOccults.Click += new System.EventHandler(this.OnFindOccultsClick);
 			// 
-			// tbBlanks
+			// tbOccults
 			// 
-			this.tbBlanks.Location = new System.Drawing.Point(5, 130);
-			this.tbBlanks.Name = "tbBlanks";
-			this.tbBlanks.Size = new System.Drawing.Size(275, 19);
-			this.tbBlanks.TabIndex = 10;
+			this.tbOccults.Location = new System.Drawing.Point(5, 130);
+			this.tbOccults.Name = "tbOccults";
+			this.tbOccults.Size = new System.Drawing.Size(275, 19);
+			this.tbOccults.TabIndex = 10;
 			// 
-			// lblBlanks
+			// lblOccults
 			// 
-			this.lblBlanks.Location = new System.Drawing.Point(5, 115);
-			this.lblBlanks.Name = "lblBlanks";
-			this.lblBlanks.Size = new System.Drawing.Size(80, 15);
-			this.lblBlanks.TabIndex = 9;
-			this.lblBlanks.Text = "Blanks folder";
+			this.lblOccults.Location = new System.Drawing.Point(5, 115);
+			this.lblOccults.Name = "lblOccults";
+			this.lblOccults.Size = new System.Drawing.Size(65, 15);
+			this.lblOccults.TabIndex = 9;
+			this.lblOccults.Text = "OTD folder";
 			// 
 			// TilesetForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(314, 192);
-			this.Controls.Add(this.btnFindBlanks);
-			this.Controls.Add(this.tbBlanks);
-			this.Controls.Add(this.lblBlanks);
+			this.Controls.Add(this.btnFindOccults);
+			this.Controls.Add(this.tbOccults);
+			this.Controls.Add(this.lblOccults);
 			this.Controls.Add(this.btnFindRoutes);
 			this.Controls.Add(this.btnFindMaps);
 			this.Controls.Add(this.tbMaps);
@@ -320,9 +320,9 @@ namespace MapView
 		private TextBox tbRoutes;
 		private TextBox tbMaps;
 		private Button btnFindMaps;
-		private Button btnFindBlanks;
-		private TextBox tbBlanks;
-		private Label lblBlanks;
+		private Button btnFindOccults;
+		private TextBox tbOccults;
+		private Label lblOccults;
 		private Button btnFindRoutes;
 	}
 }

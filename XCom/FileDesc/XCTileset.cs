@@ -70,10 +70,10 @@ namespace XCom
 			else
 				sw.WriteLine(Tab + "rmpPath:" + RoutePath);
 
-			if (vars.Vars[BlankPath] != null)
-				sw.WriteLine(Tab + "blankPath:" + ((Variable)vars.Vars[BlankPath]).Name);
+			if (vars.Vars[OccultPath] != null)
+				sw.WriteLine(Tab + "blankPath:" + ((Variable)vars.Vars[OccultPath]).Name);
 			else
-				sw.WriteLine(Tab + "blankPath:" + BlankPath);
+				sw.WriteLine(Tab + "blankPath:" + OccultPath);
 
 			sw.WriteLine(Tab + "palette:" + Palette.Label);
 
@@ -119,8 +119,8 @@ namespace XCom
 			var desc = new XCMapDesc(
 								name,
 								MapPath,
-								BlankPath,
 								RoutePath,
+								OccultPath,
 								new string[0],
 								Palette);
 			MapDescs[desc.Label] = desc;
@@ -142,7 +142,7 @@ namespace XCom
 
 		public override void ParseLine(
 				string key,
-				string line,
+				string val,
 				StreamReader sr,
 				Varidia vars)
 		{
@@ -151,7 +151,7 @@ namespace XCom
 				case "FILES":
 				{
 					var dictDescs = new Dictionary<string, MapDesc>();
-					Subsets[line] = dictDescs;
+					Subsets[val] = dictDescs;
 					string lineVars = Varidia.ReadLine(sr, vars);
 					while (lineVars.ToUpperInvariant() != "END")
 					{
@@ -162,8 +162,8 @@ namespace XCom
 						var desc = new XCMapDesc(
 											file,
 											MapPath,
-											BlankPath,
 											RoutePath,
+											OccultPath,
 											deps,
 											Palette);
 
@@ -202,12 +202,12 @@ namespace XCom
 //					_tileEnd = int.Parse(line, System.Globalization.CultureInfo.InvariantCulture);
 //					break;
 
-				default:
+//				default:
 //					XConsole.AdZerg(string.Format(
 //												System.Globalization.CultureInfo.CurrentCulture,
 //												"Unknown line in tileset {0}-> {1}:{2}",
 //												Name, key, line));
-					break;
+//					break;
 			}
 		}
 	}

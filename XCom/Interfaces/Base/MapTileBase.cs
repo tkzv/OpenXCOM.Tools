@@ -15,9 +15,10 @@ namespace XCom.Interfaces.Base
 		{ get; }
 
 		/// <summary>
-		/// Flag to optimize screen drawing.
+		/// A tile is flagged as occulted if it has tiles with ground-parts
+		/// above and to the south or east.
 		/// </summary>
-		public bool DrawAbove
+		public bool Occulted
 		{ get; set; }
 	}
 }
