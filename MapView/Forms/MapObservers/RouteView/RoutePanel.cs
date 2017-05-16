@@ -25,11 +25,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			set { _pos = value; }
 		}
 
-		private readonly GraphicsPath _lozSelector = new GraphicsPath(); // mouse-over cursor lozenge
-		private readonly GraphicsPath _lozSelected = new GraphicsPath(); // clicked tile lozenge
-
-		private readonly DrawBlobService _blobService = new DrawBlobService();
-
 		private readonly Font _fontOverlay = new Font("Verdana", 7F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 		private readonly Font _fontRose    = new Font("Courier New", 22, FontStyle.Bold);
 
@@ -39,7 +34,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private Graphics     _graphics;
 		private GraphicsPath _nodeFill = new GraphicsPath();
 
-		private RouteNode _nodeSelected;
+		internal RouteNode NodeSelected
+		{ get; set; }
 		#endregion
 
 
@@ -52,7 +48,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			_graphics = e.Graphics;
 			_graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-//			_graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 			ControlPaint.DrawBorder3D(_graphics, ClientRectangle, Border3DStyle.Etched);
 
@@ -61,25 +56,25 @@ namespace MapView.Forms.MapObservers.RouteViews
 //			{
 			if (MapFile != null)
 			{
-				_blobService.HalfWidth  = DrawAreaWidth;
-				_blobService.HalfHeight = DrawAreaHeight;
+				BlobService.HalfWidth  = DrawAreaWidth;
+				BlobService.HalfHeight = DrawAreaHeight;
 
 				DrawBlobs();
 
-				if (ClickPoint.X > -1 && ClickPoint.Y > -1)
-				{
-					_nodeSelected = ((XCMapTile)MapFile[ClickPoint.Y, ClickPoint.X]).Node;
-				}
-				else
-					_nodeSelected = null;
+//				if (ClickPoint.X > -1 && ClickPoint.Y > -1)
+//				{
+//					_nodeSelected = ((XCMapTile)MapFile[ClickPoint.Y, ClickPoint.X]).Node;
+//				}
+//				else
+//					_nodeSelected = null;
 
 				DrawLinks();
 
-				if (_nodeSelected != null)
+				if (NodeSelected != null)
 					DrawLinkLines(
 							Origin.X + (ClickPoint.X - ClickPoint.Y)     * DrawAreaWidth,
 							Origin.Y + (ClickPoint.X + ClickPoint.Y + 1) * DrawAreaHeight,
-							_nodeSelected,
+							NodeSelected,
 							RoutePens[RouteView.SelectedLinkColor]);
 
 				DrawNodes();
@@ -95,18 +90,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 									new Pen( // TODO: make this a separate Option.
 											RoutePens[RouteView.GridLineColor].Color,
 											RoutePens[RouteView.GridLineColor].Width + 1),
-									_lozSelector);
+									LozSelector);
 				}
 
-				if (_selectedCol != -1)
-				{
-					PathSelectedLozenge(); // TODO: cache that.
+				if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick)
 					_graphics.DrawPath(
 									new Pen( // TODO: make this a separate Option.
 											RouteBrushes[RouteView.SelectedNodeColor].Color,
 											RoutePens[RouteView.GridLineColor].Width + 1),
-									_lozSelected);
-				}
+									LozSelected);
 
 				if (ShowPriorityBars)
 					DrawNodeImportanceMeters();
@@ -127,68 +119,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 //							8, 8);
 //				throw;
 //			}
-		}
-
-		/// <summary>
-		/// Sets the graphics-path for a lozenge-border around the tile that
-		/// is currently mouse-overed.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <returns></returns>
-		private void PathSelectorLozenge(int x, int y)
-		{
-			int halfWidth  = _blobService.HalfWidth;
-			int halfHeight = _blobService.HalfHeight;
-
-			var p0 = new Point(x,             y);
-			var p1 = new Point(x + halfWidth, y + halfHeight);
-			var p2 = new Point(x,             y + halfHeight * 2);
-			var p3 = new Point(x - halfWidth, y + halfHeight);
-
-			_lozSelector.Reset();
-			_lozSelector.AddLine(p0, p1);
-			_lozSelector.AddLine(p1, p2);
-			_lozSelector.AddLine(p2, p3);
-			_lozSelector.CloseFigure();
-		}
-
-		/// <summary>
-		/// Sets the graphics-path for a lozenge-border around the tile at the
-		/// current 'ClickPoint'.
-		/// </summary>
-		internal void PathSelectedLozenge()
-		{
-			int halfWidth  = _blobService.HalfWidth;
-			int halfHeight = _blobService.HalfHeight;
-
-			var p0 = new Point(
-							Origin.X + (_selectedCol - _selectedRow) * halfWidth,
-							Origin.Y + (_selectedCol + _selectedRow) * halfHeight);
-			var p1 = new Point(
-							Origin.X + (_selectedCol - _selectedRow) * halfWidth  + halfWidth,
-							Origin.Y + (_selectedCol + _selectedRow) * halfHeight + halfHeight);
-			var p2 = new Point(
-							Origin.X + (_selectedCol - _selectedRow) * halfWidth,
-							Origin.Y + (_selectedCol + _selectedRow) * halfHeight + halfHeight * 2);
-			var p3 = new Point(
-							Origin.X + (_selectedCol - _selectedRow) * halfWidth  - halfWidth,
-							Origin.Y + (_selectedCol + _selectedRow) * halfHeight + halfHeight);
-
-			_lozSelected.Reset();
-			_lozSelected.AddLine(p0, p1);
-			_lozSelected.AddLine(p1, p2);
-			_lozSelected.AddLine(p2, p3);
-			_lozSelected.CloseFigure();
-		}
-
-		internal void SetSelectedTile(int x, int y)
-		{
-			_selectedCol = x;
-			_selectedRow = y;
-
-			if (x != -1)
-				PathSelectedLozenge();
 		}
 
 
@@ -229,13 +159,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 						tile = MapFile[r, c] as XCMapTile;
 
 						if (tile.Content != null)
-							_blobService.DrawContent(_graphics, _toolContent, x, y, tile.Content);
+							BlobService.DrawContent(_graphics, _toolContent, x, y, tile.Content);
 
 						if (tile.West != null)
-							_blobService.DrawContent(_graphics, _toolWall, x, y, tile.West);
+							BlobService.DrawContent(_graphics, _toolWall, x, y, tile.West);
 
 						if (tile.North != null)
-							_blobService.DrawContent(_graphics, _toolWall, x, y, tile.North);
+							BlobService.DrawContent(_graphics, _toolWall, x, y, tile.North);
 					}
 				}
 			}
@@ -269,7 +199,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					if (MapFile[rSrc, cSrc] != null
 						&& (node = ((XCMapTile)MapFile[rSrc, cSrc]).Node) != null
-						&& (_nodeSelected == null || !_nodeSelected.Equals(node)))
+						&& (NodeSelected == null || !NodeSelected.Equals(node)))
 					{
 						DrawLinkLines(xSrc, ySrc, node, pen, false);
 					}
@@ -333,7 +263,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					default:
 						if ((nodeDst = MapFile.RouteFile[link.Destination]) != null
 							&& nodeDst.Lev == MapFile.Level
-							&& (_nodeSelected == null || !_nodeSelected.Equals(nodeDst)))
+							&& (NodeSelected == null || !NodeSelected.Equals(nodeDst)))
 						{
 							xDst = Origin.X + (nodeDst.Col - nodeDst.Row)     * DrawAreaWidth;
 							yDst = Origin.Y + (nodeDst.Col + nodeDst.Row + 1) * DrawAreaHeight;

@@ -5,8 +5,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-using MapView.Forms.MainWindow;
-
 using XCom;
 using XCom.Interfaces.Base;
 
@@ -23,13 +21,12 @@ namespace MapView.Forms.MapObservers.TopViews
 		#region Fields & Properties
 		private readonly GraphicsPath _lozSelector = new GraphicsPath(); // mouse-over cursor lozenge
 		private readonly GraphicsPath _lozSelected = new GraphicsPath(); // selected tile or tiles being drag-selected
-//		private readonly GraphicsPath _lozSel      = new GraphicsPath();
 
-		[Browsable(false), DefaultValue(null)]
+//		[Browsable(false), DefaultValue(null)]
 		internal protected Dictionary<string, Pen> TopPens
 		{ get; set; }
 
-		[Browsable(false), DefaultValue(null)]
+//		[Browsable(false), DefaultValue(null)]
 		internal protected Dictionary<string, SolidBrush> TopBrushes
 		{ get; set; }
 
@@ -45,10 +42,24 @@ namespace MapView.Forms.MapObservers.TopViews
 		private int _originY;	// But this isn't really used. It's set to 'OffsetY' and stays that way.
 
 
-		private DrawBlobService _blobService = new DrawBlobService();
+		private readonly DrawBlobService _blobService = new DrawBlobService();
 		internal protected DrawBlobService BlobService
 		{
 			get { return _blobService; }
+		}
+
+//		[Browsable(false), DefaultValue(null)]
+		public override XCMapBase MapBase
+		{
+			set
+			{
+				base.MapBase = value;
+
+				_blobService.HalfWidth = 8;
+
+				ResizeObserver(Parent.Width, Parent.Height);
+				Refresh();
+			}
 		}
 
 //		private int _lozHeightMin = 4;
@@ -64,34 +75,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		#endregion
 
 
-//		#region cTor
-//		/// <summary>
-//		/// cTor. Instantiated only as the parent of TopViewPanel.
-//		/// </summary>
-//		internal protected TopViewPanelParent()
-//		{}
-//		#endregion
-
-
-		[Browsable(false), DefaultValue(null)]
-		public override XCMapBase MapBase
-		{
-			set
-			{
-				base.MapBase = value;
-
-				_blobService.HalfWidth = 8;
-
-				ResizeObserver(Parent.Width, Parent.Height);
-				Refresh();
-			}
-		}
-
 		#region cTor
 		/// <summary>
-		/// cTor.
+		/// cTor. Instantiated only as the parent of TopViewPanel.
 		/// </summary>
-		internal TopViewPanelParent()
+		internal protected TopViewPanelParent()
 		{
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
 				   | ControlStyles.AllPaintingInWmPaint
@@ -171,11 +159,6 @@ namespace MapView.Forms.MapObservers.TopViews
 			PathSelectedLozenge();
 		}
 
-		internal protected void OnMouseDrag()
-		{
-			PathSelectedLozenge();
-		}
-
 		/// <summary>
 		/// Sets the graphics-path for a lozenge-border around all tiles that
 		/// are selected or being selected.
@@ -210,44 +193,29 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh();
 		}
 
-
-/*		/// <summary>
-		/// Inherited from IMapObserver through MapObserverControl0.
+		/// <summary>
+		/// Sets the graphics-path for a lozenge-border around the tile that
+		/// is currently mouse-overed.
 		/// </summary>
-		/// <param name="args"></param>
-		public override void OnLocationSelected_Observer(LocationSelectedEventArgs args)
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		private void PathSelectorLozenge(int x, int y)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("TopViewPanelParent.OnLocationSelected_Observer");
+			int halfWidth  = _blobService.HalfWidth;
+			int halfHeight = _blobService.HalfHeight;
 
-			var pt = e.MapLocation;
-//			Text = "c " + pt.Col + "  r " + pt.Row; // I don't think this actually prints anywhere.
+			var p0 = new Point(x,             y);
+			var p1 = new Point(x + halfWidth, y + halfHeight);
+			var p2 = new Point(x,             y + halfHeight * 2);
+			var p3 = new Point(x - halfWidth, y + halfHeight);
 
-			var halfWidth  = _drawService.HalfWidth;
-			var halfHeight = _drawService.HalfHeight;
-
-			int xc = (pt.Col - pt.Row) * halfWidth;
-			int yc = (pt.Col + pt.Row) * halfHeight;
-
-			_lozSel.Reset();
-			_lozSel.AddLine(
-					xc, yc,
-					xc + halfWidth, yc + halfHeight);
-			_lozSel.AddLine(
-					xc + halfWidth, yc + halfHeight,
-					xc, yc + 2 * halfHeight);
-			_lozSel.AddLine(
-					xc, yc + 2 * halfHeight,
-					xc - halfWidth, yc + halfHeight);
-			_lozSel.CloseFigure();
-
-			OnMouseDrag();
-
-			Refresh(); // I don't think this is needed.
-		} */
-
-		// NOTE: there is no OnLevelChanged_Observer for TopView.
-
+			_lozSelector.Reset();
+			_lozSelector.AddLine(p0, p1);
+			_lozSelector.AddLine(p1, p2);
+			_lozSelector.AddLine(p2, p3);
+			_lozSelector.CloseFigure();
+		}
 
 		/// <summary>
 		/// Overrides DoubleBufferControl.RenderGraphics() - ie, OnPaint().
@@ -321,28 +289,70 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
-		/// <summary>
-		/// Sets the graphics-path for a lozenge-border around the tile that
-		/// is currently mouse-overed.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <returns></returns>
-		private void PathSelectorLozenge(int x, int y)
+
+		private bool _isMouseDrag;
+
+		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			int halfWidth  = _blobService.HalfWidth;
-			int halfHeight = _blobService.HalfHeight;
+			if (MapBase != null)
+			{
+				var location = GetTileLocation(
+											e.X - _originX,
+											e.Y - _originY);
+				if (   location.Y > -1 && location.Y < MainViewUnderlay.Instance.MapBase.MapSize.Rows
+					&& location.X > -1 && location.X < MainViewUnderlay.Instance.MapBase.MapSize.Cols)
+				{
+					// as long as MainViewOverlay.OnLocationSelected_Main()
+					// fires before the subsidiary viewers' OnLocationSelected_Observer()
+					// functions fire, FirstClick is set okay by the former.
+					//
+					// See also, RouteView.OnLocationSelected_Observer()
+					// ps. The FirstClick flag for TopView should be set either in 
+					// this class's OnLocationSelected_Observer() handler or even
+					// QuadrantPanel.OnLocationSelected_Observer() ... anyway.
+					//
+					// or better: Make a flag of it in XCMapBase where Location is actually
+					// set and all these OnLocationSelected events really fire out of !
+//					MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
 
-			var p0 = new Point(x, y);
-			var p1 = new Point(x + halfWidth, y + halfHeight);
-			var p2 = new Point(x,             y + halfHeight * 2);
-			var p3 = new Point(x - halfWidth, y + halfHeight);
+					MapBase.Location = new MapLocation(
+													location.Y,
+													location.X,
+													MapBase.Level);
+					_isMouseDrag = true;
+					MainViewUnderlay.Instance.MainViewOverlay.TripMouseDragEvent(location, location);
+				}
+			}
+		}
 
-			_lozSelector.Reset();
-			_lozSelector.AddLine(p0, p1);
-			_lozSelector.AddLine(p1, p2);
-			_lozSelector.AddLine(p2, p3);
-			_lozSelector.CloseFigure();
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			_isMouseDrag = false;
+
+			// is Refresh needed for RouteView also - are refreshes needed for overlay/this, at all
+			// cf. RoutePanelParent.OnMouseUp()
+			MainViewUnderlay.Instance.MainViewOverlay.Refresh();
+			Refresh();
+		}
+
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			var end = GetTileLocation(
+									e.X - _originX,
+									e.Y - _originY);
+			if (end.X != _col || end.Y != _row)
+			{
+				_col = end.X;
+				_row = end.Y;
+
+				if (_isMouseDrag)
+				{
+					var mainOverlay = MainViewUnderlay.Instance.MainViewOverlay;
+					mainOverlay.TripMouseDragEvent(mainOverlay.DragStart, end);
+				}
+				else
+					Refresh(); // mouseover refresh for TopView.
+			}
 		}
 
 		/// <summary>
@@ -366,80 +376,53 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 
-		private bool _isMouseDrag;
-
-		protected override void OnMouseDown(MouseEventArgs e)
-		{
-			if (MapBase != null)
-			{
-				var location = GetTileLocation(
-											e.X - _originX,
-											e.Y - _originY);
-				if (   location.Y > -1 && location.Y < MainViewUnderlay.Instance.MapBase.MapSize.Rows
-					&& location.X > -1 && location.X < MainViewUnderlay.Instance.MapBase.MapSize.Cols)
-				{
-//					MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;	// as long as MainViewOverlay.OnLocationSelected_Main()
-																					// fires before the subsidiary viewers' OnLocationSelected_Observer()
-					MapBase.Location = new MapLocation(								// functions fire, FirstClick is set okay by the former.
-													location.Y,						// See also, RouteView.OnLocationSelected_Observer()
-													location.X,						// ps. The FirstClick flag for TopView should be set either in 
-													MapBase.Level);					// this class's OnLocationSelected_Observer() handler or even
-																					// QuadrantPanel.OnLocationSelected_Observer() ... anyway.
-					_isMouseDrag = true;											// or better: Make a flag of it in XCMapBase where Location is actually
-					MainViewUnderlay.Instance.MainViewOverlay.DragSelect(			// set and all these OnLocationSelected events really fire out of!
-																	location,
-																	location);
-
-					// update the selected tile for RouteView also (no drags allowed on RouteView however)
-					var routePanel = ViewerFormsManager.RouteView.Control.RoutePanel;
-					routePanel.SetSelectedTile(location.X, location.Y);
-					routePanel.Refresh();
-				}
-			}
-		}
-
-		protected override void OnMouseUp(MouseEventArgs e)
-		{
-			_isMouseDrag = false;
-			MainViewUnderlay.Instance.MainViewOverlay.Refresh();
-
-			Refresh();
-		}
-
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-			var pt = GetTileLocation(
-									e.X - _originX,
-									e.Y - _originY);
-			if (pt.X != _col || pt.Y != _row)
-			{
-				_col = pt.X;
-				_row = pt.Y;
-
-				if (_isMouseDrag)
-				{
-					var overlay = MainViewUnderlay.Instance.MainViewOverlay;
-					overlay.DragSelect(overlay.DragStart, pt);
-
-					// clear the selected lozenge on RouteView (no drags for RouteView)
-					var routePanel = ViewerFormsManager.RouteView.Control.RoutePanel;
-					routePanel.SetSelectedTile(-1, -1);
-					routePanel.Refresh();
-				}
-
-				Refresh(); // mouseover refresh for TopView.
-			}
-		}
-
 /*		/// <summary>
-		/// Scrolls the z-axis for TopRouteView. Sort of .... no, well no it doesn't.
+		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
-		/// <param name="e"></param>
-		protected override void OnMouseWheel(MouseEventArgs e)
+		/// <param name="args"></param>
+		public override void OnLocationSelected_Observer(LocationSelectedEventArgs args)
 		{
-			base.OnMouseWheel(e);
-			if		(e.Delta < 0) base.Map.Up();
-			else if	(e.Delta > 0) base.Map.Down();
+			LogFile.WriteLine("");
+			LogFile.WriteLine("TopViewPanelParent.OnLocationSelected_Observer");
+
+			var pt = e.MapLocation;
+//			Text = "c " + pt.Col + "  r " + pt.Row; // I don't think this actually prints anywhere.
+
+			var halfWidth  = _drawService.HalfWidth;
+			var halfHeight = _drawService.HalfHeight;
+
+			int xc = (pt.Col - pt.Row) * halfWidth;
+			int yc = (pt.Col + pt.Row) * halfHeight;
+
+			_lozSel.Reset();
+			_lozSel.AddLine(
+					xc, yc,
+					xc + halfWidth, yc + halfHeight);
+			_lozSel.AddLine(
+					xc + halfWidth, yc + halfHeight,
+					xc, yc + 2 * halfHeight);
+			_lozSel.AddLine(
+					xc, yc + 2 * halfHeight,
+					xc - halfWidth, yc + halfHeight);
+			_lozSel.CloseFigure();
+
+			OnMouseDrag();
+
+			Refresh(); // I don't think this is needed.
 		} */
+
+		// NOTE: there is no OnLevelChanged_Observer for TopView.
+
+
+//		/// <summary>
+//		/// Scrolls the z-axis for TopRouteView. Sort of .... no, well no it doesn't.
+//		/// </summary>
+//		/// <param name="e"></param>
+//		protected override void OnMouseWheel(MouseEventArgs e)
+//		{
+//			base.OnMouseWheel(e);
+//			if		(e.Delta < 0) base.Map.Up();
+//			else if	(e.Delta > 0) base.Map.Down();
+//		}
 	}
 }

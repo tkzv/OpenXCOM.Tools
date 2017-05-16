@@ -705,7 +705,6 @@ namespace DSShared.Windows
 			base.OnPaint(e);
 			var graphics = e.Graphics;
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-//			graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 			/********** Vertical splitter ********/
 			if (Dock == DockStyle.Left || Dock == DockStyle.Right)

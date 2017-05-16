@@ -41,7 +41,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		internal TopViewPanel()
 		{
-			MainViewUnderlay.Instance.MainViewOverlay.MouseDragEvent += OnMouseDrag;
+			MainViewUnderlay.Instance.MainViewOverlay.MouseDragEvent += PathSelectedLozenge;
 
 			(this as Control).KeyDown += OnEditKeyDown;
 		}
@@ -86,7 +86,6 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			var graphics = e.Graphics;
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-//			graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 			ControlPaint.DrawBorder3D(graphics, ClientRectangle, Border3DStyle.Etched);
 		}
@@ -96,8 +95,6 @@ namespace MapView.Forms.MapObservers.TopViews
 			base.OnMouseDown(e);
 
 			Focus(); // needed for KeyDown events.
-
-			OnMouseDrag();
 
 			if (e.Button == MouseButtons.Right)
 				QuadrantsPanel.SetSelected(e.Button, 1);
@@ -113,15 +110,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			var mapTile = (XCMapTile)tile;
 
-			if (_toolWest == null)
-				_toolWest = new ColorTools(TopPens[TopView.WestColor]);
-
-			if (_toolNorth == null)
-				_toolNorth = new ColorTools(TopPens[TopView.NorthColor]);
-
-			if (_toolContent == null)
-				_toolContent = new ColorTools(TopBrushes[TopView.ContentColor], _toolNorth.Pen.Width);
-
+			_toolWest    = _toolWest    ?? new ColorTools(TopPens[TopView.WestColor]);
+			_toolNorth   = _toolNorth   ?? new ColorTools(TopPens[TopView.NorthColor]);
+			_toolContent = _toolContent ?? new ColorTools(TopBrushes[TopView.ContentColor], _toolNorth.Pen.Width);
 
 			if (Ground.Checked && mapTile.Ground != null)
 				BlobService.DrawFloor(

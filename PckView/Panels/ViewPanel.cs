@@ -426,7 +426,6 @@ namespace PckView
 			{
 				var graphics = e.Graphics;
 				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-//				graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 
 				if (!_scrollBar.Visible) // indicate the reserved width for scrollbar.

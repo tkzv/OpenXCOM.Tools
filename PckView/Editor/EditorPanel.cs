@@ -132,7 +132,6 @@ namespace PckView
 		{
 			var graphics = e.Graphics;
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-//			graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 			int width  = _sprite.Image.Width;
 			int height = _sprite.Image.Height;

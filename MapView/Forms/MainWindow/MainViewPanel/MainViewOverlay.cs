@@ -67,21 +67,9 @@ namespace MapView
 				{
 					_dragStart = new Point(-1, -1);
 					_dragEnd   = new Point(-1, -1);
-
-					// clear the selected tile on TopView
-//					ViewerFormsManager.TopView.Control.TopViewPanel.PathSelectedLozenge();
-//					ViewerFormsManager.TopView.Control.TopViewPanel.Refresh();
-
-					// clear the selected tile for RouteView also
-					ViewerFormsManager.RouteView.Control.RoutePanel.SetSelectedTile(-1, -1); // NOTE: does not understand 'dragStart/dragEnd' like TopView does.
-//					ViewerFormsManager.RouteView.Control.RoutePanel.PathSelectedLozenge();
 				}
 			}
 		}
-
-		private int _col; // these are used only to print the clicked location info.
-		private int _row;
-		private int _lev;
 
 
 		internal CursorSprite Cuboid
@@ -417,24 +405,16 @@ namespace MapView
 
 			if (MapBase != null)
 			{
-				var dragStart = GetTileLocation(e.X, e.Y);
-				if (   dragStart.X > -1 && dragStart.X < MapBase.MapSize.Cols
-					&& dragStart.Y > -1 && dragStart.Y < MapBase.MapSize.Rows)
+				var start = GetTileLocation(e.X, e.Y);
+				if (   start.X > -1 && start.X < MapBase.MapSize.Cols
+					&& start.Y > -1 && start.Y < MapBase.MapSize.Rows)
 				{
-					_isMouseDrag = true;
-					DragSelect(dragStart, dragStart);
-
 					MapBase.Location = new MapLocation(
-													dragStart.Y,
-													dragStart.X,
+													start.Y,
+													start.X,
 													MapBase.Level);
-					Refresh();
-
-					// update the selected tile for RouteView (no drags allowed on RouteView however)
-					// NOTE: TopView understands drags and updates auto.
-					var routePanel = ViewerFormsManager.RouteView.Control.RoutePanel;
-					routePanel.SetSelectedTile(dragStart.X, dragStart.Y);
-					routePanel.Refresh();
+					_isMouseDrag = true;
+					TripMouseDragEvent(start, start);
 				}
 			}
 		}
@@ -456,20 +436,13 @@ namespace MapView
 		{
 			if (MapBase != null)
 			{
-				var location = GetTileLocation(e.X, e.Y);
-				if (location.X != DragEnd.X || location.Y != DragEnd.Y)
+				var end = GetTileLocation(e.X, e.Y);
+				if (end.X != DragEnd.X || end.Y != DragEnd.Y)
 				{
 					if (_isMouseDrag)
-					{
-						DragSelect(DragStart, location);
-
-						// clear the selected lozenge on RouteView (no drags for RouteView)
-						var routePanel = ViewerFormsManager.RouteView.Control.RoutePanel;
-						routePanel.SetSelectedTile(-1, -1);
-						routePanel.Refresh();
-					}
-
-					Refresh(); // mouseover refresh for MainView.
+						TripMouseDragEvent(DragStart, end);
+					else
+						Refresh(); // mouseover refresh for MainView.
 				}
 			}
 		}
@@ -479,48 +452,40 @@ namespace MapView
 		/// </summary>
 		/// <param name="start"></param>
 		/// <param name="end"></param>
-		internal void DragSelect(Point start, Point end)
+		internal void TripMouseDragEvent(Point start, Point end)
 		{
 			if (DragStart != start || DragEnd != end)
 			{
-				DragStart = start;
-				DragEnd   = end;
+				DragStart = start;	// these ensure that the start and end points stay
+				DragEnd   = end;	// within the bounds of the currently loaded map.
 	
 				if (MouseDragEvent != null)
 					MouseDragEvent();
 
-				// refreshes MainView in realtime iff a drag-select is happening in TopView.
-				// But if the drag-select is done on MainView itself this is not needed to update the selection in realtime.
-				Refresh();	// this refreshes MainView for a click on RouteView
-			}				// unless the click is at location (0,0) *and* the
-		}					// map has just been loaded ... NOTE: a click on
-							// TopView will refresh the MainView selected-tile
-							// by some other other way ... -> TopViewPanelParent.OnMouseUp().
+				RefreshViewers();
+			}
+		}
 
 		/// <summary>
 		/// Gets the drag-start point as a lesser value than the drag-end point.
-		/// See 'DragStart'.
+		/// See 'DragStart' for bounds.
 		/// </summary>
 		/// <returns></returns>
 		internal Point GetCanonicalDragStart()
 		{
 			return new Point(
-//						Math.Max(Math.Min(DragStart.X, DragEnd.X), 0),	// NOTE: the bounds should be okay (see DragStart/DragEnd)
-//						Math.Max(Math.Min(DragStart.Y, DragEnd.Y), 0));	// only the Min() is needed.
 						Math.Min(DragStart.X, DragEnd.X),
 						Math.Min(DragStart.Y, DragEnd.Y));
 		}
 
 		/// <summary>
 		/// Gets the drag-end point as a greater value than the drag-start point.
-		/// See 'DragEnd'.
+		/// See 'DragEnd' for bounds.
 		/// </summary>
 		/// <returns></returns>
 		internal Point GetCanonicalDragEnd()
 		{
 			return new Point(
-//						Math.Min(Math.Max(DragStart.X, DragEnd.X), MapBase.MapSize.Cols - 1),	// NOTE: the bounds should be okay (see DragStart/DragEnd)
-//						Math.Min(Math.Max(DragStart.Y, DragEnd.Y), MapBase.MapSize.Rows - 1));	// only the Max() is needed.
 						Math.Max(DragStart.X, DragEnd.X),
 						Math.Max(DragStart.Y, DragEnd.Y));
 		}
@@ -567,6 +532,10 @@ namespace MapView
 		#endregion
 
 
+		private int _col; // these are used only to print the clicked location info.
+		private int _row;
+		private int _lev;
+
 		/// <summary>
 		/// Fires when a location is selected in MainView.
 		/// </summary>
@@ -582,11 +551,8 @@ namespace MapView
 			_row = args.Location.Row;
 			_lev = args.Location.Lev;
 
-			DragSelect(new Point(_col, _row), DragEnd);
-
 			XCMainWindow.Instance.StatusBarPrintPosition(
-													_col,
-													_row,
+													_col, _row,
 													MapBase.MapSize.Levs - _lev);
 		}
 
@@ -598,8 +564,7 @@ namespace MapView
 		{
 			_lev = args.Level;
 			XCMainWindow.Instance.StatusBarPrintPosition(
-													_col,
-													_row,
+													_col, _row,
 													MapBase.MapSize.Levs - _lev);
 			Refresh();
 		}
@@ -619,12 +584,9 @@ namespace MapView
 				_graphics = e.Graphics;
 				_graphics.InterpolationMode = InterpolationLocal;
 				_graphics.PixelOffsetMode   = PixelOffsetMode.HighQuality;
-//				_graphics.SmoothingMode     = SmoothingMode.HighQuality;
 
-//				if (!_isMouseDrag
-//					|| (DragStart.X == DragEnd.X && DragStart.Y == DragEnd.Y))
 				if (_spriteShadeEnabled)
-					_spriteAttributes.SetGamma(SpriteDarknessLocal, ColorAdjustType.Bitmap); // TODO: laggy ....
+					_spriteAttributes.SetGamma(SpriteDarknessLocal, ColorAdjustType.Bitmap);
 
 				// Image Processing using C# - https://www.codeproject.com/Articles/33838/Image-Processing-using-C
 				// ColorMatrix Guide - https://docs.rainmeter.net/tips/colormatrix-guide/
@@ -694,9 +656,7 @@ namespace MapView
 								bool isGray = FirstClick && lev == MapBase.Level && _graySelection
 										   && (isClicked || dragRect.IntersectsWith(tileRect));
 
-//								if (System.Windows.Forms.Control.MouseButtons != System.Windows.Forms.MouseButtons.Left) // TEST.
-//								if (!_isMouseDrag)
-									DrawTile(tile, x, y, isGray);
+								DrawTile(tile, x, y, isGray);
 							}
 
 							if (FirstClick && isClicked && Cuboid != null)
@@ -714,7 +674,7 @@ namespace MapView
 
 //				if (_drawSelectionBox) // always false.
 				if (FirstClick && !_graySelection)
-					DrawSelectedLozenge(dragRect);
+					DrawSelectionLozenge(dragRect);
 			}
 		}
 
@@ -869,7 +829,7 @@ namespace MapView
 		/// selected tiles in grayscale is FALSE.
 		/// </summary>
 		/// <param name="dragRect"></param>
-		private void DrawSelectedLozenge(Rectangle dragRect)
+		private void DrawSelectionLozenge(Rectangle dragRect)
 		{
 			var top    = GetScreenCoordinates(new Point(dragRect.X,     dragRect.Y));
 			var right  = GetScreenCoordinates(new Point(dragRect.Right, dragRect.Y));

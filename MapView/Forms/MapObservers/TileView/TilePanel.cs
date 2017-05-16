@@ -290,7 +290,6 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				var graphics = e.Graphics;
 				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-//				graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 				int x = 0;
 				int y = 0;

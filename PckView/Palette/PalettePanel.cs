@@ -97,7 +97,6 @@ namespace PckView
 			{
 				var graphics = e.Graphics;
 				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-//				graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 				for (int
 						i = 0,

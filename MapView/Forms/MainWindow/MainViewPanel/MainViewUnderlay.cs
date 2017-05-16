@@ -154,7 +154,6 @@ namespace MapView
 			// indicate reserved space for scroll-bars.
 			var graphics = e.Graphics;
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-//			graphics.SmoothingMode = SmoothingMode.HighQuality;
 
 			var pen = new Pen(SystemColors.ControlLight, 1);
 			graphics.DrawLine(

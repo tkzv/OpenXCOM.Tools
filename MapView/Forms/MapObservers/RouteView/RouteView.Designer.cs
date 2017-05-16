@@ -344,46 +344,46 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.tbLink5Dist.Location = new System.Drawing.Point(240, 125);
 			this.tbLink5Dist.Name = "tbLink5Dist";
+			this.tbLink5Dist.ReadOnly = true;
 			this.tbLink5Dist.Size = new System.Drawing.Size(30, 19);
 			this.tbLink5Dist.TabIndex = 32;
-			this.tbLink5Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnLink5DistKeyDown);
-			this.tbLink5Dist.Leave += new System.EventHandler(this.OnLink5DistLeave);
+			this.tbLink5Dist.WordWrap = false;
 			// 
 			// tbLink4Dist
 			// 
 			this.tbLink4Dist.Location = new System.Drawing.Point(240, 100);
 			this.tbLink4Dist.Name = "tbLink4Dist";
+			this.tbLink4Dist.ReadOnly = true;
 			this.tbLink4Dist.Size = new System.Drawing.Size(30, 19);
 			this.tbLink4Dist.TabIndex = 31;
-			this.tbLink4Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnLink4DistKeyDown);
-			this.tbLink4Dist.Leave += new System.EventHandler(this.OnLink4DistLeave);
+			this.tbLink4Dist.WordWrap = false;
 			// 
 			// tbLink3Dist
 			// 
 			this.tbLink3Dist.Location = new System.Drawing.Point(240, 75);
 			this.tbLink3Dist.Name = "tbLink3Dist";
+			this.tbLink3Dist.ReadOnly = true;
 			this.tbLink3Dist.Size = new System.Drawing.Size(30, 19);
 			this.tbLink3Dist.TabIndex = 30;
-			this.tbLink3Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnLink3DistKeyDown);
-			this.tbLink3Dist.Leave += new System.EventHandler(this.OnLink3DistLeave);
+			this.tbLink3Dist.WordWrap = false;
 			// 
 			// tbLink2Dist
 			// 
 			this.tbLink2Dist.Location = new System.Drawing.Point(240, 50);
 			this.tbLink2Dist.Name = "tbLink2Dist";
+			this.tbLink2Dist.ReadOnly = true;
 			this.tbLink2Dist.Size = new System.Drawing.Size(30, 19);
 			this.tbLink2Dist.TabIndex = 29;
-			this.tbLink2Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnLink2DistKeyDown);
-			this.tbLink2Dist.Leave += new System.EventHandler(this.OnLink2DistLeave);
+			this.tbLink2Dist.WordWrap = false;
 			// 
 			// tbLink1Dist
 			// 
 			this.tbLink1Dist.Location = new System.Drawing.Point(240, 25);
 			this.tbLink1Dist.Name = "tbLink1Dist";
+			this.tbLink1Dist.ReadOnly = true;
 			this.tbLink1Dist.Size = new System.Drawing.Size(30, 19);
 			this.tbLink1Dist.TabIndex = 28;
-			this.tbLink1Dist.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnLink1DistKeyDown);
-			this.tbLink1Dist.Leave += new System.EventHandler(this.OnLink1DistLeave);
+			this.tbLink1Dist.WordWrap = false;
 			// 
 			// labelDist
 			// 
