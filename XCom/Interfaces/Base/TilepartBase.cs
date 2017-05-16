@@ -33,15 +33,15 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// This is the ID unique to this TilepartBase after it has been loaded.
+		/// The ID of this tilepart that's unique to its terrain/MCD.
 		/// </summary>
 		public int Id
-		{ get; protected set; }
+		{ get; private set; }
 
 		/// <summary>
-		/// This is the ID by which the Map knows this tile by.
+		/// The ID of this tilepart that's unique to the Map.
 		/// </summary>
-		public int TileListId
+		public int PartListId
 		{ get; set; }
 
 
@@ -52,7 +52,7 @@ namespace XCom.Interfaces.Base
 		internal TilepartBase(int id)
 		{
 			Id = id;
-			TileListId = -1;
+			PartListId = -1;
 		}
 	}
 }

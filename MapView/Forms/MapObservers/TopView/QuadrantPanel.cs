@@ -159,7 +159,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 							case 2:
 								var tileView = ViewerFormsManager.TileView.Control;
-								tileView.SelectedTile = _tile[SelectedQuadrant];
+								tileView.SelectedTilePart = _tile[SelectedQuadrant];
 								break;
 						}
 						break;
@@ -170,7 +170,7 @@ namespace MapView.Forms.MapObservers.TopViews
 						{
 							case 1:
 								var tileView = ViewerFormsManager.TileView.Control;
-								_tile[SelectedQuadrant] = tileView.SelectedTile;
+								_tile[SelectedQuadrant] = tileView.SelectedTilePart;
 								break;
 
 							case 2:

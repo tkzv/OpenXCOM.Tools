@@ -37,17 +37,17 @@ namespace MapView
 			var mapFile = mapBase as XCMapFile;
 			if (mapFile != null)
 			{
-				foreach (string dep in mapFile.Dependencies)
+				foreach (string terrain in mapFile.Terrains)
 				{
 					if (first)
 						first = false;
 					else
 						lbl2Tilesets.Text += ";";
 
-					lbl2Tilesets.Text += dep;
+					lbl2Tilesets.Text += terrain;
 
-					recordsTotal += GameInfo.ImageInfo[dep].GetRecords().Count;
-					spritesTotal += GameInfo.ImageInfo[dep].GetPckPack().Count;
+					recordsTotal += GameInfo.ImageInfo[terrain].GetRecords().Count;
+					spritesTotal += GameInfo.ImageInfo[terrain].GetPckPack().Count;
 				}
 			}
 

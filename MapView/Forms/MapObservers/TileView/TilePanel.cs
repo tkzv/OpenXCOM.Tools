@@ -74,11 +74,11 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 		/// <summary>
-		/// Gets the selected-tile-id.
-		/// Sets the selected-tile-id when a valid QuadrantPanel quad is
+		/// Gets the selected-tilepart-id.
+		/// Sets the selected-tilepart-id when a valid QuadrantPanel quad is
 		/// double-clicked.
 		/// </summary>
-		internal TilepartBase TileSelected
+		internal TilepartBase PartSelected
 		{
 			get
 			{
@@ -91,10 +91,10 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				if (value != null)
 				{
-					_id = value.TileListId + 1; // +1 to account for the eraser - not sure.
+					_id = value.PartListId + 1; // +1 to account for the eraser - not sure.
 
 					if (TileSelectedEvent != null)
-						TileSelectedEvent(TileSelected);
+						TileSelectedEvent(PartSelected);
 
 					ScrollToTile();
 				}
@@ -240,7 +240,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				_id = id;
 
 				if (TileSelectedEvent != null)
-					TileSelectedEvent(TileSelected);
+					TileSelectedEvent(PartSelected);
 
 				ScrollToTile();
 				Refresh();

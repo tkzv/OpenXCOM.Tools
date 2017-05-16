@@ -19,10 +19,10 @@ namespace XCom
 		private readonly string _path       = String.Empty;
 		private readonly string _pathOccult = String.Empty;
 
-		private readonly string[] _deps;
-		public string[] Dependencies
+		private readonly string[] _terrains;
+		public string[] Terrains
 		{
-			get { return _deps; }
+			get { return _terrains; }
 		}
 
 		private RouteNodeCollection _routeFile;
@@ -41,57 +41,55 @@ namespace XCom
 		/// <param name="path"></param>
 		/// <param name="pathOccult"></param>
 		/// <param name="parts"></param>
-		/// <param name="dependencies"></param>
+		/// <param name="terrains"></param>
 		/// <param name="routeFile"></param>
 		internal XCMapFile(
 				string file,
 				string path,
 				string pathOccult,
 				List<TilepartBase> parts,
-				string[] dependencies,
+				string[] terrains,
 				RouteNodeCollection routeFile)
 			:
 				base(file, parts)
 		{
-			_file = file;
-			_path = path;
+			_file       = file;
+			_path       = path;
 			_pathOccult = pathOccult;
+			_terrains   = terrains;
+			_routeFile  = routeFile;
 
-			_deps = dependencies;
-
-			_routeFile = routeFile;
-
-			var pfe = path + file + MapExt;
+			string pfe = path + file + MapExt;
 			if (!File.Exists(pfe))
 			{
 				throw new FileNotFoundException(pfe);
 			}
 
 			for (int i = 0; i != parts.Count; ++i)
-				parts[i].TileListId = i;
+				parts[i].PartListId = i;
 
 			ReadMapFile(File.OpenRead(pfe), parts);
 
-			SetupRoutes(routeFile);
+			SetupRouteNodes(routeFile);
 
 			if (!String.IsNullOrEmpty(pathOccult))
 			{
 				if (File.Exists(pathOccult + file + OccultFile.OccultExt))
 				{
-//					try
-//					{
-					OccultFile.LoadOccult(file, pathOccult, this);
-//					}
-//					catch
-//					{
-//						for (int lev = 0; lev != MapSize.Levs; ++lev)
-//						for (int row = 0; row != MapSize.Rows; ++row)
-//						for (int col = 0; col != MapSize.Cols; ++col)
-//						{
-//							this[row, col, lev].Occulted = false;
-//						}
-//						throw;
-//					}
+					try
+					{
+						OccultFile.LoadOccult(file, pathOccult, this);
+					}
+					catch // TODO: send warning to user.
+					{
+						for (int lev = 0; lev != MapSize.Levs; ++lev)
+						for (int row = 0; row != MapSize.Rows; ++row)
+						for (int col = 0; col != MapSize.Cols; ++col)
+						{
+							this[row, col, lev].Occulted = false;
+						}
+						throw;
+					}
 				}
 				else
 					CalculateOccultations();
@@ -130,7 +128,7 @@ namespace XCom
 			}
 		}
 
-		private void SetupRoutes(RouteNodeCollection file)
+		private void SetupRouteNodes(RouteNodeCollection file)
 		{
 //			if (file.ExtraHeight != 0) // remove ExtraHeight for editing - see Save() below_
 //				foreach (RouteNode node in file)
@@ -146,39 +144,45 @@ namespace XCom
 
 		public void CalculateOccultations()
 		{
-			for (int lev = MapSize.Levs - 1; lev > -1; --lev)
-			for (int row = 0; row < MapSize.Rows - 2; ++row)
-			for (int col = 0; col < MapSize.Cols - 2; ++col)
+			if (MapSize.Levs > 1) // NOTE: Maps shall be at least 10x10x1 ...
 			{
-				if (this[row, col, lev] != null && lev - 1 > -1)	// TODO: should probably be "lev-1 > 0"
-				{
-					var tile = (XCMapTile)this[row, col, lev - 1];	// TODO: ... because "lev-1"
+				MapTileBase tile = null;
 
-					if (   tile != null								// TODO: doesn't happen anyway.
-						&& tile.Ground != null											// top
-						&& ((XCMapTile)this[row + 1, col,     lev - 1]).Ground != null	// south
-						&& ((XCMapTile)this[row + 2, col,     lev - 1]).Ground != null
-						&& ((XCMapTile)this[row + 1, col + 1, lev - 1]).Ground != null	// southeast
-						&& ((XCMapTile)this[row + 2, col + 1, lev - 1]).Ground != null
-						&& ((XCMapTile)this[row + 2, col + 2, lev - 1]).Ground != null
-						&& ((XCMapTile)this[row,     col + 1, lev - 1]).Ground != null	// east
-						&& ((XCMapTile)this[row,     col + 2, lev - 1]).Ground != null
-						&& ((XCMapTile)this[row + 1, col + 2, lev - 1]).Ground != null)
+				for (int lev = MapSize.Levs - 1; lev != 0; --lev)
+				for (int row = 0; row != MapSize.Rows - 2; ++row)
+				for (int col = 0; col != MapSize.Cols - 2; ++col)
+				{
+					if ((tile = this[row, col, lev]) != null) // safety. The tile should always be valid.
 					{
-						this[row, col, lev].Occulted = true;
+						if (   ((XCMapTile)this[row,     col,     lev - 1]).Ground != null // above
+
+							&& ((XCMapTile)this[row + 1, col,     lev - 1]).Ground != null // south
+							&& ((XCMapTile)this[row + 2, col,     lev - 1]).Ground != null
+
+							&& ((XCMapTile)this[row,     col + 1, lev - 1]).Ground != null // east
+							&& ((XCMapTile)this[row,     col + 2, lev - 1]).Ground != null
+
+							&& ((XCMapTile)this[row + 1, col + 1, lev - 1]).Ground != null // southeast
+							&& ((XCMapTile)this[row + 1, col + 2, lev - 1]).Ground != null
+							&& ((XCMapTile)this[row + 2, col + 1, lev - 1]).Ground != null
+							&& ((XCMapTile)this[row + 2, col + 2, lev - 1]).Ground != null)
+						{
+							tile.Occulted = true;
+						}
+						else
+							tile.Occulted = false;
 					}
-					else
-						this[row, col, lev].Occulted = false;
 				}
+				OccultFile.SaveOccult(_file, _pathOccult, this);
 			}
-			OccultFile.SaveOccult(_file, _pathOccult, this);
+			//else // TODO: inform user that the current map has only 1 level and no .OTD will be created.
 		}
 
-		public string GetDepLabel(TilepartBase part)
+		public string GetTerrainLabel(TilepartBase part)
 		{
 			int id = -1;
 
-			foreach (var tile1 in Tiles)
+			foreach (var tile1 in Parts)
 			{
 				if (tile1.Id == 0)
 					++id;
@@ -187,8 +191,8 @@ namespace XCom
 					break;
 			}
 
-			if (id != -1 && id < _deps.Length)
-				return _deps[id];
+			if (id != -1 && id < _terrains.Length)
+				return _terrains[id];
 
 			return null;
 		}
@@ -261,22 +265,22 @@ namespace XCom
 					if (tile.Ground == null)
 						fs.WriteByte(0);
 					else
-						fs.WriteByte((byte)(tile.Ground.TileListId + 2)); // why "+2" -> reserved for the 2 Blank tiles.
+						fs.WriteByte((byte)(tile.Ground.PartListId + 2)); // why "+2" -> reserved for the 2 Blank tiles.
 
 					if (tile.West == null)
 						fs.WriteByte(0);
 					else
-						fs.WriteByte((byte)(tile.West.TileListId + 2));
+						fs.WriteByte((byte)(tile.West.PartListId + 2));
 
 					if (tile.North == null)
 						fs.WriteByte(0);
 					else
-						fs.WriteByte((byte)(tile.North.TileListId + 2));
+						fs.WriteByte((byte)(tile.North.PartListId + 2));
 
 					if (tile.Content == null)
 						fs.WriteByte(0);
 					else
-						fs.WriteByte((byte)(tile.Content.TileListId + 2));
+						fs.WriteByte((byte)(tile.Content.PartListId + 2));
 				}
 
 //				fs.WriteByte(RouteFile.ExtraHeight); // <- NON-STANDARD <-| See also ReadMapFile() above^

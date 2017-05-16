@@ -52,29 +52,29 @@ namespace MapView.Forms.MapObservers.TileViews
 			set
 			{
 				base.MapBase = value;
-				Tiles = (value != null) ? value.Tiles
-										: null;
+				TileParts = (value != null) ? value.Parts
+											: null;
 			}
 		}
 
-		private System.Collections.Generic.IList<TilepartBase> Tiles
+		private System.Collections.Generic.IList<TilepartBase> TileParts
 		{
 			set
 			{
-				for (int i = 0; i != _panels.Length; ++i)
-					_panels[i].SetTiles(value);
+				for (int id = 0; id != _panels.Length; ++id)
+					_panels[id].SetTiles(value);
 
 				OnResize(null);
 			}
 		}
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		internal TilepartBase SelectedTile
+		internal TilepartBase SelectedTilePart
 		{
-			get { return _panels[tcTileTypes.SelectedIndex].TileSelected; }
+			get { return _panels[tcTileTypes.SelectedIndex].PartSelected; }
 			set
 			{
-				_allTiles.TileSelected = value;
+				_allTiles.PartSelected = value;
 				tcTileTypes.SelectedIndex = 0;
 
 				Refresh();
@@ -140,12 +140,12 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			McdRecord record = null;
 
-			if (SelectedTile != null)
+			if (SelectedTilePart != null)
 			{
-				ViewerFormsManager.TopView.Control.SelectQuadrant(SelectedTile.Record.TileType);
+				ViewerFormsManager.TopView.Control.SelectQuadrant(SelectedTilePart.Record.TileType);
 
-				f.Text = BuildTitleString(SelectedTile.TileListId, SelectedTile.Id);
-				record = SelectedTile.Record;
+				f.Text = BuildTitleString(SelectedTilePart.PartListId, SelectedTilePart.Id);
+				record = SelectedTilePart.Record;
 			}
 			else
 				f.Text = "Tile View";
@@ -167,7 +167,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (part != null)
 			{
-				f.Text = BuildTitleString(part.TileListId, part.Id);
+				f.Text = BuildTitleString(part.PartListId, part.Id);
 				record = part.Record;
 			}
 			else
@@ -383,10 +383,10 @@ namespace MapView.Forms.MapObservers.TileViews
 
 					McdRecord record = null;
 
-					var tile = SelectedTile;
+					var tile = SelectedTilePart;
 					if (tile != null)
 					{
-						f.Text = BuildTitleString(tile.TileListId, tile.Id);
+						f.Text = BuildTitleString(tile.PartListId, tile.Id);
 						record = tile.Record;
 					}
 					else
@@ -555,12 +555,12 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <returns></returns>
 		private string GetDepLabel()
 		{
-			var tile = SelectedTile;
+			var tile = SelectedTilePart;
 			if (tile != null)
 			{
 				var mapFile = MapBase as XCMapFile;
 				if (mapFile != null)
-					return mapFile.GetDepLabel(tile);
+					return mapFile.GetTerrainLabel(tile);
 			}
 			return null;
 		}

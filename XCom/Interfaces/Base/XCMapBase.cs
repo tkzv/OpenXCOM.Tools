@@ -59,7 +59,7 @@ namespace XCom.Interfaces.Base
 		{ get; set; }
 
 		private readonly List<TilepartBase> _parts;
-		public List<TilepartBase> Tiles
+		public List<TilepartBase> Parts
 		{
 			get { return _parts; }
 		}
