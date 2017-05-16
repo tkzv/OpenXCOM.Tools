@@ -61,13 +61,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				DrawBlobs();
 
-//				if (ClickPoint.X > -1 && ClickPoint.Y > -1)
-//				{
-//					_nodeSelected = ((XCMapTile)MapFile[ClickPoint.Y, ClickPoint.X]).Node;
-//				}
-//				else
-//					_nodeSelected = null;
-
 				DrawLinks();
 
 				if (NodeSelected != null)

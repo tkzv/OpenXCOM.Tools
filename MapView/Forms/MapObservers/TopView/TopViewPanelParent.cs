@@ -296,11 +296,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			if (MapBase != null)
 			{
-				var location = GetTileLocation(
-											e.X - _originX,
-											e.Y - _originY);
-				if (   location.Y > -1 && location.Y < MainViewUnderlay.Instance.MapBase.MapSize.Rows
-					&& location.X > -1 && location.X < MainViewUnderlay.Instance.MapBase.MapSize.Cols)
+				var start = GetTileLocation(e.X, e.Y);
+				if (   start.Y > -1 && start.Y < MainViewUnderlay.Instance.MapBase.MapSize.Rows
+					&& start.X > -1 && start.X < MainViewUnderlay.Instance.MapBase.MapSize.Cols)
 				{
 					// as long as MainViewOverlay.OnLocationSelected_Main()
 					// fires before the subsidiary viewers' OnLocationSelected_Observer()
@@ -316,11 +314,10 @@ namespace MapView.Forms.MapObservers.TopViews
 //					MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
 
 					MapBase.Location = new MapLocation(
-													location.Y,
-													location.X,
+													start.Y, start.X,
 													MapBase.Level);
 					_isMouseDrag = true;
-					MainViewUnderlay.Instance.MainViewOverlay.TripMouseDragEvent(location, location);
+					MainViewUnderlay.Instance.MainViewOverlay.TripMouseDragEvent(start, start);
 				}
 			}
 		}
@@ -328,18 +325,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			_isMouseDrag = false;
-
-			// is Refresh needed for RouteView also - are refreshes needed for overlay/this, at all
-			// cf. RoutePanelParent.OnMouseUp()
-			MainViewUnderlay.Instance.MainViewOverlay.Refresh();
-			Refresh();
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			var end = GetTileLocation(
-									e.X - _originX,
-									e.Y - _originY);
+			var end = GetTileLocation(e.X, e.Y);
 			if (end.X != _col || end.Y != _row)
 			{
 				_col = end.X;
@@ -363,6 +353,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <returns></returns>
 		private Point GetTileLocation(int x, int y)
 		{
+			x -= _originX;
+			y -= _originY;
+
 			double halfWidth  = _blobService.HalfWidth;
 			double halfHeight = _blobService.HalfHeight;
 

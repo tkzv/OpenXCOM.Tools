@@ -176,46 +176,37 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (MapFile != null && RoutePanelClickedEvent != null)
+			if (MapFile != null)
 			{
-				var location = GetTileLocation(e.X, e.Y);
-				if (location.X != -1)
+				var start = GetTileLocation(e.X, e.Y);
+				if (start.X != -1)
 				{
-//					var tile = MapFile[loc.Y, loc.X];
-//					if (tile != null) // this had better not be null ...
-//					{
-					ClickPoint = location;
-
 					MapFile.Location = new MapLocation(
-													location.Y,
-													location.X,
+													start.Y, start.X,
 													MapFile.Level);
 
-					MainViewUnderlay.Instance.MainViewOverlay.TripMouseDragEvent(location, location);
+					MainViewUnderlay.Instance.MainViewOverlay.TripMouseDragEvent(start, start);
 
-					var args = new RoutePanelClickedEventArgs();
-					args.MouseEventArgs  = e; // used only to get the Button by RouteView.OnRoutePanelClicked()
+					if (RoutePanelClickedEvent != null) // fire RouteView.OnRoutePanelClicked()
+					{
+						var args = new RoutePanelClickedEventArgs();
+						args.MouseEventArgs  = e; // used only to get the mouse-button
 
-					args.ClickedTile     = MapFile[location.Y, location.X];
-//					args.ClickedTile     = tile;
+						args.ClickedTile     = MapFile[start.Y, start.X];
+//						args.ClickedTile     = tile;
 
-					args.ClickedLocation = MapFile.Location; // WARNING: keep an eye on that. Ie, don't let 'args' change 'MapFile.Location' wantonly.
-//					args.ClickedLocation = new MapLocation(
-//														loc.Y,
-//														loc.X,
-//														MapFile.Level);
-					RoutePanelClickedEvent(this, args);
-				}
-//				}
-			}
+						args.ClickedLocation = MapFile.Location; // WARNING: keep an eye on that. Ie, don't let 'args' change 'MapFile.Location' wantonly.
+//						args.ClickedLocation = new MapLocation(
+//															start.Y, start.X,
+//															MapFile.Level);
+
+						RoutePanelClickedEvent(this, args);
+					}
+
+					ClickPoint = start;	// NOTE: if a new 'ClickPoint' is set before firing the RoutePanelClickedEvent
+				}						// OnPaint() will draw a frame with incorrect selected-link lines. So only set
+			}							// the 'ClickPoint' after the event happens.
 		}
-
-		protected override void OnMouseUp(MouseEventArgs e)
-		{
-			// is this needed
-			// cf. TopViewPanelParent.OnMouseUp()					// For some whack reason, this is needed in order to refresh
-			MainViewUnderlay.Instance.MainViewOverlay.Refresh();	// MainView's selector iff a Map has just been loaded *and*
-		}															// RouteView is clicked at location (0,0).
 
 		/// <summary>
 		/// Tracks x/y location for the mouseover lozenge.
@@ -225,11 +216,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			base.OnMouseMove(e); // required to fire RouteView.OnRoutePanelMouseMove()
 
-			var location = GetTileLocation(e.X, e.Y);
-			if (location.X != _overCol || location.Y != _overRow)
+			var end = GetTileLocation(e.X, e.Y);
+			if (end.X != _overCol || end.Y != _overRow)
 			{
-				_overCol = location.X;
-				_overRow = location.Y;
+				_overCol = end.X;
+				_overRow = end.Y;
 
 				Refresh();	// 3nd mouseover refresh for RouteView.
 			}				// See RouteView.OnRoutePanelMouseMove(), RouteView.OnRoutePanelMouseLeave()

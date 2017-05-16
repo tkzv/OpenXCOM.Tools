@@ -410,7 +410,7 @@ namespace MapView
 
 		private const string GraySelection       = "GraySelection";
 
-		private const string SpriteDarkness      = "SpriteDarkness";
+		private const string SpriteShade         = "SpriteShade";
 		private const string Interpolation       = "Interpolation";
 
 
@@ -527,8 +527,8 @@ namespace MapView
 							null, MainViewUnderlay.Instance.MainViewOverlay);
 
 			Settings.AddSetting(
-							SpriteDarkness,
-							MainViewUnderlay.Instance.MainViewOverlay.SpriteDarkness,
+							SpriteShade,
+							MainViewUnderlay.Instance.MainViewOverlay.SpriteShade,
 							"The darkness of the tile sprites (10..100 default 0 off, unity is 33)"
 							+ " Values outside the range turn sprite shading off",
 							Sprites,
@@ -626,8 +626,8 @@ namespace MapView
 					MainViewUnderlay.Instance.MainViewOverlay.GridLineWidth = (int)val;
 					break;
 
-				case SpriteDarkness:
-					MainViewUnderlay.Instance.MainViewOverlay.SpriteDarkness = (int)val;
+				case SpriteShade:
+					MainViewUnderlay.Instance.MainViewOverlay.SpriteShade = (int)val;
 					break;
 
 				case Interpolation:

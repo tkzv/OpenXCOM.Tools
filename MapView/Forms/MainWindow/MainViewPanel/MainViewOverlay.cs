@@ -158,19 +158,19 @@ namespace MapView
 		private bool _spriteShadeEnabled = true;
 
 		// NOTE: Options don't like floats afaict, hence this workaround w/
-		// 'SpriteDarkness' and 'SpriteDarknessLocal' ->
-		private int _spriteDarkness;												// 0 = initial val for sprite darkness Option
-		public int SpriteDarkness													// <- public for Reflection.
+		// 'SpriteShade' and 'SpriteShadeLocal' ->
+		private int _spriteShade;													// 0 = initial val for sprite shade Option
+		public int SpriteShade														// <- public for Reflection.
 		{
-			get { return _spriteDarkness; }
+			get { return _spriteShade; }
 			set
 			{
-				_spriteDarkness = value;
+				_spriteShade = value;
 
-				if (_spriteDarkness > 9 && _spriteDarkness < 101)
+				if (_spriteShade > 9 && _spriteShade < 101)
 				{
 					_spriteShadeEnabled = true;
-					SpriteDarknessLocal = _spriteDarkness * 0.03f;
+					SpriteShadeLocal = _spriteShade * 0.03f;
 				}
 				else
 					_spriteShadeEnabled = false;
@@ -178,11 +178,11 @@ namespace MapView
 				Refresh();
 			}
 		}
-		private float _spriteDarknessLocal = 1.0f;									// initial val for local sprite darkness
-		private float SpriteDarknessLocal
+		private float _spriteShadeLocal = 1.0f;										// initial val for local sprite shade
+		private float SpriteShadeLocal
 		{
-			get { return _spriteDarknessLocal; }
-			set { _spriteDarknessLocal = value; }
+			get { return _spriteShadeLocal; }
+			set { _spriteShadeLocal = value; }
 		}
 
 		// NOTE: Options don't like enums afaict, hence this workaround w/
@@ -586,7 +586,7 @@ namespace MapView
 				_graphics.PixelOffsetMode   = PixelOffsetMode.HighQuality;
 
 				if (_spriteShadeEnabled)
-					_spriteAttributes.SetGamma(SpriteDarknessLocal, ColorAdjustType.Bitmap);
+					_spriteAttributes.SetGamma(SpriteShadeLocal, ColorAdjustType.Bitmap);
 
 				// Image Processing using C# - https://www.codeproject.com/Articles/33838/Image-Processing-using-C
 				// ColorMatrix Guide - https://docs.rainmeter.net/tips/colormatrix-guide/
@@ -875,13 +875,16 @@ namespace MapView
 		/// <returns></returns>
 		private Point GetTileLocation(int x, int y)
 		{
+			x -= Origin.X;
+			y -= Origin.Y;
+
 			double halfWidth  = HalfWidth;
 			double halfHeight = HalfHeight;
 
 			double verticalOffset = (MapBase.Level + 1) * 3;
 
-			double xd = Math.Floor(x - Origin.X - halfWidth);					// x=0 is the axis from the top to the bottom of the map-lozenge.
-			double yd = Math.Floor(y - Origin.Y - halfHeight * verticalOffset);	// y=0 is measured from the top of the map-lozenge downward.
+			double xd = Math.Floor(x - halfWidth);						// x=0 is the axis from the top to the bottom of the map-lozenge.
+			double yd = Math.Floor(y - halfHeight * verticalOffset);	// y=0 is measured from the top of the map-lozenge downward.
 
 			double x1 = xd / (halfWidth  * 2)
 					  + yd / (halfHeight * 2);
