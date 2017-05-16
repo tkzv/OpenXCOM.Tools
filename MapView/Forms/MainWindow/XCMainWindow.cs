@@ -229,7 +229,7 @@ namespace MapView
 											String.Empty,
 											2,
 											Palette.UfoBattle);
-				_mainViewUnderlay.MainViewOverlay.Cuboid = new CursorSprite(cuboid);
+				_mainViewUnderlay.MainViewOverlay.Cuboid = new CuboidSprite(cuboid);
 			}
 			catch
 			{
@@ -240,7 +240,7 @@ namespace MapView
 												String.Empty,
 												4,
 												Palette.TftdBattle);
-					_mainViewUnderlay.MainViewOverlay.Cuboid = new CursorSprite(cuboid);
+					_mainViewUnderlay.MainViewOverlay.Cuboid = new CuboidSprite(cuboid);
 				}
 				catch
 				{

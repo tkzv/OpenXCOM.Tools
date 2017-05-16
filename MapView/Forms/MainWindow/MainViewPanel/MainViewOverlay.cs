@@ -72,7 +72,7 @@ namespace MapView
 		}
 
 
-		internal CursorSprite Cuboid
+		internal CuboidSprite Cuboid
 		{ private get; set; }
 
 
@@ -437,14 +437,29 @@ namespace MapView
 			if (MapBase != null)
 			{
 				var end = GetTileLocation(e.X, e.Y);
-				if (end.X != DragEnd.X || end.Y != DragEnd.Y)
+
+				_suppressTargeter = false;
+				_col = end.X;
+				_row = end.Y;
+
+				if (_isMouseDrag
+					&& (end.X != DragEnd.X || end.Y != DragEnd.Y))
 				{
-					if (_isMouseDrag)
-						TripMouseDragEvent(DragStart, end);
-					else
-						Refresh(); // mouseover refresh for MainView.
+					TripMouseDragEvent(DragStart, end);
 				}
+
+				Refresh(); // mouseover refresh for MainView.
 			}
+		}
+
+		/// <summary>
+		/// Hides the cuboid-targeter when the mouse leaves this control.
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnMouseLeave(EventArgs e)
+		{
+			_suppressTargeter = true;
+			Refresh();
 		}
 
 		/// <summary>
@@ -532,9 +547,11 @@ namespace MapView
 		#endregion
 
 
-		private int _col; // these are used only to print the clicked location info.
-		private int _row;
-		private int _lev;
+		private int _col; // these are used to track the cursor location and to
+		private int _row; // print the clicked location info.
+		private int _lev; // this is used only to print the clicked location info.
+
+		private bool _suppressTargeter = true;
 
 		/// <summary>
 		/// Fires when a location is selected in MainView.
@@ -546,11 +563,11 @@ namespace MapView
 			//LogFile.WriteLine("MainViewOverlay.OnLocationSelected_Main");
 
 			FirstClick = true;
+			_suppressTargeter = false;
 
 			_col = args.Location.Col;
 			_row = args.Location.Row;
 			_lev = args.Location.Lev;
-
 			XCMainWindow.Instance.StatusBarPrintPosition(
 													_col, _row,
 													MapBase.MapSize.Levs - _lev);
@@ -562,6 +579,8 @@ namespace MapView
 		/// <param name="args"></param>
 		internal void OnLevelChanged_Main(LevelChangedEventArgs args)
 		{
+			_suppressTargeter = true;
+
 			_lev = args.Level;
 			XCMainWindow.Instance.StatusBarPrintPosition(
 													_col, _row,
@@ -594,19 +613,16 @@ namespace MapView
 				ControlPaint.DrawBorder3D(_graphics, ClientRectangle, Border3DStyle.Etched);
 
 
-				var dragRect = new Rectangle(new Point(0, 0), new Size(0, 0));
+				var dragRect = new Rectangle();
 				if (FirstClick)
 				{
-					var dragMin = new Point(
-										Math.Min(DragStart.X, DragEnd.X),
-										Math.Min(DragStart.Y, DragEnd.Y));
-					var dragMax = new Point(
-										Math.Max(DragStart.X, DragEnd.X),
-										Math.Max(DragStart.Y, DragEnd.Y));
+					var start = GetCanonicalDragStart();
+					var end   = GetCanonicalDragEnd();
 
-					dragRect = new Rectangle(dragMin, new Size(Point.Subtract(dragMax, new Size(dragMin))));
-					dragRect.Width  += 1;
-					dragRect.Height += 1;
+					dragRect = new Rectangle(
+										start.X, start.Y,
+										end.X - start.X + 1,
+										end.Y - start.Y + 1);
 				}
 
 				for (int
@@ -635,46 +651,63 @@ namespace MapView
 									x += HalfWidth,
 									y += HalfHeight)
 						{
-							var tileRect = new Rectangle(col, row, 1, 1);
+							bool isClicked = FirstClick //&& Cuboid != null
+										  && (   (col == DragStart.X && row == DragStart.Y)
+											  || (col == DragEnd.X   && row == DragEnd.Y));
 
-							bool isClicked = (col == DragStart.X && row == DragStart.Y)
-										  || (col == DragEnd.X   && row == DragEnd.Y);
-
-							if (FirstClick && isClicked && Cuboid != null)
-								Cuboid.DrawCursorBack(
-													_graphics,
-													x + 1, y - 1,
-//													false,
-													lev == MapBase.Level,
-													HalfWidth,
-													HalfHeight);
+							if (isClicked)
+							{
+								Cuboid.DrawCuboid(
+												_graphics,
+												x + 1, y - 1,
+												HalfWidth,
+												HalfHeight,
+												false,
+												lev == MapBase.Level);
+							}
 
 							if (lev == MapBase.Level || !MapBase[row, col, lev].Occulted)
 							{
-								var tile = (XCMapTile)MapBase[row, col, lev];
-
-								bool isGray = FirstClick && lev == MapBase.Level && _graySelection
-										   && (isClicked || dragRect.IntersectsWith(tileRect));
-
-								DrawTile(tile, x, y, isGray);
+								DrawTile(
+										(XCMapTile)MapBase[row, col, lev],
+										x, y,
+										_graySelection && FirstClick
+											&& lev == MapBase.Level
+											&& dragRect.Contains(col, row));
 							}
 
-							if (FirstClick && isClicked && Cuboid != null)
-								Cuboid.DrawCursorFront(
-													_graphics,
-													x + 1, y - 1,
-//													MainViewUnderlay.AniStep,
-//													false,
-													lev == MapBase.Level,
-													HalfWidth,
-													HalfHeight);
+							if (isClicked)
+							{
+								Cuboid.DrawCuboid(
+												_graphics,
+												x + 1, y - 1,
+												HalfWidth,
+												HalfHeight,
+												true,
+												lev == MapBase.Level);
+							}
+							else if (!_suppressTargeter
+									&& col == _col
+									&& row == _row
+									&& lev == MapBase.Level)
+							{
+								Cuboid.DrawTargeter(
+												_graphics,
+												x + 1, y - 1,
+												HalfWidth,
+												HalfHeight);
+							}
 						}
 					}
 				}
 
 //				if (_drawSelectionBox) // always false.
-				if (FirstClick && !_graySelection)
-					DrawSelectionLozenge(dragRect);
+//				if (FirstClick && !_graySelection)
+				if (    dragRect.Width > 2 || dragRect.Height > 2
+					|| (dragRect.Width > 1 && dragRect.Height > 1))
+				{
+					DrawSelectionBorder(dragRect);
+				}
 			}
 		}
 
@@ -829,7 +862,7 @@ namespace MapView
 		/// selected tiles in grayscale is FALSE.
 		/// </summary>
 		/// <param name="dragRect"></param>
-		private void DrawSelectionLozenge(Rectangle dragRect)
+		private void DrawSelectionBorder(Rectangle dragRect)
 		{
 			var top    = GetScreenCoordinates(new Point(dragRect.X,     dragRect.Y));
 			var right  = GetScreenCoordinates(new Point(dragRect.Right, dragRect.Y));

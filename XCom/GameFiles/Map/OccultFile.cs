@@ -8,7 +8,7 @@ namespace XCom
 {
 	internal static class OccultFile
 	{
-		internal static readonly string OccultExt = ".OTD";
+		internal const string OccultExt = ".OTD";
 
 
 		internal static void LoadOccult(

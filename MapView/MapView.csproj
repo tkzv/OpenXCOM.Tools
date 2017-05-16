@@ -228,7 +228,7 @@
     <Compile Include="Forms\OtherForms\ChoiceDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Cursor.cs">
+    <Compile Include="CuboidSprite.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Globals.cs">
