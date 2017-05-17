@@ -221,7 +221,7 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// Used by XCMapBase.SaveGif()
+		/// Used by MapFileBase.SaveGif()
 		/// </summary>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
@@ -283,7 +283,7 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// Used by XCMapBase.SaveGif()
+		/// Used by MapFileBase.SaveGif()
 		/// </summary>
 		/// <param name="src"></param>
 		/// <param name="dst"></param>
@@ -350,7 +350,7 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// Used by XCMapBase.SaveGif()
+		/// Used by MapFileBase.SaveGif()
 		/// </summary>
 		/// <param name="src"></param>
 		/// <param name="transparent"></param>
@@ -425,7 +425,7 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// Used by XCMapBase.SaveGif()
+		/// Used by MapFileBase.SaveGif()
 		/// </summary>
 		/// <param name="src"></param>
 		/// <param name="bounds"></param>
@@ -493,7 +493,7 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// Used by XCMapBase.SaveGif()
+		/// Used by MapFileBase.SaveGif()
 		/// </summary>
 		/// <param name="cur"></param>
 		/// <param name="total"></param>

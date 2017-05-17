@@ -8,9 +8,9 @@ using XCom.Services;
 
 namespace XCom
 {
-	public sealed class XCMapFile
+	public sealed class MapFileChild
 		:
-			XCMapBase
+			MapFileBase
 	{
 		#region Fields & Properties
 		public static readonly string MapExt = ".MAP";
@@ -43,7 +43,7 @@ namespace XCom
 		/// <param name="parts"></param>
 		/// <param name="terrains"></param>
 		/// <param name="routeFile"></param>
-		internal XCMapFile(
+		internal MapFileChild(
 				string file,
 				string path,
 				string pathOccult,
@@ -366,9 +366,9 @@ namespace XCom
 				// TODO: Settle a graceful way to handle exceptions throughout.
 				// Unfortunately it would take a long time to force each one to
 				// be raised for investigation.
-				XConsole.AdZerg("XCMapFile.CreateTile() Invalid value(s) in .MAP file: " + _file);
+				XConsole.AdZerg("MapFileChild.CreateTile() Invalid value(s) in .MAP file: " + _file);
 				System.Windows.Forms.MessageBox.Show(
-												"XCMapFile.CreateTile()" + Environment.NewLine
+												"MapFileChild.CreateTile()" + Environment.NewLine
 													+ "Invalid value(s) in .MAP file: " + _file + Environment.NewLine
 													+ "indices: " + q1 + "," + q2 + "," + q3 + "," + q4 + Environment.NewLine
 													+ "length: " + parts.Count + Environment.NewLine

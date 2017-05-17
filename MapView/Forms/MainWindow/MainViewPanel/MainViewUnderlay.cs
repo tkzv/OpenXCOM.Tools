@@ -31,8 +31,8 @@ namespace MapView
 			get { return _mainViewOverlay; }
 		}
 
-		private XCMapBase _mapBase;
-		internal XCMapBase MapBase
+		private MapFileBase _mapBase;
+		internal MapFileBase MapBase
 		{
 			get { return _mapBase; }
 			set

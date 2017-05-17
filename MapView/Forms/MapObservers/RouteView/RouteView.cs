@@ -62,7 +62,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private Panel pRoutes;
 
-		private XCMapFile _mapFile;
+		private MapFileChild _mapFile;
 
 		private RouteNode _nodeSelected;
 		internal RouteNode NodeSelected
@@ -93,12 +93,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
-		public override XCMapBase MapBase
+		public override MapFileBase MapBase
 		{
 			set
 			{
 				base.MapBase = value;
-				_mapFile     = value as XCMapFile;
+				_mapFile     = value as MapFileChild;
 
 				DeselectNode();
 

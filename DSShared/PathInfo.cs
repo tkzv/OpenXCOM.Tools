@@ -17,6 +17,10 @@ namespace DSShared
 
 		public const string MapViewers     = "MV_ViewersFile";
 
+
+		public const string MapConfig      = "MV_ConfigFile";
+
+
 		public const string YamlViewers    = "MapViewers.yml";
 		public const string YamlViewersOld = "MapViewers_old.yml";
 

@@ -29,7 +29,7 @@ namespace MapView
 			_mainViewUnderlay = underlay;
 		}
 
-		internal XCMapBase MapBase
+		internal MapFileBase MapBase
 		{ get; set; }
 
 		private Point _origin = new Point(0, 0);

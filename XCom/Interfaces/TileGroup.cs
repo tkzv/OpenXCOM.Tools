@@ -6,10 +6,11 @@ using XCom.Interfaces.Base;
 
 namespace XCom.Interfaces
 {
-	public class Tileset // TODO: cTor has inheritors and calls a virtual function.
+	public class TileGroup // TODO: cTor has inheritors and calls a virtual function.
 		:
-			TilesetBase
+			TileGroupBase
 	{
+		#region Fields & Properties
 		public Palette Palette
 		{ get; set; }
 
@@ -54,22 +55,22 @@ namespace XCom.Interfaces
 
 //		private string scanFile;
 //		private string loftFile;
+		#endregion
 
 
-
-		protected Tileset(string name)
+		#region cTor
+		protected TileGroup(string name)
 			:
 				base(name)
 		{
-			Palette = GameInfo.DefaultPalette;
+			Palette = ResourceInfo.DefaultPalette;
 //			_mapSize = new MapSize(60, 60, 4);
 
 //			_mapDepth = 0;
 //			_underwater = true;
 //			_baseStyle = false;
 		}
-
-		protected Tileset(
+		protected TileGroup(
 				string name,
 				StreamReader sr,
 				Varidia vars)
@@ -77,7 +78,7 @@ namespace XCom.Interfaces
 				this(name)
 		{
 			//LogFile.WriteLine("");
-			//LogFile.WriteLine("[7]Tileset cTor");
+			//LogFile.WriteLine("[7]TileGroup cTor");
 			while (sr.Peek() != -1)
 			{
 				string line = Varidia.ReadLine(sr, vars);
@@ -165,8 +166,10 @@ namespace XCom.Interfaces
 				}
 			}
 		}
+		#endregion
 
 
+		#region Methods (virtual)
 		public virtual void Save(StreamWriter sw, Varidia vars)
 		{}
 
@@ -177,15 +180,16 @@ namespace XCom.Interfaces
 				Varidia vars)
 		{}
 
-		public virtual void AddMap(string name, string subset)
+		public virtual void AddMap(string tileset, string category)
 		{}
 
-		public virtual void AddMap(XCMapDesc desc, string subset)
+		public virtual void AddMap(MapDescChild desc, string category)
 		{}
 
-		public virtual XCMapDesc RemoveMap(string name, string subset)
-		{
-			return null;
-		}
+//		public virtual MapDescChild RemoveTileset(string tileset, string category)
+//		{
+//			return null;
+//		}
+		#endregion
 	}
 }

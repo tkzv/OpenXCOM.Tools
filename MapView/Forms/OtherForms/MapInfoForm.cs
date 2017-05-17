@@ -20,7 +20,7 @@ namespace MapView
 		}
 
 
-		public void Analyze(XCMapBase mapBase)
+		public void Analyze(MapFileBase mapBase)
 		{
 			groupInfo.Text = "Map: " + mapBase.Label;
 
@@ -34,7 +34,7 @@ namespace MapView
 			int spritesTotal = 0;
 
 			bool first = true;
-			var mapFile = mapBase as XCMapFile;
+			var mapFile = mapBase as MapFileChild;
 			if (mapFile != null)
 			{
 				foreach (string terrain in mapFile.Terrains)
@@ -46,8 +46,8 @@ namespace MapView
 
 					lbl2Tilesets.Text += terrain;
 
-					recordsTotal += GameInfo.ImageInfo[terrain].GetRecords().Count;
-					spritesTotal += GameInfo.ImageInfo[terrain].GetPckPack().Count;
+					recordsTotal += ResourceInfo.ImageInfo[terrain].GetRecords().Count;
+					spritesTotal += ResourceInfo.ImageInfo[terrain].GetPckPack().Count;
 				}
 			}
 

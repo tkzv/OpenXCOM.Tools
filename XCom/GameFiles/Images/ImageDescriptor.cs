@@ -33,12 +33,12 @@ namespace XCom
 
 		internal PckSpriteCollection GetPckPack(Palette pal)
 		{
-			return GameInfo.CachePckPack(Path, Label, 2, pal);
+			return ResourceInfo.CachePckPack(Path, Label, 2, pal);
 		}
 
 		public PckSpriteCollection GetPckPack()
 		{
-			return GetPckPack(GameInfo.DefaultPalette);
+			return GetPckPack(ResourceInfo.DefaultPalette);
 		}
 
 		internal McdRecordCollection GetRecordsByPalette(Palette pal, XCTileFactory tileFactory)
@@ -53,7 +53,7 @@ namespace XCom
 
 		public McdRecordCollection GetRecords()
 		{
-			return GetRecordsByPalette(GameInfo.DefaultPalette, new XCTileFactory());
+			return GetRecordsByPalette(ResourceInfo.DefaultPalette, new XCTileFactory());
 		}
 
 		public override string ToString()

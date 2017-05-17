@@ -8,12 +8,25 @@ namespace XCom
 //	public delegate void ParseConfigLineEventHandler(KeyvalPair keyval, Varidia vars);
 
 
-	public static class GameInfo
+	public static class ResourceInfo
 	{
-		private static Palette _palette = Palette.UfoBattle;
+		private static TileGroupDesc _tilegroupInfo;
+		public static TileGroupDesc TileGroupInfo
+		{
+			get { return _tilegroupInfo; }
+		}
 
-		private static ImageInfo _imageInfo;
-		private static TilesetDesc _tilesetDesc;
+		private static ImageDesc _imageInfo;
+		public static ImageDesc ImageInfo
+		{
+			get { return _imageInfo; }
+		}
+
+		private static Palette _palette = Palette.UfoBattle;
+		internal static Palette DefaultPalette
+		{
+			get { return _palette; }
+		}
 
 		private static Dictionary<Palette, Dictionary<string, PckSpriteCollection>> _pckDictionary;
 
@@ -41,12 +54,12 @@ namespace XCom
 					{
 						case "MAPDATA": // ref to MapEdit.Cfg
 							//LogFile.WriteLine(". [1]Paths.cfg MAPDATA keyval.Value= " + keyval.Value);
-							_tilesetDesc = new TilesetDesc(keyval.Value, vars); // this is spooky, not a delightful way.
+							_tilegroupInfo = new TileGroupDesc(keyval.Value, vars); // this is spooky, not a delightful way.
 							break;
 
 						case "IMAGES": // ref to Images.Cfg
 							//LogFile.WriteLine(". [1]Paths.cfg IMAGES keyval.Value= " + keyval.Value);
-							_imageInfo = new ImageInfo(keyval.Value, vars);
+							_imageInfo = new ImageDesc(keyval.Value, vars);
 							break;
 
 						case "CURSOR":
@@ -77,21 +90,6 @@ namespace XCom
 			}
 
 			Directory.SetCurrentDirectory(SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory)); // change back to app dir
-		}
-
-		public static ImageInfo ImageInfo
-		{
-			get { return _imageInfo; }
-		}
-
-		public static TilesetDesc TilesetInfo
-		{
-			get { return _tilesetDesc; }
-		}
-
-		internal static Palette DefaultPalette
-		{
-			get { return _palette; }
 		}
 
 		internal static PckSpriteCollection GetPckPack(string imageSet)

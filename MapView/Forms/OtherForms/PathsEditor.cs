@@ -45,9 +45,9 @@ namespace MapView
 			MaximumSize = size; // fu.net
 
 
-			tbPathsMaps.Text    = GameInfo.TilesetInfo.Path;
-			tbPathsImages.Text  = GameInfo.ImageInfo.Path;
-			tbImagesImages.Text = GameInfo.ImageInfo.Path;
+			tbPathsMaps.Text    = ResourceInfo.TileGroupInfo.Path;
+			tbPathsImages.Text  = ResourceInfo.ImageInfo.Path;
+			tbImagesImages.Text = ResourceInfo.ImageInfo.Path;
 
 //			txtCursor.Text   = GameInfo.CursorPath;
 //			txtCursor.Text   = GameInfo.MiscInfo.CursorFile;
@@ -67,7 +67,7 @@ namespace MapView
 			tvMaps.Nodes.Clear();
 
 			var list = new ArrayList();
-			foreach (object ob in GameInfo.TilesetInfo.Tilesets.Keys)
+			foreach (object ob in ResourceInfo.TileGroupInfo.TileGroups.Keys)
 				list.Add(ob);
 
 			list.Sort();
@@ -75,21 +75,21 @@ namespace MapView
 			var list1 = new ArrayList();
 			foreach (string ob in list) // tileset
 			{
-				var it = GameInfo.TilesetInfo.Tilesets[ob];
+				var it = ResourceInfo.TileGroupInfo.TileGroups[ob];
 				if (it != null)
 				{
 					var tn = tvMaps.Nodes.Add(ob); // make the node for the tileset
 
 					list1.Clear();
 
-					foreach (string ob1 in it.Subsets.Keys) // make a node for each subset
+					foreach (string ob1 in it.Categories.Keys) // make a node for each subset
 						list1.Add(ob1);
 
 					list1.Sort();
 
 					foreach (string ob1 in list1)
 					{
-						var subset = it.Subsets[ob1];
+						var subset = it.Categories[ob1];
 						if (subset != null)
 						{
 							var tn1 = tn.Nodes.Add(ob1);
@@ -113,7 +113,7 @@ namespace MapView
 		{
 			var list = new ArrayList();
 
-			var info = GameInfo.ImageInfo;
+			var info = ResourceInfo.ImageInfo;
 			foreach (object ob in info.Images.Keys)
 				list.Add(ob);
 
@@ -128,7 +128,7 @@ namespace MapView
 
 		private void lbImages_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			tbImagesTerrain.Text = GameInfo.ImageInfo[(string)lbImages.SelectedItem].Path;
+			tbImagesTerrain.Text = ResourceInfo.ImageInfo[(string)lbImages.SelectedItem].Path;
 		}
 
 		private void tvMaps_AfterSelect(object sender, TreeViewEventArgs e)
@@ -137,7 +137,7 @@ namespace MapView
 			gbMapsBlock.Enabled   =
 			delMap.Enabled        = false;
 
-			Tileset tileset = null;
+			TileGroup tileset = null;
 
 			var node = e.Node;
 			if (node.Parent != null)
@@ -151,21 +151,21 @@ namespace MapView
 					gbMapsBlock.Enabled   =
 					delMap.Enabled        = true;
 
-					tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[node.Parent.Parent.Text];
+					tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[node.Parent.Parent.Text];
 
-					var desc = (XCMapDesc)tileset[node.Text];
+					var desc = (MapDescChild)tileset[node.Text];
 
 					lbMapsImagesUsed.Items.Clear();
 
 					if (desc != null)
 					{
-						foreach (string dep in desc.Dependencies)
+						foreach (string dep in desc.Terrains)
 							lbMapsImagesUsed.Items.Add(dep);
 					}
 					else
 					{
 						tileset.AddMap(
-									new XCMapDesc(
+									new MapDescChild(
 												node.Text,
 												tileset.MapPath,
 												tileset.RoutePath,
@@ -177,12 +177,12 @@ namespace MapView
 				}
 				else // subset node
 				{
-					tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[node.Parent.Text];
+					tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[node.Parent.Text];
 				}
 			}
 			else // parent node
 			{
-				tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[node.Text];
+				tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[node.Text];
 				addMap.Enabled =
 				delMap.Enabled =
 				delSub.Enabled = false;
@@ -203,7 +203,7 @@ namespace MapView
 
 		private void tbMapsMaps_Leave(object sender, EventArgs e)
 		{
-			var tileset = getCurrentTileset();
+			var tileset = GetCurrentTileGroup();
 			if (!Directory.Exists(tbMapsMaps.Text))
 			{
 				using (var output = new OutputBox("Directory not found: " + tbMapsMaps.Text))
@@ -224,7 +224,7 @@ namespace MapView
 
 		private void tbMapsRoutes_Leave(object sender, EventArgs e)
 		{
-			var tileset = getCurrentTileset();
+			var tileset = GetCurrentTileGroup();
 			if (!Directory.Exists(tbMapsRoutes.Text))
 			{
 				using (var output = new OutputBox("Directory not found: " + tbMapsRoutes.Text))
@@ -239,8 +239,8 @@ namespace MapView
 
 		private void btnMapsUp_Click(object sender, EventArgs e)
 		{
-			var tileset = getCurrentTileset();
-			string[] deps = ((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies;
+			var tileset = GetCurrentTileGroup();
+			string[] deps = ((MapDescChild)tileset[tvMaps.SelectedNode.Text]).Terrains;
 
 			for (int i = 1; i != deps.Length; ++i)
 			{
@@ -250,7 +250,7 @@ namespace MapView
 					deps[i - 1] = deps[i];
 					deps[i] = old;
 
-					((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies = deps;
+					((MapDescChild)tileset[tvMaps.SelectedNode.Text]).Terrains = deps;
 
 					lbMapsImagesUsed.Items.Clear();
 
@@ -265,8 +265,8 @@ namespace MapView
 
 		private void btnMapsDown_Click(object sender, EventArgs e)
 		{
-			var tileset = getCurrentTileset();
-			string[] deps = ((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies;
+			var tileset = GetCurrentTileGroup();
+			string[] deps = ((MapDescChild)tileset[tvMaps.SelectedNode.Text]).Terrains;
 
 			for (int i = 0; i != deps.Length - 1; ++i)
 			{
@@ -276,7 +276,7 @@ namespace MapView
 					deps[i + 1] = deps[i];
 					deps[i] = old;
 
-					((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies = deps;
+					((MapDescChild)tileset[tvMaps.SelectedNode.Text]).Terrains = deps;
 					
 					lbMapsImagesUsed.Items.Clear();
 
@@ -291,10 +291,10 @@ namespace MapView
 
 		private void btnMapsRight_Click(object sender, EventArgs e)
 		{
-			var tileset = getCurrentTileset();
-			var deps = new ArrayList(((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies);
+			var tileset = GetCurrentTileGroup();
+			var deps = new ArrayList(((MapDescChild)tileset[tvMaps.SelectedNode.Text]).Terrains);
 			deps.Remove(lbMapsImagesUsed.SelectedItem);
-			((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies = (string[])deps.ToArray(typeof(string));
+			((MapDescChild)tileset[tvMaps.SelectedNode.Text]).Terrains = (string[])deps.ToArray(typeof(string));
 			
 			lbMapsImagesUsed.Items.Clear();
 
@@ -304,14 +304,14 @@ namespace MapView
 
 		private void btnMapsLeft_Click(object sender, EventArgs e)
 		{
-			var tileset = getCurrentTileset();
-			var dep = new ArrayList(((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies);
+			var tileset = GetCurrentTileGroup();
+			var dep = new ArrayList(((MapDescChild)tileset[tvMaps.SelectedNode.Text]).Terrains);
 
 			foreach (object ob in lbMapsImagesAll.SelectedItems)
 				if (!dep.Contains(ob))
 				{
 					dep.Add(ob);
-					((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies = (string[])dep.ToArray(typeof(string));
+					((MapDescChild)tileset[tvMaps.SelectedNode.Text]).Terrains = (string[])dep.ToArray(typeof(string));
 				
 					lbMapsImagesUsed.Items.Clear();
 
@@ -380,7 +380,7 @@ namespace MapView
 
 		private void tbImagesTerrain_TextChanged(object sender, EventArgs e)
 		{
-			GameInfo.ImageInfo[(string)lbImages.SelectedItem].Path = tbImagesTerrain.Text;
+			ResourceInfo.ImageInfo[(string)lbImages.SelectedItem].Path = tbImagesTerrain.Text;
 		}
 
 		private void cmImagesAddImageset_Click(object sender, EventArgs e)
@@ -399,7 +399,7 @@ namespace MapView
 						string file = pfe.Substring(pfe.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
 						file        = file.Substring(0, file.IndexOf(".", StringComparison.Ordinal));
 	
-						GameInfo.ImageInfo[file] = new ImageDescriptor(file, path);
+						ResourceInfo.ImageInfo[file] = new ImageDescriptor(file, path);
 					}
 	
 					lbImages.Items.Clear();
@@ -412,7 +412,7 @@ namespace MapView
 
 		private void cmImagesDeleteImageset_Click(object sender, EventArgs e)
 		{
-			GameInfo.ImageInfo.Images.Remove(lbImages.SelectedItem.ToString());
+			ResourceInfo.ImageInfo.Images.Remove(lbImages.SelectedItem.ToString());
 
 			lbImages.Items.Clear();
 			lbMapsImagesAll.Items.Clear();
@@ -445,27 +445,27 @@ namespace MapView
 
 		private void btnImagesSave_Click(object sender, EventArgs e)
 		{
-			GameInfo.ImageInfo.Save(tbPathsImages.Text);
+			ResourceInfo.ImageInfo.Save(tbPathsImages.Text);
 		}
 
 		private void newGroup_Click(object sender, EventArgs e)
 		{
-			using (var f = new TilesetForm())
+			using (var f = new TileGroupForm())
 			{
 				f.ShowDialog(this);
 
-				if (f.TilesetLabel != null)
+				if (f.TileGroupLabel != null)
 				{
-					var tileset = (Tileset)GameInfo.TilesetInfo.AddTileset(
-																		f.TilesetLabel,
-																		f.MapsPath,
-																		f.RoutesPath,
-																		f.OccultsPath);
+					var tilegroup = (TileGroup)ResourceInfo.TileGroupInfo.AddTileGroup(
+																				f.TileGroupLabel,
+																				f.MapsPath,
+																				f.RoutesPath,
+																				f.OccultsPath);
 //					addTileset(tileset.Name);
-					tvMaps.Nodes.Add(tileset.Name);
+					tvMaps.Nodes.Add(tilegroup.Label);
 
-					tbMapsMaps.Text   = tileset.MapPath;
-					tbMapsRoutes.Text = tileset.RoutePath;
+					tbMapsMaps.Text   = tilegroup.MapPath;
+					tbMapsRoutes.Text = tilegroup.RoutePath;
 
 //					saveMapedit();
 				}
@@ -475,21 +475,21 @@ namespace MapView
 		private void cbMapsPalette_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (tvMaps.SelectedNode.Parent == null)
-				getCurrentTileset().Palette = cbMapsPalette.SelectedItem as Palette;
+				GetCurrentTileGroup().Palette = cbMapsPalette.SelectedItem as Palette;
 		}
 
 		private void OnSubsetClick(object sender, EventArgs e)
 		{
-			using (var f = new SubsetForm())
+			using (var f = new CategoryForm())
 			{
 				f.ShowDialog(this);
-				if (!String.IsNullOrEmpty(f.SubsetLabel))
+				if (!String.IsNullOrEmpty(f.CategoryLabel))
 				{
-					var tileset = getCurrentTileset();
+					var tilegroup = GetCurrentTileGroup();
 
 //					TreeNode tn = treeMaps.SelectedNode; // TODO: Check if not used.
 
-					tileset.Subsets[f.SubsetLabel] = new Dictionary<string, MapDesc>();
+					tilegroup.Categories[f.CategoryLabel] = new Dictionary<string, MapDescBase>();
 
 //					tileset.NewSubset(f.SubsetName);
 //					saveMapedit();
@@ -499,16 +499,17 @@ namespace MapView
 			}
 		}
 
-		private Tileset getCurrentTileset()
+		private TileGroup GetCurrentTileGroup()
 		{
-			var tn = tvMaps.SelectedNode;
-			if (tn.Parent == null)
-				return (Tileset)GameInfo.TilesetInfo.Tilesets[tn.Text];
+			var node = tvMaps.SelectedNode;
 
-			if (tn.Parent.Parent == null)
-				return (Tileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Text];
+			if (node.Parent == null)
+				return ResourceInfo.TileGroupInfo.TileGroups[node.Text] as TileGroup;
 
-			return (Tileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Parent.Text];
+			if (node.Parent.Parent == null)
+				return ResourceInfo.TileGroupInfo.TileGroups[node.Parent.Text] as TileGroup;
+
+			return ResourceInfo.TileGroupInfo.TileGroups[node.Parent.Parent.Text] as TileGroup;
 		}
 
 //		private void btnSave2_Click(object sender, System.EventArgs e)
@@ -526,7 +527,7 @@ namespace MapView
 				{
 					if (tvMaps.SelectedNode.Parent != null) // add to here
 					{
-						string pfe = tbMapsMaps.Text + f.MapLabel + XCMapFile.MapExt;
+						string pfe = tbMapsMaps.Text + f.MapLabel + MapFileChild.MapExt;
 						if (File.Exists(pfe))
 						{
 							using (var fdialog = new ChoiceDialog(pfe))
@@ -538,27 +539,27 @@ namespace MapView
 							}
 						}
 
-						XCMapFile.CreateMap(
-										File.OpenWrite(pfe),
-										f.MapRows,
-										f.MapCols,
-										f.MapHeight);
+						MapFileChild.CreateMap(
+											File.OpenWrite(pfe),
+											f.MapRows,
+											f.MapCols,
+											f.MapHeight);
 
 						using (var fs = File.OpenWrite(tbMapsRoutes.Text + f.MapLabel + RouteNodeCollection.RouteExt)) // TODO: wtf.
 						{}
 
-						Tileset tileset;
+						TileGroup tileset;
 						string label;
 
 						if (tvMaps.SelectedNode.Parent.Parent == null)
 						{
-							tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[tvMaps.SelectedNode.Parent.Text];
+							tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[tvMaps.SelectedNode.Parent.Text];
 							tvMaps.SelectedNode.Nodes.Add(f.MapLabel);
 							label = tvMaps.SelectedNode.Text;
 						}
 						else
 						{
-							tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[tvMaps.SelectedNode.Parent.Parent.Text];
+							tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[tvMaps.SelectedNode.Parent.Parent.Text];
 							tvMaps.SelectedNode.Parent.Nodes.Add(f.MapLabel);
 							label = tvMaps.SelectedNode.Parent.Text;
 						}
@@ -592,7 +593,7 @@ namespace MapView
 						var tn = (tvMaps.SelectedNode.Parent.Parent == null) ? tvMaps.SelectedNode
 																			 : tvMaps.SelectedNode.Parent;
 
-						var tileset = (Tileset)GameInfo.TilesetInfo.Tilesets[tn.Parent.Text];
+						var tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[tn.Parent.Text];
 						foreach (string file in f.FileNames)
 						{
 							int start = file.LastIndexOf(@"\", StringComparison.Ordinal) + 1;
@@ -630,8 +631,8 @@ namespace MapView
 
 		private void delGroup_Click(object sender, EventArgs e)
 		{
-			var tileset = getCurrentTileset();
-			GameInfo.TilesetInfo.Tilesets[tileset.Name] = null;
+			var tileset = GetCurrentTileGroup();
+			ResourceInfo.TileGroupInfo.TileGroups[tileset.Label] = null;
 			if (tvMaps.SelectedNode.Parent == null)
 			{
 				tvMaps.Nodes.Remove(tvMaps.SelectedNode);
@@ -656,8 +657,8 @@ namespace MapView
 
 				if (tn != null)
 				{
-					var tileset = getCurrentTileset();
-					tileset.Subsets[tn.Text] = null;
+					var tileset = GetCurrentTileGroup();
+					tileset.Categories[tn.Text] = null;
 					tn.Parent.Nodes.Remove(tn);
 				}
 			}
@@ -671,8 +672,8 @@ namespace MapView
 				TreeNode tn = tvMaps.SelectedNode;
 				if (tn != null)
 				{
-					var tileset = getCurrentTileset();
-					tileset.Subsets[tn.Parent.Text][tn.Text] = null;
+					var tileset = GetCurrentTileGroup();
+					tileset.Categories[tn.Parent.Text][tn.Text] = null;
 					tileset[tn.Text] = null;
 					tn.Parent.Nodes.Remove(tn);
 				}
@@ -736,26 +737,26 @@ namespace MapView
 
 		private void btnMapsCopy_Click(object sender, EventArgs e)
 		{
-			var tileset = getCurrentTileset();
+			var tileset = GetCurrentTileGroup();
 
-			int length = ((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies.Length;
+			int length = ((MapDescChild)tileset[tvMaps.SelectedNode.Text]).Terrains.Length;
 			_images = new string[length];
 
 			for (int i = 0; i != length; ++i)
-				_images[i] = ((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies[i];
+				_images[i] = ((MapDescChild)tileset[tvMaps.SelectedNode.Text]).Terrains[i];
 		}
 
 		private void btnMapsPaste_Click(object sender, EventArgs e)
 		{
-			var tileset = getCurrentTileset();
+			var tileset = GetCurrentTileGroup();
 
-			((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies = new string[_images.Length];
+			((MapDescChild)tileset[tvMaps.SelectedNode.Text]).Terrains = new string[_images.Length];
 
 			lbMapsImagesUsed.Items.Clear();
 
 			for (int i = 0; i != _images.Length; ++i)
 			{
-				((XCMapDesc)tileset[tvMaps.SelectedNode.Text]).Dependencies[i] = _images[i];
+				((MapDescChild)tileset[tvMaps.SelectedNode.Text]).Terrains[i] = _images[i];
 				lbMapsImagesUsed.Items.Add(_images[i]);
 			}
 		}

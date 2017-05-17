@@ -85,6 +85,11 @@ namespace MapView
 			LogFile.WriteLine("Environment cached.");
 
 
+			var pathConfig = new PathInfo(dir, "MapConfig", "yml");
+			share.SetShare(PathInfo.MapConfig, pathConfig);
+
+
+
 			var pathViewerPositions = new PathInfo(dir, "MapViewers", "yml");
 			share.SetShare(PathInfo.MapViewers, pathViewerPositions);
 
@@ -103,16 +108,29 @@ namespace MapView
 			LogFile.WriteLine("PathInfo cached.");
 
 
-			if (!pathPaths.FileExists()) // check if Paths.cfg exists yet
+			if (!pathConfig.FileExists()) // check if MapConfig.yml exists yet
 			{
-				using (var f = new InstallationForm())
+				using (var f = new ConfigurationForm())
 					if (f.ShowDialog(this) != DialogResult.OK)
-						Environment.Exit(-1); // wtf -1
+						Environment.Exit(0);
 
-				LogFile.WriteLine("Installation files created.");
+				LogFile.WriteLine("Configuration file created.");
 			}
 			else
-				LogFile.WriteLine("Paths.Cfg file exists.");
+				LogFile.WriteLine("Configuration file exists.");
+
+
+
+//			if (!pathPaths.FileExists()) // check if Paths.cfg exists yet
+//			{
+//				using (var f = new InstallationForm())
+//					if (f.ShowDialog(this) != DialogResult.OK)
+//						Environment.Exit(-1); // wtf -1
+//
+//				LogFile.WriteLine("Installation files created.");
+//			}
+//			else
+//				LogFile.WriteLine("Paths.Cfg file exists.");
 
 
 			if (!pathViewerPositions.FileExists()) // check if MapViewers.yml exists yet
@@ -200,9 +218,9 @@ namespace MapView
 
 
 //			GameInfo.ParseConfigLineEvent += OnParseConfigLine;
-			InitializeGameInfo(pathPaths);
+			InitializeResourceInfo(pathPaths);
 //			GameInfo.ParseConfigLineEvent -= OnParseConfigLine;
-			LogFile.WriteLine("GameInfo initialized.");
+			LogFile.WriteLine("ResourceInfo initialized.");
 
 
 			_viewersManager.ManageViewers();
@@ -224,7 +242,7 @@ namespace MapView
 			PckSpriteCollection cuboid = null;
 			try
 			{
-				cuboid = GameInfo.CachePckPack(
+				cuboid = ResourceInfo.CachePckPack(
 											SharedSpace.Instance.GetString(SharedSpace.CursorFile),
 											String.Empty,
 											2,
@@ -235,7 +253,7 @@ namespace MapView
 			{
 				try
 				{
-					cuboid = GameInfo.CachePckPack(
+					cuboid = ResourceInfo.CachePckPack(
 												SharedSpace.Instance.GetString(SharedSpace.CursorFile),
 												String.Empty,
 												4,
@@ -251,7 +269,7 @@ namespace MapView
 			}
 			LogFile.WriteLine("Cursor loaded.");
 
-			PopulateMapTree();
+			CreateTree();
 			LogFile.WriteLine("Tilesets created and loaded to tree panel.");
 
 			if (pathSettings.FileExists())
@@ -278,11 +296,11 @@ namespace MapView
 
 			/****************************************/
 			// Copied from PckView
-//			loadedTypes = new LoadOfType<MapDesc>();
+//			loadedTypes = new LoadOfType<MapDescBase>();
 //			sharedSpace["MapMods"] = loadedTypes.AllLoaded;
 
 			// There are no currently loadable maps in this assembly so this is more for future use
-//			loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(XCom.Interfaces.Base.MapDesc)));
+//			loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(XCom.Interfaces.Base.MapDescBase)));
 
 //			if (Directory.Exists(sharedSpace[SharedSpace.CustomDirectory].ToString()))
 //			{
@@ -302,9 +320,9 @@ namespace MapView
 		#endregion
 
 
-		private static void InitializeGameInfo(PathInfo pathInfo)
+		private static void InitializeResourceInfo(PathInfo pathPaths)
 		{
-			GameInfo.Initialize(Palette.UfoBattle, pathInfo);
+			ResourceInfo.Initialize(Palette.UfoBattle, pathPaths);
 		}
 
 /*		private void OnParseConfigLine(KeyvalPair line, Varidia vars)
@@ -337,37 +355,30 @@ namespace MapView
 			}
 		} */
 
-		private void PopulateMapTree()
+		private void CreateTree()
 		{
 			tvMaps.Nodes.Clear();
 
-			foreach (string key in GameInfo.TilesetInfo.Tilesets.Keys)
-				AddMapGroup(GameInfo.TilesetInfo.Tilesets[key]);
-		}
-
-		private void AddMapGroup(TilesetBase tileset)
-		{
-			var node = new SortableTreeNode(tileset.Name);
-			node.Tag = tileset;
-			tvMaps.Nodes.Add(node);
-
-			foreach (string key in tileset.Subsets.Keys)
+			var groups = ResourceInfo.TileGroupInfo.TileGroups;
+			foreach (string keyGroup in groups.Keys)
 			{
-				var treeGroup = new SortableTreeNode(key);
-				treeGroup.Tag = tileset.Subsets[key];
-				node.Nodes.Add(treeGroup);
+				var nodeGroup = new SortableTreeNode(groups[keyGroup].Label);
+				nodeGroup.Tag = groups[keyGroup];
+				tvMaps.Nodes.Add(nodeGroup);
 
-				AddMapNodes(treeGroup, tileset.Subsets[key]);
-			}
-		}
+				foreach (string keyCategory in groups[keyGroup].Categories.Keys)
+				{
+					var nodeCategory = new SortableTreeNode(keyCategory);
+					nodeCategory.Tag = groups[keyGroup].Categories[keyCategory];
+					nodeGroup.Nodes.Add(nodeCategory);
 
-		private static void AddMapNodes(TreeNode tn, IDictionary<string, MapDesc> maps)
-		{
-			foreach (string key in maps.Keys)
-			{
-				var node = new SortableTreeNode(key);
-				node.Tag = maps[key];
-				tn.Nodes.Add(node);
+					foreach (string keyTileset in groups[keyGroup].Categories[keyCategory].Keys)
+					{
+						var nodeTileset = new SortableTreeNode(keyTileset);
+						nodeTileset.Tag = groups[keyGroup].Categories[keyCategory][keyTileset];
+						nodeCategory.Nodes.Add(nodeTileset);
+					}
+				}
 			}
 		}
 
@@ -779,7 +790,7 @@ namespace MapView
 
 		private void OnRegenOccultClick(object sender, EventArgs e)
 		{
-			var mapFile = MainViewUnderlay.Instance.MapBase as XCMapFile;
+			var mapFile = MainViewUnderlay.Instance.MapBase as MapFileChild;
 			if (mapFile != null)
 			{
 				mapFile.CalculateOccultations();
@@ -797,10 +808,10 @@ namespace MapView
 			var pathInfo = (PathInfo)share;
 
 //			GameInfo.ParseConfigLineEvent += OnParseConfigLine;
-			InitializeGameInfo(pathInfo);
+			InitializeResourceInfo(pathInfo);
 //			GameInfo.ParseConfigLineEvent -= OnParseConfigLine;
 
-			PopulateMapTree();
+			CreateTree();
 		}
 
 		/// <summary>
@@ -843,7 +854,7 @@ namespace MapView
 
 		private void LoadSelectedMap()
 		{
-			var desc = tvMaps.SelectedNode.Tag as MapDesc;
+			var desc = tvMaps.SelectedNode.Tag as MapDescBase;
 			if (desc != null)
 			{
 //				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.
@@ -855,7 +866,7 @@ namespace MapView
 																			// a DeadTile or AlternateTile is out of bounds.
 				var fileService = new XCMapFileService(tileFactory);
 
-				var mapBase = fileService.Load(desc as XCMapDesc);
+				var mapBase = fileService.Load(desc as MapDescChild);
 				_mainViewUnderlay.MapBase = mapBase;
 
 				tsEdit.Enabled = true;
@@ -975,7 +986,7 @@ namespace MapView
 
 		private void OnHq2xClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE.
 		{
-//			var map = _mainViewPanel.MapBase as XCMapFile;
+//			var map = _mainViewPanel.MapBase as MapFileChild;
 //			if (map != null)
 //			{
 //				map.HQ2X();

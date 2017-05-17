@@ -24,9 +24,9 @@ namespace MapView
 			get { return _observersDictionary; }
 		}
 
-		private XCMapBase _mapBase;
+		private MapFileBase _mapBase;
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public virtual XCMapBase MapBase
+		public virtual MapFileBase MapBase
 		{
 			get { return _mapBase; }
 			set

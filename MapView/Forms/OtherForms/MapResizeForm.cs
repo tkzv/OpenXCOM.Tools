@@ -11,8 +11,8 @@ namespace MapView
 			Form
 	{
 		#region Fields & Properties
-		private XCMapBase _mapBase;
-		internal XCMapBase MapBase
+		private MapFileBase _mapBase;
+		internal MapFileBase MapBase
 		{
 			get { return _mapBase; }
 			set

@@ -49,7 +49,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 //		[Browsable(false), DefaultValue(null)]
-		public override XCMapBase MapBase
+		public override MapFileBase MapBase
 		{
 			set
 			{
@@ -309,7 +309,7 @@ namespace MapView.Forms.MapObservers.TopViews
 					// this class's OnLocationSelected_Observer() handler or even
 					// QuadrantPanel.OnLocationSelected_Observer() ... anyway.
 					//
-					// or better: Make a flag of it in XCMapBase where Location is actually
+					// or better: Make a flag of it in MapFileBase where Location is actually
 					// set and all these OnLocationSelected events really fire out of !
 //					MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
 

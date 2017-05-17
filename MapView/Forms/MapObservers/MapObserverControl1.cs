@@ -26,9 +26,9 @@ namespace MapView
 			get { return _observersDictionary; }
 		}
 
-		private XCMapBase _mapBase;
+		private MapFileBase _mapBase;
 		[Browsable(false), DefaultValue(null)]
-		public virtual XCMapBase MapBase
+		public virtual MapFileBase MapBase
 		{
 			get { return _mapBase; }
 			set

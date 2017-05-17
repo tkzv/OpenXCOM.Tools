@@ -47,7 +47,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 
 		#region Properties
-		public override XCMapBase MapBase
+		public override MapFileBase MapBase
 		{
 			set
 			{
@@ -422,7 +422,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		private void OnVolutarMcdEditorClick(object sender, EventArgs e)
 		{
-			if ((MapBase as XCMapFile) != null)
+			if ((MapBase as MapFileChild) != null)
 			{
 				var service = new VolutarSettingService(Settings);
 				var pfe = service.FullPath;	// this will invoke a box for the user to input the
@@ -446,10 +446,10 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		private void OnPckEditorClick(object sender, EventArgs e)
 		{
-			var dep = GetDepLabel();
-			if (dep != null)
+			var terrain = GetTerrainLabel();
+			if (terrain != null)
 			{
-				var imageInfo = GameInfo.ImageInfo[dep];
+				var imageInfo = ResourceInfo.ImageInfo[terrain];
 				if (imageInfo != null)
 				{
 					string pfePck = imageInfo.Path + imageInfo.Label + PckSpriteCollection.PckExt;
@@ -500,8 +500,8 @@ namespace MapView.Forms.MapObservers.TileViews
 							f.ShowDialog(owner);
 							if (f.SavedFile)
 							{
-								GameInfo.ImageInfo.Images[dep].ClearMcdTable();
-								GameInfo.ClearPckCache(imageInfo.Path, imageInfo.Label);
+								ResourceInfo.ImageInfo.Images[terrain].ClearMcdTable();
+								ResourceInfo.ClearPckCache(imageInfo.Path, imageInfo.Label);
 
 								PckSaved();
 							}
@@ -545,7 +545,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <returns></returns>
 		private string BuildTitleString(int id, int mcd)
 		{
-			var dep = GetDepLabel();
+			var dep = GetTerrainLabel();
 			return "Tile View - id " + id + "  mcd " + mcd + "  file " + (dep ?? "unknown");
 		}
 
@@ -553,14 +553,14 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// Gets the label of the tileset of the currently selected tile.
 		/// </summary>
 		/// <returns></returns>
-		private string GetDepLabel()
+		private string GetTerrainLabel()
 		{
-			var tile = SelectedTilePart;
-			if (tile != null)
+			var part = SelectedTilePart;
+			if (part != null)
 			{
-				var mapFile = MapBase as XCMapFile;
+				var mapFile = MapBase as MapFileChild;
 				if (mapFile != null)
-					return mapFile.GetTerrainLabel(tile);
+					return mapFile.GetTerrainLabel(part);
 			}
 			return null;
 		}

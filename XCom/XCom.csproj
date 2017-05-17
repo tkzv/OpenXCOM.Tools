@@ -97,7 +97,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileDesc\FileDesc.cs" />
     <Compile Include="GameFiles\Map\McdRecordFactory.cs" />
     <Compile Include="GameFiles\Map\RouteData\Link.cs" />
     <Compile Include="GameFiles\Map\RouteData\RouteNode.cs" />
@@ -109,7 +108,7 @@
     <Compile Include="Interfaces\Base\MapTileList.cs" />
     <Compile Include="Services\MapResizeService.cs" />
     <Compile Include="Interfaces\Base\MapTileBase.cs" />
-    <Compile Include="Interfaces\Base\XCMapBase.cs" />
+    <Compile Include="Interfaces\Base\MapFileBase.cs" />
     <Compile Include="Interfaces\Base\IMapObserver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -123,7 +122,7 @@
     <Compile Include="GameFiles\Images\ImageDescriptor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\ImageInfo.cs">
+    <Compile Include="GameFiles\Images\ImageDesc.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Images\Types\XCBitmap.cs">
@@ -138,7 +137,7 @@
     <Compile Include="GameFiles\Map\OccultFile.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Map\XCMapFile.cs">
+    <Compile Include="GameFiles\Map\MapFileChild.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Map\XCMapTile.cs">
@@ -159,10 +158,10 @@
     <Compile Include="GameFiles\Map\XCTilepart.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FileDesc\TilesetDesc.cs">
+    <Compile Include="FileDesc\TileGroupDesc.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FileDesc\XCTileset.cs">
+    <Compile Include="FileDesc\TileGroupChild.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GameFiles\Varidia.cs">
@@ -171,24 +170,24 @@
     <Compile Include="GameFiles\Variable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameInfo.cs">
+    <Compile Include="ResourceInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Globals.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\Base\MapDesc.cs">
+    <Compile Include="Interfaces\Base\MapDescBase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\Base\TilepartBase.cs" />
-    <Compile Include="Interfaces\Base\TilesetBase.cs">
+    <Compile Include="Interfaces\Base\TileGroupBase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\XCImageFile.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FileDesc\XCMapDesc.cs" />
-    <Compile Include="Interfaces\Tileset.cs" />
+    <Compile Include="FileDesc\MapDescChild.cs" />
+    <Compile Include="Interfaces\TileGroup.cs" />
     <Compile Include="LogFile.cs">
       <SubType>Code</SubType>
     </Compile>

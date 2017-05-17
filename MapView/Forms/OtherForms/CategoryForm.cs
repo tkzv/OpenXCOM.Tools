@@ -4,21 +4,22 @@ using System.Windows.Forms;
 
 namespace MapView
 {
-	internal sealed class SubsetForm
+	internal sealed class CategoryForm
 		:
 			Form
 	{
 		private string _label;
+		public string CategoryLabel
+		{
+			get { return _label; }
+		}
 
-		public SubsetForm()
+
+		public CategoryForm()
 		{
 			InitializeComponent();
 		}
 
-		public string SubsetLabel
-		{
-			get { return _label; }
-		}
 
 		private void OnOkClick(object sender, EventArgs e)
 		{
@@ -46,18 +47,18 @@ namespace MapView
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.lblSubset = new Label();
-			this.tbLabel = new TextBox();
-			this.btnOk = new Button();
+			this.lblCategory = new System.Windows.Forms.Label();
+			this.tbLabel = new System.Windows.Forms.TextBox();
+			this.btnOk = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
-			// lblSubset
+			// lblCategory
 			// 
-			this.lblSubset.Location = new System.Drawing.Point(5, 5);
-			this.lblSubset.Name = "lblSubset";
-			this.lblSubset.Size = new System.Drawing.Size(80, 15);
-			this.lblSubset.TabIndex = 0;
-			this.lblSubset.Text = "Subset Label";
+			this.lblCategory.Location = new System.Drawing.Point(5, 5);
+			this.lblCategory.Name = "lblCategory";
+			this.lblCategory.Size = new System.Drawing.Size(90, 15);
+			this.lblCategory.TabIndex = 0;
+			this.lblCategory.Text = "Category Label";
 			// 
 			// tbLabel
 			// 
@@ -75,20 +76,21 @@ namespace MapView
 			this.btnOk.Text = "Ok";
 			this.btnOk.Click += new System.EventHandler(this.OnOkClick);
 			// 
-			// SubsetForm
+			// CategoryForm
 			// 
+			this.AcceptButton = this.btnOk;
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(244, 76);
 			this.Controls.Add(this.btnOk);
 			this.Controls.Add(this.tbLabel);
-			this.Controls.Add(this.lblSubset);
+			this.Controls.Add(this.lblCategory);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "SubsetForm";
-			this.StartPosition = FormStartPosition.CenterParent;
-			this.Text = "New Subset";
+			this.Name = "CategoryForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "Add Category";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -97,7 +99,7 @@ namespace MapView
 
 		private System.ComponentModel.Container components = null;
 
-		private Label lblSubset;
+		private Label lblCategory;
 		private TextBox tbLabel;
 		private Button btnOk;
 	}

@@ -311,7 +311,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							x += DrawAreaWidth,
 							y += DrawAreaHeight)
 				{
-					var tile = MapFile[row, col] as XCMapTile;	// NOTE: XCMapBase has the current level stored and uses
+					var tile = MapFile[row, col] as XCMapTile;	// NOTE: MapFileBase has the current level stored and uses
 					if (tile != null)							// it to return only tiles on the correct level here.
 					{
 						var node = tile.Node;

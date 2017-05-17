@@ -8,9 +8,9 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
-	internal sealed class XCTileset
+	internal sealed class TileGroupChild
 		:
-			Tileset
+			TileGroup
 	{
 //		private string[] _mapOrder;
 //		private MapLocation[] _startLoc;
@@ -20,12 +20,11 @@ namespace XCom
 		private const string Tab = "\t";
 
 
-		internal XCTileset(string name)
+		internal TileGroupChild(string name)
 			:
 				base(name)
 		{}
-
-		internal XCTileset(string name, StreamReader sr, Varidia vars)
+		internal TileGroupChild(string name, StreamReader sr, Varidia vars)
 			:
 				base(name, sr, vars)
 		{}
@@ -57,7 +56,7 @@ namespace XCom
 
 		public override void Save(StreamWriter sw, Varidia vars)
 		{
-			sw.WriteLine("Tileset:" + Name);
+			sw.WriteLine("Tileset:" + Label);
 			sw.WriteLine(Tab + "type:1");
 
 			if (vars.Vars[MapPath] != null)
@@ -77,25 +76,25 @@ namespace XCom
 
 			sw.WriteLine(Tab + "palette:" + Palette.Label);
 
-			foreach (string keySubsets in Subsets.Keys)
+			foreach (string keySubsets in Categories.Keys)
 			{
-				Dictionary<string, MapDesc> valDesc = Subsets[keySubsets];
+				Dictionary<string, MapDescBase> valDesc = Categories[keySubsets];
 				if (valDesc != null)
 				{
 					var deps = new Varidia("Deps");
 					foreach (string keyDesc in valDesc.Keys)
 					{
-						var desc = MapDescs[keyDesc] as XCMapDesc;
+						var desc = MapDescDictionary[keyDesc] as MapDescChild;
 						if (desc != null)
 						{
 							string depList = String.Empty;
-							if (desc.Dependencies.Length != 0)
+							if (desc.Terrains.Length != 0)
 							{
 								int i = 0;
-								for (; i != desc.Dependencies.Length - 1; ++i)
-									depList += desc.Dependencies[i] + " ";
+								for (; i != desc.Terrains.Length - 1; ++i)
+									depList += desc.Terrains[i] + " ";
 	
-								depList += desc.Dependencies[i];
+								depList += desc.Terrains[i];
 							}
 							deps.AddKeyvalPair(desc.Label, depList);
 						}
@@ -114,31 +113,31 @@ namespace XCom
 			sw.Flush();
 		}
 
-		public override void AddMap(string name, string subset)
+		public override void AddMap(string tileset, string category)
 		{
-			var desc = new XCMapDesc(
-								name,
-								MapPath,
-								RoutePath,
-								OccultPath,
-								new string[0],
-								Palette);
-			MapDescs[desc.Label] = desc;
-			Subsets[subset][desc.Label] = desc;
+			var desc = new MapDescChild(
+									tileset,
+									MapPath,
+									RoutePath,
+									OccultPath,
+									new string[0],
+									Palette);
+			MapDescDictionary[desc.Label]    =
+			Categories[category][desc.Label] = desc;
 		}
 
-		public override void AddMap(XCMapDesc desc, string subset)
+		public override void AddMap(MapDescChild desc, string category)
 		{
-			MapDescs[desc.Label] = desc;
-			Subsets[subset][desc.Label] = desc;
+			MapDescDictionary[desc.Label]    =
+			Categories[category][desc.Label] = desc;
 		}
 
-		public override XCMapDesc RemoveMap(string name, string subset)
-		{
-			var desc = Subsets[subset][name] as XCMapDesc;
-			Subsets[subset].Remove(name);
-			return desc;
-		}
+//		public override MapDescChild RemoveTileset(string tileset, string category)
+//		{
+//			var desc = Categories[category][tileset] as MapDescChild;
+//			Categories[category].Remove(tileset);
+//			return desc;
+//		}
 
 		public override void ParseLine(
 				string key,
@@ -150,25 +149,25 @@ namespace XCom
 			{
 				case "FILES":
 				{
-					var dictDescs = new Dictionary<string, MapDesc>();
-					Subsets[val] = dictDescs;
+					var descDictionary = new Dictionary<string, MapDescBase>();
+					Categories[val] = descDictionary;
 					string lineVars = Varidia.ReadLine(sr, vars);
 					while (lineVars.ToUpperInvariant() != "END")
 					{
-						int pos       = lineVars.IndexOf(':');
-						string file   = lineVars.Substring(0, pos);
-						string[] deps = lineVars.Substring(pos + 1).Split(' ');
+						int pos           = lineVars.IndexOf(':');
+						string file       = lineVars.Substring(0, pos);
+						string[] terrains = lineVars.Substring(pos + 1).Split(' ');
 
-						var desc = new XCMapDesc(
-											file,
-											MapPath,
-											RoutePath,
-											OccultPath,
-											deps,
-											Palette);
+						var desc = new MapDescChild(
+												file,
+												MapPath,
+												RoutePath,
+												OccultPath,
+												terrains,
+												Palette);
 
-						MapDescs[file] =
-						dictDescs[file] = desc;
+						MapDescDictionary[file] =
+						descDictionary[file]    = desc;
 
 						lineVars = Varidia.ReadLine(sr, vars);
 					}

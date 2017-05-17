@@ -22,8 +22,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Fields & Properties
-		private XCMapFile _mapFile;
-		internal protected XCMapFile MapFile
+		private MapFileChild _mapFile;
+		internal protected MapFileChild MapFile
 		{
 			get { return _mapFile; }
 			set

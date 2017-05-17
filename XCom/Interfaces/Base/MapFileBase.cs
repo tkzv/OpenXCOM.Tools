@@ -15,7 +15,7 @@ namespace XCom.Interfaces.Base
 	/// <summary>
 	/// This is basically the currently loaded Map.
 	/// </summary>
-	public class XCMapBase
+	public class MapFileBase
 	{
 		public event LocationSelectedEventHandler LocationSelectedEvent;
 		public event LevelChangedEventHandler LevelChangedEvent;
@@ -131,11 +131,11 @@ namespace XCom.Interfaces.Base
 
 		#region cTor
 		/// <summary>
-		/// cTor. Instantiated only as the parent of XCMapFile.
+		/// cTor. Instantiated only as the parent of MapFileChild.
 		/// </summary>
 		/// <param name="label"></param>
 		/// <param name="parts"></param>
-		protected XCMapBase(string label, List<TilepartBase> parts)
+		protected MapFileBase(string label, List<TilepartBase> parts)
 		{
 			Label = label;
 			_parts = parts;
@@ -146,7 +146,7 @@ namespace XCom.Interfaces.Base
 		#region Methods
 		public virtual void Save()
 		{
-//			throw new InvalidOperationException("XCMapBase: Save() is not implemented."); // ... odd ....
+//			throw new InvalidOperationException("MapFileBase: Save() is not implemented."); // ... odd ....
 		}
 
 		/// <summary>
@@ -178,14 +178,14 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Forwards the call to XCMapFile.
+		/// Forwards the call to MapFileChild.
 		/// </summary>
 		/// <param name="rows"></param>
 		/// <param name="cols"></param>
 		/// <param name="levs"></param>
 		/// <param name="ceiling"></param>
 		public virtual void MapResize(	// NOTE: This doesn't handle Routes or node-checking
-				int rows,				// which XCMapFile.ResizeTo() does.
+				int rows,				// which MapFileChild.ResizeTo() does.
 				int cols,
 				int levs,
 				bool ceiling)
@@ -193,14 +193,14 @@ namespace XCom.Interfaces.Base
 
 		/// <summary>
 		/// Not generic enough to call with custom derived classes other than
-		/// XCMapFile.
+		/// MapFileChild.
 		/// </summary>
 		/// <param name="file"></param>
 		public void SaveGif(string file)
 		{
 			var palette = GetFirstGroundPalette();
 			if (palette == null)
-				throw new ArgumentNullException("file", "XCMapBase: At least 1 ground tile is required.");
+				throw new ArgumentNullException("file", "MapFileBase: At least 1 ground tile is required.");
 
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
 			var b = XCBitmap.MakeBitmap(
@@ -264,13 +264,13 @@ namespace XCom.Interfaces.Base
 		private Palette GetFirstGroundPalette()
 		{
 			for (int lev = 0; lev != MapSize.Levs; ++lev)
-				for (int row = 0; row != MapSize.Rows; ++row)
-					for (int col = 0; col != MapSize.Cols; ++col)
-					{
-						var tile = (XCMapTile)this[row, col, lev];
-						if (tile.Ground != null)
-							return tile.Ground[0].Palette;
-					}
+			for (int row = 0; row != MapSize.Rows; ++row)
+			for (int col = 0; col != MapSize.Cols; ++col)
+			{
+				var tile = this[row, col, lev] as XCMapTile;
+				if (tile.Ground != null)
+					return tile.Ground[0].Palette;
+			}
 
 			return null;
 		}

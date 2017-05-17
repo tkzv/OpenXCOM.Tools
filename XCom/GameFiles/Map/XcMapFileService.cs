@@ -18,14 +18,14 @@ namespace XCom
 		}
 
 
-		public XCMapBase Load(XCMapDesc desc)
+		public MapFileBase Load(MapDescChild desc)
 		{
 			if (desc != null && File.Exists(desc.FilePath))
 			{
 				var parts = new List<TilepartBase>();
-				var info = GameInfo.ImageInfo;
+				var info = ResourceInfo.ImageInfo;
 
-				foreach (string dep in desc.Dependencies)
+				foreach (string dep in desc.Terrains)
 				{
 					var tileInfo = info[dep];
 					if (tileInfo != null)
@@ -37,13 +37,13 @@ namespace XCom
 				}
 
 				var RMP = new RouteNodeCollection(desc.Label, desc.RoutePath);
-				var MAP = new XCMapFile(
-									desc.Label,
-									desc.MapPath,
-									desc.OccultPath,
-									parts,
-									desc.Dependencies,
-									RMP);
+				var MAP = new MapFileChild(
+										desc.Label,
+										desc.MapPath,
+										desc.OccultPath,
+										parts,
+										desc.Terrains,
+										RMP);
 				return MAP;
 			}
 			return null;

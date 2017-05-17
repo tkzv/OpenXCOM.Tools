@@ -71,7 +71,7 @@ namespace MapView.Forms.MainWindow
 				TopView.Control.SelectQuadrant(part.Record.TileType);
 		}
 
-		internal void SetObservers(XCMapBase mapBase)
+		internal void SetObservers(MapFileBase mapBase)
 		{
 			var observers = new IMapObserver[]
 			{
@@ -89,7 +89,7 @@ namespace MapView.Forms.MainWindow
 			MainViewUnderlay.Instance.MainViewOverlay.Refresh();
 		}
 
-		private void SetObserver(XCMapBase mapBase, IMapObserver observer)
+		private void SetObserver(MapFileBase mapBase, IMapObserver observer)
 		{
 			if (observer.MapBase != null)
 			{

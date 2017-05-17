@@ -14,7 +14,7 @@ namespace XCom
 		internal static void LoadOccult(
 				string file,
 				string path,
-				XCMapBase mapBase)
+				MapFileBase mapBase)
 		{
 			using (var br = new BinaryReader(File.OpenRead(path + file + OccultExt)))
 			{
@@ -46,7 +46,7 @@ namespace XCom
 		internal static void SaveOccult(
 				string file,
 				string path,
-				XCMapBase mapBase)
+				MapFileBase mapBase)
 		{
 			Directory.CreateDirectory(path);
 

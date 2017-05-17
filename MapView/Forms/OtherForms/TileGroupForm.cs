@@ -4,17 +4,17 @@ using System.Windows.Forms;
 
 namespace MapView
 {
-	internal sealed class TilesetForm
+	internal sealed class TileGroupForm
 		:
 			Form
 	{
-		internal TilesetForm()
+		internal TileGroupForm()
 		{
 			InitializeComponent();
 		}
 
 		private string _label;
-		internal string TilesetLabel
+		internal string TileGroupLabel
 		{
 			get { return _label; }
 		}

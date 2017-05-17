@@ -8,75 +8,34 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
-	public sealed class TilesetDesc
-		:
-			FileDesc
+	public sealed class TileGroupDesc
 	{
-		#region FileDesc requirements
-		/// <summary>
-		/// WARNING: This doesn't appear to be used but has to be here to
-		/// satisfy inheritance from FileDesc.Save() which is abstract.
-		/// </summary>
-		/// <param name="pfe"></param>
-		public override void Save(string pfe)
+		#region Fields & Properties
+		private readonly string _path;
+		public string Path
 		{
-			var vars = new Varidia("Path"); // iterate thru each tileset, call save on them
+			get { return _path; }
+		}
 
-			foreach (string key in _tilesets.Keys)
-			{
-				var tileset = (Tileset)_tilesets[key];
-				if (tileset != null)
-				{
-					vars.AddKeyvalPair("rootPath",  tileset.MapPath);
-					vars.AddKeyvalPair("rmpPath",   tileset.RoutePath);
-					vars.AddKeyvalPair("blankPath", tileset.OccultPath);
-				}
-			}
-
-			using (var sw = new StreamWriter(pfe))
-			{
-				foreach (string key in vars.Variables)
-				{
-					var val = (Variable)vars.Vars[key];
-					sw.WriteLine(string.Format(
-											System.Globalization.CultureInfo.InvariantCulture,
-											"{0}:{1}",
-											val.Name, val.Value));
-				}
-
-				foreach (string key in _tilesets.Keys)
-					if (_tilesets[key] != null)
-						((Tileset)_tilesets[key]).Save(sw, vars);
-			}
+		private readonly Dictionary<string, TileGroupBase> _tilegroups;
+		public Dictionary<string, TileGroupBase> TileGroups
+		{
+			get { return _tilegroups; }
 		}
 		#endregion
 
 
-		private readonly Dictionary<string, TilesetBase> _tilesets;
-		public Dictionary<string, TilesetBase> Tilesets
+		#region cTor
+		internal TileGroupDesc(string pfe, Varidia vars)
 		{
-			get { return _tilesets; }
-		}
+			_path = pfe;
 
-//		private double version;
-
-
-/*		public TilesetDesc()
-			:
-				base(String.Empty)
-		{
-			_tilesets = new Dictionary<string, TilesetBase>();
-		} */
-		internal TilesetDesc(string inFile, Varidia vars)
-			:
-				base(inFile)
-		{
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("[4]TilesetDesc cTor file= " + inFile);
-			_tilesets = new Dictionary<string, TilesetBase>();
+			_tilegroups = new Dictionary<string, TileGroupBase>();
 			//LogFile.WriteLine(". [4]instantiate _tilesets Dictionary");
 
-			using (var sr = new StreamReader(File.OpenRead(inFile)))
+			using (var sr = new StreamReader(File.OpenRead(pfe)))
 			{
 				var vars1 = new Varidia(sr, vars);
 
@@ -119,7 +78,7 @@ namespace XCom
 //											break;
 										case 1:
 											//LogFile.WriteLine(". . . . . [4]instantiate XCTileset _tilesets[" + val + "]");
-											_tilesets[val] = new XCTileset(val, sr, new Varidia(vars1));
+											_tilegroups[val] = new TileGroupChild(val, sr, new Varidia(vars1));
 											break;
 									}
 									break;
@@ -149,20 +108,61 @@ namespace XCom
 				}
 			}
 		}
+		#endregion
 
-		public TilesetBase AddTileset(
-								string name,
-								string pathMaps,
-								string pathRoutes,
-								string pathOccults)
+
+		#region Methods
+		public TileGroupBase AddTileGroup(
+				string label,
+				string pathMaps,
+				string pathRoutes,
+				string pathOccults)
 		{
-			var tileset = new XCTileset(name);
+			var tilegroup = new TileGroupChild(label);
 
-			tileset.MapPath    = pathMaps;
-			tileset.RoutePath  = pathRoutes;
-			tileset.OccultPath = pathOccults;
+			tilegroup.MapPath    = pathMaps;
+			tilegroup.RoutePath  = pathRoutes;
+			tilegroup.OccultPath = pathOccults;
 
-			return (_tilesets[name] = tileset);
+			return (_tilegroups[label] = tilegroup);
 		}
+		#endregion
 	}
 }
+
+/*		/// <summary>
+		/// WARNING: This doesn't appear to be used but has to be here to
+		/// satisfy inheritance from FileDesc.Save() which is abstract.
+		/// </summary>
+		/// <param name="pfe"></param>
+		public override void Save(string pfe)
+		{
+			var vars = new Varidia("Path"); // iterate thru each tileset, call save on them
+
+			foreach (string key in _tilesets.Keys)
+			{
+				var tileset = (TileGroup)_tilesets[key];
+				if (tileset != null)
+				{
+					vars.AddKeyvalPair("rootPath",  tileset.MapPath);
+					vars.AddKeyvalPair("rmpPath",   tileset.RoutePath);
+					vars.AddKeyvalPair("blankPath", tileset.OccultPath);
+				}
+			}
+
+			using (var sw = new StreamWriter(pfe))
+			{
+				foreach (string key in vars.Variables)
+				{
+					var val = (Variable)vars.Vars[key];
+					sw.WriteLine(string.Format(
+											System.Globalization.CultureInfo.InvariantCulture,
+											"{0}:{1}",
+											val.Name, val.Value));
+				}
+
+				foreach (string key in _tilesets.Keys)
+					if (_tilesets[key] != null)
+						((TileGroup)_tilesets[key]).Save(sw, vars);
+			}
+		} */
