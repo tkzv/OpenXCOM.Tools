@@ -59,9 +59,9 @@ namespace XCom.Interfaces
 
 
 		#region cTor
-		protected TileGroup(string name)
+		protected TileGroup(string label)
 			:
-				base(name)
+				base(label)
 		{
 			Palette = ResourceInfo.DefaultPalette;
 //			_mapSize = new MapSize(60, 60, 4);
@@ -71,11 +71,11 @@ namespace XCom.Interfaces
 //			_baseStyle = false;
 		}
 		protected TileGroup(
-				string name,
+				string label,
 				StreamReader sr,
 				Varidia vars)
 			:
-				this(name)
+				this(label)
 		{
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("[7]TileGroup cTor");

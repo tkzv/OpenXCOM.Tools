@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-using XCom.GameFiles.Map;
+using XCom.Resources.Map;
 
 
 namespace XCom

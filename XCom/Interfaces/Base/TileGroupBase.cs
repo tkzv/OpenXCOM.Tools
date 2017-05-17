@@ -31,7 +31,7 @@ namespace XCom.Interfaces.Base
 			get { return _mapDescDictionary[label]; }
 			set
 			{
-				if (!_mapDescDictionary.ContainsKey(label))	// isNecessary(?)
+				if (!_mapDescDictionary.ContainsKey(label))	// isNecessary=TRUE/FALSE
 					_mapDescDictionary.Add(label, value);	// no, none of this inheritance of inheritance of interfaces that aren't bullshit is "necessary".
 
 				_mapDescDictionary[label] = value;

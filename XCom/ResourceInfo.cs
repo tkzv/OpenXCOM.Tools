@@ -33,7 +33,7 @@ namespace XCom
 //		public static event ParseConfigLineEventHandler ParseConfigLineEvent;
 
 
-		public static void Initialize(Palette pal, DSShared.PathInfo pathInfo)
+		public static void InitializeResources(Palette pal, DSShared.PathInfo pathInfo)
 		{
 			Directory.SetCurrentDirectory(pathInfo.Path);	// change to /settings dir
 			XConsole.Init(20);								// note that prints LogFile to settings dir also

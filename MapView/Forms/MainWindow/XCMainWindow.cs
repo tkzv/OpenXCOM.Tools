@@ -15,8 +15,8 @@ using MapView.Forms.XCError.WarningConsole;
 //using Microsoft.Win32;
 
 using XCom;
-using XCom.GameFiles.Map;
-using XCom.GameFiles.Map.RouteData;
+using XCom.Resources.Map;
+using XCom.Resources.Map.RouteData;
 //using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
@@ -218,7 +218,7 @@ namespace MapView
 
 
 //			GameInfo.ParseConfigLineEvent += OnParseConfigLine;
-			InitializeResourceInfo(pathPaths);
+			ResourceInfo.InitializeResources(Palette.UfoBattle, pathPaths);
 //			GameInfo.ParseConfigLineEvent -= OnParseConfigLine;
 			LogFile.WriteLine("ResourceInfo initialized.");
 
@@ -319,11 +319,6 @@ namespace MapView
 		}
 		#endregion
 
-
-		private static void InitializeResourceInfo(PathInfo pathPaths)
-		{
-			ResourceInfo.Initialize(Palette.UfoBattle, pathPaths);
-		}
 
 /*		private void OnParseConfigLine(KeyvalPair line, Varidia vars)
 		{
@@ -808,7 +803,7 @@ namespace MapView
 			var pathInfo = (PathInfo)share;
 
 //			GameInfo.ParseConfigLineEvent += OnParseConfigLine;
-			InitializeResourceInfo(pathInfo);
+			ResourceInfo.InitializeResources(Palette.UfoBattle, pathInfo);
 //			GameInfo.ParseConfigLineEvent -= OnParseConfigLine;
 
 			CreateTree();
@@ -854,8 +849,8 @@ namespace MapView
 
 		private void LoadSelectedMap()
 		{
-			var desc = tvMaps.SelectedNode.Tag as MapDescBase;
-			if (desc != null)
+			var description = tvMaps.SelectedNode.Tag as MapDescBase;
+			if (description != null)
 			{
 //				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.
 
@@ -866,14 +861,14 @@ namespace MapView
 																			// a DeadTile or AlternateTile is out of bounds.
 				var fileService = new XCMapFileService(tileFactory);
 
-				var mapBase = fileService.Load(desc as MapDescChild);
+				var mapBase = fileService.Load(description as MapDescChild);
 				_mainViewUnderlay.MapBase = mapBase;
 
 				tsEdit.Enabled = true;
 
 				RouteCheckService.CheckNodeBounds(mapBase);
 
-				tsslMap.Text = desc.Label;
+				tsslMapLabel.Text = description.Label;
 				tsslDimensions.Text = (mapBase != null) ? mapBase.MapSize.ToString()
 														: "size: n/a";
 				tsslPosition.Text = String.Empty;

@@ -1,59 +1,82 @@
-﻿groups:
-  - type: ufoShips
-    categories:
-      - type: Ufo
-        tilesets:
-          - type: UFO_110
-            terrains:
-              - U_EXT02
-              - U_WALL02
-              - U_BITS
-          - type: UFO_120
-            terrains:
-              - U_EXT02
-              - U_WALL02
-              - U_BITS
-          - type: UFO_130
-            terrains:
-              - U_EXT02
-              - U_WALL02
-              - U_DISEC2
-              - U_BITS
-          - type: UFO_140
-            terrains:
-              - U_EXT02
-              - U_WALL02
-              - U_OPER2
-              - U_BITS
-          - type: UFO_150
-            terrains:
-              - U_EXT02
-              - U_WALL02
-              - U_PODS
-              - U_BITS
-          - type: UFO_160
-            terrains:
-              - U_EXT02
-              - U_WALL02
-              - U_PODS
-              - U_BITS
-          - type: UFO_170
-            terrains:
-              - U_EXT02
-              - U_WALL02
-              - U_DISEC2
-              - U_BITS
-      - type: Craft
-        tilesets:
-          - type: AVENGER
-            terrains:
-              - AVENGER
-          - type: LIGHTNIN
-            terrains:
-              - LIGHTNIN
-          - type: PLANE
-            terrains:
-              - PLANE
-  - type: ufoLandscapes
-  - type: tftdShips
-  - type: tftdLandscapes
+﻿# This is the default MapConfig for MapViewII. It sets up the stock UFOs, Craft,
+# and landscapes for out-of-the-box use by the app.
+#
+# 'tilesets' - a list that contains all the blocks (sequence)
+# 'type'     - the label of MAP/RMP files for the block (scalar)
+# 'terrains' - the label(s) of MCD/PCK/TAB files for the block (sequence)
+# 'category' - a header for the tileset, is arbitrary here (scalar)
+# 'group'    - a header for the categories, is arbitrary here (scalar)
+tilesets:
+  - type: UFO_110
+    terrains:
+      - U_EXT02
+      - U_WALL02
+      - U_BITS
+    category: Ufo
+    group: ufoShips
+  - type: UFO_120
+    terrains:
+      - U_EXT02
+      - U_WALL02
+      - U_BITS
+    category: Ufo
+    group: ufoShips
+  - type: UFO_130
+    terrains:
+      - U_EXT02
+      - U_WALL02
+      - U_DISEC2
+      - U_BITS
+    category: Ufo
+    group: ufoShips
+  - type: UFO_140
+    terrains:
+      - U_EXT02
+      - U_WALL02
+      - U_OPER2
+      - U_BITS
+    category: Ufo
+    group: ufoShips
+  - type: UFO_150
+    terrains:
+      - U_EXT02
+      - U_WALL02
+      - U_PODS
+      - U_BITS
+    category: Ufo
+    group: ufoShips
+  - type: UFO_160
+    terrains:
+      - U_EXT02
+      - U_WALL02
+      - U_PODS
+      - U_BITS
+    category: Ufo
+    group: ufoShips
+  - type: UFO_170
+    terrains:
+      - U_EXT02
+      - U_WALL02
+      - U_DISEC2
+      - U_BITS
+    category: Ufo
+    group: ufoShips
+  - type: AVENGER
+    terrains:
+      - AVENGER
+    category: Craft
+    group: ufoShips
+  - type: LIGHTNIN
+    terrains:
+      - LIGHTNIN
+    category: Craft
+    group: ufoShips
+  - type: PLANE
+    terrains:
+      - PLANE
+    category: Craft
+    group: ufoShips
+
+#group: ufoLandscapes
+#group: tftdShips
+#group: tftdLandscapes

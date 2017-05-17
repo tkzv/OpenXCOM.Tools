@@ -342,6 +342,9 @@
     <EmbeddedResource Include="Forms\McdViewer\McdViewerForm.resx">
       <DependentUpon>McdViewerForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OtherForms\ConfigurationForm.resx">
+      <DependentUpon>ConfigurationForm.Designer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\MapResizeForm.resx">
       <DependentUpon>MapResizeForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -420,7 +423,8 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <EmbeddedResource Include="_Embedded\MapViewers.yml" />
-    <EmbeddedResource Include="_Embedded\MapConfig.yml" />
+    <EmbeddedResource Include="_Embedded\MapConfig_Bk.yml" />
+    <None Include="_Embedded\MapConfig.yml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

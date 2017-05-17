@@ -2,7 +2,7 @@
 using System.IO;
 
 
-namespace XCom.GameFiles.Map
+namespace XCom.Resources.Map
 {
 	public sealed class XCTileFactory
 	{

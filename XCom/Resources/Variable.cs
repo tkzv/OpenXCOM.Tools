@@ -45,6 +45,7 @@ namespace XCom
 			_list.Add(prefix);
 		}
 
+
 		private const string DefaultPrefix = ""; // NOTE: doesn't accept String.Empty.
 
 		internal void Write(TextWriter sw, string prefix = DefaultPrefix)

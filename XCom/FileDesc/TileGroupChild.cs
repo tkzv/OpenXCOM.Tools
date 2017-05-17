@@ -20,13 +20,13 @@ namespace XCom
 		private const string Tab = "\t";
 
 
-		internal TileGroupChild(string name)
+		internal TileGroupChild(string label)
 			:
-				base(name)
+				base(label)
 		{}
-		internal TileGroupChild(string name, StreamReader sr, Varidia vars)
+		internal TileGroupChild(string label, StreamReader sr, Varidia vars)
 			:
-				base(name, sr, vars)
+				base(label, sr, vars)
 		{}
 
 

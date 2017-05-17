@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-using XCom.GameFiles.Map;
+using XCom.Resources.Map;
 using XCom.Interfaces.Base;
 
 
@@ -9,15 +9,20 @@ namespace XCom
 {
 	public class XCMapFileService
 	{
+		#region Fields
 		private readonly XCTileFactory _tileFactory;
+		#endregion
 
 
+		#region cTor
 		public XCMapFileService(XCTileFactory tileFactory)
 		{
 			_tileFactory = tileFactory;
 		}
+		#endregion
 
 
+		#region Methods
 		public MapFileBase Load(MapDescChild desc)
 		{
 			if (desc != null && File.Exists(desc.FilePath))
@@ -48,5 +53,6 @@ namespace XCom
 			}
 			return null;
 		}
+		#endregion
 	}
 }

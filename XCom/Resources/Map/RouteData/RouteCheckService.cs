@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using XCom.Interfaces.Base;
 
 
-namespace XCom.GameFiles.Map.RouteData
+namespace XCom.Resources.Map.RouteData
 {
 	public static class RouteCheckService
 	{

@@ -55,7 +55,7 @@ namespace MapView
 			this.sfdSaveDialog = new System.Windows.Forms.SaveFileDialog();
 			this.ssMain = new System.Windows.Forms.StatusStrip();
 			this.tsslScale = new System.Windows.Forms.ToolStripStatusLabel();
-			this.tsslMap = new System.Windows.Forms.ToolStripStatusLabel();
+			this.tsslMapLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tsslDimensions = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tsslPosition = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tscPanel = new System.Windows.Forms.ToolStripContainer();
@@ -166,17 +166,17 @@ namespace MapView
 			this.miOptions});
 			this.menuEdit.Text = "&Edit";
 			// 
-			// miOptions
-			// 
-			this.miOptions.Index = 0;
-			this.miOptions.Text = "&Options";
-			this.miOptions.Click += new System.EventHandler(this.OnOptionsClick);
-			// 
 			// miPaths
 			// 
-			this.miPaths.Index = 1;
+			this.miPaths.Index = 0;
 			this.miPaths.Text = "&Paths";
 			this.miPaths.Click += new System.EventHandler(this.OnPathsEditorClick);
+			// 
+			// miOptions
+			// 
+			this.miOptions.Index = 1;
+			this.miOptions.Text = "&Options";
+			this.miOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
 			// menuAnimation
 			// 
@@ -241,7 +241,7 @@ namespace MapView
 			this.ssMain.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.ssMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.tsslScale,
-			this.tsslMap,
+			this.tsslMapLabel,
 			this.tsslDimensions,
 			this.tsslPosition});
 			this.ssMain.Location = new System.Drawing.Point(188, 432);
@@ -259,16 +259,16 @@ namespace MapView
 			this.tsslScale.Name = "tsslScale";
 			this.tsslScale.Size = new System.Drawing.Size(90, 17);
 			// 
-			// tsslMap
+			// tsslMapLabel
 			// 
-			this.tsslMap.AutoSize = false;
-			this.tsslMap.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+			this.tsslMapLabel.AutoSize = false;
+			this.tsslMapLabel.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-			this.tsslMap.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tsslMap.Name = "tsslMap";
-			this.tsslMap.Size = new System.Drawing.Size(139, 17);
-			this.tsslMap.Spring = true;
+			this.tsslMapLabel.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsslMapLabel.Name = "tsslMapLabel";
+			this.tsslMapLabel.Size = new System.Drawing.Size(139, 17);
+			this.tsslMapLabel.Spring = true;
 			// 
 			// tsslDimensions
 			// 
@@ -446,7 +446,7 @@ namespace MapView
 		private System.Windows.Forms.MenuItem miExport;
 		private DSShared.Windows.CollapsibleSplitter csSplitter;
 		private System.Windows.Forms.StatusStrip ssMain;
-		private System.Windows.Forms.ToolStripStatusLabel tsslMap;
+		private System.Windows.Forms.ToolStripStatusLabel tsslMapLabel;
 		private System.Windows.Forms.ToolStripStatusLabel tsslDimensions;
 		private System.Windows.Forms.ToolStripStatusLabel tsslPosition;
 		private System.Windows.Forms.ToolStripContainer tscPanel;

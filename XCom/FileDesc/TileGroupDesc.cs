@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
 
@@ -30,10 +29,8 @@ namespace XCom
 		{
 			_path = pfe;
 
-			//LogFile.WriteLine("");
-			//LogFile.WriteLine("[4]TilesetDesc cTor file= " + inFile);
 			_tilegroups = new Dictionary<string, TileGroupBase>();
-			//LogFile.WriteLine(". [4]instantiate _tilesets Dictionary");
+
 
 			using (var sr = new StreamReader(File.OpenRead(pfe)))
 			{
@@ -42,49 +39,34 @@ namespace XCom
 				int pos;
 				string key, val, line;
 
-				//LogFile.WriteLine(". [4]start stream iteration");
 				while ((line = vars1.ReadLine(sr)) != null) // will not return lines that start '$' (or whitespace lines)
 				{
 					pos = line.IndexOf(':');
-					key = line.Substring(0, pos);
+					key = line.Substring(0, pos).ToUpperInvariant();
 					val = line.Substring(pos + 1);
 
-					//LogFile.WriteLine("");
-					//LogFile.WriteLine(". . [4]TilesetDesc cTor line= " + line);
-					//LogFile.WriteLine(". . [4]pos= " + pos);
-					//LogFile.WriteLine(". . [4]key= " + key);
-					//LogFile.WriteLine(". . [4]val= " + val);
-
-					switch (key.ToUpperInvariant())
+					switch (key)
 					{
 						case "TILESET":
 							line = Varidia.ReadLine(sr, vars1);
 							pos  = line.IndexOf(':');
 							key  = line.Substring(0, pos).ToUpperInvariant();
 
-							//LogFile.WriteLine(". . . [4]case TILESET");
-							//LogFile.WriteLine(". . . [4]line= " + line);
-							//LogFile.WriteLine(". . . [4]pos= " + pos);
-							//LogFile.WriteLine(". . . [4]key= " + key);
-
 							switch (key)
 							{
 								case "TYPE":
-									//LogFile.WriteLine(". . . . [4]subcase TYPE val= " + int.Parse(line.Substring(pos + 1), System.Globalization.CultureInfo.InvariantCulture));
-									switch (int.Parse(line.Substring(pos + 1), System.Globalization.CultureInfo.InvariantCulture))
+									switch (Int32.Parse(line.Substring(pos + 1), System.Globalization.CultureInfo.InvariantCulture))
 									{
 //										case 0:
 //											_tilesets[name] = new Type0Tileset(name, sr, new Varidia(vars1));
 //											break;
 										case 1:
-											//LogFile.WriteLine(". . . . . [4]instantiate XCTileset _tilesets[" + val + "]");
 											_tilegroups[val] = new TileGroupChild(val, sr, new Varidia(vars1));
 											break;
 									}
 									break;
 
 								default:
-									//LogFile.WriteLine(". . . . [4]subcase default Type Not Found");
 									Console.WriteLine(string.Format(
 																System.Globalization.CultureInfo.CurrentCulture,
 																"Type line not found: {0}",
@@ -98,7 +80,6 @@ namespace XCom
 //							break;
 	
 						default:
-							//LogFile.WriteLine(". . . [4]case default UNKNOWN line= " + line);
 							Console.WriteLine(string.Format(
 														System.Globalization.CultureInfo.CurrentCulture,
 														"Unknown line: {0}",

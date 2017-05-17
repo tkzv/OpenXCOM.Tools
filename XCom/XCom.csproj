@@ -97,15 +97,42 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameFiles\Map\McdRecordFactory.cs" />
-    <Compile Include="GameFiles\Map\RouteData\Link.cs" />
-    <Compile Include="GameFiles\Map\RouteData\RouteNode.cs" />
-    <Compile Include="GameFiles\Map\RouteData\RouteCheckService.cs" />
-    <Compile Include="GameFiles\Map\SpecialType.cs" />
-    <Compile Include="GameFiles\Map\XCMapFileService.cs" />
-    <Compile Include="GameFiles\Map\XCTileFactory.cs" />
+    <Compile Include="Resources\Images\Collections\PckSpriteCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\Images\Collections\XCImageCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\Images\ImageDesc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\Images\ImageDescriptor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\Images\Types\PckImage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\Images\Types\XCBitmap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\Images\Types\XCImage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\Map\McdRecordFactory.cs" />
+    <Compile Include="Resources\Map\RouteData\Link.cs" />
+    <Compile Include="Resources\Map\RouteData\RouteNode.cs" />
+    <Compile Include="Resources\Map\RouteData\RouteCheckService.cs" />
+    <Compile Include="Resources\Map\SpecialType.cs" />
+    <Compile Include="Resources\Map\XCMapFileService.cs" />
+    <Compile Include="Resources\Map\XCTileFactory.cs" />
     <Compile Include="Interfaces\Base\MapPosition.cs" />
     <Compile Include="Interfaces\Base\MapTileList.cs" />
+    <Compile Include="Resources\Variable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Resources\Varidia.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Services\MapResizeService.cs" />
     <Compile Include="Interfaces\Base\MapTileBase.cs" />
     <Compile Include="Interfaces\Base\MapFileBase.cs" />
@@ -113,61 +140,34 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\Collections\PckSpriteCollection.cs">
+    <Compile Include="Resources\Map\OccultFile.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\Collections\XCImageCollection.cs">
+    <Compile Include="Resources\Map\MapFileChild.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\ImageDescriptor.cs">
+    <Compile Include="Resources\Map\XCMapTile.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\ImageDesc.cs">
+    <Compile Include="Resources\Map\McdRecord.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\Types\XCBitmap.cs">
+    <Compile Include="Resources\Map\McdRecordCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\Types\PckImage.cs">
+    <Compile Include="Resources\Map\RouteData\RouteNodeCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Images\Types\XCImage.cs">
+    <Compile Include="Resources\Map\EnumString.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GameFiles\Map\OccultFile.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameFiles\Map\MapFileChild.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameFiles\Map\XCMapTile.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameFiles\Map\McdRecord.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameFiles\Map\McdRecordCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameFiles\Map\RouteData\RouteNodeCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameFiles\Map\EnumString.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameFiles\Map\XCTilepart.cs">
+    <Compile Include="Resources\Map\XCTilepart.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FileDesc\TileGroupDesc.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FileDesc\TileGroupChild.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameFiles\Varidia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameFiles\Variable.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ResourceInfo.cs">
@@ -251,6 +251,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources" />
+    <Folder Include="Resources\Images" />
+    <Folder Include="Resources\Images\Collections" />
+    <Folder Include="Resources\Images\Types" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

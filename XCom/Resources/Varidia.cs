@@ -10,115 +10,8 @@ namespace XCom
 	/// </summary>
 	public sealed class Varidia
 	{
-		private readonly Hashtable _vars;
-
+		#region Fields & Properties
 		private string _baseVar;
-
-		private readonly Varidia _other;
-
-		private StreamReader _sr;
-
-
-		// TODO: Document the following 5 contructors. Figure out why not all
-		// class variables are initialized.
-
-		/// <summary>
-		/// cTor
-		/// </summary>
-		public Varidia()
-		{
-			_vars = new Hashtable();
-			_other = null;
-			_baseVar = String.Empty;
-		}
-
-		/// <summary>
-		/// cTor
-		/// </summary>
-		public Varidia(StreamReader sr)
-		{
-			_sr = sr;
-
-			_vars = new Hashtable();
-			_other = null;
-		}
-
-		/// <summary>
-		/// cTor
-		/// </summary>
-		public Varidia(string baseVar)
-			:
-				this()
-		{
-			_baseVar = baseVar;
-		}
-
-		/// <summary>
-		/// cTor
-		/// </summary>
-		public Varidia(Varidia other)
-			:
-				this()
-		{
-			_other = other;
-		}
-
-		/// <summary>
-		/// cTor
-		/// </summary>
-		public Varidia(StreamReader sr, Varidia vars)
-		{
-			_vars = new Hashtable();
-			_sr = sr;
-			_other = vars;
-		}
-
-
-		/// <summary>
-		/// property BaseStream
-		/// </summary>
-		public StreamReader BaseStream
-		{
-			get { return _sr; }
-		}
-
-		/// <summary>
-		/// property Other
-		/// </summary>
-		public Varidia Other
-		{
-			get { return _other; }
-		}
-
-		/// <summary>
-		/// property Vars
-		/// </summary>
-		public Hashtable Vars
-		{
-			get { return _vars; }
-		}
-
-		/// <summary>
-		/// property Variables
-		/// </summary>
-		public ICollection Variables
-		{
-			get { return _vars.Keys; }
-		}
-
-
-		/// <summary>
-		/// Adds a key-val pair to this collection.
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="value"></param>
-		public void AddKeyvalPair(string key, string value)
-		{
-			if (_vars[value] == null)
-				_vars[value] = new Variable(_baseVar, key + ":", value);
-			else
-				((Variable)_vars[value]).Add(key + ":");
-		}
 
 		/// <summary>
 		/// property this[var]
@@ -133,6 +26,111 @@ namespace XCom
 				return _other[var];
 			}
 			set { _vars[var] = value; }
+		}
+
+		/// <summary>
+		/// property Variables
+		/// </summary>
+		public ICollection Variables
+		{
+			get { return _vars.Keys; }
+		}
+
+		private readonly Hashtable _vars;
+		/// <summary>
+		/// property Vars
+		/// </summary>
+		public Hashtable Vars
+		{
+			get { return _vars; }
+		}
+
+		private readonly Varidia _other;
+		/// <summary>
+		/// property Other
+		/// </summary>
+		public Varidia Other
+		{
+			get { return _other; }
+		}
+
+		private StreamReader _sr;
+		/// <summary>
+		/// property BaseStream
+		/// </summary>
+		public StreamReader BaseStream
+		{
+			get { return _sr; }
+		}
+		#endregion
+
+
+		// TODO: Document the following 5 contructors. Figure out why not all
+		// class variables are initialized. Figure out why this class exists.
+		// oh yeah, to parse the Apollo trajectory to the moon. And back ....
+
+		#region cTors
+		/// <summary>
+		/// cTor
+		/// </summary>
+		public Varidia()
+		{
+			_vars = new Hashtable();
+			_other = null;
+			_baseVar = String.Empty;
+		}
+		/// <summary>
+		/// cTor
+		/// </summary>
+		public Varidia(StreamReader sr)
+		{
+			_sr = sr;
+
+			_vars = new Hashtable();
+			_other = null;
+		}
+		/// <summary>
+		/// cTor
+		/// </summary>
+		public Varidia(string baseVar)
+			:
+				this()
+		{
+			_baseVar = baseVar;
+		}
+		/// <summary>
+		/// cTor
+		/// </summary>
+		public Varidia(Varidia other)
+			:
+				this()
+		{
+			_other = other;
+		}
+		/// <summary>
+		/// cTor
+		/// </summary>
+		public Varidia(StreamReader sr, Varidia vars)
+		{
+			_vars = new Hashtable();
+			_sr = sr;
+			_other = vars;
+		}
+		#endregion
+
+
+		#region Methods
+		/// <summary>
+		/// Adds a key-val pair to this collection.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="value"></param>
+		public void AddKeyvalPair(string key, string value)
+		{
+			if (_vars[value] == null)
+				_vars[value] = new Variable(_baseVar, key + ":", value);
+			else
+				((Variable)_vars[value]).Add(key + ":");
 		}
 
 		/// <summary>
@@ -243,38 +241,49 @@ namespace XCom
 			return (_other != null) ? _other.AliasSubstitution(line)
 									: line;
 		}
+		#endregion
 	}
 
 
 	/// <summary>
-	/// class KeyvalPair - helper class for Varidia.
+	/// KeyvalPair - helper class for Varidia.
 	/// </summary>
 	public class KeyvalPair
 	{
+		#region Fields & Properties
 		private readonly string _key;
-		private readonly string _val;
-
-
-		public KeyvalPair(string key, string value)
-		{
-			_key = key;
-			_val = value;
-		}
-
-
 		public string Keyword
 		{
 			get { return _key; }
 		}
 
+		private readonly string _val;
 		public string Value
 		{
 			get { return _val; }
 		}
+		#endregion
 
+
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="value"></param>
+		public KeyvalPair(string key, string value)
+		{
+			_key = key;
+			_val = value;
+		}
+		#endregion
+
+
+		#region Methods
 		public override string ToString()
 		{
 			return _key + ":" + _val;
 		}
+		#endregion
 	}
 }
