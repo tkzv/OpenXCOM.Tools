@@ -46,8 +46,8 @@ namespace MapView
 
 					lbl2Tilesets.Text += terrain;
 
-					recordsTotal += ResourceInfo.ImageInfo[terrain].GetRecords().Count;
-					spritesTotal += ResourceInfo.ImageInfo[terrain].GetPckPack().Count;
+					recordsTotal += ResourceInfo.TerrainInfo[terrain].GetMcdRecords().Count;
+					spritesTotal += ResourceInfo.TerrainInfo[terrain].GetImageset().Count;
 				}
 			}
 

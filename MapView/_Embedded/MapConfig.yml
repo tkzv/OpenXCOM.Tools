@@ -1,11 +1,11 @@
 ﻿# This is the default MapConfig for MapViewII. It sets up the stock UFOs, Craft,
 # and landscapes for out-of-the-box use by the app.
 #
-# 'tilesets' - a list that contains all the blocks (sequence)
-# 'type'     - the label of MAP/RMP files for the block (scalar)
-# 'terrains' - the label(s) of MCD/PCK/TAB files for the block (sequence)
-# 'category' - a header for the tileset, is arbitrary here (scalar)
-# 'group'    - a header for the categories, is arbitrary here (scalar)
+# 'tilesets' - a list that contains all the blocks
+# 'type'     - the label of MAP/RMP files for the block
+# 'terrains' - the label(s) of MCD/PCK/TAB files for the block
+# 'category' - a header for the tileset, is arbitrary here
+# 'group'    - a header for the categories, is arbitrary here
 tilesets:
   - type: UFO_110
     terrains:

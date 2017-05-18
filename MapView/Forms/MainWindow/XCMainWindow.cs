@@ -108,7 +108,23 @@ namespace MapView
 			LogFile.WriteLine("PathInfo cached.");
 
 
-			if (!pathConfig.FileExists()) // check if MapConfig.yml exists yet
+			// check if Paths.cfg exists yet, if not show the Installation window
+			if (!pathPaths.FileExists())
+			{
+				using (var f = new InstallationForm())
+					if (f.ShowDialog(this) != DialogResult.OK)
+						Environment.Exit(-1); // wtf -1
+
+				LogFile.WriteLine("Installation files created.");
+			}
+			else
+				LogFile.WriteLine("Paths.Cfg file exists.");
+
+
+			// check if MapConfig.yml exists yet, if not show the Configuration window
+			// NOTE: MapConfig.yml is created by ConfigurationForm
+			// TODO: check for MapDirectory.yml also
+			if (!pathConfig.FileExists())
 			{
 				using (var f = new ConfigurationForm())
 					if (f.ShowDialog(this) != DialogResult.OK)
@@ -120,26 +136,15 @@ namespace MapView
 				LogFile.WriteLine("Configuration file exists.");
 
 
-
-//			if (!pathPaths.FileExists()) // check if Paths.cfg exists yet
-//			{
-//				using (var f = new InstallationForm())
-//					if (f.ShowDialog(this) != DialogResult.OK)
-//						Environment.Exit(-1); // wtf -1
-//
-//				LogFile.WriteLine("Installation files created.");
-//			}
-//			else
-//				LogFile.WriteLine("Paths.Cfg file exists.");
-
-
-			if (!pathViewerPositions.FileExists()) // check if MapViewers.yml exists yet
+			// check if MapViewers.yml exists yet, if not create it
+			if (!pathViewerPositions.FileExists())
 			{
 				CreateViewersFile();
 				LogFile.WriteLine("Window configuration file created.");
 			}
 			else
 				LogFile.WriteLine("Window configuration file exists.");
+
 
 
 			InitializeComponent();
@@ -172,6 +177,8 @@ namespace MapView
 			tvMaps.BeforeSelect += OnMapTreeSelect;
 			tvMaps.AfterSelect  += OnMapTreeSelected;
 			// welcome to your new home
+
+			Closing += OnCloseSaveRegistry;
 
 			_instance = this;
 
@@ -239,38 +246,85 @@ namespace MapView
 			tsEdit.Enabled = false;
 
 
+			// read MapDirectory.yml to get the resources dir (for both UFO and TFTD)
+			// NOTE: MapDirectory.yml is created by ConfigurationForm
+			string fileResources = Path.Combine(
+											SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory),
+											PathInfo.YamlResources);
+			using (var sr = new StreamReader(File.OpenRead(fileResources)))
+			{
+				var str = new YamlStream();
+				str.Load(sr);
+
+				string key = null;
+				string val = null;
+
+				var nodeRoot = str.Documents[0].RootNode as YamlMappingNode;
+				foreach (var node in nodeRoot.Children)
+				{
+					switch (node.Key.ToString())
+					{
+						case "ufo":
+							key = SharedSpace.ResourcesDirectoryUfo;
+							break;
+						case "tftd":
+							key = SharedSpace.ResourcesDirectoryTftd;
+							break;
+					}
+
+					val = node.Value.ToString();
+					val = (!val.Equals("placeholder")) ? val
+													   : null;
+
+					SharedSpace.Instance.SetShare(key, val);
+				}
+			}
+
 			PckSpriteCollection cuboid = null;
-			try
-			{
-				cuboid = ResourceInfo.CachePckPack(
-											SharedSpace.Instance.GetString(SharedSpace.CursorFile),
-											String.Empty,
-											2,
-											Palette.UfoBattle);
-				_mainViewUnderlay.MainViewOverlay.Cuboid = new CuboidSprite(cuboid);
-			}
-			catch
-			{
-				try
+//			try // the UFO cursor spriteset first
+//			{
+				cuboid = ResourceInfo.LoadSpriteset(
+												SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo),
+												SharedSpace.CursorFilePrefix,
+												2,
+												Palette.UfoBattle);
+				if (cuboid != null)
 				{
-					cuboid = ResourceInfo.CachePckPack(
-												SharedSpace.Instance.GetString(SharedSpace.CursorFile),
-												String.Empty,
-												4,
-												Palette.TftdBattle);
 					_mainViewUnderlay.MainViewOverlay.Cuboid = new CuboidSprite(cuboid);
+					LogFile.WriteLine("UFO Cursor loaded.");
 				}
-				catch
-				{
-					_mainViewUnderlay.Cursor = null; // NOTE: this is the system cursor, NOT the cuboid-sprite.
-					throw; // TODO: there's got to be a better way to do that ....
-				}
-				throw;
-			}
-			LogFile.WriteLine("Cursor loaded.");
+				else
+					LogFile.WriteLine("UFO Cursor not found.");
+//			}
+//			catch
+//			{
+//				try // the TFTD cursor spriteset last
+//				{
+					cuboid = ResourceInfo.LoadSpriteset(
+													SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd),
+													SharedSpace.CursorFilePrefix,
+													4,
+													Palette.TftdBattle);
+					if (cuboid != null)
+					{
+						_mainViewUnderlay.MainViewOverlay.Cuboid = new CuboidSprite(cuboid);
+						LogFile.WriteLine("TFTD Cursor loaded.");
+					}
+					else
+						LogFile.WriteLine("TFTD Cursor not found.");
+//				}
+//				catch
+//				{
+//					_mainViewUnderlay.Cursor = null; // NOTE: this is the system cursor, NOT the cuboid-sprite.
+//					throw; // TODO: there's got to be a better way to do that ....
+//				}
+//				throw;
+//			}
+
 
 			CreateTree();
 			LogFile.WriteLine("Tilesets created and loaded to tree panel.");
+
 
 			if (pathSettings.FileExists())
 			{
@@ -280,8 +334,6 @@ namespace MapView
 			else
 				LogFile.WriteLine("User settings NOT loaded - no settings file to load.");
 
-
-			Closing += OnCloseSaveRegistry;
 
 
 			_loadingProgress = new LoadingForm();
@@ -422,7 +474,7 @@ namespace MapView
 
 		private void LoadSettings()
 		{
-			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
+			string file = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
 			using (var sr = new StreamReader(File.OpenRead(file)))
 			{
 				var str = new YamlStream();
@@ -665,7 +717,7 @@ namespace MapView
 					WindowState = FormWindowState.Normal;
 					_viewersManager.CloseSubsidiaryViewers();
 
-					string path = SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory);
+					string path = SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory);
 					string src  = Path.Combine(path, PathInfo.YamlViewers);
 					string dst  = Path.Combine(path, PathInfo.YamlViewersOld);
 
@@ -695,7 +747,7 @@ namespace MapView
 										Top    = Top,
 										Width  = Width,
 										Height = Height - SystemInformation.CaptionButtonSize.Height
-									},
+									}
 								};
 
 								var ser = new Serializer();

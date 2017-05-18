@@ -8,6 +8,8 @@ using DSShared;
 
 using XCom;
 
+using YamlDotNet.Serialization;
+
 
 namespace MapView
 {
@@ -83,19 +85,40 @@ namespace MapView
 			if (tbTftd.Text.EndsWith(@"\", StringComparison.Ordinal))
 				tbTftd.Text = tbTftd.Text.Substring(0, tbTftd.Text.Length - 1);
 
+			// TODO: check that either directory given is valid if not blank.
+
 			// Or install the dirs/configs anyway and allow the user to set things up in the PathsEditor.
 			// Otherwise an exception will be thrown when XCMainWindow cTor tries to instantiate the CuboidSprite.
 			// what's the CuboidSprite used for anyway -> the cursor looks like a windows cursor.
 			// note: It's used to indicate the dragStart and dragEnd tiles.
 
-			const string CuboidPck = @"\UFOGRAPH\CURSOR.PCK";
-			const string CuboidTab = @"\UFOGRAPH\CURSOR.TAB";
+			const string CursorPck = SharedSpace.CursorFilePrefix + PckSpriteCollection.PckExt;
+			const string CursorTab = SharedSpace.CursorFilePrefix + PckSpriteCollection.TabExt;
 
-			if (   (File.Exists(tbUfo.Text  + CuboidPck) && File.Exists(tbUfo.Text  + CuboidTab))
-				|| (File.Exists(tbTftd.Text + CuboidPck) && File.Exists(tbTftd.Text + CuboidTab)))
+			if (   (File.Exists(tbUfo.Text  + CursorPck) && File.Exists(tbUfo.Text  + CursorTab))
+				|| (File.Exists(tbTftd.Text + CursorPck) && File.Exists(tbTftd.Text + CursorTab)))
 			{
-				var pathConfig = (PathInfo)SharedSpace.Instance[PathInfo.MapConfig];
-				pathConfig.CreateDirectory(); // create a dir for MapConfig.yml
+				var pathConfig = SharedSpace.Instance[PathInfo.MapConfig] as PathInfo;
+				pathConfig.CreateDirectory(); // create a dir for MapConfig.yml and MapDirectory.yml
+
+
+				string pfeMapDirectory = Path.Combine(pathConfig.Path, PathInfo.YamlResources);
+
+				using (var fs = new FileStream(pfeMapDirectory, FileMode.Create)) // wipe/create MapDirectory.yml
+				using (var sw = new StreamWriter(fs))
+				{
+					object node = new
+					{
+						ufo  = (!String.IsNullOrEmpty(tbUfo.Text)  ? tbUfo.Text
+																   : "placeholder"),
+						tftd = (!String.IsNullOrEmpty(tbTftd.Text) ? tbTftd.Text
+																   : "placeholder")
+					};
+
+					var ser = new Serializer();
+					ser.Serialize(sw, node);
+				}
+
 
 				string pfeMapConfig = pathConfig.FullPath;
 
@@ -108,10 +131,11 @@ namespace MapView
 													.GetManifestResourceStream("MapView._Embedded.MapConfig.yml")))
 					using (var fs = new FileStream(pfeMapConfig, FileMode.Append))
 					using (var sw = new StreamWriter(fs))
-//						TransferConfig(sr, sw);
-						while (sr.Peek() != -1) // transfer text to MapConfig.yml
+						while (sr.Peek() != -1) // transfer embedded textfile to MapConfig.yml
 							sw.WriteLine(sr.ReadLine());
 				}
+
+				// TODO: TFTD dir
 
 				DialogResult = DialogResult.OK;
 				Close();
@@ -122,8 +146,8 @@ namespace MapView
 							this,
 							"A valid UFO or TFTD resource directory must exist with"
 								+ Environment.NewLine + Environment.NewLine
-								+ @" \UFOGRAPH\CURSOR.PCK" + Environment.NewLine
-								+ @" \UFOGRAPH\CURSOR.TAB",
+								+ CursorPck + Environment.NewLine
+								+ CursorTab,
 							"Error",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Error,
@@ -139,7 +163,6 @@ namespace MapView
 		}
 	}
 }
-
 
 //				var pathPaths = (PathInfo)SharedSpace.Instance[PathInfo.PathsFile];
 //				pathPaths.CreateDirectory();	// create a dir for Paths.Cfg
@@ -248,9 +271,3 @@ namespace MapView
 
 				DialogResult = DialogResult.OK;
 				Close(); */
-
-//		private void TransferConfig(TextReader sr, TextWriter sw)
-//		{
-//			while (sr.Peek() != -1)
-//				sw.WriteLine(sr.ReadLine());
-//		}

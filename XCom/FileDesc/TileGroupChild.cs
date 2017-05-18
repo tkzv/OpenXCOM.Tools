@@ -12,14 +12,12 @@ namespace XCom
 		:
 			TileGroup
 	{
-//		private string[] _mapOrder;
-//		private MapLocation[] _startLoc;
-//		private int _tileStart = -1;
-//		private int _tileEnd   = -1;
-
+		#region Fields
 		private const string Tab = "\t";
+		#endregion
 
 
+		#region cTors
 		internal TileGroupChild(string label)
 			:
 				base(label)
@@ -28,32 +26,10 @@ namespace XCom
 			:
 				base(label, sr, vars)
 		{}
+		#endregion
 
 
-/*		public MapLocation[] StartLocations // fix: return a collection or make it a method
-		{
-			get { return _startLoc; }
-		}
-		public int StartTile
-		{
-			get { return _tileStart; }
-		}
-		public int EndTile
-		{
-			get { return _tileEnd; }
-		}
-		public string[] MapOrder // fix: return a collection or make it a method
-		{
-			get { return _mapOrder; }
-		}
-		public string[] Order // fix: return a collection or make it a method
-		{
-			get { return _mapOrder; }
-		} */
-
-//		public override IMap GetMap(ShipDescriptor xCom, ShipDescriptor alien)
-//		{ return new Type1Map(this, xCom, alien); }
-
+		#region Methods
 		public override void Save(StreamWriter sw, Varidia vars)
 		{
 			sw.WriteLine("Tileset:" + Label);
@@ -209,5 +185,35 @@ namespace XCom
 //					break;
 			}
 		}
+		#endregion
 	}
 }
+
+//		private string[] _mapOrder;
+//		private MapLocation[] _startLoc;
+//		private int _tileStart = -1;
+//		private int _tileEnd   = -1;
+
+/*		public MapLocation[] StartLocations // fix: return a collection or make it a method
+		{
+			get { return _startLoc; }
+		}
+		public int StartTile
+		{
+			get { return _tileStart; }
+		}
+		public int EndTile
+		{
+			get { return _tileEnd; }
+		}
+		public string[] MapOrder // fix: return a collection or make it a method
+		{
+			get { return _mapOrder; }
+		}
+		public string[] Order // fix: return a collection or make it a method
+		{
+			get { return _mapOrder; }
+		} */
+
+//		public override IMap GetMap(ShipDescriptor xCom, ShipDescriptor alien)
+//		{ return new Type1Map(this, xCom, alien); }

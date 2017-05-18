@@ -41,7 +41,8 @@ namespace MapView
 
 			// NOTE: Add your own personal XCOM resources-dir here if desired:
 			var dirsUfo = new List<string>();
-			dirsUfo.Add(@"C:\0xC_kL\data");
+			dirsUfo.Add(@"C:\MapView_test");
+//			dirsUfo.Add(@"C:\0xC_kL\data");
 
 //			dirsUfo.Add(@"C:\ufo");
 //			dirsUfo.Add(@"C:\ufo enemy unknown");
@@ -127,10 +128,11 @@ namespace MapView
 			// Otherwise an exception will be thrown when XCMainWindow cTor tries to instantiate the CursorSprite.
 			// what's the CursorSprite used for anyway -> the cursor looks like a windows cursor.
 			// note: It's used to indicate the dragStart and dragEnd tiles.
-			const string Pck = @"\UFOGRAPH\CURSOR.PCK";
-			const string Tab = @"\UFOGRAPH\CURSOR.TAB";
-			if (   (File.Exists(tbUfo.Text  + Pck) && File.Exists(tbUfo.Text  + Tab))
-				|| (File.Exists(tbTftd.Text + Pck) && File.Exists(tbTftd.Text + Tab)))
+			const string CursorPck = SharedSpace.CursorFilePrefix + PckSpriteCollection.PckExt;
+			const string CursorTab = SharedSpace.CursorFilePrefix + PckSpriteCollection.TabExt;
+
+			if (   (File.Exists(tbUfo.Text  + CursorPck) && File.Exists(tbUfo.Text  + CursorTab))
+				|| (File.Exists(tbTftd.Text + CursorPck) && File.Exists(tbTftd.Text + CursorTab)))
 			{
 				var pathPaths = (PathInfo)SharedSpace.Instance[PathInfo.PathsFile];
 				pathPaths.CreateDirectory();	// create a dir for Paths.Cfg
@@ -193,7 +195,7 @@ namespace MapView
 //				_vars["##imgUFO##"]  = txtUFO.Text  + @"\TERRAIN\";
 //				_vars["##imgTFTD##"] = txtTFTD.Text + @"\TERRAIN\";
 
-				_vars["##RunPath##"] = SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory);
+				_vars["##RunPath##"] = SharedSpace.Instance.GetShare(SharedSpace.ApplicationDirectory);
 
 				using (var fs = new FileStream(pfeMapEdit, FileMode.Create))	// wipe/create MapEdit.Cfg
 				{}
@@ -246,8 +248,8 @@ namespace MapView
 							this,
 							"A valid UFO or TFTD resource directory must exist with"
 								+ Environment.NewLine + Environment.NewLine
-								+ @" \UFOGRAPH\CURSOR.PCK" + Environment.NewLine
-								+ @" \UFOGRAPH\CURSOR.TAB",
+								+ CursorPck + Environment.NewLine
+								+ CursorTab,
 							"Error",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Error,

@@ -22,54 +22,31 @@ namespace XCom.Interfaces
 
 		public string OccultPath
 		{ get; set; }
-
-//		private string[] _ground;
-//		public string[] Ground // TODO: return a collection or make it a method.
-//		{
-//			get { return _ground; }
-//		}
-
-//		private bool _underwater;
-//		public bool Underwater
-//		{
-//			get { return _underwater; }
-//		}
-
-//		private bool _baseStyle;
-//		public bool BaseStyle
-//		{
-//			get { return _baseStyle; }
-//		}
-
-//		private int _mapDepth;
-//		public int Depth
-//		{
-//			get { return _mapDepth; }
-//		}
-
-/*		private MapSize _mapSize;
-		public MapSize Size
-		{
-			get { return _mapSize; }
-		} */
-
-//		private string scanFile;
-//		private string loftFile;
 		#endregion
 
 
-		#region cTor
+		#region cTors
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="label"></param>
 		protected TileGroup(string label)
 			:
 				base(label)
 		{
-			Palette = ResourceInfo.DefaultPalette;
-//			_mapSize = new MapSize(60, 60, 4);
+			Palette = ResourceInfo.Palette;
 
+//			_mapSize = new MapSize(60, 60, 4);
 //			_mapDepth = 0;
 //			_underwater = true;
 //			_baseStyle = false;
 		}
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="label"></param>
+		/// <param name="sr"></param>
+		/// <param name="vars"></param>
 		protected TileGroup(
 				string label,
 				StreamReader sr,
@@ -77,26 +54,15 @@ namespace XCom.Interfaces
 			:
 				this(label)
 		{
-			//LogFile.WriteLine("");
-			//LogFile.WriteLine("[7]TileGroup cTor");
 			while (sr.Peek() != -1)
 			{
 				string line = Varidia.ReadLine(sr, vars);
-				//LogFile.WriteLine(". [7]line= " + line);
-
 				if (line.ToUpperInvariant() == "END")
-				{
-					//LogFile.WriteLine(". . [7]Exit.");
 					return;
-				}
 
 				int pos    = line.IndexOf(':');
 				string key = line.Substring(0, pos);
 				string val = line.Substring(pos + 1);
-
-				//LogFile.WriteLine(". [7]pos= " + pos);
-				//LogFile.WriteLine(". [7]key= " + key);
-				//LogFile.WriteLine(". [7]val= " + val);
 
 				switch (key.ToUpperInvariant())
 				{
@@ -159,8 +125,7 @@ namespace XCom.Interfaces
 //						loftFile = val;
 //						break;
 
-					default:
-						// user-defined keyword
+					default: // user-defined keyword
 						ParseLine(key, val, sr, vars); // FIX: "Virtual member call in a constructor."
 						break;
 				}
@@ -193,3 +158,36 @@ namespace XCom.Interfaces
 		#endregion
 	}
 }
+
+//		private string[] _ground;
+//		public string[] Ground // TODO: return a collection or make it a method.
+//		{
+//			get { return _ground; }
+//		}
+
+//		private bool _underwater;
+//		public bool Underwater
+//		{
+//			get { return _underwater; }
+//		}
+
+//		private bool _baseStyle;
+//		public bool BaseStyle
+//		{
+//			get { return _baseStyle; }
+//		}
+
+//		private int _mapDepth;
+//		public int Depth
+//		{
+//			get { return _mapDepth; }
+//		}
+
+/*		private MapSize _mapSize;
+		public MapSize Size
+		{
+			get { return _mapSize; }
+		} */
+
+//		private string scanFile;
+//		private string loftFile;

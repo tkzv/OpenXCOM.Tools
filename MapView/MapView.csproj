@@ -423,8 +423,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <EmbeddedResource Include="_Embedded\MapViewers.yml" />
-    <EmbeddedResource Include="_Embedded\MapConfig_Bk.yml" />
-    <None Include="_Embedded\MapConfig.yml" />
+    <EmbeddedResource Include="_Embedded\MapConfig.yml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

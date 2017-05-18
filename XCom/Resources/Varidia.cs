@@ -139,19 +139,13 @@ namespace XCom
 		/// <returns>KeyVal</returns>
 		public KeyvalPair ReadLine()
 		{
-			//LogFile.WriteLine("");
-			//LogFile.WriteLine("[2]Varidia.ReadLine()");
 			string line = ReadLine(_sr, this);
-			//LogFile.WriteLine(". [2]line= " + (line ?? "null"));
 			if (line != null)
 			{
 				int pos = line.IndexOf(':');
-				//LogFile.WriteLine((pos > 0) ? ". . [2]pos':'>0 RET key= " + line.Substring(0, pos) + " val= " + line.Substring(pos + 1)
-				//                            : ". . [2]pos':'<1 RET key= " + line + " val=");
 				return (pos > 0) ? new KeyvalPair(line.Substring(0, pos), line.Substring(pos + 1))
 								 : new KeyvalPair(line, String.Empty);
 			}
-			//LogFile.WriteLine("[2]. . Ret NULL");
 			return null;
 		}
 
@@ -162,8 +156,6 @@ namespace XCom
 		/// <returns>string</returns>
 		public string ReadLine(TextReader sr)
 		{
-			//LogFile.WriteLine("");
-			//LogFile.WriteLine("[5]Varidia.ReadLine(sr)");
 			return ReadLine(sr, this);
 		}
 
@@ -175,23 +167,16 @@ namespace XCom
 		/// <returns>string</returns>
 		public static string ReadLine(TextReader sr, Varidia vars)
 		{
-			//LogFile.WriteLine("");
-			//LogFile.WriteLine("[3,6]Varidia.ReadLine(sr, vars)");
 			string line = String.Empty;
 
 			while (true)
 			{
-				//LogFile.WriteLine(". [3,6]iterate TRUE");
 				do // get a good line - not a comment or empty string
 				{
 					if (sr.Peek() == -1) // zilch, exit.
-					{
-						//LogFile.WriteLine(". . . [3,6]end of file. Ret NULL");
 						return null;
-					}
 
 					line = sr.ReadLine().Trim();
-					//LogFile.WriteLine(". . [3,6](seeking) line= " + line);
 				}
 				while (line.Length == 0 || line[0] == '#');
 
@@ -201,30 +186,15 @@ namespace XCom
 					string key = line.Substring(0, pos);
 					string val = vars.AliasSubstitution(line.Substring(pos + 1));
 
-					//LogFile.WriteLine(". . [3,6]found $");
-					//LogFile.WriteLine(". . [3,6]pos= " + pos);
-					//LogFile.WriteLine(". . [3,6]key= " + key);
-					//LogFile.WriteLine(". . [3,6]val= " + val);
-					//LogFile.WriteLine(". . [3,6]cache it and look for another ...");
-
 					vars[key] = val;
 				}
 				else // got a line
-				{
-					//LogFile.WriteLine(". . [3,6]found a line!");
 					break;
-				}
-				//LogFile.WriteLine("");
 			}
 
 			if (line.IndexOf("$", StringComparison.Ordinal) > 0) // replace any variables the line might have
-			{
-				//LogFile.WriteLine(". . [3,6]$var found - do ParseVar()");
 				line = vars.AliasSubstitution(line);
-			}
 
-			//LogFile.WriteLine(". . . [3,6]RET line= " + line);
-			//LogFile.WriteLine("");
 			return line;
 		}
 

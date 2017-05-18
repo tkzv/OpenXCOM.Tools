@@ -28,14 +28,14 @@ namespace XCom
 			if (desc != null && File.Exists(desc.FilePath))
 			{
 				var parts = new List<TilepartBase>();
-				var info = ResourceInfo.ImageInfo;
+				var info = ResourceInfo.TerrainInfo;
 
 				foreach (string dep in desc.Terrains)
 				{
 					var tileInfo = info[dep];
 					if (tileInfo != null)
 					{
-						var MCD = tileInfo.GetRecordsByPalette(desc.Palette, _tileFactory);
+						var MCD = tileInfo.GetMcdRecords(desc.Palette, _tileFactory);
 						foreach (XCTilepart part in MCD)
 							parts.Add(part);
 					}

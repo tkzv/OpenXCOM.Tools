@@ -9,20 +9,39 @@ namespace XCom
 	public delegate void LoadingEventHandler(int cur, int total);
 
 
+	/// <summary>
+	/// A spriteset: a collection of images taken from PCK/TAB file data.
+	/// </summary>
 	public sealed class PckSpriteCollection
 		:
 			XCImageCollection
 	{
-		public static readonly string PckExt = ".pck";
-		public static readonly string TabExt = ".tab";
+		#region Constants
+		public const string PckExt = ".PCK";
+		public const string TabExt = ".TAB";
+		#endregion
 
+
+		#region Fields & Properties
 		private int _bpp;
 		public int Bpp
 		{
 			get { return _bpp; }
 		}
+		#endregion
 
 
+		#region cTor
+		/// <summary>
+		/// cTor. Parses a PCK-file into the collection of its images according
+		/// to its TAB-file.
+		/// </summary>
+		/// <param name="strPck"></param>
+		/// <param name="strTab"></param>
+		/// <param name="bpp"></param>
+		/// <param name="pal"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
 		public PckSpriteCollection(
 				Stream strPck,
 				Stream strTab,
@@ -73,29 +92,34 @@ namespace XCom
 
 			for (int id = 0; id != offsets.Length - 1; ++id)
 			{
-				var binData = new byte[offsets[id + 1] - offsets[id]];
-				for (int j = 0; j != binData.Length; ++j)
-					binData[j] = info[offsets[id] + j];
+				var bindata = new byte[offsets[id + 1] - offsets[id]];
+				for (int j = 0; j != bindata.Length; ++j)
+					bindata[j] = info[offsets[id] + j];
 
 				Add(new PckImage(
 								id,
-								binData,
+								bindata,
 								pal,
 								this,
 								width,
 								height));
 			}
 		}
+		#endregion
 
 
+		#region Methods
 		public static void Save(
 				string dir,
 				string file,
 				XCImageCollection images,
 				int bpp)
 		{
-			using (var bwPck = new BinaryWriter(File.Create(dir + @"\" + file + PckExt)))
-			using (var bwTab = new BinaryWriter(File.Create(dir + @"\" + file + TabExt)))
+			string pfePck = Path.Combine(dir, file + PckExt);
+			string pfeTab = Path.Combine(dir, file + TabExt);
+
+			using (var bwPck = new BinaryWriter(File.Create(pfePck)))
+			using (var bwTab = new BinaryWriter(File.Create(pfeTab)))
 			{
 				switch (bpp)
 				{
@@ -125,5 +149,6 @@ namespace XCom
 				}
 			}
 		}
+		#endregion
 	}
 }

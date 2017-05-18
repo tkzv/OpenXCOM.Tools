@@ -16,70 +16,65 @@ namespace XCom
 			get { return _tilegroupInfo; }
 		}
 
-		private static ImageDesc _imageInfo;
-		public static ImageDesc ImageInfo
+		private static TerrainDesc _terrainInfo;
+		public static TerrainDesc TerrainInfo
 		{
-			get { return _imageInfo; }
+			get { return _terrainInfo; }
 		}
 
 		private static Palette _palette = Palette.UfoBattle;
-		internal static Palette DefaultPalette
+		internal static Palette Palette
 		{
 			get { return _palette; }
 		}
 
-		private static Dictionary<Palette, Dictionary<string, PckSpriteCollection>> _pckDictionary;
+		private static Dictionary<Palette, Dictionary<string, PckSpriteCollection>> _spritesDictionary;
 
 //		public static event ParseConfigLineEventHandler ParseConfigLineEvent;
 
 
-		public static void InitializeResources(Palette pal, DSShared.PathInfo pathInfo)
+		public static void InitializeResources(Palette pal, DSShared.PathInfo pathPaths)
 		{
-			Directory.SetCurrentDirectory(pathInfo.Path);	// change to /settings dir
-			XConsole.Init(20);								// note that prints LogFile to settings dir also
+			Directory.SetCurrentDirectory(pathPaths.Path);	// change to /settings dir
+			XConsole.Init(20);								// note that prints the LogFile to settings dir also
 
 			_palette = pal;
-			_pckDictionary = new Dictionary<Palette, Dictionary<string, PckSpriteCollection>>();
+			_spritesDictionary = new Dictionary<Palette, Dictionary<string, PckSpriteCollection>>();
 
-			using (var sr = new StreamReader(File.OpenRead(pathInfo.FullPath))) // open Paths.Cfg
+			using (var sr = new StreamReader(File.OpenRead(pathPaths.FullPath))) // open/read Paths.Cfg
 			{
 				var vars = new Varidia(sr);	// this object is going to hold all sorts of keyval pairs
 											// be careful you don't duplicate/overwrite a var since the following loop
-				KeyvalPair keyval;			// is going to rifle through all the config files and throw it together ...
-				//LogFile.WriteLine("[1]GameInfo.Init parse Paths.cfg");
-				while ((keyval = vars.ReadLine()) != null) // parse Paths.Cfg; will not return lines that start '$' (or whitespace lines)
+											// is going to rifle through all the config files and throw it together ...
+				KeyvalPair keyval;
+				while ((keyval = vars.ReadLine()) != null) // parse Paths.Cfg; will skip lines that start '$' or are whitespace
 				{
-					//LogFile.WriteLine(". [1]iter Paths.cfg keyval= " + keyval.Keyword);
 					switch (keyval.Keyword.ToUpperInvariant())
 					{
-						case "MAPDATA": // ref to MapEdit.Cfg
-							//LogFile.WriteLine(". [1]Paths.cfg MAPDATA keyval.Value= " + keyval.Value);
+						case "MAPDATA": // get path to MapEdit.Cfg
 							_tilegroupInfo = new TileGroupDesc(keyval.Value, vars); // this is spooky, not a delightful way.
 							break;
 
-						case "IMAGES": // ref to Images.Cfg
-							//LogFile.WriteLine(". [1]Paths.cfg IMAGES keyval.Value= " + keyval.Value);
-							_imageInfo = new ImageDesc(keyval.Value, vars);
+						case "IMAGES": // get path to Images.Cfg
+							_terrainInfo = new TerrainDesc(keyval.Value, vars);
 							break;
 
-						case "CURSOR":
-						{
-							//LogFile.WriteLine(". [1]Paths.cfg CURSOR keyval.Value= " + keyval.Value);
-							string directorySeparator = String.Empty;
-							if (!keyval.Value.EndsWith(@"\", StringComparison.Ordinal))
-								directorySeparator = @"\";
-
-							SharedSpace.Instance.SetShare(
-													SharedSpace.CursorFile,
-													keyval.Value + directorySeparator + SharedSpace.Cursor);
-							break;
-						}
+//						case "CURSOR": // done in XCMainWindow.
+//						{
+//							string directorySeparator = String.Empty;
+//							if (!keyval.Value.EndsWith(@"\", StringComparison.Ordinal))
+//								directorySeparator = @"\";
+//
+//							SharedSpace.Instance.SetShare(
+//													"cursorFile", //SharedSpace.CursorFile,
+//													keyval.Value + directorySeparator + SharedSpace.Cursor);
+//							break;
+//						}
 
 //						case "CURSOR":
 //						case "USEBLANKS":
 //							goto default; // ... doh.
 //						default:
-							//LogFile.WriteLine(". [1]Paths.cfg default");
 //							if (ParseConfigLineEvent != null)		// this is just stupid. 'clever' but stupid.
 //								ParseConfigLineEvent(keyval, vars);	// TODO: handle any potential errors in OnParseConfigLine() instead of aliasing aliases to delegates.
 //							else
@@ -89,51 +84,64 @@ namespace XCom
 				}
 			}
 
-			Directory.SetCurrentDirectory(SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory)); // change back to app dir
+			Directory.SetCurrentDirectory(SharedSpace.Instance.GetShare(SharedSpace.ApplicationDirectory)); // change back to app dir
 		}
 
-		internal static PckSpriteCollection GetPckPack(string imageSet)
-		{
-			return _imageInfo.Images[imageSet].GetPckPack(_palette);
-		}
+//		internal static PckSpriteCollection GetSpriteset(string spriteset)
+//		{
+//			return _terrainInfo.Terrains[spriteset].GetImageset(_palette);
+//		}
 
-		public static PckSpriteCollection CachePckPack(
+		public static PckSpriteCollection LoadSpriteset(
 				string path,
 				string file,
 				int bpp,
 				Palette pal)
 		{
-			if (_pckDictionary == null)
-				_pckDictionary = new Dictionary<Palette, Dictionary<string, PckSpriteCollection>>();
+			LogFile.WriteLine("");
+			LogFile.WriteLine("ResourceInfo.PckSpriteCollection");
 
-			if (!_pckDictionary.ContainsKey(pal))
-				_pckDictionary.Add(pal, new Dictionary<string, PckSpriteCollection>());
-
-//			if (_pckHash[pal][basePath + baseName] == null)
-			var pf = path + file;
-
-			var spritesetDictionary = _pckDictionary[pal];
-			if (!spritesetDictionary.ContainsKey(pf))
+			if (!String.IsNullOrEmpty(path))
 			{
-				using (var strPck = File.OpenRead(pf + PckSpriteCollection.PckExt))
-				using (var strTab = File.OpenRead(pf + PckSpriteCollection.TabExt))
-				{
-					spritesetDictionary.Add(pf, new PckSpriteCollection(
-																	strPck,
-																	strTab,
-																	bpp,
-																	pal));
-				}
-			}
+				LogFile.WriteLine(". path= " + path);
+				LogFile.WriteLine(". file= " + file);
 
-			return _pckDictionary[pal][pf];
+				if (_spritesDictionary == null)
+					_spritesDictionary = new Dictionary<Palette, Dictionary<string, PckSpriteCollection>>();
+
+				if (!_spritesDictionary.ContainsKey(pal))
+					_spritesDictionary.Add(pal, new Dictionary<string, PckSpriteCollection>());
+
+//				if (_pckHash[pal][path + file] == null)
+				var pf = Path.Combine(path, file);
+				LogFile.WriteLine(". pf= " + pf);
+
+				var spritesetDictionary = _spritesDictionary[pal];
+				if (!spritesetDictionary.ContainsKey(pf))
+				{
+					LogFile.WriteLine(". . pf not found in spriteset dictionary -> add new PckSpriteCollection");
+
+					using (var strPck = File.OpenRead(pf + PckSpriteCollection.PckExt))
+					using (var strTab = File.OpenRead(pf + PckSpriteCollection.TabExt))
+					{
+						spritesetDictionary.Add(pf, new PckSpriteCollection(
+																		strPck,
+																		strTab,
+																		bpp,
+																		pal));
+					}
+				}
+
+				return _spritesDictionary[pal][pf];
+			}
+			return null;
 		}
 
-		public static void ClearPckCache(string path, string file)
+		public static void ClearSpriteset(string path, string file)
 		{
-			var pf = path + file;
+			var pf = Path.Combine(path, file);
 
-			foreach (var spritesetDictionary in _pckDictionary.Values)
+			foreach (var spritesetDictionary in _spritesDictionary.Values)
 				spritesetDictionary.Remove(pf);
 		}
 	}

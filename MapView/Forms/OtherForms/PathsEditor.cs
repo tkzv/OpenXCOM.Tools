@@ -46,8 +46,8 @@ namespace MapView
 
 
 			tbPathsMaps.Text    = ResourceInfo.TileGroupInfo.Path;
-			tbPathsImages.Text  = ResourceInfo.ImageInfo.Path;
-			tbImagesImages.Text = ResourceInfo.ImageInfo.Path;
+			tbPathsImages.Text  = ResourceInfo.TerrainInfo.Path;
+			tbImagesImages.Text = ResourceInfo.TerrainInfo.Path;
 
 //			txtCursor.Text   = GameInfo.CursorPath;
 //			txtCursor.Text   = GameInfo.MiscInfo.CursorFile;
@@ -113,8 +113,8 @@ namespace MapView
 		{
 			var list = new ArrayList();
 
-			var info = ResourceInfo.ImageInfo;
-			foreach (object ob in info.Images.Keys)
+			var info = ResourceInfo.TerrainInfo;
+			foreach (object ob in info.Terrains.Keys)
 				list.Add(ob);
 
 			list.Sort();
@@ -128,7 +128,7 @@ namespace MapView
 
 		private void lbImages_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			tbImagesTerrain.Text = ResourceInfo.ImageInfo[(string)lbImages.SelectedItem].Path;
+			tbImagesTerrain.Text = ResourceInfo.TerrainInfo[(string)lbImages.SelectedItem].Path;
 		}
 
 		private void tvMaps_AfterSelect(object sender, TreeViewEventArgs e)
@@ -380,7 +380,7 @@ namespace MapView
 
 		private void tbImagesTerrain_TextChanged(object sender, EventArgs e)
 		{
-			ResourceInfo.ImageInfo[(string)lbImages.SelectedItem].Path = tbImagesTerrain.Text;
+			ResourceInfo.TerrainInfo[(string)lbImages.SelectedItem].Path = tbImagesTerrain.Text;
 		}
 
 		private void cmImagesAddImageset_Click(object sender, EventArgs e)
@@ -399,7 +399,7 @@ namespace MapView
 						string file = pfe.Substring(pfe.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
 						file        = file.Substring(0, file.IndexOf(".", StringComparison.Ordinal));
 	
-						ResourceInfo.ImageInfo[file] = new ImageDescriptor(file, path);
+						ResourceInfo.TerrainInfo[file] = new TerrainDescriptor(file, path);
 					}
 	
 					lbImages.Items.Clear();
@@ -412,7 +412,7 @@ namespace MapView
 
 		private void cmImagesDeleteImageset_Click(object sender, EventArgs e)
 		{
-			ResourceInfo.ImageInfo.Images.Remove(lbImages.SelectedItem.ToString());
+			ResourceInfo.TerrainInfo.Terrains.Remove(lbImages.SelectedItem.ToString());
 
 			lbImages.Items.Clear();
 			lbMapsImagesAll.Items.Clear();
@@ -445,7 +445,7 @@ namespace MapView
 
 		private void btnImagesSave_Click(object sender, EventArgs e)
 		{
-			ResourceInfo.ImageInfo.Save(tbPathsImages.Text);
+			ResourceInfo.TerrainInfo.Save(tbPathsImages.Text);
 		}
 
 		private void newGroup_Click(object sender, EventArgs e)

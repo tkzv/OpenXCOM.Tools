@@ -434,7 +434,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 					Process.Start(new ProcessStartInfo(pfe));
 
-					Directory.SetCurrentDirectory(SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory)); // change back to app dir
+					Directory.SetCurrentDirectory(SharedSpace.Instance.GetShare(SharedSpace.ApplicationDirectory)); // change back to app dir
 				}
 			}
 		}
@@ -449,7 +449,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			var terrain = GetTerrainLabel();
 			if (terrain != null)
 			{
-				var imageInfo = ResourceInfo.ImageInfo[terrain];
+				var imageInfo = ResourceInfo.TerrainInfo[terrain];
 				if (imageInfo != null)
 				{
 					string pfePck = imageInfo.Path + imageInfo.Label + PckSpriteCollection.PckExt;
@@ -484,7 +484,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 						using (var f = new PckViewForm())
 						{
-							var pckPack = imageInfo.GetPckPack();
+							var pckPack = imageInfo.GetImageset();
 							f.SelectedPalette = pckPack.Pal.Label;
 							f.LoadSpriteCollectionFile(pfePck, true);
 
@@ -500,8 +500,8 @@ namespace MapView.Forms.MapObservers.TileViews
 							f.ShowDialog(owner);
 							if (f.SavedFile)
 							{
-								ResourceInfo.ImageInfo.Images[terrain].ClearMcdTable();
-								ResourceInfo.ClearPckCache(imageInfo.Path, imageInfo.Label);
+								ResourceInfo.TerrainInfo.Terrains[terrain].ClearMcdTable();
+								ResourceInfo.ClearSpriteset(imageInfo.Path, imageInfo.Label);
 
 								PckSaved();
 							}

@@ -103,10 +103,10 @@
     <Compile Include="Resources\Images\Collections\XCImageCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Resources\Images\ImageDesc.cs">
+    <Compile Include="Resources\Images\TerrainDesc.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Resources\Images\ImageDescriptor.cs">
+    <Compile Include="Resources\Images\TerrainDescriptor.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Resources\Images\Types\PckImage.cs">
