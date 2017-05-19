@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 using XCom.Interfaces.Base;
 
@@ -19,9 +20,7 @@ namespace XCom
 
 		internal string FilePath
 		{
-			get { return MapPath
-					   + Label
-					   + MapFileChild.MapExt; }
+			get { return Path.Combine(MapPath, Label + MapFileChild.MapExt); }
 		}
 
 		internal string OccultPath

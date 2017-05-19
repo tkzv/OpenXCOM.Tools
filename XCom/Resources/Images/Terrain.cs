@@ -35,7 +35,7 @@ namespace XCom
 		public Terrain(string label)
 		{
 			Label = label;
-			PathDirectory = Path.Combine(SharedSpace.ResourcesDirectoryUfo, "TERRAIN"); // TODO: TFTD ....
+			PathDirectory = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo), "TERRAIN"); // TODO: TFTD ....
 
 			_recordsTable = new Hashtable(3);
 		}

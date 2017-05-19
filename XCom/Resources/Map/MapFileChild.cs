@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 using XCom.Interfaces.Base;
 using XCom.Services;
@@ -59,42 +60,54 @@ namespace XCom
 			_terrains   = terrains;
 			_routeFile  = routeFile;
 
-			string pfe = path + file + MapExt;
-			if (!File.Exists(pfe))
+			string pfe = Path.Combine(path, file + MapExt);
+			if (File.Exists(pfe))
 			{
-				throw new FileNotFoundException(pfe);
-			}
-
-			for (int i = 0; i != parts.Count; ++i)
-				parts[i].PartListId = i;
-
-			ReadMapFile(File.OpenRead(pfe), parts);
-
-			SetupRouteNodes(routeFile);
-
-			if (!String.IsNullOrEmpty(pathOccult))
-			{
-				if (File.Exists(pathOccult + file + OccultFile.OccultExt))
+				for (int i = 0; i != parts.Count; ++i)
+					parts[i].PartListId = i;
+	
+				ReadMapFile(File.OpenRead(pfe), parts);
+	
+				SetupRouteNodes(routeFile);
+	
+				if (!String.IsNullOrEmpty(pathOccult))
 				{
-					try
+					if (File.Exists(pathOccult + file + OccultFile.OccultExt))
 					{
-						OccultFile.LoadOccult(file, pathOccult, this);
-					}
-					catch // TODO: send warning to user.
-					{
-						for (int lev = 0; lev != MapSize.Levs; ++lev)
-						for (int row = 0; row != MapSize.Rows; ++row)
-						for (int col = 0; col != MapSize.Cols; ++col)
+						try
 						{
-							this[row, col, lev].Occulted = false;
+							OccultFile.LoadOccult(file, pathOccult, this);
 						}
-						throw;
+						catch // TODO: send warning to user.
+						{
+							for (int lev = 0; lev != MapSize.Levs; ++lev)
+							for (int row = 0; row != MapSize.Rows; ++row)
+							for (int col = 0; col != MapSize.Cols; ++col)
+							{
+								this[row, col, lev].Occulted = false;
+							}
+							throw;
+						}
 					}
+					else
+						CalculateOccultations();
 				}
-				else
-					CalculateOccultations();
 			}
-			// TODO: throw something here or at least inform the user.
+			else
+			{
+				string error = String.Format(
+										System.Globalization.CultureInfo.CurrentCulture,
+										"The file does not exist{0}{0}{1}",
+										Environment.NewLine,
+										pfe);
+				MessageBox.Show(
+							error,
+							"Error",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Error,
+							MessageBoxDefaultButton.Button1,
+							0);
+			}
 		}
 		#endregion
 

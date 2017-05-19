@@ -34,9 +34,9 @@ namespace XCom.Interfaces
 			:
 				base(label)
 		{
-			MapDirectory    = Path.Combine(SharedSpace.ResourcesDirectoryUfo, "MAPS"); // TODO: TFTD ....
-			RouteDirectory  = Path.Combine(SharedSpace.ResourcesDirectoryUfo, "ROUTES");
-			OccultDirectory = Path.Combine(SharedSpace.SettingsDirectory, @"OccultTileData\UFO");
+			MapDirectory    = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo), "MAPS"); // TODO: TFTD ....
+			RouteDirectory  = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo), "ROUTES");
+			OccultDirectory = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory), @"OccultTileData\UFO");
 
 			Palette = ResourceInfo.Palette;
 //			Palette = Palette.UfoBattle;

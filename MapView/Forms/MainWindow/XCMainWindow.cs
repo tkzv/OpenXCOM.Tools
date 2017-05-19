@@ -226,13 +226,6 @@ namespace MapView
 			LogFile.WriteLine("ViewerFormsManager initialized.");
 
 
-			ResourceInfo.InitializeResources(Palette.UfoBattle, pathConfig); // load resources from YAML.
-//			GameInfo.ParseConfigLineEvent += OnParseConfigLine;
-//			ResourceInfo.InitializeResources(Palette.UfoBattle, pathPaths);
-//			GameInfo.ParseConfigLineEvent -= OnParseConfigLine;
-			LogFile.WriteLine("ResourceInfo initialized.");
-
-
 			_viewersManager.ManageViewers();
 
 
@@ -323,6 +316,13 @@ namespace MapView
 //				}
 //				throw;
 //			}
+
+
+			ResourceInfo.InitializeResources(Palette.UfoBattle, pathConfig); // load resources from YAML.
+//			GameInfo.ParseConfigLineEvent += OnParseConfigLine;
+//			ResourceInfo.InitializeResources(Palette.UfoBattle, pathPaths);
+//			GameInfo.ParseConfigLineEvent -= OnParseConfigLine;
+			LogFile.WriteLine("ResourceInfo initialized.");
 
 
 			CreateTree();
@@ -915,26 +915,27 @@ namespace MapView
 
 		private void LoadSelectedMap()
 		{
-			var description = tvMaps.SelectedNode.Tag as DescriptorBase;
-			if (description != null)
+			LogFile.WriteLine("");
+			LogFile.WriteLine("XCMainWindow.LoadSelectedMap");
+
+			var descriptor = tvMaps.SelectedNode.Tag as DescriptorBase;
+			if (descriptor != null)
 			{
+				LogFile.WriteLine(". descriptor= " + descriptor);
+
 //				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.
 
 				_mainViewUnderlay.MainViewOverlay.FirstClick = false;
 
-				var tileFactory = new XCTileFactory();
-				tileFactory.WarningEvent += _warningHandler.HandleWarning;	// used to send a message to the Console if
-																			// a DeadTile or AlternateTile is out of bounds.
-				var fileService = new XCMapFileService(tileFactory);
-
-				var mapBase = fileService.Load(description as Descriptor);
+				var fileService = new XCMapFileService();
+				var mapBase = fileService.LoadTileset(descriptor as Descriptor);
 				_mainViewUnderlay.MapBase = mapBase;
 
 				tsEdit.Enabled = true;
 
 				RouteCheckService.CheckNodeBounds(mapBase);
 
-				tsslMapLabel.Text = description.Label;
+				tsslMapLabel.Text = descriptor.Label;
 				tsslDimensions.Text = (mapBase != null) ? mapBase.MapSize.ToString()
 														: "size: n/a";
 				tsslPosition.Text = String.Empty;

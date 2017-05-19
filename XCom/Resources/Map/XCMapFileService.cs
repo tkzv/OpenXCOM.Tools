@@ -10,32 +10,37 @@ namespace XCom
 	public class XCMapFileService
 	{
 		#region Fields
-		private readonly XCTileFactory _tileFactory;
+		private readonly XCTileFactory _tileFactory = new XCTileFactory();
 		#endregion
 
 
-		#region cTor
-		public XCMapFileService(XCTileFactory tileFactory)
-		{
-			_tileFactory = tileFactory;
-		}
-		#endregion
+//		#region cTor
+//		public XCMapFileService()
+//		{}
+//		#endregion
 
 
 		#region Methods
-		public MapFileBase Load(Descriptor descriptor)
+		public MapFileBase LoadTileset(Descriptor descriptor)
 		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("XCMapFileService.LoadTileset descriptor= " + descriptor);
+
+			LogFile.WriteLine("file= " + descriptor.FilePath);
+
 			if (descriptor != null && File.Exists(descriptor.FilePath))
 			{
+				LogFile.WriteLine(". descriptor VALID and file exists");
+
 				var parts = new List<TilepartBase>();
 				var info = ResourceInfo.TerrainInfo;
 
 				foreach (string terrain in descriptor.Terrains)
 				{
-					var tileInfo = info[terrain];
-					if (tileInfo != null)
+					var infoTerrain = info[terrain];
+					if (infoTerrain != null)
 					{
-						var MCD = tileInfo.GetMcdRecords(descriptor.Palette, _tileFactory);
+						var MCD = infoTerrain.GetMcdRecords(descriptor.Palette, _tileFactory);
 						foreach (XCTilepart part in MCD)
 							parts.Add(part);
 					}
@@ -51,6 +56,8 @@ namespace XCom
 										RMP);
 				return MAP;
 			}
+
+			LogFile.WriteLine(". descriptor NOT Valid or file does NOT exist");
 			return null;
 		}
 		#endregion

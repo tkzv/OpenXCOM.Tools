@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.IO;
 
 
@@ -6,18 +7,26 @@ namespace XCom.Resources.Map
 {
 	public sealed class XCTileFactory
 	{
+		private const string McdExt = ".MCD";
+
+		private const int Total = 62; // there are 62 bytes in each MCD record.
+
+		/// <summary>
+		/// Creates MCD-records from an MCD-file.
+		/// </summary>
+		/// <param name="file"></param>
+		/// <param name="dir"></param>
+		/// <param name="spriteset"></param>
+		/// <returns></returns>
 		internal XCTilepart[] CreateRecords(
 				string file,
 				string dir,
 				PckSpriteCollection spriteset)
 		{
-//			int diff = (file == "XBASES05") ? 3 : 0; // TODO: wtf.
+			string pfe = Path.Combine(dir, file + McdExt);
 
-			const int Total = 62; // there are 62 entries in each MCD file.
-
-			using (var bs = new BufferedStream(File.OpenRead(dir + file + ".MCD")))
+			using (var bs = new BufferedStream(File.OpenRead(pfe)))
 			{
-//				var tiles = new XCTilepart[(((int)bs.Length) / Total) - diff];
 				var parts = new XCTilepart[(int)bs.Length / Total]; // TODO: Error if this don't work out right.
 
 				for (int id = 0; id != parts.Length; ++id)
@@ -34,13 +43,21 @@ namespace XCom.Resources.Map
 				for (int id = 0; id != parts.Length; ++id)
 				{
 					parts[id].Dead = GetDeadPart(file, id, parts[id].Record, parts);
-					parts[id].Alternate = GetAlternatePart(file, id, parts[id].Record, parts); // TODO: check if the Alternate gets counted by MapInfoForm
+					parts[id].Alternate = GetAlternatePart(file, id, parts[id].Record, parts);
 				}
 
 				return parts;
 			}
 		}
 
+		/// <summary>
+		/// Gets the dead-tile of a given MCD-record.
+		/// </summary>
+		/// <param name="file"></param>
+		/// <param name="id"></param>
+		/// <param name="record"></param>
+		/// <param name="parts"></param>
+		/// <returns></returns>
 		private XCTilepart GetDeadPart(
 				string file,
 				int id,
@@ -52,17 +69,32 @@ namespace XCom.Resources.Map
 				if (record.DieTile < parts.Length)
 					return parts[record.DieTile];
 
-				HandleWarning(String.Format(
+				string warn = String.Format(
 										System.Globalization.CultureInfo.CurrentCulture,
-										"In the MCD file {0}, the tile entry {1} has an invalid alternate tile (id {2} of {3} records).",
+										"In the MCD file {0}, the tile entry {1} has an invalid dead tile (id {2} of {3} records).",
 										file,
 										id,
 										record.Alt_MCD,
-										parts.Length));
+										parts.Length);
+				MessageBox.Show(
+							warn,
+							"Warning",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Warning,
+							MessageBoxDefaultButton.Button1,
+							0);
 			}
 			return null;
 		}
 
+		/// <summary>
+		/// Gets the alternate-tile of a given MCD-record.
+		/// </summary>
+		/// <param name="file"></param>
+		/// <param name="id"></param>
+		/// <param name="record"></param>
+		/// <param name="parts"></param>
+		/// <returns></returns>
 		private XCTilepart GetAlternatePart(
 				string file,
 				int id,
@@ -74,31 +106,22 @@ namespace XCom.Resources.Map
 				if (record.Alt_MCD < parts.Length)
 					return parts[record.Alt_MCD];
 
-				HandleWarning(String.Format(
+				string warn = String.Format(
 										System.Globalization.CultureInfo.CurrentCulture,
 										"In the MCD file {0}, the tile entry {1} has an invalid alternate tile (id {2} of {3} records).",
 										file,
 										id,
 										record.Alt_MCD,
-										parts.Length));
+										parts.Length);
+				MessageBox.Show(
+							warn,
+							"Warning",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Warning,
+							MessageBoxDefaultButton.Button1,
+							0);
 			}
 			return null;
-		}
-
-
-		public event Action<string> WarningEvent;
-
-		private void HandleWarning(string warning)
-		{
-			Action<string> handler = WarningEvent;
-			if (handler != null)
-			{
-				handler(warning);
-			}
-			else
-			{
-				throw new ApplicationException(warning);
-			}
 		}
 	}
 }
