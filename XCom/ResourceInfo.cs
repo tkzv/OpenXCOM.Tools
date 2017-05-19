@@ -16,8 +16,8 @@ namespace XCom
 			get { return _tilegroupInfo; }
 		}
 
-		private static TerrainDesc _terrainInfo;
-		public static TerrainDesc TerrainInfo
+		private static TerrainHerder _terrainInfo;
+		public static TerrainHerder TerrainInfo
 		{
 			get { return _terrainInfo; }
 		}
@@ -33,15 +33,23 @@ namespace XCom
 //		public static event ParseConfigLineEventHandler ParseConfigLineEvent;
 
 
-		public static void InitializeResources(Palette pal, DSShared.PathInfo pathPaths)
+		public static void InitializeResources(Palette pal, DSShared.PathInfo pathConfig)
 		{
-			Directory.SetCurrentDirectory(pathPaths.Path);	// change to /settings dir
+			Directory.SetCurrentDirectory(pathConfig.Path);	// change to /settings dir
 			XConsole.Init(20);								// note that prints the LogFile to settings dir also
 
 			_palette = pal;
 			_spritesDictionary = new Dictionary<Palette, Dictionary<string, PckSpriteCollection>>();
 
-			using (var sr = new StreamReader(File.OpenRead(pathPaths.FullPath))) // open/read Paths.Cfg
+
+			var tilesetManager = new TilesetManager(pathConfig.FullPath); // TEST.
+
+			_tilegroupInfo = new TileGroupDesc(tilesetManager);
+
+//			_terrainInfo = new TerrainDesc(keyval.Value, vars);
+
+
+/*			using (var sr = new StreamReader(File.OpenRead(pathConfig.FullPath))) // open/read Paths.Cfg
 			{
 				var vars = new Varidia(sr);	// this object is going to hold all sorts of keyval pairs
 											// be careful you don't duplicate/overwrite a var since the following loop
@@ -82,7 +90,7 @@ namespace XCom
 //							break;
 					}
 				}
-			}
+			} */
 
 			Directory.SetCurrentDirectory(SharedSpace.Instance.GetShare(SharedSpace.ApplicationDirectory)); // change back to app dir
 		}

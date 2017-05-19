@@ -19,8 +19,8 @@ namespace XCom
 		private readonly string _path       = String.Empty;
 		private readonly string _pathOccult = String.Empty;
 
-		private readonly string[] _terrains;
-		public string[] Terrains
+		private readonly List<string> _terrains;
+		public List<string> Terrains
 		{
 			get { return _terrains; }
 		}
@@ -48,7 +48,7 @@ namespace XCom
 				string path,
 				string pathOccult,
 				List<TilepartBase> parts,
-				string[] terrains,
+				List<string> terrains,
 				RouteNodeCollection routeFile)
 			:
 				base(file, parts)
@@ -191,7 +191,7 @@ namespace XCom
 					break;
 			}
 
-			if (id != -1 && id < _terrains.Length)
+			if (id != -1 && id < _terrains.Count)
 				return _terrains[id];
 
 			return null;

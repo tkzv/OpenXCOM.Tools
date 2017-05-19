@@ -224,8 +224,9 @@ namespace MapView
 			LogFile.WriteLine("ViewerFormsManager initialized.");
 
 
+			ResourceInfo.InitializeResources(Palette.UfoBattle, pathConfig); // load resources from YAML.
 //			GameInfo.ParseConfigLineEvent += OnParseConfigLine;
-			ResourceInfo.InitializeResources(Palette.UfoBattle, pathPaths);
+//			ResourceInfo.InitializeResources(Palette.UfoBattle, pathPaths);
 //			GameInfo.ParseConfigLineEvent -= OnParseConfigLine;
 			LogFile.WriteLine("ResourceInfo initialized.");
 
@@ -348,11 +349,11 @@ namespace MapView
 
 			/****************************************/
 			// Copied from PckView
-//			loadedTypes = new LoadOfType<MapDescBase>();
+//			loadedTypes = new LoadOfType<DescriptorBase>();
 //			sharedSpace["MapMods"] = loadedTypes.AllLoaded;
 
 			// There are no currently loadable maps in this assembly so this is more for future use
-//			loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(XCom.Interfaces.Base.MapDescBase)));
+//			loadedTypes.LoadFrom(Assembly.GetAssembly(typeof(XCom.Interfaces.Base.DescriptorBase)));
 
 //			if (Directory.Exists(sharedSpace[SharedSpace.CustomDirectory].ToString()))
 //			{
@@ -413,16 +414,16 @@ namespace MapView
 				nodeGroup.Tag = groups[keyGroup];
 				tvMaps.Nodes.Add(nodeGroup);
 
-				foreach (string keyCategory in groups[keyGroup].Categories.Keys)
+				foreach (string keyCategory in groups[keyGroup].TilesetCategories.Keys)
 				{
 					var nodeCategory = new SortableTreeNode(keyCategory);
-					nodeCategory.Tag = groups[keyGroup].Categories[keyCategory];
+					nodeCategory.Tag = groups[keyGroup].TilesetCategories[keyCategory];
 					nodeGroup.Nodes.Add(nodeCategory);
 
-					foreach (string keyTileset in groups[keyGroup].Categories[keyCategory].Keys)
+					foreach (string keyTileset in groups[keyGroup].TilesetCategories[keyCategory].Keys)
 					{
 						var nodeTileset = new SortableTreeNode(keyTileset);
-						nodeTileset.Tag = groups[keyGroup].Categories[keyCategory][keyTileset];
+						nodeTileset.Tag = groups[keyGroup].TilesetCategories[keyCategory][keyTileset];
 						nodeCategory.Nodes.Add(nodeTileset);
 					}
 				}
@@ -901,7 +902,7 @@ namespace MapView
 
 		private void LoadSelectedMap()
 		{
-			var description = tvMaps.SelectedNode.Tag as MapDescBase;
+			var description = tvMaps.SelectedNode.Tag as DescriptorBase;
 			if (description != null)
 			{
 //				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.
@@ -913,7 +914,7 @@ namespace MapView
 																			// a DeadTile or AlternateTile is out of bounds.
 				var fileService = new XCMapFileService(tileFactory);
 
-				var mapBase = fileService.Load(description as MapDescChild);
+				var mapBase = fileService.Load(description as Descriptor);
 				_mainViewUnderlay.MapBase = mapBase;
 
 				tsEdit.Enabled = true;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 using XCom.Interfaces.Base;
@@ -27,10 +28,29 @@ namespace XCom.Interfaces
 
 		#region cTors
 		/// <summary>
+		/// cTor. Load from YAML.
+		/// </summary>
+		internal TileGroup(string label, Dictionary<string, Tileset> tilesets)
+			:
+				base(label)
+		{
+			MapPath    = Path.Combine(SharedSpace.ResourcesDirectoryUfo, "MAPS"); // TODO: TFTD ....
+			RoutePath  = Path.Combine(SharedSpace.ResourcesDirectoryUfo, "ROUTES");
+			OccultPath = Path.Combine(SharedSpace.SettingsDirectory, @"OccultTileData\UFO");
+
+//			Palette = ;
+//							case "UFO":  Palette = Palette.UfoBattle;       break;
+//							case "TFTD": Palette = Palette.TftdBattle;      break;
+//							default:     Palette = Palette.GetPalette(val); break;
+		}
+
+
+
+		/// <summary>
 		/// cTor.
 		/// </summary>
 		/// <param name="label"></param>
-		protected TileGroup(string label)
+		internal protected TileGroup(string label)
 			:
 				base(label)
 		{
@@ -47,7 +67,7 @@ namespace XCom.Interfaces
 		/// <param name="label"></param>
 		/// <param name="sr"></param>
 		/// <param name="vars"></param>
-		protected TileGroup(
+		internal protected TileGroup(
 				string label,
 				StreamReader sr,
 				Varidia vars)
@@ -140,7 +160,7 @@ namespace XCom.Interfaces
 
 		public virtual void ParseLine(
 				string key,
-				string val,
+				string value,
 				StreamReader sr,
 				Varidia vars)
 		{}
@@ -148,10 +168,10 @@ namespace XCom.Interfaces
 		public virtual void AddMap(string tileset, string category)
 		{}
 
-		public virtual void AddMap(MapDescChild desc, string category)
+		public virtual void AddMap(Descriptor desc, string category)
 		{}
 
-//		public virtual MapDescChild RemoveTileset(string tileset, string category)
+//		public virtual Descriptor RemoveTileset(string tileset, string category)
 //		{
 //			return null;
 //		}

@@ -103,10 +103,10 @@
     <Compile Include="Resources\Images\Collections\XCImageCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Resources\Images\TerrainDesc.cs">
+    <Compile Include="Resources\Images\TerrainHerder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Resources\Images\TerrainDescriptor.cs">
+    <Compile Include="Resources\Images\Terrain.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Resources\Images\Types\PckImage.cs">
@@ -176,7 +176,7 @@
     <Compile Include="Globals.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\Base\MapDescBase.cs">
+    <Compile Include="Interfaces\Base\DescriptorBase.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\Base\TilepartBase.cs" />
@@ -186,7 +186,7 @@
     <Compile Include="Interfaces\XCImageFile.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FileDesc\MapDescChild.cs" />
+    <Compile Include="FileDesc\Descriptor.cs" />
     <Compile Include="Interfaces\TileGroup.cs" />
     <Compile Include="LogFile.cs">
       <SubType>Code</SubType>
@@ -218,6 +218,8 @@
     <Compile Include="ConsoleForm.Designer.cs">
       <DependentUpon>ConsoleForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Tileset.cs" />
+    <Compile Include="TilesetManager.cs" />
     <Compile Include="XConsole.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -243,6 +245,10 @@
     <ProjectReference Include="..\DSShared\DSShared.csproj">
       <Project>{A8A39824-E51C-426B-A449-9780BF9E2DF6}</Project>
       <Name>DSShared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YamlDotNet\YamlDotNet.csproj">
+      <Project>{bf32de1b-6276-4341-b212-f8862adbba7a}</Project>
+      <Name>YamlDotNet</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -406,10 +406,10 @@ namespace PckView
 				using (var strPck = File.OpenRead(pfePck))
 				using (var strTab = File.OpenRead(pfeTab))
 				{
-					XCImageCollection pckPack = null;
+					XCImageCollection spriteset = null;
 					try
 					{
-						pckPack = new PckSpriteCollection(
+						spriteset = new PckSpriteCollection(
 														strPck,
 														strTab,
 														2,
@@ -417,25 +417,25 @@ namespace PckView
 					}
 					catch (Exception)
 					{
-						pckPack = new PckSpriteCollection(
+						spriteset = new PckSpriteCollection(
 														strPck,
 														strTab,
 														4,
 														Palette.UfoBattle);
 					}
 
-					if (pckPack != null)
+					if (spriteset != null)
 					{
-						pckPack.ImageFile = fileType;
-						pckPack.Label = Path.GetFileNameWithoutExtension(pfePck);
+						spriteset.ImageFile = fileType;
+						spriteset.Label = Path.GetFileNameWithoutExtension(pfePck);
 
-						if (pckPack.Pal == null)
-							pckPack.Pal = Palette.UfoBattle;
+						if (spriteset.Pal == null)
+							spriteset.Pal = Palette.UfoBattle;
 					}
 
-					OnPaletteClick((MenuItem)_paletteDictionary[pckPack.ImageFile.DefaultPalette], null);
+					OnPaletteClick((MenuItem)_paletteDictionary[spriteset.ImageFile.DefaultPalette], null);
 
-					_viewPanel.SpritePack = pckPack;
+					_viewPanel.SpritePack = spriteset;
 
 
 					UpdateCaption();

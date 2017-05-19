@@ -7,11 +7,10 @@ using XCom.Resources.Map;
 namespace XCom
 {
 	/// <summary>
-	/// Describes information about terrains: the path to the PCK, TAB, and MCD
+	/// Describes information about a terrain: the path to the PCK, TAB, and MCD
 	/// files.
 	/// </summary>
-	public sealed class TerrainDescriptor
-//		: IComparable // TODO: should override Equals, ==, !=, <, > // so long, IComparable.
+	public sealed class Terrain
 	{
 		#region Fields
 		private readonly Hashtable _recordsTable;
@@ -28,7 +27,7 @@ namespace XCom
 
 
 		#region cTor
-		public TerrainDescriptor(string label, string path)
+		public Terrain(string label, string path)
 		{
 			Label = label;
 			Path  = path;
@@ -39,12 +38,12 @@ namespace XCom
 
 
 		#region Methods
-		public PckSpriteCollection GetImageset()
+		public PckSpriteCollection GetSpriteset()
 		{
-			return GetImageset(ResourceInfo.Palette);
+			return GetSpriteset(ResourceInfo.Palette);
 		}
 
-		internal PckSpriteCollection GetImageset(Palette pal)
+		private PckSpriteCollection GetSpriteset(Palette pal)
 		{
 			return ResourceInfo.LoadSpriteset(Path, Label, 2, pal);
 		}
@@ -58,7 +57,7 @@ namespace XCom
 		{
 			if (_recordsTable[pal] == null)
 			{
-				var tiles = tileFactory.CreateTiles(Label, Path, GetImageset(pal));
+				var tiles = tileFactory.CreateRecords(Label, Path, GetSpriteset(pal));
 				_recordsTable[pal] = new McdRecordCollection(tiles);
 			}
 			return _recordsTable[pal] as McdRecordCollection;
@@ -69,14 +68,10 @@ namespace XCom
 			_recordsTable.Clear();
 		}
 
-//		public override string ToString()
-//		{
-//			return Label;
-//		}
-//		public int CompareTo(object obj)
-//		{
-//			return String.CompareOrdinal(Label, obj.ToString());
-//		}
+		public override string ToString()
+		{
+			return Label;
+		}
 		#endregion
 	}
 }

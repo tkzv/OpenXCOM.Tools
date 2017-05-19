@@ -6,10 +6,10 @@ namespace XCom.Resources.Map
 {
 	public sealed class XCTileFactory
 	{
-		internal XCTilepart[] CreateTiles(
+		internal XCTilepart[] CreateRecords(
 				string file,
 				string dir,
-				PckSpriteCollection pckPack)
+				PckSpriteCollection spriteset)
 		{
 //			int diff = (file == "XBASES05") ? 3 : 0; // TODO: wtf.
 
@@ -26,7 +26,7 @@ namespace XCom.Resources.Map
 					bs.Read(bindata, 0, Total);
 					var record = McdRecordFactory.CreateRecord(bindata);
 
-					var part = new XCTilepart(id, pckPack, record); //, tiles); // NOTE: Tiles is not used.
+					var part = new XCTilepart(id, spriteset, record);
 
 					parts[id] = part;
 				}

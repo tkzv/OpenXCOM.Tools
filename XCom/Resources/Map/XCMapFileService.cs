@@ -23,31 +23,31 @@ namespace XCom
 
 
 		#region Methods
-		public MapFileBase Load(MapDescChild desc)
+		public MapFileBase Load(Descriptor descriptor)
 		{
-			if (desc != null && File.Exists(desc.FilePath))
+			if (descriptor != null && File.Exists(descriptor.FilePath))
 			{
 				var parts = new List<TilepartBase>();
 				var info = ResourceInfo.TerrainInfo;
 
-				foreach (string dep in desc.Terrains)
+				foreach (string terrain in descriptor.Terrains)
 				{
-					var tileInfo = info[dep];
+					var tileInfo = info[terrain];
 					if (tileInfo != null)
 					{
-						var MCD = tileInfo.GetMcdRecords(desc.Palette, _tileFactory);
+						var MCD = tileInfo.GetMcdRecords(descriptor.Palette, _tileFactory);
 						foreach (XCTilepart part in MCD)
 							parts.Add(part);
 					}
 				}
 
-				var RMP = new RouteNodeCollection(desc.Label, desc.RoutePath);
+				var RMP = new RouteNodeCollection(descriptor.Label, descriptor.RoutePath);
 				var MAP = new MapFileChild(
-										desc.Label,
-										desc.MapPath,
-										desc.OccultPath,
+										descriptor.Label,
+										descriptor.MapPath,
+										descriptor.OccultPath,
 										parts,
-										desc.Terrains,
+										descriptor.Terrains,
 										RMP);
 				return MAP;
 			}

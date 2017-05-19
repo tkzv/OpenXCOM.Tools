@@ -3,7 +3,7 @@ using System;
 
 namespace XCom.Interfaces.Base
 {
-	public class MapDescBase
+	public class DescriptorBase
 	{
 		#region Properties
 		public string Label
@@ -13,10 +13,10 @@ namespace XCom.Interfaces.Base
 
 		#region cTor
 		/// <summary>
-		/// cTor. Instantiated only as the parent of MapDescChild.
+		/// cTor. Instantiated only as the parent of Descriptor.
 		/// </summary>
 		/// <param name="tileset"></param>
-		internal protected MapDescBase(string tileset)
+		internal protected DescriptorBase(string tileset)
 		{
 			Label = tileset;
 		}

@@ -1,13 +1,14 @@
 using System;
+using System.Collections.Generic;
 
 using XCom.Interfaces.Base;
 
 
 namespace XCom
 {
-	public sealed class MapDescChild
+	public sealed class Descriptor // *snap*
 		:
-			MapDescBase
+			DescriptorBase
 	{
 		#region Properties
 		internal string MapPath
@@ -26,7 +27,7 @@ namespace XCom
 		internal string OccultPath
 		{ get; private set; }
 
-		public string[] Terrains
+		public List<string> Terrains
 		{ get; set; }
 
 		internal Palette Palette
@@ -38,39 +39,28 @@ namespace XCom
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		/// <param name="label"></param>
+		/// <param name="tileset"></param>
 		/// <param name="pathMaps"></param>
 		/// <param name="pathRoutes"></param>
 		/// <param name="pathOccults"></param>
 		/// <param name="terrains"></param>
 		/// <param name="pal"></param>
-		public MapDescChild(
-				string label,
+		public Descriptor(
+				string tileset,
 				string pathMaps,
 				string pathRoutes,
 				string pathOccults,
-				string[] terrains,
+				List<string> terrains,
 				Palette pal)
 			:
-				base(label)
+				base(tileset)
 		{
 			MapPath    = pathMaps;
 			RoutePath  = pathRoutes;
 			OccultPath = pathOccults;
 			Terrains   = terrains;
 			Palette    = pal;
-//			IsStatic   = false;
 		}
 		#endregion
 	}
 }
-
-//		public bool IsStatic
-//		{ get; set; }
-
-//		public int CompareTo(object other)
-//		{
-//			var desc = other as MapDescChild;
-//			return (desc != null) ? String.CompareOrdinal(Label, desc.Label)
-//								  : 1;
-//		}

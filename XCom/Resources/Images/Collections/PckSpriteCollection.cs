@@ -40,15 +40,11 @@ namespace XCom
 		/// <param name="strTab"></param>
 		/// <param name="bpp"></param>
 		/// <param name="pal"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
 		public PckSpriteCollection(
 				Stream strPck,
 				Stream strTab,
 				int bpp,
-				Palette pal,
-				int width  = 32,
-				int height = 40)
+				Palette pal)
 		{
 			_bpp = bpp;
 			Pal = pal;
@@ -100,9 +96,7 @@ namespace XCom
 								id,
 								bindata,
 								pal,
-								this,
-								width,
-								height));
+								this));
 			}
 		}
 		#endregion

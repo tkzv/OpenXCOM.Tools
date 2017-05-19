@@ -16,7 +16,7 @@ namespace XCom
 			get { return _path; }
 		}
 
-		private readonly Dictionary<string, TileGroupBase> _tilegroups;
+		private readonly Dictionary<string, TileGroupBase> _tilegroups = new Dictionary<string, TileGroupBase>();
 		public Dictionary<string, TileGroupBase> TileGroups
 		{
 			get { return _tilegroups; }
@@ -25,7 +25,16 @@ namespace XCom
 
 
 		#region cTor
-		internal TileGroupDesc(string pfe, Varidia vars)
+		internal TileGroupDesc(TilesetManager tilesetManager)
+		{
+//			_path = tilesetManager.Pfe;
+
+			foreach (string gruop in tilesetManager.Groups)
+				_tilegroups[gruop] = new TileGroupChild(gruop, tilesetManager.Tilesets);
+		}
+
+
+		internal TileGroupDesc(string pfe, Varidia vars) // path to MapEdit.cfg
 		{
 			_path = pfe;
 

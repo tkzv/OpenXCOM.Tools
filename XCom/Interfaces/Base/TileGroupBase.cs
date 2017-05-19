@@ -14,43 +14,45 @@ namespace XCom.Interfaces.Base
 			get { return _label; }
 		}
 
-		private readonly Dictionary<string, MapDescBase> _mapDescDictionary;
-		internal protected Dictionary<string, MapDescBase> MapDescDictionary
+		private readonly Dictionary<string, DescriptorBase> _descriptionDictionary = new Dictionary<string, DescriptorBase>();
+		internal protected Dictionary<string, DescriptorBase> TilesetDescriptors
 		{
-			get { return _mapDescDictionary; }
+			get { return _descriptionDictionary; }
 		}
 
-		private readonly Dictionary<string, Dictionary<string, MapDescBase>> _categories;
-		public Dictionary<string, Dictionary<string, MapDescBase>> Categories
+		private readonly Dictionary<string, Dictionary<string, DescriptorBase>> _categories = new Dictionary<string, Dictionary<string, DescriptorBase>>();
+		public Dictionary<string, Dictionary<string, DescriptorBase>> TilesetCategories
 		{
 			get { return _categories; }
 		}
 
-		public MapDescBase this[string label]
+		public DescriptorBase this[string label]
 		{
-			get { return _mapDescDictionary[label]; }
+			get { return _descriptionDictionary[label]; }
 			set
 			{
-				if (!_mapDescDictionary.ContainsKey(label))	// isNecessary=TRUE/FALSE
-					_mapDescDictionary.Add(label, value);	// no, none of this inheritance of inheritance of interfaces that aren't bullshit is "necessary".
+				if (!_descriptionDictionary.ContainsKey(label))	// isNecessary=TRUE/FALSE
+					_descriptionDictionary.Add(label, value);	// no, none of this inheritance of inheritance of interfaces that aren't bullshit is "necessary".
 
-				_mapDescDictionary[label] = value;
+				_descriptionDictionary[label] = value;
 			}
 		}
 
 //		public ICollection MapList
 //		{
-//			get { return _mapDescs.Keys; }
+//			get { return _descriptionDictionary.Keys; }
 //		}
 		#endregion
 
 
 		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="label"></param>
 		internal protected TileGroupBase(string label)
 		{
 			_label = label;
-			_mapDescDictionary = new Dictionary<string, MapDescBase>();
-			_categories = new Dictionary<string, Dictionary<string, MapDescBase>>();
 		}
 		#endregion
 	}

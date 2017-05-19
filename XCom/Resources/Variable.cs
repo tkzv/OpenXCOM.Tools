@@ -35,10 +35,10 @@ namespace XCom
 			get { return _name; }
 		}
 
-		internal string Value
-		{
-			get { return _value; }
-		}
+//		internal string Value
+//		{
+//			get { return _value; }
+//		}
 
 		internal void Add(string prefix)
 		{

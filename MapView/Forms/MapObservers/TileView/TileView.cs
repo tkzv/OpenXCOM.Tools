@@ -484,7 +484,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 						using (var f = new PckViewForm())
 						{
-							var pckPack = imageInfo.GetImageset();
+							var pckPack = imageInfo.GetSpriteset();
 							f.SelectedPalette = pckPack.Pal.Label;
 							f.LoadSpriteCollectionFile(pfePck, true);
 

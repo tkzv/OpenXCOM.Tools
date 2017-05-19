@@ -22,30 +22,27 @@ namespace XCom
 		private static int _idCanonical;
 		private int _id;
 
-		public static int Width  = 32;
-		public static int Height = 40;
+		public const int Width  = 32;
+		public const int Height = 40;
 
 
-/*		internal PckImage(
-				int imageId,
-				byte[] id,
-				Palette pal,
-				PckSpriteCollection pckFile)
-			:
-			this(
-				imageId,
-				id,
-				pal,
-				pckFile,
-				32, 40)
-		{} */
+//		internal PckImage(
+//				int imageId,
+//				byte[] id,
+//				Palette pal,
+//				PckSpriteCollection pckFile)
+//			:
+//			this(
+//				imageId,
+//				id,
+//				pal,
+//				pckFile)
+//		{}
 		internal PckImage(
 				int imageId,
 				byte[] binData,
 				Palette pal,
-				PckSpriteCollection pckPack,
-				int width,
-				int height)
+				PckSpriteCollection pckPack)
 			:
 				base(
 					new byte[]{},
@@ -61,9 +58,6 @@ namespace XCom
 //			this.idx = idx;
 
 			_id = _idCanonical++;
-
-			Width  = width;
-			Height = height;
 
 //			image = new Bitmap(Width, Height, PixelFormat.Format8bppIndexed);
 			_expanded = new byte[Width * Height];

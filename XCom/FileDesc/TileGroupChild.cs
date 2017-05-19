@@ -18,6 +18,35 @@ namespace XCom
 
 
 		#region cTors
+		/// <summary>
+		/// cTor. Load from YAML.
+		/// </summary>
+		internal TileGroupChild(string label, Dictionary<string, Tileset> tilesets)
+			:
+				base(label, tilesets)
+		{
+			foreach (string tileset in tilesets.Keys)
+			{
+				if (!TilesetCategories.ContainsKey(tilesets[tileset].Category))
+				{
+					var descriptors = new Dictionary<string, DescriptorBase>();
+					TilesetCategories[tilesets[tileset].Category] = descriptors;
+
+					var descriptor = new Descriptor(
+												tilesets[tileset].Type,
+												MapPath,
+												RoutePath,
+												OccultPath,
+												tilesets[tileset].Terrains,
+												Palette);
+
+					TilesetDescriptors[tilesets[tileset].Type] =
+					descriptors[tilesets[tileset].Type]        = descriptor;
+				}
+			}
+		}
+
+
 		internal TileGroupChild(string label)
 			:
 				base(label)
@@ -52,27 +81,27 @@ namespace XCom
 
 			sw.WriteLine(Tab + "palette:" + Palette.Label);
 
-			foreach (string keySubsets in Categories.Keys)
+			foreach (string keySubsets in TilesetCategories.Keys)
 			{
-				Dictionary<string, MapDescBase> valDesc = Categories[keySubsets];
+				Dictionary<string, DescriptorBase> valDesc = TilesetCategories[keySubsets];
 				if (valDesc != null)
 				{
 					var deps = new Varidia("Deps");
-					foreach (string keyDesc in valDesc.Keys)
+					foreach (string desc in valDesc.Keys)
 					{
-						var desc = MapDescDictionary[keyDesc] as MapDescChild;
-						if (desc != null)
+						var descriptor = TilesetDescriptors[desc] as Descriptor;
+						if (descriptor != null)
 						{
 							string depList = String.Empty;
-							if (desc.Terrains.Length != 0)
+							if (descriptor.Terrains.Count != 0)
 							{
 								int i = 0;
-								for (; i != desc.Terrains.Length - 1; ++i)
-									depList += desc.Terrains[i] + " ";
+								for (; i != descriptor.Terrains.Count - 1; ++i)
+									depList += descriptor.Terrains[i] + " ";
 	
-								depList += desc.Terrains[i];
+								depList += descriptor.Terrains[i];
 							}
-							deps.AddKeyvalPair(desc.Label, depList);
+							deps.AddKeyvalPair(descriptor.Label, depList);
 						}
 					}
 
@@ -91,33 +120,33 @@ namespace XCom
 
 		public override void AddMap(string tileset, string category)
 		{
-			var desc = new MapDescChild(
+			var desc = new Descriptor(
 									tileset,
 									MapPath,
 									RoutePath,
 									OccultPath,
-									new string[0],
+									new List<string>(),
 									Palette);
-			MapDescDictionary[desc.Label]    =
-			Categories[category][desc.Label] = desc;
+			TilesetDescriptors[desc.Label]          =
+			TilesetCategories[category][desc.Label] = desc;
 		}
 
-		public override void AddMap(MapDescChild desc, string category)
+		public override void AddMap(Descriptor desc, string category)
 		{
-			MapDescDictionary[desc.Label]    =
-			Categories[category][desc.Label] = desc;
+			TilesetDescriptors[desc.Label]          =
+			TilesetCategories[category][desc.Label] = desc;
 		}
 
-//		public override MapDescChild RemoveTileset(string tileset, string category)
+//		public override Descriptor RemoveTileset(string tileset, string category)
 //		{
-//			var desc = Categories[category][tileset] as MapDescChild;
+//			var desc = Categories[category][tileset] as Descriptor;
 //			Categories[category].Remove(tileset);
 //			return desc;
 //		}
 
 		public override void ParseLine(
 				string key,
-				string val,
+				string value,
 				StreamReader sr,
 				Varidia vars)
 		{
@@ -125,8 +154,8 @@ namespace XCom
 			{
 				case "FILES":
 				{
-					var descDictionary = new Dictionary<string, MapDescBase>();
-					Categories[val] = descDictionary;
+					var descDictionary = new Dictionary<string, DescriptorBase>();
+					TilesetCategories[value] = descDictionary;
 					string lineVars = Varidia.ReadLine(sr, vars);
 					while (lineVars.ToUpperInvariant() != "END")
 					{
@@ -134,16 +163,18 @@ namespace XCom
 						string file       = lineVars.Substring(0, pos);
 						string[] terrains = lineVars.Substring(pos + 1).Split(' ');
 
-						var desc = new MapDescChild(
+						var terrainList = new List<string>(terrains);
+
+						var desc = new Descriptor(
 												file,
 												MapPath,
 												RoutePath,
 												OccultPath,
-												terrains,
+												terrainList,
 												Palette);
 
-						MapDescDictionary[file] =
-						descDictionary[file]    = desc;
+						TilesetDescriptors[file] =
+						descDictionary[file]     = desc;
 
 						lineVars = Varidia.ReadLine(sr, vars);
 					}

@@ -5,7 +5,7 @@ using System.IO;
 
 namespace XCom
 {
-	public sealed class TerrainDesc
+	public sealed class TerrainHerder
 	{
 		#region Fields & Properties
 		private readonly string _path;
@@ -14,8 +14,8 @@ namespace XCom
 			get { return _path; }
 		}
 
-		private readonly Dictionary<string, TerrainDescriptor> _terrainsDictionary;
-		public TerrainDescriptor this[string label]
+		private readonly Dictionary<string, Terrain> _terrainsDictionary;
+		public Terrain this[string label]
 		{
 			get
 			{
@@ -39,10 +39,10 @@ namespace XCom
 		/// </summary>
 		/// <param name="pfe"></param>
 		/// <param name="vars"></param>
-		internal TerrainDesc(string pfe, Varidia vars)
+		internal TerrainHerder(string pfe, Varidia vars)
 		{
 			_path = pfe;
-			_terrainsDictionary = new Dictionary<string, TerrainDescriptor>();
+			_terrainsDictionary = new Dictionary<string, Terrain>();
 
 			Load(pfe, vars);
 		}
@@ -59,7 +59,7 @@ namespace XCom
 				KeyvalPair keyval;
 				while ((keyval = vars.ReadLine()) != null)
 				{
-					var terrain = new TerrainDescriptor(keyval.Keyword.ToUpperInvariant(), keyval.Value);
+					var terrain = new Terrain(keyval.Keyword.ToUpperInvariant(), keyval.Value);
 					_terrainsDictionary[keyval.Keyword.ToUpperInvariant()] = terrain;
 				}
 			}
@@ -100,12 +100,12 @@ namespace XCom
 		public sealed class TerrainAccessor
 		{
 			#region Fields
-			private readonly Dictionary<string, TerrainDescriptor> _terrainsDictionary;
+			private readonly Dictionary<string, Terrain> _terrainsDictionary;
 			#endregion
 
 
 			#region Properties
-			public TerrainDescriptor this[string terrain]
+			public Terrain this[string terrain]
 			{
 				get { return _terrainsDictionary[terrain.ToUpperInvariant()]; }
 			}
@@ -127,7 +127,7 @@ namespace XCom
 			/// cTor.
 			/// </summary>
 			/// <param name="terrainsDictionary"></param>
-			internal TerrainAccessor(Dictionary<string, TerrainDescriptor> terrainsDictionary)
+			internal TerrainAccessor(Dictionary<string, Terrain> terrainsDictionary)
 			{
 				_terrainsDictionary = terrainsDictionary;
 			}
