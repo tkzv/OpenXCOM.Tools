@@ -11,16 +11,28 @@ namespace XCom
 	{
 #if DEBUG
 		private const string DebugLogFile = "debug.log";
+
+		private static string _pathdir;
+		public static string PathDir
+		{
+			private get { return _pathdir; }
+			set
+			{
+				_pathdir = Path.Combine(value, DebugLogFile);
+				CreateLog();
+			}
+		}
 #endif
 
 		/// <summary>
-		/// Creates a logfile or Cleans the old one.
+		/// Creates a logfile or cleans the old one. The logfile should be
+		/// created by setting 'PathDir' only.
 		/// </summary>
-		public static void CreateLogFile()
+		private static void CreateLog()
 		{
 #if DEBUG
-			using (var sw = new StreamWriter(File.Open( // clean the old logfile
-													DebugLogFile,
+			using (var sw = new StreamWriter(File.Open(
+													PathDir,
 													FileMode.Create,
 													FileAccess.Write,
 													FileShare.None)))
@@ -36,7 +48,7 @@ namespace XCom
 		{
 #if DEBUG
 			using (var sw = new StreamWriter(File.Open(
-													DebugLogFile,
+													PathDir,
 													FileMode.Append,
 													FileAccess.Write,
 													FileShare.None)))

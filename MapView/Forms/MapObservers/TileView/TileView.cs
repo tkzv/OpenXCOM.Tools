@@ -446,15 +446,14 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		private void OnPckEditorClick(object sender, EventArgs e)
 		{
-			var terrain = GetTerrainLabel();
-			if (terrain != null)
+			string label = GetTerrainLabel();
+			if (!String.IsNullOrEmpty(label))
 			{
-				var imageInfo = ResourceInfo.TerrainInfo[terrain];
-				if (imageInfo != null)
+				var terrain = ResourceInfo.TerrainInfo[label];
+				if (terrain != null)
 				{
-					string pfePck = imageInfo.Path + imageInfo.Label + PckSpriteCollection.PckExt;
-					string pfeTab = pfePck.Substring(0, pfePck.Length - 4);
-					pfeTab += PckSpriteCollection.TabExt;
+					string pfePck = terrain.PathDirectory + terrain.Label + PckSpriteCollection.PckExt;
+					string pfeTab = terrain.PathDirectory + terrain.Label + PckSpriteCollection.TabExt;
 
 					if (!File.Exists(pfePck))
 					{
@@ -484,8 +483,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 						using (var f = new PckViewForm())
 						{
-							var pckPack = imageInfo.GetSpriteset();
-							f.SelectedPalette = pckPack.Pal.Label;
+							var spriteset = terrain.GetSpriteset();
+							f.SelectedPalette = spriteset.Pal.Label;
 							f.LoadSpriteCollectionFile(pfePck, true);
 
 							var parent = FindForm();
@@ -500,8 +499,8 @@ namespace MapView.Forms.MapObservers.TileViews
 							f.ShowDialog(owner);
 							if (f.SavedFile)
 							{
-								ResourceInfo.TerrainInfo.Terrains[terrain].ClearMcdTable();
-								ResourceInfo.ClearSpriteset(imageInfo.Path, imageInfo.Label);
+								ResourceInfo.TerrainInfo.Terrains[label].ClearMcdTable(); // TODO: huh, MCD won't change ...
+								ResourceInfo.ClearSpriteset(terrain.PathDirectory, terrain.Label);
 
 								PckSaved();
 							}

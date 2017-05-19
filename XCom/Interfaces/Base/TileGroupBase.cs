@@ -14,27 +14,36 @@ namespace XCom.Interfaces.Base
 			get { return _label; }
 		}
 
-		private readonly Dictionary<string, DescriptorBase> _descriptionDictionary = new Dictionary<string, DescriptorBase>();
-		internal protected Dictionary<string, DescriptorBase> TilesetDescriptors
+		/// <summary>
+		/// 
+		/// </summary>
+		private readonly Dictionary<string, DescriptorBase> _descriptors = new Dictionary<string, DescriptorBase>();
+		internal protected Dictionary<string, DescriptorBase> Descriptors
 		{
-			get { return _descriptionDictionary; }
+			get { return _descriptors; }
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		private readonly Dictionary<string, Dictionary<string, DescriptorBase>> _categories = new Dictionary<string, Dictionary<string, DescriptorBase>>();
-		public Dictionary<string, Dictionary<string, DescriptorBase>> TilesetCategories
+		public Dictionary<string, Dictionary<string, DescriptorBase>> Categories
 		{
 			get { return _categories; }
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public DescriptorBase this[string label]
 		{
-			get { return _descriptionDictionary[label]; }
+			get { return _descriptors[label]; }
 			set
 			{
-				if (!_descriptionDictionary.ContainsKey(label))	// isNecessary=TRUE/FALSE
-					_descriptionDictionary.Add(label, value);	// no, none of this inheritance of inheritance of interfaces that aren't bullshit is "necessary".
+				if (!_descriptors.ContainsKey(label))
+					_descriptors.Add(label, value);
 
-				_descriptionDictionary[label] = value;
+//				_descriptors[label] = value;
 			}
 		}
 

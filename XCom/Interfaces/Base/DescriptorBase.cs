@@ -24,7 +24,7 @@ namespace XCom.Interfaces.Base
 
 
 		#region Methods
-		public override string ToString() // isUsed yes/no
+		public override string ToString()
 		{
 			return Label;
 		}

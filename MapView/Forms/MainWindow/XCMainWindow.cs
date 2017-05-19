@@ -65,15 +65,17 @@ namespace MapView
 		/// </summary>
 		internal XCMainWindow()
 		{
-			// TODO: further optimize this loading sequence ....
+			LogFile.PathDir = Environment.CurrentDirectory; // creates a logfile/ wipes the old one.
 
-			LogFile.CreateLogFile();
 			LogFile.WriteLine("Starting MAIN MapView window ...");
 
 
+			// TODO: further optimize this loading sequence ....
+
 			var share = SharedSpace.Instance;
 
-			share.SetShare("MapView", this);
+//			share.SetShare("MapView", this);
+
 			share.SetShare(
 						SharedSpace.ApplicationDirectory,
 						Environment.CurrentDirectory);
@@ -109,16 +111,16 @@ namespace MapView
 
 
 			// check if Paths.cfg exists yet, if not show the Installation window
-			if (!pathPaths.FileExists())
-			{
-				using (var f = new InstallationForm())
-					if (f.ShowDialog(this) != DialogResult.OK)
-						Environment.Exit(-1); // wtf -1
-
-				LogFile.WriteLine("Installation files created.");
-			}
-			else
-				LogFile.WriteLine("Paths.Cfg file exists.");
+//			if (!pathPaths.FileExists())
+//			{
+//				using (var f = new InstallationForm())
+//					if (f.ShowDialog(this) != DialogResult.OK)
+//						Environment.Exit(-1); // wtf -1
+//
+//				LogFile.WriteLine("Installation files created.");
+//			}
+//			else
+//				LogFile.WriteLine("Paths.Cfg file exists.");
 
 
 			// check if MapConfig.yml exists yet, if not show the Configuration window
@@ -405,25 +407,36 @@ namespace MapView
 
 		private void CreateTree()
 		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("XCMainWindow.CreateTree");
+
 			tvMaps.Nodes.Clear();
 
 			var groups = ResourceInfo.TileGroupInfo.TileGroups;
+			LogFile.WriteLine(". groups= " + groups);
+
 			foreach (string keyGroup in groups.Keys)
 			{
+				LogFile.WriteLine(". . keyGroup= " + keyGroup);
+
 				var nodeGroup = new SortableTreeNode(groups[keyGroup].Label);
 				nodeGroup.Tag = groups[keyGroup];
 				tvMaps.Nodes.Add(nodeGroup);
 
-				foreach (string keyCategory in groups[keyGroup].TilesetCategories.Keys)
+				foreach (string keyCategory in groups[keyGroup].Categories.Keys)
 				{
+					LogFile.WriteLine(". . . keyCategory= " + keyCategory);
+
 					var nodeCategory = new SortableTreeNode(keyCategory);
-					nodeCategory.Tag = groups[keyGroup].TilesetCategories[keyCategory];
+					nodeCategory.Tag = groups[keyGroup].Categories[keyCategory];
 					nodeGroup.Nodes.Add(nodeCategory);
 
-					foreach (string keyTileset in groups[keyGroup].TilesetCategories[keyCategory].Keys)
+					foreach (string keyTileset in groups[keyGroup].Categories[keyCategory].Keys)
 					{
+						LogFile.WriteLine(". . . . keyTileset= " + keyTileset);
+
 						var nodeTileset = new SortableTreeNode(keyTileset);
-						nodeTileset.Tag = groups[keyGroup].TilesetCategories[keyCategory][keyTileset];
+						nodeTileset.Tag = groups[keyGroup].Categories[keyCategory][keyTileset];
 						nodeCategory.Nodes.Add(nodeTileset);
 					}
 				}

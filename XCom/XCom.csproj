@@ -164,7 +164,7 @@
     <Compile Include="Resources\Map\XCTilepart.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FileDesc\TileGroupDesc.cs">
+    <Compile Include="FileDesc\GroupHerder.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FileDesc\TileGroupChild.cs">

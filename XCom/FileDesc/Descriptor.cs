@@ -55,6 +55,9 @@ namespace XCom
 			:
 				base(tileset)
 		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("Descriptor cTor tileset= " + tileset);
+
 			MapPath    = pathMaps;
 			RoutePath  = pathRoutes;
 			OccultPath = pathOccults;

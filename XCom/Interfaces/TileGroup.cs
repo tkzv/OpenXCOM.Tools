@@ -15,13 +15,13 @@ namespace XCom.Interfaces
 		public Palette Palette
 		{ get; set; }
 
-		public string MapPath
+		public string MapDirectory
 		{ get; set; }
 
-		public string RoutePath
+		public string RouteDirectory
 		{ get; set; }
 
-		public string OccultPath
+		public string OccultDirectory
 		{ get; set; }
 		#endregion
 
@@ -30,23 +30,23 @@ namespace XCom.Interfaces
 		/// <summary>
 		/// cTor. Load from YAML.
 		/// </summary>
-		internal TileGroup(string label, Dictionary<string, Tileset> tilesets)
+		internal TileGroup(string label)
 			:
 				base(label)
 		{
-			MapPath    = Path.Combine(SharedSpace.ResourcesDirectoryUfo, "MAPS"); // TODO: TFTD ....
-			RoutePath  = Path.Combine(SharedSpace.ResourcesDirectoryUfo, "ROUTES");
-			OccultPath = Path.Combine(SharedSpace.SettingsDirectory, @"OccultTileData\UFO");
+			MapDirectory    = Path.Combine(SharedSpace.ResourcesDirectoryUfo, "MAPS"); // TODO: TFTD ....
+			RouteDirectory  = Path.Combine(SharedSpace.ResourcesDirectoryUfo, "ROUTES");
+			OccultDirectory = Path.Combine(SharedSpace.SettingsDirectory, @"OccultTileData\UFO");
 
-//			Palette = ;
-//							case "UFO":  Palette = Palette.UfoBattle;       break;
-//							case "TFTD": Palette = Palette.TftdBattle;      break;
-//							default:     Palette = Palette.GetPalette(val); break;
+			Palette = ResourceInfo.Palette;
+//			Palette = Palette.UfoBattle;
+			// TODO: TFTD Palette = Palette.TftdBattle
+			// custom Palette = Palette.GetPalette(val)
 		}
 
 
 
-		/// <summary>
+/*		/// <summary>
 		/// cTor.
 		/// </summary>
 		/// <param name="label"></param>
@@ -60,8 +60,8 @@ namespace XCom.Interfaces
 //			_mapDepth = 0;
 //			_underwater = true;
 //			_baseStyle = false;
-		}
-		/// <summary>
+		} */
+/*		/// <summary>
 		/// cTor.
 		/// </summary>
 		/// <param name="label"></param>
@@ -101,15 +101,15 @@ namespace XCom.Interfaces
 //						break;
 
 					case "ROOTPATH":
-						MapPath = val;
+						MapDirectory = val;
 						break;
 
 					case "RMPPATH":
-						RoutePath = val;
+						RouteDirectory = val;
 						break;
 
 					case "BLANKPATH":
-						OccultPath = val;
+						OccultDirectory = val;
 						break;
 
 //					case "BASESTYLE": // not used. Might want to throw it at default:ParseLine()
@@ -150,7 +150,7 @@ namespace XCom.Interfaces
 						break;
 				}
 			}
-		}
+		} */
 		#endregion
 
 
@@ -160,7 +160,7 @@ namespace XCom.Interfaces
 
 		public virtual void ParseLine(
 				string key,
-				string value,
+				string category,
 				StreamReader sr,
 				Varidia vars)
 		{}
@@ -168,7 +168,7 @@ namespace XCom.Interfaces
 		public virtual void AddMap(string tileset, string category)
 		{}
 
-		public virtual void AddMap(Descriptor desc, string category)
+		public virtual void AddMap(Descriptor descriptor, string category)
 		{}
 
 //		public virtual Descriptor RemoveTileset(string tileset, string category)

@@ -34,8 +34,8 @@ namespace MapView
 
 			// NOTE: Add your own personal XCOM resources-dir here if desired:
 			var dirsUfo = new List<string>();
-			dirsUfo.Add(@"C:\MapView_test");
-//			dirsUfo.Add(@"C:\0xC_kL\data");
+//			dirsUfo.Add(@"C:\MapView_test");
+			dirsUfo.Add(@"C:\0xC_kL\data");
 
 			foreach (string dir in dirsUfo)
 				if (Directory.Exists(dir))
@@ -95,8 +95,8 @@ namespace MapView
 			const string CursorPck = SharedSpace.CursorFilePrefix + PckSpriteCollection.PckExt;
 			const string CursorTab = SharedSpace.CursorFilePrefix + PckSpriteCollection.TabExt;
 
-			if (   (File.Exists(tbUfo.Text  + CursorPck) && File.Exists(tbUfo.Text  + CursorTab))
-				|| (File.Exists(tbTftd.Text + CursorPck) && File.Exists(tbTftd.Text + CursorTab)))
+			if (   (File.Exists(Path.Combine(tbUfo.Text,  CursorPck)) && File.Exists(Path.Combine(tbUfo.Text,  CursorTab)))
+			    || (File.Exists(Path.Combine(tbTftd.Text, CursorPck)) && File.Exists(Path.Combine(tbTftd.Text, CursorTab))))
 			{
 				var pathConfig = SharedSpace.Instance[PathInfo.MapConfig] as PathInfo;
 				pathConfig.CreateDirectory(); // create a dir for MapConfig.yml and MapDirectory.yml

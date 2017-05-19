@@ -7,7 +7,7 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
-	public sealed class TileGroupDesc
+	public sealed class GroupHerder
 	{
 		#region Fields & Properties
 		private readonly string _path;
@@ -25,16 +25,16 @@ namespace XCom
 
 
 		#region cTor
-		internal TileGroupDesc(TilesetManager tilesetManager)
+		internal GroupHerder(TilesetManager tilesetManager)
 		{
-//			_path = tilesetManager.Pfe;
+			_path = tilesetManager.FullPath; // TODO: not right. not needed.
 
 			foreach (string gruop in tilesetManager.Groups)
 				_tilegroups[gruop] = new TileGroupChild(gruop, tilesetManager.Tilesets);
 		}
 
 
-		internal TileGroupDesc(string pfe, Varidia vars) // path to MapEdit.cfg
+/*		internal GroupHerder(string pfe, Varidia vars) // path to MapEdit.cfg
 		{
 			_path = pfe;
 
@@ -97,7 +97,7 @@ namespace XCom
 					}
 				}
 			}
-		}
+		} */
 		#endregion
 
 
@@ -110,9 +110,9 @@ namespace XCom
 		{
 			var tilegroup = new TileGroupChild(label);
 
-			tilegroup.MapPath    = pathMaps;
-			tilegroup.RoutePath  = pathRoutes;
-			tilegroup.OccultPath = pathOccults;
+			tilegroup.MapDirectory    = pathMaps;
+			tilegroup.RouteDirectory  = pathRoutes;
+			tilegroup.OccultDirectory = pathOccults;
 
 			return (_tilegroups[label] = tilegroup);
 		}

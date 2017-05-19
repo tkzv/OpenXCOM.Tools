@@ -22,8 +22,13 @@ namespace XCom
 		}
 
 		private readonly List<string> _types      = new List<string>();
-		private readonly List<string> _terrains   = new List<string>();
 		private readonly List<string> _categories = new List<string>();
+
+		private readonly List<string> _terrains   = new List<string>();
+		internal List<string> Terrains
+		{
+			get { return _terrains; }
+		}
 
 		private readonly List<string> _groups     = new List<string>();
 		internal List<string> Groups
@@ -31,11 +36,11 @@ namespace XCom
 			get { return _groups; }
 		}
 
-//		private readonly string _pfe;
-//		internal string Pfe
-//		{
-//			get { return _pfe; }
-//		}
+		private readonly string _fullpath;
+		internal string FullPath
+		{
+			get { return _fullpath; }
+		}
 		#endregion
 
 
@@ -49,7 +54,7 @@ namespace XCom
 			LogFile.WriteLine("");
 			LogFile.WriteLine("TilesetManager cTor");
 
-//			_pfe = pfe;
+			_fullpath = pfe;
 
 			// TODO: if exists(pfe)
 			// else error out.
@@ -72,7 +77,7 @@ namespace XCom
 					string nodeType = nodeTileset.Children[new YamlScalarNode("type")].ToString();
 					LogFile.WriteLine(". . type= " + nodeType); // "UFO_110"
 					if (!_types.Contains(nodeType)) // safety. There shall be only 1 tileset of any type in YAML.
-					_types.Add(nodeType);
+						_types.Add(nodeType);
 
 					string nodeGroup = nodeTileset.Children[new YamlScalarNode("group")].ToString();
 					LogFile.WriteLine(". . group= " + nodeGroup); // "ufoShips"

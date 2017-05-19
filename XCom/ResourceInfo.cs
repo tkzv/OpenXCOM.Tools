@@ -10,16 +10,16 @@ namespace XCom
 
 	public static class ResourceInfo
 	{
-		private static TileGroupDesc _tilegroupInfo;
-		public static TileGroupDesc TileGroupInfo
+		private static GroupHerder _infoTilegroup;
+		public static GroupHerder TileGroupInfo
 		{
-			get { return _tilegroupInfo; }
+			get { return _infoTilegroup; }
 		}
 
-		private static TerrainHerder _terrainInfo;
+		private static TerrainHerder _infoTerrain;
 		public static TerrainHerder TerrainInfo
 		{
-			get { return _terrainInfo; }
+			get { return _infoTerrain; }
 		}
 
 		private static Palette _palette = Palette.UfoBattle;
@@ -41,12 +41,11 @@ namespace XCom
 			_palette = pal;
 			_spritesDictionary = new Dictionary<Palette, Dictionary<string, PckSpriteCollection>>();
 
+			var tilesetManager = new TilesetManager(pathConfig.FullPath);
 
-			var tilesetManager = new TilesetManager(pathConfig.FullPath); // TEST.
+			_infoTilegroup = new GroupHerder(tilesetManager);
+			_infoTerrain   = new TerrainHerder(tilesetManager);
 
-			_tilegroupInfo = new TileGroupDesc(tilesetManager);
-
-//			_terrainInfo = new TerrainDesc(keyval.Value, vars);
 
 
 /*			using (var sr = new StreamReader(File.OpenRead(pathConfig.FullPath))) // open/read Paths.Cfg

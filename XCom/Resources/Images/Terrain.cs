@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.IO;
 
 using XCom.Resources.Map;
 
@@ -21,16 +22,29 @@ namespace XCom
 		public string Label
 		{ get; private set; }
 
-		public string Path
+		public string PathDirectory
 		{ get; set; }
 		#endregion
 
 
 		#region cTor
+		/// <summary>
+		/// cTor. Loads from YAML.
+		/// </summary>
+		/// <param name="label"></param>
+		public Terrain(string label)
+		{
+			Label = label;
+			PathDirectory = Path.Combine(SharedSpace.ResourcesDirectoryUfo, "TERRAIN"); // TODO: TFTD ....
+
+			_recordsTable = new Hashtable(3);
+		}
+
+
 		public Terrain(string label, string path)
 		{
 			Label = label;
-			Path  = path;
+			PathDirectory = path;
 
 			_recordsTable = new Hashtable(3);
 		}
@@ -45,7 +59,7 @@ namespace XCom
 
 		private PckSpriteCollection GetSpriteset(Palette pal)
 		{
-			return ResourceInfo.LoadSpriteset(Path, Label, 2, pal);
+			return ResourceInfo.LoadSpriteset(PathDirectory, Label, 2, pal);
 		}
 
 		public McdRecordCollection GetMcdRecords()
@@ -57,7 +71,7 @@ namespace XCom
 		{
 			if (_recordsTable[pal] == null)
 			{
-				var tiles = tileFactory.CreateRecords(Label, Path, GetSpriteset(pal));
+				var tiles = tileFactory.CreateRecords(Label, PathDirectory, GetSpriteset(pal));
 				_recordsTable[pal] = new McdRecordCollection(tiles);
 			}
 			return _recordsTable[pal] as McdRecordCollection;

@@ -14,14 +14,14 @@ namespace XCom
 			get { return _path; }
 		}
 
-		private readonly Dictionary<string, Terrain> _terrainsDictionary;
+		private readonly Dictionary<string, Terrain> _terrainsDictionary = new Dictionary<string, Terrain>();
 		public Terrain this[string label]
 		{
 			get
 			{
-				string key = label.ToUpperInvariant();
-				return (_terrainsDictionary.ContainsKey(key)) ? _terrainsDictionary[key]
-															  : null;
+				string labelUc = label.ToUpperInvariant();
+				return (_terrainsDictionary.ContainsKey(labelUc)) ? _terrainsDictionary[labelUc]
+																  : null;
 			}
 			set { _terrainsDictionary[label.ToUpperInvariant()] = value; }
 		}
@@ -35,6 +35,24 @@ namespace XCom
 
 		#region cTor
 		/// <summary>
+		/// cTor. Loads from YAML.
+		/// </summary>
+		internal TerrainHerder(TilesetManager tilesetManager)
+		{
+			_path = tilesetManager.FullPath; // TODO: not right. not needed.
+
+			foreach (string terrain in tilesetManager.Terrains)
+			{
+				string terrainUc = terrain.ToUpperInvariant();
+
+				if (!_terrainsDictionary.ContainsKey(terrainUc))
+					_terrainsDictionary[terrainUc] = new Terrain(terrainUc);
+			}
+		}
+
+
+
+		/// <summary>
 		/// cTor.
 		/// </summary>
 		/// <param name="pfe"></param>
@@ -42,16 +60,7 @@ namespace XCom
 		internal TerrainHerder(string pfe, Varidia vars)
 		{
 			_path = pfe;
-			_terrainsDictionary = new Dictionary<string, Terrain>();
 
-			Load(pfe, vars);
-		}
-		#endregion
-
-
-		#region Methods
-		private void Load(string pfe, Varidia vars)
-		{
 			using (var sr = new StreamReader(File.OpenRead(pfe)))
 			{
 				vars = new Varidia(sr, vars);
@@ -64,7 +73,10 @@ namespace XCom
 				}
 			}
 		}
+		#endregion
 
+
+		#region Methods
 		public void Save(string pfe)
 		{
 			using (var sw = new StreamWriter(pfe))
@@ -78,10 +90,10 @@ namespace XCom
 					if (_terrainsDictionary[key] != null)
 					{
 						var terrain = _terrainsDictionary[key];
-						if (!vars.ContainsKey(terrain.Path))
-							vars[terrain.Path] = new Variable(terrain.Label + ":", terrain.Path);
+						if (!vars.ContainsKey(terrain.PathDirectory))
+							vars[terrain.PathDirectory] = new Variable(terrain.Label + ":", terrain.PathDirectory);
 						else
-							vars[terrain.Path].Add(terrain.Label + ":");
+							vars[terrain.PathDirectory].Add(terrain.Label + ":");
 					}
 				}
 

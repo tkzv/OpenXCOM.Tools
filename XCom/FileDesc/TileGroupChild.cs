@@ -23,26 +23,40 @@ namespace XCom
 		/// </summary>
 		internal TileGroupChild(string label, Dictionary<string, Tileset> tilesets)
 			:
-				base(label, tilesets)
+				base(label)
 		{
-			foreach (string tileset in tilesets.Keys)
+			LogFile.WriteLine("");
+			LogFile.WriteLine("TileGroupChild cTor");
+
+			foreach (string key in tilesets.Keys)
 			{
-				if (!TilesetCategories.ContainsKey(tilesets[tileset].Category))
+				LogFile.WriteLine(". key= " + key);
+
+				if (!Descriptors.ContainsKey(key))
+//				if (!TilesetCategories.ContainsKey(tilesets[key].Category))
 				{
-					var descriptors = new Dictionary<string, DescriptorBase>();
-					TilesetCategories[tilesets[tileset].Category] = descriptors;
+					LogFile.WriteLine(". . key not found - ADD");
+
+					var tileset = tilesets[key];
+
+					LogFile.WriteLine(". . tileset.Category= " + tileset.Category);
+					if (!Categories.ContainsKey(tileset.Category))
+						Categories[tileset.Category] = new Dictionary<string, DescriptorBase>();
+
+					LogFile.WriteLine(". . tileset.Type= " + tileset.Type);
 
 					var descriptor = new Descriptor(
-												tilesets[tileset].Type,
-												MapPath,
-												RoutePath,
-												OccultPath,
-												tilesets[tileset].Terrains,
+												tileset.Type,
+												MapDirectory,
+												RouteDirectory,
+												OccultDirectory,
+												tileset.Terrains,
 												Palette);
 
-					TilesetDescriptors[tilesets[tileset].Type] =
-					descriptors[tilesets[tileset].Type]        = descriptor;
+					Descriptors[tileset.Type]                  =
+					Categories[tileset.Category][tileset.Type] = descriptor;
 				}
+				else LogFile.WriteLine(". . key already found - bypass.");
 			}
 		}
 
@@ -51,90 +65,91 @@ namespace XCom
 			:
 				base(label)
 		{}
-		internal TileGroupChild(string label, StreamReader sr, Varidia vars)
-			:
-				base(label, sr, vars)
-		{}
+
+//		internal TileGroupChild(string label, StreamReader sr, Varidia vars)
+//			:
+//				base(label, sr, vars)
+//		{} 
 		#endregion
 
 
 		#region Methods
 		public override void Save(StreamWriter sw, Varidia vars)
 		{
-			sw.WriteLine("Tileset:" + Label);
-			sw.WriteLine(Tab + "type:1");
-
-			if (vars.Vars[MapPath] != null)
-				sw.WriteLine(Tab + "rootpath:" + ((Variable)vars.Vars[MapPath]).Name);
-			else
-				sw.WriteLine(Tab + "rootpath:" + MapPath);
-
-			if (vars.Vars[RoutePath] != null)
-				sw.WriteLine(Tab + "rmpPath:" + ((Variable)vars.Vars[RoutePath]).Name);
-			else
-				sw.WriteLine(Tab + "rmpPath:" + RoutePath);
-
-			if (vars.Vars[OccultPath] != null)
-				sw.WriteLine(Tab + "blankPath:" + ((Variable)vars.Vars[OccultPath]).Name);
-			else
-				sw.WriteLine(Tab + "blankPath:" + OccultPath);
-
-			sw.WriteLine(Tab + "palette:" + Palette.Label);
-
-			foreach (string keySubsets in TilesetCategories.Keys)
-			{
-				Dictionary<string, DescriptorBase> valDesc = TilesetCategories[keySubsets];
-				if (valDesc != null)
-				{
-					var deps = new Varidia("Deps");
-					foreach (string desc in valDesc.Keys)
-					{
-						var descriptor = TilesetDescriptors[desc] as Descriptor;
-						if (descriptor != null)
-						{
-							string depList = String.Empty;
-							if (descriptor.Terrains.Count != 0)
-							{
-								int i = 0;
-								for (; i != descriptor.Terrains.Count - 1; ++i)
-									depList += descriptor.Terrains[i] + " ";
-	
-								depList += descriptor.Terrains[i];
-							}
-							deps.AddKeyvalPair(descriptor.Label, depList);
-						}
-					}
-
-					sw.WriteLine(Tab + "files:" + keySubsets);
-	
-					foreach (string dep in deps.Variables)
-						((Variable)deps.Vars[dep]).Write(sw, Tab + Tab);
-
-					sw.WriteLine(Tab + "end");
-				}
-			}
-
-			sw.WriteLine("end" + Environment.NewLine);
-			sw.Flush();
+//			sw.WriteLine("Tileset:" + Label);
+//			sw.WriteLine(Tab + "type:1");
+//
+//			if (vars.Vars[MapDirectory] != null)
+//				sw.WriteLine(Tab + "rootpath:" + ((Variable)vars.Vars[MapDirectory]).Name);
+//			else
+//				sw.WriteLine(Tab + "rootpath:" + MapDirectory);
+//
+//			if (vars.Vars[RouteDirectory] != null)
+//				sw.WriteLine(Tab + "rmpPath:" + ((Variable)vars.Vars[RouteDirectory]).Name);
+//			else
+//				sw.WriteLine(Tab + "rmpPath:" + RouteDirectory);
+//
+//			if (vars.Vars[OccultDirectory] != null)
+//				sw.WriteLine(Tab + "blankPath:" + ((Variable)vars.Vars[OccultDirectory]).Name);
+//			else
+//				sw.WriteLine(Tab + "blankPath:" + OccultDirectory);
+//
+//			sw.WriteLine(Tab + "palette:" + Palette.Label);
+//
+//			foreach (string categories in TilesetCategories.Keys)
+//			{
+//				Dictionary<string, DescriptorBase> descriptors = TilesetCategories[categories];
+//				if (descriptors != null)
+//				{
+//					var terrains = new Varidia("Deps");
+//					foreach (string key in descriptors.Keys)
+//					{
+//						var descriptor = TilesetDescriptors[key] as Descriptor;
+//						if (descriptor != null)
+//						{
+//							string terrainList = String.Empty;
+//							if (descriptor.Terrains.Count != 0)
+//							{
+//								int i = 0;
+//								for (; i != descriptor.Terrains.Count - 1; ++i)
+//									terrainList += descriptor.Terrains[i] + " ";
+//	
+//								terrainList += descriptor.Terrains[i];
+//							}
+//							terrains.AddKeyvalPair(descriptor.Label, terrainList);
+//						}
+//					}
+//
+//					sw.WriteLine(Tab + "files:" + categories);
+//	
+//					foreach (string terrain in terrains.Variables)
+//						((Variable)terrains.Vars[terrain]).Write(sw, Tab + Tab);
+//
+//					sw.WriteLine(Tab + "end");
+//				}
+//			}
+//
+//			sw.WriteLine("end" + Environment.NewLine);
+//			sw.Flush();
 		}
 
 		public override void AddMap(string tileset, string category)
 		{
-			var desc = new Descriptor(
-									tileset,
-									MapPath,
-									RoutePath,
-									OccultPath,
-									new List<string>(),
-									Palette);
-			TilesetDescriptors[desc.Label]          =
-			TilesetCategories[category][desc.Label] = desc;
+			var descriptor = new Descriptor(
+										tileset,
+										MapDirectory,
+										RouteDirectory,
+										OccultDirectory,
+										new List<string>(),
+										Palette);
+			Descriptors[tileset]          =
+			Categories[category][tileset] = descriptor;
 		}
 
-		public override void AddMap(Descriptor desc, string category)
+		public override void AddMap(Descriptor descriptor, string category)
 		{
-			TilesetDescriptors[desc.Label]          =
-			TilesetCategories[category][desc.Label] = desc;
+			Descriptors[descriptor.Label]          =
+			Categories[category][descriptor.Label] = descriptor;
 		}
 
 //		public override Descriptor RemoveTileset(string tileset, string category)
@@ -143,10 +158,13 @@ namespace XCom
 //			Categories[category].Remove(tileset);
 //			return desc;
 //		}
+		#endregion
+	}
+}
 
-		public override void ParseLine(
+/*		public override void ParseLine(
 				string key,
-				string value,
+				string category,
 				StreamReader sr,
 				Varidia vars)
 		{
@@ -154,27 +172,28 @@ namespace XCom
 			{
 				case "FILES":
 				{
-					var descDictionary = new Dictionary<string, DescriptorBase>();
-					TilesetCategories[value] = descDictionary;
+					var descriptors = new Dictionary<string, DescriptorBase>();
+					TilesetCategories[category] = new Dictionary<string, DescriptorBase>();
+
 					string lineVars = Varidia.ReadLine(sr, vars);
 					while (lineVars.ToUpperInvariant() != "END")
 					{
 						int pos           = lineVars.IndexOf(':');
-						string file       = lineVars.Substring(0, pos);
+						string tileset    = lineVars.Substring(0, pos);
 						string[] terrains = lineVars.Substring(pos + 1).Split(' ');
 
 						var terrainList = new List<string>(terrains);
 
-						var desc = new Descriptor(
-												file,
-												MapPath,
-												RoutePath,
-												OccultPath,
-												terrainList,
-												Palette);
+						var descriptor = new Descriptor(
+													tileset,
+													MapDirectory,
+													RouteDirectory,
+													OccultDirectory,
+													terrainList,
+													Palette);
 
-						TilesetDescriptors[file] =
-						descDictionary[file]     = desc;
+						TilesetDescriptors[tileset]          =
+						TilesetCategories[category][tileset] = descriptor;
 
 						lineVars = Varidia.ReadLine(sr, vars);
 					}
@@ -215,10 +234,7 @@ namespace XCom
 //												Name, key, line));
 //					break;
 			}
-		}
-		#endregion
-	}
-}
+		} */
 
 //		private string[] _mapOrder;
 //		private MapLocation[] _startLoc;

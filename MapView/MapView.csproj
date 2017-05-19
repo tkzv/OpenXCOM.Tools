@@ -211,6 +211,10 @@
     <Compile Include="Forms\OtherForms\ConfigurationForm.Designer.cs">
       <DependentUpon>ConfigurationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\OtherForms\PathsEditor.cs" />
+    <Compile Include="Forms\OtherForms\PathsEditor.Designer.cs">
+      <DependentUpon>PathsEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -262,7 +266,7 @@
     <Compile Include="Forms\OtherForms\OutputBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\PathsEditor.cs">
+    <Compile Include="Forms\OtherForms\PathsEditor_.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Program.cs" />
@@ -367,7 +371,10 @@
       <DependentUpon>OutputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\PathsEditor.resx">
-      <DependentUpon>PathsEditor.cs</DependentUpon>
+      <DependentUpon>PathsEditor.Designer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OtherForms\PathsEditor_.resx">
+      <DependentUpon>PathsEditor_.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MapObservers\RouteView\RouteView.resx">
       <SubType>Designer</SubType>

@@ -81,8 +81,6 @@ namespace XCom
 
 		public string GetShare(string key)
 		{
-			LogFile.WriteLine("SharedSpace.GetShare key= " + key);
-			LogFile.WriteLine(". val= " + _share[key] as String);
 			return _share[key] as String;
 		}
 		#endregion
