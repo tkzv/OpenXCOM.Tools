@@ -15,22 +15,22 @@ namespace XCom
 	public sealed class TilesetManager
 	{
 		#region Fields & Properties
-		private readonly Dictionary<string, Tileset> _tilesetDictionary = new Dictionary<string, Tileset>();
+		private Dictionary<string, Tileset> _tilesets = new Dictionary<string, Tileset>();
 		internal Dictionary<string, Tileset> Tilesets
 		{
-			get { return _tilesetDictionary; }
+			get { return _tilesets; }
 		}
 
-		private readonly List<string> _types      = new List<string>();
-		private readonly List<string> _categories = new List<string>();
+//		private readonly List<string> _types      = new List<string>();
+//		private readonly List<string> _categories = new List<string>();
 
-		private readonly List<string> _terrains   = new List<string>();
+		private List<string> _terrains = new List<string>();
 		internal List<string> Terrains
 		{
 			get { return _terrains; }
 		}
 
-		private readonly List<string> _groups     = new List<string>();
+		private List<string> _groups = new List<string>();
 		internal List<string> Groups
 		{
 			get { return _groups; }
@@ -76,18 +76,18 @@ namespace XCom
 
 					string nodeType = nodeTileset.Children[new YamlScalarNode("type")].ToString();
 					LogFile.WriteLine(". . type= " + nodeType); // "UFO_110"
-					if (!_types.Contains(nodeType)) // safety. There shall be only 1 tileset of any type in YAML.
-						_types.Add(nodeType);
-
-					string nodeGroup = nodeTileset.Children[new YamlScalarNode("group")].ToString();
-					LogFile.WriteLine(". . group= " + nodeGroup); // "ufoShips"
-					if (!_groups.Contains(nodeGroup))
-						_groups.Add(nodeGroup);
+//					if (!_types.Contains(nodeType)) // safety. There shall be only 1 tileset of any type in YAML.
+//						_types.Add(nodeType);
 
 					string nodeCategory = nodeTileset.Children[new YamlScalarNode("category")].ToString();
 					LogFile.WriteLine(". . category= " + nodeCategory); // "Ufo"
-					if (!_categories.Contains(nodeCategory))
-						_categories.Add(nodeCategory);
+//					if (!_categories.Contains(nodeCategory))
+//						_categories.Add(nodeCategory);
+
+					string nodeGroup = nodeTileset.Children[new YamlScalarNode("group")].ToString();
+					LogFile.WriteLine(". . group= " + nodeGroup); // "ufoShips"
+					if (!Groups.Contains(nodeGroup))
+						Groups.Add(nodeGroup);
 
 
 					var terrainList = new List<string>();
@@ -97,14 +97,14 @@ namespace XCom
 					{
 						LogFile.WriteLine(". . . terrain= " + nodeTerrain); // "U_EXT02" etc.
 
-						string st = nodeTerrain.ToString();
+						string terrain = nodeTerrain.ToString();
 
-						terrainList.Add(st);
+						terrainList.Add(terrain);
 
-						if (!_terrains.Contains(st))
+						if (!Terrains.Contains(terrain))
 						{
 							LogFile.WriteLine(". . . . adding terrain");
-							_terrains.Add(st);
+							Terrains.Add(terrain);
 						}
 					}
 
@@ -113,7 +113,7 @@ namespace XCom
 											nodeGroup,
 											nodeCategory,
 											terrainList);
-					_tilesetDictionary.Add(nodeType, tileset);
+					Tilesets.Add(nodeType, tileset);
 				}
 //				}
 			}

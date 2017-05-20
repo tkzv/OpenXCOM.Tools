@@ -64,14 +64,14 @@ namespace XCom
 
 		public McdRecordCollection GetMcdRecords()
 		{
-			return GetMcdRecords(ResourceInfo.Palette, new XCTileFactory());
+			return GetMcdRecords(ResourceInfo.Palette);
 		}
 
-		internal McdRecordCollection GetMcdRecords(Palette pal, XCTileFactory tileFactory)
+		internal McdRecordCollection GetMcdRecords(Palette pal)
 		{
 			if (_recordsTable[pal] == null)
 			{
-				var tiles = tileFactory.CreateRecords(Label, PathDirectory, GetSpriteset(pal));
+				var tiles = XCTileFactory.CreateRecords(Label, PathDirectory, GetSpriteset(pal));
 				_recordsTable[pal] = new McdRecordCollection(tiles);
 			}
 			return _recordsTable[pal] as McdRecordCollection;

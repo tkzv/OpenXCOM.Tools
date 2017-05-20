@@ -7,28 +7,17 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
-	public class XCMapFileService
+	public static class XCMapFileService
 	{
-		#region Fields
-		private readonly XCTileFactory _tileFactory = new XCTileFactory();
-		#endregion
-
-
-//		#region cTor
-//		public XCMapFileService()
-//		{}
-//		#endregion
-
-
 		#region Methods
-		public MapFileBase LoadTileset(Descriptor descriptor)
+		public static MapFileBase LoadTileset(Descriptor descriptor)
 		{
 			LogFile.WriteLine("");
 			LogFile.WriteLine("XCMapFileService.LoadTileset descriptor= " + descriptor);
 
-			LogFile.WriteLine("file= " + descriptor.FilePath);
+			LogFile.WriteLine("file= " + descriptor.FullPath);
 
-			if (descriptor != null && File.Exists(descriptor.FilePath))
+			if (descriptor != null && File.Exists(descriptor.FullPath))
 			{
 				LogFile.WriteLine(". descriptor VALID and file exists");
 
@@ -40,17 +29,17 @@ namespace XCom
 					var infoTerrain = info[terrain];
 					if (infoTerrain != null)
 					{
-						var MCD = infoTerrain.GetMcdRecords(descriptor.Palette, _tileFactory);
+						var MCD = infoTerrain.GetMcdRecords(descriptor.Palette);
 						foreach (XCTilepart part in MCD)
 							parts.Add(part);
 					}
 				}
 
-				var RMP = new RouteNodeCollection(descriptor.Label, descriptor.RoutePath);
+				var RMP = new RouteNodeCollection(descriptor.Label, descriptor.RoutesPath);
 				var MAP = new MapFileChild(
 										descriptor.Label,
-										descriptor.MapPath,
-										descriptor.OccultPath,
+										descriptor.MapsPath,
+										descriptor.OccultsPath,
 										parts,
 										descriptor.Terrains,
 										RMP);

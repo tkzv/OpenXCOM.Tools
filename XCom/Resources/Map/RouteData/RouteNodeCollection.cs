@@ -215,8 +215,8 @@ namespace XCom
 
 		public const string RouteExt = ".RMP";
 
-		private readonly string _file;
-		private readonly string _path;
+		private string FullPath
+		{ get; set; }
 
 
 		public static readonly object[] UnitRankUfo =
@@ -292,15 +292,13 @@ namespace XCom
 		/// <param name="path"></param>
 		internal RouteNodeCollection(string file, string path)
 		{
+			FullPath = Path.Combine(path, file + RouteExt);
+
 			_nodes = new List<RouteNode>();
 
-			_file = file;
-			_path = path;
-
-			string pfe = path + file + RouteExt;
-			if (File.Exists(pfe))
+			if (File.Exists(FullPath))
 			{
-				using (var bs = new BufferedStream(File.OpenRead(pfe)))
+				using (var bs = new BufferedStream(File.OpenRead(FullPath)))
 				{
 					for (byte id = 0; id < bs.Length / 24; ++id)
 					{
@@ -342,7 +340,7 @@ namespace XCom
 		/// </summary>
 		internal void Save()
 		{
-			using (var fs = File.Create(_path + _file + RouteExt))
+			using (var fs = File.Create(FullPath))
 			{
 				for (int i = 0; i != _nodes.Count; ++i)
 					_nodes[i].Save(fs); // -> RouteNode.Save() writes the node-data

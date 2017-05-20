@@ -164,7 +164,7 @@ namespace MapView
 					}
 					else
 					{
-						tileset.AddMap(
+						tileset.AddTileset(
 									new Descriptor(
 												node.Text,
 												tileset.MapDirectory,
@@ -429,7 +429,7 @@ namespace MapView
 
 		private void btnPathsInstall_Click(object sender, EventArgs e)
 		{
-			using (var f = new InstallationForm())
+			using (var f = new ConfigurationForm())
 				f.ShowDialog(this);
 		}
 
@@ -534,7 +534,7 @@ namespace MapView
 				{
 					if (tvMaps.SelectedNode.Parent != null) // add to here
 					{
-						string pfe = tbMapsMaps.Text + f.MapLabel + MapFileChild.MapExt;
+						string pfe = tbMapsMaps.Text + f.MapLabel + MapFileChild.MapExt; // TODO: this string is probly wrong since YAML.
 						if (File.Exists(pfe))
 						{
 							using (var fdialog = new ChoiceDialog(pfe))
@@ -571,7 +571,7 @@ namespace MapView
 							label = tvMaps.SelectedNode.Parent.Text;
 						}
 
-						tileset.AddMap(f.MapLabel, label);
+						tileset.AddTileset(f.MapLabel, label);
 
 //						saveMapedit();
 					}
@@ -609,7 +609,7 @@ namespace MapView
 							string name = file.Substring(start, end-start);
 							try
 							{
-								tileset.AddMap(name, tn.Text);
+								tileset.AddTileset(name, tn.Text);
 								tn.Nodes.Add(name);
 							}
 							catch (Exception ex)

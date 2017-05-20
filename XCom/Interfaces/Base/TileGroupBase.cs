@@ -1,5 +1,4 @@
 using System;
-//using System.Collections;
 using System.Collections.Generic;
 
 
@@ -8,11 +7,8 @@ namespace XCom.Interfaces.Base
 	public class TileGroupBase
 	{
 		#region Fields & Properties
-		private readonly string _label;
 		public string Label
-		{
-			get { return _label; }
-		}
+		{ get; private set; }
 
 		/// <summary>
 		/// 
@@ -41,16 +37,9 @@ namespace XCom.Interfaces.Base
 			set
 			{
 				if (!_descriptors.ContainsKey(label))
-					_descriptors.Add(label, value);
-
-//				_descriptors[label] = value;
+					_descriptors[label] = value;
 			}
 		}
-
-//		public ICollection MapList
-//		{
-//			get { return _descriptionDictionary.Keys; }
-//		}
 		#endregion
 
 
@@ -61,7 +50,7 @@ namespace XCom.Interfaces.Base
 		/// <param name="label"></param>
 		internal protected TileGroupBase(string label)
 		{
-			_label = label;
+			Label = label;
 		}
 		#endregion
 	}

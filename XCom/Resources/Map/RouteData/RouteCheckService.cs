@@ -10,8 +10,9 @@ namespace XCom.Resources.Map.RouteData
 	public static class RouteCheckService
 	{
 		/// <summary>
-		/// Checks for and if necessary deletes nodes that are outside of a
-		/// Map's x/y/z bounds. See also RouteNodeCollectionFile.CheckNodeBounds().
+		/// Checks for and if necessary gives user a choice to delete nodes that
+		/// are outside of a Map's x/y/z bounds.
+		/// See also RouteNodeCollectionFile.CheckNodeBounds().
 		/// </summary>
 		/// <param name="mapBase"></param>
 		public static void CheckNodeBounds(MapFileBase mapBase)
@@ -21,7 +22,7 @@ namespace XCom.Resources.Map.RouteData
 			{
 				var invalid = new List<RouteNode>();
 
-				foreach (RouteNode node in mapFile.RouteFile)
+				foreach (RouteNode node in mapFile.Routes)
 					if (RouteNodeCollection.IsOutsideMap(
 													node,
 													mapBase.MapSize.Cols,
@@ -46,7 +47,7 @@ namespace XCom.Resources.Map.RouteData
 						mapFile.MapChanged = true;
 
 						foreach (var node in invalid)
-							mapFile.RouteFile.DeleteNode(node);
+							mapFile.Routes.DeleteNode(node);
 					}
 				}
 			}

@@ -421,7 +421,7 @@ namespace PckView
 														strPck,
 														strTab,
 														4,
-														Palette.UfoBattle);
+														Palette.UfoBattle); // TODO: uh, should be 'TftdBattle'
 					}
 
 					if (spriteset != null)

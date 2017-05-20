@@ -14,10 +14,12 @@ namespace XCom
 			MapFileBase
 	{
 		#region Fields & Properties
-		public static readonly string MapExt = ".MAP";
+		public const string MapExt = ".MAP";
+
+		private string FullPath
+		{ get; set; }
 
 		private readonly string _file       = String.Empty;
-		private readonly string _path       = String.Empty;
 		private readonly string _pathOccult = String.Empty;
 
 		private readonly List<string> _terrains;
@@ -26,11 +28,8 @@ namespace XCom
 			get { return _terrains; }
 		}
 
-		private RouteNodeCollection _routeFile;
-		public RouteNodeCollection RouteFile
-		{
-			get { return _routeFile; }
-		}
+		public RouteNodeCollection Routes
+		{ get; set; }
 		#endregion
 
 
@@ -43,36 +42,37 @@ namespace XCom
 		/// <param name="pathOccult"></param>
 		/// <param name="parts"></param>
 		/// <param name="terrains"></param>
-		/// <param name="routeFile"></param>
+		/// <param name="routes"></param>
 		internal MapFileChild(
 				string file,
 				string path,
 				string pathOccult,
 				List<TilepartBase> parts,
 				List<string> terrains,
-				RouteNodeCollection routeFile)
+				RouteNodeCollection routes)
 			:
 				base(file, parts)
 		{
+			FullPath = Path.Combine(path, file + MapExt);
+
 			_file       = file;
-			_path       = path;
 			_pathOccult = pathOccult;
 			_terrains   = terrains;
-			_routeFile  = routeFile;
 
-			string pfe = Path.Combine(path, file + MapExt);
-			if (File.Exists(pfe))
+			Routes = routes;
+
+			if (File.Exists(FullPath))
 			{
 				for (int i = 0; i != parts.Count; ++i)
 					parts[i].PartListId = i;
-	
-				ReadMapFile(File.OpenRead(pfe), parts);
-	
-				SetupRouteNodes(routeFile);
-	
+
+				ReadMapFile(parts);
+				SetupRouteNodes(routes);
+
 				if (!String.IsNullOrEmpty(pathOccult))
 				{
-					if (File.Exists(pathOccult + file + OccultFile.OccultExt))
+					string pfeOccult = Path.Combine(pathOccult, file + OccultFile.OccultExt);
+					if (File.Exists(pfeOccult))
 					{
 						try
 						{
@@ -99,7 +99,7 @@ namespace XCom
 										System.Globalization.CultureInfo.CurrentCulture,
 										"The file does not exist{0}{0}{1}",
 										Environment.NewLine,
-										pfe);
+										FullPath);
 				MessageBox.Show(
 							error,
 							"Error",
@@ -113,14 +113,14 @@ namespace XCom
 
 
 		#region Methods
-		private void ReadMapFile(Stream str, List<TilepartBase> parts)
+		private void ReadMapFile(List<TilepartBase> parts)
 		{
-			using (var bs = new BufferedStream(str))
+			using (var bs = new BufferedStream(File.OpenRead(FullPath)))
 			{
 				int rows = bs.ReadByte();
 				int cols = bs.ReadByte();
 				int levs = bs.ReadByte();
-	
+
 				MapTiles = new MapTileList(rows, cols, levs);
 				MapSize  = new MapSize(rows, cols, levs);
 
@@ -141,13 +141,58 @@ namespace XCom
 			}
 		}
 
-		private void SetupRouteNodes(RouteNodeCollection file)
+		private XCMapTile CreateTile(
+				IList<TilepartBase> parts,
+				int q1,
+				int q2,
+				int q3,
+				int q4)
+		{
+			try
+			{
+				var a = (q1 > 1) ? (XCTilepart)parts[q1 - 2]
+								 : null;
+	
+				var b = (q2 > 1) ? (XCTilepart)parts[q2 - 2]
+								 : null;
+	
+				var c = (q3 > 1) ? (XCTilepart)parts[q3 - 2]
+								 : null;
+	
+				var d = (q4 > 1) ? (XCTilepart)parts[q4 - 2]
+								 : null;
+	
+				return new XCMapTile(a, b, c, d);
+			}
+			catch (Exception ex)
+			{
+				// TODO: Settle a graceful way to handle exceptions throughout.
+				// and/or use AdZerg()
+
+//				XConsole.AdZerg("MapFileChild.CreateTile() Invalid value(s) in .MAP file: " + _file);
+				System.Windows.Forms.MessageBox.Show(
+												"MapFileChild.CreateTile()" + Environment.NewLine
+													+ "Invalid value(s) in .MAP file: " + _file + Environment.NewLine
+													+ "indices: " + q1 + "," + q2 + "," + q3 + "," + q4 + Environment.NewLine
+													+ "length: " + parts.Count + Environment.NewLine
+													+ ex + ":" + ex.Message,
+												"Error",
+												System.Windows.Forms.MessageBoxButtons.OK,
+												System.Windows.Forms.MessageBoxIcon.Warning,
+												System.Windows.Forms.MessageBoxDefaultButton.Button1,
+												0);
+//				return XCMapTile.BlankTile;
+				throw;
+			}
+		}
+
+		private void SetupRouteNodes(RouteNodeCollection routes)
 		{
 //			if (file.ExtraHeight != 0) // remove ExtraHeight for editing - see Save() below_
-//				foreach (RouteNode node in file)
+//				foreach (RouteNode node in routes)
 //					node.Lev -= file.ExtraHeight;
 
-			foreach (RouteNode node in file)
+			foreach (RouteNode node in routes)
 			{
 				var tile = this[node.Row, node.Col, node.Lev];
 				if (tile != null)
@@ -188,9 +233,16 @@ namespace XCom
 				}
 				OccultFile.SaveOccult(_file, _pathOccult, this);
 			}
-			//else // TODO: inform user that the current map has only 1 level and no .OTD will be created.
+			//else // TODO: inform user that the current map has only 1 level
+			// and no .OTD will be created if the command is initiated from the
+			// filemenu.
 		}
 
+		/// <summary>
+		/// Gets the terrain-type given a tile-part.
+		/// </summary>
+		/// <param name="part"></param>
+		/// <returns></returns>
 		public string GetTerrainLabel(TilepartBase part)
 		{
 			int id = -1;
@@ -210,11 +262,16 @@ namespace XCom
 			return null;
 		}
 
+		/// <summary>
+		/// Adds a route-node to the map-tile at a given location.
+		/// </summary>
+		/// <param name="location"></param>
+		/// <returns></returns>
 		public RouteNode AddRouteNode(MapLocation location)
 		{
 			MapChanged = true;
 
-			var node = RouteFile.AddNode(
+			var node = Routes.AddNode(
 									(byte)location.Row,
 									(byte)location.Col,
 									(byte)location.Lev);
@@ -257,13 +314,13 @@ namespace XCom
 		{
 			MapChanged = false;
 
-			using (var fs = File.Create(_path + _file + MapExt))
+			using (var fs = File.Create(FullPath))
 			{
 //				if (RouteFile.ExtraHeight != 0) // add ExtraHeight to save - see SetupRoutes() above^
 //					foreach (RouteNode node in RouteFile)
 //						node.Lev += RouteFile.ExtraHeight;
 
-				RouteFile.Save(); // <- saves the .RMP file
+				Routes.Save(); // <- saves the .RMP file
 
 				fs.WriteByte((byte)MapSize.Rows); // http://www.ufopaedia.org/index.php/MAPS
 				fs.WriteByte((byte)MapSize.Cols); // - says this header is "height, width and depth (in that order)"
@@ -324,75 +381,24 @@ namespace XCom
 			{
 				MapChanged = true;
 
-				if (levs != MapSize.Levs && ceiling) // update Routes
+				if (levs != MapSize.Levs && ceiling) // adjust route-nodes ->
 				{
-					int delta = levs - MapSize.Levs;		// NOTE: map levels are reversed
-					foreach (RouteNode node in RouteFile)	// so adding levels to the ceiling needs to push the existing nodes down.
-					{
-//						if (levs < MapSize.Levs)
-//							node.Lev = node.Lev + delta;
-//						else
+					int delta = levs - MapSize.Levs;	// NOTE: map levels are reversed
+					foreach (RouteNode node in Routes)	// so adding levels to the ceiling needs to push the existing nodes down.
 						node.Lev += delta;
-					}
 				}
 
 				if (   cols < MapSize.Cols // check for and ask if user wants to delete any route-nodes outside the new bounds
 					|| rows < MapSize.Rows
 					|| levs < MapSize.Levs)
 				{
-					RouteFile.CheckNodeBounds(cols, rows, levs);
+					Routes.CheckNodeBounds(cols, rows, levs);
 				}
 
 				MapTiles = tileList;
 				MapSize  = new MapSize(rows, cols, levs);
 
-				Level = MapSize.Levs - 1;
-			}
-		}
-
-		private XCMapTile CreateTile(
-				IList<TilepartBase> parts,
-				int q1,
-				int q2,
-				int q3,
-				int q4)
-		{
-			try
-			{
-				var a = (q1 > 1) ? (XCTilepart)parts[q1 - 2]
-								 : null;
-	
-				var b = (q2 > 1) ? (XCTilepart)parts[q2 - 2]
-								 : null;
-	
-				var c = (q3 > 1) ? (XCTilepart)parts[q3 - 2]
-								 : null;
-	
-				var d = (q4 > 1) ? (XCTilepart)parts[q4 - 2]
-								 : null;
-	
-				return new XCMapTile(a, b, c, d);
-			}
-			catch (Exception ex)
-			{
-				// and/or use AdZerg()
-				// TODO: Settle a graceful way to handle exceptions throughout.
-				// Unfortunately it would take a long time to force each one to
-				// be raised for investigation.
-				XConsole.AdZerg("MapFileChild.CreateTile() Invalid value(s) in .MAP file: " + _file);
-				System.Windows.Forms.MessageBox.Show(
-												"MapFileChild.CreateTile()" + Environment.NewLine
-													+ "Invalid value(s) in .MAP file: " + _file + Environment.NewLine
-													+ "indices: " + q1 + "," + q2 + "," + q3 + "," + q4 + Environment.NewLine
-													+ "length: " + parts.Count + Environment.NewLine
-													+ ex + ":" + ex.Message,
-												"Error",
-												System.Windows.Forms.MessageBoxButtons.OK,
-												System.Windows.Forms.MessageBoxIcon.Warning,
-												System.Windows.Forms.MessageBoxDefaultButton.Button1,
-												0);
-//				return XCMapTile.BlankTile;
-				throw;
+				Level = 0; //MapSize.Levs - 1; NOTE: this might need to fire a LevelChanged event ...
 			}
 		}
 		#endregion

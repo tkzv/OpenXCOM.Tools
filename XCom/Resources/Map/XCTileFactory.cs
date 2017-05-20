@@ -5,11 +5,12 @@ using System.IO;
 
 namespace XCom.Resources.Map
 {
-	public sealed class XCTileFactory
+	public static class XCTileFactory
 	{
 		private const string McdExt = ".MCD";
 
 		private const int Total = 62; // there are 62 bytes in each MCD record.
+
 
 		/// <summary>
 		/// Creates MCD-records from an MCD-file.
@@ -18,7 +19,7 @@ namespace XCom.Resources.Map
 		/// <param name="dir"></param>
 		/// <param name="spriteset"></param>
 		/// <returns></returns>
-		internal XCTilepart[] CreateRecords(
+		internal static XCTilepart[] CreateRecords(
 				string file,
 				string dir,
 				PckSpriteCollection spriteset)
@@ -58,7 +59,7 @@ namespace XCom.Resources.Map
 		/// <param name="record"></param>
 		/// <param name="parts"></param>
 		/// <returns></returns>
-		private XCTilepart GetDeadPart(
+		private static XCTilepart GetDeadPart(
 				string file,
 				int id,
 				McdRecord record,
@@ -95,7 +96,7 @@ namespace XCom.Resources.Map
 		/// <param name="record"></param>
 		/// <param name="parts"></param>
 		/// <returns></returns>
-		private XCTilepart GetAlternatePart(
+		private static XCTilepart GetAlternatePart(
 				string file,
 				int id,
 				McdRecord record,

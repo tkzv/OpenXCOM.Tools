@@ -43,10 +43,10 @@ namespace MapView
 		/// TopViewPanelParent.
 		/// </summary>
 		/// <param name="args"></param>
-		public virtual void OnLocationSelected_Observer(LocationSelectedEventArgs args)
+		public virtual void OnLocationSelectedObserver(LocationSelectedEventArgs args)
 		{
 			//XCom.LogFile.WriteLine("");
-			//XCom.LogFile.WriteLine("MapObserverControl1.OnLocationSelected_Observer");
+			//XCom.LogFile.WriteLine("MapObserverControl1.OnLocationSelectedObserver");
 
 //			Refresh();
 		}
@@ -56,7 +56,7 @@ namespace MapView
 		/// TopViewPanelParent.
 		/// </summary>
 		/// <param name="args"></param>
-		public virtual void OnLevelChanged_Observer(LevelChangedEventArgs args)
+		public virtual void OnLevelChangedObserver(LevelChangedEventArgs args)
 		{
 //			Refresh();
 		}

@@ -301,13 +301,13 @@ namespace MapView.Forms.MapObservers.TopViews
 					&& start.X > -1 && start.X < MapBase.MapSize.Cols)
 				{
 					// as long as MainViewOverlay.OnLocationSelected_Main()
-					// fires before the subsidiary viewers' OnLocationSelected_Observer()
+					// fires before the subsidiary viewers' OnLocationSelectedObserver()
 					// functions fire, FirstClick is set okay by the former.
 					//
-					// See also, RouteView.OnLocationSelected_Observer()
+					// See also, RouteView.OnLocationSelectedObserver()
 					// ps. The FirstClick flag for TopView should be set either in 
-					// this class's OnLocationSelected_Observer() handler or even
-					// QuadrantPanel.OnLocationSelected_Observer() ... anyway.
+					// this class's OnLocationSelectedObserver() handler or even
+					// QuadrantPanel.OnLocationSelectedObserver() ... anyway.
 					//
 					// or better: Make a flag of it in MapFileBase where Location is actually
 					// set and all these OnLocationSelected events really fire out of !
@@ -373,10 +373,10 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
 		/// <param name="args"></param>
-		public override void OnLocationSelected_Observer(LocationSelectedEventArgs args)
+		public override void OnLocationSelectedObserver(LocationSelectedEventArgs args)
 		{
 			LogFile.WriteLine("");
-			LogFile.WriteLine("TopViewPanelParent.OnLocationSelected_Observer");
+			LogFile.WriteLine("TopViewPanelParent.OnLocationSelectedObserver");
 
 			var pt = e.MapLocation;
 //			Text = "c " + pt.Col + "  r " + pt.Row; // I don't think this actually prints anywhere.
@@ -404,7 +404,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			Refresh(); // I don't think this is needed.
 		} */
 
-		// NOTE: there is no OnLevelChanged_Observer for TopView.
+		// NOTE: there is no OnLevelChangedObserver for TopView.
 
 
 //		/// <summary>

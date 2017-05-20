@@ -110,19 +110,6 @@ namespace MapView
 			LogFile.WriteLine("PathInfo cached.");
 
 
-			// check if Paths.cfg exists yet, if not show the Installation window
-//			if (!pathPaths.FileExists())
-//			{
-//				using (var f = new InstallationForm())
-//					if (f.ShowDialog(this) != DialogResult.OK)
-//						Environment.Exit(-1); // wtf -1
-//
-//				LogFile.WriteLine("Installation files created.");
-//			}
-//			else
-//				LogFile.WriteLine("Paths.Cfg file exists.");
-
-
 			// check if MapConfig.yml exists yet, if not show the Configuration window
 			// NOTE: MapConfig.yml is created by ConfigurationForm
 			// TODO: check for MapDirectory.yml also
@@ -319,9 +306,6 @@ namespace MapView
 
 
 			ResourceInfo.InitializeResources(Palette.UfoBattle, pathConfig); // load resources from YAML.
-//			GameInfo.ParseConfigLineEvent += OnParseConfigLine;
-//			ResourceInfo.InitializeResources(Palette.UfoBattle, pathPaths);
-//			GameInfo.ParseConfigLineEvent -= OnParseConfigLine;
 			LogFile.WriteLine("ResourceInfo initialized.");
 
 
@@ -375,36 +359,9 @@ namespace MapView
 		#endregion
 
 
-/*		private void OnParseConfigLine(KeyvalPair line, Varidia vars)
-		{
-			switch (line.Keyword.ToUpperInvariant())
-			{
-				case "CURSOR": // NOTE: moved to GameInfo.InitializeGameInfo()
-				{
-					string directorySeparator = String.Empty;
-					if (!line.Value.EndsWith(@"\", StringComparison.Ordinal))
-						directorySeparator = @"\";
-
-					SharedSpace.Instance.SetShare(
-											SharedSpace.CursorFile,
-											line.Value + directorySeparator + SharedSpace.Cursor);
-					break;
-				}
-
-//				case "LOGFILE":
-//					try
-//					{
-//						LogFile.DebugOn = bool.Parse(line.Rest);
-//					}
-//					catch
-//					{
-//						Console.WriteLine("Could not parse logfile line.");
-//					}
-//					break;
-
-			}
-		} */
-
+		/// <summary>
+		/// Creates the Map-tree on the left side of MainView.
+		/// </summary>
 		private void CreateTree()
 		{
 			LogFile.WriteLine("");
@@ -443,6 +400,9 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// A functor that sorts tree-nodes.
+		/// </summary>
 		private sealed class SortableTreeNode
 			:
 				TreeNode,
@@ -486,6 +446,10 @@ namespace MapView
 		private const string Interpolation       = "Interpolation";
 
 
+		/// <summary>
+		/// Loads (a) MainView's screen-size and -position from YAML,
+		/// (b) settings in MainView's Options screen.
+		/// </summary>
 		private void LoadSettings()
 		{
 			string file = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
@@ -629,6 +593,12 @@ namespace MapView
 //							Main);
 		}
 
+		/// <summary>
+		/// Handles a MainView Options change by the user.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="key"></param>
+		/// <param name="val"></param>
 		private void OnSettingChange(object sender, string key, object val)
 		{
 			Settings[key].Value = val;
@@ -712,6 +682,13 @@ namespace MapView
 		#endregion
 
 
+		/// <summary>
+		/// This has nothing to do with the Registry anymore, but it saves
+		/// MainView's Options as well as its screen-size and -position to YAML
+		/// when the app closes.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="args"></param>
 		private void OnCloseSaveRegistry(object sender, CancelEventArgs args)
 		{
 			if (NotifySave() == DialogResult.Cancel)
@@ -776,23 +753,23 @@ namespace MapView
 
 				// kL_note: This is for storing MainViewer size and position in
 				// the Windows Registry:
-/*				if (PathsEditor.SaveRegistry)
-				{
-					using (var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry))
-					using (var keyMapView = keySoftware.CreateSubKey(DSShared.Windows.RegistryInfo.MapViewRegistry))
-					using (var keyMainView = keyMapView.CreateSubKey("MainView"))
-					{
-						_mainViewsManager.CloseAllViewers();
-						WindowState = FormWindowState.Normal;
-						keyMainView.SetValue("Left",   Left);
-						keyMainView.SetValue("Top",    Top);
-						keyMainView.SetValue("Width",  Width);
-						keyMainView.SetValue("Height", Height - SystemInformation.CaptionButtonSize.Height);
-						keyMainView.Close();
-						keyMapView.Close();
-						keySoftware.Close();
-					}
-				} */
+//				if (PathsEditor.SaveRegistry)
+//				{
+//					using (var keySoftware = Registry.CurrentUser.CreateSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry))
+//					using (var keyMapView = keySoftware.CreateSubKey(DSShared.Windows.RegistryInfo.MapViewRegistry))
+//					using (var keyMainView = keyMapView.CreateSubKey("MainView"))
+//					{
+//						_mainViewsManager.CloseAllViewers();
+//						WindowState = FormWindowState.Normal;
+//						keyMainView.SetValue("Left",   Left);
+//						keyMainView.SetValue("Top",    Top);
+//						keyMainView.SetValue("Width",  Width);
+//						keyMainView.SetValue("Height", Height - SystemInformation.CaptionButtonSize.Height);
+//						keyMainView.Close();
+//						keyMapView.Close();
+//						keySoftware.Close();
+//					}
+//				}
 			}
 		}
 
@@ -800,12 +777,6 @@ namespace MapView
 		{
 			ViewerFormsManager.TopView.Control.QuadrantsPanel.Refresh();
 		}
-
-/*		private static void myQuit(object sender, string command)
-		{
-			if (command == "OK")
-				Environment.Exit(0);
-		} */
 
 		/// <summary>
 		/// Fired by the F1 key to turn animations On.
@@ -861,18 +832,18 @@ namespace MapView
 
 		private void OnPathsEditorClick(object sender, EventArgs e)
 		{
-			var share = SharedSpace.Instance[PathInfo.PathsFile];
+			// DISABLED UNTIL I MASSAGE YAML-CONFIG LOADING INTO PLACE ->
 
-			using (var f = new PathsEditor(share.ToString()))
-				f.ShowDialog();
-
-			var pathInfo = (PathInfo)share;
-
-//			GameInfo.ParseConfigLineEvent += OnParseConfigLine;
-			ResourceInfo.InitializeResources(Palette.UfoBattle, pathInfo);
-//			GameInfo.ParseConfigLineEvent -= OnParseConfigLine;
-
-			CreateTree();
+//			var share = SharedSpace.Instance[PathInfo.PathsFile];
+//
+//			using (var f = new PathsEditor(share.ToString()))
+//				f.ShowDialog();
+//
+//			var pathInfo = (PathInfo)share;
+//
+//			ResourceInfo.InitializeResources(Palette.UfoBattle, pathInfo);
+//
+//			CreateTree();
 		}
 
 		/// <summary>
@@ -927,8 +898,7 @@ namespace MapView
 
 				_mainViewUnderlay.MainViewOverlay.FirstClick = false;
 
-				var fileService = new XCMapFileService();
-				var mapBase = fileService.LoadTileset(descriptor as Descriptor);
+				var mapBase = XCMapFileService.LoadTileset(descriptor as Descriptor);
 				_mainViewUnderlay.MapBase = mapBase;
 
 				tsEdit.Enabled = true;
@@ -950,8 +920,7 @@ namespace MapView
 
 				_viewerFormsManager.SetObservers(mapBase); // reset all observer events
 			}
-//			else
-//				miExport.Enabled = false;
+//			else miExport.Enabled = false;
 		}
 
 		private void ToggleDoorSprites(bool animate)
@@ -966,6 +935,10 @@ namespace MapView
 		}
 
 
+		/// <summary>
+		/// Shows the user a dialog-box asking to Save if stuff has changed.
+		/// </summary>
+		/// <returns></returns>
 		private DialogResult NotifySave()
 		{
 			if (_mainViewUnderlay.MapBase != null && _mainViewUnderlay.MapBase.MapChanged)
@@ -992,6 +965,7 @@ namespace MapView
 			}
 			return DialogResult.OK;
 		}
+
 
 		private Form _foptions;
 		private bool _closing;

@@ -11,12 +11,14 @@ namespace XCom
 		internal const string OccultExt = ".OTD";
 
 
+		#region Methods
 		internal static void LoadOccult(
 				string file,
 				string path,
 				MapFileBase mapBase)
 		{
-			using (var br = new BinaryReader(File.OpenRead(path + file + OccultExt)))
+			string pfeOccult = Path.Combine(path, file + OccultExt);
+			using (var br = new BinaryReader(File.OpenRead(pfeOccult)))
 			{
 				bool flip = true;
 				int i = 0;
@@ -50,7 +52,8 @@ namespace XCom
 		{
 			Directory.CreateDirectory(path);
 
-			using (var bw = new BinaryWriter(new FileStream(path + file + OccultExt, FileMode.Create)))
+			string pfeOccult = Path.Combine(path, file + OccultExt);
+			using (var bw = new BinaryWriter(new FileStream(pfeOccult, FileMode.Create)))
 			{
 				bool flip = true;
 				UInt16 i = 0;
@@ -72,5 +75,6 @@ namespace XCom
 				}
 			}
 		}
+		#endregion
 	}
 }

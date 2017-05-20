@@ -5,9 +5,6 @@ using System.IO;
 
 namespace XCom
 {
-//	public delegate void ParseConfigLineEventHandler(KeyvalPair keyval, Varidia vars);
-
-
 	public static class ResourceInfo
 	{
 		private static GroupHerder _infoTilegroup;
@@ -30,8 +27,6 @@ namespace XCom
 
 		private static Dictionary<Palette, Dictionary<string, PckSpriteCollection>> _spritesDictionary;
 
-//		public static event ParseConfigLineEventHandler ParseConfigLineEvent;
-
 
 		public static void InitializeResources(Palette pal, DSShared.PathInfo pathConfig)
 		{
@@ -46,51 +41,6 @@ namespace XCom
 			_infoTilegroup = new GroupHerder(tilesetManager);
 			_infoTerrain   = new TerrainHerder(tilesetManager);
 
-
-
-/*			using (var sr = new StreamReader(File.OpenRead(pathConfig.FullPath))) // open/read Paths.Cfg
-			{
-				var vars = new Varidia(sr);	// this object is going to hold all sorts of keyval pairs
-											// be careful you don't duplicate/overwrite a var since the following loop
-											// is going to rifle through all the config files and throw it together ...
-				KeyvalPair keyval;
-				while ((keyval = vars.ReadLine()) != null) // parse Paths.Cfg; will skip lines that start '$' or are whitespace
-				{
-					switch (keyval.Keyword.ToUpperInvariant())
-					{
-						case "MAPDATA": // get path to MapEdit.Cfg
-							_tilegroupInfo = new TileGroupDesc(keyval.Value, vars); // this is spooky, not a delightful way.
-							break;
-
-						case "IMAGES": // get path to Images.Cfg
-							_terrainInfo = new TerrainDesc(keyval.Value, vars);
-							break;
-
-//						case "CURSOR": // done in XCMainWindow.
-//						{
-//							string directorySeparator = String.Empty;
-//							if (!keyval.Value.EndsWith(@"\", StringComparison.Ordinal))
-//								directorySeparator = @"\";
-//
-//							SharedSpace.Instance.SetShare(
-//													"cursorFile", //SharedSpace.CursorFile,
-//													keyval.Value + directorySeparator + SharedSpace.Cursor);
-//							break;
-//						}
-
-//						case "CURSOR":
-//						case "USEBLANKS":
-//							goto default; // ... doh.
-//						default:
-//							if (ParseConfigLineEvent != null)		// this is just stupid. 'clever' but stupid.
-//								ParseConfigLineEvent(keyval, vars);	// TODO: handle any potential errors in OnParseConfigLine() instead of aliasing aliases to delegates.
-//							else
-//								XConsole.AdZerg("GameInfo: Error in Paths.cfg file: " + keyval); // this is just wrong. It doesn't catch an error in paths.cfg at all ....
-//							break;
-					}
-				}
-			} */
-
 			Directory.SetCurrentDirectory(SharedSpace.Instance.GetShare(SharedSpace.ApplicationDirectory)); // change back to app dir
 		}
 
@@ -102,7 +52,7 @@ namespace XCom
 		public static PckSpriteCollection LoadSpriteset(
 				string path,
 				string file,
-				int bpp,
+				int lenTabOffset,
 				Palette pal)
 		{
 			LogFile.WriteLine("");
@@ -134,7 +84,7 @@ namespace XCom
 						spritesetDictionary.Add(pf, new PckSpriteCollection(
 																		strPck,
 																		strTab,
-																		bpp,
+																		lenTabOffset,
 																		pal));
 					}
 				}

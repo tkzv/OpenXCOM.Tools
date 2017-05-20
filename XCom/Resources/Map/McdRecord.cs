@@ -68,7 +68,7 @@ namespace XCom
 
 	public sealed class McdRecord
 	{
-		private static int _idCanonical = 0;
+		private static int _idCanonical;
 
 
 		#region cTor
@@ -83,7 +83,11 @@ namespace XCom
 
 
 		#region Properties
-		public int Id { get; private set; }
+		/// <summary>
+		/// Id is used only by MapInfoForm.
+		/// </summary>
+		public int Id
+		{ get; private set; }
 
 //		public Rectangle Bounds { get; set; }
 

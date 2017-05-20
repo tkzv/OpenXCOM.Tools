@@ -12,18 +12,16 @@ namespace XCom
 			DescriptorBase
 	{
 		#region Properties
-		internal string MapPath
+		internal string MapsPath
 		{ get; private set; }
 
-		internal string RoutePath
+		internal string RoutesPath
 		{ get; private set; }
 
-		internal string FilePath
-		{
-			get { return Path.Combine(MapPath, Label + MapFileChild.MapExt); }
-		}
+		internal string OccultsPath
+		{ get; private set; }
 
-		internal string OccultPath
+		internal string FullPath
 		{ get; private set; }
 
 		public List<string> Terrains
@@ -54,14 +52,16 @@ namespace XCom
 			:
 				base(tileset)
 		{
-			LogFile.WriteLine("");
 			LogFile.WriteLine("Descriptor cTor tileset= " + tileset);
+			LogFile.WriteLine("");
 
-			MapPath    = pathMaps;
-			RoutePath  = pathRoutes;
-			OccultPath = pathOccults;
-			Terrains   = terrains;
-			Palette    = pal;
+			MapsPath    = pathMaps;
+			RoutesPath  = pathRoutes;
+			OccultsPath = pathOccults;
+			Terrains    = terrains;
+			Palette     = pal;
+
+			FullPath = Path.Combine(MapsPath, Label + MapFileChild.MapExt);
 		}
 		#endregion
 	}

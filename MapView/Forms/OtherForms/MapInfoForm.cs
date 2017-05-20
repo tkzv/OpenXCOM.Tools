@@ -149,9 +149,9 @@ namespace MapView
 			{
 				recordsTable[part.Record.Id] = true;
 
-				var images = part.Images;
-				foreach (PckImage image in images)
-					spritesTable[image.StaticId] = true;
+				var sprites = part.Images;
+				foreach (PckImage sprite in sprites)
+					spritesTable[sprite.Id] = true;
 			}
 		}
 

@@ -38,15 +38,15 @@ namespace XCom
 		/// </summary>
 		/// <param name="strPck"></param>
 		/// <param name="strTab"></param>
-		/// <param name="bpp"></param>
+		/// <param name="lenTabOffset"></param>
 		/// <param name="pal"></param>
 		public PckSpriteCollection(
 				Stream strPck,
 				Stream strTab,
-				int bpp,
+				int lenTabOffset,
 				Palette pal)
 		{
-			_bpp = bpp;
+			_bpp = lenTabOffset;
 			Pal = pal;
 
 			uint[] offsets;
@@ -55,20 +55,23 @@ namespace XCom
 			{
 				strTab.Position = 0;
 
-				offsets = new uint[(strTab.Length / bpp) + 1];
+				offsets = new uint[(strTab.Length / lenTabOffset) + 1];
 				using (var br = new BinaryReader(strTab))
 				{
-					switch (bpp)
+					switch (lenTabOffset)
 					{
 						case 2:
-							for (int i = 0; i != strTab.Length / bpp; ++i)
+							for (int i = 0; i != strTab.Length / lenTabOffset; ++i)
 								offsets[i] = br.ReadUInt16();
 							break;
 	
-						default:
-							for (int i = 0; i != strTab.Length / bpp; ++i)
+						case 4:
+							for (int i = 0; i != strTab.Length / lenTabOffset; ++i)
 								offsets[i] = br.ReadUInt32();
 							break;
+
+//						default:
+//							break;
 					}
 				}
 			}
@@ -103,11 +106,11 @@ namespace XCom
 
 
 		#region Methods
-		public static void Save(
+		public static void SaveSpriteset(
 				string dir,
 				string file,
-				XCImageCollection images,
-				int bpp)
+				XCImageCollection imageset,
+				int lenTabOffset)
 		{
 			string pfePck = Path.Combine(dir, file + PckExt);
 			string pfeTab = Path.Combine(dir, file + TabExt);
@@ -115,31 +118,32 @@ namespace XCom
 			using (var bwPck = new BinaryWriter(File.Create(pfePck)))
 			using (var bwTab = new BinaryWriter(File.Create(pfeTab)))
 			{
-				switch (bpp)
+				switch (lenTabOffset)
 				{
 					case 2:
 					{
-						ushort count = 0;
-						foreach (XCImage image in images)
+						ushort pos = 0;
+						foreach (XCImage image in imageset)
 						{
-							bwTab.Write(count);
-							ushort len = (ushort)PckImage.EncodePckData(bwPck, image);
-							count += len;
+							bwTab.Write(pos);
+							pos += (ushort)PckImage.WritePckFile(bwPck, image);
 						}
 						break;
 					}
 
-					default:
+					case 4:
 					{
-						uint count = 0;
-						foreach (XCImage image in images)
+						uint pos = 0;
+						foreach (XCImage image in imageset)
 						{
-							bwTab.Write(count);
-							uint len = (uint)PckImage.EncodePckData(bwPck, image);
-							count += len;
+							bwTab.Write(pos);
+							pos += (uint)PckImage.WritePckFile(bwPck, image);
 						}
 						break;
 					}
+
+//					default:
+//						break;
 				}
 			}
 		}

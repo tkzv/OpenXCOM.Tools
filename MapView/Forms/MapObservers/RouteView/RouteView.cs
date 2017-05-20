@@ -205,16 +205,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
 		/// <param name="args"></param>
-		public override void OnLocationSelected_Observer(LocationSelectedEventArgs args)
+		public override void OnLocationSelectedObserver(LocationSelectedEventArgs args)
 		{
 			//LogFile.WriteLine("");
-			//LogFile.WriteLine("RouteView.OnLocationSelected_Observer");
+			//LogFile.WriteLine("RouteView.OnLocationSelectedObserver");
 
 			// as long as MainViewOverlay.OnLocationSelected_Main()
-			// fires before the subsidiary viewers' OnLocationSelected_Observer()
+			// fires before the subsidiary viewers' OnLocationSelectedObserver()
 			// functions fire, FirstClick is set okay by the former.
 			//
-			// See also, TopViewPanelParent.OnLocationSelected_Observer()
+			// See also, TopViewPanelParent.OnLocationSelectedObserver()
 //			MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
 
 			_col = args.Location.Col;
@@ -227,7 +227,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
 		/// <param name="args"></param>
-		public override void OnLevelChanged_Observer(LevelChangedEventArgs args)
+		public override void OnLevelChangedObserver(LevelChangedEventArgs args)
 		{
 			_lev = args.Level;
 			PrintSelectedLocation();
@@ -545,7 +545,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				_linksList.Clear();
 
-				for (byte i = 0; i != _mapFile.RouteFile.Length; ++i)
+				for (byte i = 0; i != _mapFile.Routes.Length; ++i)
 				{
 					if (i != NodeSelected.Index)
 						_linksList.Add(i); // add all linkable (ie. other) nodes
@@ -665,7 +665,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (NodeSelected[slotId].Destination < Link.ExitWest)
 			{
-				var nodeDst = _mapFile.RouteFile[NodeSelected[slotId].Destination];
+				var nodeDst = _mapFile.Routes[NodeSelected[slotId].Destination];
 				if (nodeDst != null)
 				{
 					if (NodeSelected.Lev > nodeDst.Lev)
@@ -776,7 +776,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							break;
 
 						default:
-							var node = _mapFile.RouteFile[NodeSelected[slotId].Destination];
+							var node = _mapFile.Routes[NodeSelected[slotId].Destination];
 							NodeSelected[slotId].Distance = CalculateLinkDistance(
 																				NodeSelected,
 																				node,
@@ -1025,7 +1025,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				_mapFile.MapChanged = true;
 
-				_mapFile.RouteFile.DeleteNode(NodeSelected);
+				_mapFile.Routes.DeleteNode(NodeSelected);
 
 				((XCMapTile)_mapFile[NodeSelected.Row,
 									 NodeSelected.Col,
@@ -1137,7 +1137,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private void OnAllNodeSpawnRank0Click(object sender, EventArgs e)
 		{
 			int changed = 0;
-			foreach (RouteNode node in _mapFile.RouteFile)
+			foreach (RouteNode node in _mapFile.Routes)
 				if (node.SpawnRank != 0)
 				{
 					++changed;

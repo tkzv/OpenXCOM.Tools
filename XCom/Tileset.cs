@@ -11,25 +11,17 @@ namespace XCom
 	internal sealed class Tileset
 	{
 		#region Fields
-		private readonly string _type;
 		internal string Type
-		{
-			get { return _type; }
-		}
+		{ get; private set; }
 
-		private readonly string _group;
+		internal string Group
+		{ get; set; }
 
-		private readonly string _category;
 		internal string Category
-		{
-			get { return _category; }
-		}
+		{ get; set; }
 
-		private readonly List<string> _terrains;
 		internal List<string> Terrains
-		{
-			get { return _terrains; }
-		}
+		{ get; set; }
 		#endregion
 
 
@@ -47,10 +39,10 @@ namespace XCom
 				string category,
 				List<string> terrains)
 		{
-			_type     = type;
-			_group    = gruop;
-			_category = category;
-			_terrains = terrains;
+			Type     = type;
+			Group    = gruop;
+			Category = category;
+			Terrains = terrains;
 		}
 		#endregion
 	}

@@ -83,10 +83,10 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
 		/// <param name="args"></param>
-		public override void OnLocationSelected_Observer(LocationSelectedEventArgs args)
+		public override void OnLocationSelectedObserver(LocationSelectedEventArgs args)
 		{
 			//LogFile.WriteLine("");
-			//LogFile.WriteLine("QuadrantPanel.OnLocationSelected_Observer");
+			//LogFile.WriteLine("QuadrantPanel.OnLocationSelectedObserver");
 
 			_tile = args.SelectedTile as XCMapTile;
 			_location = args.Location;
@@ -97,7 +97,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
 		/// <param name="args"></param>
-		public override void OnLevelChanged_Observer(LevelChangedEventArgs args)
+		public override void OnLevelChangedObserver(LevelChangedEventArgs args)
 		{
 			if (_location != null)
 			{

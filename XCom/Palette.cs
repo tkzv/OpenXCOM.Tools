@@ -288,22 +288,22 @@ namespace XCom
 			return _colors.GetHashCode(); // FIX: "Non-readonly field referenced in GetHashCode()."
 		}
 
-		internal static Palette GetPalette(string label)
-		{
-			if (_palHash[label] == null)
-			{
-				var ass = Assembly.GetExecutingAssembly();
-				try
-				{
-					_palHash[label] = new Palette(ass.GetManifestResourceStream(EmbedPath + label + ".pal"));
-				}
-				catch
-				{
-					_palHash[label] = null;
-					throw;
-				}
-			}
-			return (Palette)_palHash[label];
-		}
+//		internal static Palette GetPalette(string label)
+//		{
+//			if (_palHash[label] == null)
+//			{
+//				var ass = Assembly.GetExecutingAssembly();
+//				try
+//				{
+//					_palHash[label] = new Palette(ass.GetManifestResourceStream(EmbedPath + label + ".pal"));
+//				}
+//				catch
+//				{
+//					_palHash[label] = null;
+//					throw;
+//				}
+//			}
+//			return (Palette)_palHash[label];
+//		}
 	}
 }

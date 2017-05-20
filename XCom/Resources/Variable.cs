@@ -30,11 +30,10 @@ namespace XCom
 		}
 
 
-		internal string Name
-		{
-			get { return _name; }
-		}
-
+//		internal string Name
+//		{
+//			get { return _name; }
+//		}
 //		internal string Value
 //		{
 //			get { return _value; }

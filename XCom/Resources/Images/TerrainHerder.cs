@@ -49,30 +49,6 @@ namespace XCom
 					_terrainsDictionary[terrainUc] = new Terrain(terrainUc);
 			}
 		}
-
-
-
-		/// <summary>
-		/// cTor.
-		/// </summary>
-		/// <param name="pfe"></param>
-		/// <param name="vars"></param>
-		internal TerrainHerder(string pfe, Varidia vars)
-		{
-			_path = pfe;
-
-			using (var sr = new StreamReader(File.OpenRead(pfe)))
-			{
-				vars = new Varidia(sr, vars);
-
-				KeyvalPair keyval;
-				while ((keyval = vars.ReadLine()) != null)
-				{
-					var terrain = new Terrain(keyval.Keyword.ToUpperInvariant(), keyval.Value);
-					_terrainsDictionary[keyval.Keyword.ToUpperInvariant()] = terrain;
-				}
-			}
-		}
 		#endregion
 
 

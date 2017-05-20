@@ -145,9 +145,7 @@ namespace XCom.Interfaces.Base
 
 		#region Methods
 		public virtual void Save()
-		{
-//			throw new InvalidOperationException("MapFileBase: Save() is not implemented."); // ... odd ....
-		}
+		{}
 
 		/// <summary>
 		/// Changes the 'Level' property and fires a LevelChanged event.

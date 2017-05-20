@@ -254,7 +254,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 						break;
 
 					default:
-						if ((nodeDst = MapFile.RouteFile[link.Destination]) != null
+						if ((nodeDst = MapFile.Routes[link.Destination]) != null
 							&& nodeDst.Lev == MapFile.Level
 							&& (NodeSelected == null || !NodeSelected.Equals(nodeDst)))
 						{
@@ -355,9 +355,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 										break;
 
 									default:
-										if (MapFile.RouteFile[link.Destination] != null)
+										if (MapFile.Routes[link.Destination] != null)
 										{
-											int levelDestination = MapFile.RouteFile[link.Destination].Lev;
+											int levelDestination = MapFile.Routes[link.Destination].Lev;
 											if (levelDestination != MapFile.Level)
 											{
 												if (levelDestination < MapFile.Level) // draw arrow up.

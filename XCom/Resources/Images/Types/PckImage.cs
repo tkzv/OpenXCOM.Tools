@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 using XCom.Interfaces;
 
@@ -10,22 +11,32 @@ namespace XCom
 		:
 			XCImage
 	{
+		#region Fields & Properties
 //		private int _mapId;
 
 		private const byte TransparentId = 0xFE; // should that be '0x0'
 
-		private readonly PckSpriteCollection _pckPack;
+		private readonly PckSpriteCollection _spriteset;
+
 		private readonly byte[] _expanded; // i suspect this should be '_scaled'
 		private int _moveId = -1;
 //		private byte _moveVal = 0;
-
-		private static int _idCanonical;
-		private int _id;
 
 		public const int Width  = 32;
 		public const int Height = 40;
 
 
+		private static int _idCanonical;
+
+		/// <summary>
+		/// Id is used only by MapInfoForm.
+		/// </summary>
+		public int Id
+		{ get; private set; }
+		#endregion
+
+
+		#region cTors
 //		internal PckImage(
 //				int imageId,
 //				byte[] id,
@@ -39,10 +50,10 @@ namespace XCom
 //				pckFile)
 //		{}
 		internal PckImage(
-				int imageId,
-				byte[] binData,
+				int fileId,
+				byte[] bindata,
 				Palette pal,
-				PckSpriteCollection pckPack)
+				PckSpriteCollection spriteset)
 			:
 				base(
 					new byte[]{},
@@ -50,14 +61,14 @@ namespace XCom
 					null,
 					-1)
 		{
+			FileId  = fileId;
 			Palette = pal;
-			_pckPack = pckPack;
-			FileId = imageId;
+			_spriteset = spriteset;
 
 //			this.imageNum = imageNum;
 //			this.idx = idx;
 
-			_id = _idCanonical++;
+			Id = _idCanonical++;
 
 //			image = new Bitmap(Width, Height, PixelFormat.Format8bppIndexed);
 			_expanded = new byte[Width * Height];
@@ -65,15 +76,15 @@ namespace XCom
 			for (int i = 0; i != _expanded.Length; ++i)
 				_expanded[i] = TransparentId;
 
-			int posStart = 0;
+			int posStart    = 0;
 			int posExpanded = 0;
 
-			if (binData[0] != 254)
-				posExpanded = binData[posStart++] * Width;
+			if (bindata[0] != 254)
+				posExpanded = bindata[posStart++] * Width;
 
-			for (int i = posStart; i < binData.Length; ++i)
+			for (int i = posStart; i < bindata.Length; ++i)
 			{
-				switch (binData[i])
+				switch (bindata[i])
 				{
 					case 254: // skip required pixels
 						if (_moveId == -1)
@@ -81,7 +92,7 @@ namespace XCom
 							_moveId = i + 1;
 //							_moveVal = id[i + 1];
 						}
-						posExpanded += binData[i + 1];
+						posExpanded += bindata[i + 1];
 						++i;
 						break;
 
@@ -89,7 +100,7 @@ namespace XCom
 						break;
 
 					default:
-						_expanded[posExpanded++] = binData[i];
+						_expanded[posExpanded++] = bindata[i];
 						break;
 				}
 			}
@@ -106,77 +117,77 @@ namespace XCom
 										_expanded,
 										pal.Grayscale.Colors);
 		}
+		#endregion
 
 
-		internal static int EncodePckData(System.IO.BinaryWriter output, XCImage image)
+		#region Methods
+		internal static int WritePckFile(BinaryWriter bw, XCImage image)
 		{
-			int count = 0;
+			int pos = 0;
 			bool flag = true;
 
 			byte[] input = image.Bindata;
 
-			var binData = new List<byte>();
+			var bindata = new List<byte>();
 
 //			Color trans = pal.Transparent;
 //			pal.SetTransparent(false);
 
-			int totalCount = 0;
-			for (int i = 0; i != input.Length; ++i)
+			for (int id = 0; id != input.Length; ++id)
 			{
-				byte id = input[i];
-				++totalCount;
+				byte b = input[id];
 
-				if (id == TransparentId)
-					++count;
+				if (b == TransparentId)
+					++pos;
 				else
 				{
-					if (count != 0)
+					if (pos != 0)
 					{
 						if (flag)
 						{
 							flag = false;
 
-							binData.Add((byte)(count / image.Image.Width));	// # of initial rows to skip
-							count     = (byte)(count % image.Image.Width);	// current position in the transparent row
+							bindata.Add((byte)(pos / image.Image.Width));	// # of initial rows to skip
+							pos =       (byte)(pos % image.Image.Width);	// current position in the transparent row
 							//Console.WriteLine("count, lines: {0}, cells {1}", count/PckImage.IMAGE_WIDTH, count%PckImage.IMAGE_WIDTH);
 						}
 
-						while (count >= 255)
+						while (pos >= 255)
 						{
-							binData.Add(TransparentId);
-							binData.Add(255);
-							count -= 255;
+							bindata.Add(TransparentId);
+							bindata.Add(255);
+							pos -= 255;
 						}
 
-						if (count != 0)
+						if (pos != 0)
 						{
-							binData.Add(TransparentId);
-							binData.Add((byte)count);
+							bindata.Add(TransparentId);
+							bindata.Add((byte)pos);
 						}
-						count = 0;
+						pos = 0;
 					}
-					binData.Add(id);
+					bindata.Add(b);
 				}
 			}
 
 			bool throughLoop = false;
-			while (count >= 255)
+			while (pos >= 255)
 			{
-				binData.Add(254);
-				binData.Add(255);
-				count -= 255;
+				bindata.Add(254);
+				bindata.Add(255);
+				pos -= 255;
 				throughLoop = true;
 			}
 
-			if ((byte)binData[binData.Count - 1] != 255 || throughLoop)
-				binData.Add(255);
+			if ((byte)bindata[bindata.Count - 1] != 255 || throughLoop)
+				bindata.Add(255);
 
 //			if (bytes.Count % 2 == 1 || throughLoop)
 //				bytes.Add(255);
 
-			output.Write(binData.ToArray());
+			bw.Write(bindata.ToArray());
 
-			return binData.Count;
+			return bindata.Count;
 		}
 
 //		public override void Hq2x()
@@ -185,77 +196,75 @@ namespace XCom
 //				base.Hq2x();
 //		}
 
-		public int StaticId
-		{
-			get { return _id; }
-		}
+//		public static Type GetCollectionType()
+//		{
+//			return typeof(PckSpriteCollection);
+//		}
 
-/*		public static Type GetCollectionType()
-		{
-			return typeof(PckSpriteCollection);
-		} */
+//		public void ReImage()
+//		{
+//			_image = Bmp.MakeBitmap8(
+//								Width,
+//								Height,
+//								_expanded,
+//								Palette.Colors);
+//			_gray = Bmp.MakeBitmap8(
+//								Width,
+//								Height,
+//								_expanded,
+//								Palette.Grayscale.Colors);
+//		}
 
-/*		public void ReImage()
-		{
-			_image = Bmp.MakeBitmap8(
-								Width,
-								Height,
-								_expanded,
-								Palette.Colors);
-			_gray = Bmp.MakeBitmap8(
-								Width,
-								Height,
-								_expanded,
-								Palette.Grayscale.Colors);
-		} */
+//		public void MoveImage(byte offset)
+//		{
+//			_id[_moveId] = (byte)(_moveVal - offset);
+//			int ex = 0;
+//			int startIdx = 0;
+//			for (int i = 0; i != _expanded.Length; ++i)
+//				_expanded[i] = TransparentIndex;
+//
+//			if (_id[0] != 254)
+//				ex = _id[startIdx++] * Width;
+//
+//			for (int i = startIdx; i < _id.Length; ++i)
+//			{
+//				switch (_id[i])
+//				{
+//					case 254: // skip required pixels
+//						ex += _id[i + 1];
+//						++i;
+//						break;
+//
+//					case 255: // end of image
+//						break;
+//
+//					default:
+//						_expanded[ex++] = _id[i];
+//						break;
+//				}
+//			}
+//		
+//			_image = Bmp.MakeBitmap8(
+//								Width,
+//								Height,
+//								_expanded,
+//								Palette.Colors);
+//			_gray = Bmp.MakeBitmap8(
+//								Width,
+//								Height,
+//								_expanded,
+//								Palette.Grayscale.Colors);
+//		}
 
-/*		public void MoveImage(byte offset)
-		{
-			_id[_moveId] = (byte)(_moveVal - offset);
-			int ex = 0;
-			int startIdx = 0;
-			for (int i = 0; i != _expanded.Length; ++i)
-				_expanded[i] = TransparentIndex;
+//		public int MapId
+//		{
+//			get { return _mapId; }
+//			set { _mapId = value; }
+//		}
+		#endregion
 
-			if (_id[0] != 254)
-				ex = _id[startIdx++] * Width;
 
-			for (int i = startIdx; i < _id.Length; ++i)
-			{
-				switch (_id[i])
-				{
-					case 254: // skip required pixels
-						ex += _id[i + 1];
-						++i;
-						break;
-
-					case 255: // end of image
-						break;
-
-					default:
-						_expanded[ex++] = _id[i];
-						break;
-				}
-			}
-		
-			_image = Bmp.MakeBitmap8(
-								Width,
-								Height,
-								_expanded,
-								Palette.Colors);
-			_gray = Bmp.MakeBitmap8(
-								Width,
-								Height,
-								_expanded,
-								Palette.Grayscale.Colors);
-		} */
-
-/*		public int MapId
-		{
-			get { return _mapId; }
-			set { _mapId = value; }
-		} */
-
+		#region Methods (override)
 		public override bool Equals(object obj)
 		{
 			if (obj is PckImage)
@@ -273,8 +282,8 @@ namespace XCom
 		{
 			string ret = String.Empty;
 
-			if (_pckPack != null)
-				ret += _pckPack.ToString();
+			if (_spriteset != null)
+				ret += _spriteset.ToString();
 
 			ret += FileId + Environment.NewLine;
 
@@ -295,5 +304,6 @@ namespace XCom
 			}
 			return ret;
 		}
+		#endregion
 	}
 }

@@ -57,10 +57,10 @@ namespace MapView
 		/// Satisfies IMapObserver. Used by RouteView.
 		/// </summary>
 		/// <param name="args"></param>
-		public virtual void OnLocationSelected_Observer(LocationSelectedEventArgs args)
+		public virtual void OnLocationSelectedObserver(LocationSelectedEventArgs args)
 		{
 			//XCom.LogFile.WriteLine("");
-			//XCom.LogFile.WriteLine("MapObserverControl0.OnLocationSelected_Observer");
+			//XCom.LogFile.WriteLine("MapObserverControl0.OnLocationSelectedObserver");
 
 			Refresh();
 		}
@@ -69,7 +69,7 @@ namespace MapView
 		/// Satisfied IMapObserver.
 		/// </summary>
 		/// <param name="args"></param>
-		public virtual void OnLevelChanged_Observer(LevelChangedEventArgs args)
+		public virtual void OnLevelChangedObserver(LevelChangedEventArgs args)
 		{
 			Refresh();
 		}
