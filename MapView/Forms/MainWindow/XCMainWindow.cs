@@ -889,7 +889,7 @@ namespace MapView
 			LogFile.WriteLine("");
 			LogFile.WriteLine("XCMainWindow.LoadSelectedMap");
 
-			var descriptor = tvMaps.SelectedNode.Tag as DescriptorBase;
+			var descriptor = tvMaps.SelectedNode.Tag as Descriptor;
 			if (descriptor != null)
 			{
 				LogFile.WriteLine(". descriptor= " + descriptor);

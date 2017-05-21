@@ -15,8 +15,8 @@ namespace XCom
 	public sealed class TilesetManager
 	{
 		#region Fields & Properties
-		private Dictionary<string, Tileset> _tilesets = new Dictionary<string, Tileset>();
-		internal Dictionary<string, Tileset> Tilesets
+		private List<Tileset> _tilesets = new List<Tileset>();
+		internal List<Tileset> Tilesets
 		{
 			get { return _tilesets; }
 		}
@@ -30,17 +30,14 @@ namespace XCom
 			get { return _terrains; }
 		}
 
-		private List<string> _groups = new List<string>();
+		private readonly List<string> _groups = new List<string>();
 		internal List<string> Groups
 		{
 			get { return _groups; }
 		}
 
-		private readonly string _fullpath;
 		internal string FullPath
-		{
-			get { return _fullpath; }
-		}
+		{ get; set; }
 		#endregion
 
 
@@ -48,18 +45,18 @@ namespace XCom
 		/// <summary>
 		/// cTor. 
 		/// </summary>
-		/// <param name="pfe">path+file+extension of MapConfig.yml</param>
-		public TilesetManager(string pfe)
+		/// <param name="fullpath">path+file+extension of MapConfig.yml</param>
+		public TilesetManager(string fullpath)
 		{
 			LogFile.WriteLine("");
 			LogFile.WriteLine("TilesetManager cTor");
 
-			_fullpath = pfe;
+			FullPath = fullpath;
 
 			// TODO: if exists(pfe)
 			// else error out.
 
-			using (var sr = new StreamReader(File.OpenRead(pfe)))
+			using (var sr = new StreamReader(File.OpenRead(fullpath)))
 			{
 				var str = new YamlStream();
 				str.Load(sr);
@@ -74,10 +71,10 @@ namespace XCom
 				{
 					//LogFile.WriteLine(". . tileset= " + tileset); // lists all data in the tileset
 
-					string nodeType = nodeTileset.Children[new YamlScalarNode("type")].ToString();
-					LogFile.WriteLine(". . type= " + nodeType); // "UFO_110"
-//					if (!_types.Contains(nodeType)) // safety. There shall be only 1 tileset of any type in YAML.
-//						_types.Add(nodeType);
+					string nodeLabel = nodeTileset.Children[new YamlScalarNode("type")].ToString();
+					LogFile.WriteLine(". . type= " + nodeLabel); // "UFO_110"
+//					if (!_types.Contains(nodeLabel)) // safety. There shall be only 1 tileset of any type in YAML.
+//						_types.Add(nodeLabel);
 
 					string nodeCategory = nodeTileset.Children[new YamlScalarNode("category")].ToString();
 					LogFile.WriteLine(". . category= " + nodeCategory); // "Ufo"
@@ -108,12 +105,25 @@ namespace XCom
 						}
 					}
 
+					string nodeBasepath = String.Empty;
+					var basepath = new YamlScalarNode("basepath");
+					if (nodeTileset.Children.ContainsKey(basepath))
+					{
+						nodeBasepath = nodeTileset.Children[basepath].ToString();
+						LogFile.WriteLine(". . basepath= " + nodeBasepath);
+//						if (!Groups.Contains(nodeBasepath))
+//							Groups.Add(nodeBasepath);
+					}
+					else LogFile.WriteLine(". . basepath not found.");
+
+
 					var tileset = new Tileset(
-											nodeType,
+											nodeLabel,
 											nodeGroup,
 											nodeCategory,
-											terrainList);
-					Tilesets.Add(nodeType, tileset);
+											terrainList,
+											nodeBasepath);
+					Tilesets.Add(tileset);
 				}
 //				}
 			}

@@ -7,27 +7,27 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
+	/// <summary>
+	/// Descriptors describe a tileset: a Map, its route-nodes, and terrain. It
+	/// also holds the path to its files' parent directory.
+	/// A descriptor is accessed *only* through a Group and Category, and is
+	/// identified by its tileset-label. This allows multiple tilesets (ie. with
+	/// the same label) to be configured differently according to Category and
+	/// Group.
+	/// </summary>
 	public sealed class Descriptor // *snap*
-		:
-			DescriptorBase
 	{
 		#region Properties
-		internal string MapsPath
+		public string Label
 		{ get; private set; }
 
-		internal string RoutesPath
-		{ get; private set; }
-
-		internal string OccultsPath
-		{ get; private set; }
-
-		internal string FullPath
+		internal string BasePath
 		{ get; private set; }
 
 		public List<string> Terrains
 		{ get; set; }
 
-		internal Palette Palette
+		internal Palette Pal
 		{ get; private set; }
 		#endregion
 
@@ -37,31 +37,30 @@ namespace XCom
 		/// cTor.
 		/// </summary>
 		/// <param name="tileset"></param>
-		/// <param name="pathMaps"></param>
-		/// <param name="pathRoutes"></param>
-		/// <param name="pathOccults"></param>
 		/// <param name="terrains"></param>
-		/// <param name="pal"></param>
+		/// <param name="basepath"></param>
+		/// <param name="palette"></param>
 		public Descriptor(
 				string tileset,
-				string pathMaps,
-				string pathRoutes,
-				string pathOccults,
 				List<string> terrains,
-				Palette pal)
-			:
-				base(tileset)
+				string basepath,
+				Palette palette)
 		{
 			LogFile.WriteLine("Descriptor cTor tileset= " + tileset);
 			LogFile.WriteLine("");
 
-			MapsPath    = pathMaps;
-			RoutesPath  = pathRoutes;
-			OccultsPath = pathOccults;
-			Terrains    = terrains;
-			Palette     = pal;
+			Label    = tileset;
+			Terrains = terrains;
+			BasePath = basepath;
+			Pal      = palette;
+		}
+		#endregion
 
-			FullPath = Path.Combine(MapsPath, Label + MapFileChild.MapExt);
+
+		#region Methods
+		public override string ToString()
+		{
+			return Label;
 		}
 		#endregion
 	}

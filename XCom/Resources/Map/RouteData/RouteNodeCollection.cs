@@ -213,7 +213,8 @@ namespace XCom
 		#region Fields
 		private readonly List<RouteNode> _nodes;
 
-		public const string RouteExt = ".RMP";
+		public const string RouteExt   = ".RMP";
+		private const string RoutesDir = @"\ROUTES";
 
 		private string FullPath
 		{ get; set; }
@@ -289,10 +290,12 @@ namespace XCom
 		/// cTor. Reads the .RMP file and adds its data as RouteNodes to a List.
 		/// </summary>
 		/// <param name="file"></param>
-		/// <param name="path"></param>
-		internal RouteNodeCollection(string file, string path)
+		/// <param name="basepath"></param>
+		internal RouteNodeCollection(string file, string basepath)
 		{
-			FullPath = Path.Combine(path, file + RouteExt);
+			FullPath = Path.Combine(
+								basepath + RoutesDir,
+								file + RouteExt);
 
 			_nodes = new List<RouteNode>();
 

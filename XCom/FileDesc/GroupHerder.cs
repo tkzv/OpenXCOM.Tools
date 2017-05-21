@@ -28,8 +28,8 @@ namespace XCom
 		{
 			_path = tilesetManager.FullPath; // TODO: not right. not needed.
 
-			foreach (string gruop in tilesetManager.Groups)
-				_tilegroups[gruop] = new TileGroupChild(gruop, tilesetManager.Tilesets);
+			foreach (string tilegroup in tilesetManager.Groups)
+				_tilegroups[tilegroup] = new TileGroupChild(tilegroup, tilesetManager.Tilesets);
 		}
 		#endregion
 

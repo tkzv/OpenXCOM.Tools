@@ -176,7 +176,7 @@
     <Compile Include="Globals.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\Base\DescriptorBase.cs">
+    <Compile Include="Interfaces\Base\DescriptorBase_.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\Base\TilepartBase.cs" />

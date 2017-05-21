@@ -15,10 +15,10 @@ namespace XCom.Interfaces
 		public Palette Palette
 		{ get; set; }
 
-		public string MapDirectory
+		public string MapDirectory // TODO: fix this out of PathsEditor.
 		{ get; set; }
 
-		public string RouteDirectory
+		public string RouteDirectory // TODO: fix this out of PathsEditor.
 		{ get; set; }
 
 		public string OccultDirectory
@@ -34,11 +34,11 @@ namespace XCom.Interfaces
 			:
 				base(label)
 		{
-			MapDirectory    = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo), "MAPS"); // TODO: TFTD ....
+			MapDirectory    = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo), "MAPS"); // TODO: These are irrelevant.
 			RouteDirectory  = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo), "ROUTES");
 			OccultDirectory = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory), @"OccultTileData\UFO");
 
-			Palette = ResourceInfo.Palette;
+			Palette = ResourceInfo.Pal;
 //			Palette = Palette.UfoBattle;
 			// TODO: TFTD Palette = Palette.TftdBattle
 			// custom Palette = Palette.GetPalette(val)

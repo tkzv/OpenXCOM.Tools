@@ -552,7 +552,7 @@
 			// 
 			this.delGroup.Index = 1;
 			this.delGroup.Text = "Delete group";
-			this.delGroup.Click += new System.EventHandler(this.delGroup_Click);
+			this.delGroup.Click += new System.EventHandler(this.OnDeleteGroupClick);
 			// 
 			// miAddSubset
 			// 
@@ -564,7 +564,7 @@
 			// 
 			this.delSub.Index = 3;
 			this.delSub.Text = "Delete sub-group";
-			this.delSub.Click += new System.EventHandler(this.delSub_Click);
+			this.delSub.Click += new System.EventHandler(this.OnDeleteCategoryClick);
 			// 
 			// addMap
 			// 
@@ -590,7 +590,7 @@
 			// 
 			this.delMap.Index = 5;
 			this.delMap.Text = "Delete map";
-			this.delMap.Click += new System.EventHandler(this.delMap_Click);
+			this.delMap.Click += new System.EventHandler(this.OnDeleteTilesetClick);
 			// 
 			// btnMapsSaveTree
 			// 

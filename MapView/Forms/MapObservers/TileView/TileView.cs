@@ -144,7 +144,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				ViewerFormsManager.TopView.Control.SelectQuadrant(SelectedTilePart.Record.TileType);
 
-				f.Text = BuildTitleString(SelectedTilePart.PartListId, SelectedTilePart.Id);
+				f.Text = BuildTitleString(SelectedTilePart.TilesetId, SelectedTilePart.Id);
 				record = SelectedTilePart.Record;
 			}
 			else
@@ -167,7 +167,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (part != null)
 			{
-				f.Text = BuildTitleString(part.PartListId, part.Id);
+				f.Text = BuildTitleString(part.TilesetId, part.Id);
 				record = part.Record;
 			}
 			else
@@ -386,7 +386,7 @@ namespace MapView.Forms.MapObservers.TileViews
 					var tile = SelectedTilePart;
 					if (tile != null)
 					{
-						f.Text = BuildTitleString(tile.PartListId, tile.Id);
+						f.Text = BuildTitleString(tile.TilesetId, tile.Id);
 						record = tile.Record;
 					}
 					else

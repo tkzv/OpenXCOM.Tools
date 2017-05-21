@@ -227,7 +227,7 @@ namespace MapView
 			this.tvMaps.Dock = System.Windows.Forms.DockStyle.Left;
 			this.tvMaps.Location = new System.Drawing.Point(0, 0);
 			this.tvMaps.Name = "tvMaps";
-			this.tvMaps.Size = new System.Drawing.Size(180, 454);
+			this.tvMaps.Size = new System.Drawing.Size(200, 454);
 			this.tvMaps.TabIndex = 0;
 			// 
 			// sfdSaveDialog
@@ -244,9 +244,9 @@ namespace MapView
 			this.tsslMapLabel,
 			this.tsslDimensions,
 			this.tsslPosition});
-			this.ssMain.Location = new System.Drawing.Point(188, 432);
+			this.ssMain.Location = new System.Drawing.Point(208, 432);
 			this.ssMain.Name = "ssMain";
-			this.ssMain.Size = new System.Drawing.Size(444, 22);
+			this.ssMain.Size = new System.Drawing.Size(424, 22);
 			this.ssMain.TabIndex = 2;
 			this.ssMain.Text = "statusStrip1";
 			// 
@@ -267,7 +267,7 @@ namespace MapView
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
 			this.tsslMapLabel.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tsslMapLabel.Name = "tsslMapLabel";
-			this.tsslMapLabel.Size = new System.Drawing.Size(139, 17);
+			this.tsslMapLabel.Size = new System.Drawing.Size(119, 17);
 			this.tsslMapLabel.Spring = true;
 			// 
 			// tsslDimensions
@@ -298,19 +298,19 @@ namespace MapView
 			// tscPanel.ContentPanel
 			// 
 			this.tscPanel.ContentPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-			this.tscPanel.ContentPanel.Size = new System.Drawing.Size(444, 407);
+			this.tscPanel.ContentPanel.Size = new System.Drawing.Size(424, 407);
 			this.tscPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			// 
 			// tscPanel.LeftToolStripPanel
 			// 
 			this.tscPanel.LeftToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.tscPanel.Location = new System.Drawing.Point(188, 0);
+			this.tscPanel.Location = new System.Drawing.Point(208, 0);
 			this.tscPanel.Name = "tscPanel";
 			// 
 			// tscPanel.RightToolStripPanel
 			// 
 			this.tscPanel.RightToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.tscPanel.Size = new System.Drawing.Size(444, 432);
+			this.tscPanel.Size = new System.Drawing.Size(424, 432);
 			this.tscPanel.TabIndex = 4;
 			// 
 			// tscPanel.TopToolStripPanel
@@ -385,7 +385,7 @@ namespace MapView
 			// 
 			this.csSplitter.BorderStyle3D = System.Windows.Forms.Border3DStyle.Flat;
 			this.csSplitter.ControlToHide = this.tvMaps;
-			this.csSplitter.Location = new System.Drawing.Point(180, 0);
+			this.csSplitter.Location = new System.Drawing.Point(200, 0);
 			this.csSplitter.MinimumSize = new System.Drawing.Size(5, 5);
 			this.csSplitter.Name = "cSplitList";
 			this.csSplitter.Size = new System.Drawing.Size(8, 454);

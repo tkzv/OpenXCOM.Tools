@@ -7,6 +7,9 @@ using XCom.Interfaces.Base;
 
 namespace XCom
 {
+	/// <summary>
+	/// Loads a tileset. Called by XCMainWindow.LoadSelectedMap()
+	/// </summary>
 	public static class XCMapFileService
 	{
 		#region Methods
@@ -15,35 +18,39 @@ namespace XCom
 			LogFile.WriteLine("");
 			LogFile.WriteLine("XCMapFileService.LoadTileset descriptor= " + descriptor);
 
-			LogFile.WriteLine("file= " + descriptor.FullPath);
-
-			if (descriptor != null && File.Exists(descriptor.FullPath))
+			if (descriptor != null)
 			{
-				LogFile.WriteLine(". descriptor VALID and file exists");
-
-				var parts = new List<TilepartBase>();
-				var info = ResourceInfo.TerrainInfo;
-
-				foreach (string terrain in descriptor.Terrains)
+				string pfeMap = Path.Combine(
+										descriptor.BasePath + MapFileChild.MapsDir,
+										descriptor.Label + MapFileChild.MapExt);
+				LogFile.WriteLine(". pfeMap= " + pfeMap);
+	
+				if (File.Exists(pfeMap))
 				{
-					var infoTerrain = info[terrain];
-					if (infoTerrain != null)
+					LogFile.WriteLine(". . Map file exists");
+	
+					var parts = new List<TilepartBase>();
+	
+					foreach (string terrain in descriptor.Terrains)
 					{
-						var MCD = infoTerrain.GetMcdRecords(descriptor.Palette);
-						foreach (XCTilepart part in MCD)
-							parts.Add(part);
+						var infoTerrain = ResourceInfo.TerrainInfo[terrain];
+						if (infoTerrain != null)
+						{
+							var MCD = infoTerrain.GetMcdRecords(descriptor.Pal);
+							foreach (XCTilepart part in MCD)
+								parts.Add(part);
+						}
 					}
+	
+					var RMP = new RouteNodeCollection(descriptor.Label, descriptor.BasePath);
+					var MAP = new MapFileChild(
+											descriptor.Label,
+											descriptor.BasePath,
+											parts,
+											descriptor.Terrains,
+											RMP);
+					return MAP;
 				}
-
-				var RMP = new RouteNodeCollection(descriptor.Label, descriptor.RoutesPath);
-				var MAP = new MapFileChild(
-										descriptor.Label,
-										descriptor.MapsPath,
-										descriptor.OccultsPath,
-										parts,
-										descriptor.Terrains,
-										RMP);
-				return MAP;
 			}
 
 			LogFile.WriteLine(". descriptor NOT Valid or file does NOT exist");

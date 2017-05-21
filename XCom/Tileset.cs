@@ -15,12 +15,15 @@ namespace XCom
 		{ get; private set; }
 
 		internal string Group
-		{ get; set; }
+		{ get; private set; }
 
 		internal string Category
-		{ get; set; }
+		{ get; private set; }
 
 		internal List<string> Terrains
+		{ get; private set; }
+
+		internal string BasePath
 		{ get; set; }
 		#endregion
 
@@ -30,19 +33,22 @@ namespace XCom
 		/// cTor.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <param name="gruop"></param>
+		/// <param name="grup"></param>
 		/// <param name="category"></param>
 		/// <param name="terrains"></param>
+		/// <param name="basepath"></param>
 		internal Tileset(
 				string type,
-				string gruop, // sic.
+				string grup, // sic.
 				string category,
-				List<string> terrains)
+				List<string> terrains,
+				string basepath)
 		{
 			Type     = type;
-			Group    = gruop;
+			Group    = grup;
 			Category = category;
 			Terrains = terrains;
+			BasePath = basepath;
 		}
 		#endregion
 	}

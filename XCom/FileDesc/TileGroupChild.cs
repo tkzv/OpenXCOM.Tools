@@ -16,51 +16,66 @@ namespace XCom
 		/// <summary>
 		/// cTor. Load from YAML.
 		/// </summary>
-		internal TileGroupChild(string labelGroup, Dictionary<string, Tileset> tilesets)
+		internal TileGroupChild(string labelGroup, List<Tileset> tilesets)
 			:
 				base(labelGroup)
 		{
 			LogFile.WriteLine("");
 			LogFile.WriteLine("TileGroupChild cTor label= " + labelGroup);
 
-			foreach (string keyTileset in tilesets.Keys)
+			foreach (var tileset in tilesets)
 			{
-				LogFile.WriteLine(". keyTileset= " + keyTileset);
+				LogFile.WriteLine(". tileset.Type= " + tileset.Type);
 
-				if (!Descriptors.ContainsKey(keyTileset))
-//				if (!Categories.ContainsKey(tilesets[key].Category))
+				if (tileset.Group == labelGroup)
 				{
-					LogFile.WriteLine(". . Descriptor not found");
+					LogFile.WriteLine(". . tileset belongs to Group");
+					LogFile.WriteLine(". . tileset.Category= " + tileset.Category);
 
-					var tileset = tilesets[keyTileset];
-
-					if (tileset.Group == labelGroup)
+					if (!Categories.ContainsKey(tileset.Category))
 					{
-						LogFile.WriteLine(". . . tileset belongs to Group");
-						LogFile.WriteLine(". . . tileset.Category= " + tileset.Category);
+						LogFile.WriteLine(". . . Create new Category");
 
-						if (!Categories.ContainsKey(tileset.Category))
-						{
-							LogFile.WriteLine(". . . . Create new Category");
-
-							Categories[tileset.Category] = new Dictionary<string, DescriptorBase>();
-						}
-
-						LogFile.WriteLine(". . . tileset.Type= " + tileset.Type);
-
-						var descriptor = new Descriptor(
-													tileset.Type,
-													MapDirectory,
-													RouteDirectory,
-													OccultDirectory,
-													tileset.Terrains,
-													Palette);
-
-						Descriptors[tileset.Type]                  =
-						Categories[tileset.Category][tileset.Type] = descriptor;
+						Categories[tileset.Category] = new Dictionary<string, Descriptor>();
 					}
+
+					bool isUfo = true;
+					if      (labelGroup.StartsWith("ufo", StringComparison.OrdinalIgnoreCase))
+					{
+						isUfo = true;
+					}
+					else if (labelGroup.StartsWith("tftd", StringComparison.OrdinalIgnoreCase))
+					{
+						isUfo = false;
+					}
+
+					var pal = Palette.UfoBattle;
+					if (isUfo)
+					{
+						pal = Palette.UfoBattle;
+					}
+					else
+					{
+						pal = Palette.TftdBattle;
+					}
+
+					if (String.IsNullOrEmpty(tileset.BasePath))
+					{
+						if (isUfo)
+							tileset.BasePath = SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo);
+						else
+							tileset.BasePath = SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd);
+					}
+
+					var descriptor = new Descriptor(
+												tileset.Type,
+												tileset.Terrains,
+												tileset.BasePath,
+												pal);
+
+					Categories[tileset.Category][tileset.Type] = descriptor;
 				}
-				else LogFile.WriteLine(". . key already found - bypass.");
+				else LogFile.WriteLine(". . tileset not in this Group - bypass.");
 			}
 		}
 
@@ -79,20 +94,19 @@ namespace XCom
 
 		public override void AddTileset(string tileset, string category)
 		{
+			string basepath = String.Empty;	// TODO: fix this in PathsEditor.
+			var pal = Palette.UfoBattle;	// TODO: fix this in PathsEditor.
+
 			var descriptor = new Descriptor(
 										tileset,
-										MapDirectory,
-										RouteDirectory,
-										OccultDirectory,
 										new List<string>(),
-										Palette);
-			Descriptors[tileset]          =
+										basepath,
+										pal);
 			Categories[category][tileset] = descriptor;
 		}
 
 		public override void AddTileset(Descriptor descriptor, string category)
 		{
-			Descriptors[descriptor.Label]          =
 			Categories[category][descriptor.Label] = descriptor;
 		}
 

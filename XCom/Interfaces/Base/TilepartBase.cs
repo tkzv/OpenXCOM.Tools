@@ -41,7 +41,7 @@ namespace XCom.Interfaces.Base
 		/// <summary>
 		/// The ID of this tilepart that's unique to the Map.
 		/// </summary>
-		public int PartListId
+		public int TilesetId
 		{ get; set; }
 
 
@@ -52,7 +52,7 @@ namespace XCom.Interfaces.Base
 		internal TilepartBase(int id)
 		{
 			Id = id;
-			PartListId = -1;
+			TilesetId = -1;
 		}
 	}
 }

@@ -14,6 +14,8 @@ namespace XCom
 	public sealed class Terrain
 	{
 		#region Fields
+		private const string PathDir = @"\TERRAIN";
+
 		private readonly Hashtable _recordsTable;
 		#endregion
 
@@ -54,7 +56,7 @@ namespace XCom
 		#region Methods
 		public PckSpriteCollection GetSpriteset()
 		{
-			return GetSpriteset(ResourceInfo.Palette);
+			return GetSpriteset(ResourceInfo.Pal);
 		}
 
 		private PckSpriteCollection GetSpriteset(Palette pal)
@@ -64,7 +66,7 @@ namespace XCom
 
 		public McdRecordCollection GetMcdRecords()
 		{
-			return GetMcdRecords(ResourceInfo.Palette);
+			return GetMcdRecords(ResourceInfo.Pal);
 		}
 
 		internal McdRecordCollection GetMcdRecords(Palette pal)

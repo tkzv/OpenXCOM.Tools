@@ -137,7 +137,7 @@ namespace MapView
 			gbMapsBlock.Enabled   =
 			delMap.Enabled        = false;
 
-			TileGroup tileset = null;
+			TileGroup tilegroup = null;
 
 			var node = e.Node;
 			if (node.Parent != null)
@@ -145,15 +145,15 @@ namespace MapView
 				addMap.Enabled =
 				delSub.Enabled = true;
 
-				if (node.Parent.Parent != null) // inner node
+				if (node.Parent.Parent != null) // tileset node
 				{
 					gbMapsTerrain.Enabled = false;
 					gbMapsBlock.Enabled   =
 					delMap.Enabled        = true;
 
-					tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[node.Parent.Parent.Text];
+					tilegroup = ResourceInfo.TileGroupInfo.TileGroups[node.Parent.Parent.Text] as TileGroup;
 
-					var descriptor = (Descriptor)tileset[node.Text];
+					var descriptor = (Descriptor)tilegroup[node.Text];
 
 					lbMapsImagesUsed.Items.Clear();
 
@@ -164,35 +164,35 @@ namespace MapView
 					}
 					else
 					{
-						tileset.AddTileset(
-									new Descriptor(
-												node.Text,
-												tileset.MapDirectory,
-												tileset.RouteDirectory,
-												tileset.OccultDirectory,
-												new List<string>(),
-												tileset.Palette),
-									node.Parent.Text);
+						tilegroup.AddTileset(
+										new Descriptor(
+													node.Text,
+//													tilegroup.RouteDirectory,
+//													tilegroup.OccultDirectory,
+													new List<string>(),
+													tilegroup.MapDirectory,	// TODO: fix the Map directory.
+													tilegroup.Palette),		// TODO: fix the Palette determination.
+										node.Parent.Text);
 					}
 				}
-				else // subset node
+				else // category node
 				{
-					tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[node.Parent.Text];
+					tilegroup = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[node.Parent.Text];
 				}
 			}
-			else // parent node
+			else // group node
 			{
-				tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[node.Text];
+				tilegroup = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[node.Text];
 				addMap.Enabled =
 				delMap.Enabled =
 				delSub.Enabled = false;
 			}
 
-			tbMapsMaps.Text    = tileset.MapDirectory;
-			tbMapsRoutes.Text  = tileset.RouteDirectory;
-			tbMapsOccults.Text = tileset.OccultDirectory;
+			tbMapsMaps.Text    = tilegroup.MapDirectory;
+			tbMapsRoutes.Text  = tilegroup.RouteDirectory;
+			tbMapsOccults.Text = tilegroup.OccultDirectory; // TODO: remove that.
 
-			cbMapsPalette.SelectedItem = tileset.Palette;
+			cbMapsPalette.SelectedItem = tilegroup.Palette;
 		}
 
 		private void tbMapsMaps_KeyPress(object sender, KeyPressEventArgs e)
@@ -203,7 +203,7 @@ namespace MapView
 
 		private void tbMapsMaps_Leave(object sender, EventArgs e)
 		{
-			var tileset = GetCurrentTileGroup();
+			var tileset = GetCurrentTileGroup(); // <- could be a group, category, or tileset
 			if (!Directory.Exists(tbMapsMaps.Text))
 			{
 				using (var output = new OutputBox("Directory not found: " + tbMapsMaps.Text))
@@ -224,7 +224,7 @@ namespace MapView
 
 		private void tbMapsRoutes_Leave(object sender, EventArgs e)
 		{
-			var tileset = GetCurrentTileGroup();
+			var tileset = GetCurrentTileGroup(); // <- could be a group, category, or tileset
 			if (!Directory.Exists(tbMapsRoutes.Text))
 			{
 				using (var output = new OutputBox("Directory not found: " + tbMapsRoutes.Text))
@@ -239,7 +239,7 @@ namespace MapView
 
 		private void btnMapsUp_Click(object sender, EventArgs e)
 		{
-			var tileset = GetCurrentTileGroup();
+			var tileset = GetCurrentTileGroup(); // <- could be a group, category, or tileset
 			var terrains = ((Descriptor)tileset[tvMaps.SelectedNode.Text]).Terrains;
 
 			for (int id = 1; id != terrains.Count; ++id)
@@ -265,7 +265,7 @@ namespace MapView
 
 		private void btnMapsDown_Click(object sender, EventArgs e)
 		{
-			var tileset = GetCurrentTileGroup();
+			var tileset = GetCurrentTileGroup(); // <- could be a group, category, or tileset
 			var terrains = ((Descriptor)tileset[tvMaps.SelectedNode.Text]).Terrains;
 
 			for (int id = 0; id != terrains.Count - 1; ++id)
@@ -482,7 +482,7 @@ namespace MapView
 		private void cbMapsPalette_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (tvMaps.SelectedNode.Parent == null)
-				GetCurrentTileGroup().Palette = cbMapsPalette.SelectedItem as Palette;
+				GetCurrentTileGroup().Palette = cbMapsPalette.SelectedItem as Palette; // <- could be a group, category, or tileset
 		}
 
 		private void OnSubsetClick(object sender, EventArgs e)
@@ -492,11 +492,11 @@ namespace MapView
 				f.ShowDialog(this);
 				if (!String.IsNullOrEmpty(f.CategoryLabel))
 				{
-					var tilegroup = GetCurrentTileGroup();
+					var tilegroup = GetCurrentTileGroup(); // <- could be a group, category, or tileset
 
 //					TreeNode tn = treeMaps.SelectedNode; // TODO: Check if not used.
 
-					tilegroup.Categories[f.CategoryLabel] = new Dictionary<string, DescriptorBase>();
+					tilegroup.Categories[f.CategoryLabel] = new Dictionary<string, Descriptor>();
 
 //					tileset.NewSubset(f.SubsetName);
 //					saveMapedit();
@@ -506,7 +506,7 @@ namespace MapView
 			}
 		}
 
-		private TileGroup GetCurrentTileGroup()
+		private TileGroup GetCurrentTileGroup() // <- could be a group, category, or tileset
 		{
 			var node = tvMaps.SelectedNode;
 
@@ -636,10 +636,12 @@ namespace MapView
 			}
 		}
 
-		private void delGroup_Click(object sender, EventArgs e)
+		private void OnDeleteGroupClick(object sender, EventArgs e)
 		{
-			var tileset = GetCurrentTileGroup();
-			ResourceInfo.TileGroupInfo.TileGroups[tileset.Label] = null;
+			var tilegroup = GetCurrentTileGroup(); // <- could be a group, category, or tileset
+
+			ResourceInfo.TileGroupInfo.TileGroups[tilegroup.Label] = null;
+
 			if (tvMaps.SelectedNode.Parent == null)
 			{
 				tvMaps.Nodes.Remove(tvMaps.SelectedNode);
@@ -650,40 +652,38 @@ namespace MapView
 			}
 			else
 				tvMaps.Nodes.Remove(tvMaps.SelectedNode.Parent.Parent);
-
-//			saveMapedit();
 		}
 
-		private void delSub_Click(object sender, EventArgs e)
+		private void OnDeleteCategoryClick(object sender, EventArgs e)
 		{
-			var tn = tvMaps.SelectedNode.Parent;
-			if (tn != null)
+			var node = tvMaps.SelectedNode.Parent;
+			if (node != null)
 			{
-				if (tvMaps.SelectedNode.Parent.Parent == null)
-					tn = tvMaps.SelectedNode;
+				if (node.Parent == null)
+					node = tvMaps.SelectedNode;
 
-				if (tn != null)
+				if (node != null)
 				{
-					var tileset = GetCurrentTileGroup();
-					tileset.Categories[tn.Text] = null;
-					tn.Parent.Nodes.Remove(tn);
+					var tilegroup = GetCurrentTileGroup(); // <- could be a group, category, or tileset
+
+					tilegroup.Categories[node.Text] = null;
+
+					node.Parent.Nodes.Remove(node);
 				}
 			}
 		}
 
-		private void delMap_Click(object sender, EventArgs e)
+		private void OnDeleteTilesetClick(object sender, EventArgs e)
 		{
-			if (   tvMaps.SelectedNode.Parent != null
-				&& tvMaps.SelectedNode.Parent.Parent != null)
+			var node = tvMaps.SelectedNode;
+			if (node.Parent != null && node.Parent.Parent != null)
 			{
-				TreeNode tn = tvMaps.SelectedNode;
-				if (tn != null)
-				{
-					var tileset = GetCurrentTileGroup();
-					tileset.Categories[tn.Parent.Text][tn.Text] = null;
-					tileset[tn.Text] = null;
-					tn.Parent.Nodes.Remove(tn);
-				}
+				var tilegroup = GetCurrentTileGroup(); // <- could be a group, category, or tileset
+
+				tilegroup.Categories[node.Parent.Text][node.Text] = null;
+//				tilegroup[node.Text] = null;
+
+				node.Parent.Nodes.Remove(node);
 			}
 		}
 

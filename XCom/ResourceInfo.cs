@@ -20,7 +20,7 @@ namespace XCom
 		}
 
 		private static Palette _palette = Palette.UfoBattle;
-		internal static Palette Palette
+		internal static Palette Pal
 		{
 			get { return _palette; }
 		}

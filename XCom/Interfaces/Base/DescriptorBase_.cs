@@ -1,3 +1,4 @@
+/*
 using System;
 
 
@@ -31,3 +32,4 @@ namespace XCom.Interfaces.Base
 		#endregion
 	}
 }
+*/

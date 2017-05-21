@@ -58,11 +58,8 @@ namespace XCom.Interfaces.Base
 		internal MapTileList MapTiles
 		{ get; set; }
 
-		private readonly List<TilepartBase> _parts;
 		public List<TilepartBase> Parts
-		{
-			get { return _parts; }
-		}
+		{ get; set; }
 
 		private MapLocation _location;
 		/// <summary>
@@ -138,7 +135,7 @@ namespace XCom.Interfaces.Base
 		protected MapFileBase(string label, List<TilepartBase> parts)
 		{
 			Label = label;
-			_parts = parts;
+			Parts = parts;
 		}
 		#endregion
 

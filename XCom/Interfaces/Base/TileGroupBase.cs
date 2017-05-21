@@ -13,8 +13,8 @@ namespace XCom.Interfaces.Base
 		/// <summary>
 		/// 
 		/// </summary>
-		private readonly Dictionary<string, DescriptorBase> _descriptors = new Dictionary<string, DescriptorBase>();
-		internal protected Dictionary<string, DescriptorBase> Descriptors
+		private readonly Dictionary<string, Descriptor> _descriptors = new Dictionary<string, Descriptor>();
+		internal protected Dictionary<string, Descriptor> Descriptors
 		{
 			get { return _descriptors; }
 		}
@@ -22,16 +22,16 @@ namespace XCom.Interfaces.Base
 		/// <summary>
 		/// 
 		/// </summary>
-		private readonly Dictionary<string, Dictionary<string, DescriptorBase>> _categories = new Dictionary<string, Dictionary<string, DescriptorBase>>();
-		public Dictionary<string, Dictionary<string, DescriptorBase>> Categories
+		private readonly Dictionary<string, Dictionary<string, Descriptor>> _categories = new Dictionary<string, Dictionary<string, Descriptor>>();
+		public Dictionary<string, Dictionary<string, Descriptor>> Categories
 		{
 			get { return _categories; }
 		}
 
 		/// <summary>
-		/// 
+		/// Used by PathsEditor to add/delete treenodes.
 		/// </summary>
-		public DescriptorBase this[string label]
+		public Descriptor this[string label]
 		{
 			get { return _descriptors[label]; }
 			set

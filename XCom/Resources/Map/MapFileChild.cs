@@ -14,13 +14,14 @@ namespace XCom
 			MapFileBase
 	{
 		#region Fields & Properties
-		public const string MapExt = ".MAP";
+		public const string MapExt    = ".MAP";
+		internal const string MapsDir = @"\MAPS";
 
 		private string FullPath
 		{ get; set; }
 
-		private readonly string _file       = String.Empty;
-		private readonly string _pathOccult = String.Empty;
+		private readonly string _file;
+//		private readonly string _pathOccult = String.Empty;
 
 		private readonly List<string> _terrains;
 		public List<string> Terrains
@@ -29,7 +30,7 @@ namespace XCom
 		}
 
 		public RouteNodeCollection Routes
-		{ get; set; }
+		{ get; private set; }
 		#endregion
 
 
@@ -38,25 +39,25 @@ namespace XCom
 		/// cTor.
 		/// </summary>
 		/// <param name="file"></param>
-		/// <param name="path"></param>
-		/// <param name="pathOccult"></param>
+		/// <param name="basepath"></param>
+//		/// <param name="pathOccult"></param>
 		/// <param name="parts"></param>
 		/// <param name="terrains"></param>
 		/// <param name="routes"></param>
 		internal MapFileChild(
 				string file,
-				string path,
-				string pathOccult,
+				string basepath,
+//				string pathOccult,
 				List<TilepartBase> parts,
 				List<string> terrains,
 				RouteNodeCollection routes)
 			:
 				base(file, parts)
 		{
-			FullPath = Path.Combine(path, file + MapExt);
+			FullPath = Path.Combine(basepath + MapsDir, file + MapExt);
 
-			_file       = file;
-			_pathOccult = pathOccult;
+			_file       = file; // is used only for error in CreateTile()
+//			_pathOccult = pathOccult;
 			_terrains   = terrains;
 
 			Routes = routes;
@@ -64,34 +65,35 @@ namespace XCom
 			if (File.Exists(FullPath))
 			{
 				for (int i = 0; i != parts.Count; ++i)
-					parts[i].PartListId = i;
+					parts[i].TilesetId = i;
 
 				ReadMapFile(parts);
 				SetupRouteNodes(routes);
+				CalculateOccultations();
 
-				if (!String.IsNullOrEmpty(pathOccult))
-				{
-					string pfeOccult = Path.Combine(pathOccult, file + OccultFile.OccultExt);
-					if (File.Exists(pfeOccult))
-					{
-						try
-						{
-							OccultFile.LoadOccult(file, pathOccult, this);
-						}
-						catch // TODO: send warning to user.
-						{
-							for (int lev = 0; lev != MapSize.Levs; ++lev)
-							for (int row = 0; row != MapSize.Rows; ++row)
-							for (int col = 0; col != MapSize.Cols; ++col)
-							{
-								this[row, col, lev].Occulted = false;
-							}
-							throw;
-						}
-					}
-					else
-						CalculateOccultations();
-				}
+//				if (!String.IsNullOrEmpty(pathOccult))
+//				{
+//					string pfeOccult = Path.Combine(pathOccult, file + OccultFile.OccultExt);
+//					if (File.Exists(pfeOccult))
+//					{
+//						try
+//						{
+//							OccultFile.LoadOccult(file, pathOccult, this);
+//						}
+//						catch // TODO: send warning to user.
+//						{
+//							for (int lev = 0; lev != MapSize.Levs; ++lev)
+//							for (int row = 0; row != MapSize.Rows; ++row)
+//							for (int col = 0; col != MapSize.Cols; ++col)
+//							{
+//								this[row, col, lev].Occulted = false;
+//							}
+//							throw;
+//						}
+//					}
+//					else
+//						CalculateOccultations();
+//				}
 			}
 			else
 			{
@@ -231,7 +233,7 @@ namespace XCom
 							tile.Occulted = false;
 					}
 				}
-				OccultFile.SaveOccult(_file, _pathOccult, this);
+//				OccultFile.SaveOccult(_file, _pathOccult, this);
 			}
 			//else // TODO: inform user that the current map has only 1 level
 			// and no .OTD will be created if the command is initiated from the
@@ -335,22 +337,22 @@ namespace XCom
 					if (tile.Ground == null)
 						fs.WriteByte(0);
 					else
-						fs.WriteByte((byte)(tile.Ground.PartListId + 2)); // why "+2" -> reserved for the 2 Blank tiles.
+						fs.WriteByte((byte)(tile.Ground.TilesetId + 2)); // why "+2" -> reserved for the 2 Blank tiles.
 
 					if (tile.West == null)
 						fs.WriteByte(0);
 					else
-						fs.WriteByte((byte)(tile.West.PartListId + 2));
+						fs.WriteByte((byte)(tile.West.TilesetId + 2));
 
 					if (tile.North == null)
 						fs.WriteByte(0);
 					else
-						fs.WriteByte((byte)(tile.North.PartListId + 2));
+						fs.WriteByte((byte)(tile.North.TilesetId + 2));
 
 					if (tile.Content == null)
 						fs.WriteByte(0);
 					else
-						fs.WriteByte((byte)(tile.Content.PartListId + 2));
+						fs.WriteByte((byte)(tile.Content.TilesetId + 2));
 				}
 
 //				fs.WriteByte(RouteFile.ExtraHeight); // <- NON-STANDARD <-| See also ReadMapFile() above^
