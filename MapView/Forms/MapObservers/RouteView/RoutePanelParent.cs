@@ -97,21 +97,21 @@ namespace MapView.Forms.MapObservers.RouteViews
 			get { return _brushes; }
 		}
 
-		private int _opacity = 255; // cf. RouteView.LoadControl0Settings()
+		private int _opacity = 255; // cf. RouteView.LoadControl0Options()
 		internal protected int Opacity
 		{
 			get { return _opacity; }
 			set { _opacity = value.Clamp(0, 255); }
 		}
 
-		private bool _showOverlay = true; // cf. RouteView.LoadControl0Settings()
+		private bool _showOverlay = true; // cf. RouteView.LoadControl0Options()
 		internal protected bool ShowOverlay
 		{
 			get { return _showOverlay; }
 			set { _showOverlay = value; }
 		}
 
-		private bool _showPriorityBars = true; // cf. RouteView.LoadControl0Settings()
+		private bool _showPriorityBars = true; // cf. RouteView.LoadControl0Options()
 		internal protected bool ShowPriorityBars
 		{
 			get { return _showPriorityBars; }

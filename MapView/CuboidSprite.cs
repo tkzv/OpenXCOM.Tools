@@ -8,7 +8,7 @@ namespace MapView
 {
 	internal class CuboidSprite
 	{
-		private readonly PckSpriteCollection _pckPack;
+		private readonly SpriteCollection _spriteset;
 
 
 		#region cTor
@@ -16,13 +16,13 @@ namespace MapView
 		/// Constructs a CuboidSprite.
 		/// The CuboidSprite is the actual cuboid selector in XCOM resources.
 		/// </summary>
-		/// <param name="pckPack"></param>
-		internal CuboidSprite(PckSpriteCollection pckPack)
+		/// <param name="spriteset"></param>
+		internal CuboidSprite(SpriteCollection spriteset)
 		{
-			_pckPack = pckPack;
+			_spriteset = spriteset;
 
-			foreach (PckImage sprite in pckPack)
-				sprite.Image.MakeTransparent(pckPack.Pal.Transparent);
+			foreach (PckImage sprite in spriteset)
+				sprite.Image.MakeTransparent(spriteset.Pal.Transparent);
 		}
 		#endregion
 
@@ -53,7 +53,7 @@ namespace MapView
 				id = red ? 0 : 2;
 
 			graphics.DrawImage(
-							_pckPack[id].Image,
+							_spriteset[id].Image,
 							x, y,
 							halfWidth  * 2,		// NOTE: the values for width and height
 							halfHeight * 5);	// are based on a sprite that's 32x40.
@@ -66,7 +66,7 @@ namespace MapView
 				int halfHeight)
 		{
 			graphics.DrawImage(
-							_pckPack[7].Image, // yellow targeter sprite
+							_spriteset[7].Image, // yellow targeter sprite
 							x, y,
 							halfWidth  * 2,		// NOTE: the values for width and height
 							halfHeight * 5);	// are based on a sprite that's 32x40.
@@ -185,7 +185,7 @@ namespace MapView
 //			get { return _state; }
 //			set { _state = value; }
 //		}
-//		public PckSpriteCollection PckCursorSprites
+//		public SpriteCollection PckCursorSprites
 //		{
 //			get { return _file; }
 //		}

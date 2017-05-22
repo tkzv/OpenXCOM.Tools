@@ -36,7 +36,7 @@ namespace XCom.Interfaces.Base
 			get { return _descriptors[label]; }
 			set
 			{
-				if (!_descriptors.ContainsKey(label))
+				if (!_descriptors.ContainsKey(label)) // TODO: this needs to work through Categories *only*
 					_descriptors[label] = value;
 			}
 		}
@@ -47,10 +47,10 @@ namespace XCom.Interfaces.Base
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		/// <param name="label"></param>
-		internal protected TileGroupBase(string label)
+		/// <param name="labelGroup"></param>
+		internal protected TileGroupBase(string labelGroup)
 		{
-			Label = label;
+			Label = labelGroup;
 		}
 		#endregion
 	}

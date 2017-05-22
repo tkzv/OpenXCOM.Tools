@@ -6,13 +6,10 @@ using XCom.Interfaces;
 
 namespace XCom
 {
-	public delegate void LoadingEventHandler(int cur, int total);
-
-
 	/// <summary>
 	/// A spriteset: a collection of images taken from PCK/TAB file data.
 	/// </summary>
-	public sealed class PckSpriteCollection
+	public sealed class SpriteCollection
 		:
 			XCImageCollection
 	{
@@ -40,7 +37,7 @@ namespace XCom
 		/// <param name="strTab"></param>
 		/// <param name="lenTabOffset"></param>
 		/// <param name="pal"></param>
-		public PckSpriteCollection(
+		public SpriteCollection(
 				Stream strPck,
 				Stream strTab,
 				int lenTabOffset,
@@ -69,9 +66,6 @@ namespace XCom
 							for (int i = 0; i != strTab.Length / lenTabOffset; ++i)
 								offsets[i] = br.ReadUInt32();
 							break;
-
-//						default:
-//							break;
 					}
 				}
 			}

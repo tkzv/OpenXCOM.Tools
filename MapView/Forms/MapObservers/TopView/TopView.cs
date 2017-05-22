@@ -158,7 +158,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			{
 				it.Checked = true;
 
-				_foptions = new OptionsForm("TopViewOptions", Settings);
+				_foptions = new OptionsForm("TopViewOptions", Options);
 				_foptions.Text = "Top View Options";
 
 				_foptions.Show();
@@ -236,7 +236,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		#endregion
 
 
-		#region Settings
+		#region Options
 		// headers
 		private const string Tile     = "Tile";
 		private const string Selector = "Selector";
@@ -266,9 +266,9 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		/// <summary>
-		/// Loads default settings for TopView in TopRouteView screens.
+		/// Loads default options for TopView in TopRouteView screens.
 		/// </summary>
-		protected internal override void LoadControl0Settings()
+		protected internal override void LoadControl0Options()
 		{
 			_topBrushes = new Dictionary<string, SolidBrush>();
 			_topPens    = new Dictionary<string, Pen>();
@@ -302,22 +302,22 @@ namespace MapView.Forms.MapObservers.TopViews
 			OptionChangedEventHandler pw = OnPenWidthChanged;
 //			ValueChangedEventHandler dh = OnDiamondHeight;
 
-			Settings.AddSetting(FloorColor,        Color.BurlyWood,                 "Color of the floor tile indicator",           Tile,     bc);
-			Settings.AddSetting(WestColor,         Color.Khaki,                     "Color of the west tile indicator",            Tile,     pc);
-			Settings.AddSetting(NorthColor,        Color.Wheat,                     "Color of the north tile indicator",           Tile,     pc);
-			Settings.AddSetting(ContentColor,      Color.MediumSeaGreen,            "Color of the content tile indicator",         Tile,     bc);
-			Settings.AddSetting(WestWidth,         3,                               "Width of the west tile indicator in pixels",  Tile,     pw);
-			Settings.AddSetting(NorthWidth,        3,                               "Width of the north tile indicator in pixels", Tile,     pw);
+			Options.AddOption(FloorColor,        Color.BurlyWood,                 "Color of the floor tile indicator",           Tile,     bc);
+			Options.AddOption(WestColor,         Color.Khaki,                     "Color of the west tile indicator",            Tile,     pc);
+			Options.AddOption(NorthColor,        Color.Wheat,                     "Color of the north tile indicator",           Tile,     pc);
+			Options.AddOption(ContentColor,      Color.MediumSeaGreen,            "Color of the content tile indicator",         Tile,     bc);
+			Options.AddOption(WestWidth,         3,                               "Width of the west tile indicator in pixels",  Tile,     pw);
+			Options.AddOption(NorthWidth,        3,                               "Width of the north tile indicator in pixels", Tile,     pw);
 
-			Settings.AddSetting(SelectorColor,     Color.Black,                     "Color of the mouse-over indicator",           Selector, pc);
-			Settings.AddSetting(SelectorWidth,     2,                               "Width of the mouse-over indicator in pixels", Selector, pw);
-			Settings.AddSetting(SelectedColor,     Color.RoyalBlue,                 "Color of the selection line",                 Selector, pc);
-			Settings.AddSetting(SelectedWidth,     2,                               "Width of the selection line in pixels",       Selector, pw);
-			Settings.AddSetting(SelectedTypeColor, Color.LightBlue,                 "Background color of the selected tiletype",   Selector, bc);
+			Options.AddOption(SelectorColor,     Color.Black,                     "Color of the mouse-over indicator",           Selector, pc);
+			Options.AddOption(SelectorWidth,     2,                               "Width of the mouse-over indicator in pixels", Selector, pw);
+			Options.AddOption(SelectedColor,     Color.RoyalBlue,                 "Color of the selection line",                 Selector, pc);
+			Options.AddOption(SelectedWidth,     2,                               "Width of the selection line in pixels",       Selector, pw);
+			Options.AddOption(SelectedTypeColor, Color.LightBlue,                 "Background color of the selected tiletype",   Selector, bc);
 
-			Settings.AddSetting(GridColor,         Color.Black,                     "Color of the grid lines",                     Grid,     pc);
-			Settings.AddSetting(GridWidth,         1,                               "Width of the grid lines in pixels",           Grid,     pw);
-//			Settings.AddSetting(TileMinHeight,     _topViewPanel.TileLozengeHeight, "Minimum height of the grid tiles in pixels",  Grid,     dh);
+			Options.AddOption(GridColor,         Color.Black,                     "Color of the grid lines",                     Grid,     pc);
+			Options.AddOption(GridWidth,         1,                               "Width of the grid lines in pixels",           Grid,     pw);
+//			Options.AddOption(TileMinHeight,     _topViewPanel.TileLozengeHeight, "Minimum height of the grid tiles in pixels",  Grid,     dh);
 
 			QuadrantsPanel.Pens   =
 			_topViewPanel.TopPens = _topPens;
@@ -329,7 +329,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 		/// <summary>
-		/// Fires when a brush-color changes in Settings.
+		/// Fires when a brush-color changes in Options.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="key"></param>
@@ -345,7 +345,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 		/// <summary>
-		/// Fires when a pen-color changes in Settings.
+		/// Fires when a pen-color changes in Options.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="key"></param>
@@ -357,7 +357,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 		/// <summary>
-		/// Fires when a pen-width changes in Settings.
+		/// Fires when a pen-width changes in Options.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="key"></param>
@@ -389,7 +389,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 //		/// <summary>
-//		/// Fires when the minimum diamond-height changes in Settings.
+//		/// Fires when the minimum diamond-height changes in Options.
 //		/// </summary>
 //		/// <param name="sender"></param>
 //		/// <param name="keyword"></param>

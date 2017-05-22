@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 using XCom.Interfaces.Base;
 
 
 namespace XCom
 {
-	public sealed class GroupHerder
+	public sealed class TileGroupManager
 	{
 		#region Fields & Properties
 		private readonly string _path;
@@ -24,7 +25,7 @@ namespace XCom
 
 
 		#region cTor
-		internal GroupHerder(TilesetManager tilesetManager)
+		internal TileGroupManager(TilesetManager tilesetManager)
 		{
 			_path = tilesetManager.FullPath; // TODO: not right. not needed.
 

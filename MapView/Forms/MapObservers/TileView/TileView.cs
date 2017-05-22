@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 using MapView.Forms.MainWindow;
 using MapView.Forms.McdViewer;
-using MapView.SettingServices;
+using MapView.OptionsServices;
 
 using PckView;
 
@@ -230,9 +230,9 @@ namespace MapView.Forms.MapObservers.TileViews
 		};
 
 		/// <summary>
-		/// Loads default settings for TileView screen.
+		/// Loads default options for TileView screen.
 		/// </summary>
-		protected internal override void LoadControl0Settings()
+		protected internal override void LoadControl0Options()
 		{
 			string desc = String.Empty;
 
@@ -295,7 +295,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				// are later retrieved from Options ....
 				//
 				// See OnSpecialPropertyColorChanged() below_
-				Settings.AddSetting(
+				Options.AddOption(
 								specialType,
 								((SolidBrush)_brushesSpecial[specialType]).Color,
 								desc,					// appears as a tip at the bottom of the Options screen.
@@ -304,7 +304,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 			TilePanel.SetSpecialPropertyBrushes(_brushesSpecial);
 
-			VolutarSettingService.LoadSettings(Settings);
+			VolutarSettingService.LoadOptions(Options);
 		}
 
 		/// <summary>
@@ -341,7 +341,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			{
 				it.Checked = true;
 
-				_foptions = new OptionsForm("TileViewOptions", Settings);
+				_foptions = new OptionsForm("TileViewOptions", Options);
 				_foptions.Text = "Tile View Options";
 
 				_foptions.Show();
@@ -424,9 +424,9 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			if ((MapBase as MapFileChild) != null)
 			{
-				var service = new VolutarSettingService(Settings);
+				var service = new VolutarSettingService(Options);
 				var pfe = service.FullPath;	// this will invoke a box for the user to input the
-											// executable's path if it doesn't exist in Settings.
+											// executable's path if it doesn't exist in Options.
 				if (File.Exists(pfe))
 				{
 					string dir = Path.GetDirectoryName(pfe); // change to MCDEdit dir so that accessing MCDEdit.txt doesn't cause probs.
@@ -452,14 +452,14 @@ namespace MapView.Forms.MapObservers.TileViews
 				var terrain = ResourceInfo.TerrainInfo[label];
 				if (terrain != null)
 				{
-					string pfePck = terrain.PathDirectory + terrain.Label + PckSpriteCollection.PckExt;
-					string pfeTab = terrain.PathDirectory + terrain.Label + PckSpriteCollection.TabExt;
+					string pfePck = Path.Combine(terrain.PathTerrain, terrain.Label + SpriteCollection.PckExt);
+					string pfeTab = Path.Combine(terrain.PathTerrain, terrain.Label + SpriteCollection.TabExt);
 
 					if (!File.Exists(pfePck))
 					{
 						MessageBox.Show(
 									this,
-									"File does not exist: " + pfePck,
+									"File does not exist" + Environment.NewLine + Environment.NewLine + pfePck,
 									"Error",
 									MessageBoxButtons.OK,
 									MessageBoxIcon.Error,
@@ -470,7 +470,7 @@ namespace MapView.Forms.MapObservers.TileViews
 					{
 						MessageBox.Show(
 									this,
-									"File does not exist: " + pfeTab,
+									"File does not exist" + Environment.NewLine + Environment.NewLine + pfeTab,
 									"Error",
 									MessageBoxButtons.OK,
 									MessageBoxIcon.Error,
@@ -489,7 +489,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 							var parent = FindForm();
 
-							Form owner = null;
+							Form owner = null; // TODO: what's this muck-a-muck
 							if (parent != null)
 								owner = parent.Owner;
 
@@ -500,7 +500,7 @@ namespace MapView.Forms.MapObservers.TileViews
 							if (f.SavedFile)
 							{
 								ResourceInfo.TerrainInfo.Terrains[label].ClearMcdTable(); // TODO: huh, MCD won't change ...
-								ResourceInfo.ClearSpriteset(terrain.PathDirectory, terrain.Label);
+								ResourceInfo.ClearSpriteset(terrain.PathTerrain, terrain.Label);
 
 								PckSaved();
 							}

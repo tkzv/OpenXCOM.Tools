@@ -13,27 +13,27 @@ namespace MapView.Forms.MainWindow
 	{
 		private readonly Dictionary<string, Form> _viewersDictionary = new Dictionary<string, Form>();
 
-		private readonly SettingsManager    _settingsManager;
+		private readonly OptionsManager     _optionsManager;
 		private readonly ConsoleSharedSpace _consoleShare;
 
 
 		internal ViewersManager(
-				SettingsManager settingsManager,
+				OptionsManager optionsManager,
 				ConsoleSharedSpace consoleShare)
 		{
-			_settingsManager = settingsManager;
-			_consoleShare = consoleShare;
+			_optionsManager = optionsManager;
+			_consoleShare   = consoleShare;
 		}
 
 
 		internal void ManageViewers()
 		{
 			//LogFile.WriteLine("ManageViewers");
-			ViewerFormsManager.TopRouteView.ControlTop.Settings   = ViewerFormsManager.TopView.Control.Settings;
-			ViewerFormsManager.TopRouteView.ControlRoute.Settings = ViewerFormsManager.RouteView.Control.Settings;
+			ViewerFormsManager.TopRouteView.ControlTop.Options   = ViewerFormsManager.TopView.Control.Options;
+			ViewerFormsManager.TopRouteView.ControlRoute.Options = ViewerFormsManager.RouteView.Control.Options;
 
-			ViewerFormsManager.TopRouteView.ControlTop.LoadControl0Settings();
-			ViewerFormsManager.TopRouteView.ControlRoute.LoadControl0Settings();
+			ViewerFormsManager.TopRouteView.ControlTop.LoadControl0Options();
+			ViewerFormsManager.TopRouteView.ControlRoute.LoadControl0Options();
 
 
 			AddViewer("Top View",    ViewerFormsManager.TopView);
@@ -47,7 +47,7 @@ namespace MapView.Forms.MainWindow
 
 			AddViewer("TopRoute View", ViewerFormsManager.TopRouteView);
 
-			AddViewer("Console", _consoleShare.GetConsole());
+			AddViewer("Console", _consoleShare.Console);
 
 			AddViewer("Help",  ViewerFormsManager.HelpScreen);
 			AddViewer("About", ViewerFormsManager.AboutScreen);
@@ -75,7 +75,7 @@ namespace MapView.Forms.MainWindow
 //			f.FormBorderStyle = FormBorderStyle.SizableToolWindow;
 		}
 
-		private void SetAsObserver(string regkey, Form f)
+		private void SetAsObserver(string key, Form f)
 		{
 			//LogFile.WriteLine("SetAsObserver regkey= " + regkey);
 			var fobserver = f as IMapObserverProvider; // TopViewForm, RouteViewForm, TileViewForm only.
@@ -83,11 +83,11 @@ namespace MapView.Forms.MainWindow
 			{
 				//LogFile.WriteLine(". is IMapObserverProvider");
 				var fcontrol = fobserver.ObserverControl0; // ie. TopView, RouteView, TileView.
-				fcontrol.LoadControl0Settings();
+				fcontrol.LoadControl0Options();
 
-				var regInfo = new DSShared.Windows.RegistryInfo(f, regkey); // subscribe to Load and Closing events.
+				var regInfo = new DSShared.Windows.RegistryInfo(f, key); // subscribe to Load and Closing events.
 
-				_settingsManager.Add(regkey, fcontrol.Settings);
+				_optionsManager.Add(key, fcontrol.Options);
 			}
 		}
 /*		private void SetAsObserver(Form f, string caption, string regkey = null)
@@ -97,10 +97,10 @@ namespace MapView.Forms.MainWindow
 			if (fObserver != null)
 			{
 				var observerType0 = fObserver.MapObserver;
-				observerType0.LoadControl0Settings();
+				observerType0.LoadControl0Options();
 //				observerType0.RegistryInfo = new DSShared.Windows.RegistryInfo(f, regkey); // subscribe to Load and Closing events.
 				var regInfo = new DSShared.Windows.RegistryInfo(f, regkey); // subscribe to Load and Closing events.
-				_settingsManager.Add(regkey, observerType0.Settings);
+				_optionsManager.Add(regkey, observerType0.Options);
 			}
 //			f.ShowInTaskbar = false;
 //			f.FormBorderStyle = FormBorderStyle.SizableToolWindow;

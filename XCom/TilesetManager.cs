@@ -53,6 +53,23 @@ namespace XCom
 
 			FullPath = fullpath;
 
+
+			var progress = ProgressBarForm.Instance;
+			progress.SetInfo("Parsing MapConfig ...");
+
+			var typeCount = 0; // TODO: optimize the reading (here & below) into a buffer.
+			using (var reader = File.OpenText(fullpath))
+			{
+				string line = String.Empty;
+				while ((line = reader.ReadLine()) != null)
+				{
+					if (line.Contains("- type"))
+						++typeCount;
+				}
+			}
+			progress.SetTotal(typeCount);
+
+
 			// TODO: if exists(pfe)
 			// else error out.
 
@@ -73,7 +90,7 @@ namespace XCom
 
 					string nodeLabel = nodeTileset.Children[new YamlScalarNode("type")].ToString();
 					LogFile.WriteLine(". . type= " + nodeLabel); // "UFO_110"
-//					if (!_types.Contains(nodeLabel)) // safety. There shall be only 1 tileset of any type in YAML.
+//					if (!_types.Contains(nodeLabel))
 //						_types.Add(nodeLabel);
 
 					string nodeCategory = nodeTileset.Children[new YamlScalarNode("category")].ToString();
@@ -124,9 +141,11 @@ namespace XCom
 											terrainList,
 											nodeBasepath);
 					Tilesets.Add(tileset);
+
+					progress.UpdateProgress();
 				}
-//				}
 			}
+			progress.Hide();
 		}
 		#endregion
 	}

@@ -9,8 +9,8 @@ using System.Windows.Forms;
 using DSShared;
 
 using MapView.Forms.MainWindow;
-using MapView.Forms.XCError.WarningConsole;
-//using MapView.SettingServices;
+//using MapView.Forms.XCError.WarningConsole;
+//using MapView.OptionsServices;
 
 //using Microsoft.Win32;
 
@@ -41,14 +41,14 @@ namespace MapView
 		private readonly MainMenusManager      _mainMenusManager;
 
 		private readonly LoadingForm           _loadingProgress;
-		private readonly ConsoleWarningHandler _warningHandler;
+//		private readonly ConsoleWarningHandler _warningHandler;
 
 
-		private readonly SettingsManager _settingsManager;
-		private Settings Settings
+		private readonly OptionsManager _optionsManager;
+		private Options Options
 		{
-			get { return _settingsManager["MainWindow"]; }
-			set { _settingsManager["MainWindow"] = value; }
+			get { return _optionsManager["MainWindow"]; }
+			set { _optionsManager["MainWindow"] = value; }
 		}
 
 		private static XCMainWindow _instance;
@@ -95,8 +95,8 @@ namespace MapView
 			var pathViewerPositions = new PathInfo(dir, "MapViewers", "yml");
 			share.SetShare(PathInfo.MapViewers, pathViewerPositions);
 
-			var pathSettings = new PathInfo(dir, "MVSettings", "cfg");
-			share.SetShare(PathInfo.SettingsFile, pathSettings);
+			var pathOptions = new PathInfo(dir, "MVSettings", "cfg");
+			share.SetShare(PathInfo.SettingsFile, pathOptions);
 
 			var pathPaths = new PathInfo(dir, "Paths", "cfg");
 			share.SetShare(PathInfo.PathsFile, pathPaths);
@@ -172,13 +172,13 @@ namespace MapView
 			_instance = this;
 
 
-			_settingsManager = new SettingsManager(); // goes before LoadSettings()
+			_optionsManager = new OptionsManager(); // goes before LoadOptions()
 
-			Settings = new Settings(); // NOTE: Settings hold Options. And should probly be called 'Options'.
+			Options = new Options();
 
-			LoadSettings();									// TODO: check if this should go after the managers load
-			LogFile.WriteLine("MainView Settings loaded.");	// since managers might be re-instantiating needlessly
-															// when OnSettingsChange() runs ....
+			LoadOptions();									// TODO: check if this should go after the managers load
+			LogFile.WriteLine("MainView Options loaded.");	// since managers might be re-instantiating needlessly
+															// when OnOptionsClick() runs ....
 
 			_mainViewUnderlay = MainViewUnderlay.Instance;
 			_mainViewUnderlay.Dock = DockStyle.Fill;
@@ -194,14 +194,14 @@ namespace MapView
 
 
 			var consoleShare = new ConsoleSharedSpace(share);
-			_warningHandler  = new ConsoleWarningHandler(consoleShare);
+//			_warningHandler  = new ConsoleWarningHandler(consoleShare);
 
 
 			_viewerFormsManager = new ViewerFormsManager();
-			_viewersManager     = new ViewersManager(_settingsManager, consoleShare);
+			_viewersManager     = new ViewersManager(_optionsManager, consoleShare);
 			_mainMenusManager   = new MainMenusManager(menuView, menuHelp);
 
-			_mainMenusManager.PopulateMenus(consoleShare.GetConsole(), Settings);
+			_mainMenusManager.PopulateMenus(consoleShare.Console, Options);
 			LogFile.WriteLine("MainView menus populated.");
 
 			ViewerFormsManager.HideViewersManager = _mainMenusManager.CreateShowHideManager(); // subsidiary viewers hide when PckView is invoked from TileView.
@@ -263,49 +263,35 @@ namespace MapView
 				}
 			}
 
-			PckSpriteCollection cuboid = null;
-//			try // the UFO cursor spriteset first
-//			{
-				cuboid = ResourceInfo.LoadSpriteset(
-												SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo),
-												SharedSpace.CursorFilePrefix,
-												2,
-												Palette.UfoBattle);
-				if (cuboid != null)
-				{
-					_mainViewUnderlay.MainViewOverlay.Cuboid = new CuboidSprite(cuboid);
-					LogFile.WriteLine("UFO Cursor loaded.");
-				}
-				else
-					LogFile.WriteLine("UFO Cursor not found.");
-//			}
-//			catch
-//			{
-//				try // the TFTD cursor spriteset last
-//				{
-					cuboid = ResourceInfo.LoadSpriteset(
-													SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd),
-													SharedSpace.CursorFilePrefix,
-													4,
-													Palette.TftdBattle);
-					if (cuboid != null)
-					{
-						_mainViewUnderlay.MainViewOverlay.Cuboid = new CuboidSprite(cuboid);
-						LogFile.WriteLine("TFTD Cursor loaded.");
-					}
-					else
-						LogFile.WriteLine("TFTD Cursor not found.");
-//				}
-//				catch
-//				{
-//					_mainViewUnderlay.Cursor = null; // NOTE: this is the system cursor, NOT the cuboid-sprite.
-//					throw; // TODO: there's got to be a better way to do that ....
-//				}
-//				throw;
-//			}
+			SpriteCollection cuboid = null;
+			cuboid = ResourceInfo.LoadSpriteset(
+											SharedSpace.CursorFilePrefix,
+											SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo),
+											2,
+											Palette.UfoBattle);
+			if (cuboid != null)
+			{
+				_mainViewUnderlay.MainViewOverlay.Cuboid = new CuboidSprite(cuboid);
+				LogFile.WriteLine("UFO Cursor loaded.");
+			}
+			else
+				LogFile.WriteLine("UFO Cursor not found.");
+
+			cuboid = ResourceInfo.LoadSpriteset(
+											SharedSpace.CursorFilePrefix,
+											SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd),
+											4,
+											Palette.TftdBattle);
+			if (cuboid != null)
+			{
+				_mainViewUnderlay.MainViewOverlay.Cuboid = new CuboidSprite(cuboid);
+				LogFile.WriteLine("TFTD Cursor loaded.");
+			}
+			else
+				LogFile.WriteLine("TFTD Cursor not found.");
 
 
-			ResourceInfo.InitializeResources(Palette.UfoBattle, pathConfig); // load resources from YAML.
+			ResourceInfo.InitializeResources(pathConfig); // load resources from YAML.
 			LogFile.WriteLine("ResourceInfo initialized.");
 
 
@@ -313,18 +299,18 @@ namespace MapView
 			LogFile.WriteLine("Tilesets created and loaded to tree panel.");
 
 
-			if (pathSettings.FileExists())
+			if (pathOptions.FileExists())
 			{
-				_settingsManager.Load(pathSettings.FullPath);
-				LogFile.WriteLine("User settings loaded.");
+				_optionsManager.LoadOptions(pathOptions.FullPath);
+				LogFile.WriteLine("User options loaded.");
 			}
 			else
-				LogFile.WriteLine("User settings NOT loaded - no settings file to load.");
+				LogFile.WriteLine("User options NOT loaded - no options file to load.");
 
 
 
 			_loadingProgress = new LoadingForm();
-			XCBitmap.LoadingEvent += _loadingProgress.HandleProgress; // TODO: fix or remove that.
+			XCBitmap.LoadingEvent += _loadingProgress.UpdateProgress; // TODO: fix or remove that.
 
 
 			// I should rewrite the hq2x wrapper for .NET sometime -- not the code it's pretty insane
@@ -352,6 +338,7 @@ namespace MapView
 //					}
 //			}
 			/****************************************/
+
 
 			LogFile.WriteLine("About to show MainView ...");
 			Show();
@@ -422,7 +409,7 @@ namespace MapView
 		}
 
 
-		#region Settings
+		#region Options
 		// headers
 		private const string Global  = "Global";
 		private const string MapView = "MapView";
@@ -450,7 +437,7 @@ namespace MapView
 		/// Loads (a) MainView's screen-size and -position from YAML,
 		/// (b) settings in MainView's Options screen.
 		/// </summary>
-		private void LoadSettings()
+		private void LoadOptions()
 		{
 			string file = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
 			using (var sr = new StreamReader(File.OpenRead(file)))
@@ -502,15 +489,15 @@ namespace MapView
 //				keySoftware.Close();
 //			}
 
-			var handler = new OptionChangedEventHandler(OnSettingChange);
+			var handler = new OptionChangedEventHandler(OnOptionChange);
 
-			Settings.AddSetting(
+			Options.AddOption(
 							Animation,
 							MainViewUnderlay.IsAnimated,
 							"If true the sprites will animate",
 							Global,
 							handler);
-			Settings.AddSetting(
+			Options.AddOption(
 							Doors,
 							false,
 							"If true the doors will animate if Animation is also on - if"
@@ -518,51 +505,51 @@ namespace MapView
 							+ " This setting may need to be re-toggled if Animation changes",
 							Global,
 							handler);
-			Settings.AddSetting(
+			Options.AddOption(
 							SaveWindowPositions,
 							true, //PathsEditor.SaveRegistry,
 							"If true the window positions and sizes will be saved",
 							Global,
 							handler);
 
-			Settings.AddSetting(
+			Options.AddOption(
 							ShowGrid,
 							MainViewUnderlay.Instance.MainViewOverlay.ShowGrid,
 							"If true a grid will display at the current level of editing",
 							MapView,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
-			Settings.AddSetting(
+			Options.AddOption(
 							GridLayerColor,
 							MainViewUnderlay.Instance.MainViewOverlay.GridLayerColor,
 							"Color of the grid",
 							MapView,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
-			Settings.AddSetting(
+			Options.AddOption(
 							GridLayerOpacity,
 							MainViewUnderlay.Instance.MainViewOverlay.GridLayerOpacity,
 							"Opacity of the grid (0..255 default 200)",
 							MapView,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
-			Settings.AddSetting(
+			Options.AddOption(
 							GridLineColor,
 							MainViewUnderlay.Instance.MainViewOverlay.GridLineColor,
 							"Color of the lines that make up the grid",
 							MapView,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
-			Settings.AddSetting(
+			Options.AddOption(
 							GridLineWidth,
 							MainViewUnderlay.Instance.MainViewOverlay.GridLineWidth,
 							"Width of the grid lines in pixels",
 							MapView,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
-			Settings.AddSetting(
+			Options.AddOption(
 							GraySelection,
 							MainViewUnderlay.Instance.MainViewOverlay.GraySelection,
 							"If true the selection area will show up in gray",
 							MapView,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
 
-			Settings.AddSetting(
+			Options.AddOption(
 							SpriteShade,
 							MainViewUnderlay.Instance.MainViewOverlay.SpriteShade,
 							"The darkness of the tile sprites (10..100 default 0 off, unity is 33)"
@@ -579,14 +566,14 @@ namespace MapView
 						+ "5 - nearest neighbor (fastest)"                 + Environment.NewLine
 						+ "6 - high quality bilinear (smoothest)"          + Environment.NewLine
 						+ "7 - high quality bicubic (best in a pig's eye)";
-			Settings.AddSetting(
+			Options.AddOption(
 							Interpolation,
 							MainViewUnderlay.Instance.MainViewOverlay.Interpolation,
 							desc,
 							Sprites,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
 
-//			Settings.AddSetting(
+//			Options.AddOption(
 //							SaveOnExit,
 //							true,
 //							"If true these settings will be saved on program exit",
@@ -598,14 +585,17 @@ namespace MapView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="key"></param>
-		/// <param name="val"></param>
-		private void OnSettingChange(object sender, string key, object val)
+		/// <param name="value"></param>
+		private void OnOptionChange(
+				object sender,
+				string key,
+				object value)
 		{
-			Settings[key].Value = val;
+			Options[key].Value = value;
 			switch (key)
 			{
 				case Animation:
-					miOn.Checked = (bool)val;		// NOTE: 'miOn.Checked' and 'miOff.Checked' are used
+					miOn.Checked = (bool)value;		// NOTE: 'miOn.Checked' and 'miOff.Checked' are used
 					miOff.Checked = !miOn.Checked;	// by the F1 and F2 keys to switch animations on/off.
 					MainViewUnderlay.Animate(miOn.Checked);
 
@@ -624,7 +614,7 @@ namespace MapView
 					break;
 
 				case Doors:
-					miDoors.Checked = (bool)val; // NOTE: 'miDoors.Checked' is used by the F3 key to toggle door animations.
+					miDoors.Checked = (bool)value; // NOTE: 'miDoors.Checked' is used by the F3 key to toggle door animations.
 
 					if (miOn.Checked)
 					{
@@ -634,7 +624,7 @@ namespace MapView
 					{
 						if (_mainViewUnderlay.MapBase != null) // NOTE: MapBase is null on MapView load.
 						{
-							foreach (XCTilepart part in _mainViewUnderlay.MapBase.Parts)
+							foreach (Tilepart part in _mainViewUnderlay.MapBase.Parts)
 								part.SetDoorToAlternateSprite();
 
 							Refresh();
@@ -649,31 +639,31 @@ namespace MapView
 					break;
 
 				case ShowGrid:
-					MainViewUnderlay.Instance.MainViewOverlay.ShowGrid = (bool)val;
+					MainViewUnderlay.Instance.MainViewOverlay.ShowGrid = (bool)value;
 					break;
 
 				case GridLayerColor:
-					MainViewUnderlay.Instance.MainViewOverlay.GridLayerColor = (Color)val;
+					MainViewUnderlay.Instance.MainViewOverlay.GridLayerColor = (Color)value;
 					break;
 
 				case GridLayerOpacity:
-					MainViewUnderlay.Instance.MainViewOverlay.GridLayerOpacity = (int)val;
+					MainViewUnderlay.Instance.MainViewOverlay.GridLayerOpacity = (int)value;
 					break;
 
 				case GridLineColor:
-					MainViewUnderlay.Instance.MainViewOverlay.GridLineColor = (Color)val;
+					MainViewUnderlay.Instance.MainViewOverlay.GridLineColor = (Color)value;
 					break;
 
 				case GridLineWidth:
-					MainViewUnderlay.Instance.MainViewOverlay.GridLineWidth = (int)val;
+					MainViewUnderlay.Instance.MainViewOverlay.GridLineWidth = (int)value;
 					break;
 
 				case SpriteShade:
-					MainViewUnderlay.Instance.MainViewOverlay.SpriteShade = (int)val;
+					MainViewUnderlay.Instance.MainViewOverlay.SpriteShade = (int)value;
 					break;
 
 				case Interpolation:
-					MainViewUnderlay.Instance.MainViewOverlay.Interpolation = (int)val;
+					MainViewUnderlay.Instance.MainViewOverlay.Interpolation = (int)value;
 					break;
 
 				// NOTE: 'GraySelection' is handled. reasons ...
@@ -700,7 +690,7 @@ namespace MapView
 				//LogFile.WriteLine("OnCloseSaveRegistry MainView");
 				_mainMenusManager.IsQuitting();
 
-				_settingsManager.Save(); // save MV_SettingsFile // TODO: Save Settings when closing the Options form(s).
+				_optionsManager.SaveOptions(); // save MV_SettingsFile // TODO: Save Settings when closing the Options form(s).
 
 
 //				if (PathsEditor.SaveRegistry) // TODO: re-implement.
@@ -785,7 +775,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnOnClick(object sender, EventArgs e)
 		{
-			OnSettingChange(this, Animation, true);
+			OnOptionChange(this, Animation, true);
 		}
 
 		/// <summary>
@@ -795,7 +785,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnOffClick(object sender, EventArgs e)
 		{
-			OnSettingChange(this, Animation, false);
+			OnOptionChange(this, Animation, false);
 		}
 
 		/// <summary>
@@ -805,7 +795,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnToggleDoorsClick(object sender, EventArgs e)
 		{
-			OnSettingChange(this, Doors, !miDoors.Checked);
+			OnOptionChange(this, Doors, !miDoors.Checked);
 		}
 
 		private void OnSaveClick(object sender, EventArgs e)
@@ -911,7 +901,7 @@ namespace MapView
 				tsslPosition.Text = String.Empty;
 				ViewerFormsManager.RouteView.Control.ClearSelectedLocation();
 
-				Settings[Doors].Value = false; // toggle off door-animations; not sure that this is necessary to do.
+				Options[Doors].Value = false; // toggle off door-animations; not sure that this is necessary to do.
 				miDoors.Checked = false;
 				ToggleDoorSprites(false);
 
@@ -927,7 +917,7 @@ namespace MapView
 		{
 			if (_mainViewUnderlay.MapBase != null) // NOTE: MapBase is null on MapView load.
 			{
-				foreach (XCTilepart part in _mainViewUnderlay.MapBase.Parts)
+				foreach (Tilepart part in _mainViewUnderlay.MapBase.Parts)
 					part.SetDoorSprites(animate);
 
 				Refresh();
@@ -977,7 +967,7 @@ namespace MapView
 			{
 				it.Checked = true;
 
-				_foptions = new OptionsForm("MainViewOptions", Settings);
+				_foptions = new OptionsForm("MainViewOptions", Options);
 				_foptions.Text = "Main View Options";
 
 				_foptions.Show();

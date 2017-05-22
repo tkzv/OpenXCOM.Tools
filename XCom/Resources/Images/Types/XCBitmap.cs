@@ -19,12 +19,15 @@ using XCom.Interfaces;
 
 namespace XCom
 {
+	public delegate void LoadingEventHandler(int progress, int total);
+
+
 	public static class XCBitmap
 	{
 		public static event LoadingEventHandler LoadingEvent;
 
 		// amount of space between saved bmp image blocks
-//		private static readonly int space = 1;
+//		private const int space = 1;
 
 
 		public static void Save(string path, Bitmap image)
@@ -495,12 +498,12 @@ namespace XCom
 		/// <summary>
 		/// Used by MapFileBase.SaveGif()
 		/// </summary>
-		/// <param name="cur"></param>
+		/// <param name="value"></param>
 		/// <param name="total"></param>
-		internal static void FireLoadingEvent(int cur, int total)
+		internal static void UpdateProgressBar(int value, int total)
 		{
 			if (LoadingEvent != null)
-				LoadingEvent(cur, total);
+				LoadingEvent(value, total);
 		}
 
 //		public static unsafe Bitmap HQ2X(/*Bitmap image*/)
@@ -642,7 +645,7 @@ namespace XCom
 								pal,
 								x, y,
 								width, height));
-				FireLoadingEvent(aniSprite, rows * cols);
+				UpdateProgressBar(aniSprite, rows * cols);
 			}
 
 			list.Pal = pal;
@@ -707,7 +710,7 @@ namespace XCom
 
 /*		public static XCImage LoadSingle(Bitmap src, int num, Palette pal, Type collectionType)
 		{
-//			return PckSpriteCollection.FromBmpSingle(src, num, pal);
+//			return SpriteCollection.FromBmpSingle(src, num, pal);
 
 			MethodInfo mi = collectionType.GetMethod("FromBmpSingle");
 			if (mi == null)

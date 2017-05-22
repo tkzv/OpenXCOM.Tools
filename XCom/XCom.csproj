@@ -97,13 +97,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Resources\Images\Collections\PckSpriteCollection.cs">
+    <Compile Include="ProgressBarForm.cs" />
+    <Compile Include="Resources\Images\Collections\SpriteCollection.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Resources\Images\Collections\XCImageCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Resources\Images\TerrainHerder.cs">
+    <Compile Include="Resources\Images\TerrainManager.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Resources\Images\Terrain.cs">
@@ -127,20 +128,11 @@
     <Compile Include="Resources\Map\XCTileFactory.cs" />
     <Compile Include="Interfaces\Base\MapPosition.cs" />
     <Compile Include="Interfaces\Base\MapTileList.cs" />
-    <Compile Include="Resources\Variable.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Resources\Varidia.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Services\MapResizeService.cs" />
     <Compile Include="Interfaces\Base\MapTileBase.cs" />
     <Compile Include="Interfaces\Base\MapFileBase.cs" />
     <Compile Include="Interfaces\Base\IMapObserver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Resources\Map\OccultFile.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Resources\Map\MapFileChild.cs">
@@ -161,10 +153,10 @@
     <Compile Include="Resources\Map\EnumString.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Resources\Map\XCTilepart.cs">
+    <Compile Include="Resources\Map\Tilepart.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FileDesc\GroupHerder.cs">
+    <Compile Include="FileDesc\TileGroupManager.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FileDesc\TileGroupChild.cs">
@@ -174,9 +166,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Globals.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Interfaces\Base\DescriptorBase_.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\Base\TilepartBase.cs" />
@@ -223,6 +212,9 @@
     <Compile Include="XConsole.cs">
       <SubType>Code</SubType>
     </Compile>
+    <EmbeddedResource Include="ProgressBarForm.resx">
+      <DependentUpon>ProgressBarForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>

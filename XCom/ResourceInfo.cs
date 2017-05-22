@@ -2,86 +2,77 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using DSShared;
+
 
 namespace XCom
 {
 	public static class ResourceInfo
 	{
-		private static GroupHerder _infoTilegroup;
-		public static GroupHerder TileGroupInfo
+		public static TileGroupManager TileGroupInfo
+		{ get; private set; }
+
+		public static TerrainManager TerrainInfo
+		{ get; private set; }
+
+		private static readonly Dictionary<Palette, Dictionary<string, SpriteCollection>> _spritesDictionary
+						  = new Dictionary<Palette, Dictionary<string, SpriteCollection>>();
+
+
+		/// <summary>
+		/// Initializes/ loads info about XCOM resources.
+		/// </summary>
+		/// <param name="pathConfig"></param>
+		public static void InitializeResources(PathInfo pathConfig)
 		{
-			get { return _infoTilegroup; }
-		}
-
-		private static TerrainHerder _infoTerrain;
-		public static TerrainHerder TerrainInfo
-		{
-			get { return _infoTerrain; }
-		}
-
-		private static Palette _palette = Palette.UfoBattle;
-		internal static Palette Pal
-		{
-			get { return _palette; }
-		}
-
-		private static Dictionary<Palette, Dictionary<string, PckSpriteCollection>> _spritesDictionary;
-
-
-		public static void InitializeResources(Palette pal, DSShared.PathInfo pathConfig)
-		{
-			Directory.SetCurrentDirectory(pathConfig.Path);	// change to /settings dir
-			XConsole.Init(20);								// note that prints the LogFile to settings dir also
-
-			_palette = pal;
-			_spritesDictionary = new Dictionary<Palette, Dictionary<string, PckSpriteCollection>>();
+			Directory.SetCurrentDirectory(pathConfig.Path); // change to /settings dir // TODO: screw settings dir.
+//			XConsole.Init(20);
 
 			var tilesetManager = new TilesetManager(pathConfig.FullPath);
 
-			_infoTilegroup = new GroupHerder(tilesetManager);
-			_infoTerrain   = new TerrainHerder(tilesetManager);
+			TileGroupInfo = new TileGroupManager(tilesetManager);
+			TerrainInfo   = new TerrainManager(tilesetManager);
 
 			Directory.SetCurrentDirectory(SharedSpace.Instance.GetShare(SharedSpace.ApplicationDirectory)); // change back to app dir
 		}
 
-//		internal static PckSpriteCollection GetSpriteset(string spriteset)
-//		{
-//			return _terrainInfo.Terrains[spriteset].GetImageset(_palette);
-//		}
-
-		public static PckSpriteCollection LoadSpriteset(
-				string path,
+		/// <summary>
+		/// Loads a given spriteset for UFO or TFTD.
+		/// </summary>
+		/// <param name="file"></param>
+		/// <param name="path"></param>
+		/// <param name="lenTabOffset"></param>
+		/// <param name="pal"></param>
+		/// <returns></returns>
+		public static SpriteCollection LoadSpriteset(
 				string file,
+				string path,
 				int lenTabOffset,
 				Palette pal)
 		{
 			LogFile.WriteLine("");
-			LogFile.WriteLine("ResourceInfo.PckSpriteCollection");
+			LogFile.WriteLine("ResourceInfo.SpriteCollection");
 
 			if (!String.IsNullOrEmpty(path))
 			{
 				LogFile.WriteLine(". path= " + path);
 				LogFile.WriteLine(". file= " + file);
 
-				if (_spritesDictionary == null)
-					_spritesDictionary = new Dictionary<Palette, Dictionary<string, PckSpriteCollection>>();
-
 				if (!_spritesDictionary.ContainsKey(pal))
-					_spritesDictionary.Add(pal, new Dictionary<string, PckSpriteCollection>());
+					_spritesDictionary.Add(pal, new Dictionary<string, SpriteCollection>());
 
-//				if (_pckHash[pal][path + file] == null)
 				var pf = Path.Combine(path, file);
 				LogFile.WriteLine(". pf= " + pf);
 
 				var spritesetDictionary = _spritesDictionary[pal];
 				if (!spritesetDictionary.ContainsKey(pf))
 				{
-					LogFile.WriteLine(". . pf not found in spriteset dictionary -> add new PckSpriteCollection");
+					LogFile.WriteLine(". . pf not found in spriteset dictionary -> add new SpriteCollection");
 
-					using (var strPck = File.OpenRead(pf + PckSpriteCollection.PckExt))
-					using (var strTab = File.OpenRead(pf + PckSpriteCollection.TabExt))
+					using (var strPck = File.OpenRead(pf + SpriteCollection.PckExt))
+					using (var strTab = File.OpenRead(pf + SpriteCollection.TabExt))
 					{
-						spritesetDictionary.Add(pf, new PckSpriteCollection(
+						spritesetDictionary.Add(pf, new SpriteCollection(
 																		strPck,
 																		strTab,
 																		lenTabOffset,
@@ -94,6 +85,11 @@ namespace XCom
 			return null;
 		}
 
+		/// <summary>
+		/// Clears a given spriteset from the dictionary.
+		/// </summary>
+		/// <param name="path"></param>
+		/// <param name="file"></param>
 		public static void ClearSpriteset(string path, string file)
 		{
 			var pf = Path.Combine(path, file);
@@ -101,5 +97,10 @@ namespace XCom
 			foreach (var spritesetDictionary in _spritesDictionary.Values)
 				spritesetDictionary.Remove(pf);
 		}
+
+//		internal static SpriteCollection GetSpriteset(string spriteset)
+//		{
+//			return _terrainInfo.Terrains[spriteset].GetImageset(_palette);
+//		}
 	}
 }

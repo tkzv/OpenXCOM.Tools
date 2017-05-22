@@ -63,9 +63,9 @@ namespace XCom
 		/// </summary>
 		/// <param name="key">the key to look for</param>
 		/// <param name="value">the object to add if the current value doesn't
-		/// exist or is null (default null)</param>
+		/// exist or is null</param>
 		/// <returns>the value associated with the key as an object</returns>
-		public object SetShare(string key, object value = null)
+		public object SetShare(string key, object value)
 		{
 			if (!_share.ContainsKey(key))
 			{
@@ -82,6 +82,17 @@ namespace XCom
 		public string GetShare(string key)
 		{
 			return _share[key] as String;
+		}
+
+		/// <summary>
+		/// Gets the console, basically.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
+		public object GetShareObject(string key)
+		{
+			return (_share.ContainsKey(key)) ? _share[key]
+											 : null;
 		}
 		#endregion
 	}

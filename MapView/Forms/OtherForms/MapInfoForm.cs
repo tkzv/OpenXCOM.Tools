@@ -12,7 +12,7 @@ namespace MapView
 		:
 			Form
 	{
-		public MapInfoForm()
+		internal MapInfoForm()
 		{
 			InitializeComponent();
 
@@ -20,7 +20,7 @@ namespace MapView
 		}
 
 
-		public void Analyze(MapFileBase mapBase)
+		internal void Analyze(MapFileBase mapBase)
 		{
 			groupInfo.Text = "Map: " + mapBase.Label;
 
@@ -80,7 +80,7 @@ namespace MapView
 								++parts;
 								Count(tile.Ground, recordsTable, spritesTable);
 
-								var part = tile.Ground as XCTilepart;
+								var part = tile.Ground as Tilepart;
 								if (part != null)
 									Count(part.Dead, recordsTable, spritesTable);
 							}
@@ -90,7 +90,7 @@ namespace MapView
 								++parts;
 								Count(tile.West, recordsTable, spritesTable);
 
-								var part = tile.West as XCTilepart;
+								var part = tile.West as Tilepart;
 								if (part != null)
 									Count(part.Dead, recordsTable, spritesTable);
 							}
@@ -100,7 +100,7 @@ namespace MapView
 								++parts;
 								Count(tile.North, recordsTable, spritesTable);
 
-								var part = tile.North as XCTilepart;
+								var part = tile.North as Tilepart;
 								if (part != null)
 									Count(part.Dead, recordsTable, spritesTable);
 							}
@@ -110,7 +110,7 @@ namespace MapView
 								++parts;
 								Count(tile.Content, recordsTable, spritesTable);
 
-								var part = tile.Content as XCTilepart;
+								var part = tile.Content as Tilepart;
 								if (part != null)
 									Count(part.Dead, recordsTable, spritesTable);
 							}

@@ -76,7 +76,7 @@ namespace MapView
 		#endregion
 
 
-		internal Settings Settings
+		internal Options Options
 		{ get; set; }
 
 
@@ -86,12 +86,12 @@ namespace MapView
 		/// </summary>
 		public MapObserverControl0()
 		{
-			Settings = new Settings();
+			Options = new Options();
 		}
 		#endregion
 
 
-		internal protected virtual void LoadControl0Settings()
+		internal protected virtual void LoadControl0Options()
 		{}
 
 /*		/// <summary>

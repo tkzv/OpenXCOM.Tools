@@ -28,8 +28,8 @@ namespace MapView
 //		public static readonly string RegistryKey = "MapView";
 
 
-		private static XCom.PckSpriteCollection _extraTiles;
-		internal static XCom.PckSpriteCollection ExtraTiles
+		private static XCom.SpriteCollection _extraTiles;
+		internal static XCom.SpriteCollection ExtraTiles
 		{
 			get { return _extraTiles; }
 		}
@@ -43,7 +43,7 @@ namespace MapView
 				using (var strTab = System.Reflection.Assembly.GetExecutingAssembly()
 									.GetManifestResourceStream("MapView._Embedded.Extra.TAB"))
 				{
-					_extraTiles = new XCom.PckSpriteCollection(
+					_extraTiles = new XCom.SpriteCollection(
 															strPck,
 															strTab,
 															2,

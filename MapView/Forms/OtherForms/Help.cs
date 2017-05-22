@@ -121,9 +121,9 @@ namespace MapView
 		/// </summary>
 		private void UpdateSpecialPropertyColors()
 		{
-			// TODO: update special property colors from Settings without
+			// TODO: update special property colors from Options without
 			// requiring that the Help screen be reloaded. Neither form
-			// (Settings or Help) is modal, so the code can't rely on that
+			// (Options or Help) is modal, so the code can't rely on that
 			// user-forced effect.
 			var brushesSpecial = MapView.Forms.MainWindow.ViewerFormsManager.TileView.Control.GetSpecialPropertyBrushes();
 

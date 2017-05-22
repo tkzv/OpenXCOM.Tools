@@ -128,7 +128,7 @@ namespace MapView
 
 		private void lbImages_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			tbImagesTerrain.Text = ResourceInfo.TerrainInfo[(string)lbImages.SelectedItem].PathDirectory;
+			tbImagesTerrain.Text = ResourceInfo.TerrainInfo[(string)lbImages.SelectedItem].PathTerrain;
 		}
 
 		private void tvMaps_AfterSelect(object sender, TreeViewEventArgs e)
@@ -171,7 +171,7 @@ namespace MapView
 //													tilegroup.OccultDirectory,
 													new List<string>(),
 													tilegroup.MapDirectory,	// TODO: fix the Map directory.
-													tilegroup.Palette),		// TODO: fix the Palette determination.
+													tilegroup.Pal),		// TODO: fix the Palette determination.
 										node.Parent.Text);
 					}
 				}
@@ -192,7 +192,7 @@ namespace MapView
 			tbMapsRoutes.Text  = tilegroup.RouteDirectory;
 			tbMapsOccults.Text = tilegroup.OccultDirectory; // TODO: remove that.
 
-			cbMapsPalette.SelectedItem = tilegroup.Palette;
+			cbMapsPalette.SelectedItem = tilegroup.Pal;
 		}
 
 		private void tbMapsMaps_KeyPress(object sender, KeyPressEventArgs e)
@@ -387,7 +387,7 @@ namespace MapView
 
 		private void tbImagesTerrain_TextChanged(object sender, EventArgs e)
 		{
-			ResourceInfo.TerrainInfo[(string)lbImages.SelectedItem].PathDirectory = tbImagesTerrain.Text;
+			ResourceInfo.TerrainInfo[(string)lbImages.SelectedItem].PathTerrain = tbImagesTerrain.Text;
 		}
 
 		private void cmImagesAddImageset_Click(object sender, EventArgs e)
@@ -450,9 +450,9 @@ namespace MapView
 			}
 		}
 
-		private void btnImagesSave_Click(object sender, EventArgs e)
+		private void OnSaveTerrainsClick(object sender, EventArgs e)
 		{
-			ResourceInfo.TerrainInfo.Save(tbPathsImages.Text);
+			ResourceInfo.TerrainInfo.SaveTerrain(tbPathsImages.Text);
 		}
 
 		private void newGroup_Click(object sender, EventArgs e)
@@ -482,7 +482,7 @@ namespace MapView
 		private void cbMapsPalette_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (tvMaps.SelectedNode.Parent == null)
-				GetCurrentTileGroup().Palette = cbMapsPalette.SelectedItem as Palette; // <- could be a group, category, or tileset
+				GetCurrentTileGroup().Pal = cbMapsPalette.SelectedItem as Palette; // <- could be a group, category, or tileset
 		}
 
 		private void OnSubsetClick(object sender, EventArgs e)

@@ -119,7 +119,6 @@ namespace MapView
 //			_mainViewOverlay = mainViewOverlay;
 
 			_mainViewOverlay = new MainViewOverlay();
-			_mainViewOverlay.SetMainViewUnderlay(this);
 
 			Controls.AddRange(new Control[]
 			{

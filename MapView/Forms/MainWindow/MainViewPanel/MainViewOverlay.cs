@@ -23,12 +23,6 @@ namespace MapView
 
 
 		#region Fields & Properties
-		private MainViewUnderlay _mainViewUnderlay;
-		internal void SetMainViewUnderlay(MainViewUnderlay underlay)
-		{
-			_mainViewUnderlay = underlay;
-		}
-
 		internal MapFileBase MapBase
 		{ get; set; }
 
@@ -194,7 +188,7 @@ namespace MapView
 			set
 			{
 				_interpolation = value.Clamp(0, 7);
-				_interpolationLocal = (InterpolationMode)_interpolation;
+				InterpolationLocal = (InterpolationMode)_interpolation;
 				Refresh();
 			}
 		}

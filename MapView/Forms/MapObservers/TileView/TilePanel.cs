@@ -115,11 +115,11 @@ namespace MapView.Forms.MapObservers.TileViews
 			_specialTypeBrushes = brushes;
 		}
 
-//		private static PckSpriteCollection extraFile;
-//		public static PckSpriteCollection ExtraFile
+//		private static SpriteCollection _extraFile;
+//		public static SpriteCollection ExtraFile
 //		{
-//			get { return extraFile; }
-//			set { extraFile = value; }
+//			get { return _extraFile; }
+//			set { _extraFile = value; }
 //		}
 
 

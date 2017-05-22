@@ -75,7 +75,7 @@ namespace PckView
 			#region SharedSpace information
 
 			var consoleShare = new ConsoleSharedSpace(new SharedSpace());
-			_console = consoleShare.GetConsole();
+			_console = consoleShare.Console;
 			_console.FormClosing += (sender, e) =>
 			{
 				e.Cancel = true;
@@ -397,7 +397,7 @@ namespace PckView
 		public void LoadSpriteCollectionFile(string pfePck, bool help)
 		{
 			string pfeTab = pfePck.Substring(0, pfePck.Length - 4);
-			pfeTab += PckSpriteCollection.TabExt;
+			pfeTab += SpriteCollection.TabExt;
 
 			if (File.Exists(pfeTab))
 			{
@@ -409,7 +409,7 @@ namespace PckView
 					XCImageCollection spriteset = null;
 					try
 					{
-						spriteset = new PckSpriteCollection(
+						spriteset = new SpriteCollection(
 														strPck,
 														strTab,
 														2,
@@ -417,7 +417,7 @@ namespace PckView
 					}
 					catch (Exception)
 					{
-						spriteset = new PckSpriteCollection(
+						spriteset = new SpriteCollection(
 														strPck,
 														strTab,
 														4,
@@ -655,7 +655,7 @@ namespace PckView
 			FileBackupManager.Backup(_path);
 
 			// Save
-			PckSpriteCollection.Save(
+			SpriteCollection.Save(
 								dir,
 								fileWithoutExt,
 								_totalViewPck.Collection,

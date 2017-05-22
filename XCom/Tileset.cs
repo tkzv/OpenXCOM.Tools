@@ -7,6 +7,11 @@ namespace XCom
 	/// <summary>
 	/// A Tileset is a tileset. It's comprised of references to loaded MAP/RMP
 	/// data as well as required terrain-data loaded from PCK/TAB/MCD files.
+	/// However, a Tileset is used only for loading groups- and terrains-
+	/// configuration from MapConfig; the data is then sorted by the
+	/// TilesetManager and is stored as Descriptor's and Terrain's for use in
+	/// the viewers/editors.
+	/// NOTE: I'm just working as best I can with a big wad of spaghetti.
 	/// </summary>
 	internal sealed class Tileset
 	{
@@ -33,19 +38,19 @@ namespace XCom
 		/// cTor.
 		/// </summary>
 		/// <param name="type"></param>
-		/// <param name="grup"></param>
+		/// <param name="gruop"></param>
 		/// <param name="category"></param>
 		/// <param name="terrains"></param>
 		/// <param name="basepath"></param>
 		internal Tileset(
 				string type,
-				string grup, // sic.
+				string gruop, // sic.
 				string category,
 				List<string> terrains,
 				string basepath)
 		{
 			Type     = type;
-			Group    = grup;
+			Group    = gruop;
 			Category = category;
 			Terrains = terrains;
 			BasePath = basepath;

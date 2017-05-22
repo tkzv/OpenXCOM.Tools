@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using DSShared.Windows;
 
 
-namespace MapView.SettingServices
+namespace MapView.OptionsServices
 {
 	/// <summary>
 	/// Deals with Volutar's MCD Editor app. Or any app/file really.
@@ -14,16 +14,16 @@ namespace MapView.SettingServices
 	{
 		private const string VolutarMcdEditorPath = "VolutarMcdEditorPath";
 
-		private readonly Settings _settings;
+		private readonly Options _options;
 
 		private string _fullpath;
 		internal string FullPath
 		{
 			get
 			{
-				var setting = _settings.GetSetting(VolutarMcdEditorPath, String.Empty);
+				var option = _options.GetOption(VolutarMcdEditorPath, String.Empty);
 
-				_fullpath = setting.Value as String;
+				_fullpath = option.Value as String;
 				if (!File.Exists(_fullpath))
 				{
 					using (var f = new InputBox("Enter the Volutar MCD Editor Path in full"))
@@ -33,7 +33,7 @@ namespace MapView.SettingServices
 							if (File.Exists(f.InputString))
 							{
 								_fullpath = f.InputString;
-								setting.Value = (object)f.InputString;
+								option.Value = (object)f.InputString;
 							}
 							else
 								MessageBox.Show(
@@ -51,15 +51,15 @@ namespace MapView.SettingServices
 		}
 
 
-		internal VolutarSettingService(Settings settings)
+		internal VolutarSettingService(Options options)
 		{
-			_settings = settings;
+			_options = options;
 		}
 
 
-		public static void LoadSettings(Settings settings)
+		public static void LoadOptions(Options options)
 		{
-			settings.AddSetting(
+			options.AddOption(
 							VolutarMcdEditorPath,
 							String.Empty,
 							"Path to Volutar MCD Editor" + Environment.NewLine

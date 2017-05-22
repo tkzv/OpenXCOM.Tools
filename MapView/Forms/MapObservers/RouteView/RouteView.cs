@@ -272,7 +272,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				it.Checked = true;
 
-				_foptions = new OptionsForm("RouteViewOptions", Settings);
+				_foptions = new OptionsForm("RouteViewOptions", Options);
 				_foptions.Text = "Route View Options";
 
 				_foptions.Show();
@@ -1204,7 +1204,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 								// but at least it's no longer "selected".
 
 
-		#region Settings
+		#region Options
 		// headers
 		private const string Links = "Links";
 		private const string View  = "View";
@@ -1233,9 +1233,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		/// <summary>
-		/// Loads default settings for RouteView in TopRouteView screens.
+		/// Loads default options for RouteView in TopRouteView screens.
 		/// </summary>
-		protected internal override void LoadControl0Settings()
+		protected internal override void LoadControl0Options()
 		{
 			tscbConnectionType.SelectedIndex = 0;
 
@@ -1252,13 +1252,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var pen = new Pen(new SolidBrush(Color.OrangeRed), 2);
 			pens[UnselectedLinkColor] = pen;
 			pens[UnselectedLinkWidth] = pen;
-			Settings.AddSetting(
+			Options.AddOption(
 							UnselectedLinkColor,
 							pen.Color,
 							"Color of unselected link lines",
 							Links,
 							pc);
-			Settings.AddSetting(
+			Options.AddOption(
 							UnselectedLinkWidth,
 							2,
 							"Width of unselected link lines",
@@ -1268,13 +1268,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			pen = new Pen(new SolidBrush(Color.RoyalBlue), 2);
 			pens[SelectedLinkColor] = pen;
 			pens[SelectedLinkWidth] = pen;
-			Settings.AddSetting(
+			Options.AddOption(
 							SelectedLinkColor,
 							pen.Color,
 							"Color of selected link lines",
 							Links,
 							pc);
-			Settings.AddSetting(
+			Options.AddOption(
 							SelectedLinkWidth,
 							2,
 							"Width of selected link lines",
@@ -1284,13 +1284,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			pen = new Pen(new SolidBrush(Color.BurlyWood), 3);
 			pens[WallColor] = pen;
 			pens[WallWidth] = pen;
-			Settings.AddSetting(
+			Options.AddOption(
 							WallColor,
 							pen.Color,
 							"Color of wall indicators",
 							View,
 							pc);
-			Settings.AddSetting(
+			Options.AddOption(
 							WallWidth,
 							3,
 							"Width of wall indicators",
@@ -1299,7 +1299,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			var brush = new SolidBrush(Color.DarkGoldenrod);
 			brushes[ContentColor] = brush;
-			Settings.AddSetting(
+			Options.AddOption(
 							ContentColor,
 							brush.Color,
 							"Color of content indicators",
@@ -1309,13 +1309,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			pen = new Pen(new SolidBrush(Color.Black), 1);
 			pens[GridLineColor] = pen;
 			pens[GridLineWidth] = pen;
-			Settings.AddSetting(
+			Options.AddOption(
 							GridLineColor,
 							pen.Color,
 							"Color of grid lines",
 							View,
 							pc);
-			Settings.AddSetting(
+			Options.AddOption(
 							GridLineWidth,
 							1,
 							"Width of grid lines",
@@ -1324,7 +1324,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			brush = new SolidBrush(Color.MediumSeaGreen);
 			brushes[UnselectedNodeColor] = brush;
-			Settings.AddSetting(
+			Options.AddOption(
 							UnselectedNodeColor,
 							brush.Color,
 							"Color of unselected nodes",
@@ -1333,7 +1333,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			brush = new SolidBrush(Color.RoyalBlue);
 			brushes[SelectedNodeColor] = brush;
-			Settings.AddSetting(
+			Options.AddOption(
 							SelectedNodeColor,
 							brush.Color,
 							"Color of selected nodes",
@@ -1342,28 +1342,28 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			brush = new SolidBrush(Color.GreenYellow);
 			brushes[SpawnNodeColor] = brush;
-			Settings.AddSetting(
+			Options.AddOption(
 							SpawnNodeColor,
 							brush.Color,
 							"Color of spawn nodes",
 							Nodes,
 							bc);
 
-			Settings.AddSetting(
+			Options.AddOption(
 							NodeOpacity,
 							255,
 							"Opacity of node colors (0..255)",
 							Nodes,
 							oc);
 
-			Settings.AddSetting(
+			Options.AddOption(
 							ShowPriorityBars,
 							true,
 							"True to show patrol-priority and spawn-weight bars",
 							Nodes,
 							sp);
 
-			Settings.AddSetting(
+			Options.AddOption(
 							ShowOverlay,
 							true,
 							"True to show mouse-over information",

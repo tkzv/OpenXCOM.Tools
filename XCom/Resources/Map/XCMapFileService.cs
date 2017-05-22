@@ -22,7 +22,7 @@ namespace XCom
 			{
 				string pfeMap = Path.Combine(
 										descriptor.BasePath + MapFileChild.MapsDir,
-										descriptor.Label + MapFileChild.MapExt);
+										descriptor.Label    + MapFileChild.MapExt);
 				LogFile.WriteLine(". pfeMap= " + pfeMap);
 	
 				if (File.Exists(pfeMap))
@@ -37,7 +37,7 @@ namespace XCom
 						if (infoTerrain != null)
 						{
 							var MCD = infoTerrain.GetMcdRecords(descriptor.Pal);
-							foreach (XCTilepart part in MCD)
+							foreach (Tilepart part in MCD)
 								parts.Add(part);
 						}
 					}

@@ -20,14 +20,14 @@ namespace MapView
 		private OptionsPropertyGrid _propertyGrid;
 
 
-		internal OptionsForm(string typeLabel, Settings settings)
+		internal OptionsForm(string typeLabel, Options options)
 		{
 			InitializeComponent();
 
 			var regInfo = new RegistryInfo(this, "Options"); // subscribe to Load and Closing events.
 
 			_propertyGrid.TypeLabel = typeLabel;
-			_propertyGrid.SetSettings(settings);
+			_propertyGrid.SetOptions(options);
 		}
 
 
@@ -74,7 +74,7 @@ namespace MapView
 			set { _typeLabel = value; }
 		}
 
-		private Settings _settings;
+		private Options _options;
 
 //		private bool _instantUpdate = true;
 
@@ -111,7 +111,7 @@ namespace MapView
 		}
 
 /*		[DefaultValue(true)]
-		[Description("If true the Setting.Update() event will be called when a property changes.")]
+		[Description("If true the Option.Update() event will be called when a property changes.")]
 		public bool InstantUpdate
 		{
 			get { return _instantUpdate; }
@@ -124,21 +124,21 @@ namespace MapView
 		{
 			base.OnPropertyValueChanged(e);
 
-			((Setting)_settings[e.ChangedItem.Label]).Value = e.ChangedItem.Value;
+			((Option)_options[e.ChangedItem.Label]).Value = e.ChangedItem.Value;
 
 //			if (_instantUpdate)
-			((Setting)_settings[e.ChangedItem.Label]).doUpdate(
+			((Option)_options[e.ChangedItem.Label]).doUpdate(
 															e.ChangedItem.Label,
 															e.ChangedItem.Value);
 		}
 
 		/// <summary>
-		/// I always wanted a function like this.
+		/// Does some complicated stuff.
 		/// </summary>
-		/// <param name="settings">the settings to set</param>
-		internal void SetSettings(Settings settings)
+		/// <param name="options">the options to set</param>
+		internal void SetOptions(Options options)
 		{
-			_settings = settings;
+			_options = options;
 
 			// Reflection.Emit code below copied and modified
 			// http://longhorn.msdn.microsoft.com/lhsdk/ref/ns/system.reflection.emit/c/propertybuilder/propertybuilder.aspx
@@ -181,19 +181,19 @@ namespace MapView
 							typeBuilder,
 							fieldBuilder);
 
-				foreach (string key in _settings.Keys)
+				foreach (string key in _options.Keys)
 					EmitProperty(
 							typeBuilder,
 							fieldBuilder,
-							_settings[key],
+							_options[key],
 							key);
 
 				_hashTypes[_typeLabel] = typeBuilder.CreateType();
 			}
 
 			var table = new Hashtable();
-			foreach (string key in _settings.Keys)
-				table[key] = _settings[key].Value;
+			foreach (string key in _options.Keys)
+				table[key] = _options[key].Value;
 
 #if SaveDLL && DEBUG
 			assemblyBuilder.Save("Test.dll");
@@ -251,12 +251,12 @@ namespace MapView
 		/// </summary>
 		/// <param name="typeBuilder"></param>
 		/// <param name="fieldInfo"></param>
-		/// <param name="setting"></param>
+		/// <param name="option"></param>
 		/// <param name="name"></param>
 		private void EmitProperty(
 				TypeBuilder typeBuilder,
 				FieldInfo fieldInfo,
-				Setting setting,
+				Option option,
 				string name)
 		{
 			// to figure out what opcodes to emit, i would compile a small class
@@ -266,9 +266,9 @@ namespace MapView
 			var propertyBuilder = typeBuilder.DefineProperty(
 														name,
 														PropertyAttributes.None,
-														setting.Value.GetType(),
+														option.Value.GetType(),
 														new Type[]{});
-			var objType = setting.Value.GetType();
+			var objType = option.Value.GetType();
 			var methodGetter = typeBuilder.DefineMethod(
 													"get_" + name,
 													MethodAttributes.Public,
@@ -323,17 +323,17 @@ namespace MapView
 			propertyBuilder.SetGetMethod(methodGetter);
 			propertyBuilder.SetSetMethod(methodSetter);
 
-			if (setting.Description != null)
+			if (option.Description != null)
 			{
 				var ctorInfo = typeof(DescriptionAttribute).GetConstructor(new []{ typeof(string) });
-				var attributeBuilder = new CustomAttributeBuilder(ctorInfo, new object[]{ setting.Description });
+				var attributeBuilder = new CustomAttributeBuilder(ctorInfo, new object[]{ option.Description });
 				propertyBuilder.SetCustomAttribute(attributeBuilder);
 			}
 
-			if (setting.Category != null)
+			if (option.Category != null)
 			{
 				var ctorInfo = typeof(CategoryAttribute).GetConstructor(new []{ typeof(string) });
-				var attributeBuilder = new CustomAttributeBuilder(ctorInfo, new object[]{ setting.Category });
+				var attributeBuilder = new CustomAttributeBuilder(ctorInfo, new object[]{ option.Category });
 				propertyBuilder.SetCustomAttribute(attributeBuilder);
 			}
 		}

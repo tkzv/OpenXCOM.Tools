@@ -213,7 +213,7 @@ namespace XCom
 		#region Fields
 		private readonly List<RouteNode> _nodes;
 
-		public const string RouteExt   = ".RMP";
+		public  const string RouteExt  = ".RMP";
 		private const string RoutesDir = @"\ROUTES";
 
 		private string FullPath

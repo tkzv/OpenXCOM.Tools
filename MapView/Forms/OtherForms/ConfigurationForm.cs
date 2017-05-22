@@ -92,8 +92,8 @@ namespace MapView
 			// what's the CuboidSprite used for anyway -> the cursor looks like a windows cursor.
 			// note: It's used to indicate the dragStart and dragEnd tiles.
 
-			const string CursorPck = SharedSpace.CursorFilePrefix + PckSpriteCollection.PckExt;
-			const string CursorTab = SharedSpace.CursorFilePrefix + PckSpriteCollection.TabExt;
+			const string CursorPck = SharedSpace.CursorFilePrefix + SpriteCollection.PckExt;
+			const string CursorTab = SharedSpace.CursorFilePrefix + SpriteCollection.TabExt;
 
 			if (   (File.Exists(Path.Combine(tbUfo.Text,  CursorPck)) && File.Exists(Path.Combine(tbUfo.Text,  CursorTab)))
 			    || (File.Exists(Path.Combine(tbTftd.Text, CursorPck)) && File.Exists(Path.Combine(tbTftd.Text, CursorTab))))

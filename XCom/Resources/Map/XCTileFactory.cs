@@ -19,16 +19,16 @@ namespace XCom.Resources.Map
 		/// <param name="dir"></param>
 		/// <param name="spriteset"></param>
 		/// <returns></returns>
-		internal static XCTilepart[] CreateRecords(
+		internal static Tilepart[] CreateRecords(
 				string file,
 				string dir,
-				PckSpriteCollection spriteset)
+				SpriteCollection spriteset)
 		{
 			string pfe = Path.Combine(dir, file + McdExt);
 
 			using (var bs = new BufferedStream(File.OpenRead(pfe)))
 			{
-				var parts = new XCTilepart[(int)bs.Length / Total]; // TODO: Error if this don't work out right.
+				var parts = new Tilepart[(int)bs.Length / Total]; // TODO: Error if this don't work out right.
 
 				for (int id = 0; id != parts.Length; ++id)
 				{
@@ -36,7 +36,7 @@ namespace XCom.Resources.Map
 					bs.Read(bindata, 0, Total);
 					var record = McdRecordFactory.CreateRecord(bindata);
 
-					var part = new XCTilepart(id, spriteset, record);
+					var part = new Tilepart(id, spriteset, record);
 
 					parts[id] = part;
 				}
@@ -59,11 +59,11 @@ namespace XCom.Resources.Map
 		/// <param name="record"></param>
 		/// <param name="parts"></param>
 		/// <returns></returns>
-		private static XCTilepart GetDeadPart(
+		private static Tilepart GetDeadPart(
 				string file,
 				int id,
 				McdRecord record,
-				XCTilepart[] parts)
+				Tilepart[] parts)
 		{
 			if (record.DieTile != 0)
 			{
@@ -96,11 +96,11 @@ namespace XCom.Resources.Map
 		/// <param name="record"></param>
 		/// <param name="parts"></param>
 		/// <returns></returns>
-		private static XCTilepart GetAlternatePart(
+		private static Tilepart GetAlternatePart(
 				string file,
 				int id,
 				McdRecord record,
-				XCTilepart[] parts)
+				Tilepart[] parts)
 		{
 			if (record.Alt_MCD != 0) // || record.HumanDoor || record.UfoDoor
 			{

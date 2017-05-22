@@ -14,7 +14,7 @@ namespace XCom
 			MapFileBase
 	{
 		#region Fields & Properties
-		public const string MapExt    = ".MAP";
+		public   const string MapExt  = ".MAP";
 		internal const string MapsDir = @"\MAPS";
 
 		private string FullPath
@@ -152,16 +152,16 @@ namespace XCom
 		{
 			try
 			{
-				var a = (q1 > 1) ? (XCTilepart)parts[q1 - 2]
+				var a = (q1 > 1) ? (Tilepart)parts[q1 - 2]
 								 : null;
 	
-				var b = (q2 > 1) ? (XCTilepart)parts[q2 - 2]
+				var b = (q2 > 1) ? (Tilepart)parts[q2 - 2]
 								 : null;
 	
-				var c = (q3 > 1) ? (XCTilepart)parts[q3 - 2]
+				var c = (q3 > 1) ? (Tilepart)parts[q3 - 2]
 								 : null;
 	
-				var d = (q4 > 1) ? (XCTilepart)parts[q4 - 2]
+				var d = (q4 > 1) ? (Tilepart)parts[q4 - 2]
 								 : null;
 	
 				return new XCMapTile(a, b, c, d);

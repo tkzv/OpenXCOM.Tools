@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 using XCom.Interfaces;
 using XCom.Interfaces.Base;
@@ -23,6 +24,13 @@ namespace XCom
 			LogFile.WriteLine("");
 			LogFile.WriteLine("TileGroupChild cTor label= " + labelGroup);
 
+			var progress = ProgressBarForm.Instance;
+			progress.SetInfo("Sorting: " + labelGroup);
+			progress.SetTotal(tilesets.Count);
+			progress.ResetProgress();
+			progress.Show();
+
+
 			foreach (var tileset in tilesets)
 			{
 				LogFile.WriteLine(". tileset.Type= " + tileset.Type);
@@ -39,58 +47,46 @@ namespace XCom
 						Categories[tileset.Category] = new Dictionary<string, Descriptor>();
 					}
 
-					bool isUfo = true;
-					if      (labelGroup.StartsWith("ufo", StringComparison.OrdinalIgnoreCase))
-					{
-						isUfo = true;
-					}
-					else if (labelGroup.StartsWith("tftd", StringComparison.OrdinalIgnoreCase))
-					{
-						isUfo = false;
-					}
-
-					var pal = Palette.UfoBattle;
-					if (isUfo)
-					{
-						pal = Palette.UfoBattle;
-					}
-					else
-					{
-						pal = Palette.TftdBattle;
-					}
-
 					if (String.IsNullOrEmpty(tileset.BasePath))
 					{
-						if (isUfo)
-							tileset.BasePath = SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo);
-						else
-							tileset.BasePath = SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd);
+						switch (GroupType)
+						{
+							case TileGroup.GameType.Ufo:
+								tileset.BasePath = SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo);
+								break;
+							case TileGroup.GameType.Tftd:
+								tileset.BasePath = SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd);
+								break;
+						}
 					}
 
 					var descriptor = new Descriptor(
 												tileset.Type,
 												tileset.Terrains,
 												tileset.BasePath,
-												pal);
+												Pal);
 
 					Categories[tileset.Category][tileset.Type] = descriptor;
 				}
 				else LogFile.WriteLine(". . tileset not in this Group - bypass.");
+
+				progress.UpdateProgress();
 			}
+			progress.Hide();
 		}
 
-		internal TileGroupChild(string label)
+		internal TileGroupChild(string labelGroup)
 			:
-				base(label)
+				base(labelGroup)
 		{}
 		#endregion
 
 
 		#region Methods
-		public override void Save(StreamWriter sw, Varidia vars)
-		{
-			// TODO: possibly save YAML Config here.
-		}
+//		public override void SaveTileGroup(StreamWriter sw, Varidia vars)
+//		{
+//			// TODO: possibly save YAML Config here.
+//		}
 
 		public override void AddTileset(string tileset, string category)
 		{

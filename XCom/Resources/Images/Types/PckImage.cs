@@ -16,7 +16,7 @@ namespace XCom
 
 		private const byte TransparentId = 0xFE; // should that be '0x0'
 
-		private readonly PckSpriteCollection _spriteset;
+		private readonly SpriteCollection _spriteset;
 
 		private readonly byte[] _expanded; // i suspect this should be '_scaled'
 		private int _moveId = -1;
@@ -41,7 +41,7 @@ namespace XCom
 //				int imageId,
 //				byte[] id,
 //				Palette pal,
-//				PckSpriteCollection pckFile)
+//				SpriteCollection pckFile)
 //			:
 //			this(
 //				imageId,
@@ -53,7 +53,7 @@ namespace XCom
 				int fileId,
 				byte[] bindata,
 				Palette pal,
-				PckSpriteCollection spriteset)
+				SpriteCollection spriteset)
 			:
 				base(
 					new byte[]{},
@@ -198,7 +198,7 @@ namespace XCom
 
 //		public static Type GetCollectionType()
 //		{
-//			return typeof(PckSpriteCollection);
+//			return typeof(SpriteCollection);
 //		}
 
 //		public void ReImage()

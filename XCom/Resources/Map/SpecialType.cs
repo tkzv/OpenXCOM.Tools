@@ -1,7 +1,7 @@
 namespace XCom
 {
 	// TODO: give these generic names (eg, 'Type00'..'Type14') and use the
-	// Option-tip via Settings to describe the special properties, ala UFO or
+	// option-tip via Options to describe the special properties, ala UFO or
 	// TFTD.
 	// Note that the Help screen already uses a radio-button to switch the
 	// descriptions between the two.

@@ -649,7 +649,7 @@
 			this.btnImagesSave.Size = new System.Drawing.Size(85, 35);
 			this.btnImagesSave.TabIndex = 3;
 			this.btnImagesSave.Text = "Save";
-			this.btnImagesSave.Click += new System.EventHandler(this.btnImagesSave_Click);
+			this.btnImagesSave.Click += new System.EventHandler(this.OnSaveTerrainsClick);
 			// 
 			// lblImagesTerrain
 			// 

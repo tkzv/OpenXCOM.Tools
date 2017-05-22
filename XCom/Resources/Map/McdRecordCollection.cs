@@ -6,9 +6,9 @@ namespace XCom
 {
 	public class McdRecordCollection
 		:
-			ReadOnlyCollection<XCTilepart>
+			ReadOnlyCollection<Tilepart>
 	{
-		internal McdRecordCollection(XCTilepart[] parts)
+		internal McdRecordCollection(Tilepart[] parts)
 			:
 				base(parts)
 		{}

@@ -234,11 +234,11 @@ namespace XCom.Interfaces.Base
 							var usedParts = this[row, col, lev].UsedTiles;
 							foreach (var usedPart in usedParts)
 							{
-								var part = usedPart as XCTilepart;
+								var part = usedPart as Tilepart;
 								XCBitmap.Draw(part[0].Image, b, x, y - part.Record.TileOffset);
 							}
 
-							XCBitmap.FireLoadingEvent(i, (MapSize.Levs - Level) * MapSize.Rows * MapSize.Cols);
+							XCBitmap.UpdateProgressBar(i, (MapSize.Levs - Level) * MapSize.Rows * MapSize.Cols);
 						}
 					}
 				}

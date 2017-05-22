@@ -7,12 +7,21 @@ using XCom.Interfaces.Base;
 
 namespace XCom.Interfaces
 {
-	public class TileGroup // TODO: cTor has inheritors and calls a virtual function.
+	public class TileGroup
 		:
 			TileGroupBase
 	{
+		internal protected enum GameType
+		{
+			Ufo,
+			Tftd
+		}
+
 		#region Fields & Properties
-		public Palette Palette
+		internal protected GameType GroupType
+		{ get; private set; }
+
+		public Palette Pal
 		{ get; set; }
 
 		public string MapDirectory // TODO: fix this out of PathsEditor.
@@ -30,32 +39,40 @@ namespace XCom.Interfaces
 		/// <summary>
 		/// cTor. Load from YAML.
 		/// </summary>
-		internal TileGroup(string label)
+		internal TileGroup(string labelGroup)
 			:
-				base(label)
+				base(labelGroup)
 		{
 			MapDirectory    = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo), "MAPS"); // TODO: These are irrelevant.
 			RouteDirectory  = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo), "ROUTES");
 			OccultDirectory = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory), @"OccultTileData\UFO");
 
-			Palette = ResourceInfo.Pal;
-//			Palette = Palette.UfoBattle;
-			// TODO: TFTD Palette = Palette.TftdBattle
+			if (labelGroup.StartsWith("tftd", StringComparison.OrdinalIgnoreCase))
+			{
+				GroupType = GameType.Tftd;
+			}
+			else //if (labelGroup.StartsWith("ufo", StringComparison.OrdinalIgnoreCase))
+			{
+				GroupType = GameType.Ufo;	// NOTE: if the prefix "tftd" is not found at the beginning of
+			}								// the group-label then default to UFO path and palette.
+
+			switch (GroupType)
+			{
+				case GameType.Ufo:
+					Pal = Palette.UfoBattle;
+					break;
+				case GameType.Tftd:
+					Pal = Palette.TftdBattle;
+					break;
+			}
 			// custom Palette = Palette.GetPalette(val)
 		}
 		#endregion
 
 
 		#region Methods (virtual)
-		public virtual void Save(StreamWriter sw, Varidia vars)
-		{}
-
-		public virtual void ParseLine(
-				string key,
-				string category,
-				StreamReader sr,
-				Varidia vars)
-		{}
+//		public virtual void SaveTileGroup(StreamWriter sw, Varidia vars)
+//		{}
 
 		public virtual void AddTileset(string tileset, string category)
 		{}

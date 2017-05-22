@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 
 using XCom;
 
@@ -7,21 +8,26 @@ namespace MapView.Forms.XCError.WarningConsole
 {
 	internal sealed class ConsoleWarningHandler
 	{
+		#region Fields
 		private readonly ConsoleSharedSpace _consoleShare;
+		#endregion
 
+
+		#region cTor
 		internal ConsoleWarningHandler(ConsoleSharedSpace consoleShare)
 		{
 			_consoleShare = consoleShare;
 		}
+		#endregion
 
+
+		#region Methods
 		internal void HandleWarning(string st)
 		{
-			var console = _consoleShare.GetConsole();
-			if (console != null)
-			{
-				console.Show();
-				XConsole.AdZerg("WARNING: " + st);
-			}
+			_consoleShare.Console.Show();
+			XConsole.AdZerg("WARNING: " + st);
 		}
+		#endregion
 	}
 }
+*/

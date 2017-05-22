@@ -17,7 +17,7 @@ namespace MapView.Forms.MainWindow
 		private readonly List<MenuItem> _allItems = new List<MenuItem>();
 		private readonly List<Form>     _allForms = new List<Form>();
 
-		private Settings _settings;
+		private Options _options;
 
 		private bool _quitting;
 
@@ -35,10 +35,10 @@ namespace MapView.Forms.MainWindow
 		/// Adds menuitems to MapView's dropdown list.
 		/// </summary>
 		/// <param name="console">pointer to the console-form</param>
-		/// <param name="settings">pointer to MV_SettingsFile options</param>
-		internal void PopulateMenus(Form console, Settings settings)
+		/// <param name="options">pointer to MV_SettingsFile options</param>
+		internal void PopulateMenus(Form console, Options options)
 		{
-			_settings = settings;
+			_options = options;
 
 			CreateMenuItem(ViewerFormsManager.TileView,     "Tile View",     _viewsMenu);
 
@@ -56,7 +56,7 @@ namespace MapView.Forms.MainWindow
 			CreateMenuItem(ViewerFormsManager.HelpScreen,   "Help",          _helpMenu);
 			CreateMenuItem(ViewerFormsManager.AboutScreen,  "About",         _helpMenu);
 
-			AddMenuItemSettings();
+			AddMenuItemOptions();
 		}
 
 		/// <summary>
@@ -111,14 +111,14 @@ namespace MapView.Forms.MainWindow
 			}
 		}
 
-		private void AddMenuItemSettings()
+		private void AddMenuItemOptions()
 		{
 			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
-				string key = GetSettingsViewerKey(it);
+				string key = GetViewerKey(it);
 				if (!String.IsNullOrEmpty(key))
 				{
-					_settings.AddSetting(
+					_options.AddOption(
 									key,
 //									!(it.Tag is XCom.ConsoleForm)
 //									!(it.Tag is MapView.Forms.MapObservers.TileViews.TopRouteViewForm),	// q. why is TopRouteViewForm under 'TileViews'
@@ -138,12 +138,12 @@ namespace MapView.Forms.MainWindow
 							{
 								var fsender = sender as Form;
 								if (fsender != null)
-									_settings[key].Value = fsender.Visible;
+									_options[key].Value = fsender.Visible;
 							}
 //							if (_quitting) return;
 //							var fsender = sender as Form;
 //							if (fsender == null) return;
-//							_settings[key].Value = fsender.Visible;
+//							_options[key].Value = fsender.Visible;
 						};
 					}
 				}
@@ -158,15 +158,15 @@ namespace MapView.Forms.MainWindow
 		{
 			foreach (MenuItem it in _viewsMenu.MenuItems)
 			{
-				string key = GetSettingsViewerKey(it);
+				string key = GetViewerKey(it);
 				if (key != null)
 				{
-					if (_settings[key].IsTrue)
+					if (_options[key].IsTrue)
 					{
 						it.PerformClick();
 					}
 					else					// NOTE: does not run unless a viewer's key was
-					{						// set "false" in AddMenuItemSettings() above^
+					{						// set "false" in AddMenuItemOptions() above^
 						it.PerformClick();	// not sure that this double-click gimmick
 						it.PerformClick();	// is necessary even then ...
 					}
@@ -175,15 +175,15 @@ namespace MapView.Forms.MainWindow
 //			foreach (MenuItem it in _show.MenuItems) // NOTE: Don't do this. Go figure.
 //			{
 //				it.PerformClick();
-//				var key = GetWindowSettingName(it);
-//				if (!(_settings[key].IsTrue))
+//				var key = GetViewerKey(it);
+//				if (!(_options[key].IsTrue))
 //					it.PerformClick();
 //			}
 
 			_viewsMenu.Enabled = true;
 		}
 
-		private static string GetSettingsViewerKey(MenuItem it)
+		private static string GetViewerKey(MenuItem it)
 		{
 			string suffix = it.Text;
 			return (suffix != Divider) ? "Window" + Divider + suffix
