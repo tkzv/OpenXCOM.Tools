@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-using XCom.Interfaces.Base;
+using XCom.Resources.Map;
 
 
 namespace XCom
@@ -17,17 +17,19 @@ namespace XCom
 	/// </summary>
 	public sealed class Descriptor // *snap*
 	{
+		public const string PathTerrain = "TERRAIN";
+
 		#region Properties
 		public string Label
 		{ get; private set; }
 
-		internal string BasePath
+		public string BasePath
 		{ get; private set; }
 
 		public List<string> Terrains
 		{ get; set; }
 
-		internal Palette Pal
+		public Palette Pal
 		{ get; private set; }
 		#endregion
 
@@ -58,6 +60,32 @@ namespace XCom
 
 
 		#region Methods
+		/// <summary>
+		/// Gets the MCD-records for a given terrain in this Descriptor.
+		/// </summary>
+		/// <returns></returns>
+		public McdRecordCollection GetMcdRecords(string terrain)
+		{
+			string pathTerrain = Path.Combine(BasePath, PathTerrain);
+
+			var tiles = XCTileFactory.CreateRecords(
+												terrain,
+												pathTerrain,
+												GetSpriteset(terrain));
+			return new McdRecordCollection(tiles);
+		}
+
+		/// <summary>
+		/// Gets the spriteset for a given terrain in this Descriptor.
+		/// </summary>
+		/// <returns></returns>
+		public SpriteCollection GetSpriteset(string terrain)
+		{
+			string pathTerrain = Path.Combine(BasePath, PathTerrain);
+
+			return ResourceInfo.LoadSpriteset(terrain, pathTerrain, 2, Pal); // TODO: should '2' be '4' for TFTD
+		}
+
 		public override string ToString()
 		{
 			return Label;

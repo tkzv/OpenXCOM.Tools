@@ -90,22 +90,11 @@ namespace MapView
 			var pathConfig = new PathInfo(dir, "MapConfig", "yml");
 			share.SetShare(PathInfo.MapConfig, pathConfig);
 
-
-
 			var pathViewerPositions = new PathInfo(dir, "MapViewers", "yml");
 			share.SetShare(PathInfo.MapViewers, pathViewerPositions);
 
 			var pathOptions = new PathInfo(dir, "MVSettings", "cfg");
 			share.SetShare(PathInfo.SettingsFile, pathOptions);
-
-			var pathPaths = new PathInfo(dir, "Paths", "cfg");
-			share.SetShare(PathInfo.PathsFile, pathPaths);
-
-			var pathMapEdit = new PathInfo(dir, "MapEdit", "cfg");
-			share.SetShare(PathInfo.MapEditFile, pathMapEdit);
-
-			var pathImages = new PathInfo(dir, "Images", "cfg");
-			share.SetShare(PathInfo.ImagesFile, pathImages);
 
 			LogFile.WriteLine("PathInfo cached.");
 
@@ -669,8 +658,6 @@ namespace MapView
 				// NOTE: 'GraySelection' is handled. reasons ...
 			}
 		}
-		#endregion
-
 
 		/// <summary>
 		/// This has nothing to do with the Registry anymore, but it saves
@@ -762,7 +749,10 @@ namespace MapView
 //				}
 			}
 		}
+		#endregion
 
+
+		#region Eventcalls
 		private void OnAnimationUpdate(object sender, EventArgs e)
 		{
 			ViewerFormsManager.TopView.Control.QuadrantsPanel.Refresh();
@@ -822,140 +812,18 @@ namespace MapView
 
 		private void OnPathsEditorClick(object sender, EventArgs e)
 		{
-			// DISABLED UNTIL I MASSAGE YAML-CONFIG LOADING INTO PLACE ->
-
 //			var share = SharedSpace.Instance[PathInfo.PathsFile];
-//
-//			using (var f = new PathsEditor(share.ToString()))
-//				f.ShowDialog();
-//
-//			var pathInfo = (PathInfo)share;
-//
-//			ResourceInfo.InitializeResources(Palette.UfoBattle, pathInfo);
-//
+
+			using (var f = new PathsEditor())
+				f.ShowDialog();
+
+
+			// TODO: if MapConfig gets saved reload resources ....
+
+//			ResourceInfo.InitializeResources(Palette.UfoBattle, (PathInfo)share);
+
 //			CreateTree();
 		}
-
-		/// <summary>
-		/// De-colorizes the background-field of a previously selected label
-		/// in the left-panel's MapBlocks' tree.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnMapTreeSelect(object sender, CancelEventArgs e)
-		{
-			if (NotifySave() == DialogResult.Cancel)
-			{
-				e.Cancel = true;
-			}
-			else if (tvMaps.SelectedNode != null)
-			{
-				tvMaps.SelectedNode.BackColor = SystemColors.Control;
-			}
-		}
-
-		/// <summary>
-		/// Colorizes the background-field of the newly selected label in the
-		/// left-panel's MapBlocks' tree.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnMapTreeSelected(object sender, TreeViewEventArgs e)
-		{
-			tvMaps.SelectedNode.BackColor = Color.Gold;
-			LoadSelectedMap();
-		}
-
-		/// <summary>
-		/// Reloads the map when a save is done in PckView (via TileView).
-		/// </summary>
-		private void OnPckSavedEvent()
-		{
-			LoadSelectedMap();
-		}
-
-		private void LoadSelectedMap()
-		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("XCMainWindow.LoadSelectedMap");
-
-			var descriptor = tvMaps.SelectedNode.Tag as Descriptor;
-			if (descriptor != null)
-			{
-				LogFile.WriteLine(". descriptor= " + descriptor);
-
-//				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.
-
-				_mainViewUnderlay.MainViewOverlay.FirstClick = false;
-
-				var mapBase = XCMapFileService.LoadTileset(descriptor as Descriptor);
-				_mainViewUnderlay.MapBase = mapBase;
-
-				tsEdit.Enabled = true;
-
-				RouteCheckService.CheckNodeBounds(mapBase);
-
-				tsslMapLabel.Text = descriptor.Label;
-				tsslDimensions.Text = (mapBase != null) ? mapBase.MapSize.ToString()
-														: "size: n/a";
-				tsslPosition.Text = String.Empty;
-				ViewerFormsManager.RouteView.Control.ClearSelectedLocation();
-
-				Options[Doors].Value = false; // toggle off door-animations; not sure that this is necessary to do.
-				miDoors.Checked = false;
-				ToggleDoorSprites(false);
-
-				if (!menuView.Enabled) // open/close the forms that appear in the Views menu.
-					_mainMenusManager.StartAllViewers();
-
-				_viewerFormsManager.SetObservers(mapBase); // reset all observer events
-			}
-//			else miExport.Enabled = false;
-		}
-
-		private void ToggleDoorSprites(bool animate)
-		{
-			if (_mainViewUnderlay.MapBase != null) // NOTE: MapBase is null on MapView load.
-			{
-				foreach (Tilepart part in _mainViewUnderlay.MapBase.Parts)
-					part.SetDoorSprites(animate);
-
-				Refresh();
-			}
-		}
-
-
-		/// <summary>
-		/// Shows the user a dialog-box asking to Save if stuff has changed.
-		/// </summary>
-		/// <returns></returns>
-		private DialogResult NotifySave()
-		{
-			if (_mainViewUnderlay.MapBase != null && _mainViewUnderlay.MapBase.MapChanged)
-			{
-				switch (MessageBox.Show(
-									this,
-									"Do you want to save changes?",
-									"Map Changed",
-									MessageBoxButtons.YesNoCancel,
-									MessageBoxIcon.Question,
-									MessageBoxDefaultButton.Button1,
-									0))
-				{
-					case DialogResult.No:		// don't save
-						break;
-
-					case DialogResult.Yes:		// save
-						_mainViewUnderlay.MapBase.Save();
-						break;
-
-					case DialogResult.Cancel:	// do nothing
-						return DialogResult.Cancel;
-				}
-			}
-			return DialogResult.OK;
-		}
-
 
 		private Form _foptions;
 		private bool _closing;
@@ -1066,7 +934,7 @@ namespace MapView
 			{
 				var f = new MapInfoForm();
 				f.Show();
-				f.Analyze(_mainViewUnderlay.MapBase);
+				f.Analyze(_mainViewUnderlay.MapBase as MapFileChild);
 			}
 		}
 
@@ -1149,6 +1017,128 @@ namespace MapView
 		}
 
 		/// <summary>
+		/// De-colorizes the background-field of a previously selected label
+		/// in the left-panel's MapBlocks' tree.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnMapTreeSelect(object sender, CancelEventArgs e)
+		{
+			if (NotifySave() == DialogResult.Cancel)
+			{
+				e.Cancel = true;
+			}
+			else if (tvMaps.SelectedNode != null)
+			{
+				tvMaps.SelectedNode.BackColor = SystemColors.Control;
+			}
+		}
+
+		/// <summary>
+		/// Colorizes the background-field of the newly selected label in the
+		/// left-panel's MapBlocks' tree.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnMapTreeSelected(object sender, TreeViewEventArgs e)
+		{
+			tvMaps.SelectedNode.BackColor = Color.Gold;
+			LoadSelectedMap();
+		}
+
+		/// <summary>
+		/// Reloads the map when a save is done in PckView (via TileView).
+		/// </summary>
+		private void OnPckSavedEvent()
+		{
+			LoadSelectedMap();
+		}
+		#endregion
+
+
+		#region Methods
+		private void LoadSelectedMap()
+		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("XCMainWindow.LoadSelectedMap");
+
+			var descriptor = tvMaps.SelectedNode.Tag as Descriptor;
+			if (descriptor != null)
+			{
+				LogFile.WriteLine(". descriptor= " + descriptor);
+
+//				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.
+
+				_mainViewUnderlay.MainViewOverlay.FirstClick = false;
+
+				var mapBase = XCMapFileService.LoadTileset(descriptor as Descriptor);
+				_mainViewUnderlay.MapBase = mapBase;
+
+				tsEdit.Enabled = true;
+
+				RouteCheckService.CheckNodeBounds(mapBase);
+
+				tsslMapLabel.Text = descriptor.Label;
+				tsslDimensions.Text = (mapBase != null) ? mapBase.MapSize.ToString()
+														: "size: n/a";
+				tsslPosition.Text = String.Empty;
+				ViewerFormsManager.RouteView.Control.ClearSelectedLocation();
+
+				Options[Doors].Value = false; // toggle off door-animations; not sure that this is necessary to do.
+				miDoors.Checked = false;
+				ToggleDoorSprites(false);
+
+				if (!menuView.Enabled) // open/close the forms that appear in the Views menu.
+					_mainMenusManager.StartAllViewers();
+
+				_viewerFormsManager.SetObservers(mapBase); // reset all observer events
+			}
+//			else miExport.Enabled = false;
+		}
+
+		private void ToggleDoorSprites(bool animate)
+		{
+			if (_mainViewUnderlay.MapBase != null) // NOTE: MapBase is null on MapView load.
+			{
+				foreach (Tilepart part in _mainViewUnderlay.MapBase.Parts)
+					part.SetDoorSprites(animate);
+
+				Refresh();
+			}
+		}
+
+		/// <summary>
+		/// Shows the user a dialog-box asking to Save if stuff has changed.
+		/// </summary>
+		/// <returns></returns>
+		private DialogResult NotifySave()
+		{
+			if (_mainViewUnderlay.MapBase != null && _mainViewUnderlay.MapBase.MapChanged)
+			{
+				switch (MessageBox.Show(
+									this,
+									"Do you want to save changes?",
+									"Map Changed",
+									MessageBoxButtons.YesNoCancel,
+									MessageBoxIcon.Question,
+									MessageBoxDefaultButton.Button1,
+									0))
+				{
+					case DialogResult.No:		// don't save
+						break;
+
+					case DialogResult.Yes:		// save
+						_mainViewUnderlay.MapBase.Save();
+						break;
+
+					case DialogResult.Cancel:	// do nothing
+						return DialogResult.Cancel;
+				}
+			}
+			return DialogResult.OK;
+		}
+
+		/// <summary>
 		/// Prints the currently selected location to the status bar.
 		/// NOTE: The 'lev' should be inverted before it's passed in.
 		/// </summary>
@@ -1193,5 +1183,6 @@ namespace MapView
 					sw.WriteLine(sr.ReadLine());
 			}
 		}
+		#endregion
 	}
 }

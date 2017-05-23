@@ -13,12 +13,16 @@ namespace PckView
 		:
 			Form
 	{
-		#region Fields & Properties
-
+		#region Fields
 		private readonly EditorPanel _editorPanel;
 		private PaletteView _palView;
 		private TrackBar _trackBar;
 
+		bool _paletteInitDone;
+		#endregion
+
+
+		#region Properties
 		internal Palette Palette
 		{
 			set
@@ -36,7 +40,6 @@ namespace PckView
 
 
 		#region cTor
-
 		/// <summary>
 		/// cTor.
 		/// </summary>
@@ -81,8 +84,7 @@ namespace PckView
 		#endregion
 
 
-		#region EventCalls
-
+		#region Eventcalls
 		private void OnTrackScroll(object sender, EventArgs e)
 		{
 			_editorPanel.ScaleFactor =_trackBar.Value;
@@ -97,9 +99,6 @@ namespace PckView
 
 			_trackBar.Width = _editorPanel.Width;
 		}
-
-
-		bool _paletteInitDone;
 
 		private void OnShowPaletteClick(object sender, EventArgs e)
 		{

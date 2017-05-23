@@ -21,9 +21,15 @@ namespace XCom.Interfaces.Base
 		public event LevelChangedEventHandler LevelChangedEvent;
 
 
-		#region Fields & Properties
+		#region Fields (static)
 		private const int HalfWidthConst  = 16;
 		private const int HalfHeightConst =  8;
+		#endregion
+
+
+		#region Properties
+		public Descriptor Descriptor
+		{ get; private set; }
 
 		private int _level;
 		/// <summary>
@@ -130,11 +136,13 @@ namespace XCom.Interfaces.Base
 		/// <summary>
 		/// cTor. Instantiated only as the parent of MapFileChild.
 		/// </summary>
-		/// <param name="label"></param>
+		/// <param name="descriptor"></param>
 		/// <param name="parts"></param>
-		protected MapFileBase(string label, List<TilepartBase> parts)
+		protected MapFileBase(Descriptor descriptor, List<TilepartBase> parts)
 		{
-			Label = label;
+			Descriptor = descriptor;
+
+			Label = Descriptor.Label;
 			Parts = parts;
 		}
 		#endregion

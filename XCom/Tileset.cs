@@ -16,7 +16,7 @@ namespace XCom
 	internal sealed class Tileset
 	{
 		#region Fields
-		internal string Type
+		internal string Label
 		{ get; private set; }
 
 		internal string Group
@@ -37,19 +37,19 @@ namespace XCom
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		/// <param name="type"></param>
+		/// <param name="label"></param>
 		/// <param name="gruop"></param>
 		/// <param name="category"></param>
 		/// <param name="terrains"></param>
 		/// <param name="basepath"></param>
 		internal Tileset(
-				string type,
+				string label,
 				string gruop, // sic.
 				string category,
 				List<string> terrains,
 				string basepath)
 		{
-			Type     = type;
+			Label    = label;
 			Group    = gruop;
 			Category = category;
 			Terrains = terrains;

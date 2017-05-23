@@ -102,7 +102,7 @@ namespace MapView
 				pathConfig.CreateDirectory(); // create a dir for MapConfig.yml and MapDirectory.yml
 
 
-				string pfeMapDirectory = Path.Combine(pathConfig.Path, PathInfo.YamlResources);
+				string pfeMapDirectory = Path.Combine(pathConfig.DirectoryPath, PathInfo.YamlResources);
 
 				using (var fs = new FileStream(pfeMapDirectory, FileMode.Create)) // wipe/create MapDirectory.yml
 				using (var sw = new StreamWriter(fs))

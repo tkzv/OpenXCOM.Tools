@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 
-using XCom.Resources.Map;
 using XCom.Interfaces.Base;
 
 
@@ -33,21 +32,23 @@ namespace XCom
 	
 					foreach (string terrain in descriptor.Terrains)
 					{
-						var infoTerrain = ResourceInfo.TerrainInfo[terrain];
-						if (infoTerrain != null)
-						{
-							var MCD = infoTerrain.GetMcdRecords(descriptor.Pal);
-							foreach (Tilepart part in MCD)
-								parts.Add(part);
-						}
+						var MCD = descriptor.GetMcdRecords(terrain);
+						foreach (Tilepart part in MCD)
+							parts.Add(part);
+
+//						var infoTerrain = ResourceInfo.TerrainInfo[terrain];
+//						if (infoTerrain != null)
+//						{
+//							var MCD = infoTerrain.GetMcdRecords(descriptor.Pal);
+//							foreach (Tilepart part in MCD)
+//								parts.Add(part);
+//						}
 					}
-	
+
 					var RMP = new RouteNodeCollection(descriptor.Label, descriptor.BasePath);
 					var MAP = new MapFileChild(
-											descriptor.Label,
-											descriptor.BasePath,
+											descriptor,
 											parts,
-											descriptor.Terrains,
 											RMP);
 					return MAP;
 				}

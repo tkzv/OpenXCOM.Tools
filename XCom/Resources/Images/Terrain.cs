@@ -54,47 +54,47 @@ namespace XCom
 
 
 		#region Methods
-		/// <summary>
-		/// Gets the spriteset for this terrain given a palette.
-		/// </summary>
-		/// <param name="pal"></param>
-		/// <returns></returns>
-		public SpriteCollection GetSpriteset(Palette pal = null)
-		{
-			if (pal == null)
-				pal = Palette.UfoBattle;
+//		/// <summary>
+//		/// Gets the spriteset for this terrain given a palette.
+//		/// </summary>
+//		/// <param name="pal"></param>
+//		/// <returns></returns>
+//		public SpriteCollection GetSpriteset(Palette pal = null)
+//		{
+//			if (pal == null)
+//				pal = Palette.UfoBattle;
+//
+//			return ResourceInfo.LoadSpriteset(Label, PathTerrain, 2, pal); // TODO: should '2' be '4' for TFTD
+//		}
 
-			return ResourceInfo.LoadSpriteset(Label, PathTerrain, 2, pal); // TODO: should '2' be '4' for TFTD
-		}
+//		/// <summary>
+//		/// Gets the MCD-records for this terrain given a palette.
+//		/// NOTE: Calling this function instantiates records by palette if a
+//		/// table doesn't exist yet.
+//		/// </summary>
+//		/// <param name="pal"></param>
+//		/// <returns></returns>
+//		public McdRecordCollection GetMcdRecords(Palette pal = null)
+//		{
+//			if (pal == null)
+//				pal = Palette.UfoBattle;
+//
+//			if (_recordsTable[pal] == null)
+//			{
+//				var tiles = XCTileFactory.CreateRecords(Label, PathTerrain, GetSpriteset(pal));
+//				_recordsTable[pal] = new McdRecordCollection(tiles);
+//			}
+//
+//			return _recordsTable[pal] as McdRecordCollection;
+//		}
 
-		/// <summary>
-		/// Gets the MCD-records for this terrain given a palette.
-		/// NOTE: Calling this function instantiates records by palette if a
-		/// table doesn't exist yet.
-		/// </summary>
-		/// <param name="pal"></param>
-		/// <returns></returns>
-		public McdRecordCollection GetMcdRecords(Palette pal = null)
-		{
-			if (pal == null)
-				pal = Palette.UfoBattle;
-
-			if (_recordsTable[pal] == null)
-			{
-				var tiles = XCTileFactory.CreateRecords(Label, PathTerrain, GetSpriteset(pal));
-				_recordsTable[pal] = new McdRecordCollection(tiles);
-			}
-
-			return _recordsTable[pal] as McdRecordCollection;
-		}
-
-		/// <summary>
-		/// Clears the MCD table ....
-		/// </summary>
-		public void ClearMcdTable()
-		{
-			_recordsTable.Clear();
-		}
+//		/// <summary>
+//		/// Clears the MCD table ....
+//		/// </summary>
+//		public void ClearMcdTable()
+//		{
+//			_recordsTable.Clear();
+//		}
 
 		/// <summary>
 		/// Override for ToString().

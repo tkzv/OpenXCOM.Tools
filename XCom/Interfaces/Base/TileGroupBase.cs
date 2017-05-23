@@ -11,7 +11,8 @@ namespace XCom.Interfaces.Base
 		{ get; private set; }
 
 		/// <summary>
-		/// 
+		/// Descriptors is a dictionary of descriptor-labels (.MAP/.RMP
+		/// filenames w/out extension) mapped to Descriptors.
 		/// </summary>
 		private readonly Dictionary<string, Descriptor> _descriptors = new Dictionary<string, Descriptor>();
 		internal protected Dictionary<string, Descriptor> Descriptors
@@ -20,7 +21,9 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// 
+		/// Categories is a dictionary of category-labels mapped to a
+		/// subdictionary of descriptor-labels (.MAP/.RMP filenames w/out
+		/// extension) mapped to the Descriptors themselves.
 		/// </summary>
 		private readonly Dictionary<string, Dictionary<string, Descriptor>> _categories = new Dictionary<string, Dictionary<string, Descriptor>>();
 		public Dictionary<string, Dictionary<string, Descriptor>> Categories

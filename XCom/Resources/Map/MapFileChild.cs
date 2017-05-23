@@ -20,14 +20,8 @@ namespace XCom
 		private string FullPath
 		{ get; set; }
 
-		private readonly string _file;
-//		private readonly string _pathOccult = String.Empty;
-
-		private readonly List<string> _terrains;
 		public List<string> Terrains
-		{
-			get { return _terrains; }
-		}
+		{ get; private set; }
 
 		public RouteNodeCollection Routes
 		{ get; private set; }
@@ -38,27 +32,23 @@ namespace XCom
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		/// <param name="file"></param>
-		/// <param name="basepath"></param>
-//		/// <param name="pathOccult"></param>
+		/// <param name="descriptor"></param>
 		/// <param name="parts"></param>
-		/// <param name="terrains"></param>
 		/// <param name="routes"></param>
 		internal MapFileChild(
-				string file,
-				string basepath,
-//				string pathOccult,
+				Descriptor descriptor,
 				List<TilepartBase> parts,
-				List<string> terrains,
 				RouteNodeCollection routes)
 			:
-				base(file, parts)
+				base(descriptor, parts)
 		{
-			FullPath = Path.Combine(basepath + MapsDir, file + MapExt);
+			FullPath = Path.Combine(
+								Descriptor.BasePath + MapsDir,
+								Descriptor.Label    + MapExt);
 
-			_file       = file; // is used only for error in CreateTile()
+			Terrains = Descriptor.Terrains;
+
 //			_pathOccult = pathOccult;
-			_terrains   = terrains;
 
 			Routes = routes;
 
@@ -171,10 +161,10 @@ namespace XCom
 				// TODO: Settle a graceful way to handle exceptions throughout.
 				// and/or use AdZerg()
 
-//				XConsole.AdZerg("MapFileChild.CreateTile() Invalid value(s) in .MAP file: " + _file);
+//				XConsole.AdZerg("MapFileChild.CreateTile() Invalid value(s) in .MAP file: " + Descriptor.Label);
 				System.Windows.Forms.MessageBox.Show(
 												"MapFileChild.CreateTile()" + Environment.NewLine
-													+ "Invalid value(s) in .MAP file: " + _file + Environment.NewLine
+													+ "Invalid value(s) in .MAP file: " + Descriptor.Label + Environment.NewLine
 													+ "indices: " + q1 + "," + q2 + "," + q3 + "," + q4 + Environment.NewLine
 													+ "length: " + parts.Count + Environment.NewLine
 													+ ex + ":" + ex.Message,
@@ -258,8 +248,8 @@ namespace XCom
 					break;
 			}
 
-			if (id != -1 && id < _terrains.Count)
-				return _terrains[id];
+			if (id != -1 && id < Terrains.Count)
+				return Terrains[id];
 
 			return null;
 		}

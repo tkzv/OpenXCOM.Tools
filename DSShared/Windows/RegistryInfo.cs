@@ -4,8 +4,6 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
-//using Microsoft.Win32;
-
 using YamlDotNet.RepresentationModel;	// read values (deserialization)
 using YamlDotNet.Serialization;			// write values
 

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 
-//using Microsoft.Win32;
+using DSShared;
 
 using XCom;
 using XCom.Interfaces;
@@ -28,14 +27,14 @@ namespace MapView
 //			set { _saveRegistry = value; }
 //		}
 
-		private string _paths;
+		#region Fields
 		private List<string> _terrains;
+		#endregion
 
 
-		internal PathsEditor(string pathsPath)
+		#region cTor
+		internal PathsEditor()
 		{
-			_paths = pathsPath;
-
 			InitializeComponent();
 
 			// WORKAROUND: See note in 'XCMainWindow' cTor.
@@ -60,7 +59,26 @@ namespace MapView
 			cbMapsPalette.Items.Add(Palette.UfoBattle);
 			cbMapsPalette.Items.Add(Palette.TftdBattle);
 		}
+		#endregion
 
+
+		#region Methods
+		private void PopulateTerrainList()
+		{
+			var terrains = new ArrayList();
+
+			var infoTerrain = ResourceInfo.TerrainInfo;
+			foreach (object keyTerrain in infoTerrain.Terrains.Keys)
+				terrains.Add(keyTerrain);
+
+			terrains.Sort();
+
+			foreach (object terrain in terrains)
+			{
+				lbImages.Items.Add(terrain);
+				lbMapsImagesAll.Items.Add(terrain);
+			}
+		}
 
 		private void populateTree()
 		{
@@ -109,23 +127,22 @@ namespace MapView
 			}
 		}
 
-		private void PopulateTerrainList()
+		private TileGroup GetCurrentTileGroup() // <- could be a group, category, or tileset node.
 		{
-			var terrains = new ArrayList();
+			var node = tvMaps.SelectedNode;
 
-			var infoTerrain = ResourceInfo.TerrainInfo;
-			foreach (object keyTerrain in infoTerrain.Terrains.Keys)
-				terrains.Add(keyTerrain);
+			if (node.Parent == null)
+				return ResourceInfo.TileGroupInfo.TileGroups[node.Text] as TileGroup;
 
-			terrains.Sort();
+			if (node.Parent.Parent == null)
+				return ResourceInfo.TileGroupInfo.TileGroups[node.Parent.Text] as TileGroup;
 
-			foreach (object terrain in terrains)
-			{
-				lbImages.Items.Add(terrain);
-				lbMapsImagesAll.Items.Add(terrain);
-			}
+			return ResourceInfo.TileGroupInfo.TileGroups[node.Parent.Parent.Text] as TileGroup;
 		}
+		#endregion
 
+
+		#region Eventcalls
 		private void lbImages_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			tbImagesTerrain.Text = ResourceInfo.TerrainInfo[(string)lbImages.SelectedItem].PathTerrain;
@@ -329,13 +346,13 @@ namespace MapView
 
 		private void btnPathsClearRegistry_Click(object sender, EventArgs e) // NOTE: disabled w/ Visible=FALSE in the designer.
 		{
-/*			_saveRegistry = false;
-
-			using (var keySoftware = Registry.CurrentUser.OpenSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry, true))
-			{
-				keySoftware.DeleteSubKeyTree(DSShared.Windows.RegistryInfo.MapViewRegistry);
-				keySoftware.Close();
-			} */
+//			_saveRegistry = false;
+//
+//			using (var keySoftware = Registry.CurrentUser.OpenSubKey(DSShared.Windows.RegistryInfo.SoftwareRegistry, true))
+//			{
+//				keySoftware.DeleteSubKeyTree(DSShared.Windows.RegistryInfo.MapViewRegistry);
+//				keySoftware.Close();
+//			}
 		}
 
 		private void btnPathsMaps_Click(object sender, EventArgs e)
@@ -364,26 +381,26 @@ namespace MapView
 			}
 		}
 
-/*		private void miSave_Click(object sender, EventArgs e)
-		{
-			StreamWriter sw = new StreamWriter(new FileStream(this._paths, FileMode.Create));
-			
-			GameInfo.CursorPath  = txtCursor.Text;
-			GameInfo.MapPath     = txtMap.Text;
-			GameInfo.ImagePath   = txtImages.Text;
-//			GameInfo.PalettePath = txtPalettes.Text;
-
-			sw.WriteLine("mapdata:"  + txtMap.Text);
-			sw.WriteLine("images:"   + txtImages.Text);
-			sw.WriteLine("cursor:"   + txtCursor.Text);
-//			sw.WriteLine("palettes:" + txtPalettes.Text);
-
-			sw.Flush();
-			sw.Close();
-
-//			GameInfo.GetImageInfo().Save(new FileStream(txtImages.Text, FileMode.Create));
-//			GameInfo.GetTileInfo().Save(new FileStream(txtMap.Text, FileMode.Create));
-		}*/
+//		private void miSave_Click(object sender, EventArgs e)
+//		{
+//			StreamWriter sw = new StreamWriter(new FileStream(this._paths, FileMode.Create));
+//			
+//			GameInfo.CursorPath  = txtCursor.Text;
+//			GameInfo.MapPath     = txtMap.Text;
+//			GameInfo.ImagePath   = txtImages.Text;
+////			GameInfo.PalettePath = txtPalettes.Text;
+//
+//			sw.WriteLine("mapdata:"  + txtMap.Text);
+//			sw.WriteLine("images:"   + txtImages.Text);
+//			sw.WriteLine("cursor:"   + txtCursor.Text);
+////			sw.WriteLine("palettes:" + txtPalettes.Text);
+//
+//			sw.Flush();
+//			sw.Close();
+//
+////			GameInfo.GetImageInfo().Save(new FileStream(txtImages.Text, FileMode.Create));
+////			GameInfo.GetTileInfo().Save(new FileStream(txtMap.Text, FileMode.Create));
+//		}
 
 		private void tbImagesTerrain_TextChanged(object sender, EventArgs e)
 		{
@@ -435,7 +452,12 @@ namespace MapView
 
 		private void btnPathsSave_Click(object sender, EventArgs e)
 		{
-			using (var sw = new StreamWriter(new FileStream(_paths, FileMode.Create)))
+			string pfeConfig = ((PathInfo)SharedSpace.Instance[PathInfo.MapConfig]).FullPath;
+			LogFile.WriteLine("");
+			LogFile.WriteLine("PathsEditor.btnPathsSave_Click");
+
+			using (var fs = new FileStream(pfeConfig, FileMode.Create))
+			using (var sw = new StreamWriter(fs))
 			{
 //				GameInfo.MapPath     = txtMap.Text;
 //				GameInfo.ImagePath   = txtImages.Text;
@@ -444,9 +466,9 @@ namespace MapView
 
 //				sw.WriteLine("palettes:" + txtPalettes.Text);
 	
-				sw.WriteLine("mapdata:" + tbPathsMaps.Text);
-				sw.WriteLine("images:"  + tbPathsImages.Text);
-				sw.WriteLine("cursor:"  + tbPathsCursor.Text);
+//				sw.WriteLine("mapdata:" + tbPathsMaps.Text);
+//				sw.WriteLine("images:"  + tbPathsImages.Text);
+//				sw.WriteLine("cursor:"  + tbPathsCursor.Text);
 			}
 		}
 
@@ -504,19 +526,6 @@ namespace MapView
 					populateTree();
 				}
 			}
-		}
-
-		private TileGroup GetCurrentTileGroup() // <- could be a group, category, or tileset
-		{
-			var node = tvMaps.SelectedNode;
-
-			if (node.Parent == null)
-				return ResourceInfo.TileGroupInfo.TileGroups[node.Text] as TileGroup;
-
-			if (node.Parent.Parent == null)
-				return ResourceInfo.TileGroupInfo.TileGroups[node.Parent.Text] as TileGroup;
-
-			return ResourceInfo.TileGroupInfo.TileGroups[node.Parent.Parent.Text] as TileGroup;
 		}
 
 //		private void btnSave2_Click(object sender, System.EventArgs e)
@@ -698,43 +707,43 @@ namespace MapView
 
 		private void btnMapsSaveTree_Click(object sender, EventArgs e)
 		{
-/*			var cursor = Cursor.Current;
-			Cursor.Current = Cursors.WaitCursor;
-
-//			string path	= txtMap.Text.Substring(0, txtMap.Text.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
-//			string file	= txtMap.Text.Substring(txtMap.Text.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
-//			string ext	= file.Substring(file.LastIndexOf(".", StringComparison.Ordinal));
-//			file		= file.Substring(0, file.LastIndexOf(".", StringComparison.Ordinal));
-
-			string path_file = txtMap.Text.Substring(0, txtMap.Text.LastIndexOf(".", StringComparison.Ordinal) + 1); // includes "."
-			string fileRecent = path_file + "new";
-
-			try
-			{
-				string fileBackup = path_file + "old";
-
-				GameInfo.TilesetInfo.Save(fileRecent);
-
-				if (File.Exists(txtMap.Text))
-				{
-					if (File.Exists(fileBackup))
-						File.Delete(fileBackup);
-
-					File.Move(txtMap.Text, fileBackup);
-				}
-
-				File.Move(fileRecent, txtMap.Text);
-
-				Cursor.Current = cursor;
-				Text = "Paths Editor - saved MapEdit.cfg";
-			}
-			catch (Exception except)
-			{
-				if (File.Exists(fileRecent))
-					File.Delete(fileRecent);
-
-				throw except;
-			} */
+//			var cursor = Cursor.Current;
+//			Cursor.Current = Cursors.WaitCursor;
+//
+////			string path	= txtMap.Text.Substring(0, txtMap.Text.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+////			string file	= txtMap.Text.Substring(txtMap.Text.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
+////			string ext	= file.Substring(file.LastIndexOf(".", StringComparison.Ordinal));
+////			file		= file.Substring(0, file.LastIndexOf(".", StringComparison.Ordinal));
+//
+//			string path_file = txtMap.Text.Substring(0, txtMap.Text.LastIndexOf(".", StringComparison.Ordinal) + 1); // includes "."
+//			string fileRecent = path_file + "new";
+//
+//			try
+//			{
+//				string fileBackup = path_file + "old";
+//
+//				GameInfo.TilesetInfo.Save(fileRecent);
+//
+//				if (File.Exists(txtMap.Text))
+//				{
+//					if (File.Exists(fileBackup))
+//						File.Delete(fileBackup);
+//
+//					File.Move(txtMap.Text, fileBackup);
+//				}
+//
+//				File.Move(fileRecent, txtMap.Text);
+//
+//				Cursor.Current = cursor;
+//				Text = "Paths Editor - saved MapEdit.cfg";
+//			}
+//			catch (Exception except)
+//			{
+//				if (File.Exists(fileRecent))
+//					File.Delete(fileRecent);
+//
+//				throw except;
+//			}
 		}
 
 		private void closeItem_Click(object sender, EventArgs e)
@@ -767,5 +776,6 @@ namespace MapView
 				lbMapsImagesUsed.Items.Add(_terrains[id]);
 			}
 		}
+		#endregion
 	}
 }

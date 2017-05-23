@@ -449,65 +449,68 @@ namespace MapView.Forms.MapObservers.TileViews
 			string label = GetTerrainLabel();
 			if (!String.IsNullOrEmpty(label))
 			{
-				var terrain = ResourceInfo.TerrainInfo[label];
-				if (terrain != null)
+				string path = Path.Combine(MapBase.Descriptor.BasePath, Descriptor.PathTerrain);
+				string pfePck = Path.Combine(
+										path,
+										label + SpriteCollection.PckExt);
+				string pfeTab = Path.Combine(
+										path,
+										label + SpriteCollection.TabExt);
+
+				if (!File.Exists(pfePck))
 				{
-					string pfePck = Path.Combine(terrain.PathTerrain, terrain.Label + SpriteCollection.PckExt);
-					string pfeTab = Path.Combine(terrain.PathTerrain, terrain.Label + SpriteCollection.TabExt);
+					MessageBox.Show(
+								this,
+								"File does not exist" + Environment.NewLine + Environment.NewLine + pfePck,
+								"Error",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Error,
+								MessageBoxDefaultButton.Button1,
+								0);
+				}
+				else if (!File.Exists(pfeTab))
+				{
+					MessageBox.Show(
+								this,
+								"File does not exist" + Environment.NewLine + Environment.NewLine + pfeTab,
+								"Error",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Error,
+								MessageBoxDefaultButton.Button1,
+								0);
+				}
+				else
+				{
+					_showHideManager.HideViewers();
 
-					if (!File.Exists(pfePck))
+					using (var f = new PckViewForm())
 					{
-						MessageBox.Show(
-									this,
-									"File does not exist" + Environment.NewLine + Environment.NewLine + pfePck,
-									"Error",
-									MessageBoxButtons.OK,
-									MessageBoxIcon.Error,
-									MessageBoxDefaultButton.Button1,
-									0);
-					}
-					else if (!File.Exists(pfeTab))
-					{
-						MessageBox.Show(
-									this,
-									"File does not exist" + Environment.NewLine + Environment.NewLine + pfeTab,
-									"Error",
-									MessageBoxButtons.OK,
-									MessageBoxIcon.Error,
-									MessageBoxDefaultButton.Button1,
-									0);
-					}
-					else
-					{
-						_showHideManager.HideViewers();
+						f.SelectedPalette = MapBase.Descriptor.Pal.Label;
+						f.LoadSpriteCollectionFile(pfePck, true);
 
-						using (var f = new PckViewForm())
+						var parent = FindForm();
+
+						Form owner = null; // TODO: what's this muck-a-muck
+						if (parent != null)
+							owner = parent.Owner;
+
+						if (owner == null)
+							owner = parent;
+
+						f.ShowDialog(owner);
+						if (f.SavedFile)
 						{
-							var spriteset = terrain.GetSpriteset();
-							f.SelectedPalette = spriteset.Pal.Label;
-							f.LoadSpriteCollectionFile(pfePck, true);
+//							ResourceInfo.TerrainInfo.Terrains[label].ClearMcdTable();
+//							ResourceInfo.ClearSpriteset(terrain.PathTerrain, terrain.Label);
+							// TODO: It's probably entirely unnecessary to clear the spriteset and
+							// MCD-records, since this ends up calling XCMainWindow.LoadSelectedMap()
+							// but keep an eye on it ....
 
-							var parent = FindForm();
-
-							Form owner = null; // TODO: what's this muck-a-muck
-							if (parent != null)
-								owner = parent.Owner;
-
-							if (owner == null)
-								owner = parent;
-
-							f.ShowDialog(owner);
-							if (f.SavedFile)
-							{
-								ResourceInfo.TerrainInfo.Terrains[label].ClearMcdTable(); // TODO: huh, MCD won't change ...
-								ResourceInfo.ClearSpriteset(terrain.PathTerrain, terrain.Label);
-
-								PckSaved();
-							}
+							PckSaved();
 						}
-
-						_showHideManager.RestoreViewers();
 					}
+
+					_showHideManager.RestoreViewers();
 				}
 			}
 			else
@@ -544,8 +547,10 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <returns></returns>
 		private string BuildTitleString(int id, int mcd)
 		{
-			var dep = GetTerrainLabel();
-			return "Tile View - id " + id + "  mcd " + mcd + "  file " + (dep ?? "unknown");
+			return String.Format(
+							System.Globalization.CultureInfo.CurrentCulture,
+							"Tile View - id {0}  mcd {1}  file {2}",
+							id, mcd, GetTerrainLabel() ?? "unknown");
 		}
 
 		/// <summary>
@@ -554,14 +559,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <returns></returns>
 		private string GetTerrainLabel()
 		{
-			var part = SelectedTilePart;
-			if (part != null)
-			{
-				var mapFile = MapBase as MapFileChild;
-				if (mapFile != null)
-					return mapFile.GetTerrainLabel(part);
-			}
-			return null;
+			return (SelectedTilePart != null) ? ((MapFileChild)MapBase).GetTerrainLabel(SelectedTilePart)
+											  : null;
 		}
 
 		/// <summary>

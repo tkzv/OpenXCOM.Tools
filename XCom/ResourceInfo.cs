@@ -15,7 +15,7 @@ namespace XCom
 		public static TerrainManager TerrainInfo
 		{ get; private set; }
 
-		private static readonly Dictionary<Palette, Dictionary<string, SpriteCollection>> _spritesDictionary
+		private static readonly Dictionary<Palette, Dictionary<string, SpriteCollection>> _palSpritesets
 						  = new Dictionary<Palette, Dictionary<string, SpriteCollection>>();
 
 
@@ -25,7 +25,7 @@ namespace XCom
 		/// <param name="pathConfig"></param>
 		public static void InitializeResources(PathInfo pathConfig)
 		{
-			Directory.SetCurrentDirectory(pathConfig.Path); // change to /settings dir // TODO: screw settings dir.
+			Directory.SetCurrentDirectory(pathConfig.DirectoryPath); // change to /settings dir // TODO: screw settings dir.
 //			XConsole.Init(20);
 
 			var tilesetManager = new TilesetManager(pathConfig.FullPath);
@@ -37,7 +37,8 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// Loads a given spriteset for UFO or TFTD.
+		/// Loads a given spriteset for UFO or TFTD. This could go in Descriptor
+		/// except the XCOM cursor-sprites load w/out a descriptor.
 		/// </summary>
 		/// <param name="file"></param>
 		/// <param name="path"></param>
@@ -51,52 +52,52 @@ namespace XCom
 				Palette pal)
 		{
 			LogFile.WriteLine("");
-			LogFile.WriteLine("ResourceInfo.SpriteCollection");
+			LogFile.WriteLine("ResourceInfo.LoadSpriteset");
 
 			if (!String.IsNullOrEmpty(path))
 			{
 				LogFile.WriteLine(". path= " + path);
 				LogFile.WriteLine(". file= " + file);
 
-				if (!_spritesDictionary.ContainsKey(pal))
-					_spritesDictionary.Add(pal, new Dictionary<string, SpriteCollection>());
+				if (!_palSpritesets.ContainsKey(pal))
+					_palSpritesets.Add(pal, new Dictionary<string, SpriteCollection>());
 
 				var pf = Path.Combine(path, file);
 				LogFile.WriteLine(". pf= " + pf);
 
-				var spritesetDictionary = _spritesDictionary[pal];
-				if (!spritesetDictionary.ContainsKey(pf))
+				var spritesets = _palSpritesets[pal];
+				if (!spritesets.ContainsKey(pf))
 				{
 					LogFile.WriteLine(". . pf not found in spriteset dictionary -> add new SpriteCollection");
 
 					using (var strPck = File.OpenRead(pf + SpriteCollection.PckExt))
 					using (var strTab = File.OpenRead(pf + SpriteCollection.TabExt))
 					{
-						spritesetDictionary.Add(pf, new SpriteCollection(
-																		strPck,
-																		strTab,
-																		lenTabOffset,
-																		pal));
+						spritesets.Add(pf, new SpriteCollection(
+															strPck,
+															strTab,
+															lenTabOffset,
+															pal));
 					}
 				}
 
-				return _spritesDictionary[pal][pf];
+				return _palSpritesets[pal][pf];
 			}
 			return null;
 		}
 
-		/// <summary>
-		/// Clears a given spriteset from the dictionary.
-		/// </summary>
-		/// <param name="path"></param>
-		/// <param name="file"></param>
-		public static void ClearSpriteset(string path, string file)
-		{
-			var pf = Path.Combine(path, file);
-
-			foreach (var spritesetDictionary in _spritesDictionary.Values)
-				spritesetDictionary.Remove(pf);
-		}
+//		/// <summary>
+//		/// Clears a given spriteset from the dictionary.
+//		/// </summary>
+//		/// <param name="path"></param>
+//		/// <param name="file"></param>
+//		public static void ClearSpriteset(string path, string file)
+//		{
+//			var pf = Path.Combine(path, file);
+//
+//			foreach (var spritesetDictionary in _spritesDictionary.Values)
+//				spritesetDictionary.Remove(pf);
+//		}
 
 //		internal static SpriteCollection GetSpriteset(string spriteset)
 //		{

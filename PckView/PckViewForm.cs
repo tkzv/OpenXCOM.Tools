@@ -19,8 +19,7 @@ namespace PckView
 		:
 			Form
 	{
-		#region Fields & Properties
-
+		#region Fields
 		private ViewPanel _viewPanel;
 
 		private Editor _editor;
@@ -38,20 +37,26 @@ namespace PckView
 
 		private SharedSpace _share;
 
+		private Dictionary<Palette, MenuItem> _paletteItems;
+		#endregion
 
-		private Dictionary<Palette, MenuItem> _paletteDictionary;
 
+		#region Properties
 		public bool SavedFile
 		{ get; private set; }
 
 		public string SelectedPalette
 		{
-			get { return _palette.Label; }
 			set
 			{
-				foreach (Palette pal in _paletteDictionary.Keys)
+				foreach (Palette pal in _paletteItems.Keys)
+				{
 					if (pal.Label.Equals(value))
-						OnPaletteClick(_paletteDictionary[pal], null);
+					{
+						OnPaletteClick(_paletteItems[pal], null);
+						break;
+					}
+				}
 			}
 		}
 		#endregion
@@ -111,7 +116,7 @@ namespace PckView
 			miSave.Visible = false;
 
 			_share[SharedSpace.Palettes] = new Dictionary<string, Palette>();
-			_paletteDictionary = new Dictionary<Palette, MenuItem>();
+			_paletteItems = new Dictionary<Palette, MenuItem>();
 
 			AddPalette(Palette.UfoBattle,    miPaletteMenu);
 			AddPalette(Palette.UfoGeo,       miPaletteMenu);
@@ -125,7 +130,7 @@ namespace PckView
 			_palette = Palette.UfoBattle;
 			_palette.EnableTransparency(true);
 
-			_paletteDictionary[_palette].Checked = true;
+			_paletteItems[_palette].Checked = true;
 
 			_viewPanel.Pal = _palette;
 
@@ -178,7 +183,7 @@ namespace PckView
 			it.MenuItems.Add(itPal);
 
 			itPal.Click += OnPaletteClick;
-			_paletteDictionary[pal] = itPal;
+			_paletteItems[pal] = itPal;
 
 			((Dictionary<string, Palette>)_share[SharedSpace.Palettes])[pal.Label] = pal;
 			return itPal;
@@ -352,10 +357,10 @@ namespace PckView
 			if (pal != null && pal != _palette)
 			{
 				if (_palette != null)
-					_paletteDictionary[_palette].Checked = false;
+					_paletteItems[_palette].Checked = false;
 
 				_palette = pal;
-				_paletteDictionary[_palette].Checked = true;
+				_paletteItems[_palette].Checked = true;
 
 				_viewPanel.Pal = _palette;
 
@@ -433,7 +438,7 @@ namespace PckView
 							spriteset.Pal = Palette.UfoBattle;
 					}
 
-					OnPaletteClick((MenuItem)_paletteDictionary[spriteset.ImageFile.DefaultPalette], null);
+					OnPaletteClick((MenuItem)_paletteItems[spriteset.ImageFile.DefaultPalette], null);
 
 					_viewPanel.SpritePack = spriteset;
 

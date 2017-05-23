@@ -24,7 +24,8 @@ namespace XCom
 		private readonly Dictionary<string, object> _share = new Dictionary<string, object>();
 		public object this[string key]
 		{
-			get { return _share[key]; }
+			get { return (_share.ContainsKey(key)) ? _share[key]
+												   : null; }
 			set { _share[key] = value; }
 		}
 
@@ -53,6 +54,8 @@ namespace XCom
 		//
 		// NOTE: which means that SharedSpace and PathInfo have very similar
 		// usages and ought be merged.
+		//
+		// NOTE: PathInfo objects are returned as objects also.
 
 
 		#region Methods
@@ -82,17 +85,6 @@ namespace XCom
 		public string GetShare(string key)
 		{
 			return _share[key] as String;
-		}
-
-		/// <summary>
-		/// Gets the console, basically.
-		/// </summary>
-		/// <param name="key"></param>
-		/// <returns></returns>
-		public object GetShareObject(string key)
-		{
-			return (_share.ContainsKey(key)) ? _share[key]
-											 : null;
 		}
 		#endregion
 	}

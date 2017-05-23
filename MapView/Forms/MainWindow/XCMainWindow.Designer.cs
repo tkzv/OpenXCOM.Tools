@@ -227,7 +227,7 @@ namespace MapView
 			this.tvMaps.Dock = System.Windows.Forms.DockStyle.Left;
 			this.tvMaps.Location = new System.Drawing.Point(0, 0);
 			this.tvMaps.Name = "tvMaps";
-			this.tvMaps.Size = new System.Drawing.Size(240, 454);
+			this.tvMaps.Size = new System.Drawing.Size(240, 452);
 			this.tvMaps.TabIndex = 0;
 			// 
 			// sfdSaveDialog
@@ -244,9 +244,9 @@ namespace MapView
 			this.tsslMapLabel,
 			this.tsslDimensions,
 			this.tsslPosition});
-			this.ssMain.Location = new System.Drawing.Point(248, 432);
+			this.ssMain.Location = new System.Drawing.Point(248, 430);
 			this.ssMain.Name = "ssMain";
-			this.ssMain.Size = new System.Drawing.Size(384, 22);
+			this.ssMain.Size = new System.Drawing.Size(382, 22);
 			this.ssMain.TabIndex = 2;
 			this.ssMain.Text = "statusStrip1";
 			// 
@@ -298,7 +298,7 @@ namespace MapView
 			// tscPanel.ContentPanel
 			// 
 			this.tscPanel.ContentPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-			this.tscPanel.ContentPanel.Size = new System.Drawing.Size(384, 407);
+			this.tscPanel.ContentPanel.Size = new System.Drawing.Size(382, 405);
 			this.tscPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			// 
 			// tscPanel.LeftToolStripPanel
@@ -310,7 +310,7 @@ namespace MapView
 			// tscPanel.RightToolStripPanel
 			// 
 			this.tscPanel.RightToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.tscPanel.Size = new System.Drawing.Size(384, 432);
+			this.tscPanel.Size = new System.Drawing.Size(382, 430);
 			this.tscPanel.TabIndex = 4;
 			// 
 			// tscPanel.TopToolStripPanel
@@ -388,7 +388,7 @@ namespace MapView
 			this.csSplitter.Location = new System.Drawing.Point(240, 0);
 			this.csSplitter.MinimumSize = new System.Drawing.Size(5, 5);
 			this.csSplitter.Name = "cSplitList";
-			this.csSplitter.Size = new System.Drawing.Size(8, 454);
+			this.csSplitter.Size = new System.Drawing.Size(8, 452);
 			this.csSplitter.TabIndex = 1;
 			this.csSplitter.TabStop = false;
 			// 
@@ -396,7 +396,7 @@ namespace MapView
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.BackColor = System.Drawing.SystemColors.Control;
-			this.ClientSize = new System.Drawing.Size(632, 454);
+			this.ClientSize = new System.Drawing.Size(630, 452);
 			this.Controls.Add(this.tscPanel);
 			this.Controls.Add(this.ssMain);
 			this.Controls.Add(this.csSplitter);

@@ -33,7 +33,7 @@ namespace XCom
 
 			foreach (var tileset in tilesets)
 			{
-				LogFile.WriteLine(". tileset.Type= " + tileset.Type);
+				LogFile.WriteLine(". tileset.Label= " + tileset.Label);
 
 				if (tileset.Group == labelGroup)
 				{
@@ -61,12 +61,12 @@ namespace XCom
 					}
 
 					var descriptor = new Descriptor(
-												tileset.Type,
+												tileset.Label,
 												tileset.Terrains,
 												tileset.BasePath,
 												Pal);
 
-					Categories[tileset.Category][tileset.Type] = descriptor;
+					Categories[tileset.Category][tileset.Label] = descriptor;
 				}
 				else LogFile.WriteLine(". . tileset not in this Group - bypass.");
 

@@ -20,13 +20,13 @@ namespace MapView
 		}
 
 
-		internal void Analyze(MapFileBase mapBase)
+		internal void Analyze(MapFileChild mapFile)
 		{
-			groupInfo.Text = "Map: " + mapBase.Label;
+			groupInfo.Text = "Map: " + mapFile.Label;
 
-			lbl2Dimensions.Text = mapBase.MapSize.Cols + ","
-								+ mapBase.MapSize.Rows + ","
-								+ mapBase.MapSize.Levs;
+			lbl2Dimensions.Text = mapFile.MapSize.Cols + ","
+								+ mapFile.MapSize.Rows + ","
+								+ mapFile.MapSize.Levs;
 
 			lbl2Tilesets.Text = String.Empty;
 
@@ -34,21 +34,17 @@ namespace MapView
 			int spritesTotal = 0;
 
 			bool first = true;
-			var mapFile = mapBase as MapFileChild;
-			if (mapFile != null)
+			foreach (string terrain in mapFile.Terrains)
 			{
-				foreach (string terrain in mapFile.Terrains)
-				{
-					if (first)
-						first = false;
-					else
-						lbl2Tilesets.Text += ";";
+				if (first)
+					first = false;
+				else
+					lbl2Tilesets.Text += ";";
 
-					lbl2Tilesets.Text += terrain;
+				lbl2Tilesets.Text += terrain;
 
-					recordsTotal += ResourceInfo.TerrainInfo[terrain].GetMcdRecords().Count;
-					spritesTotal += ResourceInfo.TerrainInfo[terrain].GetSpriteset().Count;
-				}
+				recordsTotal += mapFile.Descriptor.GetMcdRecords(terrain).Count;
+				spritesTotal += mapFile.Descriptor.GetSpriteset(terrain).Count;
 			}
 
 			var width = TextRenderer.MeasureText(lbl2Tilesets.Text, lbl2Tilesets.Font).Width;
@@ -63,64 +59,58 @@ namespace MapView
 			var recordsTable = new Hashtable();
 			var spritesTable = new Hashtable();
 
-			pBar.Maximum = mapBase.MapSize.Cols * mapBase.MapSize.Rows * mapBase.MapSize.Levs;
+			pBar.Maximum = mapFile.MapSize.Cols * mapFile.MapSize.Rows * mapFile.MapSize.Levs;
 			pBar.Value = 0;
 
-			for (int c = 0; c != mapBase.MapSize.Cols; ++c)
+			for (int col = 0; col != mapFile.MapSize.Cols; ++col)
+			for (int row = 0; row != mapFile.MapSize.Rows; ++row)
+			for (int lev = 0; lev != mapFile.MapSize.Levs; ++lev)
 			{
-				for (int r = 0; r != mapBase.MapSize.Rows; ++r)
+				var tile = mapFile[row, col, lev] as XCMapTile;
+				if (!tile.Vacant)
 				{
-					for (int h = 0; h != mapBase.MapSize.Levs; ++h)
+					if (tile.Ground != null)
 					{
-						var tile = mapBase[r, c, h] as XCMapTile;
-						if (!tile.Vacant)
-						{
-							if (tile.Ground != null)
-							{
-								++parts;
-								Count(tile.Ground, recordsTable, spritesTable);
+						++parts;
+						Count(tile.Ground, recordsTable, spritesTable);
 
-								var part = tile.Ground as Tilepart;
-								if (part != null)
-									Count(part.Dead, recordsTable, spritesTable);
-							}
+						var part = tile.Ground as Tilepart;
+						if (part != null)
+							Count(part.Dead, recordsTable, spritesTable);
+					}
 
-							if (tile.West != null)
-							{
-								++parts;
-								Count(tile.West, recordsTable, spritesTable);
+					if (tile.West != null)
+					{
+						++parts;
+						Count(tile.West, recordsTable, spritesTable);
 
-								var part = tile.West as Tilepart;
-								if (part != null)
-									Count(part.Dead, recordsTable, spritesTable);
-							}
+						var part = tile.West as Tilepart;
+						if (part != null)
+							Count(part.Dead, recordsTable, spritesTable);
+					}
 
-							if (tile.North != null)
-							{
-								++parts;
-								Count(tile.North, recordsTable, spritesTable);
+					if (tile.North != null)
+					{
+						++parts;
+						Count(tile.North, recordsTable, spritesTable);
 
-								var part = tile.North as Tilepart;
-								if (part != null)
-									Count(part.Dead, recordsTable, spritesTable);
-							}
+						var part = tile.North as Tilepart;
+						if (part != null)
+							Count(part.Dead, recordsTable, spritesTable);
+					}
 
-							if (tile.Content != null)
-							{
-								++parts;
-								Count(tile.Content, recordsTable, spritesTable);
+					if (tile.Content != null)
+					{
+						++parts;
+						Count(tile.Content, recordsTable, spritesTable);
 
-								var part = tile.Content as Tilepart;
-								if (part != null)
-									Count(part.Dead, recordsTable, spritesTable);
-							}
-
-							++pBar.Value;
-							pBar.Refresh();
-//							System.Threading.Thread.Sleep(1); // for testing.
-						}
+						var part = tile.Content as Tilepart;
+						if (part != null)
+							Count(part.Dead, recordsTable, spritesTable);
 					}
 				}
+				++pBar.Value;
+				pBar.Refresh();
 			}
 
 			var pct = Math.Round(100.0 * (double)recordsTable.Keys.Count / (double)recordsTotal, 2);
@@ -204,7 +194,7 @@ namespace MapView
 			this.lbl1Dimensions.Name = "lbl1Dimensions";
 			this.lbl1Dimensions.Size = new System.Drawing.Size(115, 15);
 			this.lbl1Dimensions.TabIndex = 0;
-			this.lbl1Dimensions.Text = "Dimensions (c,r,h)";
+			this.lbl1Dimensions.Text = "Dimensions (c,r,L)";
 			// 
 			// lbl2Dimensions
 			// 
@@ -362,6 +352,7 @@ namespace MapView
 			this.groupAnalyze.ResumeLayout(false);
 			this.groupInfo.ResumeLayout(false);
 			this.ResumeLayout(false);
+
 		}
 		#endregion
 
