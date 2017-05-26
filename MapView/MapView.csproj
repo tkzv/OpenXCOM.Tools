@@ -211,6 +211,14 @@
     <Compile Include="Forms\OtherForms\ConfigurationForm.Designer.cs">
       <DependentUpon>ConfigurationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\OtherForms\MapTreeInputBox.cs" />
+    <Compile Include="Forms\OtherForms\MapTreeInputBox.Designer.cs">
+      <DependentUpon>MapTreeInputBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\OtherForms\MapTreeTilesetInputBox.cs" />
+    <Compile Include="Forms\OtherForms\MapTreeTilesetInputBox.Designer.cs">
+      <DependentUpon>MapTreeTilesetInputBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\OtherForms\PathsEditor.cs" />
     <Compile Include="Forms\OtherForms\PathsEditor.Designer.cs">
       <DependentUpon>PathsEditor.cs</DependentUpon>
@@ -359,6 +367,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\MapInfoForm.resx">
       <DependentUpon>MapInfoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OtherForms\MapTreeInputBox.resx">
+      <DependentUpon>MapTreeInputBox.Designer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OtherForms\MapTreeTilesetInputBox.resx">
+      <DependentUpon>MapTreeTilesetInputBox.Designer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\NewMapForm.resx">
       <DependentUpon>NewMapForm.cs</DependentUpon>

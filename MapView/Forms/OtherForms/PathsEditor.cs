@@ -181,15 +181,15 @@ namespace MapView
 					}
 					else
 					{
-						tilegroup.AddTileset(
-										new Descriptor(
-													node.Text,
-//													tilegroup.RouteDirectory,
-//													tilegroup.OccultDirectory,
-													new List<string>(),
-													tilegroup.MapDirectory,	// TODO: fix the Map directory.
-													tilegroup.Pal),		// TODO: fix the Palette determination.
-										node.Parent.Text);
+//						tilegroup.AddTileset(
+//										new Descriptor(
+//													node.Text,
+////													tilegroup.RouteDirectory,
+////													tilegroup.OccultDirectory,
+//													new List<string>(),
+//													tilegroup.MapDirectory,	// TODO: fix the Map directory.
+//													tilegroup.Pal),			// TODO: fix the Palette determination.
+//										node.Parent.Text);
 					}
 				}
 				else // category node
@@ -535,62 +535,62 @@ namespace MapView
 
 		private void addNewMap_Click(object sender, EventArgs e)
 		{
-			using (var f = new NewMapForm())
-			{
-				f.ShowDialog(this);
-
-				if (f.MapLabel != null)
-				{
-					if (tvMaps.SelectedNode.Parent != null) // add to here
-					{
-						string pfe = tbMapsMaps.Text + f.MapLabel + MapFileChild.MapExt; // TODO: this string is probly wrong since YAML.
-						if (File.Exists(pfe))
-						{
-							using (var fdialog = new ChoiceDialog(pfe))
-							{
-								fdialog.ShowDialog(this);
-	
-								if (fdialog.Choice == Choice.UseExisting)
-									return;
-							}
-						}
-
-						MapFileChild.CreateMap(
-											File.OpenWrite(pfe),
-											f.MapRows,
-											f.MapCols,
-											f.MapHeight);
-
-						using (var fs = File.OpenWrite(tbMapsRoutes.Text + f.MapLabel + RouteNodeCollection.RouteExt)) // TODO: wtf.
-						{}
-
-						TileGroup tileset;
-						string label;
-
-						if (tvMaps.SelectedNode.Parent.Parent == null)
-						{
-							tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[tvMaps.SelectedNode.Parent.Text];
-							tvMaps.SelectedNode.Nodes.Add(f.MapLabel);
-							label = tvMaps.SelectedNode.Text;
-						}
-						else
-						{
-							tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[tvMaps.SelectedNode.Parent.Parent.Text];
-							tvMaps.SelectedNode.Parent.Nodes.Add(f.MapLabel);
-							label = tvMaps.SelectedNode.Parent.Text;
-						}
-
-						tileset.AddTileset(f.MapLabel, label);
-
-//						saveMapedit();
-					}
-//					else // top node, baaaaad
+//			using (var f = new NewMapForm())
+//			{
+//				f.ShowDialog(this);
+//
+//				if (f.MapLabel != null)
+//				{
+//					if (tvMaps.SelectedNode.Parent != null) // add to here
 //					{
-//						tileset = GameInfo.GetTileInfo()[treeMaps.SelectedNode.Parent.Text];
-//						treeMaps.SelectedNode.Parent.Nodes.Add(nf.MapName);
+//						string pfe = tbMapsMaps.Text + f.MapLabel + MapFileChild.MapExt; // TODO: this string is probly wrong since YAML.
+//						if (File.Exists(pfe))
+//						{
+//							using (var fdialog = new ChoiceDialog(pfe))
+//							{
+//								fdialog.ShowDialog(this);
+//	
+//								if (fdialog.Choice == Choice.UseExisting)
+//									return;
+//							}
+//						}
+//
+//						MapFileChild.CreateMap(
+//											File.OpenWrite(pfe),
+//											f.MapRows,
+//											f.MapCols,
+//											f.MapHeight);
+//
+//						using (var fs = File.OpenWrite(tbMapsRoutes.Text + f.MapLabel + RouteNodeCollection.RouteExt)) // TODO: wtf.
+//						{}
+//
+//						TileGroup tileset;
+//						string label;
+//
+//						if (tvMaps.SelectedNode.Parent.Parent == null)
+//						{
+//							tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[tvMaps.SelectedNode.Parent.Text];
+//							tvMaps.SelectedNode.Nodes.Add(f.MapLabel);
+//							label = tvMaps.SelectedNode.Text;
+//						}
+//						else
+//						{
+//							tileset = (TileGroup)ResourceInfo.TileGroupInfo.TileGroups[tvMaps.SelectedNode.Parent.Parent.Text];
+//							tvMaps.SelectedNode.Parent.Nodes.Add(f.MapLabel);
+//							label = tvMaps.SelectedNode.Parent.Text;
+//						}
+//
+//						tileset.AddTileset(f.MapLabel, label);
+//
+////						saveMapedit();
 //					}
-				}
-			}
+////					else // top node, baaaaad
+////					{
+////						tileset = GameInfo.GetTileInfo()[treeMaps.SelectedNode.Parent.Text];
+////						treeMaps.SelectedNode.Parent.Nodes.Add(nf.MapName);
+////					}
+//				}
+//			}
 		}
 
 		private void addExistingMap_Click(object sender, EventArgs e)
@@ -618,8 +618,8 @@ namespace MapView
 							string name = file.Substring(start, end-start);
 							try
 							{
-								tileset.AddTileset(name, tn.Text);
-								tn.Nodes.Add(name);
+//								tileset.AddTileset(name, tn.Text);
+//								tn.Nodes.Add(name);
 							}
 							catch (Exception ex)
 							{

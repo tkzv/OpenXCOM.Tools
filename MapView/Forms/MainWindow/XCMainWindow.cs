@@ -12,12 +12,8 @@ using MapView.Forms.MainWindow;
 //using MapView.Forms.XCError.WarningConsole;
 //using MapView.OptionsServices;
 
-//using Microsoft.Win32;
-
 using XCom;
-using XCom.Resources.Map;
 using XCom.Resources.Map.RouteData;
-//using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
 using YamlDotNet.RepresentationModel;	// read values (deserialization)
@@ -151,10 +147,13 @@ namespace MapView
 			MaximumSize = size; // fu.net
 
 
+			tvMaps.NodeMouseClick += (sender, args) => tvMaps.SelectedNode = args.Node;
+
 			// jijack: These two events keep getting deleted in my designer:
-			tvMaps.BeforeSelect += OnMapTreeSelect;
-			tvMaps.AfterSelect  += OnMapTreeSelected;
+			tvMaps.BeforeSelect += OnMapTreeBeforeSelect;
+			tvMaps.AfterSelect  += OnMapTreeAfterSelected;
 			// welcome to your new home
+
 
 			Closing += OnCloseSaveRegistry;
 
@@ -1017,32 +1016,323 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// De-colorizes the background-field of a previously selected label
-		/// in the left-panel's MapBlocks' tree.
+		/// Opens a context-menu on RMB-click.
+		/// NOTE: a MouseClick event occurs *after* the treeview's BeforeSelect
+		/// and AfterSelected events occur. So the selected Map will change
+		/// *before* a context-menu is shown, which is good.
+		/// NOTE: A MouseClick event won't work if the tree is blank. So use MouseDown.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnMapTreeSelect(object sender, CancelEventArgs e)
+		private void OnMapTreeMouseDown(object sender, MouseEventArgs e)
 		{
-			if (NotifySave() == DialogResult.Cancel)
+			switch (e.Button)
 			{
-				e.Cancel = true;
-			}
-			else if (tvMaps.SelectedNode != null)
-			{
-				tvMaps.SelectedNode.BackColor = SystemColors.Control;
+				case MouseButtons.Right:
+					cmMapTreeMenu.MenuItems.Clear();
+
+					cmMapTreeMenu.MenuItems.Add("Add Group ...", new EventHandler(OnAddGroupClick));
+
+					if (tvMaps.SelectedNode != null)
+					{
+						switch (tvMaps.SelectedNode.Level)
+						{
+							case 0: // group-node.
+								cmMapTreeMenu.MenuItems.Add("-");
+								cmMapTreeMenu.MenuItems.Add("Edit Group ...", new EventHandler(OnEditGroupClick));
+								cmMapTreeMenu.MenuItems.Add("Delete Group", new EventHandler(OnDeleteGroupClick));
+								cmMapTreeMenu.MenuItems.Add("-");
+								cmMapTreeMenu.MenuItems.Add("Add Category ...", new EventHandler(OnAddCategoryClick));
+								break;
+
+							case 1: // category-node.
+								cmMapTreeMenu.MenuItems.Add("-");
+								cmMapTreeMenu.MenuItems.Add("Edit Category ...", new EventHandler(OnEditCategoryClick));
+								cmMapTreeMenu.MenuItems.Add("Delete Category", new EventHandler(OnDeleteCategoryClick));
+								cmMapTreeMenu.MenuItems.Add("-");
+								cmMapTreeMenu.MenuItems.Add("Add Tileset ...", new EventHandler(OnAddTilesetClick));
+								break;
+
+							case 2: // tileset-node.
+								cmMapTreeMenu.MenuItems.Add("-");
+								cmMapTreeMenu.MenuItems.Add("Edit Tileset ...", new EventHandler(OnEditTilesetClick));
+								cmMapTreeMenu.MenuItems.Add("Delete Tileset", new EventHandler(OnDeleteTilesetClick));
+								break;
+						}
+					}
+
+					cmMapTreeMenu.Show(tvMaps, e.Location);
+					break;
 			}
 		}
 
 		/// <summary>
-		/// Colorizes the background-field of the newly selected label in the
-		/// left-panel's MapBlocks' tree.
+		/// Adds a group to the map-tree.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnMapTreeSelected(object sender, TreeViewEventArgs e)
+		private void OnAddGroupClick(object sender, EventArgs e)
 		{
-			tvMaps.SelectedNode.BackColor = Color.Gold;
+			LogFile.WriteLine("XCMainWindow.OnAddGroupClick");
+
+			using (var f = new MapTreeInputBox(
+											"Enter the label for a new Map group."
+												+ " It needs to start with UFO or TFTD, since"
+												+ " the prefix will set the default path and"
+												+ " palette of its tilesets.",
+											MapTreeInputBox.BoxType.AddGroup,
+											String.Empty))
+			if (f.ShowDialog(this) == DialogResult.OK)
+			{
+				ResourceInfo.TileGroupInfo.AddTileGroup(f.InputString);
+
+				CreateTree();
+			}
+		}
+
+		/// <summary>
+		/// Edits the label of a group on the map-tree.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnEditGroupClick(object sender, EventArgs e)
+		{
+			LogFile.WriteLine("XCMainWindow.OnEditGroupClick");
+
+			using (var f = new MapTreeInputBox(
+											"Enter a new label for the Map group."
+												+ " It needs to start with UFO or TFTD, since"
+												+ " the prefix will set the default path and"
+												+ " palette of its tilesets.",
+											MapTreeInputBox.BoxType.EditGroup,
+											String.Empty))
+			{
+				string labelGroup = tvMaps.SelectedNode.Text;
+
+				f.InputString = labelGroup;
+				if (f.ShowDialog(this) == DialogResult.OK)
+				{
+					ResourceInfo.TileGroupInfo.EditTileGroup(
+														f.InputString,
+														labelGroup);
+					CreateTree();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deletes a group from the map-tree.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnDeleteGroupClick(object sender, EventArgs e)
+		{
+			LogFile.WriteLine("XCMainWindow.OnDeleteGroupClick");
+
+			if (MessageBox.Show(
+							this,
+							"Are you sure you want to remove this Map group?"
+								+ " This will also remove all its categories and"
+								+ " tilesets, but files on disk are unaffected.",
+							"Warning",
+							MessageBoxButtons.OKCancel,
+							MessageBoxIcon.Warning,
+							MessageBoxDefaultButton.Button1,
+							0) == DialogResult.OK)
+			{
+				string labelGroup = tvMaps.SelectedNode.Text;
+
+				ResourceInfo.TileGroupInfo.DeleteTileGroup(labelGroup);
+
+				CreateTree();
+			}
+		}
+
+		/// <summary>
+		/// Adds a category to a group on the map-tree.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnAddCategoryClick(object sender, EventArgs e)
+		{
+			LogFile.WriteLine("XCMainWindow.OnAddCategoryClick");
+
+			string labelGroup = tvMaps.SelectedNode.Text;
+
+			using (var f = new MapTreeInputBox(
+											"Enter the label for a new Map category.",
+											MapTreeInputBox.BoxType.AddCategory,
+											labelGroup))
+			if (f.ShowDialog(this) == DialogResult.OK)
+			{
+				var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
+				tilegroup.AddCategory(f.InputString);
+
+				CreateTree();
+			}
+		}
+
+		/// <summary>
+		/// Edits the label of a category on the map-tree.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnEditCategoryClick(object sender, EventArgs e)
+		{
+			LogFile.WriteLine("XCMainWindow.OnEditCategoryClick");
+
+			string labelGroup = tvMaps.SelectedNode.Parent.Text;
+
+			using (var f = new MapTreeInputBox(
+											"Enter a new label for the Map category.",
+											MapTreeInputBox.BoxType.EditCategory,
+											labelGroup))
+			{
+				string labelCategory = tvMaps.SelectedNode.Text;
+
+				f.InputString = labelCategory;
+				if (f.ShowDialog(this) == DialogResult.OK)
+				{
+					var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
+					tilegroup.EditCategory(
+										f.InputString,
+										labelCategory);
+					CreateTree();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deletes a category from the map-tree.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnDeleteCategoryClick(object sender, EventArgs e)
+		{
+			LogFile.WriteLine("XCMainWindow.OnDeleteCategoryClick");
+
+			if (MessageBox.Show(
+							this,
+							"Are you sure you want to remove this Map category?"
+								+ " This will also remove all its tilesets, but"
+								+ " files on disk are unaffected.",
+							"Warning",
+							MessageBoxButtons.OKCancel,
+							MessageBoxIcon.Warning,
+							MessageBoxDefaultButton.Button1,
+							0) == DialogResult.OK)
+			{
+				string labelGroup    = tvMaps.SelectedNode.Parent.Text;
+				string labelCategory = tvMaps.SelectedNode.Text;
+
+				var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
+				tilegroup.DeleteCategory(labelCategory);
+
+				CreateTree();
+			}
+		}
+
+		/// <summary>
+		/// Adds a tileset and its characteristics to the map-tree.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnAddTilesetClick(object sender, EventArgs e)
+		{
+			LogFile.WriteLine("XCMainWindow.OnAddTilesetClick");
+
+			string labelGroup    = tvMaps.SelectedNode.Parent.Text;
+			string labelCategory = tvMaps.SelectedNode.Text;
+			string labelTileset  = String.Empty;
+
+			using (var f = new MapTreeTilesetInputBox(
+												MapTreeTilesetInputBox.BoxType.AddTileset,
+												labelGroup,
+												labelCategory,
+												labelTileset))
+			{
+				if (f.ShowDialog(this) == DialogResult.OK)
+				{
+
+					CreateTree();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Edits the characteristics of a tileset on the map-tree.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnEditTilesetClick(object sender, EventArgs e)
+		{
+			LogFile.WriteLine("XCMainWindow.OnEditTilesetClick");
+
+			string labelGroup    = tvMaps.SelectedNode.Parent.Parent.Text;
+			string labelCategory = tvMaps.SelectedNode.Parent.Text;
+			string labelTileset  = tvMaps.SelectedNode.Text;
+
+			using (var f = new MapTreeTilesetInputBox(
+												MapTreeTilesetInputBox.BoxType.EditTileset,
+												labelGroup,
+												labelCategory,
+												labelTileset))
+			{
+				if (f.ShowDialog(this) == DialogResult.OK)
+				{
+
+					CreateTree();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deletes a tileset from the map-tree.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnDeleteTilesetClick(object sender, EventArgs e)
+		{
+			LogFile.WriteLine("XCMainWindow.OnDeleteTilesetClick");
+
+			if (MessageBox.Show(
+							this,
+							"Are you sure you want to remove this Map tileset?"
+								+ " Files on disk are unaffected.",
+							"Warning",
+							MessageBoxButtons.OKCancel,
+							MessageBoxIcon.Warning,
+							MessageBoxDefaultButton.Button1,
+							0) == DialogResult.OK)
+			{
+				string labelGroup    = tvMaps.SelectedNode.Parent.Parent.Text;
+				string labelCategory = tvMaps.SelectedNode.Parent.Text;
+				string labelTileset  = tvMaps.SelectedNode.Text;
+
+				var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
+				tilegroup.DeleteTileset(labelTileset, labelCategory);
+
+				CreateTree();
+			}
+		}
+
+		/// <summary>
+		/// Asks user to save before switching Maps if applicable.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnMapTreeBeforeSelect(object sender, CancelEventArgs e)
+		{
+			e.Cancel |= (NotifySave() == DialogResult.Cancel);
+		}
+
+		/// <summary>
+		/// Loads the selected Map.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnMapTreeAfterSelected(object sender, TreeViewEventArgs e)
+		{
 			LoadSelectedMap();
 		}
 

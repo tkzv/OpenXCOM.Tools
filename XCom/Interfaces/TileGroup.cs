@@ -11,14 +11,14 @@ namespace XCom.Interfaces
 		:
 			TileGroupBase
 	{
-		internal protected enum GameType
+		public enum GameType
 		{
 			Ufo,
 			Tftd
 		}
 
 		#region Fields & Properties
-		internal protected GameType GroupType
+		public GameType GroupType
 		{ get; private set; }
 
 		public Palette Pal
@@ -54,7 +54,7 @@ namespace XCom.Interfaces
 			else //if (labelGroup.StartsWith("ufo", StringComparison.OrdinalIgnoreCase))
 			{
 				GroupType = GameType.Ufo;	// NOTE: if the prefix "tftd" is not found at the beginning of
-			}								// the group-label then default to UFO path and palette.
+			}								// the group-label then default to UFO basepath and palette.
 
 			switch (GroupType)
 			{
@@ -67,21 +67,6 @@ namespace XCom.Interfaces
 			}
 			// custom Palette = Palette.GetPalette(val)
 		}
-		#endregion
-
-
-		#region Methods (virtual)
-//		public virtual void SaveTileGroup(StreamWriter sw, Varidia vars)
-//		{}
-
-		public virtual void AddTileset(string tileset, string category)
-		{}
-
-		public virtual void AddTileset(Descriptor descriptor, string category)
-		{}
-
-//		public virtual Descriptor RemoveTileset(string tileset, string category)
-//		{}
 		#endregion
 	}
 }

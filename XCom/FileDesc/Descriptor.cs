@@ -86,6 +86,10 @@ namespace XCom
 			return ResourceInfo.LoadSpriteset(terrain, pathTerrain, 2, Pal); // TODO: should '2' be '4' for TFTD
 		}
 
+		/// <summary>
+		/// Overrides Object.ToString()
+		/// </summary>
+		/// <returns></returns>
 		public override string ToString()
 		{
 			return Label;

@@ -7,17 +7,29 @@ namespace DSShared.Windows
 	/// <summary>
 	/// A generic form providing a textbox for user-input.
 	/// </summary>
-	public sealed partial class InputBox
+	public sealed partial class FindFileForm
 		:
 			Form
 	{
+		#region Properties
+		/// <summary>
+		/// Gets the text in the textbox.
+		/// </summary>
+		public string InputString
+		{
+			get { return tbInput.Text; }
+		}
+		#endregion
+
+
+		#region cTors
 		/// <summary>
 		/// Main constructor.
 		/// </summary>
 		/// <param name="notice">text that will be shown above the textbox</param>
 		/// <param name="caption">caption for the titlebar</param>
 		/// <param name="input">initial value of the textbox</param>
-		public InputBox(string notice, string caption, string input)
+		public FindFileForm(string notice, string caption, string input)
 		{
 			InitializeComponent();
 			
@@ -31,20 +43,14 @@ namespace DSShared.Windows
 		/// Auxiliary constructor.
 		/// </summary>
 		/// <param name="notice"></param>
-		public InputBox(string notice)
+		public FindFileForm(string notice)
 			:
 				this(notice, "Input Text", String.Empty)
 		{}
+		#endregion
 
 
-		/// <summary>
-		/// Gets the text in the textbox.
-		/// </summary>
-		public string InputString
-		{
-			get { return tbInput.Text; }
-		}
-
+		#region Eventcalls
 		private void btnFindFile_Click(object sender, EventArgs e)
 		{
 			using (var f = openFileDialog)	// TODO: Delete the OpenFileDialog class and use stock .NET forms.
@@ -54,5 +60,6 @@ namespace DSShared.Windows
 					tbInput.Text = f.FileName;
 			}
 		}
+		#endregion
 	}
 }

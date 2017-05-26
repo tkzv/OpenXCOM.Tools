@@ -36,7 +36,7 @@ namespace XCom
 			get { return _groups; }
 		}
 
-		internal string FullPath
+		internal string FullPath // TODO: might not be needed.
 		{ get; set; }
 		#endregion
 
@@ -88,7 +88,11 @@ namespace XCom
 				{
 					//LogFile.WriteLine(". . tileset= " + tileset); // lists all data in the tileset
 
+					// IMPORTANT: ensure that tileset-labels (ie, type) and terrain-labels
+					// (ie, terrains) are stored and used only as UpperCASE strings.
+
 					string nodeLabel = nodeTileset.Children[new YamlScalarNode("type")].ToString();
+					nodeLabel = nodeLabel.ToUpperInvariant();
 					LogFile.WriteLine(". . type= " + nodeLabel); // "UFO_110"
 //					if (!_types.Contains(nodeLabel))
 //						_types.Add(nodeLabel);
@@ -112,10 +116,11 @@ namespace XCom
 						LogFile.WriteLine(". . . terrain= " + nodeTerrain); // "U_EXT02" etc.
 
 						string terrain = nodeTerrain.ToString();
+						terrain = terrain.ToUpperInvariant();
 
 						terrainList.Add(terrain);
 
-						if (!Terrains.Contains(terrain))
+						if (!Terrains.Contains(terrain)) // TODO: this is probly irrelevant since YAML etc.
 						{
 							LogFile.WriteLine(". . . . adding terrain");
 							Terrains.Add(terrain);

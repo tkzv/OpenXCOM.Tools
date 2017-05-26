@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Windows.Forms;
 
 using XCom.Interfaces;
-using XCom.Interfaces.Base;
 
 
 namespace XCom
@@ -86,31 +83,6 @@ namespace XCom
 //		public override void SaveTileGroup(StreamWriter sw, Varidia vars)
 //		{
 //			// TODO: possibly save YAML Config here.
-//		}
-
-		public override void AddTileset(string tileset, string category)
-		{
-			string basepath = String.Empty;	// TODO: fix this in PathsEditor.
-			var pal = Palette.UfoBattle;	// TODO: fix this in PathsEditor.
-
-			var descriptor = new Descriptor(
-										tileset,
-										new List<string>(),
-										basepath,
-										pal);
-			Categories[category][tileset] = descriptor;
-		}
-
-		public override void AddTileset(Descriptor descriptor, string category)
-		{
-			Categories[category][descriptor.Label] = descriptor;
-		}
-
-//		public override Descriptor RemoveTileset(string tileset, string category)
-//		{
-//			var desc = Categories[category][tileset] as Descriptor;
-//			Categories[category].Remove(tileset);
-//			return desc;
 //		}
 		#endregion
 	}

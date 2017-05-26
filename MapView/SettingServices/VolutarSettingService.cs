@@ -26,7 +26,7 @@ namespace MapView.OptionsServices
 				_fullpath = option.Value as String;
 				if (!File.Exists(_fullpath))
 				{
-					using (var f = new InputBox("Enter the Volutar MCD Editor Path in full"))
+					using (var f = new FindFileForm("Enter the Volutar MCD Editor Path in full"))
 					{
 						if (f.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 						{
