@@ -1176,6 +1176,7 @@ namespace MapView
 				ResourceInfo.TileGroupInfo.DeleteTileGroup(labelGroup);
 
 				CreateTree();
+				SelectGroupNodeTop();
 			}
 		}
 
@@ -1273,6 +1274,7 @@ namespace MapView
 				tilegroup.DeleteCategory(labelCategory);
 
 				CreateTree();
+				SelectCategoryNodeTop(labelGroup);
 			}
 		}
 
@@ -1369,11 +1371,73 @@ namespace MapView
 				tilegroup.DeleteTileset(labelTileset, labelCategory);
 
 				CreateTree();
+				SelectTilesetNodeTop(labelCategory);
 			}
 		}
 
 
 		// TODO: consolidate the select node functions into a single function.
+
+		/// <summary>
+		/// Selects the top treenode in the Maps tree if one exists.
+		/// </summary>
+		private void SelectGroupNodeTop()
+		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("SelectGroupNodeTop");
+
+			if (tvMaps.Nodes.Count != 0)
+				tvMaps.SelectedNode = tvMaps.Nodes[0];
+		}
+
+		/// <summary>
+		/// Selects the top category treenode in the Maps tree if one exists
+		/// under a given group treenode.
+		/// NOTE: Assumes that the parent-group node is valid.
+		/// </summary>
+		/// <param name="labelGroup"></param>
+		private void SelectCategoryNodeTop(string labelGroup)
+		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("SelectCategoryNodeTop");
+
+			foreach (TreeNode nodeGroup in tvMaps.Nodes)
+			{
+				if (nodeGroup.Text == labelGroup)
+				{
+					var groupCollection = nodeGroup.Nodes;
+					tvMaps.SelectedNode = (groupCollection.Count != 0) ? groupCollection[0]
+																	   : nodeGroup;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Selects the top tileset treenode in the Maps tree if one exists
+		/// under a given category treenode.
+		/// NOTE: Assumes that the parent-parent-group and parent-category nodes
+		/// are valid.
+		/// </summary>
+		/// <param name="labelCategory"></param>
+		private void SelectTilesetNodeTop(string labelCategory)
+		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("SelectTilesetNodeTop");
+
+			foreach (TreeNode nodeGroup in tvMaps.Nodes)
+			{
+				var groupCollection = nodeGroup.Nodes;
+				foreach (TreeNode nodeCategory in groupCollection)
+				{
+					if (nodeCategory.Text == labelCategory)
+					{
+						var categoryCollection = nodeCategory.Nodes;
+						tvMaps.SelectedNode = (categoryCollection.Count != 0) ? categoryCollection[0]
+																			  : nodeCategory;
+					}
+				}
+			}
+		}
 
 		/// <summary>
 		/// Selects a treenode in the Maps tree given a group-label.
@@ -1402,7 +1466,7 @@ namespace MapView
 		private void SelectCategoryNode(string labelCategory)
 		{
 			LogFile.WriteLine("");
-			LogFile.WriteLine("SelectGroupNode");
+			LogFile.WriteLine("SelectCategoryNode");
 
 			bool found = false;
 
