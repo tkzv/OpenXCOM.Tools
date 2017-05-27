@@ -67,18 +67,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelUnitInfo = new System.Windows.Forms.Label();
 			this.pRoutes = new System.Windows.Forms.Panel();
 			this.tsMain = new System.Windows.Forms.ToolStrip();
-			this.tscbConnectionType = new System.Windows.Forms.ToolStripComboBox();
+			this.tscbConnectType = new System.Windows.Forms.ToolStripComboBox();
 			this.tsddbEdit = new System.Windows.Forms.ToolStripDropDownButton();
 			this.tsmiOptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiAllNodesRank0 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiClearLinkData = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-			this.tscbConnectType = new System.Windows.Forms.ToolStripComboBox();
-			this.tsmiEditMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiOptions1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiMakeAllNodeRank0 = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsmiExtraHeight = new System.Windows.Forms.ToolStripMenuItem();
-			this.tstbExtraHeight = new System.Windows.Forms.ToolStripTextBox();
 			this.gbLinkData = new System.Windows.Forms.GroupBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.gbNodeEditor = new System.Windows.Forms.GroupBox();
@@ -91,7 +84,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.gbSpawnData.SuspendLayout();
 			this.tsMain.SuspendLayout();
-			this.menuStrip1.SuspendLayout();
 			this.gbLinkData.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.gbNodeEditor.SuspendLayout();
@@ -455,7 +447,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsMain.Font = new System.Drawing.Font("Verdana", 7F);
 			this.tsMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.tsMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.tscbConnectionType,
+			this.tscbConnectType,
 			this.tsddbEdit});
 			this.tsMain.Location = new System.Drawing.Point(0, 0);
 			this.tsMain.Name = "tsMain";
@@ -463,12 +455,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsMain.TabIndex = 0;
 			this.tsMain.Text = "tsMain";
 			// 
-			// tscbConnectionType
+			// tscbConnectType
 			// 
-			this.tscbConnectionType.Font = new System.Drawing.Font("Verdana", 7F);
-			this.tscbConnectionType.Name = "tscbConnectionType";
-			this.tscbConnectionType.Size = new System.Drawing.Size(120, 25);
-			this.tscbConnectionType.DropDownClosed += new System.EventHandler(this.OnConnectDropDownClosed);
+			this.tscbConnectType.Font = new System.Drawing.Font("Verdana", 7F);
+			this.tscbConnectType.Name = "tscbConnectType";
+			this.tscbConnectType.Size = new System.Drawing.Size(120, 25);
+			this.tscbConnectType.DropDownClosed += new System.EventHandler(this.OnConnectDropDownClosed);
 			// 
 			// tsddbEdit
 			// 
@@ -505,72 +497,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsmiClearLinkData.Size = new System.Drawing.Size(165, 22);
 			this.tsmiClearLinkData.Text = "Clear Link data";
 			this.tsmiClearLinkData.Click += new System.EventHandler(this.OnClearLinkDataClick);
-			// 
-			// menuStrip1
-			// 
-			this.menuStrip1.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.tscbConnectType,
-			this.tsmiEditMenu,
-			this.tsmiExtraHeight,
-			this.tstbExtraHeight});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(640, 24);
-			this.menuStrip1.TabIndex = 0;
-			this.menuStrip1.Text = "menuStrip1";
-			this.menuStrip1.Visible = false;
-			// 
-			// tscbConnectType
-			// 
-			this.tscbConnectType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.tscbConnectType.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tscbConnectType.Name = "tscbConnectType";
-			this.tscbConnectType.Size = new System.Drawing.Size(120, 20);
-			// 
-			// tsmiEditMenu
-			// 
-			this.tsmiEditMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.tsmiOptions1,
-			this.tsmiMakeAllNodeRank0});
-			this.tsmiEditMenu.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tsmiEditMenu.Name = "tsmiEditMenu";
-			this.tsmiEditMenu.Size = new System.Drawing.Size(37, 20);
-			this.tsmiEditMenu.Text = "Edit";
-			// 
-			// tsmiOptions1
-			// 
-			this.tsmiOptions1.Name = "tsmiOptions1";
-			this.tsmiOptions1.Size = new System.Drawing.Size(199, 22);
-			this.tsmiOptions1.Text = "Options";
-			this.tsmiOptions1.Click += new System.EventHandler(this.OnOptionsClick);
-			// 
-			// tsmiMakeAllNodeRank0
-			// 
-			this.tsmiMakeAllNodeRank0.Name = "tsmiMakeAllNodeRank0";
-			this.tsmiMakeAllNodeRank0.Size = new System.Drawing.Size(199, 22);
-			this.tsmiMakeAllNodeRank0.Text = "Make all nodes Rank 0";
-			this.tsmiMakeAllNodeRank0.Click += new System.EventHandler(this.OnAllNodeSpawnRank0Click);
-			// 
-			// tsmiExtraHeight
-			// 
-			this.tsmiExtraHeight.Enabled = false;
-			this.tsmiExtraHeight.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tsmiExtraHeight.ForeColor = System.Drawing.Color.Black;
-			this.tsmiExtraHeight.Name = "tsmiExtraHeight";
-			this.tsmiExtraHeight.Size = new System.Drawing.Size(85, 20);
-			this.tsmiExtraHeight.Text = "Extra Height";
-			this.tsmiExtraHeight.Visible = false;
-			// 
-			// tstbExtraHeight
-			// 
-			this.tstbExtraHeight.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tstbExtraHeight.Name = "tstbExtraHeight";
-			this.tstbExtraHeight.Size = new System.Drawing.Size(50, 20);
-			this.tstbExtraHeight.ToolTipText = "This amount will be added to the link\'s vertical position. Helps in UFO maps when" +
-	" the UFO terrain maps have basement floors.";
-			this.tstbExtraHeight.Visible = false;
-			this.tstbExtraHeight.TextChanged += new System.EventHandler(this.OnExtraHeightChanged);
 			// 
 			// gbLinkData
 			// 
@@ -715,15 +641,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.Controls.Add(this.pRoutes);
 			this.Controls.Add(this.tsMain);
 			this.Controls.Add(this.panel1);
-			this.Controls.Add(this.menuStrip1);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "RouteView";
 			this.Size = new System.Drawing.Size(640, 480);
 			this.gbSpawnData.ResumeLayout(false);
 			this.tsMain.ResumeLayout(false);
 			this.tsMain.PerformLayout();
-			this.menuStrip1.ResumeLayout(false);
-			this.menuStrip1.PerformLayout();
 			this.gbLinkData.ResumeLayout(false);
 			this.gbLinkData.PerformLayout();
 			this.panel1.ResumeLayout(false);
@@ -772,26 +695,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.Label lblSelectedId;
 		private System.Windows.Forms.ComboBox cbSpawnWeight;
 		private System.Windows.Forms.Label lblOverId;
-		private System.Windows.Forms.MenuStrip menuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem tsmiEditMenu;
-		private System.Windows.Forms.ToolStripMenuItem tsmiOptions1;
 		private System.Windows.Forms.Button btnPaste;
 		private System.Windows.Forms.Button btnCopy;
-		private System.Windows.Forms.ToolStripComboBox tscbConnectType;
 		private System.Windows.Forms.GroupBox gbLinkData;
 		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.ToolStripMenuItem tsmiExtraHeight;
-		private System.Windows.Forms.ToolStripTextBox tstbExtraHeight;
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.GroupBox gbPatrolData;
 		private System.Windows.Forms.ComboBox cbAttack;
 		private System.Windows.Forms.Label labelAttack;
 		private System.Windows.Forms.GroupBox gbNodeData;
-		private System.Windows.Forms.ToolStripMenuItem tsmiMakeAllNodeRank0;
 		private System.Windows.Forms.GroupBox gbNodeEditor;
 		private System.Windows.Forms.Button btnCut;
 		private System.Windows.Forms.ToolStrip tsMain;
-		private System.Windows.Forms.ToolStripComboBox tscbConnectionType;
+		private System.Windows.Forms.ToolStripComboBox tscbConnectType;
 		private System.Windows.Forms.ToolStripDropDownButton tsddbEdit;
 		private System.Windows.Forms.ToolStripMenuItem tsmiOptions;
 		private System.Windows.Forms.ToolStripMenuItem tsmiAllNodesRank0;

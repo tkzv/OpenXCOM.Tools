@@ -121,14 +121,14 @@ namespace XCom.Interfaces.Base
 			get { return this[row, col, Level]; }
 			set { this[row, col, Level] = value; }
 		}
-		/// <summary>
-		/// Gets/Sets a MapTile using a MapLocation.
-		/// </summary>
-		public MapTileBase this[MapLocation loc]
-		{
-			get { return this[loc.Row, loc.Col, loc.Lev]; }
-			set { this[loc.Row, loc.Col, loc.Lev] = value; }
-		}
+//		/// <summary>
+//		/// Gets/Sets a MapTile using a MapLocation.
+//		/// </summary>
+//		public MapTileBase this[MapLocation loc]
+//		{
+//			get { return this[loc.Row, loc.Col, loc.Lev]; }
+//			set { this[loc.Row, loc.Col, loc.Lev] = value; }
+//		}
 		#endregion
 
 

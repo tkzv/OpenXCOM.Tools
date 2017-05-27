@@ -279,9 +279,6 @@ namespace XCom
 		{
 			get { return _nodes.Count; }
 		}
-
-//		public byte ExtraHeight
-//		{ get; set; }
 		#endregion
 
 
@@ -295,7 +292,7 @@ namespace XCom
 		{
 			FullPath = Path.Combine(
 								basepath + RoutesDir,
-								file + RouteExt);
+								file     + RouteExt);
 
 			_nodes = new List<RouteNode>();
 

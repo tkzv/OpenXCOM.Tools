@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 using XCom.Interfaces.Base;
 
@@ -30,7 +31,7 @@ namespace XCom
 	
 					var parts = new List<TilepartBase>();
 	
-					foreach (string terrain in descriptor.Terrains)
+					foreach (string terrain in descriptor.Terrains) // push together all allocated terrains
 					{
 						var MCD = descriptor.GetMcdRecords(terrain);
 						foreach (Tilepart part in MCD)
@@ -44,6 +45,15 @@ namespace XCom
 //								parts.Add(part);
 //						}
 					}
+
+					if (parts.Count == 0) // NOTE: safety. This should have been disallowed before things got here. Perhaps (cf, create new tileset)
+						MessageBox.Show(
+									"There are no terrains allocated or they contain no MCD records.",
+									"Warning",
+									MessageBoxButtons.OK,
+									MessageBoxIcon.Warning,
+									MessageBoxDefaultButton.Button1,
+									0);
 
 					var RMP = new RouteNodeCollection(descriptor.Label, descriptor.BasePath);
 					var MAP = new MapFileChild(

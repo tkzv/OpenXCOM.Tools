@@ -171,6 +171,9 @@ namespace MapView.Forms.MapObservers.TopViews
 							case 1:
 								var tileView = ViewerFormsManager.TileView.Control;
 								_tile[SelectedQuadrant] = tileView.SelectedTilePart;
+
+								MainViewUnderlay.Instance.Refresh();
+								ViewerFormsManager.RouteView.Control.Refresh();
 								break;
 
 							case 2:

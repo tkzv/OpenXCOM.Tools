@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 using XCom.Interfaces.Base;
@@ -48,8 +49,6 @@ namespace XCom
 
 			Terrains = Descriptor.Terrains;
 
-//			_pathOccult = pathOccult;
-
 			Routes = routes;
 
 			if (File.Exists(FullPath))
@@ -60,30 +59,6 @@ namespace XCom
 				ReadMapFile(parts);
 				SetupRouteNodes(routes);
 				CalculateOccultations();
-
-//				if (!String.IsNullOrEmpty(pathOccult))
-//				{
-//					string pfeOccult = Path.Combine(pathOccult, file + OccultFile.OccultExt);
-//					if (File.Exists(pfeOccult))
-//					{
-//						try
-//						{
-//							OccultFile.LoadOccult(file, pathOccult, this);
-//						}
-//						catch // TODO: send warning to user.
-//						{
-//							for (int lev = 0; lev != MapSize.Levs; ++lev)
-//							for (int row = 0; row != MapSize.Rows; ++row)
-//							for (int col = 0; col != MapSize.Cols; ++col)
-//							{
-//								this[row, col, lev].Occulted = false;
-//							}
-//							throw;
-//						}
-//					}
-//					else
-//						CalculateOccultations();
-//				}
 			}
 			else
 			{
@@ -105,6 +80,10 @@ namespace XCom
 
 
 		#region Methods
+		/// <summary>
+		/// Reads a .MAP file.
+		/// </summary>
+		/// <param name="parts">a list of tileset-parts</param>
 		private void ReadMapFile(List<TilepartBase> parts)
 		{
 			using (var bs = new BufferedStream(File.OpenRead(FullPath)))
@@ -120,70 +99,89 @@ namespace XCom
 				for (int row = 0; row != rows; ++row)
 				for (int col = 0; col != cols; ++col)
 				{
-					int q1 = bs.ReadByte();
-					int q2 = bs.ReadByte();
-					int q3 = bs.ReadByte();
-					int q4 = bs.ReadByte();
-
-					this[row, col, lev] = CreateTile(parts, q1, q2, q3, q4);
+					this[row, col, lev] = CreateTile(
+												parts,
+												bs.ReadByte(),
+												bs.ReadByte(),
+												bs.ReadByte(),
+												bs.ReadByte());
 				}
-
-//				if (bs.Position < bs.Length)
-//					RouteFile.ExtraHeight = (byte)bs.ReadByte(); // <- NON-STANDARD <-| See also Save() below_
 			}
 		}
 
+
+		private bool _bypass;
+
+		private const int OffsetId = 2;
+
+		/// <summary>
+		/// Creates a tile with its four parts.
+		/// </summary>
+		/// <param name="parts">a list of total tileparts that can be used</param>
+		/// <param name="quad1">the floor</param>
+		/// <param name="quad2">the westwall</param>
+		/// <param name="quad3">the northwall</param>
+		/// <param name="quad4">the content</param>
+		/// <returns></returns>
 		private XCMapTile CreateTile(
 				IList<TilepartBase> parts,
-				int q1,
-				int q2,
-				int q3,
-				int q4)
+				int quad1,
+				int quad2,
+				int quad3,
+				int quad4)
 		{
-			try
+			if (!_bypass)
 			{
-				var a = (q1 > 1) ? (Tilepart)parts[q1 - 2]
-								 : null;
-	
-				var b = (q2 > 1) ? (Tilepart)parts[q2 - 2]
-								 : null;
-	
-				var c = (q3 > 1) ? (Tilepart)parts[q3 - 2]
-								 : null;
-	
-				var d = (q4 > 1) ? (Tilepart)parts[q4 - 2]
-								 : null;
-	
-				return new XCMapTile(a, b, c, d);
-			}
-			catch (Exception ex)
-			{
-				// TODO: Settle a graceful way to handle exceptions throughout.
-				// and/or use AdZerg()
+				int high = quad1;
+				if (quad2 > high) high = quad2;
+				if (quad3 > high) high = quad3;
+				if (quad4 > high) high = quad4;
 
-//				XConsole.AdZerg("MapFileChild.CreateTile() Invalid value(s) in .MAP file: " + Descriptor.Label);
-				System.Windows.Forms.MessageBox.Show(
-												"MapFileChild.CreateTile()" + Environment.NewLine
-													+ "Invalid value(s) in .MAP file: " + Descriptor.Label + Environment.NewLine
-													+ "indices: " + q1 + "," + q2 + "," + q3 + "," + q4 + Environment.NewLine
-													+ "length: " + parts.Count + Environment.NewLine
-													+ ex + ":" + ex.Message,
-												"Error",
-												System.Windows.Forms.MessageBoxButtons.OK,
-												System.Windows.Forms.MessageBoxIcon.Warning,
-												System.Windows.Forms.MessageBoxDefaultButton.Button1,
-												0);
-//				return XCMapTile.BlankTile;
-				throw;
+				if (high - OffsetId >= parts.Count)
+				{
+					_bypass = true;
+					MapChanged = true;
+
+					MessageBox.Show(
+								"There are tileset parts being referenced that are"
+									+ " outside the bounds of the Map's allocated MCDs."
+									+ " They will be cleared so that the Map can be"
+									+ " displayed.",
+								"Warning",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Asterisk,
+								MessageBoxDefaultButton.Button1,
+								0);
+				}
 			}
+
+			if (quad1 < 0 || quad1 - OffsetId >= parts.Count) quad1 = 0; // TODO: if any quads are < 0 MapChanged should be flagged.
+			if (quad2 < 0 || quad2 - OffsetId >= parts.Count) quad2 = 0;
+			if (quad3 < 0 || quad3 - OffsetId >= parts.Count) quad3 = 0;
+			if (quad4 < 0 || quad4 - OffsetId >= parts.Count) quad4 = 0;
+
+			var floor     = (quad1 > 1) ? (Tilepart)parts[quad1 - OffsetId]
+										: null;
+			var westwall  = (quad2 > 1) ? (Tilepart)parts[quad2 - OffsetId]
+										: null;
+			var northwall = (quad3 > 1) ? (Tilepart)parts[quad3 - OffsetId]
+										: null;
+			var content   = (quad4 > 1) ? (Tilepart)parts[quad4 - OffsetId]
+										: null;
+
+			return new XCMapTile(
+								floor,
+								westwall,
+								northwall,
+								content);
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="routes"></param>
 		private void SetupRouteNodes(RouteNodeCollection routes)
 		{
-//			if (file.ExtraHeight != 0) // remove ExtraHeight for editing - see Save() below_
-//				foreach (RouteNode node in routes)
-//					node.Lev -= file.ExtraHeight;
-
 			foreach (RouteNode node in routes)
 			{
 				var tile = this[node.Row, node.Col, node.Lev];
@@ -192,6 +190,9 @@ namespace XCom
 			}
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public void CalculateOccultations()
 		{
 			if (MapSize.Levs > 1) // NOTE: Maps shall be at least 10x10x1 ...
@@ -223,11 +224,7 @@ namespace XCom
 							tile.Occulted = false;
 					}
 				}
-//				OccultFile.SaveOccult(_file, _pathOccult, this);
 			}
-			//else // TODO: inform user that the current map has only 1 level
-			// and no .OTD will be created if the command is initiated from the
-			// filemenu.
 		}
 
 		/// <summary>
@@ -308,10 +305,6 @@ namespace XCom
 
 			using (var fs = File.Create(FullPath))
 			{
-//				if (RouteFile.ExtraHeight != 0) // add ExtraHeight to save - see SetupRoutes() above^
-//					foreach (RouteNode node in RouteFile)
-//						node.Lev += RouteFile.ExtraHeight;
-
 				Routes.Save(); // <- saves the .RMP file
 
 				fs.WriteByte((byte)MapSize.Rows); // http://www.ufopaedia.org/index.php/MAPS
@@ -344,8 +337,6 @@ namespace XCom
 					else
 						fs.WriteByte((byte)(tile.Content.TilesetId + 2));
 				}
-
-//				fs.WriteByte(RouteFile.ExtraHeight); // <- NON-STANDARD <-| See also ReadMapFile() above^
 			}
 		}
 

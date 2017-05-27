@@ -19,29 +19,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		Soldier		Soldier
 	*/
 
-/*
-	IMPORTANT NOTE: the RouteView control still contains:
-		menuStrip1 (Visible=FALSE)
-		tscbConnectType
-		tsmiEditMenu
-		- tsmiOptions
-		- tsmiMakeAllNodeRank0
-		tsmiExtraHeight
-		tstbExtraHeight
-
-	But all those have been superceded by:
-
-		tsMain
-		tscbConnectionType
-		tsddbEdit
-		- tsmiOptions2
-		- tsmiAllNodesRank0
-
-	Reason: a toolstrip works a bit better than a menustrip along the top and it
-	maintains consistency with the other viewers; also, 'ExtraHeight' is pending
-	removal.
-*/
-
 	internal sealed partial class RouteView
 		:
 			MapObserverControl0
@@ -135,7 +112,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			pRoutes.Controls.Add(_routePanel);
 
 			// setup the connect-type dropdown entries
-			tscbConnectionType.Items.AddRange(new object[]
+			tscbConnectType.Items.AddRange(new object[]
 			{
 				DontConnect,
 				OneWayConnect,
@@ -425,10 +402,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <returns></returns>
 		private ConnectNodeType GetConnectorType()
 		{
-			if (tscbConnectionType.Text == OneWayConnect)
+			if (tscbConnectType.Text == OneWayConnect)
 				return ConnectNodeType.ConnectOneWay;
 
-			if (tscbConnectionType.Text == TwoWayConnect)
+			if (tscbConnectType.Text == TwoWayConnect)
 				return ConnectNodeType.ConnectTwoWays;
 
 			return ConnectNodeType.ConnectNone;
@@ -1113,27 +1090,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void OnExtraHeightChanged(object sender, EventArgs e) // NOTE: is disabled w/ Visible=FALSE in designer.
-		{
-//			byte bite;
-//			if (byte.TryParse(
-//							tstbExtraHeight.Text,
-//							System.Globalization.NumberStyles.Integer,
-//							System.Globalization.CultureInfo.InvariantCulture,
-//							out bite))
-//			{
-//				_mapFile.RouteFile.ExtraHeight = bite;
-//				tstbExtraHeight.Text = bite.ToString(System.Globalization.CultureInfo.InvariantCulture);
-//			}
-//			else
-//			{
-//				_mapFile.RouteFile.ExtraHeight = 0;
-//				tstbExtraHeight.Text = "0";
-//			}
-//
-//			_mapFile.MapChanged |= !_loadingMap;
-		}
-
 		private void OnAllNodeSpawnRank0Click(object sender, EventArgs e)
 		{
 			int changed = 0;
@@ -1237,7 +1193,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		protected internal override void LoadControl0Options()
 		{
-			tscbConnectionType.SelectedIndex = 0;
+			tscbConnectType.SelectedIndex = 0;
 
 			var pens    = _routePanel.RoutePens;
 			var brushes = _routePanel.RouteBrushes;

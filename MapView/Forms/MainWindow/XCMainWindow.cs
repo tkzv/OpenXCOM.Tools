@@ -1017,14 +1017,6 @@ namespace MapView
 			_mainViewUnderlay.UpdateScrollers();
 		}
 
-
-//		private bool _bypass;
-//private void treeView1_MouseDown(object sender, MouseEventArgs e)
-//{
-//    TreeNode tn = treeView1.GetNodeAt(e.Location);
-//    tn.BackColor = System.Drawing.Color.White;
-//    tn.ForeColor = System.Drawing.Color.Black;
-//}
 		/// <summary>
 		/// Opens a context-menu on RMB-click.
 		/// NOTE: A MouseDown event occurs *before* the treeview's BeforeSelect
@@ -1039,15 +1031,17 @@ namespace MapView
 		private void OnMapTreeMouseDown(object sender, MouseEventArgs e)
 		{
 			LogFile.WriteLine("XCMainWindow.OnMapTreeMouseDown");
-			LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
+			if (tvMaps.SelectedNode != null) LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
 
 			switch (e.Button)
 			{
 				case MouseButtons.Right:
-//					_bypass = true;
 					var badnode = tvMaps.GetNodeAt(e.Location);	// The right-clicked node is NOT selected
-					badnode.BackColor = SystemColors.Control;	// so quit highlighting it as if it were.
-					badnode.ForeColor = SystemColors.ControlText;
+					if (badnode != null)
+					{
+						badnode.BackColor = SystemColors.Control;	// so quit highlighting it as if it were.
+						badnode.ForeColor = SystemColors.ControlText;
+					}
 
 //					var goodnode = tvMaps.SelectedNode;				// The truly selected node is going to stop being highlighted
 //					goodnode.BackColor = SystemColors.Highlight;	// even with this attempt to force it to stay highlighted.
@@ -1107,11 +1101,14 @@ namespace MapView
 												+ " palette of its tilesets.",
 											MapTreeInputBox.BoxType.AddGroup,
 											String.Empty))
-			if (f.ShowDialog(this) == DialogResult.OK)
 			{
-				ResourceInfo.TileGroupInfo.AddTileGroup(f.InputString);
+				if (f.ShowDialog(this) == DialogResult.OK)
+				{
+					ResourceInfo.TileGroupInfo.AddTileGroup(f.InputString);
 
-				CreateTree();
+					CreateTree();
+					SelectGroupNode(f.InputString);
+				}
 			}
 		}
 
@@ -1141,6 +1138,7 @@ namespace MapView
 														f.InputString,
 														labelGroup);
 					CreateTree();
+					SelectGroupNode(f.InputString);
 				}
 			}
 		}
@@ -1154,19 +1152,27 @@ namespace MapView
 		{
 			LogFile.WriteLine("XCMainWindow.OnDeleteGroupClick");
 
+			// TODO: Make a custom box for delete Group/Category/Tileset.
+
+			string labelGroup = tvMaps.SelectedNode.Text;
+
+			string notice = String.Format(
+										System.Globalization.CultureInfo.CurrentCulture,
+										"Are you sure you want to remove this Map group?"
+											+ " This will also remove all its categories and"
+											+ " tilesets, but files on disk are unaffected.{0}{0}"
+											+ "group:\t\t{1}",
+										Environment.NewLine,
+										labelGroup);
 			if (MessageBox.Show(
 							this,
-							"Are you sure you want to remove this Map group?"
-								+ " This will also remove all its categories and"
-								+ " tilesets, but files on disk are unaffected.",
+							notice,
 							"Warning",
 							MessageBoxButtons.OKCancel,
 							MessageBoxIcon.Warning,
 							MessageBoxDefaultButton.Button1,
 							0) == DialogResult.OK)
 			{
-				string labelGroup = tvMaps.SelectedNode.Text;
-
 				ResourceInfo.TileGroupInfo.DeleteTileGroup(labelGroup);
 
 				CreateTree();
@@ -1188,12 +1194,15 @@ namespace MapView
 											"Enter the label for a new Map category.",
 											MapTreeInputBox.BoxType.AddCategory,
 											labelGroup))
-			if (f.ShowDialog(this) == DialogResult.OK)
 			{
-				var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
-				tilegroup.AddCategory(f.InputString);
+				if (f.ShowDialog(this) == DialogResult.OK)
+				{
+					var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
+					tilegroup.AddCategory(f.InputString);
 
-				CreateTree();
+					CreateTree();
+					SelectCategoryNode(f.InputString);
+				}
 			}
 		}
 
@@ -1223,6 +1232,7 @@ namespace MapView
 										f.InputString,
 										labelCategory);
 					CreateTree();
+					SelectCategoryNode(f.InputString);
 				}
 			}
 		}
@@ -1236,20 +1246,29 @@ namespace MapView
 		{
 			LogFile.WriteLine("XCMainWindow.OnDeleteCategoryClick");
 
+			// TODO: Make a custom box for delete Group/Category/Tileset.
+
+			string labelGroup    = tvMaps.SelectedNode.Parent.Text;
+			string labelCategory = tvMaps.SelectedNode.Text;
+
+			string notice = String.Format(
+										System.Globalization.CultureInfo.CurrentCulture,
+										"Are you sure you want to remove this Map category?"
+											+ " This will also remove all its tilesets, but"
+											+ " files on disk are unaffected.{0}{0}"
+											+ "group:\t\t{1}{0}"
+											+ "category:\t\t{2}",
+										Environment.NewLine,
+										labelGroup, labelCategory);
 			if (MessageBox.Show(
 							this,
-							"Are you sure you want to remove this Map category?"
-								+ " This will also remove all its tilesets, but"
-								+ " files on disk are unaffected.",
+							notice,
 							"Warning",
 							MessageBoxButtons.OKCancel,
 							MessageBoxIcon.Warning,
 							MessageBoxDefaultButton.Button1,
 							0) == DialogResult.OK)
 			{
-				string labelGroup    = tvMaps.SelectedNode.Parent.Text;
-				string labelCategory = tvMaps.SelectedNode.Text;
-
 				var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
 				tilegroup.DeleteCategory(labelCategory);
 
@@ -1309,7 +1328,6 @@ namespace MapView
 
 					CreateTree();
 					SelectTilesetNode(f.Tileset);
-					LoadSelectedMap();
 				}
 			}
 		}
@@ -1323,24 +1341,87 @@ namespace MapView
 		{
 			LogFile.WriteLine("XCMainWindow.OnDeleteTilesetClick");
 
+			// TODO: Make a custom box for delete Group/Category/Tileset.
+
+			string labelGroup    = tvMaps.SelectedNode.Parent.Parent.Text;
+			string labelCategory = tvMaps.SelectedNode.Parent.Text;
+			string labelTileset  = tvMaps.SelectedNode.Text;
+
+			string notice = String.Format(
+										System.Globalization.CultureInfo.CurrentCulture,
+										"Are you sure you want to remove this Map tileset?"
+											+ " Files on disk are unaffected.{0}{0}"
+											+ "group:\t\t{1}{0}"
+											+ "category:\t\t{2}{0}"
+											+ "tileset:\t\t{3}",
+										Environment.NewLine,
+										labelGroup, labelCategory, labelTileset);
 			if (MessageBox.Show(
 							this,
-							"Are you sure you want to remove this Map tileset?"
-								+ " Files on disk are unaffected.",
+							notice,
 							"Warning",
 							MessageBoxButtons.OKCancel,
 							MessageBoxIcon.Warning,
 							MessageBoxDefaultButton.Button1,
 							0) == DialogResult.OK)
 			{
-				string labelGroup    = tvMaps.SelectedNode.Parent.Parent.Text;
-				string labelCategory = tvMaps.SelectedNode.Parent.Text;
-				string labelTileset  = tvMaps.SelectedNode.Text;
-
 				var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
 				tilegroup.DeleteTileset(labelTileset, labelCategory);
 
 				CreateTree();
+			}
+		}
+
+
+		// TODO: consolidate the select node functions into a single function.
+
+		/// <summary>
+		/// Selects a treenode in the Maps tree given a group-label.
+		/// </summary>
+		/// <param name="labelGroup"></param>
+		private void SelectGroupNode(string labelGroup)
+		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("SelectGroupNode");
+
+			foreach (TreeNode nodeGroup in tvMaps.Nodes)
+			{
+				if (nodeGroup.Text == labelGroup)
+				{
+					tvMaps.SelectedNode = nodeGroup;
+					nodeGroup.Expand();
+					break;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Selects a treenode in the Maps tree given a category-label.
+		/// </summary>
+		/// <param name="labelCategory"></param>
+		private void SelectCategoryNode(string labelCategory)
+		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("SelectGroupNode");
+
+			bool found = false;
+
+			foreach (TreeNode nodeGroup in tvMaps.Nodes)
+			{
+				if (found) break;
+
+				var groupCollection = nodeGroup.Nodes;
+				foreach (TreeNode nodeCategory in groupCollection)
+				{
+					if (nodeCategory.Text == labelCategory)
+					{
+						found = true;
+
+						tvMaps.SelectedNode = nodeCategory;
+						nodeCategory.Expand();
+						break;
+					}
+				}
 			}
 		}
 
@@ -1352,8 +1433,6 @@ namespace MapView
 		{
 			LogFile.WriteLine("");
 			LogFile.WriteLine("SelectTilesetNode");
-
-//			tvMaps.SuspendLayout();
 
 			bool found = false;
 
@@ -1379,15 +1458,12 @@ namespace MapView
 						{
 							found = true;
 
-							nodeCategory.Expand();
 							tvMaps.SelectedNode = nodeTileset;
 							break;
 						}
 					}
 				}
 			}
-//			tvMaps.ResumeLayout();
-//			tvMaps.Select();
 		}
 
 		/// <summary>

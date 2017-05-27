@@ -592,7 +592,8 @@ namespace MapView
 											}
 											catch (Exception ex)
 											{
-												ShowErrorDialog(ex.ToString());
+												ShowErrorDialog(ex.Message);
+												throw;
 											}
 										}
 										else
