@@ -124,10 +124,10 @@ namespace MapView
 		{
 			base.OnPropertyValueChanged(e);
 
-			((Option)_options[e.ChangedItem.Label]).Value = e.ChangedItem.Value;
+			((ViewerOption)_options[e.ChangedItem.Label]).Value = e.ChangedItem.Value;
 
 //			if (_instantUpdate)
-			((Option)_options[e.ChangedItem.Label]).doUpdate(
+			((ViewerOption)_options[e.ChangedItem.Label]).doUpdate(
 															e.ChangedItem.Label,
 															e.ChangedItem.Value);
 		}
@@ -256,7 +256,7 @@ namespace MapView
 		private void EmitProperty(
 				TypeBuilder typeBuilder,
 				FieldInfo fieldInfo,
-				Option option,
+				ViewerOption option,
 				string name)
 		{
 			// to figure out what opcodes to emit, i would compile a small class

@@ -11,6 +11,8 @@ using XCom;
 namespace MapView.Forms.MapObservers.TopViews
 {
 	internal sealed class QuadrantPanelDrawService
+		:
+			IDisposable
 	{
 		#region Fields
 		private const int SpriteWidth  = 32; // PckImage.Width
@@ -346,6 +348,27 @@ namespace MapView.Forms.MapObservers.TopViews
 											StartY + SpriteHeight + MarginVert + Font.Height + 1,
 											SpriteWidth,
 											SwatchHeight));
+		}
+
+		/// <summary>
+		/// This isn't really necessary since the GraphicsPath's last the
+		/// lifetime of the app. But FxCop gets antsy ....
+		/// NOTE: Dispose() is never called. cf ColorTools. cf DrawBlobService.
+		/// WARNING: This is NOT a robust implementation perhaps. But it
+		/// satisifes the core of the matter and could likely be used for
+		/// further development if that's ever required.
+		/// </summary>
+		public void Dispose()
+		{
+			if (_pathFloor   != null) _pathFloor  .Dispose();
+			if (_pathWest    != null) _pathWest   .Dispose();
+			if (_pathNorth   != null) _pathNorth  .Dispose();
+			if (_pathContent != null) _pathContent.Dispose();
+
+			if (Font  != null) Font .Dispose();
+			if (Brush != null) Brush.Dispose();
+
+			GC.SuppressFinalize(this);
 		}
 		#endregion
 	}

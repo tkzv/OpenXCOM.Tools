@@ -19,12 +19,12 @@ using XCom.Interfaces;
 
 namespace XCom
 {
-	public delegate void LoadingEventHandler(int progress, int total);
+//	public delegate void LoadingEventHandler(int progress, int total);
 
 
 	public static class XCBitmap
 	{
-		public static event LoadingEventHandler LoadingEvent;
+//		public static event LoadingEventHandler LoadingEvent;
 
 		// amount of space between saved bmp image blocks
 //		private const int space = 1;
@@ -495,16 +495,16 @@ namespace XCom
 			return dst;
 		}
 
-		/// <summary>
-		/// Used by MapFileBase.SaveGif()
-		/// </summary>
-		/// <param name="value"></param>
-		/// <param name="total"></param>
-		internal static void UpdateProgressBar(int value, int total)
-		{
-			if (LoadingEvent != null)
-				LoadingEvent(value, total);
-		}
+//		/// <summary>
+//		/// Used by MapFileBase.SaveGif()
+//		/// </summary>
+//		/// <param name="value"></param>
+//		/// <param name="total"></param>
+//		internal static void UpdateProgressBar(int value, int total)
+//		{
+//			if (LoadingEvent != null)
+//				LoadingEvent(value, total);
+//		}
 
 //		public static unsafe Bitmap HQ2X(/*Bitmap image*/)
 //		{
@@ -645,7 +645,7 @@ namespace XCom
 								pal,
 								x, y,
 								width, height));
-				UpdateProgressBar(aniSprite, rows * cols);
+//				UpdateProgressBar(aniSprite, rows * cols);
 			}
 
 			list.Pal = pal;

@@ -227,6 +227,7 @@ namespace MapView
 			this.tvMaps.BackColor = System.Drawing.SystemColors.Control;
 			this.tvMaps.Dock = System.Windows.Forms.DockStyle.Left;
 			this.tvMaps.HideSelection = false;
+			this.tvMaps.Indent = 15;
 			this.tvMaps.Location = new System.Drawing.Point(0, 0);
 			this.tvMaps.Name = "tvMaps";
 			this.tvMaps.Size = new System.Drawing.Size(240, 454);

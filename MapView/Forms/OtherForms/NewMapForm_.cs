@@ -1,3 +1,4 @@
+/*
 using System;
 
 
@@ -237,3 +238,4 @@ namespace MapView
 		private System.Windows.Forms.Button btnOk;
 	}
 }
+*/

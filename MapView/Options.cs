@@ -20,7 +20,7 @@ namespace MapView
 	{
 		#region Fields
 		private readonly Dictionary<string, Property> _properties;
-		private Dictionary<string, Option> _options;
+		private Dictionary<string, ViewerOption> _options;
 
 		private static Dictionary<Type, ConvertObjectHandler> _converters;
 		#endregion
@@ -30,7 +30,7 @@ namespace MapView
 		/// <summary>
 		/// Gets the dictionary for this Options.
 		/// </summary>
-		internal Dictionary<string, Option>.KeyCollection Keys
+		internal Dictionary<string, ViewerOption>.KeyCollection Keys
 		{
 			get { return _options.Keys; }
 		}
@@ -38,7 +38,7 @@ namespace MapView
 		/// <summary>
 		/// Gets/Sets the Option tied to the input string.
 		/// </summary>
-		internal Option this[string key]
+		internal ViewerOption this[string key]
 		{
 			get
 			{
@@ -64,7 +64,7 @@ namespace MapView
 		#region cTor
 		internal Options()
 		{
-			_options    = new Dictionary<string, Option>();
+			_options    = new Dictionary<string, ViewerOption>();
 			_properties = new Dictionary<string, Property>();
 
 			if (_converters == null)
@@ -155,10 +155,10 @@ namespace MapView
 		{
 			key = key.Replace(" ", String.Empty);
 
-			Option option;
+			ViewerOption option;
 			if (!_options.ContainsKey(key))
 			{
-				option = new Option(value, desc, category);
+				option = new ViewerOption(value, desc, category);
 				_options[key] = option;
 			}
 			else
@@ -187,11 +187,11 @@ namespace MapView
 		/// <param name="value">if there is no Option object tied to the
 		/// string, an Option will be created with this as its Value</param>
 		/// <returns>the Option object tied to the key</returns>
-		internal Option GetOption(string key, object value)
+		internal ViewerOption GetOption(string key, object value)
 		{
 			if (!_options.ContainsKey(key))
 			{
-				var option = new Option(value, null, null);
+				var option = new ViewerOption(value, null, null);
 				_options.Add(key, option);
 			}
 			return _options[key];
@@ -223,7 +223,7 @@ namespace MapView
 	/// <summary>
 	/// Stores information to be used in the OptionsPropertyGrid.
 	/// </summary>
-	public sealed class Option
+	public sealed class ViewerOption
 	{
 		#region Delegates
 		private delegate object ParseString(string st);
@@ -293,7 +293,7 @@ namespace MapView
 		/// <param name="value"></param>
 		/// <param name="desc"></param>
 		/// <param name="category"></param>
-		internal Option(
+		internal ViewerOption(
 				object value,
 				string desc,
 				string category)

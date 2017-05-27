@@ -245,7 +245,7 @@
     <Compile Include="Forms\OtherForms\MapResizeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\ChoiceDialog.cs">
+    <Compile Include="Forms\OtherForms\ChoiceDialog_.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CuboidSprite.cs">
@@ -257,7 +257,7 @@
     <Compile Include="Forms\OtherForms\Help.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\LoadingForm.cs">
+    <Compile Include="Forms\OtherForms\LoadingForm_.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\OtherForms\MapInfoForm.cs">
@@ -266,7 +266,7 @@
     <Compile Include="Forms\MainWindow\MainViewPanel\MainViewUnderlay.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\NewMapForm.cs">
+    <Compile Include="Forms\OtherForms\NewMapForm_.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\OtherForms\OutputBox.cs">
@@ -356,14 +356,14 @@
     <EmbeddedResource Include="Forms\OtherForms\MapResizeForm.resx">
       <DependentUpon>MapResizeForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\ChoiceDialog.resx">
-      <DependentUpon>ChoiceDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\OtherForms\ChoiceDialog_.resx">
+      <DependentUpon>ChoiceDialog_.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\Help.resx">
       <DependentUpon>Help.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\LoadingForm.resx">
-      <DependentUpon>LoadingForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\OtherForms\LoadingForm_.resx">
+      <DependentUpon>LoadingForm_.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\MapInfoForm.resx">
       <DependentUpon>MapInfoForm.cs</DependentUpon>
@@ -374,8 +374,8 @@
     <EmbeddedResource Include="Forms\OtherForms\MapTreeTilesetInputBox.resx">
       <DependentUpon>MapTreeTilesetInputBox.Designer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\NewMapForm.resx">
-      <DependentUpon>NewMapForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\OtherForms\NewMapForm_.resx">
+      <DependentUpon>NewMapForm_.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\OutputBox.resx">
       <DependentUpon>OutputBox.cs</DependentUpon>

@@ -18,7 +18,7 @@ namespace XCom.Interfaces
 		}
 
 		#region Fields & Properties
-		public GameType GroupType
+		public GameType GroupType // TODO: 'GroupType' can/should be superceded by 'Pal'
 		{ get; private set; }
 
 		public Palette Pal

@@ -93,26 +93,35 @@ namespace XCom.Interfaces.Base
 			AddCategory(labelCategory);
 
 			foreach (var descriptor in Categories[labelCategoryPre].Values)
-			{
 				Categories[labelCategory][descriptor.Label] = descriptor;
-			}
+
 			DeleteCategory(labelCategoryPre); // hopefully this won't wipe all Values after transferring ownership.
 		}
 
 		/// <summary>
-		/// Deletes a tileset. Called by XCMainWindow.OnDeleteTilesetClick()
-		/// NOTE: Check that tileset and category exist first.
+		/// Adds a tileset. Called by
+		/// - MapTreeTilesetInputBox.OnCreateTilesetClick()
+		/// NOTE: Check that the descriptor does *not* exist and category does
+		/// exist first.
+		/// </summary>
+		/// <param name="descriptor"></param>
+		/// <param name="labelCategory"></param>
+		public void AddTileset(Descriptor descriptor, string labelCategory)
+		{
+			Categories[labelCategory][descriptor.Label] = descriptor;
+		}
+
+		/// <summary>
+		/// Deletes a tileset. Called by
+		/// - XCMainWindow.OnDeleteTilesetClick()
+		/// - MapTreeTilesetInputBox.OnCreateTilesetClick()
+		/// NOTE: Check that category and perhaps tileset exist first.
 		/// </summary>
 		/// <param name="labelTileset">the label of the tileset to delete</param>
 		/// <param name="labelCategory">the label of the category of the tileset</param>
 		public void DeleteTileset(string labelTileset, string labelCategory)
 		{
 			Categories[labelCategory].Remove(labelTileset);
-		}
-
-		public void AddTileset(Descriptor descriptor, string labelCategory)
-		{
-			Categories[labelCategory][descriptor.Label] = descriptor;
 		}
 		#endregion
 	}

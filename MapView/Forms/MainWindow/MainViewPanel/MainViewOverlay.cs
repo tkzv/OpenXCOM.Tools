@@ -133,7 +133,7 @@ namespace MapView
 		}
 
 		private bool _graySelection = true;											// initial val for gray-selection Option
-		// NOTE: Remove suppression for Release cfg.
+		// NOTE: Remove suppression for Release cfg. .. not workie.
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
 		"CA1811:AvoidUncalledPrivateCode",
 		Justification = "Because the setter is called dynamically w/ Reflection" +

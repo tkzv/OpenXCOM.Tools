@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 using XCom;
@@ -54,17 +55,25 @@ namespace MapView
 		/// <summary>
 		/// Gets/Sets the tileset-label.
 		/// </summary>
-		private string Tileset
+		internal string Tileset
 		{
 			get { return tbTileset.Text; }
-			set { tbTileset.Text = value; }
+			private set { tbTileset.Text = value; }
 		}
 
 		/// <summary>
-		/// Sets the value of an edited tileset-label, used only for
-		/// 'EditTileset' to store a new label until user clicks Accept.
+		/// Stores the original tileset-label, used only for 'EditTileset' to
+		/// check if the label has changed when user clicks Accept.
 		/// </summary>
-		private string TilesetEdited
+		private string TilesetOriginal
+		{ get; set; }
+
+		/// <summary>
+		/// Stores the original terrain-list of a tileset, used only for
+		/// 'EditTileset' to check if the terrains have changed when user clicks
+		/// Accept.
+		/// </summary>
+		private List<string> TerrainsOriginal
 		{ get; set; }
 
 		/// <summary>
@@ -152,8 +161,15 @@ namespace MapView
 					btnFindTileset.Visible   =
 					btnFindDirectory.Visible = false;
 
-					BasePath = TileGroup.Categories[Category][Tileset].BasePath;
+					TilesetOriginal = String.Copy(Tileset);
 
+					var tileset = TileGroup.Categories[Category][Tileset];
+
+					TerrainsOriginal = new List<string>();
+					foreach (string terrain in tileset.Terrains)
+						TerrainsOriginal.Add(String.Copy(terrain));
+
+					BasePath = tileset.BasePath;
 					break;
 				}
 			}
@@ -245,9 +261,8 @@ namespace MapView
 						btnCreateMap.Enabled = (Descriptor == null
 											&& !String.IsNullOrEmpty(Tileset));
 						break;
-					case BoxType.EditTileset:
-						TilesetEdited = Tileset;
-						break;
+//					case BoxType.EditTileset:
+//						break;
 				}
 			}
 		}
@@ -303,8 +318,11 @@ namespace MapView
 				{
 					terrain = Path.GetFileNameWithoutExtension(terrains[i]).ToUpperInvariant();
 
-					if (Descriptor == null || !Descriptor.Terrains.Contains(terrain))
+					if ((Descriptor == null || !Descriptor.Terrains.Contains(terrain))
+						&& terrain != "BLANKS")
+					{
 						lbTerrainsAvailable.Items.Add(terrain);
+					}
 				}
 			}
 		}
@@ -429,13 +447,11 @@ namespace MapView
 					{									// be disabled if a Descriptor w/ tileset-label already exists
 						LogFile.WriteLine(". tileset Created");
 
-						var pal = (TileGroup.GroupType == TileGroup.GameType.Ufo) ? Palette.UfoBattle
-																				  : Palette.TftdBattle;
 						Descriptor = new Descriptor(
 												Tileset,
 												new List<string>(),
 												BasePath,
-												pal);
+												TileGroup.Pal);
 						TileGroup.AddTileset(Descriptor, Category);
 
 						btnCreateMap.Enabled = false;
@@ -460,8 +476,8 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnTilesetLabelKeyUp(object sender, KeyEventArgs e)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("OnTilesetLabelKeyUp");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("OnTilesetLabelKeyUp");
 
 			if (InputBoxType == BoxType.AddTileset && e.KeyCode == Keys.Enter)
 				OnCreateTilesetClick(null, EventArgs.Empty);
@@ -470,12 +486,19 @@ namespace MapView
 		/// <summary>
 		/// If this inputbox is type AddTileset, the accept click must check to
 		/// see if a descriptor has been created already with the CreateMap
-		/// button first. If this inputbox is type EditTileset, the accept click
-		/// will create a descriptor, delete the old descriptor, and add the new
-		/// one to the current tilegroup/category.
+		/// button first.
+		/// 
+		/// If this inputbox is type EditTileset, the accept click will create a
+		/// descriptor if the tileset-label changed and delete the old
+		/// descriptor, and add the new one to the current tilegroup/category.
+		/// If the tileset-label didn't change, nothing more need be done since
+		/// any terrains that were changed have already been changed by changes
+		/// to the Allocated/Available listboxes.
 		///
 		/// TODO: Check if the rest of the code stays happy if a tileset doesn't
-		/// have any terrains listed.
+		/// have any terrains listed. -> not only is it unhappy, but this has to
+		/// end up with writing a new valid MapFile to disk, perhaps just a
+		/// basic 10x10x1 map with flooring only.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -484,22 +507,109 @@ namespace MapView
 			LogFile.WriteLine("");
 			LogFile.WriteLine("OnAcceptClick");
 
-			Tileset = tbTileset.Text.Trim();
+			Tileset = Tileset.Trim();
 
 			switch (InputBoxType)
 			{
-				case BoxType.AddTileset:			// NOTE: The tileset-label should already
-					DialogResult = DialogResult.OK;	// have been checked for validity by here
-					break;							// by the Create button.
+				case BoxType.AddTileset:			// NOTE: The tileset-label should already have been
+					DialogResult = DialogResult.OK;	// checked for validity by here by the Create button.
+					LogFile.WriteLine(". AddTileset");
+					break;
 
 				case BoxType.EditTileset:
+					LogFile.WriteLine(". EditTileset");
+
 					if (!String.IsNullOrEmpty(Tileset))
 					{
-						if (ValidateTilesetLabel(TilesetEdited))
+						if (ValidateTilesetLabel(Tileset))
 						{
-							// TODO: create a descriptor. Check if Map-file exists already. Delete old Descriptor.
+							if (lbTerrainsAllocated.Items.Count != 0)
+							{
+								LogFile.WriteLine(". Tileset= " + Tileset);
+								foreach (string t in TerrainsOriginal)
+									LogFile.WriteLine(". terrain original= " + t);
+								foreach (string t in Descriptor.Terrains)
+									LogFile.WriteLine(". terrain= " + t);
 
-							DialogResult = DialogResult.OK;
+								if (Tileset == TilesetOriginal) // label didn't change; check if terrains changed ->
+								{
+									LogFile.WriteLine(". . label did *not* change");
+
+									if (!Descriptor.Terrains.SequenceEqual(TerrainsOriginal))
+									{
+										DialogResult = DialogResult.OK;
+									}
+									else
+										ShowInfoDialog("No changes were made.");
+
+									// NOTE: Save of Map-file is *not* required.
+								}
+								else // label changed; rewrite the descriptor ->
+								{
+									LogFile.WriteLine(". . change label");
+
+									// NOTE: user cannot edit a Map-label to be another already existing file.
+									// There are other ways to do that: either let the user delete the target-
+									// Map-file from his/her disk, or better click Edit on *that* tileset.
+									// NOTE: however, if while editing a tileset the user browses to another
+									// tileset and edits that tileset's terrains, the changes are effective.
+
+									if (!TilesetFileExists(Tileset))
+									{
+										var category = TileGroup.Categories[Category];
+										if (!category.ContainsKey(Tileset)) // safety. If the Map-file does not exist, then the current category cannot contain its key. ... ideally.
+										{
+											LogFile.WriteLine(". tileset Created");
+
+											try
+											{
+												string pfeMap    = GetFullPath(Tileset);
+												string pfeMapPre = GetFullPath(TilesetOriginal);
+
+												LogFile.WriteLine(". . fileMapPre= " + pfeMapPre);
+												LogFile.WriteLine(". . fileMap= " + pfeMap);
+
+//												using (var fs = File.Create(fileMap)) // create the file and drop the handle.
+//												{}
+
+												File.Move(pfeMapPre, pfeMap);	// NOTE: This has to happen now because if the MapTree
+																				// is clicked it will try to load the .MAP file etc.
+
+												if (File.Exists(pfeMap))		// NOTE: do *not* alter the descriptor if File.Move() went bork.
+												{								// This is likely redundant: File.Move() should throw.
+													Descriptor = new Descriptor(
+																			Tileset,
+																			category[TilesetOriginal].Terrains,
+																			BasePath,
+																			TileGroup.Pal);
+													TileGroup.AddTileset(Descriptor, Category);			// NOTE: This could be done on return to XCMainWindow.OnEditTilesetClick()
+																										// but then 'Descriptor' would have to be internal.
+													TileGroup.DeleteTileset(TilesetOriginal, Category);	// NOTE: This could be done on return to XCMainWindow.OnEditTilesetClick()
+																										// but then 'TilesetOriginal' would have to be internal.
+
+													DialogResult = DialogResult.OK;
+												}
+											}
+											catch (Exception ex)
+											{
+												ShowErrorDialog(ex.ToString());
+											}
+										}
+										else
+											ShowErrorDialog("The Map tileset already exists.");
+									}
+									else
+										ShowErrorDialog("The Map file already exists on disk. The Tileset Editor is"
+														+ " not sophisticated enough to deal with this eventuality."
+														+ " Either edit that Map directly if it's already in a Group,"
+														+ " or use Add Tileset to make it editable, or as a last"
+														+ " resort delete it from your disk." + Environment.NewLine + Environment.NewLine
+														+ GetFullPath(Tileset));
+														// TODO: Ask user if he/she wants to overwrite the Map-file.
+								}
+							}
+							else
+								ShowErrorDialog("The Map must have at least one terrain allocated.");
 						}
 						else
 							ShowErrorDialog("The Map label contains illegal characters.");
@@ -509,69 +619,6 @@ namespace MapView
 
 					break;
 			}
-
-
-/*			switch (InputBoxType)
-			{
-				case BoxType.AddGroup:
-				case BoxType.EditGroup:
-					if (String.IsNullOrEmpty(tbInput.Text))
-					{
-						ShowErrorDialog("A group label has not been specified.");
-					}
-					else if (!tbInput.Text.StartsWith("ufo",  StringComparison.OrdinalIgnoreCase)
-						&&   !tbInput.Text.StartsWith("tftd", StringComparison.OrdinalIgnoreCase))
-					{
-						
-						ShowErrorDialog("The group label needs to start with UFO or TFTD.");
-					}
-//					else if (ResourceInfo.TileGroupInfo.TileGroups.ContainsKey(tbInput.Text))
-					else
-					{
-						bool bork = false;
-						foreach (var labelGroup in ResourceInfo.TileGroupInfo.TileGroups.Keys) // check if group-label already exists
-						{
-							if (String.Equals(labelGroup, tbInput.Text, StringComparison.OrdinalIgnoreCase))
-							{
-								bork = true;
-								break;
-							}
-						}
-
-						if (bork)
-							ShowErrorDialog("The group label already exists.");
-						else
-							DialogResult = DialogResult.OK;
-					}
-					break;
-
-				case BoxType.AddCategory:
-				case BoxType.EditCategory:
-					if (String.IsNullOrEmpty(tbInput.Text))
-					{
-						ShowErrorDialog("A category label has not been specified.");
-					}
-					else
-					{
-						bool bork = false;
-
-						var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[ParentGroup];
-						foreach (var labelCategory in tilegroup.Categories.Keys)
-						{
-							if (String.Equals(labelCategory, tbInput.Text, StringComparison.OrdinalIgnoreCase))
-							{
-								bork = true;
-								break;
-							}
-						}
-
-						if (bork)
-							ShowErrorDialog("The category label already exists.");
-						else
-							DialogResult = DialogResult.OK;
-					}
-					break;
-			} */
 		}
 		#endregion
 
@@ -583,7 +630,7 @@ namespace MapView
 		/// </summary>
 		/// <param name="label"></param>
 		/// <returns></returns>
-		private bool ValidateTilesetLabel(string label)
+		private static bool ValidateTilesetLabel(string label)
 		{
 			var invalid = new List<char>();
 
@@ -593,49 +640,68 @@ namespace MapView
 
 			invalid.Add(' '); // no spaces also.
 			invalid.Add('.'); // and not dots.
-			// TODO: hell i should just check for alpha-numeric and underscore.
+			// TODO: hell i should just check for alpha-numeric and underscore. Old-school style. guaranteed.
 
 			invalidChars = invalid.ToArray();
 
 			return (label.IndexOfAny(invalidChars) == -1);
 		}
-			// https://stackoverflow.com/questions/62771/how-do-i-check-if-a-given-string-is-a-legal-valid-file-name-under-windows#answer-62888
-/*			You may use any character in the current code page (Unicode/ANSI above 127), except:
-
-			< > : " / \ | ? *
-			Characters whose integer representations are 0-31 (less than ASCII space)
-			Any other character that the target file system does not allow (say, trailing periods or spaces)
-			Any of the DOS names: CON, PRN, AUX, NUL, COM1, COM2, COM3, COM4,
-			COM5, COM6, COM7, COM8, COM9, LPT1, LPT2, LPT3, LPT4, LPT5, LPT6,
-			LPT7, LPT8, LPT9 (and avoid AUX.txt, etc)
-			The file name is all periods
-
-			Some optional things to check:
-
-			File paths (including the file name) may not have more than 260 characters (that don't use the \?\ prefix)
-			Unicode file paths (including the file name) with more than 32,000 characters when using \?\
-			(note that prefix may expand directory components and cause it to overflow the 32,000 limit)
-*//*
-			Naming Files, Paths, and Namespaces
-			https://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
-*/
-
-//		private bool TilesetFileExists()
-//		{
-//			LogFile.WriteLine("");
-//			LogFile.WriteLine("TilesetFileExists");
+//		// https://stackoverflow.com/questions/62771/how-do-i-check-if-a-given-string-is-a-legal-valid-file-name-under-windows#answer-62888
+//		You may use any character in the current code page (Unicode/ANSI above 127), except:
 //
-//			string pfeMap = null;
-//			if (!String.IsNullOrEmpty(Tileset))
-//			{
-//				pfeMap = Path.Combine(BasePath, "MAPS");
-//				pfeMap = Path.Combine(pfeMap, Tileset + ".MAP");
+//		< > : " / \ | ? *
+//		Characters whose integer representations are 0-31 (less than ASCII space)
+//		Any other character that the target file system does not allow (say, trailing periods or spaces)
+//		Any of the DOS names: CON, PRN, AUX, NUL, COM1, COM2, COM3, COM4,
+//		COM5, COM6, COM7, COM8, COM9, LPT1, LPT2, LPT3, LPT4, LPT5, LPT6,
+//		LPT7, LPT8, LPT9 (and avoid AUX.txt, etc)
+//		The file name is all periods
 //
-//				LogFile.WriteLine(". pfeMap= " + pfeMap);
-//			}
+//		Some optional things to check:
 //
-//			return (pfeMap != null && File.Exists(pfeMap));
-//		}
+//		File paths (including the file name) may not have more than 260 characters (that don't use the \?\ prefix)
+//		Unicode file paths (including the file name) with more than 32,000 characters when using \?\
+//		(note that prefix may expand directory components and cause it to overflow the 32,000 limit)
+//
+//		also: https://stackoverflow.com/questions/309485/c-sharp-sanitize-file-name
+//
+//		also: https://stackoverflow.com/questions/422090/in-c-sharp-check-that-filename-is-possibly-valid-not-that-it-exists
+//
+//		Naming Files, Paths, and Namespaces
+//		https://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx
+
+
+		/// <summary>
+		/// Gets the fullpath for a Map-file.
+		/// </summary>
+		/// <param name="labelMap"></param>
+		/// <returns></returns>
+		private string GetFullPath(string labelMap)
+		{
+			string pfeLabel = Path.Combine(BasePath, "MAPS");
+			return Path.Combine(pfeLabel, labelMap + ".MAP");
+		}
+
+		/// <summary>
+		/// Checks if a Map-file w/ 'label' exists in the current 'BasePath'
+		/// directory.
+		/// </summary>
+		/// <param name="labelMap">the name w/out extension of a Map-file to check for</param>
+		/// <returns></returns>
+		private bool TilesetFileExists(string labelMap)
+		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("TilesetFileExists");
+
+			string pfeMap = null;
+			if (!String.IsNullOrEmpty(labelMap))
+			{
+				pfeMap = GetFullPath(labelMap);
+				LogFile.WriteLine(". pfeMap= " + pfeMap);
+			}
+
+			return (pfeMap != null && File.Exists(pfeMap));
+		}
 
 		/// <summary>
 		/// Wrapper for MessageBox.Show().
@@ -649,6 +715,22 @@ namespace MapView
 						"Error",
 						MessageBoxButtons.OK,
 						MessageBoxIcon.Error,
+						MessageBoxDefaultButton.Button1,
+						0);
+		}
+
+		/// <summary>
+		/// Wrapper for MessageBox.Show().
+		/// </summary>
+		/// <param name="info">the info string to show</param>
+		private void ShowInfoDialog(string info)
+		{
+			MessageBox.Show(
+						this,
+						info,
+						"Notice",
+						MessageBoxButtons.OK,
+						MessageBoxIcon.Information,
 						MessageBoxDefaultButton.Button1,
 						0);
 		}

@@ -36,7 +36,7 @@ namespace MapView
 		private readonly ViewerFormsManager    _viewerFormsManager; // has static functs.
 		private readonly MainMenusManager      _mainMenusManager;
 
-		private readonly LoadingForm           _loadingProgress;
+//		private readonly LoadingForm           _loadingProgress;
 //		private readonly ConsoleWarningHandler _warningHandler;
 
 
@@ -147,7 +147,7 @@ namespace MapView
 			MaximumSize = size; // fu.net
 
 
-			tvMaps.NodeMouseClick += (sender, args) => tvMaps.SelectedNode = args.Node;
+//			tvMaps.NodeMouseClick += (sender, args) => tvMaps.SelectedNode = args.Node;
 
 			// jijack: These two events keep getting deleted in my designer:
 			tvMaps.BeforeSelect += OnMapTreeBeforeSelect;
@@ -297,8 +297,8 @@ namespace MapView
 
 
 
-			_loadingProgress = new LoadingForm();
-			XCBitmap.LoadingEvent += _loadingProgress.UpdateProgress; // TODO: fix or remove that.
+//			_loadingProgress = new LoadingForm();
+//			XCBitmap.LoadingEvent += _loadingProgress.UpdateProgress; // TODO: fix or remove that.
 
 
 			// I should rewrite the hq2x wrapper for .NET sometime -- not the code it's pretty insane
@@ -339,17 +339,18 @@ namespace MapView
 		/// </summary>
 		private void CreateTree()
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("XCMainWindow.CreateTree");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("XCMainWindow.CreateTree");
 
+//			tvMaps.SuspendLayout();
 			tvMaps.Nodes.Clear();
 
 			var groups = ResourceInfo.TileGroupInfo.TileGroups;
-			LogFile.WriteLine(". groups= " + groups);
+			//LogFile.WriteLine(". groups= " + groups);
 
 			foreach (string keyGroup in groups.Keys)
 			{
-				LogFile.WriteLine(". . keyGroup= " + keyGroup);
+				//LogFile.WriteLine(". . keyGroup= " + keyGroup);
 
 				var nodeGroup = new SortableTreeNode(groups[keyGroup].Label);
 				nodeGroup.Tag = groups[keyGroup];
@@ -357,7 +358,7 @@ namespace MapView
 
 				foreach (string keyCategory in groups[keyGroup].Categories.Keys)
 				{
-					LogFile.WriteLine(". . . keyCategory= " + keyCategory);
+					//LogFile.WriteLine(". . . keyCategory= " + keyCategory);
 
 					var nodeCategory = new SortableTreeNode(keyCategory);
 					nodeCategory.Tag = groups[keyGroup].Categories[keyCategory];
@@ -365,7 +366,7 @@ namespace MapView
 
 					foreach (string keyTileset in groups[keyGroup].Categories[keyCategory].Keys)
 					{
-						LogFile.WriteLine(". . . . keyTileset= " + keyTileset);
+						//LogFile.WriteLine(". . . . keyTileset= " + keyTileset);
 
 						var nodeTileset = new SortableTreeNode(keyTileset);
 						nodeTileset.Tag = groups[keyGroup].Categories[keyCategory][keyTileset];
@@ -373,6 +374,7 @@ namespace MapView
 					}
 				}
 			}
+//			tvMaps.ResumeLayout();
 		}
 
 		/// <summary>
@@ -863,16 +865,16 @@ namespace MapView
 				sfdSaveDialog.FileName = _mainViewUnderlay.MapBase.Label;
 				if (sfdSaveDialog.ShowDialog() == DialogResult.OK)
 				{
-					_loadingProgress.Show();
+//					_loadingProgress.Show();
 
-					try
-					{
-						_mainViewUnderlay.MapBase.SaveGif(sfdSaveDialog.FileName);
-					}
-					finally
-					{
-						_loadingProgress.Hide();
-					}
+//					try
+//					{
+					_mainViewUnderlay.MapBase.SaveGif(sfdSaveDialog.FileName);
+//					}
+//					finally
+//					{
+//						_loadingProgress.Hide();
+//					}
 				}
 			}
 		}
@@ -1015,9 +1017,19 @@ namespace MapView
 			_mainViewUnderlay.UpdateScrollers();
 		}
 
+
+//		private bool _bypass;
+//private void treeView1_MouseDown(object sender, MouseEventArgs e)
+//{
+//    TreeNode tn = treeView1.GetNodeAt(e.Location);
+//    tn.BackColor = System.Drawing.Color.White;
+//    tn.ForeColor = System.Drawing.Color.Black;
+//}
 		/// <summary>
 		/// Opens a context-menu on RMB-click.
-		/// NOTE: a MouseClick event occurs *after* the treeview's BeforeSelect
+		/// NOTE: A MouseDown event occurs *before* the treeview's BeforeSelect
+		/// and AfterSelected events occur ....
+		/// NOTE: A MouseClick event occurs *after* the treeview's BeforeSelect
 		/// and AfterSelected events occur. So the selected Map will change
 		/// *before* a context-menu is shown, which is good.
 		/// NOTE: A MouseClick event won't work if the tree is blank. So use MouseDown.
@@ -1026,9 +1038,22 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnMapTreeMouseDown(object sender, MouseEventArgs e)
 		{
+			LogFile.WriteLine("XCMainWindow.OnMapTreeMouseDown");
+			LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
+
 			switch (e.Button)
 			{
 				case MouseButtons.Right:
+//					_bypass = true;
+					var badnode = tvMaps.GetNodeAt(e.Location);	// The right-clicked node is NOT selected
+					badnode.BackColor = SystemColors.Control;	// so quit highlighting it as if it were.
+					badnode.ForeColor = SystemColors.ControlText;
+
+//					var goodnode = tvMaps.SelectedNode;				// The truly selected node is going to stop being highlighted
+//					goodnode.BackColor = SystemColors.Highlight;	// even with this attempt to force it to stay highlighted.
+//					goodnode.ForeColor = SystemColors.HighlightText;
+
+
 					cmMapTreeMenu.MenuItems.Clear();
 
 					cmMapTreeMenu.MenuItems.Add("Add Group ...", new EventHandler(OnAddGroupClick));
@@ -1040,7 +1065,7 @@ namespace MapView
 							case 0: // group-node.
 								cmMapTreeMenu.MenuItems.Add("-");
 								cmMapTreeMenu.MenuItems.Add("Edit Group ...", new EventHandler(OnEditGroupClick));
-								cmMapTreeMenu.MenuItems.Add("Delete Group", new EventHandler(OnDeleteGroupClick));
+								cmMapTreeMenu.MenuItems.Add("Delete Group",   new EventHandler(OnDeleteGroupClick));
 								cmMapTreeMenu.MenuItems.Add("-");
 								cmMapTreeMenu.MenuItems.Add("Add Category ...", new EventHandler(OnAddCategoryClick));
 								break;
@@ -1048,7 +1073,7 @@ namespace MapView
 							case 1: // category-node.
 								cmMapTreeMenu.MenuItems.Add("-");
 								cmMapTreeMenu.MenuItems.Add("Edit Category ...", new EventHandler(OnEditCategoryClick));
-								cmMapTreeMenu.MenuItems.Add("Delete Category", new EventHandler(OnDeleteCategoryClick));
+								cmMapTreeMenu.MenuItems.Add("Delete Category",   new EventHandler(OnDeleteCategoryClick));
 								cmMapTreeMenu.MenuItems.Add("-");
 								cmMapTreeMenu.MenuItems.Add("Add Tileset ...", new EventHandler(OnAddTilesetClick));
 								break;
@@ -1056,7 +1081,7 @@ namespace MapView
 							case 2: // tileset-node.
 								cmMapTreeMenu.MenuItems.Add("-");
 								cmMapTreeMenu.MenuItems.Add("Edit Tileset ...", new EventHandler(OnEditTilesetClick));
-								cmMapTreeMenu.MenuItems.Add("Delete Tileset", new EventHandler(OnDeleteTilesetClick));
+								cmMapTreeMenu.MenuItems.Add("Delete Tileset",   new EventHandler(OnDeleteTilesetClick));
 								break;
 						}
 					}
@@ -1280,8 +1305,11 @@ namespace MapView
 			{
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
+					LogFile.WriteLine(". f.Tileset= " + f.Tileset);
 
 					CreateTree();
+					SelectTilesetNode(f.Tileset);
+					LoadSelectedMap();
 				}
 			}
 		}
@@ -1317,12 +1345,61 @@ namespace MapView
 		}
 
 		/// <summary>
+		/// Selects a treenode in the Maps tree given a tileset-label.
+		/// </summary>
+		/// <param name="labelTileset"></param>
+		private void SelectTilesetNode(string labelTileset)
+		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("SelectTilesetNode");
+
+//			tvMaps.SuspendLayout();
+
+			bool found = false;
+
+			foreach (TreeNode nodeGroup in tvMaps.Nodes)
+			{
+				if (found) break;
+
+				LogFile.WriteLine(". group= " + nodeGroup.Text);
+
+				var groupCollection = nodeGroup.Nodes;
+				foreach (TreeNode nodeCategory in groupCollection)
+				{
+					if (found) break;
+
+					LogFile.WriteLine(". . category= " + nodeCategory.Text);
+
+					var categoryCollection = nodeCategory.Nodes;
+					foreach (TreeNode nodeTileset in categoryCollection)
+					{
+						LogFile.WriteLine(". . . tileset= " + nodeTileset.Text);
+
+						if (nodeTileset.Text == labelTileset)
+						{
+							found = true;
+
+							nodeCategory.Expand();
+							tvMaps.SelectedNode = nodeTileset;
+							break;
+						}
+					}
+				}
+			}
+//			tvMaps.ResumeLayout();
+//			tvMaps.Select();
+		}
+
+		/// <summary>
 		/// Asks user to save before switching Maps if applicable.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void OnMapTreeBeforeSelect(object sender, CancelEventArgs e)
 		{
+			LogFile.WriteLine("XCMainWindow.OnMapTreeBeforeSelect");
+			if (tvMaps.SelectedNode != null) LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
+
 			e.Cancel |= (NotifySave() == DialogResult.Cancel);
 		}
 
@@ -1333,6 +1410,9 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnMapTreeAfterSelected(object sender, TreeViewEventArgs e)
 		{
+			LogFile.WriteLine("XCMainWindow.OnMapTreeAfterSelected");
+			if (tvMaps.SelectedNode != null) LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
+
 			LoadSelectedMap();
 		}
 

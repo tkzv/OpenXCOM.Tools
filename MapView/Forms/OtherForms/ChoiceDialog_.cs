@@ -1,3 +1,4 @@
+/*
 using System;
 
 
@@ -127,3 +128,4 @@ namespace MapView
 		private System.ComponentModel.Container components = null;
 	}
 }
+*/

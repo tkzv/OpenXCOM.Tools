@@ -246,7 +246,7 @@ namespace XCom.Interfaces.Base
 								XCBitmap.Draw(part[0].Image, b, x, y - part.Record.TileOffset);
 							}
 
-							XCBitmap.UpdateProgressBar(i, (MapSize.Levs - Level) * MapSize.Rows * MapSize.Cols);
+//							XCBitmap.UpdateProgressBar(i, (MapSize.Levs - Level) * MapSize.Rows * MapSize.Cols);
 						}
 					}
 				}

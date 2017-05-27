@@ -446,7 +446,7 @@ namespace MapView
 		private static Timer _timer;
 		private static int _anistep;
 
-		// NOTE: Remove suppression for Release cfg.
+		// NOTE: Remove suppression for Release cfg. .. not workie.
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Mobility",
 		"CA1601:DoNotUseTimersThatPreventPowerStateChanges",
 		Justification = "Because animations at or greater than 1 second ain't gonna cut it.")]
