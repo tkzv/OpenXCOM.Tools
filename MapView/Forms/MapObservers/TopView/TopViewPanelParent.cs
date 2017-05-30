@@ -217,6 +217,12 @@ namespace MapView.Forms.MapObservers.TopViews
 			_lozSelector.CloseFigure();
 		}
 
+		internal void ClearSelectorLozenge()
+		{
+			_col =
+			_row = -1;
+		}
+
 		/// <summary>
 		/// Overrides DoubleBufferControl.RenderGraphics() - ie, OnPaint().
 		/// </summary>

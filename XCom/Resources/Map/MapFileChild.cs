@@ -14,10 +14,13 @@ namespace XCom
 		:
 			MapFileBase
 	{
-		#region Fields & Properties
+		#region Fields (static)
 		public   const string MapExt  = ".MAP";
 		internal const string MapsDir = @"\MAPS";
+		#endregion
 
+
+		#region Properties
 		private string FullPath
 		{ get; set; }
 
@@ -379,7 +382,7 @@ namespace XCom
 				}
 
 				MapTiles = tileList;
-				MapSize  = new MapSize(rows, cols, levs);
+				MapSize = new MapSize(rows, cols, levs);
 
 				Level = 0; //MapSize.Levs - 1; NOTE: this might need to fire a LevelChanged event ...
 			}

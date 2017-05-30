@@ -213,8 +213,8 @@ namespace XCom
 		#region Fields
 		private readonly List<RouteNode> _nodes;
 
-		public  const string RouteExt  = ".RMP";
-		private const string RoutesDir = @"\ROUTES";
+		public const string RouteExt  = ".RMP";
+		public const string RoutesDir = "ROUTES";
 
 		private string FullPath
 		{ get; set; }
@@ -290,9 +290,8 @@ namespace XCom
 		/// <param name="basepath"></param>
 		internal RouteNodeCollection(string file, string basepath)
 		{
-			FullPath = Path.Combine(
-								basepath + RoutesDir,
-								file     + RouteExt);
+			FullPath = Path.Combine(basepath, RoutesDir);
+			FullPath = Path.Combine(FullPath, file + RouteExt);
 
 			_nodes = new List<RouteNode>();
 

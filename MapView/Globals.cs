@@ -28,26 +28,26 @@ namespace MapView
 //		public static readonly string RegistryKey = "MapView";
 
 
-		private static XCom.SpriteCollection _extraTiles;
-		internal static XCom.SpriteCollection ExtraTiles
+		private static XCom.SpriteCollection _extraSprites;
+		internal static XCom.SpriteCollection ExtraSprites
 		{
-			get { return _extraTiles; }
+			get { return _extraSprites; }
 		}
 
 		internal static void LoadExtras()
 		{
-			if (_extraTiles == null)
+			if (_extraSprites == null)
 			{
 				using (var strPck = System.Reflection.Assembly.GetExecutingAssembly()
 									.GetManifestResourceStream("MapView._Embedded.Extra.PCK"))
 				using (var strTab = System.Reflection.Assembly.GetExecutingAssembly()
 									.GetManifestResourceStream("MapView._Embedded.Extra.TAB"))
 				{
-					_extraTiles = new XCom.SpriteCollection(
-															strPck,
-															strTab,
-															2,
-															XCom.Palette.UfoBattle);
+					_extraSprites = new XCom.SpriteCollection(
+														strPck,
+														strTab,
+														2,
+														XCom.Palette.UfoBattle);
 				}
 			}
 		}

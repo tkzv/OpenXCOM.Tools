@@ -11,16 +11,22 @@ namespace DSShared
 	{
 		#region Fields (static)
 		// path-keys
-		public const string SettingsFile   = "MV_SettingsFile";	// -> MVSettings.cfg
+		public const string SettingsFile = "MV_SettingsFile";	// -> MVSettings.cfg
 
-		public const string MapViewers     = "MV_ViewersFile";	// -> MapViewers.yml
-		public const string MapConfig      = "MV_ConfigFile";	// -> MapConfig.yml
+		public const string MapViewers   = "MV_ViewersFile";	// -> MapViewers.yml
+		public const string MapTilesets  = "MV_TilesetsFile";	// -> MapConfig.yml TODO: change to MapTilesets.yml
+
+		// TODO: key MapResources
 
 		// YAML files
-		public const string YamlViewers    = "MapViewers.yml";
-		public const string YamlViewersOld = "MapViewers_old.yml";
+		public const string ConfigViewers    = "MapViewers.yml";
+		public const string ConfigViewersOld = "MapViewers.old";
 
-		public const string YamlResources  = "MapDirectory.yml";
+		public const string ConfigResources    = "MapDirectory.yml"; // TODO: change to MapResources.yml
+//		public const string ConfigResourcesOld = "MapDirectory.old"; // TODO: change to MapResources.old
+
+		public const string ConfigTilesets    = "MapConfig.yml"; // TODO: change to MapTilesets.yml
+		public const string ConfigTilesetsOld = "MapConfig.old"; // TODO: change to MapTilesets.old
 		#endregion
 
 

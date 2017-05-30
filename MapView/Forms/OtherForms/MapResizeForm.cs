@@ -201,7 +201,7 @@ namespace MapView
 			this.oldC.Name = "oldC";
 			this.oldC.ReadOnly = true;
 			this.oldC.Size = new System.Drawing.Size(45, 19);
-			this.oldC.TabIndex = 7;
+			this.oldC.TabIndex = 4;
 			// 
 			// oldR
 			// 
@@ -209,29 +209,29 @@ namespace MapView
 			this.oldR.Name = "oldR";
 			this.oldR.ReadOnly = true;
 			this.oldR.Size = new System.Drawing.Size(45, 19);
-			this.oldR.TabIndex = 6;
+			this.oldR.TabIndex = 5;
 			// 
-			// oldH
+			// oldL
 			// 
 			this.oldL.Location = new System.Drawing.Point(120, 55);
-			this.oldL.Name = "oldH";
+			this.oldL.Name = "oldL";
 			this.oldL.ReadOnly = true;
 			this.oldL.Size = new System.Drawing.Size(45, 19);
-			this.oldL.TabIndex = 8;
+			this.oldL.TabIndex = 6;
 			// 
 			// txtR
 			// 
 			this.txtR.Location = new System.Drawing.Point(70, 95);
 			this.txtR.Name = "txtR";
 			this.txtR.Size = new System.Drawing.Size(45, 19);
-			this.txtR.TabIndex = 1;
+			this.txtR.TabIndex = 11;
 			// 
 			// label3
 			// 
 			this.label3.Location = new System.Drawing.Point(20, 40);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(45, 15);
-			this.label3.TabIndex = 6;
+			this.label3.TabIndex = 1;
 			this.label3.Text = "c";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
@@ -240,7 +240,7 @@ namespace MapView
 			this.label4.Location = new System.Drawing.Point(70, 40);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(45, 15);
-			this.label4.TabIndex = 7;
+			this.label4.TabIndex = 2;
 			this.label4.Text = "r";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
@@ -249,7 +249,7 @@ namespace MapView
 			this.label5.Location = new System.Drawing.Point(120, 40);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(45, 15);
-			this.label5.TabIndex = 8;
+			this.label5.TabIndex = 3;
 			this.label5.Text = "h";
 			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
@@ -258,14 +258,14 @@ namespace MapView
 			this.txtC.Location = new System.Drawing.Point(20, 95);
 			this.txtC.Name = "txtC";
 			this.txtC.Size = new System.Drawing.Size(45, 19);
-			this.txtC.TabIndex = 2;
+			this.txtC.TabIndex = 10;
 			// 
-			// txtH
+			// txtL
 			// 
 			this.txtL.Location = new System.Drawing.Point(120, 95);
-			this.txtL.Name = "txtH";
+			this.txtL.Name = "txtL";
 			this.txtL.Size = new System.Drawing.Size(45, 19);
-			this.txtL.TabIndex = 3;
+			this.txtL.TabIndex = 12;
 			this.txtL.TextChanged += new System.EventHandler(this.OnLevelTextChanged);
 			// 
 			// btnOk
@@ -274,7 +274,7 @@ namespace MapView
 			this.btnOk.Location = new System.Drawing.Point(125, 130);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(85, 40);
-			this.btnOk.TabIndex = 4;
+			this.btnOk.TabIndex = 14;
 			this.btnOk.Text = "OK";
 			this.btnOk.Click += new System.EventHandler(this.OnOkClick);
 			// 
@@ -285,7 +285,7 @@ namespace MapView
 			this.btnCancel.Location = new System.Drawing.Point(220, 130);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(85, 40);
-			this.btnCancel.TabIndex = 5;
+			this.btnCancel.TabIndex = 15;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.Click += new System.EventHandler(this.OnCancelClick);
 			// 
@@ -298,7 +298,7 @@ namespace MapView
 			this.cbCeiling.Location = new System.Drawing.Point(190, 95);
 			this.cbCeiling.Name = "cbCeiling";
 			this.cbCeiling.Size = new System.Drawing.Size(99, 16);
-			this.cbCeiling.TabIndex = 9;
+			this.cbCeiling.TabIndex = 13;
 			this.cbCeiling.Text = "add to ceiling";
 			this.cbCeiling.UseVisualStyleBackColor = true;
 			this.cbCeiling.Visible = false;
@@ -308,7 +308,7 @@ namespace MapView
 			this.label1.Location = new System.Drawing.Point(120, 80);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(45, 15);
-			this.label1.TabIndex = 12;
+			this.label1.TabIndex = 9;
 			this.label1.Text = "h";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
@@ -317,7 +317,7 @@ namespace MapView
 			this.label6.Location = new System.Drawing.Point(70, 80);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(45, 15);
-			this.label6.TabIndex = 11;
+			this.label6.TabIndex = 8;
 			this.label6.Text = "r";
 			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
@@ -326,7 +326,7 @@ namespace MapView
 			this.label7.Location = new System.Drawing.Point(20, 80);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(45, 15);
-			this.label7.TabIndex = 10;
+			this.label7.TabIndex = 7;
 			this.label7.Text = "c";
 			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
@@ -335,11 +335,11 @@ namespace MapView
 			this.label2.Location = new System.Drawing.Point(5, 5);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(305, 28);
-			this.label2.TabIndex = 13;
+			this.label2.TabIndex = 0;
 			this.label2.Text = "Columns and Rows must be multiples of 10 (10, 20, 30, etc) and Height must be 1 o" +
 	"r more.";
 			// 
-			// ChangeMapSizeForm
+			// MapResizeForm
 			// 
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
@@ -365,7 +365,7 @@ namespace MapView
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "ChangeMapSizeForm";
+			this.Name = "MapResizeForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Modify Map Size";

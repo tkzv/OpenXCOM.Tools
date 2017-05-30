@@ -44,9 +44,9 @@ namespace MapView
 			MaximumSize = size; // fu.net
 
 
-			tbPathsMaps.Text    = ResourceInfo.TileGroupInfo.Path;
-			tbPathsImages.Text  = ResourceInfo.TerrainInfo.Path;
-			tbImagesImages.Text = ResourceInfo.TerrainInfo.Path;
+//			tbPathsMaps.Text    = ResourceInfo.TileGroupInfo.Path;
+//			tbPathsImages.Text  = ResourceInfo.TerrainInfo.Path;
+//			tbImagesImages.Text = ResourceInfo.TerrainInfo.Path;
 
 //			txtCursor.Text   = GameInfo.CursorPath;
 //			txtCursor.Text   = GameInfo.MiscInfo.CursorFile;
@@ -452,7 +452,7 @@ namespace MapView
 
 		private void btnPathsSave_Click(object sender, EventArgs e)
 		{
-			string pfeConfig = ((PathInfo)SharedSpace.Instance[PathInfo.MapConfig]).FullPath;
+			string pfeConfig = ((PathInfo)SharedSpace.Instance[PathInfo.MapTilesets]).FullPath;
 			LogFile.WriteLine("");
 			LogFile.WriteLine("PathsEditor.btnPathsSave_Click");
 

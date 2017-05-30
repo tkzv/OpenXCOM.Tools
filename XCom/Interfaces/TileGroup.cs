@@ -7,17 +7,18 @@ using XCom.Interfaces.Base;
 
 namespace XCom.Interfaces
 {
+	public enum GameType
+	{
+		Ufo,
+		Tftd
+	}
+
+
 	public class TileGroup
 		:
 			TileGroupBase
 	{
-		public enum GameType
-		{
-			Ufo,
-			Tftd
-		}
-
-		#region Fields & Properties
+		#region Properties
 		public GameType GroupType // TODO: 'GroupType' can/should be superceded by 'Pal'
 		{ get; private set; }
 

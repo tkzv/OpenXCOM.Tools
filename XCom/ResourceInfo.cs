@@ -38,7 +38,8 @@ namespace XCom
 
 		/// <summary>
 		/// Loads a given spriteset for UFO or TFTD. This could go in Descriptor
-		/// except the XCOM cursor-sprites load w/out a descriptor.
+		/// except the XCOM cursor-sprites load w/out a descriptor. So do the
+		/// 'ExtraSprites'.
 		/// </summary>
 		/// <param name="file"></param>
 		/// <param name="path"></param>

@@ -48,10 +48,10 @@ namespace XCom
 					{
 						switch (GroupType)
 						{
-							case TileGroup.GameType.Ufo:
+							case GameType.Ufo:
 								tileset.BasePath = SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo);
 								break;
-							case TileGroup.GameType.Tftd:
+							case GameType.Tftd:
 								tileset.BasePath = SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd);
 								break;
 						}

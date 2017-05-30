@@ -186,7 +186,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 			else
 				graphics.DrawImage(
-								Globals.ExtraTiles[3].Image,
+								Globals.ExtraSprites[3].Image,
 								StartX,
 								StartY);
 
@@ -203,7 +203,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 			else
 				graphics.DrawImage(
-								Globals.ExtraTiles[1].Image,
+								Globals.ExtraSprites[1].Image,
 								StartX + QuadWidthTotal,
 								StartY);
 
@@ -220,7 +220,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 			else
 				graphics.DrawImage(
-								Globals.ExtraTiles[2].Image,
+								Globals.ExtraSprites[2].Image,
 								StartX + QuadWidthTotal * 2,
 								StartY);
 
@@ -237,7 +237,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 			else
 				graphics.DrawImage(
-								Globals.ExtraTiles[4].Image,
+								Globals.ExtraSprites[4].Image,
 								StartX + QuadWidthTotal * 3,
 								StartY);
 

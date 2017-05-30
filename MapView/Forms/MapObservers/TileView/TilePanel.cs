@@ -338,9 +338,9 @@ namespace MapView.Forms.MapObservers.TileViews
 					{
 						graphics.FillRectangle(Brushes.AliceBlue, rect);
 
-						if (Globals.ExtraTiles != null)
+						if (Globals.ExtraSprites != null)
 							graphics.DrawImage(
-											Globals.ExtraTiles[0].Image,
+											Globals.ExtraSprites[0].Image,
 											left, top);
 					}
 

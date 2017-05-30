@@ -187,8 +187,8 @@ namespace XCom.Interfaces.Base
 		/// <param name="cols"></param>
 		/// <param name="levs"></param>
 		/// <param name="ceiling"></param>
-		public virtual void MapResize(	// NOTE: This doesn't handle Routes or node-checking
-				int rows,				// which MapFileChild.ResizeTo() does.
+		public virtual void MapResize(
+				int rows,
 				int cols,
 				int levs,
 				bool ceiling)

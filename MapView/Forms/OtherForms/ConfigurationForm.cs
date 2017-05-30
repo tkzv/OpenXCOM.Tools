@@ -17,13 +17,28 @@ namespace MapView
 		:
 			Form
 	{
+		#region Properties
+		private string Ufo
+		{
+			get { return tbUfo.Text; }
+			set { tbUfo.Text = value; }
+		}
+
+		private string Tftd
+		{
+			get { return tbTftd.Text; }
+			set { tbTftd.Text = value; }
+		}
+		#endregion
+
+
+		#region cTor
 		/// <summary>
 		/// cTor.
 		/// </summary>
 		internal ConfigurationForm()
 		{
 			InitializeComponent();
-			DialogResult = DialogResult.Cancel;
 
 			// WORKAROUND: See note in 'XCMainWindow' cTor.
 			var size = new System.Drawing.Size();
@@ -38,14 +53,24 @@ namespace MapView
 			dirsUfo.Add(@"C:\0xC_kL\data");
 
 			foreach (string dir in dirsUfo)
+			{
 				if (Directory.Exists(dir))
 				{
-					tbUfo.Text = dir;
+					Ufo = dir;
 					break;
 				}
+			}
 		}
+		#endregion
 
-		private void btnFindUfo_Click(object sender, EventArgs e)
+
+		#region Eventcalls
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnFindUfoClick(object sender, EventArgs e)
 		{
 			using (var f = folderBrowser)
 			{
@@ -54,14 +79,19 @@ namespace MapView
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
 					if (f.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))
-						tbUfo.Text = f.SelectedPath.Substring(0, f.SelectedPath.Length - 1);
+						Ufo = f.SelectedPath.Substring(0, f.SelectedPath.Length - 1);
 					else
-						tbUfo.Text = f.SelectedPath;
+						Ufo = f.SelectedPath;
 				}
 			}
 		}
 
-		private void btnFindTftd_Click(object sender, EventArgs e)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnFindTftdClick(object sender, EventArgs e)
 		{
 			using (var f = folderBrowser)
 			{
@@ -70,204 +100,140 @@ namespace MapView
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
 					if (f.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))
-						tbTftd.Text = f.SelectedPath.Substring(0, f.SelectedPath.Length - 1);
+						Tftd = f.SelectedPath.Substring(0, f.SelectedPath.Length - 1);
 					else
-						tbTftd.Text = f.SelectedPath;
+						Tftd = f.SelectedPath;
 				}
 			}
 		}
 
-		private void btnOk_Click(object sender, EventArgs e)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnAcceptClick(object sender, EventArgs e)
 		{
-			if (tbUfo.Text.EndsWith(@"\", StringComparison.Ordinal))
-				tbUfo.Text = tbUfo.Text.Substring(0, tbUfo.Text.Length - 1);
+			Ufo  = Ufo.Trim();
+			Tftd = Tftd.Trim();
 
-			if (tbTftd.Text.EndsWith(@"\", StringComparison.Ordinal))
-				tbTftd.Text = tbTftd.Text.Substring(0, tbTftd.Text.Length - 1);
+			if (Ufo.EndsWith(@"\", StringComparison.Ordinal))
+				Ufo = Ufo.Substring(0, Ufo.Length - 1);
 
-			// TODO: check that either directory given is valid if not blank.
+			if (Tftd.EndsWith(@"\", StringComparison.Ordinal))
+				Tftd = Tftd.Substring(0, Tftd.Length - 1);
 
-			// Or install the dirs/configs anyway and allow the user to set things up in the PathsEditor.
-			// Otherwise an exception will be thrown when XCMainWindow cTor tries to instantiate the CuboidSprite.
-			// what's the CuboidSprite used for anyway -> the cursor looks like a windows cursor.
-			// note: It's used to indicate the dragStart and dragEnd tiles.
-
-			const string CursorPck = SharedSpace.CursorFilePrefix + SpriteCollection.PckExt;
-			const string CursorTab = SharedSpace.CursorFilePrefix + SpriteCollection.TabExt;
-
-			if (   (File.Exists(Path.Combine(tbUfo.Text,  CursorPck)) && File.Exists(Path.Combine(tbUfo.Text,  CursorTab)))
-			    || (File.Exists(Path.Combine(tbTftd.Text, CursorPck)) && File.Exists(Path.Combine(tbTftd.Text, CursorTab))))
+			if (String.IsNullOrEmpty(Ufo) && String.IsNullOrEmpty(Tftd))
 			{
-				var pathConfig = SharedSpace.Instance[PathInfo.MapConfig] as PathInfo;
-				pathConfig.CreateDirectory(); // create a dir for MapConfig.yml and MapDirectory.yml
-
-
-				string pfeMapDirectory = Path.Combine(pathConfig.DirectoryPath, PathInfo.YamlResources);
-
-				using (var fs = new FileStream(pfeMapDirectory, FileMode.Create)) // wipe/create MapDirectory.yml
-				using (var sw = new StreamWriter(fs))
-				{
-					object node = new
-					{
-						ufo  = (!String.IsNullOrEmpty(tbUfo.Text)  ? tbUfo.Text
-																   : "placeholder"),
-						tftd = (!String.IsNullOrEmpty(tbTftd.Text) ? tbTftd.Text
-																   : "placeholder")
-					};
-
-					var ser = new Serializer();
-					ser.Serialize(sw, node);
-				}
-
-
-				string pfeMapConfig = pathConfig.FullPath;
-
-				if (!String.IsNullOrEmpty(tbUfo.Text))
-				{
-					using (var fs = new FileStream(pfeMapConfig, FileMode.Create)) // wipe/create MapConfig.yml
-					{}
-
-					using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
-													.GetManifestResourceStream("MapView._Embedded.MapConfig.yml")))
-					using (var fs = new FileStream(pfeMapConfig, FileMode.Append))
-					using (var sw = new StreamWriter(fs))
-						while (sr.Peek() != -1) // transfer embedded textfile to MapConfig.yml
-							sw.WriteLine(sr.ReadLine());
-				}
-
-				// TODO: TFTD dir
-
-				DialogResult = DialogResult.OK;
-				Close();
+				ShowErrorDialog("Both folders cannot be blank.");
+			}
+			else if (!String.IsNullOrEmpty(Ufo) && !Directory.Exists(Ufo))
+			{
+				ShowErrorDialog("The UFO folder does not exist.");
+			}
+			else if (!String.IsNullOrEmpty(Tftd) && !Directory.Exists(Tftd))
+			{
+				ShowErrorDialog("The TFTD folder does not exist.");
+			}
+			else if (!cbResources.Checked && !cbTilesets.Checked)
+			{
+				ShowErrorDialog("Choose at least one option, or Cancel.");
 			}
 			else
 			{
-				MessageBox.Show(
-							this,
-							"A valid UFO or TFTD resource directory must exist with"
-								+ Environment.NewLine + Environment.NewLine
-								+ CursorPck + Environment.NewLine
-								+ CursorTab,
-							"Error",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Error,
-							MessageBoxDefaultButton.Button1,
-							0);
+				// Or install the dirs/configs anyway and allow the user to set things up in the PathsEditor.
+				// Otherwise an exception will be thrown when XCMainWindow cTor tries to instantiate the CuboidSprite.
+				// what's the CuboidSprite used for anyway -> the cursor looks like a windows cursor.
+				// note: It's used to indicate the dragStart and dragEnd tiles.
+
+				const string CursorPck = SharedSpace.CursorFilePrefix + SpriteCollection.PckExt;
+				const string CursorTab = SharedSpace.CursorFilePrefix + SpriteCollection.TabExt;
+
+				if (   (File.Exists(Path.Combine(Ufo,  CursorPck)) && File.Exists(Path.Combine(Ufo,  CursorTab)))
+					|| (File.Exists(Path.Combine(Tftd, CursorPck)) && File.Exists(Path.Combine(Tftd, CursorTab))))
+				{
+					var pathConfig = SharedSpace.Instance[PathInfo.MapTilesets] as PathInfo;
+					pathConfig.CreateDirectory(); // create a dir for MapConfig.yml and MapDirectory.yml
+
+
+					if (cbResources.Checked)
+					{
+						string pfeMapDirectory = Path.Combine(pathConfig.DirectoryPath, PathInfo.ConfigResources);
+
+						using (var fs = new FileStream(pfeMapDirectory, FileMode.Create)) // wipe/create MapDirectory.yml
+						using (var sw = new StreamWriter(fs))
+						{
+							object node = new
+							{
+								ufo  = (!String.IsNullOrEmpty(Ufo)  ? Ufo
+																	: "placeholder"),
+								tftd = (!String.IsNullOrEmpty(Tftd) ? Tftd
+																	: "placeholder")
+							};
+
+							var ser = new Serializer();
+							ser.Serialize(sw, node);
+						}
+					}
+
+					if (cbTilesets.Checked)
+					{
+						string pfeMapConfig = pathConfig.FullPath;
+
+						if (!String.IsNullOrEmpty(Ufo))
+						{
+							using (var fs = new FileStream(pfeMapConfig, FileMode.Create)) // wipe/create MapConfig.yml
+							{}
+
+							using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
+															.GetManifestResourceStream("MapView._Embedded.MapConfig.yml")))
+							using (var fs = new FileStream(pfeMapConfig, FileMode.Append))
+							using (var sw = new StreamWriter(fs))
+								while (sr.Peek() != -1) // transfer embedded textfile to MapConfig.yml
+									sw.WriteLine(sr.ReadLine());
+						}
+
+						// TODO: TFTD dir
+					}
+
+					DialogResult = DialogResult.OK;
+				}
+				else
+					ShowErrorDialog("A valid UFO or TFTD resource directory must exist with"
+									+ Environment.NewLine + Environment.NewLine
+									+ CursorPck + Environment.NewLine
+									+ CursorTab);
 			}
 		}
 
-		private void btnCancel_Click(object sender, EventArgs e)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnCancelClick(object sender, EventArgs e)
 		{
-			DialogResult = DialogResult.Cancel;
 			Close();
 		}
+		#endregion
+
+
+		#region Methods
+		/// <summary>
+		/// Wrapper for MessageBox.Show()
+		/// </summary>
+		/// <param name="error">the error-string to show</param>
+		private void ShowErrorDialog(string error)
+		{
+			MessageBox.Show(
+						this,
+						error,
+						"Error",
+						MessageBoxButtons.OK,
+						MessageBoxIcon.Error,
+						MessageBoxDefaultButton.Button1,
+						0);
+		}
+		#endregion
 	}
 }
-
-//				var pathPaths = (PathInfo)SharedSpace.Instance[PathInfo.PathsFile];
-//				pathPaths.CreateDirectory();	// create a dir for Paths.Cfg
-//
-//				var pathMapEdit = (PathInfo)SharedSpace.Instance[PathInfo.MapEditFile];
-//				pathMapEdit.CreateDirectory();	// create a dir for MapEdit.Cfg
-//
-//				var pathImages  = (PathInfo)SharedSpace.Instance[PathInfo.ImagesFile];
-//				pathImages.CreateDirectory();	// create a dir for Images.Cfg
-//												// psst. All three dirs are going to be the same: appdir\"settings"
-
-//				// 'pfe' = path+file+extension
-//				string pfeMapEdit = pathMapEdit.FullPath;
-//				string pfeImages  = pathImages.FullPath;
-
-//				using (var sw = new StreamWriter(new FileStream(pathPaths.FullPath, FileMode.Create))) // NOTE: will overwrite Path.cfg if it exists.
-//				{
-//					sw.WriteLine("${ufo}:"  + ((!String.IsNullOrEmpty(tbUfo.Text))  ? tbUfo.Text
-//																					: String.Empty));
-//					sw.WriteLine("${tftd}:" + ((!String.IsNullOrEmpty(tbTftd.Text)) ? tbTftd.Text
-//																					: String.Empty));
-//
-//					sw.WriteLine("mapdata:" + pfeMapEdit);
-//					sw.WriteLine("images:"  + pfeImages);
-//
-//					sw.WriteLine("useBlanks:false");
-//
-//					if (!String.IsNullOrEmpty(tbUfo.Text))
-//					{
-//						sw.WriteLine(@"cursor:${ufo}\UFOGRAPH");
-//					}
-//					else if (!String.IsNullOrEmpty(tbTftd.Text))
-//					{
-//						sw.WriteLine(@"cursor:${tftd}\UFOGRAPH");
-//					}
-//				}
-
-//				#region write misc.cfg
-//				StreamWriter sw2 = new StreamWriter(new FileStream(miscFile, FileMode.Create));
-//				if (txtTFTD.Text != "")
-//				{
-//					sw2.WriteLine(@"${ufoGraph}:${tftd}\UFOGRAPH\");
-//					sw2.WriteLine(@"${geoGraph}:${tftd}\GEOGRAPH\");
-//					sw2.WriteLine("cursor:${ufoGraph}cursor");
-//				}
-//				else
-//				{
-//					sw2.WriteLine(@"${ufoGraph}:${ufo}\UFOGRAPH\");
-//					sw2.WriteLine(@"${geoGraph}:${ufo}\GEOGRAPH\");
-//					sw2.WriteLine("cursor:${ufoGraph}cursor");
-//				}
-//				sw2.Flush();
-//				sw2.Close();
-//				#endregion
-
-
-//				_vars["##UFOPath##"]  = txtUFO.Text;
-//				_vars["##TFTDPath##"] = txtTFTD.Text;
-
-//				_vars["##imgUFO##"]  = txtUFO.Text  + @"\TERRAIN\";
-//				_vars["##imgTFTD##"] = txtTFTD.Text + @"\TERRAIN\";
-
-/*				_vars["##RunPath##"] = SharedSpace.Instance.GetString(SharedSpace.ApplicationDirectory);
-
-				using (var fs = new FileStream(pfeMapEdit, FileMode.Create))	// wipe/create MapEdit.Cfg
-				{}
-
-				using (var fs = new FileStream(pfeImages, FileMode.Create))		// wipe/create Images.Cfg
-				{}
-
-				if (!String.IsNullOrEmpty(tbUfo.Text))
-				{
-					using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
-													.GetManifestResourceStream("MapView._Embedded.MapEditUFO.cfg")))
-					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
-					using (var sw = new StreamWriter(fs))
-						Write(sr, sw); // write UFO data to MapEdit.Cfg
-
-					using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
-													.GetManifestResourceStream("MapView._Embedded.ImagesUFO.cfg")))
-					using (var fs = new FileStream(pfeImages, FileMode.Append))
-					using (var sw = new StreamWriter(fs))
-						Write(sr, sw); // write UFO data to Images.Cfg
-				}
-
-				if (!String.IsNullOrEmpty(tbTftd.Text)) // write TFTD data
-				{
-					using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
-													.GetManifestResourceStream("MapView._Embedded.MapEditTFTD.cfg")))
-					using (var fs = new FileStream(pfeMapEdit, FileMode.Append))
-					using (var sw = new StreamWriter(fs))
-					{
-						Write(sr, sw); // write TFTD data to MapEdit.Cfg
-						sw.WriteLine();
-					}
-
-					using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
-													.GetManifestResourceStream("MapView._Embedded.ImagesTFTD.cfg")))
-					using (var fs = new FileStream(pfeImages, FileMode.Append))
-					using (var sw = new StreamWriter(fs))
-					{
-						Write(sr, sw); // write TFTD data to Images.Cfg
-						sw.WriteLine();
-					}
-				}
-
-				DialogResult = DialogResult.OK;
-				Close(); */

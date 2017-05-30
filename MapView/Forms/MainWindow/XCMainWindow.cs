@@ -76,29 +76,31 @@ namespace MapView
 						SharedSpace.ApplicationDirectory,
 						Environment.CurrentDirectory);
 
-			string dir = share.SetShare(
-									SharedSpace.SettingsDirectory,
-									Path.Combine(Environment.CurrentDirectory, "settings"))
-							  .ToString();
+			string dirSettings = share.SetShare(
+											SharedSpace.SettingsDirectory,
+											Path.Combine(Environment.CurrentDirectory, "settings"))
+										.ToString();
 			LogFile.WriteLine("Environment cached.");
 
 
-			var pathConfig = new PathInfo(dir, "MapConfig", "yml");
-			share.SetShare(PathInfo.MapConfig, pathConfig);
+			var pathTilesets = new PathInfo(dirSettings, "MapConfig", "yml");
+			share.SetShare(PathInfo.MapTilesets, pathTilesets);
 
-			var pathViewerPositions = new PathInfo(dir, "MapViewers", "yml");
+			var pathViewerPositions = new PathInfo(dirSettings, "MapViewers", "yml");
 			share.SetShare(PathInfo.MapViewers, pathViewerPositions);
 
-			var pathOptions = new PathInfo(dir, "MVSettings", "cfg");
+			var pathOptions = new PathInfo(dirSettings, "MVSettings", "cfg");
 			share.SetShare(PathInfo.SettingsFile, pathOptions);
 
 			LogFile.WriteLine("PathInfo cached.");
 
 
-			// check if MapConfig.yml exists yet, if not show the Configuration window
-			// NOTE: MapConfig.yml is created by ConfigurationForm
-			// TODO: check for MapDirectory.yml also
-			if (!pathConfig.FileExists())
+			// check if MapConfig.yml and MapDirectory.yml exists yet, show the
+			// Configuration window if not
+			// NOTE: MapConfig.yml and MapDirectory.yml are created by
+			// ConfigurationForm
+			if (!pathTilesets.FileExists()
+				|| !File.Exists(Path.Combine(dirSettings, PathInfo.ConfigResources)))
 			{
 				using (var f = new ConfigurationForm())
 					if (f.ShowDialog(this) != DialogResult.OK)
@@ -155,7 +157,7 @@ namespace MapView
 			// welcome to your new home
 
 
-			Closing += OnCloseSaveRegistry;
+			Closing += OnClosingSaveOptions;
 
 			_instance = this;
 
@@ -221,7 +223,7 @@ namespace MapView
 			// NOTE: MapDirectory.yml is created by ConfigurationForm
 			string fileResources = Path.Combine(
 											SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory),
-											PathInfo.YamlResources);
+											PathInfo.ConfigResources);
 			using (var sr = new StreamReader(File.OpenRead(fileResources)))
 			{
 				var str = new YamlStream();
@@ -279,7 +281,7 @@ namespace MapView
 				LogFile.WriteLine("TFTD Cursor not found.");
 
 
-			ResourceInfo.InitializeResources(pathConfig); // load resources from YAML.
+			ResourceInfo.InitializeResources(pathTilesets); // load resources from YAML.
 			LogFile.WriteLine("ResourceInfo initialized.");
 
 
@@ -429,7 +431,7 @@ namespace MapView
 		/// </summary>
 		private void LoadOptions()
 		{
-			string file = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
+			string file = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory), PathInfo.ConfigViewers);
 			using (var sr = new StreamReader(File.OpenRead(file)))
 			{
 				var str = new YamlStream();
@@ -667,7 +669,7 @@ namespace MapView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		private void OnCloseSaveRegistry(object sender, CancelEventArgs args)
+		private void OnClosingSaveOptions(object sender, CancelEventArgs args)
 		{
 			if (NotifySave() == DialogResult.Cancel)
 			{
@@ -686,9 +688,9 @@ namespace MapView
 					WindowState = FormWindowState.Normal;
 					_viewersManager.CloseSubsidiaryViewers();
 
-					string path = SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory);
-					string src  = Path.Combine(path, PathInfo.YamlViewers);
-					string dst  = Path.Combine(path, PathInfo.YamlViewersOld);
+					string dirSettings = SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory);
+					string src = Path.Combine(dirSettings, PathInfo.ConfigViewers);
+					string dst = Path.Combine(dirSettings, PathInfo.ConfigViewersOld);
 
 					File.Copy(src, dst, true);
 
@@ -795,9 +797,14 @@ namespace MapView
 				_mainViewUnderlay.MapBase.Save();
 		}
 
+		private void OnSaveMaptreeClick(object sender, EventArgs e)
+		{
+			ResourceInfo.TileGroupInfo.SaveTileGroups();
+		}
+
 		private void OnQuitClick(object sender, EventArgs e)
 		{
-			OnCloseSaveRegistry(null, new CancelEventArgs(true));
+			OnClosingSaveOptions(null, new CancelEventArgs(true));
 			Environment.Exit(0);
 		}
 
@@ -896,6 +903,7 @@ namespace MapView
 				using (var f = new MapResizeForm())
 				{
 					f.MapBase = _mainViewUnderlay.MainViewOverlay.MapBase;
+
 					if (f.ShowDialog(this) == DialogResult.OK)
 					{
 						f.MapBase.MapResize(
@@ -903,7 +911,18 @@ namespace MapView
 										f.Cols,
 										f.Levs,
 										f.CeilingChecked);
+
 						_mainViewUnderlay.ResizeUnderlay();
+
+						_mainViewUnderlay.MainViewOverlay.FirstClick = false;
+
+						tsslDimensions.Text = f.MapBase.MapSize.ToString();
+						tsslPosition.Text = String.Empty;
+
+						_viewerFormsManager.SetObservers(f.MapBase);
+
+//						ViewerFormsManager.RouteView.Control.ClearSelectedLocation();
+						ViewerFormsManager.TopView.Control.TopViewPanel.ClearSelectorLozenge();
 					}
 				}
 			}
@@ -1104,10 +1123,10 @@ namespace MapView
 			{
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
-					ResourceInfo.TileGroupInfo.AddTileGroup(f.InputString);
+					ResourceInfo.TileGroupInfo.AddTileGroup(f.Input);
 
 					CreateTree();
-					SelectGroupNode(f.InputString);
+					SelectGroupNode(f.Input);
 				}
 			}
 		}
@@ -1131,14 +1150,14 @@ namespace MapView
 			{
 				string labelGroup = tvMaps.SelectedNode.Text;
 
-				f.InputString = labelGroup;
+				f.Input = labelGroup;
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
 					ResourceInfo.TileGroupInfo.EditTileGroup(
-														f.InputString,
+														f.Input,
 														labelGroup);
 					CreateTree();
-					SelectGroupNode(f.InputString);
+					SelectGroupNode(f.Input);
 				}
 			}
 		}
@@ -1199,10 +1218,10 @@ namespace MapView
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
 					var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
-					tilegroup.AddCategory(f.InputString);
+					tilegroup.AddCategory(f.Input);
 
 					CreateTree();
-					SelectCategoryNode(f.InputString);
+					SelectCategoryNode(f.Input);
 				}
 			}
 		}
@@ -1225,15 +1244,15 @@ namespace MapView
 			{
 				string labelCategory = tvMaps.SelectedNode.Text;
 
-				f.InputString = labelCategory;
+				f.Input = labelCategory;
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
 					var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
 					tilegroup.EditCategory(
-										f.InputString,
+										f.Input,
 										labelCategory);
 					CreateTree();
-					SelectCategoryNode(f.InputString);
+					SelectCategoryNode(f.Input);
 				}
 			}
 		}
@@ -1299,8 +1318,10 @@ namespace MapView
 			{
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
+					LogFile.WriteLine(". f.Tileset= " + f.Tileset);
 
 					CreateTree();
+					SelectTilesetNode(f.Tileset);
 				}
 			}
 		}
@@ -1577,6 +1598,13 @@ namespace MapView
 			{
 				LogFile.WriteLine(". descriptor= " + descriptor);
 
+				miSave.Enabled        =
+//				miSaveMaptree.Enabled =
+				miSaveImage.Enabled   =
+				miResize.Enabled      =
+				miInfo.Enabled        =
+				miRegenOccult.Enabled = true;
+
 //				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.
 
 				_mainViewUnderlay.MainViewOverlay.FirstClick = false;
@@ -1587,6 +1615,8 @@ namespace MapView
 				tsEdit.Enabled = true;
 
 				RouteCheckService.CheckNodeBounds(mapBase);
+
+				Text = "Map Editor - " + descriptor.BasePath;
 
 				tsslMapLabel.Text = descriptor.Label;
 				tsslDimensions.Text = (mapBase != null) ? mapBase.MapSize.ToString()
@@ -1634,11 +1664,11 @@ namespace MapView
 									MessageBoxDefaultButton.Button1,
 									0))
 				{
-					case DialogResult.No:		// don't save
-						break;
-
 					case DialogResult.Yes:		// save
 						_mainViewUnderlay.MapBase.Save();
+						break;
+
+					case DialogResult.No:		// don't save
 						break;
 
 					case DialogResult.Cancel:	// do nothing

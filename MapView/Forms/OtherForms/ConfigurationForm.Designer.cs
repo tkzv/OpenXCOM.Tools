@@ -41,6 +41,9 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.pInfo = new System.Windows.Forms.Panel();
 			this.lblInfo = new System.Windows.Forms.Label();
+			this.lblOptions = new System.Windows.Forms.Label();
+			this.cbTilesets = new System.Windows.Forms.CheckBox();
+			this.cbResources = new System.Windows.Forms.CheckBox();
 			this.pUfo.SuspendLayout();
 			this.pTftd.SuspendLayout();
 			this.pInfo.SuspendLayout();
@@ -90,7 +93,7 @@
 			this.btnFindUfo.Size = new System.Drawing.Size(30, 20);
 			this.btnFindUfo.TabIndex = 4;
 			this.btnFindUfo.Text = "...";
-			this.btnFindUfo.Click += new System.EventHandler(this.btnFindUfo_Click);
+			this.btnFindUfo.Click += new System.EventHandler(this.OnFindUfoClick);
 			// 
 			// btnFindTftd
 			// 
@@ -100,17 +103,17 @@
 			this.btnFindTftd.Size = new System.Drawing.Size(30, 20);
 			this.btnFindTftd.TabIndex = 5;
 			this.btnFindTftd.Text = "...";
-			this.btnFindTftd.Click += new System.EventHandler(this.btnFindTftd_Click);
+			this.btnFindTftd.Click += new System.EventHandler(this.OnFindTftdClick);
 			// 
 			// btnOk
 			// 
 			this.btnOk.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.btnOk.Location = new System.Drawing.Point(65, 85);
+			this.btnOk.Location = new System.Drawing.Point(65, 145);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(165, 25);
 			this.btnOk.TabIndex = 6;
 			this.btnOk.Text = "the Paths are correct";
-			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+			this.btnOk.Click += new System.EventHandler(this.OnAcceptClick);
 			// 
 			// pUfo
 			// 
@@ -140,12 +143,12 @@
 			// 
 			this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(245, 85);
+			this.btnCancel.Location = new System.Drawing.Point(245, 145);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(165, 25);
 			this.btnCancel.TabIndex = 9;
 			this.btnCancel.Text = "Cancel";
-			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+			this.btnCancel.Click += new System.EventHandler(this.OnCancelClick);
 			// 
 			// pInfo
 			// 
@@ -167,21 +170,50 @@
 			this.lblInfo.Text = "Enter the paths to either or both the UFO and TFTD resource folders. These are th" +
 	"e respective parent folder(s) of the MAPS, ROUTES, and TERRAIN folders.";
 			// 
-			// InstallationForm
+			// lblOptions
+			// 
+			this.lblOptions.Location = new System.Drawing.Point(5, 95);
+			this.lblOptions.Name = "lblOptions";
+			this.lblOptions.Size = new System.Drawing.Size(50, 15);
+			this.lblOptions.TabIndex = 11;
+			this.lblOptions.Text = "Options";
+			// 
+			// cbTilesets
+			// 
+			this.cbTilesets.Location = new System.Drawing.Point(65, 110);
+			this.cbTilesets.Name = "cbTilesets";
+			this.cbTilesets.Size = new System.Drawing.Size(270, 25);
+			this.cbTilesets.TabIndex = 14;
+			this.cbTilesets.Text = "create and/or replace the total tilesets data";
+			this.cbTilesets.UseVisualStyleBackColor = true;
+			// 
+			// cbResources
+			// 
+			this.cbResources.Location = new System.Drawing.Point(65, 90);
+			this.cbResources.Name = "cbResources";
+			this.cbResources.Size = new System.Drawing.Size(305, 24);
+			this.cbResources.TabIndex = 15;
+			this.cbResources.Text = "create and/or replace the default resource folders";
+			this.cbResources.UseVisualStyleBackColor = true;
+			// 
+			// ConfigurationForm
 			// 
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(472, 114);
+			this.ClientSize = new System.Drawing.Size(472, 174);
+			this.Controls.Add(this.cbResources);
+			this.Controls.Add(this.cbTilesets);
+			this.Controls.Add(this.lblOptions);
 			this.Controls.Add(this.pInfo);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.pTftd);
 			this.Controls.Add(this.pUfo);
 			this.Controls.Add(this.btnOk);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.MaximumSize = new System.Drawing.Size(480, 140);
-			this.MinimumSize = new System.Drawing.Size(480, 140);
-			this.Name = "InstallationForm";
+			this.MaximumSize = new System.Drawing.Size(480, 200);
+			this.MinimumSize = new System.Drawing.Size(480, 200);
+			this.Name = "ConfigurationForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "set Resource folder(s)";
 			this.pUfo.ResumeLayout(false);
@@ -207,5 +239,8 @@
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.Panel pInfo;
 		private System.Windows.Forms.Label lblInfo;
+		private System.Windows.Forms.Label lblOptions;
+		private System.Windows.Forms.CheckBox cbTilesets;
+		private System.Windows.Forms.CheckBox cbResources;
 	}
 }
