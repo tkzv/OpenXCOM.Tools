@@ -27,6 +27,8 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <WarningLevel>4</WarningLevel>
     <TargetFrameworkProfile />
+    <RunCodeAnalysis>False</RunCodeAnalysis>
+    <SourceAnalysisOverrideSettingsFile>C:\Users\User\AppData\Roaming\ICSharpCode\SharpDevelop5\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>True</DebugSymbols>
@@ -75,8 +77,8 @@
     <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy /y C:\GIT\OpenXCOM.Tools\ConfigConverter\bin\x86\Debug\ConfigConverter.exe C:\t\ConfigConverter\
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <PostBuildEvent>copy /y C:\GIT\OpenXCOM.Tools\ConfigConverter\bin\x86\Release\ConfigConverter.exe C:\0xC_kL\editors\MapView_kL\ConfigConverter
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

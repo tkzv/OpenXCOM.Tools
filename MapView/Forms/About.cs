@@ -13,20 +13,22 @@ namespace MapView
 		:
 			Form
 	{
+		#region cTor
 		internal About()
 		{
 			InitializeComponent();
 
-			string ver = Assembly.GetExecutingAssembly().GetName().Version.Major + "."
-					   + Assembly.GetExecutingAssembly().GetName().Version.Minor + "."
-					   + Assembly.GetExecutingAssembly().GetName().Version.Build + "."
-					   + Assembly.GetExecutingAssembly().GetName().Version.Revision;
+			var an = Assembly.GetExecutingAssembly().GetName();
+			string ver = an.Version.Major + "."
+					   + an.Version.Minor + "."
+					   + an.Version.Build + "."
+					   + an.Version.Revision;
 
 			lblVersion.Text = "MapView " + ver;
 #if DEBUG
-			lblVersion.Text += " kL_d";
+			lblVersion.Text += " debug";
 #else
-			lblVersion.Text += " kL_r";
+			lblVersion.Text += " release";
 #endif
 
 			lblVersion.Text += Environment.NewLine + Environment.NewLine
@@ -35,12 +37,18 @@ namespace MapView
 										"{0:yyyy MMM d}  {0:HH}:{0:mm}:{0:ss} {0:zzz}",
 										DateTime.Now);
 		}
+		#endregion
 
+
+		#region Fields
 		private Point _locBase;
 		private Point _loc;
 		private Size _size;
 		private double _lastPoint;
+		#endregion
 
+
+		#region Eventcalls
 		private void OnShown(object sender, EventArgs e)
 		{
 			string before = String.Format(
@@ -66,6 +74,26 @@ namespace MapView
 			MoveWindow();
 		}
 
+		private void OnLocationChanged(object sender, EventArgs e)
+		{
+			var locPre = new Size(GetLocationStep(_lastPoint));
+			_loc += new Size(Location - locPre);
+		}
+
+		private void OnKeyDown(object sender, KeyEventArgs e)
+		{
+			switch (e.KeyCode)
+			{
+				case Keys.Escape:
+				case Keys.Enter:
+					Close();
+					break;
+			}
+		}
+		#endregion
+
+
+		#region Methods
 		private void MoveWindow()
 		{
 			_loc = GetLocationStep(_lastPoint += 0.035);
@@ -86,12 +114,6 @@ namespace MapView
 			Location = _loc;
 		}
 
-		private void OnLocationChanged(object sender, EventArgs e)
-		{
-			var locPre = new Size(GetLocationStep(_lastPoint));
-			_loc += new Size(Location - locPre);
-		}
-
 		private Point GetLocationStep(double delta)
 		{
 			var loc = Location;
@@ -99,16 +121,6 @@ namespace MapView
 			loc.Y = (int)(_loc.Y + (Math.Cos(delta) * 50));
 			return loc;
 		}
-
-		private void OnKeyDown(object sender, KeyEventArgs e)
-		{
-			switch (e.KeyCode)
-			{
-				case Keys.Escape:
-				case Keys.Enter:
-					Close();
-					break;
-			}
-		}
+		#endregion
 	}
 }

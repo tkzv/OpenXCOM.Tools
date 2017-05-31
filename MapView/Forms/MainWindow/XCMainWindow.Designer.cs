@@ -44,7 +44,6 @@ namespace MapView
 			this.miQuit = new System.Windows.Forms.MenuItem();
 			this.miRegenOccult = new System.Windows.Forms.MenuItem();
 			this.menuEdit = new System.Windows.Forms.MenuItem();
-			this.miPaths = new System.Windows.Forms.MenuItem();
 			this.miOptions = new System.Windows.Forms.MenuItem();
 			this.menuAnimation = new System.Windows.Forms.MenuItem();
 			this.miOn = new System.Windows.Forms.MenuItem();
@@ -93,10 +92,10 @@ namespace MapView
 			this.miExport,
 			this.miResize,
 			this.miInfo,
+			this.miRegenOccult,
 			this.miHq,
 			this.miBarHori,
-			this.miQuit,
-			this.miRegenOccult});
+			this.miQuit});
 			this.menuFile.Text = "&File";
 			// 
 			// miOpen
@@ -116,6 +115,7 @@ namespace MapView
 			// 
 			// miSaveMaptree
 			// 
+			this.miSaveMaptree.Enabled = false;
 			this.miSaveMaptree.Index = 2;
 			this.miSaveMaptree.Shortcut = System.Windows.Forms.Shortcut.CtrlT;
 			this.miSaveMaptree.Text = "Save Map&tree";
@@ -149,47 +149,40 @@ namespace MapView
 			this.miInfo.Text = "&Map Info";
 			this.miInfo.Click += new System.EventHandler(this.OnInfoClick);
 			// 
+			// miRegenOccult
+			// 
+			this.miRegenOccult.Enabled = false;
+			this.miRegenOccult.Index = 7;
+			this.miRegenOccult.Text = "Regen &Occult";
+			this.miRegenOccult.Click += new System.EventHandler(this.OnRegenOccultClick);
+			// 
 			// miHq
 			// 
-			this.miHq.Index = 7;
+			this.miHq.Index = 8;
 			this.miHq.Text = "Hq&2x";
 			this.miHq.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
 			// miBarHori
 			// 
-			this.miBarHori.Index = 8;
+			this.miBarHori.Index = 9;
 			this.miBarHori.Text = "-";
 			// 
 			// miQuit
 			// 
-			this.miQuit.Index = 9;
+			this.miQuit.Index = 10;
 			this.miQuit.Text = "&Quit";
 			this.miQuit.Click += new System.EventHandler(this.OnQuitClick);
-			// 
-			// miRegenOccult
-			// 
-			this.miRegenOccult.Enabled = false;
-			this.miRegenOccult.Index = 10;
-			this.miRegenOccult.Text = "Regen &Occult";
-			this.miRegenOccult.Click += new System.EventHandler(this.OnRegenOccultClick);
 			// 
 			// menuEdit
 			// 
 			this.menuEdit.Index = 1;
 			this.menuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.miPaths,
 			this.miOptions});
 			this.menuEdit.Text = "&Edit";
 			// 
-			// miPaths
-			// 
-			this.miPaths.Index = 0;
-			this.miPaths.Text = "&Paths";
-			this.miPaths.Click += new System.EventHandler(this.OnPathsEditorClick);
-			// 
 			// miOptions
 			// 
-			this.miOptions.Index = 1;
+			this.miOptions.Index = 0;
 			this.miOptions.Text = "&Options";
 			this.miOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
@@ -453,7 +446,6 @@ namespace MapView
 		private System.Windows.Forms.MenuItem menuHelp;
 		private System.Windows.Forms.MenuItem menuEdit;
 		private System.Windows.Forms.TreeView tvMaps;
-		private System.Windows.Forms.MenuItem miPaths;
 		private System.Windows.Forms.MenuItem miOptions;
 		private System.Windows.Forms.MenuItem miSaveImage;
 		private System.Windows.Forms.SaveFileDialog sfdSaveDialog;

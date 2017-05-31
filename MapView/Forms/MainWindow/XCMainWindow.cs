@@ -52,6 +52,17 @@ namespace MapView
 		{
 			get { return _instance; }
 		}
+
+		private bool _maptreeChanged;
+		private bool MaptreeChanged
+		{
+			get { return _maptreeChanged; }
+			set
+			{
+				_maptreeChanged       =
+				miSaveMaptree.Enabled = value;
+			}
+		}
 		#endregion
 
 
@@ -61,7 +72,9 @@ namespace MapView
 		/// </summary>
 		internal XCMainWindow()
 		{
+#if DEBUG
 			LogFile.PathDir = Environment.CurrentDirectory; // creates a logfile/ wipes the old one.
+#endif
 
 			LogFile.WriteLine("Starting MAIN MapView window ...");
 
@@ -344,7 +357,6 @@ namespace MapView
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("XCMainWindow.CreateTree");
 
-//			tvMaps.SuspendLayout();
 			tvMaps.Nodes.Clear();
 
 			var groups = ResourceInfo.TileGroupInfo.TileGroups;
@@ -376,7 +388,6 @@ namespace MapView
 					}
 				}
 			}
-//			tvMaps.ResumeLayout();
 		}
 
 		/// <summary>
@@ -500,7 +511,7 @@ namespace MapView
 			Options.AddOption(
 							SaveWindowPositions,
 							true, //PathsEditor.SaveRegistry,
-							"If true the window positions and sizes will be saved",
+							"If true the window positions and sizes will be saved (disabled, always true)",
 							Global,
 							handler);
 
@@ -537,7 +548,7 @@ namespace MapView
 			Options.AddOption(
 							GraySelection,
 							MainViewUnderlay.Instance.MainViewOverlay.GraySelection,
-							"If true the selection area will show up in gray",
+							"If true the selection area will be drawn in grayscale",
 							MapView,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
 
@@ -671,7 +682,7 @@ namespace MapView
 		/// <param name="args"></param>
 		private void OnClosingSaveOptions(object sender, CancelEventArgs args)
 		{
-			if (NotifySave() == DialogResult.Cancel)
+			if (SaveAlert(true) == DialogResult.Cancel)
 			{
 				args.Cancel = true;
 			}
@@ -799,13 +810,7 @@ namespace MapView
 
 		private void OnSaveMaptreeClick(object sender, EventArgs e)
 		{
-			ResourceInfo.TileGroupInfo.SaveTileGroups();
-		}
-
-		private void OnQuitClick(object sender, EventArgs e)
-		{
-			OnClosingSaveOptions(null, new CancelEventArgs(true));
-			Environment.Exit(0);
+			MaptreeChanged = ResourceInfo.TileGroupInfo.SaveTileGroups();
 		}
 
 		private void OnRegenOccultClick(object sender, EventArgs e)
@@ -818,20 +823,12 @@ namespace MapView
 			}
 		}
 
-		private void OnPathsEditorClick(object sender, EventArgs e)
+		private void OnQuitClick(object sender, EventArgs e)
 		{
-//			var share = SharedSpace.Instance[PathInfo.PathsFile];
-
-			using (var f = new PathsEditor())
-				f.ShowDialog();
-
-
-			// TODO: if MapConfig gets saved reload resources ....
-
-//			ResourceInfo.InitializeResources(Palette.UfoBattle, (PathInfo)share);
-
-//			CreateTree();
+			OnClosingSaveOptions(null, new CancelEventArgs(true));
+			Environment.Exit(0);
 		}
+
 
 		private Form _foptions;
 		private bool _closing;
@@ -1123,6 +1120,8 @@ namespace MapView
 			{
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
+					MaptreeChanged = true;
+
 					ResourceInfo.TileGroupInfo.AddTileGroup(f.Input);
 
 					CreateTree();
@@ -1153,6 +1152,8 @@ namespace MapView
 				f.Input = labelGroup;
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
+					MaptreeChanged = true;
+
 					ResourceInfo.TileGroupInfo.EditTileGroup(
 														f.Input,
 														labelGroup);
@@ -1192,6 +1193,8 @@ namespace MapView
 							MessageBoxDefaultButton.Button1,
 							0) == DialogResult.OK)
 			{
+				MaptreeChanged = true;
+
 				ResourceInfo.TileGroupInfo.DeleteTileGroup(labelGroup);
 
 				CreateTree();
@@ -1217,6 +1220,8 @@ namespace MapView
 			{
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
+					MaptreeChanged = true;
+
 					var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
 					tilegroup.AddCategory(f.Input);
 
@@ -1247,6 +1252,8 @@ namespace MapView
 				f.Input = labelCategory;
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
+					MaptreeChanged = true;
+
 					var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
 					tilegroup.EditCategory(
 										f.Input,
@@ -1289,6 +1296,8 @@ namespace MapView
 							MessageBoxDefaultButton.Button1,
 							0) == DialogResult.OK)
 			{
+				MaptreeChanged = true;
+
 				var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
 				tilegroup.DeleteCategory(labelCategory);
 
@@ -1320,6 +1329,8 @@ namespace MapView
 				{
 					LogFile.WriteLine(". f.Tileset= " + f.Tileset);
 
+					MaptreeChanged = true;
+
 					CreateTree();
 					SelectTilesetNode(f.Tileset);
 				}
@@ -1348,6 +1359,8 @@ namespace MapView
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
 					LogFile.WriteLine(". f.Tileset= " + f.Tileset);
+
+					MaptreeChanged = true;
 
 					CreateTree();
 					SelectTilesetNode(f.Tileset);
@@ -1388,6 +1401,8 @@ namespace MapView
 							MessageBoxDefaultButton.Button1,
 							0) == DialogResult.OK)
 			{
+				MaptreeChanged = true;
+
 				var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[labelGroup];
 				tilegroup.DeleteTileset(labelTileset, labelCategory);
 
@@ -1561,7 +1576,7 @@ namespace MapView
 			LogFile.WriteLine("XCMainWindow.OnMapTreeBeforeSelect");
 			if (tvMaps.SelectedNode != null) LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
 
-			e.Cancel |= (NotifySave() == DialogResult.Cancel);
+			e.Cancel = (SaveAlert() == DialogResult.Cancel);
 		}
 
 		/// <summary>
@@ -1650,14 +1665,15 @@ namespace MapView
 		/// <summary>
 		/// Shows the user a dialog-box asking to Save if stuff has changed.
 		/// </summary>
+		/// <param name="tree">true to check if the Maptree changed (default false)</param>
 		/// <returns></returns>
-		private DialogResult NotifySave()
+		private DialogResult SaveAlert(bool tree = false)
 		{
 			if (_mainViewUnderlay.MapBase != null && _mainViewUnderlay.MapBase.MapChanged)
 			{
 				switch (MessageBox.Show(
 									this,
-									"Do you want to save changes?",
+									"Do you want to save changes to the Map and/or Routes?",
 									"Map Changed",
 									MessageBoxButtons.YesNoCancel,
 									MessageBoxIcon.Question,
@@ -1675,6 +1691,30 @@ namespace MapView
 						return DialogResult.Cancel;
 				}
 			}
+
+			if (tree && MaptreeChanged)
+			{
+				switch (MessageBox.Show(
+									this,
+									"Do you want to save changes to the Map Tree?",
+									"Maptree Changed",
+									MessageBoxButtons.YesNoCancel,
+									MessageBoxIcon.Question,
+									MessageBoxDefaultButton.Button1,
+									0))
+				{
+					case DialogResult.Yes:		// save
+						ResourceInfo.TileGroupInfo.SaveTileGroups();
+						break;
+
+					case DialogResult.No:		// don't save
+						break;
+
+					case DialogResult.Cancel:	// do nothing
+						return DialogResult.Cancel;
+				}
+			}
+
 			return DialogResult.OK;
 		}
 

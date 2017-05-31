@@ -42,7 +42,7 @@ namespace MapView
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(305, 15);
 			this.label1.TabIndex = 0;
-			this.label1.Text = "AUTHORED - Ben Ratzlaff";
+			this.label1.Text = "AUTHOR - Ben Ratzlaff aka DaiShiva";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// label2
@@ -51,7 +51,7 @@ namespace MapView
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(305, 15);
 			this.label2.TabIndex = 1;
-			this.label2.Text = "ASSISTED - BladeFireLight / J Farceur";
+			this.label2.Text = "ASSIST - BladeFireLight / J Farceur";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// lblVersion
@@ -68,7 +68,7 @@ namespace MapView
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(305, 15);
 			this.label3.TabIndex = 3;
-			this.label3.Text = "REVISED - TheBigSot";
+			this.label3.Text = "REVISION - TheBigSot";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// MoveTimer
@@ -83,7 +83,7 @@ namespace MapView
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(305, 15);
 			this.label4.TabIndex = 3;
-			this.label4.Text = "REVISED - kevL";
+			this.label4.Text = "REVISION - kevL";
 			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// label5
@@ -92,7 +92,7 @@ namespace MapView
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(305, 15);
 			this.label5.TabIndex = 4;
-			this.label5.Text = "REVISED - pmprog";
+			this.label5.Text = "REVISION - pmprog";
 			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// About

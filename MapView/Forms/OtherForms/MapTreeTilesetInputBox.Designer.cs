@@ -325,9 +325,9 @@
 			// 
 			this.lblPathCurrent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lblPathCurrent.Location = new System.Drawing.Point(115, 15);
+			this.lblPathCurrent.Location = new System.Drawing.Point(105, 15);
 			this.lblPathCurrent.Name = "lblPathCurrent";
-			this.lblPathCurrent.Size = new System.Drawing.Size(445, 15);
+			this.lblPathCurrent.Size = new System.Drawing.Size(455, 15);
 			this.lblPathCurrent.TabIndex = 10;
 			this.lblPathCurrent.Text = "lblPathCurrent";
 			this.lblPathCurrent.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

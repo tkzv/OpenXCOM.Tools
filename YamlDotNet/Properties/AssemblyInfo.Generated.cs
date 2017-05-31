@@ -1,1 +1,1 @@
-[assembly: System.Reflection.AssemblyConfiguration("Debug")]
+[assembly: System.Reflection.AssemblyConfiguration("Release")]

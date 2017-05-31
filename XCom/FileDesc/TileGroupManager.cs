@@ -98,20 +98,21 @@ namespace XCom
 		/// Saves the TileGroups with their children (categories and tilesets)
 		/// to a YAML file.
 		/// </summary>
-		public void SaveTileGroups()
+		public bool SaveTileGroups()
 		{
 			string dirSettings = SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory);
 
-			string pfeMapTree = Path.Combine(dirSettings, "MapConfigTest.yml");	// TEST
-			using (var fs = new FileStream(pfeMapTree, FileMode.Create))		// TEST
-			{}
+//			string pfeMapTree = Path.Combine(dirSettings, "MapConfigTest.yml");	// TEST
+//			using (var fs = new FileStream(pfeMapTree, FileMode.Create))		// TEST
+//			{}
 
-//			string pfeMapTree    = Path.Combine(dirSettings, PathInfo.ConfigTilesets);		// "MapConfig.yml"
+			string pfeMapTree    = Path.Combine(dirSettings, PathInfo.ConfigTilesets);		// "MapConfig.yml"
 			string pfeMapTreeOld = Path.Combine(dirSettings, PathInfo.ConfigTilesetsOld);	// "MapConfig.old"
 
 			try
 			{
-				File.Copy(pfeMapTree, pfeMapTreeOld, true); // backup MapConfig.yml -> MapConfig.old
+				if (File.Exists(pfeMapTree))
+					File.Copy(pfeMapTree, pfeMapTreeOld, true); // backup MapConfig.yml -> MapConfig.old
 
 
 				using (var fs = new FileStream(pfeMapTree, FileMode.Create))
@@ -183,12 +184,14 @@ namespace XCom
 						}
 					}
 				}
+				return true;
 			}
 			catch
 			{
 				// TODO: show error.
 				throw;
 			}
+//			return false;
 		}
 
 		/// <summary>

@@ -180,20 +180,20 @@
 			// 
 			// cbTilesets
 			// 
-			this.cbTilesets.Location = new System.Drawing.Point(65, 110);
+			this.cbTilesets.Location = new System.Drawing.Point(60, 110);
 			this.cbTilesets.Name = "cbTilesets";
-			this.cbTilesets.Size = new System.Drawing.Size(270, 25);
+			this.cbTilesets.Size = new System.Drawing.Size(405, 25);
 			this.cbTilesets.TabIndex = 14;
-			this.cbTilesets.Text = "create and/or replace the total tilesets data";
+			this.cbTilesets.Text = "create and/or replace the tilesets configuration file [MapConfig.yml]";
 			this.cbTilesets.UseVisualStyleBackColor = true;
 			// 
 			// cbResources
 			// 
-			this.cbResources.Location = new System.Drawing.Point(65, 90);
+			this.cbResources.Location = new System.Drawing.Point(60, 90);
 			this.cbResources.Name = "cbResources";
-			this.cbResources.Size = new System.Drawing.Size(305, 24);
+			this.cbResources.Size = new System.Drawing.Size(405, 24);
 			this.cbResources.TabIndex = 15;
-			this.cbResources.Text = "create and/or replace the default resource folders";
+			this.cbResources.Text = "create and/or replace the default resource file [MapDirectory.yml]";
 			this.cbResources.UseVisualStyleBackColor = true;
 			// 
 			// ConfigurationForm
