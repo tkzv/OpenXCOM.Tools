@@ -142,7 +142,7 @@ namespace XCom
 
 				if (high - OffsetId >= parts.Count)
 				{
-					_bypass = true;
+					_bypass    =
 					MapChanged = true;
 
 					MessageBox.Show(

@@ -1,13 +1,13 @@
-MapView ii
+MapView ii beta+
 
-2017 may 30
+2017 jun 1
 
 major rewrite of the original MapView by Ben Ratzlaff aka DaiShiva (and others)
 
 MapView is a map and routes editor for XCOM UFO/TFTD. It nominally requires the original UFO/TFTD resources, such as PCK/TAB/MCD files. It can edit pre-existing MAP and RMP files, and create new ones from scratch.
 
-requirements:
-.NET 3.5, 32/64-bit Windows OS, ~1 MB disk installation
+REQUIREMENTS:
+32/64-bit Windows OS, .NET 3.5, ~1 MB disk installation, XCOM Resources
 
 A converter utility, ConfigConverter, is included that might/should be able to convert a MapEdit.dat/cfg file, which is used for MapView 1, into a MapView 2 configuration file for tilesets. MapView 2 uses YAML to save most if not all settings; MapView 1 uses a custom parser.
 
@@ -24,4 +24,5 @@ MAKE BACKUPS OF ALL YOUR STUFF. i mean it. Stuff being your MAPS and ROUTES, mos
 
 ps. Open MapView at least once before trying to run PckView (the latter needs some settings that at present only the former creates).
 
-pps. This is a work in progress (eg, things like the "settings" folder might disappear..).
+pps. This is a work in progress.
+ppps. I don't have TFTD so that's untested.

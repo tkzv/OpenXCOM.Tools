@@ -51,8 +51,10 @@ namespace XCom
 
 		public static void SetLogFilePath(string path)
 		{
+#if DEBUG
 			_pathdir = Path.Combine(path, DebugLogFile);
 			CreateLog();
+#endif
 		}
 	}
 }
