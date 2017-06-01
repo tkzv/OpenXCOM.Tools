@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 using DSShared;
 
@@ -70,7 +71,11 @@ namespace XCom
 		/// <param name="labelGroupPre">the old label of the group</param>
 		public void EditTileGroup(string labelGroup, string labelGroupPre)
 		{
-			TileGroups[labelGroup] = new TileGroupBase(labelGroup);
+			LogFile.WriteLine("EditTileGroup");
+			LogFile.WriteLine(". labelGroup= " + labelGroup);
+			LogFile.WriteLine(". labelGroupPre= " + labelGroupPre);
+
+			TileGroups[labelGroup] = new TileGroupChild(labelGroup);
 
 			foreach (var labelCategory in TileGroups[labelGroupPre].Categories.Keys)
 			{
@@ -81,18 +86,8 @@ namespace XCom
 					TileGroups[labelGroup].Categories[labelCategory][descriptor.Label] = descriptor;
 				}
 			}
-			DeleteTileGroup(labelGroupPre); // hopefully this won't wipe all Values after transferring ownership.
+			DeleteTileGroup(labelGroupPre);
 		}
-//					var descriptor = new Descriptor(
-//												descriptorPre.Label,	//string tileset,
-//												descriptorPre.Terrains,	//List<string> terrains,
-//												descriptorPre.BasePath,	//string basepath,
-//												descriptorPre.Pal);		//Palette palette);
-//
-//					TileGroups[labelGroup].Categories[labelCategory].Add(
-//																		descriptor.Label,
-//																		descriptor);
-
 
 		/// <summary>
 		/// Saves the TileGroups with their children (categories and tilesets)
@@ -100,98 +95,88 @@ namespace XCom
 		/// </summary>
 		public bool SaveTileGroups()
 		{
-			string dirSettings = SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory);
+			LogFile.WriteLine("TileGroupManager.SaveTileGroups");
 
-//			string pfeMapTree = Path.Combine(dirSettings, "MapConfigTest.yml");	// TEST
-//			using (var fs = new FileStream(pfeMapTree, FileMode.Create))		// TEST
-//			{}
+			string dirSettings   = SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory);
+			string pfeMapTree    = Path.Combine(dirSettings, PathInfo.ConfigTilesets);		// "MapTilesets.yml"
+			string pfeMapTreeOld = Path.Combine(dirSettings, PathInfo.ConfigTilesetsOld);	// "MapTilesets.old"
 
-			string pfeMapTree    = Path.Combine(dirSettings, PathInfo.ConfigTilesets);		// "MapConfig.yml"
-			string pfeMapTreeOld = Path.Combine(dirSettings, PathInfo.ConfigTilesetsOld);	// "MapConfig.old"
+			if (File.Exists(pfeMapTree))
+				File.Copy(pfeMapTree, pfeMapTreeOld, true); // backup MapTilesets.yml -> MapTilesets.old
 
-			try
+
+			using (var fs = new FileStream(pfeMapTree, FileMode.Create))
+			using (var sw = new StreamWriter(fs))
 			{
-				if (File.Exists(pfeMapTree))
-					File.Copy(pfeMapTree, pfeMapTreeOld, true); // backup MapConfig.yml -> MapConfig.old
+				sw.WriteLine("# This is MapTilesets for MapViewII.");
+				sw.WriteLine("#");
+				sw.WriteLine("# 'tilesets' - a list that contains all the blocks");
+				sw.WriteLine("# 'type'     - the label of MAP/RMP files for the block");
+				sw.WriteLine("# 'terrains' - the label(s) of MCD/PCK/TAB files for the block");
+				sw.WriteLine("# 'category' - a header for the tileset, is arbitrary here");
+				sw.WriteLine("# 'group'    - a header for the categories, is arbitrary except that the first"   + Environment.NewLine
+						   + "#              letters designate the game-type and must be either 'ufo' or"       + Environment.NewLine
+						   + "#              'tftd' (case insensitive, with or without a following space).");
+				sw.WriteLine("# 'basepath' - the path to the parent directory of the tileset's files (default:" + Environment.NewLine
+						   + "#              the resource directory(s) that was/were specified when MapView"    + Environment.NewLine
+						   + "#              was installed/configured). Note that Maps are expected to be in a" + Environment.NewLine
+						   + "#              subdir called MAPS, Routes in a subdir called ROUTES, and"         + Environment.NewLine
+						   + "#              terrains - PCK/TAB/MCD files - in a subdir called TERRAIN.");
+				sw.WriteLine("");
+				sw.WriteLine("tilesets:");
 
-
-				using (var fs = new FileStream(pfeMapTree, FileMode.Create))
-				using (var sw = new StreamWriter(fs))
+				bool blankline;
+				foreach (string labelGroup in TileGroups.Keys)
 				{
-					sw.WriteLine("# This is MapConfig.yml for MapViewII.");
-					sw.WriteLine("#");
-					sw.WriteLine("# 'tilesets' - a list that contains all the blocks");
-					sw.WriteLine("# 'type'     - the label of MAP/RMP files for the block");
-					sw.WriteLine("# 'terrains' - the label(s) of MCD/PCK/TAB files for the block");
-					sw.WriteLine("# 'category' - a header for the tileset, is arbitrary here");
-					sw.WriteLine("# 'group'    - a header for the categories, is arbitrary except that the first"   + Environment.NewLine
-							   + "#              letters designate the game-type and must be either 'ufo' or"       + Environment.NewLine
-							   + "#              'tftd' (case insensitive, with or without a following space).");
-					sw.WriteLine("# 'basepath' - the path to the parent directory of the tileset's files (default:" + Environment.NewLine
-							   + "#              the resource directory(s) that was/were specified when MapView"    + Environment.NewLine
-							   + "#              was installed/configured). Note that Maps are expected to be in a" + Environment.NewLine
-							   + "#              subdir called MAPS, Routes in a subdir called ROUTES, and"         + Environment.NewLine
-							   + "#              terrains - PCK/TAB/MCD files - in a subdir called TERRAIN.");
+					LogFile.WriteLine(". saving Group= " + labelGroup);
+
+					blankline = true;
 					sw.WriteLine("");
-					sw.WriteLine("tilesets:");
+					sw.WriteLine("#---- " + labelGroup + Padder(labelGroup.Length + 6));
 
-					bool blankline;
-					foreach (string labelGroup in TileGroups.Keys)
+					var oGroup = TileGroups[labelGroup] as TileGroupChild;	// <- fuck inheritance btw. It's not been used properly and is
+					foreach (var labelCategory in oGroup.Categories.Keys)	// largely irrelevant and needlessly confusing in this codebase.
 					{
-						blankline = true;
-						sw.WriteLine("");
-						sw.WriteLine("#---- " + labelGroup + Padder(labelGroup.Length + 6));
+						if (!blankline)
+							sw.WriteLine("");
 
-						var oGroup = TileGroups[labelGroup] as TileGroupChild;	// <- fuck inheritance btw. It's not been used properly and is
-						foreach (var labelCategory in oGroup.Categories.Keys)	// largely irrelevant and needlessly confusing in this codebase.
+						blankline = false;
+						sw.WriteLine("#---- " + labelCategory + Padder(labelCategory.Length + 6));
+
+						var category = oGroup.Categories[labelCategory];
+						foreach (var labelTileset in category.Keys)
 						{
-							if (!blankline)
-								sw.WriteLine("");
+							var descriptor = category[labelTileset];
 
-							blankline = false;
-							sw.WriteLine("#---- " + labelCategory + Padder(labelCategory.Length + 6));
+							sw.WriteLine("  - type: " + descriptor.Label); // =labelTileset
+							sw.WriteLine("    terrains:");
 
-							var category = oGroup.Categories[labelCategory];
-							foreach (var labelTileset in category.Keys)
+							foreach (string terrain in descriptor.Terrains)
+								sw.WriteLine("      - " + terrain);
+
+							sw.WriteLine("    category: " + labelCategory);
+							sw.WriteLine("    group: " + labelGroup);
+
+							string basepath = descriptor.BasePath;
+							switch (oGroup.GroupType)
 							{
-								var descriptor = category[labelTileset];
+								case GameType.Ufo:
+									if (basepath != SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo))
+										sw.WriteLine("    basepath: " + basepath);
 
-								sw.WriteLine("  - type: " + descriptor.Label); // =labelTileset
-								sw.WriteLine("    terrains:");
+									break;
 
-								foreach (string terrain in descriptor.Terrains)
-									sw.WriteLine("      - " + terrain);
+								case GameType.Tftd:
+									if (basepath != SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd))
+										sw.WriteLine("    basepath: " + basepath);
 
-								sw.WriteLine("    category: " + labelCategory);
-								sw.WriteLine("    group: " + labelGroup);
-
-								string basepath = descriptor.BasePath;
-								switch (oGroup.GroupType)
-								{
-									case GameType.Ufo:
-										if (basepath != SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo))
-											sw.WriteLine("    basepath: " + basepath);
-
-										break;
-
-									case GameType.Tftd:
-										if (basepath != SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd))
-											sw.WriteLine("    basepath: " + basepath);
-
-										break;
-								}
+									break;
 							}
 						}
 					}
 				}
-				return true;
 			}
-			catch
-			{
-				// TODO: show error.
-				throw;
-			}
-//			return false;
+			return true;
 		}
 
 		/// <summary>
@@ -199,7 +184,7 @@ namespace XCom
 		/// </summary>
 		/// <param name="len"></param>
 		/// <returns></returns>
-		private string Padder(int len)
+		private static string Padder(int len)
 		{
 			string pad = String.Empty;
 			if (len < 79)
@@ -214,24 +199,6 @@ namespace XCom
 				pad += "#";
 
 			return pad;
-		}
-
-
-
-		// old function ->
-		public TileGroupBase AddTileGroup(
-				string label,
-				string pathMaps,
-				string pathRoutes,
-				string pathOccults)
-		{
-			var tilegroup = new TileGroupChild(label);
-
-			tilegroup.MapDirectory    = pathMaps;
-			tilegroup.RouteDirectory  = pathRoutes;
-			tilegroup.OccultDirectory = pathOccults;
-
-			return (TileGroups[label] = tilegroup);
 		}
 		#endregion
 	}

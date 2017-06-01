@@ -35,7 +35,7 @@ namespace MapView.Forms.MainWindow
 		/// Adds menuitems to MapView's dropdown list.
 		/// </summary>
 		/// <param name="console">pointer to the console-form</param>
-		/// <param name="options">pointer to MV_SettingsFile options</param>
+		/// <param name="options">pointer to MV_OptionsFile options</param>
 		internal void PopulateMenus(Form console, Options options)
 		{
 			_options = options;

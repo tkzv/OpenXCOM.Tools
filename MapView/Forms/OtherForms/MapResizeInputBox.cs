@@ -6,7 +6,7 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	internal sealed class MapResizeForm
+	internal sealed class MapResizeInputBox
 		:
 			Form
 	{
@@ -58,7 +58,7 @@ namespace MapView
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		internal MapResizeForm()
+		internal MapResizeInputBox()
 		{
 			InitializeComponent();
 

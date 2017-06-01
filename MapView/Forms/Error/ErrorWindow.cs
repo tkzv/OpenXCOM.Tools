@@ -11,23 +11,20 @@ namespace MapView.Forms.XCError
 		private readonly Exception _exception;
 
 
-		public ErrorWindow(Exception exception)
+		#region cTor
+		internal ErrorWindow(Exception exception)
 		{
 			_exception = exception;
 
 			InitializeComponent();
 		}
+		#endregion
 
 
-		private void ErrorDetailsPanel_Click(object sender, EventArgs e)
+		private void OnLoad(object sender, EventArgs e)
 		{
-			ErrorDetailsPanel.Dock = DockStyle.Fill;
-		}
-
-		private void ErrorWindow_Load(object sender, EventArgs e)
-		{
-			ErrorDetailsPanel.Click += ErrorDetailsPanel_Click;
-			DetailsLabel.Text = _exception.ToString();
+			tbDetails.Text = _exception.ToString();
+			tbDetails.SelectionStart = 0;
 		}
 	}
 }

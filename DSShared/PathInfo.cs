@@ -10,29 +10,33 @@ namespace DSShared
 	public class PathInfo
 	{
 		#region Fields (static)
-		// path-keys
-		public const string SettingsFile = "MV_SettingsFile";	// -> MVSettings.cfg
+		// path-keys in SharedSpace
+		public const string ShareOptions   = "MV_OptionsFile";		// -> MapOptions.cfg
 
-		public const string MapViewers   = "MV_ViewersFile";	// -> MapViewers.yml
-		public const string MapTilesets  = "MV_TilesetsFile";	// -> MapConfig.yml TODO: change to MapTilesets.yml
+		public const string ShareResources = "MV_ResourcesFile";	// -> MapResources.yml
+		public const string ShareTilesets  = "MV_TilesetsFile";		// -> MapTilesets.yml
+		public const string ShareViewers   = "MV_ViewersFile";		// -> MapViewers.yml
 
-		// TODO: key MapResources
+		// Configuration files
+		public const string ConfigOptions     = "MapOptions.cfg";	// stores user-settings for the viewers
 
-		// YAML files
-		public const string ConfigViewers    = "MapViewers.yml";
-		public const string ConfigViewersOld = "MapViewers.old";
+		public const string ConfigResources   = "MapResources.yml";	// stores the installation paths of UFO/TFTD
 
-		public const string ConfigResources    = "MapDirectory.yml"; // TODO: change to MapResources.yml
-//		public const string ConfigResourcesOld = "MapDirectory.old"; // TODO: change to MapResources.old
+		public const string ConfigTilesets    = "MapTilesets.yml";	// tilesets file configuration
+		public const string ConfigTilesetsOld = "MapTilesets.old";	// tilesets file backup
+		public const string ConfigTilesetsTpl = "MapTilesets.tpl";	// tilesets file template
 
-		public const string ConfigTilesets    = "MapConfig.yml"; // TODO: change to MapTilesets.yml
-		public const string ConfigTilesetsOld = "MapConfig.old"; // TODO: change to MapTilesets.old
+		public const string ConfigViewers     = "MapViewers.yml";	// various window positions and sizes
+		public const string ConfigViewersOld  = "MapViewers.old";	// backup
+
+
+		public const string NotConfigured = "notconfigured"; // used in MapResources.yml in case UFO or TFTD installation is not configured.
 		#endregion
 
 
 		#region Properties
 		private readonly string _file;
-		private readonly string _extension;
+//		private readonly string _extension;
 
 		private readonly string _path;
 		/// <summary>
@@ -45,17 +49,18 @@ namespace DSShared
 
 		/// <summary>
 		/// Gets the fullpath.
-		/// kL_question: Can a file or directory end with "."
+		/// kL_question: Can a file or directory end with "." (no, disallowed by Windows OS)
 		/// </summary>
 		public string FullPath
 		{
 			get
 			{
-				string fullpath = Path.Combine(_path, _file);
-				if (_extension.Length != 0)
-					fullpath += "." + _extension;
+				return Path.Combine(_path, _file);
 
-				return fullpath;
+//				string fullpath = Path.Combine(_path, _file);
+//				if (_extension.Length != 0)
+//					fullpath += "." + _extension;
+//				return fullpath;
 			}
 		}
 		#endregion
@@ -67,15 +72,12 @@ namespace DSShared
 		/// </summary>
 		/// <param name="path">the path</param>
 		/// <param name="file">the file</param>
-		/// <param name="extension">the extension</param>
 		public PathInfo(
 				string path,
-				string file,
-				string extension)
+				string file)
 		{
-			_path      = path;
-			_file      = file;
-			_extension = extension;
+			_path = path;
+			_file = file;
 		}
 		#endregion
 

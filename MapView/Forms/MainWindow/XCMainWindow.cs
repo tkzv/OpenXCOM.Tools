@@ -73,7 +73,7 @@ namespace MapView
 		internal XCMainWindow()
 		{
 #if DEBUG
-			LogFile.PathDir = Environment.CurrentDirectory; // creates a logfile/ wipes the old one.
+			LogFile.SetLogFilePath(Environment.CurrentDirectory); // creates a logfile/ wipes the old one.
 #endif
 
 			LogFile.WriteLine("Starting MAIN MapView window ...");
@@ -96,43 +96,54 @@ namespace MapView
 			LogFile.WriteLine("Environment cached.");
 
 
-			var pathTilesets = new PathInfo(dirSettings, "MapConfig", "yml");
-			share.SetShare(PathInfo.MapTilesets, pathTilesets);
+			var pathOptions = new PathInfo(dirSettings, PathInfo.ConfigOptions);
+			share.SetShare(PathInfo.ShareOptions, pathOptions);
 
-			var pathViewerPositions = new PathInfo(dirSettings, "MapViewers", "yml");
-			share.SetShare(PathInfo.MapViewers, pathViewerPositions);
+			var pathResources = new PathInfo(dirSettings, PathInfo.ConfigResources);
+			share.SetShare(PathInfo.ShareResources, pathResources);
 
-			var pathOptions = new PathInfo(dirSettings, "MVSettings", "cfg");
-			share.SetShare(PathInfo.SettingsFile, pathOptions);
+			var pathTilesets = new PathInfo(dirSettings, PathInfo.ConfigTilesets);
+			share.SetShare(PathInfo.ShareTilesets, pathTilesets);
+
+			var pathViewers = new PathInfo(dirSettings, PathInfo.ConfigViewers);
+			share.SetShare(PathInfo.ShareViewers, pathViewers);
 
 			LogFile.WriteLine("PathInfo cached.");
 
 
-			// check if MapConfig.yml and MapDirectory.yml exists yet, show the
+			// check if MapTilesets.yml and MapResources.yml exists yet, show the
 			// Configuration window if not
-			// NOTE: MapConfig.yml and MapDirectory.yml are created by
+			// NOTE: MapTilesets.yml and MapResources.yml are created by
 			// ConfigurationForm
 			if (!pathTilesets.FileExists()
 				|| !File.Exists(Path.Combine(dirSettings, PathInfo.ConfigResources)))
 			{
-				using (var f = new ConfigurationForm())
-					if (f.ShowDialog(this) != DialogResult.OK)
-						Environment.Exit(0);
+				LogFile.WriteLine("Tilesets or Resources file does not exist ... run configurator.");
 
-				LogFile.WriteLine("Configuration file created.");
+				using (var f = new ConfigurationForm())
+					f.ShowDialog(this);
 			}
 			else
-				LogFile.WriteLine("Configuration file exists.");
+				LogFile.WriteLine("Tilesets and Resources files exist.");
+
+
+			// close MapView if either MapResources.yml or MapTilesets.yml doesn't exist
+			if (!pathTilesets.FileExists() || !File.Exists(Path.Combine(dirSettings, PathInfo.ConfigResources)))
+			{
+				LogFile.WriteLine("quit MapView.");
+				Environment.Exit(0);
+			}
+
 
 
 			// check if MapViewers.yml exists yet, if not create it
-			if (!pathViewerPositions.FileExists())
+			if (!pathViewers.FileExists())
 			{
 				CreateViewersFile();
-				LogFile.WriteLine("Window configuration file created.");
+				LogFile.WriteLine("Viewers file created.");
 			}
 			else
-				LogFile.WriteLine("Window configuration file exists.");
+				LogFile.WriteLine("Viewers file exists.");
 
 
 
@@ -232,10 +243,10 @@ namespace MapView
 			tsEdit.Enabled = false;
 
 
-			// read MapDirectory.yml to get the resources dir (for both UFO and TFTD)
-			// NOTE: MapDirectory.yml is created by ConfigurationForm
+			// read MapResources.yml to get the resources dir (for both UFO and TFTD)
+			// NOTE: MapResources.yml is created by ConfigurationForm
 			string fileResources = Path.Combine(
-											SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory),
+											share.GetShare(SharedSpace.SettingsDirectory),
 											PathInfo.ConfigResources);
 			using (var sr = new StreamReader(File.OpenRead(fileResources)))
 			{
@@ -259,17 +270,17 @@ namespace MapView
 					}
 
 					val = node.Value.ToString();
-					val = (!val.Equals("placeholder")) ? val
-													   : null;
+					val = (!val.Equals(PathInfo.NotConfigured)) ? val
+																: null;
 
-					SharedSpace.Instance.SetShare(key, val);
+					share.SetShare(key, val);
 				}
 			}
 
 			SpriteCollection cuboid = null;
 			cuboid = ResourceInfo.LoadSpriteset(
 											SharedSpace.CursorFilePrefix,
-											SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo),
+											share.GetShare(SharedSpace.ResourcesDirectoryUfo),
 											2,
 											Palette.UfoBattle);
 			if (cuboid != null)
@@ -282,7 +293,7 @@ namespace MapView
 
 			cuboid = ResourceInfo.LoadSpriteset(
 											SharedSpace.CursorFilePrefix,
-											SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd),
+											share.GetShare(SharedSpace.ResourcesDirectoryTftd),
 											4,
 											Palette.TftdBattle);
 			if (cuboid != null)
@@ -691,7 +702,7 @@ namespace MapView
 				//LogFile.WriteLine("OnCloseSaveRegistry MainView");
 				_mainMenusManager.IsQuitting();
 
-				_optionsManager.SaveOptions(); // save MV_SettingsFile // TODO: Save Settings when closing the Options form(s).
+				_optionsManager.SaveOptions(); // save MV_OptionsFile // TODO: Save settings when closing the Options form(s).
 
 
 //				if (PathsEditor.SaveRegistry) // TODO: re-implement.
@@ -810,7 +821,7 @@ namespace MapView
 
 		private void OnSaveMaptreeClick(object sender, EventArgs e)
 		{
-			MaptreeChanged = ResourceInfo.TileGroupInfo.SaveTileGroups();
+			MaptreeChanged = !ResourceInfo.TileGroupInfo.SaveTileGroups();
 		}
 
 		private void OnRegenOccultClick(object sender, EventArgs e)
@@ -821,6 +832,12 @@ namespace MapView
 				mapFile.CalculateOccultations();
 				Refresh();
 			}
+		}
+
+		private void OnConfiguratorClick(object sender, EventArgs e)
+		{
+			using (var f = new ConfigurationForm())
+				f.ShowDialog(this);
 		}
 
 		private void OnQuitClick(object sender, EventArgs e)
@@ -897,7 +914,7 @@ namespace MapView
 		{
 			if (_mainViewUnderlay.MainViewOverlay.MapBase != null)
 			{
-				using (var f = new MapResizeForm())
+				using (var f = new MapResizeInputBox())
 				{
 					f.MapBase = _mainViewUnderlay.MainViewOverlay.MapBase;
 
@@ -949,7 +966,7 @@ namespace MapView
 		{
 			if (_mainViewUnderlay.MapBase != null)
 			{
-				var f = new MapInfoForm();
+				var f = new MapInfoOutputBox();
 				f.Show();
 				f.Analyze(_mainViewUnderlay.MapBase as MapFileChild);
 			}
@@ -1749,7 +1766,7 @@ namespace MapView
 		/// </summary>
 		private static void CreateViewersFile()
 		{
-			var info = (PathInfo)SharedSpace.Instance[PathInfo.MapViewers];
+			var info = (PathInfo)SharedSpace.Instance[PathInfo.ShareViewers];
 			info.CreateDirectory();
 
 			string pfe = info.FullPath;

@@ -8,7 +8,7 @@ namespace XCom
 	/// A Tileset is a tileset. It's comprised of references to loaded MAP/RMP
 	/// data as well as required terrain-data loaded from PCK/TAB/MCD files.
 	/// However, a Tileset is used only for loading groups- and terrains-
-	/// configuration from MapConfig; the data is then sorted by the
+	/// configuration from MapTilesets; the data is then sorted by the
 	/// TilesetManager and is stored as Descriptor's and Terrain's for use in
 	/// the viewers/editors.
 	/// NOTE: I'm just working as best I can with a big wad of spaghetti.

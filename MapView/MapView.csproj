@@ -219,14 +219,6 @@
     <Compile Include="Forms\OtherForms\MapTreeTilesetInputBox.Designer.cs">
       <DependentUpon>MapTreeTilesetInputBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\OtherForms\PathsEditor.cs" />
-    <Compile Include="Forms\OtherForms\PathsEditor.Designer.cs">
-      <DependentUpon>PathsEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\OtherForms\PathsEditor_.cs" />
-    <Compile Include="Forms\OtherForms\PathsEditor_.Designer.cs">
-      <DependentUpon>PathsEditor_.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -242,10 +234,7 @@
     <Compile Include="Forms\OtherForms\ByteView_.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\MapResizeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\OtherForms\ChoiceDialog_.cs">
+    <Compile Include="Forms\OtherForms\MapResizeInputBox.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CuboidSprite.cs">
@@ -257,20 +246,11 @@
     <Compile Include="Forms\OtherForms\Help.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\LoadingForm_.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\OtherForms\MapInfoForm.cs">
+    <Compile Include="Forms\OtherForms\MapInfoOutputBox.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MainWindow\MainViewPanel\MainViewUnderlay.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\OtherForms\NewMapForm_.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\OtherForms\OutputBox.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -294,12 +274,6 @@
     </Compile>
     <Compile Include="Options.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Forms\OtherForms\CategoryForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\OtherForms\TileGroupForm.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MapObservers\TileView\TileView.cs">
       <SubType>UserControl</SubType>
@@ -353,35 +327,20 @@
     <EmbeddedResource Include="Forms\OtherForms\ConfigurationForm.resx">
       <DependentUpon>ConfigurationForm.Designer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\MapResizeForm.resx">
-      <DependentUpon>MapResizeForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\ChoiceDialog_.resx">
-      <DependentUpon>ChoiceDialog_.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\OtherForms\MapResizeInputBox.resx">
+      <DependentUpon>MapResizeInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\Help.resx">
       <DependentUpon>Help.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\LoadingForm_.resx">
-      <DependentUpon>LoadingForm_.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\MapInfoForm.resx">
-      <DependentUpon>MapInfoForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\OtherForms\MapInfoOutputBox.resx">
+      <DependentUpon>MapInfoOutputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\MapTreeInputBox.resx">
       <DependentUpon>MapTreeInputBox.Designer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\MapTreeTilesetInputBox.resx">
       <DependentUpon>MapTreeTilesetInputBox.Designer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\NewMapForm_.resx">
-      <DependentUpon>NewMapForm_.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\OutputBox.resx">
-      <DependentUpon>OutputBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\PathsEditor.resx">
-      <DependentUpon>PathsEditor_.Designer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MapObservers\RouteView\RouteView.resx">
       <SubType>Designer</SubType>
@@ -398,14 +357,6 @@
     <EmbeddedResource Include="Forms\OtherForms\OptionsForm.resx">
       <DependentUpon>OptionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\CategoryForm.resx">
-      <DependentUpon>CategoryForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\TileGroupForm.resx">
-      <DependentUpon>TileGroupForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="_Embedded\ImagesTFTD.cfg" />
-    <EmbeddedResource Include="_Embedded\MapEditTFTD.cfg" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -431,7 +382,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <EmbeddedResource Include="_Embedded\MapViewers.yml" />
-    <EmbeddedResource Include="_Embedded\MapConfig.yml" />
+    <EmbeddedResource Include="_Embedded\MapTilesets.yml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

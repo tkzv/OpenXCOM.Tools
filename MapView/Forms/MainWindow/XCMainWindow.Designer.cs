@@ -43,6 +43,7 @@ namespace MapView
 			this.miBarHori = new System.Windows.Forms.MenuItem();
 			this.miQuit = new System.Windows.Forms.MenuItem();
 			this.miRegenOccult = new System.Windows.Forms.MenuItem();
+			this.miConfigurator = new System.Windows.Forms.MenuItem();
 			this.menuEdit = new System.Windows.Forms.MenuItem();
 			this.miOptions = new System.Windows.Forms.MenuItem();
 			this.menuAnimation = new System.Windows.Forms.MenuItem();
@@ -93,6 +94,7 @@ namespace MapView
 			this.miResize,
 			this.miInfo,
 			this.miRegenOccult,
+			this.miConfigurator,
 			this.miHq,
 			this.miBarHori,
 			this.miQuit});
@@ -156,20 +158,26 @@ namespace MapView
 			this.miRegenOccult.Text = "Regen &Occult";
 			this.miRegenOccult.Click += new System.EventHandler(this.OnRegenOccultClick);
 			// 
+			// miConfigurator
+			// 
+			this.miConfigurator.Index = 8;
+			this.miConfigurator.Text = "Run &Configurator";
+			this.miConfigurator.Click += new System.EventHandler(this.OnConfiguratorClick);
+			// 
 			// miHq
 			// 
-			this.miHq.Index = 8;
+			this.miHq.Index = 9;
 			this.miHq.Text = "Hq&2x";
 			this.miHq.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
 			// miBarHori
 			// 
-			this.miBarHori.Index = 9;
+			this.miBarHori.Index = 10;
 			this.miBarHori.Text = "-";
 			// 
 			// miQuit
 			// 
-			this.miQuit.Index = 10;
+			this.miQuit.Index = 11;
 			this.miQuit.Text = "&Quit";
 			this.miQuit.Click += new System.EventHandler(this.OnQuitClick);
 			// 
@@ -468,6 +476,7 @@ namespace MapView
 		private System.Windows.Forms.ToolStripButton tsbAutoZoom;
 		private System.Windows.Forms.ToolStripStatusLabel tsslScale;
 		private System.Windows.Forms.MenuItem miRegenOccult;
+		private System.Windows.Forms.MenuItem miConfigurator;
 		private System.Windows.Forms.MenuItem miSaveMaptree;
 		private System.Windows.Forms.ContextMenu cmMapTreeMenu;
 

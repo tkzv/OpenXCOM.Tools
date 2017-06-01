@@ -110,7 +110,7 @@
 			this.lblInfo.Name = "lblInfo";
 			this.lblInfo.Size = new System.Drawing.Size(360, 25);
 			this.lblInfo.TabIndex = 6;
-			this.lblInfo.Text = "This app inputs MapEdit.dat or MapEdit.cfg and converts it out to MapConfig.yml, " +
+			this.lblInfo.Text = "This app inputs MapEdit.dat or MapEdit.cfg and converts it out to MapTilesets.yml, " +
 	"a YAML configuration file for MapView 2+";
 			this.lblInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 

@@ -17,6 +17,12 @@ namespace MapView
 		:
 			Form
 	{
+		#region Fields
+		private PathInfo _pathResources = SharedSpace.Instance[PathInfo.ShareResources] as PathInfo;
+		private PathInfo _pathTilesets  = SharedSpace.Instance[PathInfo.ShareTilesets]  as PathInfo;
+		#endregion
+
+
 		#region Properties
 		private string Ufo
 		{
@@ -46,11 +52,18 @@ namespace MapView
 			size.Height = 0;
 			MaximumSize = size; // fu.net
 
+			cbResources.Checked = !_pathResources.FileExists();
+			
+			if (!_pathTilesets.FileExists())
+				rbTilesets.Select();
+			else
+				rbTilesetsTpl.Select();
+
 
 			// NOTE: Add your own personal XCOM resources-dir here if desired:
 			var dirsUfo = new List<string>();
-//			dirsUfo.Add(@"C:\MapView_test");
 			dirsUfo.Add(@"C:\0xC_kL\data");
+//			dirsUfo.Add(@"C:\MapView_test");
 
 			foreach (string dir in dirsUfo)
 			{
@@ -65,6 +78,23 @@ namespace MapView
 
 
 		#region Eventcalls
+		private void OnResourcesCheckedChanged(object sender, EventArgs e)
+		{
+			gbResources.Visible = cbResources.Checked;
+
+			btnOk.Enabled = cbResources.Checked
+						 || cbTilesets.Checked;
+		}
+
+		private void OnTilesetsCheckedChanged(object sender, EventArgs e)
+		{
+			rbTilesets.Visible    =
+			rbTilesetsTpl.Visible = cbTilesets.Checked;
+
+			btnOk.Enabled = cbTilesets.Checked
+						 || cbResources.Checked;
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -114,95 +144,92 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnAcceptClick(object sender, EventArgs e)
 		{
-			Ufo  = Ufo.Trim();
-			Tftd = Tftd.Trim();
+			bool bork = false;
 
-			if (Ufo.EndsWith(@"\", StringComparison.Ordinal))
-				Ufo = Ufo.Substring(0, Ufo.Length - 1);
+			if (cbResources.Checked) // handle XCOM resource path(s) configuration ->
+			{
+				Ufo  = Ufo.Trim();
+				Tftd = Tftd.Trim();
 
-			if (Tftd.EndsWith(@"\", StringComparison.Ordinal))
-				Tftd = Tftd.Substring(0, Tftd.Length - 1);
+				if (Ufo.EndsWith(@"\", StringComparison.Ordinal))
+					Ufo = Ufo.Substring(0, Ufo.Length - 1);
 
-			if (String.IsNullOrEmpty(Ufo) && String.IsNullOrEmpty(Tftd))
-			{
-				ShowErrorDialog("Both folders cannot be blank.");
-			}
-			else if (!String.IsNullOrEmpty(Ufo) && !Directory.Exists(Ufo))
-			{
-				ShowErrorDialog("The UFO folder does not exist.");
-			}
-			else if (!String.IsNullOrEmpty(Tftd) && !Directory.Exists(Tftd))
-			{
-				ShowErrorDialog("The TFTD folder does not exist.");
-			}
-			else if (!cbResources.Checked && !cbTilesets.Checked)
-			{
-				ShowErrorDialog("Choose at least one option, or Cancel.");
-			}
-			else
-			{
-				// Or install the dirs/configs anyway and allow the user to set things up in the PathsEditor.
-				// Otherwise an exception will be thrown when XCMainWindow cTor tries to instantiate the CuboidSprite.
-				// what's the CuboidSprite used for anyway -> the cursor looks like a windows cursor.
-				// note: It's used to indicate the dragStart and dragEnd tiles.
+				if (Tftd.EndsWith(@"\", StringComparison.Ordinal))
+					Tftd = Tftd.Substring(0, Tftd.Length - 1);
 
-				const string CursorPck = SharedSpace.CursorFilePrefix + SpriteCollection.PckExt;
-				const string CursorTab = SharedSpace.CursorFilePrefix + SpriteCollection.TabExt;
-
-				if (   (File.Exists(Path.Combine(Ufo,  CursorPck)) && File.Exists(Path.Combine(Ufo,  CursorTab)))
-					|| (File.Exists(Path.Combine(Tftd, CursorPck)) && File.Exists(Path.Combine(Tftd, CursorTab))))
+				if (String.IsNullOrEmpty(Ufo) && String.IsNullOrEmpty(Tftd))
 				{
-					var pathConfig = SharedSpace.Instance[PathInfo.MapTilesets] as PathInfo;
-					pathConfig.CreateDirectory(); // create a dir for MapConfig.yml and MapDirectory.yml
+					bork = true;
+					ShowErrorDialog("Both folders cannot be blank.");
+				}
+				else if (!String.IsNullOrEmpty(Ufo) && !Directory.Exists(Ufo))
+				{
+					bork = true;
+					ShowErrorDialog("The UFO folder does not exist.");
+				}
+				else if (!String.IsNullOrEmpty(Tftd) && !Directory.Exists(Tftd))
+				{
+					bork = true;
+					ShowErrorDialog("The TFTD folder does not exist.");
+				}
+				else // check for a valid XCOM CursorSprite and create MapResources.yml ->
+				{
+					const string CursorPck = SharedSpace.CursorFilePrefix + SpriteCollection.PckExt;
+					const string CursorTab = SharedSpace.CursorFilePrefix + SpriteCollection.TabExt;
 
-
-					if (cbResources.Checked)
+					if (   (!File.Exists(Path.Combine(Ufo,  CursorPck)) || !File.Exists(Path.Combine(Ufo,  CursorTab)))
+						&& (!File.Exists(Path.Combine(Tftd, CursorPck)) || !File.Exists(Path.Combine(Tftd, CursorTab))))
 					{
-						string pfeMapDirectory = Path.Combine(pathConfig.DirectoryPath, PathInfo.ConfigResources);
+						bork = true;
+						ShowErrorDialog("A valid UFO or TFTD resource directory must exist with"
+											+ Environment.NewLine + Environment.NewLine
+											+ CursorPck + Environment.NewLine
+											+ CursorTab);
+					}
+					else
+					{
+						var pathResources = SharedSpace.Instance[PathInfo.ShareResources] as PathInfo;
+						pathResources.CreateDirectory();
 
-						using (var fs = new FileStream(pfeMapDirectory, FileMode.Create)) // wipe/create MapDirectory.yml
+						string pfeResources = pathResources.FullPath;
+
+						using (var fs = new FileStream(pfeResources, FileMode.Create))
 						using (var sw = new StreamWriter(fs))
 						{
 							object node = new
 							{
 								ufo  = (!String.IsNullOrEmpty(Ufo)  ? Ufo
-																	: "placeholder"),
+																	: PathInfo.NotConfigured),
 								tftd = (!String.IsNullOrEmpty(Tftd) ? Tftd
-																	: "placeholder")
+																	: PathInfo.NotConfigured)
 							};
 
 							var ser = new Serializer();
 							ser.Serialize(sw, node);
 						}
 					}
-
-					if (cbTilesets.Checked)
-					{
-						string pfeMapConfig = pathConfig.FullPath;
-
-						if (!String.IsNullOrEmpty(Ufo))
-						{
-							using (var fs = new FileStream(pfeMapConfig, FileMode.Create)) // wipe/create MapConfig.yml
-							{}
-
-							using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
-															.GetManifestResourceStream("MapView._Embedded.MapConfig.yml")))
-							using (var fs = new FileStream(pfeMapConfig, FileMode.Append))
-							using (var sw = new StreamWriter(fs))
-								while (sr.Peek() != -1) // transfer embedded textfile to MapConfig.yml
-									sw.WriteLine(sr.ReadLine());
-						}
-
-						// TODO: TFTD dir
-					}
-
-					DialogResult = DialogResult.OK;
 				}
-				else
-					ShowErrorDialog("A valid UFO or TFTD resource directory must exist with"
-									+ Environment.NewLine + Environment.NewLine
-									+ CursorPck + Environment.NewLine
-									+ CursorTab);
+			}
+
+			if (!bork)
+			{
+				if (cbTilesets.Checked) // deal with MapTilesets.yml/.tpl ->
+				{
+					var pathTilesets = SharedSpace.Instance[PathInfo.ShareTilesets] as PathInfo;
+					pathTilesets.CreateDirectory();
+	
+					string pfeTilesets = rbTilesets.Checked ? pathTilesets.FullPath
+															: Path.Combine(pathTilesets.DirectoryPath, PathInfo.ConfigTilesetsTpl);
+	
+					using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
+													.GetManifestResourceStream("MapView._Embedded.MapTilesets.yml")))
+					using (var fs = new FileStream(pfeTilesets, FileMode.Create))
+					using (var sw = new StreamWriter(fs))
+						while (sr.Peek() != -1)
+							sw.WriteLine(sr.ReadLine());
+				}
+
+				Close();
 			}
 		}
 

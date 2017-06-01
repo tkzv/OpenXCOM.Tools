@@ -22,6 +22,10 @@ namespace XCom
 		}
 
 		private readonly Dictionary<string, object> _share = new Dictionary<string, object>();
+
+		/// <summary>
+		/// Gets/Sets the value as an object or null.
+		/// </summary>
 		public object this[string key]
 		{
 			get { return (_share.ContainsKey(key)) ? _share[key]
@@ -82,6 +86,11 @@ namespace XCom
 			return _share[key];
 		}
 
+		/// <summary>
+		/// Gets the value as a string.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <returns></returns>
 		public string GetShare(string key)
 		{
 			return _share[key] as String;

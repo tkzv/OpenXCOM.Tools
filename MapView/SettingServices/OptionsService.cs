@@ -13,7 +13,7 @@ namespace MapView.OptionsServices
 	{
 		internal static void SaveOptions(IDictionary<string, Options> options)
 		{
-			using (var sw = new StreamWriter(((PathInfo)SharedSpace.Instance[PathInfo.SettingsFile]).FullPath))
+			using (var sw = new StreamWriter(((PathInfo)SharedSpace.Instance[PathInfo.ShareOptions]).FullPath))
 			{
 				foreach (string key in options.Keys)
 				{

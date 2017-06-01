@@ -28,7 +28,7 @@ namespace MapView
 
 		#region Methods
 		/// <summary>
-		/// Read a line from MVSettings.cfg
+		/// Read a line from MVOptions.cfg
 		/// </summary>
 		/// <returns>KeyValPair</returns>
 		internal KeyvalPair ReadLine()

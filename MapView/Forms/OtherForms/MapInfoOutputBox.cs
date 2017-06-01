@@ -8,11 +8,11 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
-	internal sealed class MapInfoForm
+	internal sealed class MapInfoOutputBox
 		:
 			Form
 	{
-		internal MapInfoForm()
+		internal MapInfoOutputBox()
 		{
 			InitializeComponent();
 

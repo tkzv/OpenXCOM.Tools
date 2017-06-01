@@ -24,15 +24,6 @@ namespace XCom.Interfaces
 
 		public Palette Pal
 		{ get; set; }
-
-		public string MapDirectory // TODO: fix this out of PathsEditor.
-		{ get; set; }
-
-		public string RouteDirectory // TODO: fix this out of PathsEditor.
-		{ get; set; }
-
-		public string OccultDirectory
-		{ get; set; }
 		#endregion
 
 
@@ -44,10 +35,6 @@ namespace XCom.Interfaces
 			:
 				base(labelGroup)
 		{
-			MapDirectory    = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo), "MAPS"); // TODO: These are irrelevant.
-			RouteDirectory  = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo), "ROUTES");
-			OccultDirectory = Path.Combine(SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory), @"OccultTileData\UFO");
-
 			if (labelGroup.StartsWith("tftd", StringComparison.OrdinalIgnoreCase))
 			{
 				GroupType = GameType.Tftd;

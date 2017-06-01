@@ -223,10 +223,10 @@ namespace ConfigConverter
 
 
 			// YAML the tilesets ....
-			using (var fs = new FileStream("MapConfig.yml", FileMode.Create))
+			using (var fs = new FileStream("MapTilesets.yml", FileMode.Create))
 			using (var sw = new StreamWriter(fs))
 			{
-				sw.WriteLine("# This is MapConfig.yml for MapViewII.");
+				sw.WriteLine("# This is MapTilesets for MapViewII.");
 				sw.WriteLine("#");
 				sw.WriteLine("# 'tilesets' - a list that contains all the blocks");
 				sw.WriteLine("# 'type'     - the label of MAP/RMP files for the block");

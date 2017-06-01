@@ -8,15 +8,14 @@ using MapView.Forms.XCError;
 namespace MapView
 {
 	/// <summary>
-	/// Class that starts program execution.
+	/// Class that starts application execution.
 	/// </summary>
 	public class Startup
-//		: MarshalByRefObject
 	{
 		private readonly IErrorHandler _errorHandler;
 
 		/// <summary>
-		/// Initialize handler for unhandled exceptions.
+		/// Initializes a handler for unhandled exceptions.
 		/// </summary>
 		public Startup()
 		{
