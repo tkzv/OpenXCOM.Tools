@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
 
 using DSShared;
 
@@ -14,12 +13,6 @@ namespace XCom
 	public sealed class TileGroupManager
 	{
 		#region Fields & Properties
-//		private readonly string _path;
-//		public string Path
-//		{
-//			get { return _path; }
-//		}
-
 		private readonly Dictionary<string, TileGroupBase> _tilegroups = new Dictionary<string, TileGroupBase>();
 		public Dictionary<string, TileGroupBase> TileGroups
 		{
@@ -31,8 +24,6 @@ namespace XCom
 		#region cTor
 		internal TileGroupManager(TilesetManager tilesetManager)
 		{
-//			_path = tilesetManager.FullPath; // TODO: not right. not needed.
-
 			foreach (string tilegroup in tilesetManager.Groups)
 				TileGroups[tilegroup] = new TileGroupChild(tilegroup, tilesetManager.Tilesets);
 		}
@@ -47,9 +38,7 @@ namespace XCom
 		/// <param name="labelGroup">the label of the group to add</param>
 		public void AddTileGroup(string labelGroup)
 		{
-			TileGroups[labelGroup] = new TileGroupChild(
-													labelGroup,
-													new List<Tileset>());
+			TileGroups[labelGroup] = new TileGroupChild(labelGroup, new List<Tileset>());
 		}
 
 		/// <summary>
@@ -71,10 +60,6 @@ namespace XCom
 		/// <param name="labelGroupPre">the old label of the group</param>
 		public void EditTileGroup(string labelGroup, string labelGroupPre)
 		{
-			LogFile.WriteLine("EditTileGroup");
-			LogFile.WriteLine(". labelGroup= " + labelGroup);
-			LogFile.WriteLine(". labelGroupPre= " + labelGroupPre);
-
 			TileGroups[labelGroup] = new TileGroupChild(labelGroup);
 
 			foreach (var labelCategory in TileGroups[labelGroupPre].Categories.Keys)
@@ -95,7 +80,8 @@ namespace XCom
 		/// </summary>
 		public bool SaveTileGroups()
 		{
-			LogFile.WriteLine("TileGroupManager.SaveTileGroups");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("TileGroupManager.SaveTileGroups");
 
 			string dirSettings   = SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory);
 			string pfeMapTree    = Path.Combine(dirSettings, PathInfo.ConfigTilesets);		// "MapTilesets.yml"
@@ -128,7 +114,8 @@ namespace XCom
 				bool blankline;
 				foreach (string labelGroup in TileGroups.Keys)
 				{
-					LogFile.WriteLine(". saving Group= " + labelGroup);
+					//LogFile.WriteLine("");
+					//LogFile.WriteLine(". saving Group= " + labelGroup);
 
 					blankline = true;
 					sw.WriteLine("");
@@ -161,13 +148,13 @@ namespace XCom
 							switch (oGroup.GroupType)
 							{
 								case GameType.Ufo:
-									if (basepath != SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo))
+									if (basepath != SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryUfo))
 										sw.WriteLine("    basepath: " + basepath);
 
 									break;
 
 								case GameType.Tftd:
-									if (basepath != SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd))
+									if (basepath != SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryTftd))
 										sw.WriteLine("    basepath: " + basepath);
 
 									break;

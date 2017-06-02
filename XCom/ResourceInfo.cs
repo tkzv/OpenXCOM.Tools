@@ -12,9 +12,6 @@ namespace XCom
 		public static TileGroupManager TileGroupInfo
 		{ get; private set; }
 
-		public static TerrainManager TerrainInfo
-		{ get; private set; }
-
 		private static readonly Dictionary<Palette, Dictionary<string, SpriteCollection>> _palSpritesets
 						  = new Dictionary<Palette, Dictionary<string, SpriteCollection>>();
 
@@ -28,10 +25,7 @@ namespace XCom
 			Directory.SetCurrentDirectory(pathConfig.DirectoryPath); // change to /settings dir // TODO: screw settings dir.
 //			XConsole.Init(20);
 
-			var tilesetManager = new TilesetManager(pathConfig.FullPath);
-
-			TileGroupInfo = new TileGroupManager(tilesetManager);
-			TerrainInfo   = new TerrainManager(tilesetManager);
+			TileGroupInfo = new TileGroupManager(new TilesetManager(pathConfig.FullPath));
 
 			Directory.SetCurrentDirectory(SharedSpace.Instance.GetShare(SharedSpace.ApplicationDirectory)); // change back to app dir
 		}
@@ -52,24 +46,24 @@ namespace XCom
 				int lenTabOffset,
 				Palette pal)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("ResourceInfo.LoadSpriteset");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("ResourceInfo.LoadSpriteset");
 
 			if (!String.IsNullOrEmpty(path))
 			{
-				LogFile.WriteLine(". path= " + path);
-				LogFile.WriteLine(". file= " + file);
+				//LogFile.WriteLine(". path= " + path);
+				//LogFile.WriteLine(". file= " + file);
 
 				if (!_palSpritesets.ContainsKey(pal))
 					_palSpritesets.Add(pal, new Dictionary<string, SpriteCollection>());
 
 				var pf = Path.Combine(path, file);
-				LogFile.WriteLine(". pf= " + pf);
+				//LogFile.WriteLine(". pf= " + pf);
 
 				var spritesets = _palSpritesets[pal];
 				if (!spritesets.ContainsKey(pf))
 				{
-					LogFile.WriteLine(". . pf not found in spriteset dictionary -> add new SpriteCollection");
+					//LogFile.WriteLine(". . pf not found in spriteset dictionary -> add new SpriteCollection");
 
 					using (var strPck = File.OpenRead(pf + SpriteCollection.PckExt))
 					using (var strTab = File.OpenRead(pf + SpriteCollection.TabExt))

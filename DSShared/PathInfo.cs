@@ -71,7 +71,7 @@ namespace DSShared
 		/// Initializes a new instance of the <see cref="T:DSShared.PathInfo"/> class.
 		/// </summary>
 		/// <param name="path">the path</param>
-		/// <param name="file">the file</param>
+		/// <param name="file">the file with any extension</param>
 		public PathInfo(
 				string path,
 				string file)

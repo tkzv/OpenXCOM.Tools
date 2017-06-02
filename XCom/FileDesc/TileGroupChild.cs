@@ -18,8 +18,8 @@ namespace XCom
 			:
 				base(labelGroup)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("TileGroupChild cTor label= " + labelGroup);
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("TileGroupChild cTor label= " + labelGroup);
 
 			var progress = ProgressBarForm.Instance;
 			progress.SetInfo("Sorting: " + labelGroup);
@@ -30,16 +30,16 @@ namespace XCom
 
 			foreach (var tileset in tilesets)
 			{
-				LogFile.WriteLine(". tileset.Label= " + tileset.Label);
+				//LogFile.WriteLine(". tileset.Label= " + tileset.Label);
 
 				if (tileset.Group == labelGroup)
 				{
-					LogFile.WriteLine(". . tileset belongs to Group");
-					LogFile.WriteLine(". . tileset.Category= " + tileset.Category);
+					//LogFile.WriteLine(". . tileset belongs to Group");
+					//LogFile.WriteLine(". . tileset.Category= " + tileset.Category);
 
 					if (!Categories.ContainsKey(tileset.Category))
 					{
-						LogFile.WriteLine(". . . Create new Category");
+						//LogFile.WriteLine(". . . Create new Category");
 
 						Categories[tileset.Category] = new Dictionary<string, Descriptor>();
 					}
@@ -49,10 +49,10 @@ namespace XCom
 						switch (GroupType)
 						{
 							case GameType.Ufo:
-								tileset.BasePath = SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo);
+								tileset.BasePath = SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryUfo);
 								break;
 							case GameType.Tftd:
-								tileset.BasePath = SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd);
+								tileset.BasePath = SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryTftd);
 								break;
 						}
 					}
@@ -65,7 +65,7 @@ namespace XCom
 
 					Categories[tileset.Category][tileset.Label] = descriptor;
 				}
-				else LogFile.WriteLine(". . tileset not in this Group - bypass.");
+				//else LogFile.WriteLine(". . tileset not in this Group - bypass.");
 
 				progress.UpdateProgress();
 			}

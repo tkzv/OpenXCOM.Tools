@@ -21,8 +21,10 @@ namespace XCom
 			get
 			{
 				if (_console == null)
-					_console = (ConsoleForm)_share.SetShare(xConsole, new ConsoleForm());
-
+				{
+					_console = new ConsoleForm();
+					_share.SetShare(xConsole, _console);
+				}
 				return _console;
 			}
 		}

@@ -72,8 +72,10 @@ namespace MapView
 		/// </summary>
 		internal XCMainWindow()
 		{
+			string dirApplication = Path.GetDirectoryName(Application.ExecutablePath);
+			string dirSettings    = Path.Combine(dirApplication, "settings");
 #if DEBUG
-			LogFile.SetLogFilePath(Environment.CurrentDirectory); // creates a logfile/ wipes the old one.
+			LogFile.SetLogFilePath(dirApplication); // creates a logfile/ wipes the old one.
 #endif
 
 			LogFile.WriteLine("Starting MAIN MapView window ...");
@@ -83,17 +85,14 @@ namespace MapView
 
 			var share = SharedSpace.Instance;
 
-//			share.SetShare("MapView", this);
-
 			share.SetShare(
 						SharedSpace.ApplicationDirectory,
-						Environment.CurrentDirectory);
+						dirApplication);
+			share.SetShare(
+						SharedSpace.SettingsDirectory,
+						dirSettings);
 
-			string dirSettings = share.SetShare(
-											SharedSpace.SettingsDirectory,
-											Path.Combine(Environment.CurrentDirectory, "settings"))
-										.ToString();
-			LogFile.WriteLine("Environment cached.");
+			LogFile.WriteLine("App paths cached.");
 
 
 			var pathOptions = new PathInfo(dirSettings, PathInfo.ConfigOptions);
@@ -111,32 +110,30 @@ namespace MapView
 			LogFile.WriteLine("PathInfo cached.");
 
 
-			// check if MapTilesets.yml and MapResources.yml exists yet, show the
-			// Configuration window if not
-			// NOTE: MapTilesets.yml and MapResources.yml are created by
-			// ConfigurationForm
-			if (!pathTilesets.FileExists()
-				|| !File.Exists(Path.Combine(dirSettings, PathInfo.ConfigResources)))
+			// Check if MapTilesets.yml and MapResources.yml exist yet, show the
+			// Configuration window if not.
+			// NOTE: MapTilesets.yml and MapResources.yml are created by ConfigurationForm
+			if (!pathResources.FileExists() || !pathTilesets.FileExists())
 			{
-				LogFile.WriteLine("Tilesets or Resources file does not exist ... run configurator.");
+				LogFile.WriteLine("Resources or Tilesets file does not exist: run configurator.");
 
 				using (var f = new ConfigurationForm())
 					f.ShowDialog(this);
 			}
 			else
-				LogFile.WriteLine("Tilesets and Resources files exist.");
+				LogFile.WriteLine("Resources and Tilesets files exist.");
 
 
-			// close MapView if either MapResources.yml or MapTilesets.yml doesn't exist
-			if (!pathTilesets.FileExists() || !File.Exists(Path.Combine(dirSettings, PathInfo.ConfigResources)))
+			// Exit app if either MapResources.yml or MapTilesets.yml doesn't exist
+			if (!pathResources.FileExists() || !pathTilesets.FileExists())
 			{
-				LogFile.WriteLine("quit MapView.");
+				LogFile.WriteLine("Resources or Tilesets file does not exist: quit MapView.");
 				Environment.Exit(0);
 			}
 
 
 
-			// check if MapViewers.yml exists yet, if not create it
+			// Check if MapViewers.yml exists yet, if not create it
 			if (!pathViewers.FileExists())
 			{
 				CreateViewersFile();
@@ -148,7 +145,7 @@ namespace MapView
 
 
 			InitializeComponent();
-			LogFile.WriteLine("MainView window initialized.");
+			LogFile.WriteLine("MainView initialized.");
 
 			// WORKAROUND: The size of the form in the designer keeps increasing
 			// (for whatever reason) based on the
@@ -181,9 +178,9 @@ namespace MapView
 			// welcome to your new home
 
 
-			Closing += OnClosingSaveOptions;
-
 			_instance = this;
+
+			Closing += OnClosingSaveOptions;
 
 
 			_optionsManager = new OptionsManager(); // goes before LoadOptions()
@@ -207,15 +204,16 @@ namespace MapView
 			LogFile.WriteLine("Palette transparencies set.");
 
 
-			var consoleShare = new ConsoleSharedSpace(share);
+			var shareConsole = new ConsoleSharedSpace(share);
 //			_warningHandler  = new ConsoleWarningHandler(consoleShare);
 
 
 			_viewerFormsManager = new ViewerFormsManager();
-			_viewersManager     = new ViewersManager(_optionsManager, consoleShare);
-			_mainMenusManager   = new MainMenusManager(menuView, menuHelp);
+			_viewersManager     = new ViewersManager(_optionsManager, shareConsole);
+			LogFile.WriteLine("Viewer managers instantiated.");
 
-			_mainMenusManager.PopulateMenus(consoleShare.Console, Options);
+			_mainMenusManager = new MainMenusManager(menuView, menuHelp);
+			_mainMenusManager.PopulateMenus(shareConsole.Console, Options);
 			LogFile.WriteLine("MainView menus populated.");
 
 			ViewerFormsManager.HideViewersManager = _mainMenusManager.CreateShowHideManager(); // subsidiary viewers hide when PckView is invoked from TileView.
@@ -243,12 +241,9 @@ namespace MapView
 			tsEdit.Enabled = false;
 
 
-			// read MapResources.yml to get the resources dir (for both UFO and TFTD)
+			// Read MapResources.yml to get the resources dir (for both UFO and TFTD).
 			// NOTE: MapResources.yml is created by ConfigurationForm
-			string fileResources = Path.Combine(
-											share.GetShare(SharedSpace.SettingsDirectory),
-											PathInfo.ConfigResources);
-			using (var sr = new StreamReader(File.OpenRead(fileResources)))
+			using (var sr = new StreamReader(File.OpenRead(pathResources.FullPath)))
 			{
 				var str = new YamlStream();
 				str.Load(sr);
@@ -262,10 +257,10 @@ namespace MapView
 					switch (node.Key.ToString())
 					{
 						case "ufo":
-							key = SharedSpace.ResourcesDirectoryUfo;
+							key = SharedSpace.ResourceDirectoryUfo;
 							break;
 						case "tftd":
-							key = SharedSpace.ResourcesDirectoryTftd;
+							key = SharedSpace.ResourceDirectoryTftd;
 							break;
 					}
 
@@ -277,12 +272,14 @@ namespace MapView
 				}
 			}
 
-			SpriteCollection cuboid = null;
-			cuboid = ResourceInfo.LoadSpriteset(
-											SharedSpace.CursorFilePrefix,
-											share.GetShare(SharedSpace.ResourcesDirectoryUfo),
-											2,
-											Palette.UfoBattle);
+			// Setup an XCOM cursor-sprite.
+			// NOTE: This is the only stock XCOM resource that is required for
+			// MapView to start. See ConfigurationForm ...
+			var cuboid = ResourceInfo.LoadSpriteset(
+												SharedSpace.CursorFilePrefix,
+												share.GetShare(SharedSpace.ResourceDirectoryUfo),
+												2,
+												Palette.UfoBattle);
 			if (cuboid != null)
 			{
 				_mainViewUnderlay.MainViewOverlay.Cuboid = new CuboidSprite(cuboid);
@@ -293,7 +290,7 @@ namespace MapView
 
 			cuboid = ResourceInfo.LoadSpriteset(
 											SharedSpace.CursorFilePrefix,
-											share.GetShare(SharedSpace.ResourcesDirectoryTftd),
+											share.GetShare(SharedSpace.ResourceDirectoryTftd),
 											4,
 											Palette.TftdBattle);
 			if (cuboid != null)
@@ -836,14 +833,20 @@ namespace MapView
 
 		private void OnConfiguratorClick(object sender, EventArgs e)
 		{
-			using (var f = new ConfigurationForm())
-				f.ShowDialog(this);
+			using (var f = new ConfigurationForm(true))
+			{
+				if (f.ShowDialog(this) == DialogResult.OK)
+				{
+					Application.Restart();
+					Environment.Exit(0);
+				}
+			}
 		}
 
 		private void OnQuitClick(object sender, EventArgs e)
 		{
 			OnClosingSaveOptions(null, new CancelEventArgs(true));
-			Environment.Exit(0);
+			Application.Exit();
 		}
 
 

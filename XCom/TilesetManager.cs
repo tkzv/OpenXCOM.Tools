@@ -45,13 +45,13 @@ namespace XCom
 
 		#region cTor
 		/// <summary>
-		/// cTor. 
+		/// cTor.
 		/// </summary>
 		/// <param name="fullpath">path+file+extension of MapTilesets.yml</param>
 		public TilesetManager(string fullpath)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("TilesetManager cTor");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("TilesetManager cTor");
 
 			FullPath = fullpath;
 
@@ -75,10 +75,8 @@ namespace XCom
 			// TODO: if exists(pfe)
 			// else error out.
 
-			bool isUfoConfigured  = !String.IsNullOrEmpty(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo));
-			bool isTftdConfigured = !String.IsNullOrEmpty(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd));
-
-
+			bool isUfoConfigured  = !String.IsNullOrEmpty(SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryUfo));
+			bool isTftdConfigured = !String.IsNullOrEmpty(SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryTftd));
 
 			using (var sr = new StreamReader(File.OpenRead(fullpath)))
 			{
@@ -100,27 +98,27 @@ namespace XCom
 
 
 					string nodeGroup = nodeTileset.Children[new YamlScalarNode("group")].ToString();
-					LogFile.WriteLine(". . group= " + nodeGroup); // eg. "ufoShips"
+					//LogFile.WriteLine(". . group= " + nodeGroup); // eg. "ufoShips"
 
-					if (nodeGroup.StartsWith("ufo", StringComparison.OrdinalIgnoreCase) && !isUfoConfigured)
+					if (   (!isUfoConfigured  && nodeGroup.StartsWith("ufo",  StringComparison.OrdinalIgnoreCase))
+						|| (!isTftdConfigured && nodeGroup.StartsWith("tftd", StringComparison.OrdinalIgnoreCase)))
+					{
 						continue;
-
-					if (nodeGroup.StartsWith("tftd", StringComparison.OrdinalIgnoreCase) && !isTftdConfigured)
-						continue;
+					}
 
 					if (!Groups.Contains(nodeGroup))
 						Groups.Add(nodeGroup);
 
 
 					string nodeCategory = nodeTileset.Children[new YamlScalarNode("category")].ToString();
-					LogFile.WriteLine(". . category= " + nodeCategory); // eg. "Ufo"
+					//LogFile.WriteLine(". . category= " + nodeCategory); // eg. "Ufo"
 //					if (!_categories.Contains(nodeCategory))
 //						_categories.Add(nodeCategory);
 
 
 					string nodeLabel = nodeTileset.Children[new YamlScalarNode("type")].ToString();
 					nodeLabel = nodeLabel.ToUpperInvariant();
-					LogFile.WriteLine(". . type= " + nodeLabel); // eg. "UFO_110"
+					//LogFile.WriteLine(". . type= " + nodeLabel); // eg. "UFO_110"
 //					if (!_types.Contains(nodeLabel))
 //						_types.Add(nodeLabel);
 
@@ -130,7 +128,7 @@ namespace XCom
 					var nodeTerrains = nodeTileset.Children[new YamlScalarNode("terrains")] as YamlSequenceNode;
 					foreach (YamlScalarNode nodeTerrain in nodeTerrains)
 					{
-						LogFile.WriteLine(". . . terrain= " + nodeTerrain); // eg. "U_EXT02" etc.
+						//LogFile.WriteLine(". . . terrain= " + nodeTerrain); // eg. "U_EXT02" etc.
 
 						string terrain = nodeTerrain.ToString();
 						terrain = terrain.ToUpperInvariant();
@@ -139,7 +137,7 @@ namespace XCom
 
 						if (!Terrains.Contains(terrain)) // TODO: this is probly irrelevant since YAML etc.
 						{
-							LogFile.WriteLine(". . . . adding terrain");
+							//LogFile.WriteLine(". . . . adding terrain");
 							Terrains.Add(terrain);
 						}
 					}
@@ -150,11 +148,11 @@ namespace XCom
 					if (nodeTileset.Children.ContainsKey(basepath))
 					{
 						nodeBasepath = nodeTileset.Children[basepath].ToString();
-						LogFile.WriteLine(". . basepath= " + nodeBasepath);
+						//LogFile.WriteLine(". . basepath= " + nodeBasepath);
 //						if (!Groups.Contains(nodeBasepath))
 //							Groups.Add(nodeBasepath);
 					}
-					else LogFile.WriteLine(". . basepath not found.");
+					//else LogFile.WriteLine(". . basepath not found.");
 
 
 					var tileset = new Tileset(

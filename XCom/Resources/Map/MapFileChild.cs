@@ -15,8 +15,8 @@ namespace XCom
 			MapFileBase
 	{
 		#region Fields (static)
-		public   const string MapExt  = ".MAP";
-		internal const string MapsDir = @"\MAPS";
+		public const string MapExt  = ".MAP";
+		public const string MapsDir = "MAPS";
 		#endregion
 
 
@@ -46,9 +46,10 @@ namespace XCom
 			:
 				base(descriptor, parts)
 		{
+			string dirMap = Path.Combine(Descriptor.BasePath, MapsDir);
 			FullPath = Path.Combine(
-								Descriptor.BasePath + MapsDir,
-								Descriptor.Label    + MapExt);
+								dirMap,
+								Descriptor.Label + MapExt);
 
 			Terrains = Descriptor.Terrains;
 

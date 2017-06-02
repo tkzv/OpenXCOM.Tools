@@ -20,17 +20,18 @@ namespace XCom
 
 			if (descriptor != null)
 			{
+				string dirMap = Path.Combine(descriptor.BasePath, MapFileChild.MapsDir);
 				string pfeMap = Path.Combine(
-										descriptor.BasePath + MapFileChild.MapsDir,
-										descriptor.Label    + MapFileChild.MapExt);
+										dirMap,
+										descriptor.Label + MapFileChild.MapExt);
 				LogFile.WriteLine(". pfeMap= " + pfeMap);
-	
+
 				if (File.Exists(pfeMap))
 				{
 					LogFile.WriteLine(". . Map file exists");
-	
+
 					var parts = new List<TilepartBase>();
-	
+
 					foreach (string terrain in descriptor.Terrains) // push together all allocated terrains
 					{
 						var MCD = descriptor.GetMcdRecords(terrain);

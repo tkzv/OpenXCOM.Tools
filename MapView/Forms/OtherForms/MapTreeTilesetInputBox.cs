@@ -102,7 +102,7 @@ namespace MapView
 			set
 			{
 				_basepath = value;
-				lblPathCurrent.Text = Path.Combine(_basepath, "MAPS");
+				lblPathCurrent.Text = Path.Combine(_basepath, MapFileChild.MapsDir);
 
 				ListTerrains();
 			}
@@ -166,15 +166,7 @@ namespace MapView
 			// TODO: should disallow filenames like 'CON' and 'PRN' etc. also
 
 
-			foreach (string gruop in ResourceInfo.TileGroupInfo.TileGroups.Keys)
-				LogFile.WriteLine(". . group key= " + gruop);
-
-
 			TileGroup = ResourceInfo.TileGroupInfo.TileGroups[Group] as TileGroup;
-
-			if (TileGroup != null) LogFile.WriteLine(". . . TileGroup VALID");
-			else LogFile.WriteLine(". . . TileGroup NOT valid.");
-
 
 			switch (InputBoxType = boxType)
 			{
@@ -191,10 +183,10 @@ namespace MapView
 					switch (TileGroup.GroupType)
 					{
 						case GameType.Ufo:
-							keyBaseDir = SharedSpace.ResourcesDirectoryUfo;
+							keyBaseDir = SharedSpace.ResourceDirectoryUfo;
 							break;
 						case GameType.Tftd:
-							keyBaseDir = SharedSpace.ResourcesDirectoryTftd;
+							keyBaseDir = SharedSpace.ResourceDirectoryTftd;
 							break;
 					}
 					BasePath = SharedSpace.Instance.GetShare(keyBaseDir);
@@ -275,7 +267,7 @@ namespace MapView
 			{
 				ofd.Filter = "Map Files (*.map)|*.map|All Files (*.*)|*.*";
 				ofd.Title  = "Select a Map File";
-				ofd.InitialDirectory = Path.Combine(BasePath, "MAPS");
+				ofd.InitialDirectory = Path.Combine(BasePath, MapFileChild.MapsDir);
 				if (!Directory.Exists(ofd.InitialDirectory))
 					ofd.InitialDirectory = BasePath;
 
@@ -372,8 +364,8 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnTilesetKeyUp(object sender, KeyEventArgs e)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("OnTilesetLabelKeyUp");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("OnTilesetLabelKeyUp");
 
 			if (InputBoxType == BoxType.AddTileset
 				&& btnCreateMap.Enabled
@@ -699,16 +691,13 @@ namespace MapView
 
 		private void OnTerrainLeftClick(object sender, EventArgs e)
 		{
-//			if (Descriptor != null)
 			Descriptor.Terrains.Add(lbTerrainsAvailable.SelectedItem as String);
-
 			ListTerrains();
 		}
 
 		private void OnTerrainRightClick(object sender, EventArgs e)
 		{
 			Descriptor.Terrains.Remove(lbTerrainsAllocated.SelectedItem as String);
-
 			ListTerrains();
 		}
 
@@ -766,6 +755,9 @@ namespace MapView
 		{
 			if (lbTerrainsAllocated.SelectedIndex != -1)
 			{
+				LogFile.WriteLine("OnAllocatedIndexChanged");
+				LogFile.WriteLine(". descriptor= " + ((Descriptor != null) ? Descriptor.Label : "NULL"));
+
 				btnMoveRight.Enabled = true;
 
 				if (Descriptor != null && Descriptor.Terrains.Count > 1)
@@ -778,13 +770,11 @@ namespace MapView
 
 		private void OnAvailableIndexChanged(object sender, EventArgs e)
 		{
-			//LogFile.WriteLine("");
-			//LogFile.WriteLine("OnAvailableIndexChanged");
-			//LogFile.WriteLine(". descriptor " + ((Descriptor != null) ? "VALID" : "NOT Valid"));
-			//LogFile.WriteLine(". selected id= " + lbTerrainsAvailable.SelectedIndex);
+			LogFile.WriteLine("OnAvailableIndexChanged");
+			LogFile.WriteLine(". descriptor= " + ((Descriptor != null) ? Descriptor.Label : "NULL"));
 
-			btnMoveLeft.Enabled = (Descriptor != null)
-							   && (lbTerrainsAvailable.SelectedIndex != -1);
+			btnMoveLeft.Enabled = (lbTerrainsAvailable.SelectedIndex != -1)
+							   && (Descriptor != null);
 		}
 		#endregion
 
@@ -908,8 +898,8 @@ namespace MapView
 		/// <returns></returns>
 		private string GetFullPath(string labelMap)
 		{
-			string pfeLabel = Path.Combine(BasePath, "MAPS");
-			return Path.Combine(pfeLabel, labelMap + ".MAP");
+			string pfeLabel = Path.Combine(BasePath, MapFileChild.MapsDir);
+			return Path.Combine(pfeLabel, labelMap + MapFileChild.MapExt);
 		}
 
 		/// <summary>
@@ -920,7 +910,7 @@ namespace MapView
 		/// <returns></returns>
 		private bool TilesetFileExists(string labelMap)
 		{
-			LogFile.WriteLine("");
+			//LogFile.WriteLine("");
 			LogFile.WriteLine("TilesetFileExists");
 
 			string pfeMap = null;

@@ -109,7 +109,7 @@ namespace MapView
 						ShowErrorDialog("The group label needs to start with UFO or TFTD.");
 					}
 					else if (Input.StartsWith("ufo", StringComparison.OrdinalIgnoreCase)
-						&& String.IsNullOrEmpty(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryUfo)))
+						&& String.IsNullOrEmpty(SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryUfo)))
 					{
 						ShowErrorDialog("UFO has not been configured. If you have UFO resources"
 							+ " and want to set the configuration for UFO, rename or delete the file "
@@ -117,7 +117,7 @@ namespace MapView
 							+ " rerun MapView. A configuration dialog should appear.");
 					}
 					else if (Input.StartsWith("tftd", StringComparison.OrdinalIgnoreCase)
-						&& String.IsNullOrEmpty(SharedSpace.Instance.GetShare(SharedSpace.ResourcesDirectoryTftd)))
+						&& String.IsNullOrEmpty(SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryTftd)))
 					{
 						ShowErrorDialog("TFTD has not been configured. If you have TFTD resources"
 							+ " and want to set the configuration for TFTD, rename or delete the file "

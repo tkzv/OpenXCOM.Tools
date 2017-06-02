@@ -8,7 +8,22 @@ namespace XCom
 {
 	public sealed class SharedSpace
 	{
-		#region Fields & Properties
+		#region Fields & Properties (static)
+		public const string ApplicationDirectory  = "ApplicationDirectory";
+		public const string SettingsDirectory     = "SettingsDirectory"; // TODO: just put the Settings aka. Configuration files in the appdir.
+		public const string ResourceDirectoryUfo  = "ResourceDirectoryUfo";
+		public const string ResourceDirectoryTftd = "ResourceDirectoryTftd";
+
+		public const string Palettes        = "Palettes"; // for PckView ->
+//		public const string CustomDirectory = "CustomDirectory";
+//		public const string ImageTypes      = "ImageTypes";
+
+		public const string CursorFilePrefix = @"UFOGRAPH\CURSOR"; // the cursors are determined in XCMainWindow.cTor
+
+
+		/// <summary>
+		/// Gets the currently instantiated SharedSpace from anywhere.
+		/// </summary>
 		private static SharedSpace _instance;
 		public static SharedSpace Instance
 		{
@@ -20,7 +35,10 @@ namespace XCom
 				return _instance;
 			}
 		}
+		#endregion
 
+
+		#region Fields & Properties
 		private readonly Dictionary<string, object> _share = new Dictionary<string, object>();
 
 		/// <summary>
@@ -28,23 +46,9 @@ namespace XCom
 		/// </summary>
 		public object this[string key]
 		{
-			get { return (_share.ContainsKey(key)) ? _share[key]
-												   : null; }
+			get { return (_share.ContainsKey(key)) ? _share[key] : null; }
 			set { _share[key] = value; }
 		}
-
-		public const string ApplicationDirectory   = "ApplicationDirectory";
-		public const string SettingsDirectory      = "SettingsDirectory"; // TODO: just put the Settings aka. Configuration files in the appdir.
-		public const string ResourcesDirectoryUfo  = "ResourcesDirectoryUfo";
-		public const string ResourcesDirectoryTftd = "ResourcesDirectoryTftd";
-
-		public const string Palettes        = "Palettes"; // for PckView ->
-//		public const string CustomDirectory = "CustomDirectory";
-//		public const string ImageTypes      = "ImageTypes";
-
-//		public const string CursorFileUfo    = "cursorFileUfo";		// the cursors are determined in XCMainWindow.cTor
-//		public const string CursorFileTftd   = "cursorFileTftd";	// <- not currently implemented, per se.
-		public const string CursorFilePrefix = @"UFOGRAPH\CURSOR";
 		#endregion
 
 
@@ -71,8 +75,7 @@ namespace XCom
 		/// <param name="key">the key to look for</param>
 		/// <param name="value">the object to add if the current value doesn't
 		/// exist or is null</param>
-		/// <returns>the value associated with the key as an object</returns>
-		public object SetShare(string key, object value)
+		public void SetShare(string key, object value)
 		{
 			if (!_share.ContainsKey(key))
 			{
@@ -82,8 +85,6 @@ namespace XCom
 			{
 				_share[key] = value;
 			}
-
-			return _share[key];
 		}
 
 		/// <summary>

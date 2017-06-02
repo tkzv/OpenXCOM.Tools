@@ -42,9 +42,19 @@ namespace MapView
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		internal ConfigurationForm()
+		/// <param name="restart">true if MapView needs to restart to affect
+		/// changes (default false)</param>
+		internal ConfigurationForm(bool restart = false)
 		{
 			InitializeComponent();
+
+			if (restart)
+			{
+				toolTip1.SetToolTip(cbResources, "auto restart! Create paths to"
+											+ " stock UFO/TFTD installations");
+				toolTip1.SetToolTip(rbTilesets, "auto restart! WARNING : This will"
+									+ " replace any custom tileset configuration");
+			}
 
 			// WORKAROUND: See note in 'XCMainWindow' cTor.
 			var size = new System.Drawing.Size();
@@ -52,10 +62,19 @@ namespace MapView
 			size.Height = 0;
 			MaximumSize = size; // fu.net
 
-			cbResources.Checked = !_pathResources.FileExists();
-			
+			if (!_pathResources.FileExists())
+			{
+				cbResources.Enabled = false;
+			}
+			else
+				cbResources.Checked = false;
+
 			if (!_pathTilesets.FileExists())
-				rbTilesets.Select();
+			{
+				cbTilesets.Enabled    =
+				rbTilesets.Enabled    =
+				rbTilesetsTpl.Enabled = false;
+			}
 			else
 				rbTilesetsTpl.Select();
 
@@ -229,7 +248,15 @@ namespace MapView
 							sw.WriteLine(sr.ReadLine());
 				}
 
-				Close();
+				if (cbResources.Checked || (cbTilesets.Checked && rbTilesets.Checked)) // NOTE: 'cbResources' and 'rbTilesets' have priority over 'rbTilesetsTpl'
+				{
+					DialogResult = DialogResult.OK;
+				}
+				else if (cbTilesets.Checked) // && rbTilesetsTpl.Checked
+				{
+					ShowInfoDialog("Tileset template has been created in the settings subfolder.");
+					Close();
+				}
 			}
 		}
 
@@ -258,6 +285,22 @@ namespace MapView
 						"Error",
 						MessageBoxButtons.OK,
 						MessageBoxIcon.Error,
+						MessageBoxDefaultButton.Button1,
+						0);
+		}
+
+		/// <summary>
+		/// Wrapper for MessageBox.Show()
+		/// </summary>
+		/// <param name="info">the info-string to show</param>
+		private void ShowInfoDialog(string info)
+		{
+			MessageBox.Show(
+						this,
+						info,
+						"Notice",
+						MessageBoxButtons.OK,
+						MessageBoxIcon.Information,
 						MessageBoxDefaultButton.Button1,
 						0);
 		}

@@ -104,12 +104,6 @@
     <Compile Include="Resources\Images\Collections\XCImageCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Resources\Images\TerrainManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Resources\Images\Terrain.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Resources\Images\Types\PckImage.cs">
       <SubType>Code</SubType>
     </Compile>
