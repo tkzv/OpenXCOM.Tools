@@ -10,16 +10,8 @@ namespace XCom.Interfaces.Base
 		public string Label
 		{ get; private set; }
 
-//		/// <summary>
-//		/// Descriptors is a dictionary of descriptor-labels (.MAP/.RMP
-//		/// filenames w/out extension) mapped to Descriptors.
-//		/// </summary>
 		private readonly Dictionary<string, Descriptor> _descriptors
 				   = new Dictionary<string, Descriptor>();
-//		internal protected Dictionary<string, Descriptor> Descriptors
-//		{
-//			get { return _descriptors; }
-//		}
 
 		/// <summary>
 		/// Categories is a dictionary of category-labels mapped to a
@@ -31,19 +23,6 @@ namespace XCom.Interfaces.Base
 		public Dictionary<string, Dictionary<string, Descriptor>> Categories
 		{
 			get { return _categories; }
-		}
-
-		/// <summary> old function -> TODO: REMOVE THIS AFTER PATHSEDITOR GETS PLUCKED.
-		/// Used by PathsEditor to add/delete treenodes.
-		/// </summary>
-		public Descriptor this[string label]
-		{
-			get { return _descriptors[label]; }
-			set
-			{
-				if (!_descriptors.ContainsKey(label)) // TODO: this needs to work through Categories *only*
-					_descriptors[label] = value;
-			}
 		}
 		#endregion
 

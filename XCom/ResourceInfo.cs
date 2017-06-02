@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 using DSShared;
 
@@ -54,49 +55,49 @@ namespace XCom
 				//LogFile.WriteLine(". path= " + path);
 				//LogFile.WriteLine(". file= " + file);
 
-				if (!_palSpritesets.ContainsKey(pal))
-					_palSpritesets.Add(pal, new Dictionary<string, SpriteCollection>());
-
 				var pf = Path.Combine(path, file);
 				//LogFile.WriteLine(". pf= " + pf);
 
-				var spritesets = _palSpritesets[pal];
-				if (!spritesets.ContainsKey(pf))
+				string pfePck = pf + SpriteCollection.PckExt;
+				string pfeTab = pf + SpriteCollection.TabExt;
+
+				if (!File.Exists(pfePck) || !File.Exists(pfeTab))
 				{
-					//LogFile.WriteLine(". . pf not found in spriteset dictionary -> add new SpriteCollection");
-
-					using (var strPck = File.OpenRead(pf + SpriteCollection.PckExt))
-					using (var strTab = File.OpenRead(pf + SpriteCollection.TabExt))
-					{
-						spritesets.Add(pf, new SpriteCollection(
-															strPck,
-															strTab,
-															lenTabOffset,
-															pal));
-					}
+					MessageBox.Show(
+								"Can't find files for spriteset"
+									+ Environment.NewLine + Environment.NewLine
+									+ pfePck + Environment.NewLine
+									+ pfeTab,
+								"Error",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Error,
+								MessageBoxDefaultButton.Button1,
+								0);
 				}
+				else
+				{
+					if (!_palSpritesets.ContainsKey(pal))
+						_palSpritesets.Add(pal, new Dictionary<string, SpriteCollection>());
 
-				return _palSpritesets[pal][pf];
+					var spritesets = _palSpritesets[pal];
+					if (!spritesets.ContainsKey(pf))
+					{
+						//LogFile.WriteLine(". . pf not found in spriteset dictionary -> add new SpriteCollection");
+
+						using (var strPck = File.OpenRead(pfePck))
+						using (var strTab = File.OpenRead(pfeTab))
+						{
+							spritesets.Add(pf, new SpriteCollection(
+																strPck,
+																strTab,
+																lenTabOffset,
+																pal));
+						}
+					}
+					return _palSpritesets[pal][pf];
+				}
 			}
 			return null;
 		}
-
-//		/// <summary>
-//		/// Clears a given spriteset from the dictionary.
-//		/// </summary>
-//		/// <param name="path"></param>
-//		/// <param name="file"></param>
-//		public static void ClearSpriteset(string path, string file)
-//		{
-//			var pf = Path.Combine(path, file);
-//
-//			foreach (var spritesetDictionary in _spritesDictionary.Values)
-//				spritesetDictionary.Remove(pf);
-//		}
-
-//		internal static SpriteCollection GetSpriteset(string spriteset)
-//		{
-//			return _terrainInfo.Terrains[spriteset].GetImageset(_palette);
-//		}
 	}
 }

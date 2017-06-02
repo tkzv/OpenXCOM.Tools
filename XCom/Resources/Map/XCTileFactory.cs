@@ -15,40 +15,59 @@ namespace XCom.Resources.Map
 		/// <summary>
 		/// Creates MCD-records from an MCD-file.
 		/// </summary>
-		/// <param name="file"></param>
-		/// <param name="dir"></param>
+		/// <param name="terrain"></param>
+		/// <param name="dirTerrain"></param>
 		/// <param name="spriteset"></param>
 		/// <returns></returns>
 		internal static Tilepart[] CreateRecords(
-				string file,
-				string dir,
+				string terrain,
+				string dirTerrain,
 				SpriteCollection spriteset)
 		{
-			string pfe = Path.Combine(dir, file + McdExt);
-
-			using (var bs = new BufferedStream(File.OpenRead(pfe)))
+			if (spriteset != null)
 			{
-				var parts = new Tilepart[(int)bs.Length / Total]; // TODO: Error if this don't work out right.
+				string pfeMcd = Path.Combine(dirTerrain, terrain + McdExt);
 
-				for (int id = 0; id != parts.Length; ++id)
+				if (!File.Exists(pfeMcd))
 				{
-					var bindata = new byte[Total];
-					bs.Read(bindata, 0, Total);
-					var record = McdRecordFactory.CreateRecord(bindata);
-
-					var part = new Tilepart(id, spriteset, record);
-
-					parts[id] = part;
+					MessageBox.Show(
+								"Can't find file for terrain data"
+									+ Environment.NewLine + Environment.NewLine
+									+ pfeMcd,
+								"Error",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Error,
+								MessageBoxDefaultButton.Button1,
+								0);
 				}
-
-				for (int id = 0; id != parts.Length; ++id)
+				else
 				{
-					parts[id].Dead = GetDeadPart(file, id, parts[id].Record, parts);
-					parts[id].Alternate = GetAlternatePart(file, id, parts[id].Record, parts);
-				}
+					using (var bs = new BufferedStream(File.OpenRead(pfeMcd)))
+					{
+						var parts = new Tilepart[(int)bs.Length / Total]; // TODO: Error if this don't work out right.
 
-				return parts;
+						for (int id = 0; id != parts.Length; ++id)
+						{
+							var bindata = new byte[Total];
+							bs.Read(bindata, 0, Total);
+							var record = McdRecordFactory.CreateRecord(bindata);
+
+							var part = new Tilepart(id, spriteset, record);
+
+							parts[id] = part;
+						}
+
+						for (int id = 0; id != parts.Length; ++id)
+						{
+							parts[id].Dead = GetDeadPart(terrain, id, parts[id].Record, parts);
+							parts[id].Alternate = GetAlternatePart(terrain, id, parts[id].Record, parts);
+						}
+
+						return parts;
+					}
+				}
 			}
+			return new Tilepart[0];
 		}
 
 		/// <summary>

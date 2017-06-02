@@ -43,8 +43,15 @@ namespace MapView
 
 				lbl2Tilesets.Text += terrain;
 
-				recordsTotal += mapFile.Descriptor.GetMcdRecords(terrain).Count;
-				spritesTotal += mapFile.Descriptor.GetSpriteset(terrain).Count;
+				var spriteset = mapFile.Descriptor.GetTerrainSpriteset(terrain);
+				if (spriteset != null)
+				{
+					spritesTotal += spriteset.Count;
+
+					var records = mapFile.Descriptor.GetTerrainRecords(terrain);
+					if (records != null)
+						recordsTotal += records.Count;
+				}
 			}
 
 			var width = TextRenderer.MeasureText(lbl2Tilesets.Text, lbl2Tilesets.Font).Width;

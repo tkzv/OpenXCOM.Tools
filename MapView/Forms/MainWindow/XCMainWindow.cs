@@ -112,7 +112,7 @@ namespace MapView
 
 			// Check if MapTilesets.yml and MapResources.yml exist yet, show the
 			// Configuration window if not.
-			// NOTE: MapTilesets.yml and MapResources.yml are created by ConfigurationForm
+			// NOTE: MapResources.yml and MapTilesets.yml are created by ConfigurationForm
 			if (!pathResources.FileExists() || !pathTilesets.FileExists())
 			{
 				LogFile.WriteLine("Resources or Tilesets file does not exist: run configurator.");
@@ -125,7 +125,7 @@ namespace MapView
 
 
 			// Exit app if either MapResources.yml or MapTilesets.yml doesn't exist
-			if (!pathResources.FileExists() || !pathTilesets.FileExists())
+			if (!pathResources.FileExists() || !pathTilesets.FileExists()) // safety. The Configurator shall demand that both these files get created.
 			{
 				LogFile.WriteLine("Resources or Tilesets file does not exist: quit MapView.");
 				Environment.Exit(0);

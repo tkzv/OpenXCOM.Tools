@@ -76,7 +76,10 @@ namespace MapView
 				rbTilesetsTpl.Enabled = false;
 			}
 			else
+			{
+				cbTilesets.Checked = false;
 				rbTilesetsTpl.Select();
+			}
 
 
 			// NOTE: Add your own personal XCOM resources-dir here if desired:

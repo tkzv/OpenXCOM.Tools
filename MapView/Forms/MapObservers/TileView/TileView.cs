@@ -500,21 +500,13 @@ namespace MapView.Forms.MapObservers.TileViews
 						f.ShowDialog(owner);
 						if (f.SavedFile)
 						{
-//							ResourceInfo.TerrainInfo.Terrains[label].ClearMcdTable();
-//							ResourceInfo.ClearSpriteset(terrain.PathTerrain, terrain.Label);
-							// TODO: It's probably entirely unnecessary to clear the spriteset and
-							// MCD-records, since this ends up calling XCMainWindow.LoadSelectedMap()
-							// but keep an eye on it ....
-
 							PckSaved();
 						}
 					}
-
 					_showHideManager.RestoreViewers();
 				}
 			}
 			else
-			{
 				MessageBox.Show(
 							this,
 							"Select a Tile.",
@@ -523,7 +515,6 @@ namespace MapView.Forms.MapObservers.TileViews
 							MessageBoxIcon.Asterisk,
 							MessageBoxDefaultButton.Button1,
 							0);
-			}
 		}
 
 		/// <summary>

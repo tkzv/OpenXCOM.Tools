@@ -418,29 +418,38 @@ namespace MapView
 //			}
 //			else
 //			{
-			//LogFile.WriteLine(". tileset Created");
-
-			Descriptor = new Descriptor(		// be careful with that; it isn't being deleted if user clicks Cancel
-									Tileset,	// or chooses instead to create yet another descriptor.
-									new List<string>(),
-									BasePath,
-									TileGroup.Pal);
-//			TileGroup.AddTileset(Descriptor, Category);
 
 
-			if (TilesetFileExists(Tileset))
+			if (IsDescriptorInGroups(Tileset))
 			{
-				lblAddType.Text = "Add using existing Map file";
-				FileAddType = AddType.MapExists;
+				ShowErrorDialog("The label is already assigned to a different tileset.");
 			}
 			else
 			{
-				lblAddType.Text = "Add by creating a new Map file";
-				FileAddType = AddType.MapCreate;
-			}
+				LogFile.WriteLine(". descriptor Instantiated= " + Tileset);
 
-			btnCreateMap.Enabled = false;
-			ListTerrains();
+				Descriptor = new Descriptor(		// be careful with that; it isn't being deleted if user clicks Cancel
+										Tileset,	// or chooses instead to create yet another descriptor.
+										new List<string>(),
+										BasePath,
+										TileGroup.Pal);
+//				TileGroup.AddTileset(Descriptor, Category);
+
+
+				if (TilesetFileExists(Tileset))
+				{
+					lblAddType.Text = "Add using existing Map file";
+					FileAddType = AddType.MapExists;
+				}
+				else
+				{
+					lblAddType.Text = "Add by creating a new Map file";
+					FileAddType = AddType.MapCreate;
+				}
+
+				btnCreateMap.Enabled = false;
+				ListTerrains();
+			}
 //			}
 //			}
 		}
@@ -922,6 +931,18 @@ namespace MapView
 
 			LogFile.WriteLine(". ret= " + (pfeMap != null && File.Exists(pfeMap)));
 			return (pfeMap != null && File.Exists(pfeMap));
+		}
+
+		private bool IsDescriptorInGroups(string labelMap)
+		{
+			foreach (var tileGroup in ResourceInfo.TileGroupInfo.TileGroups)
+			foreach (var category in tileGroup.Value.Categories)
+			foreach (var descriptor in category.Value.Values)
+			{
+				if (descriptor.Label == labelMap)
+					return true;
+			}
+			return false;
 		}
 
 		/// <summary>

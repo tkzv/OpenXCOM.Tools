@@ -35,11 +35,14 @@ namespace XCom
 			:
 				base(id)
 		{
+//			if (spriteset != null && record != null)
+//			{
 			_spriteset = spriteset;
 			Record     = record;
 
 			Images = new XCImage[8]; // every tile-part contains refs to 8 sprites.
 			InitializeSprites();
+//			}
 		}
 		#endregion
 

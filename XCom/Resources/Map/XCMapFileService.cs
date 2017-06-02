@@ -34,17 +34,9 @@ namespace XCom
 
 					foreach (string terrain in descriptor.Terrains) // push together all allocated terrains
 					{
-						var MCD = descriptor.GetMcdRecords(terrain);
+						var MCD = descriptor.GetTerrainRecords(terrain);
 						foreach (Tilepart part in MCD)
 							parts.Add(part);
-
-//						var infoTerrain = ResourceInfo.TerrainInfo[terrain];
-//						if (infoTerrain != null)
-//						{
-//							var MCD = infoTerrain.GetMcdRecords(descriptor.Pal);
-//							foreach (Tilepart part in MCD)
-//								parts.Add(part);
-//						}
 					}
 
 					if (parts.Count == 0) // NOTE: safety. This should have been disallowed before things got here. Perhaps (cf, create new tileset)
