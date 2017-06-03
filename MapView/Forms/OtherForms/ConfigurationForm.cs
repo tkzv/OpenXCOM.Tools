@@ -20,6 +20,8 @@ namespace MapView
 		#region Fields
 		private PathInfo _pathResources = SharedSpace.Instance[PathInfo.ShareResources] as PathInfo;
 		private PathInfo _pathTilesets  = SharedSpace.Instance[PathInfo.ShareTilesets]  as PathInfo;
+
+		private bool _bork;
 		#endregion
 
 
@@ -129,12 +131,7 @@ namespace MapView
 				f.Description = "Select UFO directory";
 
 				if (f.ShowDialog(this) == DialogResult.OK)
-				{
-					if (f.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))		// TODO: probly not needed.
-						Ufo = f.SelectedPath.Substring(0, f.SelectedPath.Length - 1);	// TODO: drive-root directories do funny things. Like append '\'
-					else
-						Ufo = f.SelectedPath;
-				}
+					Ufo = f.SelectedPath;
 			}
 		}
 
@@ -150,12 +147,7 @@ namespace MapView
 				f.Description = "Select TFTD directory";
 
 				if (f.ShowDialog(this) == DialogResult.OK)
-				{
-					if (f.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))		// TODO: probly not needed.
-						Tftd = f.SelectedPath.Substring(0, f.SelectedPath.Length - 1);	// TODO: drive-root directories do funny things. Like append '\'
-					else
-						Tftd = f.SelectedPath;
-				}
+					Tftd = f.SelectedPath;
 			}
 		}
 
@@ -166,32 +158,29 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnAcceptClick(object sender, EventArgs e)
 		{
-			bool bork = false;
+			_bork = false;
 
 			if (cbResources.Checked) // handle XCOM resource path(s) configuration ->
 			{
 				Ufo  = Ufo.Trim();
 				Tftd = Tftd.Trim();
 
-				if (Ufo.EndsWith(@"\", StringComparison.Ordinal))	// TODO: drive-root directories do funny things. Like append '\'
+				if (Ufo.EndsWith(@"\", StringComparison.Ordinal)) // NOTE: drive-root directories do funny things. Like append '\'
 					Ufo = Ufo.Substring(0, Ufo.Length - 1);
 
-				if (Tftd.EndsWith(@"\", StringComparison.Ordinal))	// TODO: drive-root directories do funny things. Like append '\'
+				if (Tftd.EndsWith(@"\", StringComparison.Ordinal))
 					Tftd = Tftd.Substring(0, Tftd.Length - 1);
 
 				if (String.IsNullOrEmpty(Ufo) && String.IsNullOrEmpty(Tftd))
 				{
-					bork = true;
 					ShowErrorDialog("Both folders cannot be blank.");
 				}
 				else if (!String.IsNullOrEmpty(Ufo) && !Directory.Exists(Ufo))
 				{
-					bork = true;
 					ShowErrorDialog("The UFO folder does not exist.");
 				}
 				else if (!String.IsNullOrEmpty(Tftd) && !Directory.Exists(Tftd))
 				{
-					bork = true;
 					ShowErrorDialog("The TFTD folder does not exist.");
 				}
 				else // check for a valid XCOM CursorSprite and create MapResources.yml ->
@@ -202,7 +191,6 @@ namespace MapView
 					if (   (!File.Exists(Path.Combine(Ufo,  CursorPck)) || !File.Exists(Path.Combine(Ufo,  CursorTab)))
 						&& (!File.Exists(Path.Combine(Tftd, CursorPck)) || !File.Exists(Path.Combine(Tftd, CursorTab))))
 					{
-						bork = true;
 						ShowErrorDialog("A valid UFO or TFTD resource directory must exist with"
 											+ Environment.NewLine + Environment.NewLine
 											+ CursorPck + Environment.NewLine
@@ -229,36 +217,37 @@ namespace MapView
 							var ser = new Serializer();
 							ser.Serialize(sw, node);
 						}
+
+						DialogResult = DialogResult.OK;
 					}
 				}
 			}
 
-			if (!bork)
+			if (!_bork && cbTilesets.Checked) // deal with MapTilesets.yml/.tpl ->
 			{
-				if (cbTilesets.Checked) // deal with MapTilesets.yml/.tpl ->
-				{
-					var pathTilesets = SharedSpace.Instance[PathInfo.ShareTilesets] as PathInfo;
-					pathTilesets.CreateDirectory();
-	
-					string pfeTilesets = rbTilesets.Checked ? pathTilesets.FullPath
-															: Path.Combine(pathTilesets.DirectoryPath, PathInfo.ConfigTilesetsTpl);
-	
-					using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
-													.GetManifestResourceStream("MapView._Embedded.MapTilesets.yml")))
-					using (var fs = new FileStream(pfeTilesets, FileMode.Create))
-					using (var sw = new StreamWriter(fs))
-						while (sr.Peek() != -1)
-							sw.WriteLine(sr.ReadLine());
-				}
+				var pathTilesets = SharedSpace.Instance[PathInfo.ShareTilesets] as PathInfo;
+				pathTilesets.CreateDirectory();
 
-				if (cbResources.Checked || (cbTilesets.Checked && rbTilesets.Checked)) // NOTE: 'cbResources' and 'rbTilesets' have priority over 'rbTilesetsTpl'
+				string pfeTilesets = rbTilesets.Checked ? pathTilesets.FullPath
+														: Path.Combine(pathTilesets.DirectoryPath, PathInfo.ConfigTilesetsTpl);
+
+				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
+												.GetManifestResourceStream("MapView._Embedded.MapTilesets.yml")))
+				using (var fs = new FileStream(pfeTilesets, FileMode.Create))
+				using (var sw = new StreamWriter(fs))
+					while (sr.Peek() != -1)
+						sw.WriteLine(sr.ReadLine());
+
+				if (rbTilesets.Checked)
 				{
 					DialogResult = DialogResult.OK;
 				}
-				else if (cbTilesets.Checked)// && rbTilesetsTpl.Checked)
+				else //if (rbTilesetsTpl.Checked)
 				{
 					ShowInfoDialog("Tileset template has been created in the settings subfolder.");
-					Close();
+
+					if (!cbResources.Checked)
+						Close();
 				}
 			}
 		}
@@ -282,6 +271,7 @@ namespace MapView
 		/// <param name="error">the error-string to show</param>
 		private void ShowErrorDialog(string error)
 		{
+			_bork = true;
 			MessageBox.Show(
 						this,
 						error,
