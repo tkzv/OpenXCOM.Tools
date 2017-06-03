@@ -75,7 +75,7 @@ namespace MapView
 			string dirApplication = Path.GetDirectoryName(Application.ExecutablePath);
 			string dirSettings    = Path.Combine(dirApplication, "settings");
 #if DEBUG
-			LogFile.SetLogFilePath(dirApplication, true); // creates a logfile/ wipes the old one.
+			LogFile.SetLogFilePath(dirApplication); // creates a logfile/ wipes the old one.
 #endif
 
 			LogFile.WriteLine("Starting MAIN MapView window ...");
@@ -849,7 +849,9 @@ namespace MapView
 
 		private void OnConfiguratorClick(object sender, EventArgs e)
 		{
-			if (_mainViewUnderlay.MainViewOverlay.MapBase.MapChanged) // TODO: offer to save the Map. And if necessary the Maptree.
+			if (_mainViewUnderlay.MainViewOverlay.MapBase != null
+				&& _mainViewUnderlay.MainViewOverlay.MapBase.MapChanged) // TODO: offer to save the Map. And if necessary the Maptree.
+			{
 				MessageBox.Show(
 							this,
 							"The current Map must be saved, or its changes"
@@ -859,7 +861,9 @@ namespace MapView
 							MessageBoxIcon.Asterisk,
 							MessageBoxDefaultButton.Button1,
 							0);
+			}
 			else if (MaptreeChanged)
+			{
 				MessageBox.Show(
 							this,
 							"The Map Tree must be saved before using the Configurator.",
@@ -868,6 +872,7 @@ namespace MapView
 							MessageBoxIcon.Asterisk,
 							MessageBoxDefaultButton.Button1,
 							0);
+			}
 			else
 			{
 				using (var f = new ConfigurationForm(true))

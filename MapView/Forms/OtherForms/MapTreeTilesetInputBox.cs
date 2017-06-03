@@ -687,11 +687,11 @@ namespace MapView
 								try
 								{
 									string pfeMap = GetFullPathMap(Tileset);
-
 									LogFile.WriteLine(". . . fileMap= " + pfeMap);
 
-									string pfeRoutes = Path.Combine(BasePath, RouteNodeCollection.RoutesDir);
-										   pfeRoutes = Path.Combine(pfeRoutes, Tileset + RouteNodeCollection.RouteExt);
+									string pfeRoutes = GetFullPathRoutes(Tileset);
+									LogFile.WriteLine(". . . fileRoutes= " + pfeRoutes);
+
 									using (var fs = File.Create(pfeRoutes)) // create a blank Route-file and release its handle.
 									{}
 
