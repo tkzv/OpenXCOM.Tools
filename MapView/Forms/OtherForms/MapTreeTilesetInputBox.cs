@@ -272,7 +272,7 @@ namespace MapView
 				if (!Directory.Exists(ofd.InitialDirectory))
 					ofd.InitialDirectory = BasePath;
 
-				if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				if (ofd.ShowDialog() == DialogResult.OK)
 				{
 					string pfeMap = ofd.FileName;
 
@@ -370,15 +370,13 @@ namespace MapView
 			lbTerrainsAvailable.Items.Clear();
 
 
-			var category = TileGroup.Categories[Category];
-
 			switch (InputBoxType)
 			{
 				case BoxType.EditTileset:
 					if (Tileset == TilesetOriginal
 						|| (!IsTilesetInGroups(Tileset) && !MapFileExists(Tileset)))
 					{
-						Descriptor = category[Tileset];
+						Descriptor = TileGroup.Categories[Category][Tileset];
 					}
 					else
 						Descriptor = null;
@@ -473,11 +471,6 @@ namespace MapView
 		/// If the tileset-label didn't change, nothing more need be done since
 		/// any terrains that were changed have already been changed by changes
 		/// to the Allocated/Available listboxes.
-		///
-		/// TODO: Check if the rest of the code stays happy if a tileset doesn't
-		/// have any terrains listed. -> not only is it unhappy, but this has to
-		/// end up with writing a new valid MapFile to disk, perhaps just a
-		/// basic 10x10x1 map with flooring only.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -486,8 +479,6 @@ namespace MapView
 			LogFile.WriteLine("");
 			LogFile.WriteLine("OnAcceptClick");
 			LogFile.WriteLine(". Tileset= " + Tileset);
-
-//			Tileset = Tileset.Trim(); // safety.
 
 			switch (InputBoxType)
 			{
@@ -501,14 +492,6 @@ namespace MapView
 
 						tbTileset.Select();
 					}
-//					else if (!ValidateCharacters(Tileset))
-//					{
-//						LogFile.WriteLine(". The Map label contains illegal characters.");
-//						ShowErrorDialog("The Map label contains illegal characters.");
-//
-//						tbTileset.Select();
-//						tbTileset.SelectionStart = tbTileset.SelectionLength;
-//					}
 					else if (lbTerrainsAllocated.Items.Count == 0)
 					{
 						LogFile.WriteLine(". The Map must have at least one terrain allocated.");
@@ -562,12 +545,6 @@ namespace MapView
 							}
 							else
 							{
-//								var category = TileGroup.Categories[Category];
-//								if (category.ContainsKey(Tileset))	// safety. If the Map-file does not exist, then the current
-//								{									// category cannot contain its key. ... ideally. ie: Yes it can
-//									LogFile.WriteLine(". The tileset already exists in the category.");
-//									ShowErrorDialog("The tileset already exists in the category.");
-//								}
 								if (IsTilesetInGroups(Tileset))
 								{
 									LogFile.WriteLine(". The tileset already exists in the Maptree.");
@@ -582,45 +559,37 @@ namespace MapView
 								{
 									LogFile.WriteLine(". . . tileset Created");
 
-									try
-									{
-										string pfeMap    = GetFullPathMap(Tileset);
-										string pfeMapPre = GetFullPathMap(TilesetOriginal);
+									string pfeMap    = GetFullPathMap(Tileset);
+									string pfeMapPre = GetFullPathMap(TilesetOriginal);
 
-										LogFile.WriteLine(". . . . fileMapPre= " + pfeMapPre);
-										LogFile.WriteLine(". . . . fileMap= " + pfeMap);
+									LogFile.WriteLine(". . . . fileMapPre= " + pfeMapPre);
+									LogFile.WriteLine(". . . . fileMap= " + pfeMap);
 
-										File.Move(pfeMapPre, pfeMap);	// NOTE: This has to happen now because once the MapTree node
-																		// is selected it will try to load the .MAP file etc.
+									File.Move(pfeMapPre, pfeMap);	// NOTE: This has to happen now because once the MapTree node
+																	// is selected it will try to load the .MAP file etc.
 
-										if (File.Exists(pfeMap))		// NOTE: do *not* alter the descriptor if File.Move() went bork.
-										{								// This is likely redundant: File.Move() should throw.
-											string pfeRoutes    = GetFullPathRoutes(Tileset);
-											string pfeRoutesPre = GetFullPathRoutes(TilesetOriginal);
+									if (File.Exists(pfeMap))		// NOTE: do *not* alter the descriptor if File.Move() went bork.
+									{								// This is likely redundant: File.Move() should throw.
+										string pfeRoutes    = GetFullPathRoutes(Tileset);
+										string pfeRoutesPre = GetFullPathRoutes(TilesetOriginal);
 
-											LogFile.WriteLine(". . . . fileRoutesPre= " + pfeRoutesPre);
-											LogFile.WriteLine(". . . . fileRoutes= " + pfeRoutes);
+										LogFile.WriteLine(". . . . fileRoutesPre= " + pfeRoutesPre);
+										LogFile.WriteLine(". . . . fileRoutes= " + pfeRoutes);
 
-											File.Move(pfeRoutesPre, pfeRoutes);
+										File.Move(pfeRoutesPre, pfeRoutes);
 
-											var category = TileGroup.Categories[Category];
-											Descriptor = new Descriptor(
-																	Tileset,
-																	category[TilesetOriginal].Terrains,
-																	BasePath,
-																	TileGroup.Pal);
-											TileGroup.AddTileset(Descriptor, Category);			// NOTE: This could be done on return to XCMainWindow.OnEditTilesetClick()
-																								// but then 'Descriptor' would have to be internal.
-											TileGroup.DeleteTileset(TilesetOriginal, Category);	// NOTE: This could be done on return to XCMainWindow.OnEditTilesetClick()
-																								// but then 'TilesetOriginal' would have to be internal.
+										var category = TileGroup.Categories[Category];
+										Descriptor = new Descriptor(
+																Tileset,
+																category[TilesetOriginal].Terrains,
+																BasePath,
+																TileGroup.Pal);
+										TileGroup.AddTileset(Descriptor, Category);			// NOTE: This could be done on return to XCMainWindow.OnEditTilesetClick()
+																							// but then 'Descriptor' would have to be internal.
+										TileGroup.DeleteTileset(TilesetOriginal, Category);	// NOTE: This could be done on return to XCMainWindow.OnEditTilesetClick()
+																							// but then 'TilesetOriginal' would have to be internal.
 
-											DialogResult = DialogResult.OK;
-										}
-									}
-									catch (Exception ex)
-									{
-										ShowErrorDialog(ex.Message);
-										throw;
+										DialogResult = DialogResult.OK;
 									}
 								}
 							}
@@ -638,14 +607,6 @@ namespace MapView
 
 						tbTileset.Select();
 					}
-//					else if (!ValidateCharacters(Tileset))
-//					{
-//						LogFile.WriteLine(". The Map label contains illegal characters.");
-//						ShowErrorDialog("The Map label contains illegal characters.");
-//
-//						tbTileset.Select();
-//						tbTileset.SelectionStart = tbTileset.SelectionLength;
-//					}
 					else if (lbTerrainsAllocated.Items.Count == 0)
 					{
 						LogFile.WriteLine(". The Map must have at least one terrain allocated.");
@@ -655,67 +616,39 @@ namespace MapView
 					{
 						switch (FileAddType)
 						{
-//							case AddType.MapNone: // NOTE: this would have been intercepted by terrain-count check (at the least).
-//								break;
-
 							case AddType.MapExists:
 								LogFile.WriteLine(". . Map file EXISTS");
 
-//								if (TileGroup.Categories[Category].ContainsKey(Tileset))	// final check to ensure that the descriptor
-//								{															// doesn't already exist in the current Category.
-//									LogFile.WriteLine(". The tileset already exists in the category.");
-//									ShowErrorDialog("The tileset already exists in the category.");
-//								}
-//								else
-//								{
 								TileGroup.AddTileset(Descriptor, Category);
 								DialogResult = DialogResult.OK;
-//								}
-
 								break;
 
 							case AddType.MapCreate:
 								LogFile.WriteLine(". . Map file does NOT exist - Create new Map file");
 
-//								if (TileGroup.Categories[Category].ContainsKey(Tileset))	// NOTE: The descriptor *does* exist, because there *is* a terrain allocated,
-//								{															// which requires that the Create tileset/descriptor button has been clicked.
-//									LogFile.WriteLine(". The tileset already exists in the category.");
-//									ShowErrorDialog("The tileset already exists in the category.");
-//								}
-//								else
-//								{
-								try
-								{
-									string pfeMap = GetFullPathMap(Tileset);
-									LogFile.WriteLine(". . . fileMap= " + pfeMap);
+								string pfeMap = GetFullPathMap(Tileset);
+								LogFile.WriteLine(". . . fileMap= " + pfeMap);
 
-									string pfeRoutes = GetFullPathRoutes(Tileset);
-									LogFile.WriteLine(". . . fileRoutes= " + pfeRoutes);
+								string pfeRoutes = GetFullPathRoutes(Tileset);
+								LogFile.WriteLine(". . . fileRoutes= " + pfeRoutes);
 
-									using (var fs = File.Create(pfeRoutes)) // create a blank Route-file and release its handle.
-									{}
+								using (var fs = File.Create(pfeRoutes)) // create a blank Route-file and release its handle.
+								{}
 
-									using (var fs = File.Create(pfeMap))	// create the Map-file and release its handle.
-									{										// NOTE: This has to happen now because once the MapTree node
-										MapFileChild.CreateMap(				// is selected it will try to load the .MAP file etc.
-															fs,
-															10, 10, 1); // <- default new Map size
-									}
-
-									if (File.Exists(pfeMap) && File.Exists(pfeRoutes)) // NOTE: The descriptor has already been created with the Create descriptor button.
-									{
-										LogFile.WriteLine(". tileset Created");
-
-										TileGroup.AddTileset(Descriptor, Category);
-										DialogResult = DialogResult.OK;
-									}
+								using (var fs = File.Create(pfeMap))	// create the Map-file and release its handle.
+								{										// NOTE: This has to happen now because once the MapTree node
+									MapFileChild.CreateMap(				// is selected it will try to load the .MAP file etc.
+														fs,
+														10, 10, 1); // <- default new Map size
 								}
-								catch (Exception ex)
+
+								if (File.Exists(pfeMap) && File.Exists(pfeRoutes)) // NOTE: The descriptor has already been created with the Create descriptor button.
 								{
-									ShowErrorDialog(ex + ": " + ex.Message);
-									throw;
+									LogFile.WriteLine(". tileset Created");
+
+									TileGroup.AddTileset(Descriptor, Category);
+									DialogResult = DialogResult.OK;
 								}
-//								}
 								break;
 						}
 					}
