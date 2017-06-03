@@ -196,6 +196,7 @@ namespace MapView
 					Text = AddTileset;
 					lblAddType.Text = "Descriptor invalid";
 
+					lblTerrainChanges.Visible =
 					lblHeaderTileset.Visible  =
 					lblTilesetCurrent.Visible = false;
 
@@ -226,7 +227,7 @@ namespace MapView
 		{
 			base.OnResize(e);
 
-			int lbWidth = gbTerrains.Width / 2 - pSpacer.Width * 2 / 3; // not sure why 2/3 works.
+			int lbWidth = gbTerrains.Width / 2 - pnlSpacer.Width * 2 / 3; // not sure why 2/3 works.
 			lbTerrainsAllocated.Width =
 			lbTerrainsAvailable.Width = lbWidth;
 
