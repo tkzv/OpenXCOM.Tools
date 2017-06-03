@@ -135,7 +135,7 @@ namespace PckView
 			_viewPanel.Pal = _palette;
 
 			_editor = new Editor(null);
-			_editor.FormClosing += OnEditorClosing;
+			_editor.FormClosing += OnEditorFormClosing;
 			_editor.Palette = _palette;
 
 
@@ -343,7 +343,7 @@ namespace PckView
 			}
 		}
 
-		private void OnEditorClosing(object sender, CancelEventArgs e)
+		private void OnEditorFormClosing(object sender, CancelEventArgs e)
 		{
 			_miEdit.Checked = false;
 

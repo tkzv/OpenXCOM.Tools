@@ -77,7 +77,7 @@ namespace PckView
 								EditorPanel.PreferredHeight + _trackBar.Height);
 
 			_palView = new PaletteView();
-			_palView.FormClosing += OnPaletteClosing;
+			_palView.FormClosing += OnPaletteFormClosing;
 
 			OnTrackScroll(null, null);
 		}
@@ -123,7 +123,7 @@ namespace PckView
 				_palView.Close(); // see OnPaletteClosing()
 		}
 
-		private void OnPaletteClosing(object sender, CancelEventArgs e)
+		private void OnPaletteFormClosing(object sender, CancelEventArgs e)
 		{
 			miPalette.Checked = false;
 

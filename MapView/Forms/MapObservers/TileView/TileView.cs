@@ -377,7 +377,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				if (_mcdInfoForm == null)
 				{
 					_mcdInfoForm = new McdViewerForm();
-					_mcdInfoForm.FormClosing += OnMcdInfoClosing;
+					_mcdInfoForm.FormClosing += OnMcdInfoFormClosing;
 
 					var f = FindForm();
 
@@ -397,7 +397,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				_mcdInfoForm.Show();
 			}
 			else
-				OnMcdInfoClosing(null, null);
+				OnMcdInfoFormClosing(null, null);
 		}
 
 		/// <summary>
@@ -405,7 +405,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnMcdInfoClosing(object sender, CancelEventArgs e)
+		private void OnMcdInfoFormClosing(object sender, CancelEventArgs e)
 		{
 			tsmiMcdInfo.Checked = false;
 

@@ -66,7 +66,7 @@ namespace DSShared.Windows
 			{
 				f.StartPosition = FormStartPosition.Manual;
 				f.Load        += OnLoad;
-				f.FormClosing += OnClose;
+				f.FormClosing += OnFormClosing;
 
 				AddProperty("Left", "Top", "Width", "Height");
 			}
@@ -193,7 +193,7 @@ namespace DSShared.Windows
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnClose(object sender, EventArgs e)
+		private void OnFormClosing(object sender, EventArgs e)
 		{
 			//DSLogFile.WriteLine("OnClose _regkey= " + _regkey);
 

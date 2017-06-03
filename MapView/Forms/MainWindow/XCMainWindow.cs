@@ -180,7 +180,7 @@ namespace MapView
 
 			_instance = this;
 
-			FormClosing += OnClosingSaveOptions;
+			FormClosing += OnSaveOptionsFormClosing;
 
 
 			_optionsManager = new OptionsManager(); // goes before LoadOptions()
@@ -691,10 +691,10 @@ namespace MapView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		private void OnClosingSaveOptions(object sender, CancelEventArgs args)
+		private void OnSaveOptionsFormClosing(object sender, CancelEventArgs args)
 		{
 			LogFile.WriteLine("");
-			LogFile.WriteLine("XCMainWindow.OnClosingSaveOptions");
+			LogFile.WriteLine("XCMainWindow.OnSaveOptionsFormClosing");
 
 			_quit = true;
 			args.Cancel = false;
@@ -864,7 +864,7 @@ namespace MapView
 			LogFile.WriteLine("");
 			LogFile.WriteLine("XCMainWindow.OnQuitClick");
 
-			OnClosingSaveOptions(null, new CancelEventArgs()); // set '_quit' flag
+			OnSaveOptionsFormClosing(null, new CancelEventArgs()); // set '_quit' flag
 
 			if (_quit)
 				Environment.Exit(0); // god, that works so much better than Application.Exit()
