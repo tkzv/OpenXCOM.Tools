@@ -13,6 +13,12 @@ namespace ConfigConverter
 		:
 			Form
 	{
+		#region Fields
+		private const string PrePad = "#----- ";
+		private int PrePadLength = PrePad.Length;
+		#endregion
+
+
 		#region cTor
 		/// <summary>
 		/// Instantiates the ConfigConverter.
@@ -228,10 +234,10 @@ namespace ConfigConverter
 			{
 				sw.WriteLine("# This is MapTilesets for MapViewII.");
 				sw.WriteLine("#");
-				sw.WriteLine("# 'tilesets' - a list that contains all the blocks");
-				sw.WriteLine("# 'type'     - the label of MAP/RMP files for the block");
-				sw.WriteLine("# 'terrains' - the label(s) of MCD/PCK/TAB files for the block");
-				sw.WriteLine("# 'category' - a header for the tileset, is arbitrary here");
+				sw.WriteLine("# 'tilesets' - a list that contains all the blocks.");
+				sw.WriteLine("# 'type'     - the label of MAP/RMP files for the block.");
+				sw.WriteLine("# 'terrains' - the label(s) of MCD/PCK/TAB files for the block.");
+				sw.WriteLine("# 'category' - a header for the tileset, is arbitrary here.");
 				sw.WriteLine("# 'group'    - a header for the categories, is arbitrary except that the first"   + Environment.NewLine
 						   + "#              letters designate the game-type and must be either 'ufo' or"       + Environment.NewLine
 						   + "#              'tftd' (case insensitive, with or without a following space).");
@@ -256,7 +262,7 @@ namespace ConfigConverter
 						blankline = true;
 
 						sw.WriteLine("");
-						sw.WriteLine("#---- " + headerGroup + Padder(headerGroup.Length + 6));
+						sw.WriteLine(PrePad + headerGroup + Padder(headerGroup.Length + PrePadLength));
 					}
 
 					if (headerCategory != tileset.Category)
@@ -265,7 +271,7 @@ namespace ConfigConverter
 
 						if (!blankline)
 							sw.WriteLine("");
-						sw.WriteLine("#---- " + headerCategory + Padder(headerCategory.Length + 6));
+						sw.WriteLine(PrePad + headerCategory + Padder(headerCategory.Length + PrePadLength));
 					}
 
 					sw.WriteLine("  - type: " + tileset.Label);

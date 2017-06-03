@@ -345,6 +345,14 @@ namespace XCom
 		}
 
 		/// <summary>
+		/// Clears the 'MapChanged' flag.
+		/// </summary>
+		public override void ClearMapChanged()
+		{
+			MapChanged = false;
+		}
+
+		/// <summary>
 		/// Resizes the current Map.
 		/// </summary>
 		/// <param name="rows">total rows in the new Map</param>

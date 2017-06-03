@@ -152,6 +152,9 @@ namespace XCom.Interfaces.Base
 		public virtual void Save()
 		{}
 
+		public virtual void ClearMapChanged()
+		{}
+
 		/// <summary>
 		/// Changes the 'Level' property and fires a LevelChanged event.
 		/// </summary>

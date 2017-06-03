@@ -1,5 +1,5 @@
-﻿# This is the default MapTilesets for MapViewII. It sets up the stock UFOs, Craft,
-# and landscapes for out-of-the-box use by the app.
+﻿# This is the default MapTilesets for MapViewII. It sets up the stock UFOs,
+# Craft, and landscapes for out-of-the-box use by the app.
 #
 # 'tilesets' - a list that contains all the blocks.
 # 'type'     - the label of MAP/RMP files for the block.
@@ -16,8 +16,8 @@
 
 tilesets:
 
-# ---- ufoShips ---------------------------------------------------------------#
-# ---- UFOs -------------------------------------------------------------------#
+#----- ufoShips ---------------------------------------------------------------#
+#----- UFO --------------------------------------------------------------------#
   - type: UFO_110
     terrains:
       - U_EXT02
@@ -73,7 +73,7 @@ tilesets:
     category: UFO
     group: ufoShips
 
-# ---- XCOM Craft (ufo) -------------------------------------------------------#
+#----- Craft ------------------------------------------------------------------#
   - type: AVENGER
     terrains:
       - AVENGER
@@ -90,8 +90,8 @@ tilesets:
     category: Craft
     group: ufoShips
 
-# ---- ufoLandscapes ----------------------------------------------------------#
-# ---- base xcom --------------------------------------------------------------#
+#----- ufoLandscapes ----------------------------------------------------------#
+#----- base XCOM --------------------------------------------------------------#
   - type: XBASE_00
     terrains:
       - XBASE1
@@ -219,7 +219,7 @@ tilesets:
     category: base XCOM
     group: ufoLandscapes
 
-# ---- base alien -------------------------------------------------------------#
+#----- base aLien -------------------------------------------------------------#
   - type: UBASE_00
     terrains:
       - U_BASE
@@ -349,7 +349,7 @@ tilesets:
     category: base aLien
     group: ufoLandscapes
 
-# ---- cultivated -------------------------------------------------------------#
+#----- Cultivated -------------------------------------------------------------#
   - type: CULTA00
     terrains:
       - CULTIVAT
@@ -465,7 +465,7 @@ tilesets:
     category: Cultivated
     group: ufoLandscapes
 
-# ---- desert -----------------------------------------------------------------#
+#----- Desert -----------------------------------------------------------------#
   - type: DESERT00
     terrains:
       - DESERT
@@ -527,7 +527,7 @@ tilesets:
     category: Desert
     group: ufoLandscapes
 
-# ---- forest -----------------------------------------------------------------#
+#----- Forest -----------------------------------------------------------------#
   - type: FOREST00
     terrains:
       - FOREST
@@ -589,7 +589,7 @@ tilesets:
     category: Forest
     group: ufoLandscapes
 
-# ---- jungle -----------------------------------------------------------------#
+#----- Jungle -----------------------------------------------------------------#
   - type: JUNGLE00
     terrains:
       - JUNGLE
@@ -651,7 +651,7 @@ tilesets:
     category: Jungle
     group: ufoLandscapes
 
-# ---- mars -------------------------------------------------------------------#
+#----- Mars -------------------------------------------------------------------#
   - type: MARS00
     terrains:
       - MARS
@@ -719,7 +719,7 @@ tilesets:
     category: Mars
     group: ufoLandscapes
 
-# ---- mountain ---------------------------------------------------------------#
+#----- Mountain ---------------------------------------------------------------#
   - type: MOUNT00
     terrains:
       - MOUNT
@@ -786,7 +786,7 @@ tilesets:
     category: Mountain
     group: ufoLandscapes
 
-# ---- polar ------------------------------------------------------------------#
+#----- Polar ------------------------------------------------------------------#
   - type: POLAR00
     terrains:
       - POLAR
@@ -858,7 +858,7 @@ tilesets:
     category: Polar
     group: ufoLandscapes
 
-# ---- urban ------------------------------------------------------------------#
+#----- Urban ------------------------------------------------------------------#
   - type: URBAN00
     terrains:
       - ROADS
@@ -980,8 +980,8 @@ tilesets:
     category: Urban
     group: ufoLandscapes
 
-# ---- tftdShips --------------------------------------------------------------#
-# ---- USOs -------------------------------------------------------------------#
+#----- tftdShips --------------------------------------------------------------#
+#----- USO --------------------------------------------------------------------#
   - type: UFO01
     terrains:
       - UEXT2
@@ -1055,7 +1055,7 @@ tilesets:
     category: USO
     group: tftdShips
 
-# ---- XCOM Craft (tftd) ------------------------------------------------------#
+#----- Craft ------------------------------------------------------------------#
   - type: LEVIATH
     terrains:
       - LEVIATH
@@ -1072,8 +1072,8 @@ tilesets:
     category: Craft
     group: tftdShips
 
-# ---- tftdSeascapes ---------------------------------------------------------#
-# ---- Alien Artifact Site 1 --------------------------------------------------#
+#----- tftdSeascapes ----------------------------------------------------------#
+#----- Alien Artifact Site 1 --------------------------------------------------#
   - type: ALART00
     terrains:
       - SAND
@@ -1183,7 +1183,7 @@ tilesets:
     category: Alien Artifact Site 1
     group: tftdSeascapes
 
-# ---- Alien Artifact Site 2 --------------------------------------------------#
+#----- Alien Artifact Site 2 --------------------------------------------------#
   - type: GRUNGE00
     terrains:
       - GRUNGE1
@@ -1355,7 +1355,7 @@ tilesets:
     category: Alien Artifact Site 2
     group: tftdSeascapes
 
-# ---- alship -----------------------------------------------------------------#
+#----- alship -----------------------------------------------------------------#
   - type: ALSHIP00
     terrains:
       - GRUNGE1
@@ -1519,7 +1519,7 @@ tilesets:
     category: alship
     group: tftdSeascapes
 
-# ---- Atlantis ---------------------------------------------------------------#
+#----- Atlantis ---------------------------------------------------------------#
   - type: ATLAN00
     terrains:
       - SAND
@@ -1612,7 +1612,7 @@ tilesets:
     category: Atlantis
     group: tftdSeascapes
 
-# ---- Coral ------------------------------------------------------------------#
+#----- Coral ------------------------------------------------------------------#
   - type: CORAL00
     terrains:
       - SAND
@@ -1731,7 +1731,7 @@ tilesets:
     category: Coral
     group: tftdSeascapes
 
-# ---- Sunken Cargo Ship ------------------------------------------------------#
+#----- Sunken Cargo Ship ------------------------------------------------------#
   - type: MSUNK00
     terrains:
       - SAND
@@ -1845,7 +1845,7 @@ tilesets:
     category: Sunken Cargo Ship
     group: tftdSeascapes
 
-# ---- Sunken Galleon ---------------------------------------------------------#
+#----- Sunken Galleon ---------------------------------------------------------#
   - type: GAL01
     terrains:
       - SAND
@@ -1975,7 +1975,7 @@ tilesets:
     category: Sunken Galleon
     group: tftdSeascapes
 
-# ---- Sunken Plane -----------------------------------------------------------#
+#----- Sunken Plane -----------------------------------------------------------#
   - type: PLANE00
     terrains:
       - SAND
@@ -2124,7 +2124,7 @@ tilesets:
     category: Sunken Plane
     group: tftdSeascapes
 
-# ---- Mayan Temple -----------------------------------------------------------#
+#----- Mayan Temple -----------------------------------------------------------#
   - type: MU00
     terrains:
       - SAND
@@ -2231,7 +2231,7 @@ tilesets:
     category: Mayan Temple
     group: tftdSeascapes
 
-# ---- Underwater Research Facility -------------------------------------------#
+#----- Underwater Research Facility -------------------------------------------#
   - type: PIPES00
     terrains:
       - SAND
@@ -2317,7 +2317,7 @@ tilesets:
     category: Underwater Research Facility
     group: tftdSeascapes
 
-# ---- Seabed -----------------------------------------------------------------#
+#----- Seabed -----------------------------------------------------------------#
   - type: SEABED00
     terrains:
       - SAND
@@ -2436,7 +2436,7 @@ tilesets:
     category: Seabed
     group: tftdSeascapes
 
-# ---- Volcano ----------------------------------------------------------------#
+#----- Volcano ----------------------------------------------------------------#
   - type: VOLC00
     terrains:
       - SAND
@@ -2510,7 +2510,7 @@ tilesets:
     category: Volcano
     group: tftdSeascapes
 
-# ---- Cargo Ship Terror Site -------------------------------------------------#
+#----- Cargo Ship Terror Site -------------------------------------------------#
   - type: CARGO00
     terrains:
       - SEA
@@ -2539,7 +2539,7 @@ tilesets:
     category: Cargo Ship Terror Site
     group: tftdSeascapes
 
-# ---- Island Terror Site -----------------------------------------------------#
+#----- Island Terror Site -----------------------------------------------------#
   - type: ISLAND00
     terrains:
       - SEA
@@ -2661,7 +2661,7 @@ tilesets:
     category: Island Terror Site
     group: tftdSeascapes
 
-# ---- Cruise Ship 1 Terror Site ----------------------------------------------#
+#----- Cruise Ship 1 Terror Site ----------------------------------------------#
   - type: LINERT00
     terrains:
       - DECKC
@@ -2693,7 +2693,7 @@ tilesets:
     category: Cruise Ship 1 Terror Site
     group: tftdSeascapes
 
-# ---- Cruise Ship 2 Terror Site ----------------------------------------------#
+#----- Cruise Ship 2 Terror Site ----------------------------------------------#
   - type: LINERB02
     terrains:
       - SEA
@@ -2715,7 +2715,7 @@ tilesets:
     category: Cruise Ship 2 Terror Site
     group: tftdSeascapes
 
-# ---- Port Terror Site -------------------------------------------------------#
+#----- Port Terror Site -------------------------------------------------------#
   - type: PORT00
     terrains:
       - SEA
@@ -2864,7 +2864,7 @@ tilesets:
     category: Port Terror Site
     group: tftdSeascapes
 
-# ---- T'leth Level 2 ---------------------------------------------------------#
+#----- T'leth Level 2 ---------------------------------------------------------#
   - type: LEVEL01
     terrains:
       - ORGANIC1
@@ -2938,7 +2938,7 @@ tilesets:
     category: T'leth Level 2
     group: tftdSeascapes
 
-# ---- T'leth Level 3 ---------------------------------------------------------#
+#----- T'leth Level 3 ---------------------------------------------------------#
   - type: CRYPT01
     terrains:
       - CRYPT1
@@ -3012,7 +3012,7 @@ tilesets:
     category: T'leth Level 3
     group: tftdSeascapes
 
-# ---- Alien Base Level 1 -----------------------------------------------------#
+#----- Alien Base Level 1 -----------------------------------------------------#
   - type: ENTRY00
     terrains:
       - SAND
@@ -3095,7 +3095,7 @@ tilesets:
     category: Alien Base Level 1
     group: tftdSeascapes
 
-# ---- Alien Base Level 2 -----------------------------------------------------#
+#----- Alien Base Level 2 -----------------------------------------------------#
   - type: A_BASE00
     terrains:
       - ORGANIC1
@@ -3225,7 +3225,7 @@ tilesets:
     category: Alien Base Level 2
     group: tftdSeascapes
 
-# ---- XCom Base --------------------------------------------------------------#
+#----- XCom Base --------------------------------------------------------------#
   - type: XBASES00
     terrains:
       - XBASES01

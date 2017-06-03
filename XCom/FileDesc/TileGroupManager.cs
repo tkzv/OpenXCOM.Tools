@@ -12,7 +12,13 @@ namespace XCom
 {
 	public sealed class TileGroupManager
 	{
-		#region Fields & Properties
+		#region Fields
+		private const string PrePad = "#----- ";
+		private int PrePadLength = PrePad.Length;
+		#endregion
+
+
+		#region Properties
 		private readonly Dictionary<string, TileGroupBase> _tilegroups = new Dictionary<string, TileGroupBase>();
 		public Dictionary<string, TileGroupBase> TileGroups
 		{
@@ -78,6 +84,7 @@ namespace XCom
 		/// Saves the TileGroups with their children (categories and tilesets)
 		/// to a YAML file.
 		/// </summary>
+		/// <returns>true if no exception was thrown</returns>
 		public bool SaveTileGroups()
 		{
 			//LogFile.WriteLine("");
@@ -96,10 +103,10 @@ namespace XCom
 			{
 				sw.WriteLine("# This is MapTilesets for MapViewII.");
 				sw.WriteLine("#");
-				sw.WriteLine("# 'tilesets' - a list that contains all the blocks");
-				sw.WriteLine("# 'type'     - the label of MAP/RMP files for the block");
-				sw.WriteLine("# 'terrains' - the label(s) of MCD/PCK/TAB files for the block");
-				sw.WriteLine("# 'category' - a header for the tileset, is arbitrary here");
+				sw.WriteLine("# 'tilesets' - a list that contains all the blocks.");
+				sw.WriteLine("# 'type'     - the label of MAP/RMP files for the block.");
+				sw.WriteLine("# 'terrains' - the label(s) of MCD/PCK/TAB files for the block.");
+				sw.WriteLine("# 'category' - a header for the tileset, is arbitrary here.");
 				sw.WriteLine("# 'group'    - a header for the categories, is arbitrary except that the first"   + Environment.NewLine
 						   + "#              letters designate the game-type and must be either 'ufo' or"       + Environment.NewLine
 						   + "#              'tftd' (case insensitive, with or without a following space).");
@@ -111,6 +118,7 @@ namespace XCom
 				sw.WriteLine("");
 				sw.WriteLine("tilesets:");
 
+
 				bool blankline;
 				foreach (string labelGroup in TileGroups.Keys)
 				{
@@ -119,7 +127,7 @@ namespace XCom
 
 					blankline = true;
 					sw.WriteLine("");
-					sw.WriteLine("#---- " + labelGroup + Padder(labelGroup.Length + 6));
+					sw.WriteLine(PrePad + labelGroup + Padder(labelGroup.Length + PrePadLength));
 
 					var oGroup = TileGroups[labelGroup] as TileGroupChild;	// <- fuck inheritance btw. It's not been used properly and is
 					foreach (var labelCategory in oGroup.Categories.Keys)	// largely irrelevant and needlessly confusing in this codebase.
@@ -128,7 +136,7 @@ namespace XCom
 							sw.WriteLine("");
 
 						blankline = false;
-						sw.WriteLine("#---- " + labelCategory + Padder(labelCategory.Length + 6));
+						sw.WriteLine(PrePad + labelCategory + Padder(labelCategory.Length + PrePadLength));
 
 						var category = oGroup.Categories[labelCategory];
 						foreach (var labelTileset in category.Keys)
@@ -144,21 +152,20 @@ namespace XCom
 							sw.WriteLine("    category: " + labelCategory);
 							sw.WriteLine("    group: " + labelGroup);
 
-							string basepath = descriptor.BasePath;
+							string keyResourcePath = String.Empty;
 							switch (oGroup.GroupType)
 							{
 								case GameType.Ufo:
-									if (basepath != SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryUfo))
-										sw.WriteLine("    basepath: " + basepath);
-
+									keyResourcePath = SharedSpace.ResourceDirectoryUfo;
 									break;
 
 								case GameType.Tftd:
-									if (basepath != SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryTftd))
-										sw.WriteLine("    basepath: " + basepath);
-
+									keyResourcePath = SharedSpace.ResourceDirectoryTftd;
 									break;
 							}
+							string basepath = descriptor.BasePath;
+							if (basepath != SharedSpace.Instance.GetShare(keyResourcePath))
+								sw.WriteLine("    basepath: " + basepath);
 						}
 					}
 				}

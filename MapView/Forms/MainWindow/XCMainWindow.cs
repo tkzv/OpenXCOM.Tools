@@ -690,11 +690,14 @@ namespace MapView
 		/// <param name="args"></param>
 		private void OnClosingSaveOptions(object sender, CancelEventArgs args)
 		{
-			if (SaveAlert(true) == DialogResult.Cancel)
-			{
+			if (SaveAlert() == DialogResult.Cancel)
 				args.Cancel = true;
-			}
-			else
+
+			if (SaveAlertMaptree() == DialogResult.Cancel)
+				args.Cancel = true;
+
+
+			if (!args.Cancel)
 			{
 				//LogFile.WriteLine("OnCloseSaveRegistry MainView");
 				_mainMenusManager.IsQuitting();
@@ -1683,11 +1686,13 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Shows the user a dialog-box asking to Save if stuff has changed.
+		/// Shows the user a dialog-box asking to Save if the currently
+		/// displayed Map or Routes have changed.
+		/// NOTE: Is called when either (a) MapView is closing (b) the Map is
+		/// about to change.
 		/// </summary>
-		/// <param name="tree">true to check if the Maptree changed (default false)</param>
 		/// <returns></returns>
-		private DialogResult SaveAlert(bool tree = false)
+		private DialogResult SaveAlert()
 		{
 			if (_mainViewUnderlay.MapBase != null && _mainViewUnderlay.MapBase.MapChanged)
 			{
@@ -1700,19 +1705,34 @@ namespace MapView
 									MessageBoxDefaultButton.Button1,
 									0))
 				{
-					case DialogResult.Yes:		// save
+					case DialogResult.Yes:		// save & clear MapChanged flag
 						_mainViewUnderlay.MapBase.Save();
 						break;
 
-					case DialogResult.No:		// don't save
+					case DialogResult.No:		// don't save & clear MapChanged flag
+						_mainViewUnderlay.MapBase.ClearMapChanged(); // not really relevant since 'MapBase' is about to go by-bye.
 						break;
 
-					case DialogResult.Cancel:	// do nothing
+					case DialogResult.Cancel:	// dismiss confirmation dialog & leave state unaffected
 						return DialogResult.Cancel;
 				}
 			}
+			return DialogResult.OK;
+		}
 
-			if (tree && MaptreeChanged)
+		/// <summary>
+		/// Shows the user a dialog-box asking to Save the Maptree if it has
+		/// changed.
+		/// NOTE: Is called when either (a) MapView is closing (b) MapView is
+		/// reloading due to a configuration change (ie. only if resource-paths
+		/// have been changed, since the only other relevant option - if the
+		/// tilesets-config file - is changed then saving the current one is
+		/// pointless).
+		/// </summary>
+		/// <returns></returns>
+		private DialogResult SaveAlertMaptree()
+		{
+			if (MaptreeChanged)
 			{
 				switch (MessageBox.Show(
 									this,
@@ -1723,18 +1743,18 @@ namespace MapView
 									MessageBoxDefaultButton.Button1,
 									0))
 				{
-					case DialogResult.Yes:		// save
-						ResourceInfo.TileGroupInfo.SaveTileGroups();
+					case DialogResult.Yes:		// save & clear MaptreeChanged flag
+						OnSaveMaptreeClick(null, EventArgs.Empty);
 						break;
 
-					case DialogResult.No:		// don't save
+					case DialogResult.No:		// don't save & clear MaptreeChanged flag
+						MaptreeChanged = false; // kinda irrelevant since this class-object is about to disappear.
 						break;
 
-					case DialogResult.Cancel:	// do nothing
+					case DialogResult.Cancel:	// dismiss confirmation dialog & leave state unaffected
 						return DialogResult.Cancel;
 				}
 			}
-
 			return DialogResult.OK;
 		}
 

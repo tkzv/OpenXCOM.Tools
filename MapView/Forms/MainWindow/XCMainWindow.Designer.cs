@@ -94,7 +94,6 @@ namespace MapView
 			this.miResize,
 			this.miInfo,
 			this.miRegenOccult,
-			this.miConfigurator,
 			this.miHq,
 			this.miBarHori,
 			this.miQuit});
@@ -158,26 +157,20 @@ namespace MapView
 			this.miRegenOccult.Text = "Regen &Occult";
 			this.miRegenOccult.Click += new System.EventHandler(this.OnRegenOccultClick);
 			// 
-			// miConfigurator
-			// 
-			this.miConfigurator.Index = 8;
-			this.miConfigurator.Text = "Run &Configurator";
-			this.miConfigurator.Click += new System.EventHandler(this.OnConfiguratorClick);
-			// 
 			// miHq
 			// 
-			this.miHq.Index = 9;
+			this.miHq.Index = 8;
 			this.miHq.Text = "Hq&2x";
 			this.miHq.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
 			// miBarHori
 			// 
-			this.miBarHori.Index = 10;
+			this.miBarHori.Index = 9;
 			this.miBarHori.Text = "-";
 			// 
 			// miQuit
 			// 
-			this.miQuit.Index = 11;
+			this.miQuit.Index = 10;
 			this.miQuit.Text = "&Quit";
 			this.miQuit.Click += new System.EventHandler(this.OnQuitClick);
 			// 
@@ -185,7 +178,8 @@ namespace MapView
 			// 
 			this.menuEdit.Index = 1;
 			this.menuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.miOptions});
+			this.miOptions,
+			this.miConfigurator});
 			this.menuEdit.Text = "&Edit";
 			// 
 			// miOptions
@@ -193,6 +187,12 @@ namespace MapView
 			this.miOptions.Index = 0;
 			this.miOptions.Text = "&Options";
 			this.miOptions.Click += new System.EventHandler(this.OnOptionsClick);
+			// 
+			// miConfigurator
+			// 
+			this.miConfigurator.Index = 1;
+			this.miConfigurator.Text = "&Configurator";
+			this.miConfigurator.Click += new System.EventHandler(this.OnConfiguratorClick);
 			// 
 			// menuAnimation
 			// 
