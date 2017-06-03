@@ -34,7 +34,7 @@ namespace MapView
 			get { return _extraSprites; }
 		}
 
-		internal static void LoadExtras()
+		internal static void LoadExtraSprites()
 		{
 			if (_extraSprites == null)
 			{

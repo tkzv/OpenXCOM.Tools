@@ -149,7 +149,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 
-			Globals.LoadExtras();
+			Globals.LoadExtraSprites();
 		}
 		#endregion
 

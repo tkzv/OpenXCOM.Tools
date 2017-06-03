@@ -163,7 +163,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 				_foptions.Show();
 
-				_foptions.Closing += (sender1, e1) =>
+				_foptions.FormClosing += (sender1, e1) =>
 				{
 					if (!_closing)
 						OnOptionsClick(sender, e);

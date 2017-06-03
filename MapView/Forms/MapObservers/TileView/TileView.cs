@@ -346,7 +346,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 				_foptions.Show();
 
-				_foptions.Closing += (sender1, e1) =>
+				_foptions.FormClosing += (sender1, e1) =>
 				{
 					if (!_closing)
 						OnOptionsClick(sender, e);
@@ -377,7 +377,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				if (_mcdInfoForm == null)
 				{
 					_mcdInfoForm = new McdViewerForm();
-					_mcdInfoForm.Closing += OnMcdInfoClosing;
+					_mcdInfoForm.FormClosing += OnMcdInfoClosing;
 
 					var f = FindForm();
 

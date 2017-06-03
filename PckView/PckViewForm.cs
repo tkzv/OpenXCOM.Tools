@@ -135,7 +135,7 @@ namespace PckView
 			_viewPanel.Pal = _palette;
 
 			_editor = new Editor(null);
-			_editor.Closing += OnEditorClosing;
+			_editor.FormClosing += OnEditorClosing;
 			_editor.Palette = _palette;
 
 

@@ -56,8 +56,8 @@ namespace PckView.Forms.ImageBytes
 
 				LoadBytes();
 
-				fBytes.Closing += OnClosing;
-				fBytes.Closing += (sender, e) => closedCallBack();
+				fBytes.FormClosing += OnClosing;
+				fBytes.FormClosing += (sender, e) => closedCallBack();
 				fBytes.Location = location;
 				fBytes.Text = "Total Bytes - " + _selected.Image.Bindata.Length;
 				fBytes.Show();

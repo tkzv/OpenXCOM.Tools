@@ -79,7 +79,7 @@ namespace MapView.Forms.MainWindow
 
 			it.Click += OnMenuItemClick;
 
-			f.Closing += (sender, e) =>
+			f.FormClosing += (sender, e) =>
 			{
 				e.Cancel = true;
 				it.Checked = false;

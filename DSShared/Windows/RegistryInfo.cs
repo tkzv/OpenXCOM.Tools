@@ -65,8 +65,8 @@ namespace DSShared.Windows
 			if (f != null)
 			{
 				f.StartPosition = FormStartPosition.Manual;
-				f.Load    += OnLoad;
-				f.Closing += OnClose;
+				f.Load        += OnLoad;
+				f.FormClosing += OnClose;
 
 				AddProperty("Left", "Top", "Width", "Height");
 			}

@@ -77,23 +77,22 @@ namespace MapView.Forms.MapObservers.TopViews
 			Font  = new Font("Comic Sans MS", 7);
 			Brush = new SolidBrush(Color.LightBlue);
 
-			// cache each quadrant's rectangular bounding path
-			for (int i = 0; i != 4; ++i)
+			for (int quad = 0; quad != 4; ++quad) // cache each quadrant's rectangular bounding path
 			{
 				var p0 = new Point(
-								StartX + QuadWidthTotal * i - 1,
+								StartX + QuadWidthTotal * quad - 1,
 								StartY);
 				var p1 = new Point(
-								StartX + QuadWidthTotal * i + SpriteWidth + 1,
+								StartX + QuadWidthTotal * quad + SpriteWidth + 1,
 								StartY);
 				var p2 = new Point(
-								StartX + QuadWidthTotal * i + SpriteWidth + 1,
+								StartX + QuadWidthTotal * quad + SpriteWidth + 1,
 								StartY + SpriteHeight + 1);
 				var p3 = new Point(
-								StartX + QuadWidthTotal * i,
+								StartX + QuadWidthTotal * quad,
 								StartY + SpriteHeight + 1);
 				var p4 = new Point(
-								StartX + QuadWidthTotal * i,
+								StartX + QuadWidthTotal * quad,
 								StartY);
 
 				var path = new GraphicsPath();
@@ -103,7 +102,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				path.AddLine(p2, p3);
 				path.AddLine(p3, p4); // NOTE: try DrawRectangle() it's even worse.
 
-				switch (i)
+				switch (quad)
 				{
 					case 0: _pathFloor   = path; break;
 					case 1: _pathWest    = path; break;

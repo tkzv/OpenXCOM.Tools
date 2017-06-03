@@ -73,7 +73,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 
-			Globals.LoadExtras();
+			Globals.LoadExtraSprites();
 		}
 		#endregion
 
@@ -166,23 +166,26 @@ namespace MapView.Forms.MapObservers.TopViews
 
 					case MouseButtons.Right:
 					{
-						switch (clicks)
+						if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick) // do not set a part in a quad unless a tile is selected.
 						{
-							case 1:
-								var tileView = ViewerFormsManager.TileView.Control;
-								_tile[SelectedQuadrant] = tileView.SelectedTilePart;
+							switch (clicks)
+							{
+								case 1:
+									var tileView = ViewerFormsManager.TileView.Control;
+									_tile[SelectedQuadrant] = tileView.SelectedTilePart;
 
-								MainViewUnderlay.Instance.Refresh();
-								ViewerFormsManager.RouteView.Control.Refresh();
-								break;
+									MainViewUnderlay.Instance.Refresh();
+									ViewerFormsManager.RouteView.Control.Refresh();
+									break;
 
-							case 2:
-								_tile[SelectedQuadrant] = null;
-								break;
+								case 2:
+									_tile[SelectedQuadrant] = null;
+									break;
+							}
+
+							MapBase.MapChanged = true;
+							Refresh();
 						}
-
-						MapBase.MapChanged = true;
-						Refresh();
 
 						break;
 					}

@@ -180,7 +180,7 @@ namespace MapView
 
 			_instance = this;
 
-			Closing += OnClosingSaveOptions;
+			FormClosing += OnClosingSaveOptions;
 
 
 			_optionsManager = new OptionsManager(); // goes before LoadOptions()
@@ -681,6 +681,9 @@ namespace MapView
 			}
 		}
 
+
+		private bool _quit;
+
 		/// <summary>
 		/// This has nothing to do with the Registry anymore, but it saves
 		/// MainView's Options as well as its screen-size and -position to YAML
@@ -690,16 +693,26 @@ namespace MapView
 		/// <param name="args"></param>
 		private void OnClosingSaveOptions(object sender, CancelEventArgs args)
 		{
+			LogFile.WriteLine("");
+			LogFile.WriteLine("XCMainWindow.OnClosingSaveOptions");
+
+			_quit = true;
+			args.Cancel = false;
+
 			if (SaveAlert() == DialogResult.Cancel)
+			{
+				_quit = false;
 				args.Cancel = true;
+			}
 
 			if (SaveAlertMaptree() == DialogResult.Cancel)
-				args.Cancel = true;
-
-
-			if (!args.Cancel)
 			{
-				//LogFile.WriteLine("OnCloseSaveRegistry MainView");
+				_quit = false;
+				args.Cancel = true;
+			}
+
+			if (_quit)
+			{
 				_mainMenusManager.IsQuitting();
 
 				_optionsManager.SaveOptions(); // save MV_OptionsFile // TODO: Save settings when closing the Options form(s).
@@ -848,8 +861,13 @@ namespace MapView
 
 		private void OnQuitClick(object sender, EventArgs e)
 		{
-			OnClosingSaveOptions(null, new CancelEventArgs(true));
-			Application.Exit();
+			LogFile.WriteLine("");
+			LogFile.WriteLine("XCMainWindow.OnQuitClick");
+
+			OnClosingSaveOptions(null, new CancelEventArgs()); // set '_quit' flag
+
+			if (_quit)
+				Environment.Exit(0); // god, that works so much better than Application.Exit()
 		}
 
 
@@ -868,7 +886,7 @@ namespace MapView
 
 				_foptions.Show();
 
-				_foptions.Closing += (sender1, e1) =>
+				_foptions.FormClosing += (sender1, e1) =>
 				{
 					if (!_closing)
 						OnOptionsClick(sender, e);
@@ -1087,39 +1105,52 @@ namespace MapView
 //					goodnode.ForeColor = SystemColors.HighlightText;
 
 
-					cmMapTreeMenu.MenuItems.Clear();
-
-					cmMapTreeMenu.MenuItems.Add("Add Group ...", new EventHandler(OnAddGroupClick));
-
-					if (tvMaps.SelectedNode != null)
+					if (!_mainViewUnderlay.MapBase.MapChanged) // prevents a bunch of .net.problems, like looping dialogs.
 					{
-						switch (tvMaps.SelectedNode.Level)
+						cmMapTreeMenu.MenuItems.Clear();
+
+						cmMapTreeMenu.MenuItems.Add("Add Group ...", new EventHandler(OnAddGroupClick));
+
+						if (tvMaps.SelectedNode != null)
 						{
-							case 0: // group-node.
-								cmMapTreeMenu.MenuItems.Add("-");
-								cmMapTreeMenu.MenuItems.Add("Edit Group ...", new EventHandler(OnEditGroupClick));
-								cmMapTreeMenu.MenuItems.Add("Delete Group",   new EventHandler(OnDeleteGroupClick));
-								cmMapTreeMenu.MenuItems.Add("-");
-								cmMapTreeMenu.MenuItems.Add("Add Category ...", new EventHandler(OnAddCategoryClick));
-								break;
+							switch (tvMaps.SelectedNode.Level)
+							{
+								case 0: // group-node.
+									cmMapTreeMenu.MenuItems.Add("-");
+									cmMapTreeMenu.MenuItems.Add("Edit Group ...", new EventHandler(OnEditGroupClick));
+									cmMapTreeMenu.MenuItems.Add("Delete Group",   new EventHandler(OnDeleteGroupClick));
+									cmMapTreeMenu.MenuItems.Add("-");
+									cmMapTreeMenu.MenuItems.Add("Add Category ...", new EventHandler(OnAddCategoryClick));
+									break;
 
-							case 1: // category-node.
-								cmMapTreeMenu.MenuItems.Add("-");
-								cmMapTreeMenu.MenuItems.Add("Edit Category ...", new EventHandler(OnEditCategoryClick));
-								cmMapTreeMenu.MenuItems.Add("Delete Category",   new EventHandler(OnDeleteCategoryClick));
-								cmMapTreeMenu.MenuItems.Add("-");
-								cmMapTreeMenu.MenuItems.Add("Add Tileset ...", new EventHandler(OnAddTilesetClick));
-								break;
+								case 1: // category-node.
+									cmMapTreeMenu.MenuItems.Add("-");
+									cmMapTreeMenu.MenuItems.Add("Edit Category ...", new EventHandler(OnEditCategoryClick));
+									cmMapTreeMenu.MenuItems.Add("Delete Category",   new EventHandler(OnDeleteCategoryClick));
+									cmMapTreeMenu.MenuItems.Add("-");
+									cmMapTreeMenu.MenuItems.Add("Add Tileset ...", new EventHandler(OnAddTilesetClick));
+									break;
 
-							case 2: // tileset-node.
-								cmMapTreeMenu.MenuItems.Add("-");
-								cmMapTreeMenu.MenuItems.Add("Edit Tileset ...", new EventHandler(OnEditTilesetClick));
-								cmMapTreeMenu.MenuItems.Add("Delete Tileset",   new EventHandler(OnDeleteTilesetClick));
-								break;
+								case 2: // tileset-node.
+									cmMapTreeMenu.MenuItems.Add("-");
+									cmMapTreeMenu.MenuItems.Add("Edit Tileset ...", new EventHandler(OnEditTilesetClick));
+									cmMapTreeMenu.MenuItems.Add("Delete Tileset",   new EventHandler(OnDeleteTilesetClick));
+									break;
+							}
 						}
-					}
 
-					cmMapTreeMenu.Show(tvMaps, e.Location);
+						cmMapTreeMenu.Show(tvMaps, e.Location);
+					}
+					else
+						MessageBox.Show(
+									this,
+									"The current Map must be saved, or its changes"
+										+ " cancelled before modifying the Map Tree.",
+									"Maptree Changed",
+									MessageBoxButtons.OK,
+									MessageBoxIcon.Asterisk,
+									MessageBoxDefaultButton.Button1,
+									0);
 					break;
 			}
 		}
@@ -1589,6 +1620,16 @@ namespace MapView
 			}
 		}
 
+
+//		private bool _bypassSaveAlert;	// when reloading the MapTree after making a tileset edit
+										// the treeview's BeforeSelect event fires. This needlessly
+										// asks to save the Map (if it had already changed) and
+										// results in an endless cycle of confirmation dialogs ...
+										// so bypass all that.
+										//
+										// Congratulations. Another programming language/framework
+										// I've come to hate. The BeforeSelect event fires twice
+										// (at least) rendering the boolean entirely obsolete.
 		/// <summary>
 		/// Asks user to save before switching Maps if applicable.
 		/// </summary>
@@ -1698,7 +1739,7 @@ namespace MapView
 			{
 				switch (MessageBox.Show(
 									this,
-									"Do you want to save changes to the Map and/or Routes?",
+									"Do you want to save changes to the Map and its Routes?",
 									"Map Changed",
 									MessageBoxButtons.YesNoCancel,
 									MessageBoxIcon.Question,
