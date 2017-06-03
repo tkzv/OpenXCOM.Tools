@@ -75,7 +75,7 @@ namespace MapView
 			string dirApplication = Path.GetDirectoryName(Application.ExecutablePath);
 			string dirSettings    = Path.Combine(dirApplication, "settings");
 #if DEBUG
-			LogFile.SetLogFilePath(dirApplication); // creates a logfile/ wipes the old one.
+			LogFile.SetLogFilePath(dirApplication, true); // creates a logfile/ wipes the old one.
 #endif
 
 			LogFile.WriteLine("Starting MAIN MapView window ...");
@@ -849,12 +849,34 @@ namespace MapView
 
 		private void OnConfiguratorClick(object sender, EventArgs e)
 		{
-			using (var f = new ConfigurationForm(true))
+			if (_mainViewUnderlay.MainViewOverlay.MapBase.MapChanged) // TODO: offer to save the Map. And if necessary the Maptree.
+				MessageBox.Show(
+							this,
+							"The current Map must be saved, or its changes"
+								+ " cancelled before using the Configurator.",
+							"Map Changed",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Asterisk,
+							MessageBoxDefaultButton.Button1,
+							0);
+			else if (MaptreeChanged)
+				MessageBox.Show(
+							this,
+							"The Map Tree must be saved before using the Configurator.",
+							"Maptree Changed",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Asterisk,
+							MessageBoxDefaultButton.Button1,
+							0);
+			else
 			{
-				if (f.ShowDialog(this) == DialogResult.OK)
+				using (var f = new ConfigurationForm(true))
 				{
-					Application.Restart();
-					Environment.Exit(0);
+					if (f.ShowDialog(this) == DialogResult.OK)
+					{
+						Application.Restart();
+						Environment.Exit(0);
+					}
 				}
 			}
 		}
@@ -1105,7 +1127,7 @@ namespace MapView
 //					goodnode.ForeColor = SystemColors.HighlightText;
 
 
-					if (!_mainViewUnderlay.MapBase.MapChanged) // prevents a bunch of .net.problems, like looping dialogs.
+					if (_mainViewUnderlay.MapBase == null || !_mainViewUnderlay.MapBase.MapChanged) // prevents a bunch of .net.problems, like looping dialogs.
 					{
 						cmMapTreeMenu.MenuItems.Clear();
 
@@ -1142,11 +1164,11 @@ namespace MapView
 						cmMapTreeMenu.Show(tvMaps, e.Location);
 					}
 					else
-						MessageBox.Show(
+						MessageBox.Show( // TODO: offer to save the Map.
 									this,
 									"The current Map must be saved, or its changes"
 										+ " cancelled before modifying the Map Tree.",
-									"Maptree Changed",
+									"Map Changed",
 									MessageBoxButtons.OK,
 									MessageBoxIcon.Asterisk,
 									MessageBoxDefaultButton.Button1,

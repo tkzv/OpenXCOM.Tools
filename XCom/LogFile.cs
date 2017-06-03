@@ -49,11 +49,11 @@ namespace XCom
 #endif
 		}
 
-		public static void SetLogFilePath(string path)
+		public static void SetLogFilePath(string path, bool append = false)
 		{
 #if DEBUG
 			_pathdir = Path.Combine(path, DebugLogFile);
-			CreateLog();
+			if (!append) CreateLog();
 #endif
 		}
 	}

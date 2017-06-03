@@ -130,8 +130,8 @@ namespace MapView
 
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
-					if (f.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))
-						Ufo = f.SelectedPath.Substring(0, f.SelectedPath.Length - 1);
+					if (f.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))		// TODO: probly not needed.
+						Ufo = f.SelectedPath.Substring(0, f.SelectedPath.Length - 1);	// TODO: drive-root directories do funny things. Like append '\'
 					else
 						Ufo = f.SelectedPath;
 				}
@@ -151,8 +151,8 @@ namespace MapView
 
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
-					if (f.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))
-						Tftd = f.SelectedPath.Substring(0, f.SelectedPath.Length - 1);
+					if (f.SelectedPath.EndsWith(@"\", StringComparison.Ordinal))		// TODO: probly not needed.
+						Tftd = f.SelectedPath.Substring(0, f.SelectedPath.Length - 1);	// TODO: drive-root directories do funny things. Like append '\'
 					else
 						Tftd = f.SelectedPath;
 				}
@@ -173,10 +173,10 @@ namespace MapView
 				Ufo  = Ufo.Trim();
 				Tftd = Tftd.Trim();
 
-				if (Ufo.EndsWith(@"\", StringComparison.Ordinal))
+				if (Ufo.EndsWith(@"\", StringComparison.Ordinal))	// TODO: drive-root directories do funny things. Like append '\'
 					Ufo = Ufo.Substring(0, Ufo.Length - 1);
 
-				if (Tftd.EndsWith(@"\", StringComparison.Ordinal))
+				if (Tftd.EndsWith(@"\", StringComparison.Ordinal))	// TODO: drive-root directories do funny things. Like append '\'
 					Tftd = Tftd.Substring(0, Tftd.Length - 1);
 
 				if (String.IsNullOrEmpty(Ufo) && String.IsNullOrEmpty(Tftd))
@@ -255,7 +255,7 @@ namespace MapView
 				{
 					DialogResult = DialogResult.OK;
 				}
-				else if (cbTilesets.Checked) // && rbTilesetsTpl.Checked
+				else if (cbTilesets.Checked)// && rbTilesetsTpl.Checked)
 				{
 					ShowInfoDialog("Tileset template has been created in the settings subfolder.");
 					Close();

@@ -557,7 +557,7 @@ namespace MapView
 												+ " or use Add Tileset to make it editable, or as a last"
 												+ " resort delete it from your disk."
 												+ Environment.NewLine + Environment.NewLine
-												+ GetFullPath(Tileset));
+												+ GetFullPathMap(Tileset));
 												// TODO: Ask user if he/she wants to overwrite the Map-file.
 							}
 							else
@@ -575,7 +575,7 @@ namespace MapView
 												+ Environment.NewLine + Environment.NewLine
 												+ Tileset
 												+ Environment.NewLine + Environment.NewLine
-												+ " Options are to edit that one, delete that one,"
+												+ "Options are to edit that one, delete that one,"
 												+ " or choose a different label for this one.");
 								}
 								else
@@ -584,8 +584,8 @@ namespace MapView
 
 									try
 									{
-										string pfeMap    = GetFullPath(Tileset);
-										string pfeMapPre = GetFullPath(TilesetOriginal);
+										string pfeMap    = GetFullPathMap(Tileset);
+										string pfeMapPre = GetFullPathMap(TilesetOriginal);
 
 										LogFile.WriteLine(". . . . fileMapPre= " + pfeMapPre);
 										LogFile.WriteLine(". . . . fileMap= " + pfeMap);
@@ -595,6 +595,14 @@ namespace MapView
 
 										if (File.Exists(pfeMap))		// NOTE: do *not* alter the descriptor if File.Move() went bork.
 										{								// This is likely redundant: File.Move() should throw.
+											string pfeRoutes    = GetFullPathRoutes(Tileset);
+											string pfeRoutesPre = GetFullPathRoutes(TilesetOriginal);
+
+											LogFile.WriteLine(". . . . fileRoutesPre= " + pfeRoutesPre);
+											LogFile.WriteLine(". . . . fileRoutes= " + pfeRoutes);
+
+											File.Move(pfeRoutesPre, pfeRoutes);
+
 											var category = TileGroup.Categories[Category];
 											Descriptor = new Descriptor(
 																	Tileset,
@@ -678,7 +686,7 @@ namespace MapView
 //								{
 								try
 								{
-									string pfeMap = GetFullPath(Tileset);
+									string pfeMap = GetFullPathMap(Tileset);
 
 									LogFile.WriteLine(". . . fileMap= " + pfeMap);
 
@@ -836,10 +844,21 @@ namespace MapView
 		/// </summary>
 		/// <param name="labelMap"></param>
 		/// <returns></returns>
-		private string GetFullPath(string labelMap)
+		private string GetFullPathMap(string labelMap)
 		{
-			string pfeLabel = Path.Combine(BasePath, MapFileChild.MapsDir);
-			return Path.Combine(pfeLabel, labelMap + MapFileChild.MapExt);
+			string dirMaps = Path.Combine(BasePath, MapFileChild.MapsDir);
+			return Path.Combine(dirMaps, labelMap + MapFileChild.MapExt);
+		}
+
+		/// <summary>
+		/// Gets the fullpath for a Routes-file.
+		/// </summary>
+		/// <param name="labelRoutes"></param>
+		/// <returns></returns>
+		private string GetFullPathRoutes(string labelRoutes)
+		{
+			string dirRoutes = Path.Combine(BasePath, RouteNodeCollection.RoutesDir);
+			return Path.Combine(dirRoutes, labelRoutes + RouteNodeCollection.RouteExt);
 		}
 
 		/// <summary>
@@ -855,7 +874,7 @@ namespace MapView
 			string pfeMap = null;
 			if (!String.IsNullOrEmpty(labelMap))
 			{
-				pfeMap = GetFullPath(labelMap);
+				pfeMap = GetFullPathMap(labelMap);
 				LogFile.WriteLine(". pfeMap= " + pfeMap);
 			}
 

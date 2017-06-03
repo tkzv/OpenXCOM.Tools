@@ -48,8 +48,8 @@ namespace XCom
 				string basepath,
 				Palette palette)
 		{
-			LogFile.WriteLine("Descriptor cTor tileset= " + tileset);
-			LogFile.WriteLine("");
+			//LogFile.WriteLine("Descriptor cTor tileset= " + tileset);
+			//LogFile.WriteLine("");
 
 			Label    = tileset;
 			Terrains = terrains;
