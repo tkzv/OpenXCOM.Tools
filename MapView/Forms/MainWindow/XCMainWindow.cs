@@ -724,7 +724,6 @@ namespace MapView
 
 				_optionsManager.SaveOptions(); // save MV_OptionsFile // TODO: Save settings when closing the Options form(s).
 
-
 //				if (PathsEditor.SaveRegistry) // TODO: re-implement.
 				{
 					WindowState = FormWindowState.Normal;
@@ -759,7 +758,7 @@ namespace MapView
 										Left   = Left, // relax, YamlDotNet figures it out.
 										Top    = Top,
 										Width  = Width,
-										Height = Height - SystemInformation.CaptionButtonSize.Height
+										Height = Height - SystemInformation.MenuBarButtonSize.Height - 1 // total guess here.
 									}
 								};
 
