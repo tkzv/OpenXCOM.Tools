@@ -83,8 +83,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					cbSpawnRank.Items.Clear();
 
-					if (_mapFile.Parts[0][0].Palette == Palette.UfoBattle)
-						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);
+					if (_mapFile.Parts[0][0].Palette == Palette.UfoBattle)				// ie. Get the palette of the 1st image of the
+						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);	// 1st tilepart ... of the MapFileChild object.
 					else
 						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankTftd);
 

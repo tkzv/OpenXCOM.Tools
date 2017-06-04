@@ -23,12 +23,12 @@ namespace XCom
 		/// <param name="pathConfig"></param>
 		public static void InitializeResources(PathInfo pathConfig)
 		{
-			Directory.SetCurrentDirectory(pathConfig.DirectoryPath); // change to /settings dir // TODO: screw settings dir.
+//			Directory.SetCurrentDirectory(pathConfig.DirectoryPath); // change to /settings dir // TODO: screw settings dir.
 //			XConsole.Init(20);
 
 			TileGroupInfo = new TileGroupManager(new TilesetManager(pathConfig.FullPath));
 
-			Directory.SetCurrentDirectory(SharedSpace.Instance.GetShare(SharedSpace.ApplicationDirectory)); // change back to app dir
+//			Directory.SetCurrentDirectory(SharedSpace.Instance.GetShare(SharedSpace.ApplicationDirectory)); // change back to app dir
 		}
 
 		/// <summary>
@@ -55,11 +55,11 @@ namespace XCom
 				//LogFile.WriteLine(". path= " + path);
 				//LogFile.WriteLine(". file= " + file);
 
-				var pf = Path.Combine(path, file);
+				var pfSpriteset = Path.Combine(path, file);
 				//LogFile.WriteLine(". pf= " + pf);
 
-				string pfePck = pf + SpriteCollection.PckExt;
-				string pfeTab = pf + SpriteCollection.TabExt;
+				string pfePck = pfSpriteset + SpriteCollection.PckExt;
+				string pfeTab = pfSpriteset + SpriteCollection.TabExt;
 
 				if (!File.Exists(pfePck) || !File.Exists(pfeTab))
 				{
@@ -80,21 +80,21 @@ namespace XCom
 						_palSpritesets.Add(pal, new Dictionary<string, SpriteCollection>());
 
 					var spritesets = _palSpritesets[pal];
-					if (!spritesets.ContainsKey(pf))
+					if (!spritesets.ContainsKey(pfSpriteset))
 					{
 						//LogFile.WriteLine(". . pf not found in spriteset dictionary -> add new SpriteCollection");
 
 						using (var strPck = File.OpenRead(pfePck))
 						using (var strTab = File.OpenRead(pfeTab))
 						{
-							spritesets.Add(pf, new SpriteCollection(
-																strPck,
-																strTab,
-																lenTabOffset,
-																pal));
+							spritesets.Add(pfSpriteset, new SpriteCollection(
+																		strPck,
+																		strTab,
+																		lenTabOffset,
+																		pal));
 						}
 					}
-					return _palSpritesets[pal][pf];
+					return _palSpritesets[pal][pfSpriteset];
 				}
 			}
 			return null;

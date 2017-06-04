@@ -87,8 +87,8 @@ namespace XCom
 		/// <returns>true if no exception was thrown</returns>
 		public bool SaveTileGroups()
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("TileGroupManager.SaveTileGroups");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("TileGroupManager.SaveTileGroups");
 
 			string dirSettings   = SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory);
 			string pfeMapTree    = Path.Combine(dirSettings, PathInfo.ConfigTilesets);		// "MapTilesets.yml"

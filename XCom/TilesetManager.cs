@@ -23,23 +23,11 @@ namespace XCom
 			get { return _tilesets; }
 		}
 
-//		private readonly List<string> _types      = new List<string>();
-//		private readonly List<string> _categories = new List<string>();
-
-		private List<string> _terrains = new List<string>();
-		internal List<string> Terrains
-		{
-			get { return _terrains; }
-		}
-
 		private readonly List<string> _groups = new List<string>();
 		internal List<string> Groups
 		{
 			get { return _groups; }
 		}
-
-		internal string FullPath // TODO: might not be needed.
-		{ get; set; }
 		#endregion
 
 
@@ -53,8 +41,8 @@ namespace XCom
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("TilesetManager cTor");
 
-			FullPath = fullpath;
-
+			// TODO: if exists(fullpath)
+			// else error out.
 
 			var progress = ProgressBarForm.Instance;
 			progress.SetInfo("Parsing MapTilesets ...");
@@ -72,9 +60,6 @@ namespace XCom
 			progress.SetTotal(typeCount);
 
 
-			// TODO: if exists(pfe)
-			// else error out.
-
 			bool isUfoConfigured  = !String.IsNullOrEmpty(SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryUfo));
 			bool isTftdConfigured = !String.IsNullOrEmpty(SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryTftd));
 
@@ -84,12 +69,12 @@ namespace XCom
 				str.Load(sr);
 
 				var nodeRoot = str.Documents[0].RootNode as YamlMappingNode;
-//				foreach (var node in nodeRoot.Children) // iterate over all the tilesets
+//				foreach (var node in nodeRoot.Children) // parses YAML document divisions, ie "---"
 //				{
 				//LogFile.WriteLine(". node.Key(ScalarNode)= " + (YamlScalarNode)node.Key); // "tilesets"
 
 				var nodeTilesets = nodeRoot.Children[new YamlScalarNode("tilesets")] as YamlSequenceNode;
-				foreach (YamlMappingNode nodeTileset in nodeTilesets)
+				foreach (YamlMappingNode nodeTileset in nodeTilesets) // iterate over all the tilesets
 				{
 					//LogFile.WriteLine(". . tileset= " + tileset); // lists all data in the tileset
 
@@ -112,16 +97,10 @@ namespace XCom
 
 					string nodeCategory = nodeTileset.Children[new YamlScalarNode("category")].ToString();
 					//LogFile.WriteLine(". . category= " + nodeCategory); // eg. "Ufo"
-//					if (!_categories.Contains(nodeCategory))
-//						_categories.Add(nodeCategory);
-
 
 					string nodeLabel = nodeTileset.Children[new YamlScalarNode("type")].ToString();
 					nodeLabel = nodeLabel.ToUpperInvariant();
 					//LogFile.WriteLine(". . type= " + nodeLabel); // eg. "UFO_110"
-//					if (!_types.Contains(nodeLabel))
-//						_types.Add(nodeLabel);
-
 
 					var terrainList = new List<string>();
 
@@ -134,12 +113,6 @@ namespace XCom
 						terrain = terrain.ToUpperInvariant();
 
 						terrainList.Add(terrain);
-
-						if (!Terrains.Contains(terrain)) // TODO: this is probly irrelevant since YAML etc.
-						{
-							//LogFile.WriteLine(". . . . adding terrain");
-							Terrains.Add(terrain);
-						}
 					}
 
 
@@ -149,8 +122,6 @@ namespace XCom
 					{
 						nodeBasepath = nodeTileset.Children[basepath].ToString();
 						//LogFile.WriteLine(". . basepath= " + nodeBasepath);
-//						if (!Groups.Contains(nodeBasepath))
-//							Groups.Add(nodeBasepath);
 					}
 					//else LogFile.WriteLine(". . basepath not found.");
 
