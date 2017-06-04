@@ -108,25 +108,29 @@ namespace DSShared.Windows
 		/// <param name="e"></param>
 		private void OnLoad(object sender, EventArgs e)
 		{
-//			string file = Path.Combine(SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory), PathInfo.YamlViewers);
+			string dirSettings = Path.Combine(
+											Path.GetDirectoryName(Application.ExecutablePath),
+											PathInfo.SettingsDirectory);
+			string pfeViewers  = Path.Combine(
+											dirSettings,
+											PathInfo.ConfigViewers);
 
-			string path = AppDomain.CurrentDomain.BaseDirectory;	// NOTE: this is probably where 'DSShared.dll' resides.
-			const string file = @"settings\MapViewers.yml";			// not necessarily where 'MapView.exe' is ....
-			string pfe = Path.Combine(path, file);
-
-			using (var sr = new StreamReader(File.OpenRead(pfe)))
+			if (File.Exists(pfeViewers))
 			{
-				var str = new YamlStream();
-				str.Load(sr);
-
-				var nodeRoot = (YamlMappingNode)str.Documents[0].RootNode; // TODO: Error handling. ->
-				foreach (var node in nodeRoot.Children)
+				using (var sr = new StreamReader(File.OpenRead(pfeViewers)))
 				{
-					string viewer = ((YamlScalarNode)node.Key).Value;
-					if (String.Equals(viewer, _regkey, StringComparison.OrdinalIgnoreCase))
+					var str = new YamlStream();
+					str.Load(sr);
+
+					var nodeRoot = (YamlMappingNode)str.Documents[0].RootNode; // TODO: Error handling. ->
+					foreach (var node in nodeRoot.Children)
 					{
-						var keyvals = (YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)];
-						ImportValues(keyvals);
+						string viewer = ((YamlScalarNode)node.Key).Value;
+						if (String.Equals(viewer, _regkey, StringComparison.OrdinalIgnoreCase))
+						{
+							var keyvals = (YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)];
+							ImportValues(keyvals);
+						}
 					}
 				}
 			}
@@ -204,167 +208,170 @@ namespace DSShared.Windows
 
 //				if (_saveOnClose)
 //				{
-//				string path = SharedSpace.Instance.GetString(SharedSpace.SettingsDirectory);
+				string dirSettings   = Path.Combine(
+												Path.GetDirectoryName(Application.ExecutablePath),
+												PathInfo.SettingsDirectory);
+				string pfeViewers    = Path.Combine(
+												dirSettings,
+												PathInfo.ConfigViewers);
+				string pfeViewersOld = Path.Combine(
+												dirSettings,
+												PathInfo.ConfigViewersOld);
 
-				string path = AppDomain.CurrentDomain.BaseDirectory;	// NOTE: this is probably where 'DSShared.dll' resides.
-																		// not necessarily where 'MapView.exe' is ....
-				const string fileSrc = @"settings\MapViewers.yml";
-				string src = Path.Combine(path, fileSrc);
-
-				const string fileDst = @"settings\MapViewers_old.yml";
-				string dst = Path.Combine(path, fileDst);
-
-				File.Copy(src, dst, true);
-
-				using (var sr = new StreamReader(File.OpenRead(dst))) // but now use dst as src ->
-				using (var fs = new FileStream(src, FileMode.Create)) // overwrite previous config.
-				using (var sw = new StreamWriter(fs))
+				if (File.Exists(pfeViewers))
 				{
-					while (sr.Peek() != -1)
+					File.Copy(pfeViewers, pfeViewersOld, true);
+
+					using (var sr = new StreamReader(File.OpenRead(pfeViewersOld))) // but now use dst as src ->
+					using (var fs = new FileStream(pfeViewers, FileMode.Create)) // overwrite previous config.
+					using (var sw = new StreamWriter(fs))
 					{
-						string line = sr.ReadLine();
-						//DSLogFile.WriteLine(". line= " + line);
-
-						if (String.Equals(line, _regkey + ":", StringComparison.OrdinalIgnoreCase))
+						while (sr.Peek() != -1)
 						{
-							//DSLogFile.WriteLine(". line IS _regkey");
-							line = sr.ReadLine();
-							line = sr.ReadLine();
-							line = sr.ReadLine();
-							line = sr.ReadLine(); // heh
+							string line = sr.ReadLine();
+							//DSLogFile.WriteLine(". line= " + line);
 
-//							if (String.Equals(_regkey, "TopView", StringComparison.OrdinalIgnoreCase))
-//							{
-//								DSLogFile.WriteLine(". _regkey IS TopView"); // these were to leave space for visible quadrants
-//								line = sr.ReadLine();
-//								line = sr.ReadLine();
-//								line = sr.ReadLine();
-//								line = sr.ReadLine(); // heheh
-//							}
-
-							object node = null;
-
-							switch (_regkey)
+							if (String.Equals(line, _regkey + ":", StringComparison.OrdinalIgnoreCase))
 							{
-								case "TopView":
+								//DSLogFile.WriteLine(". line IS _regkey");
+								line = sr.ReadLine();
+								line = sr.ReadLine();
+								line = sr.ReadLine();
+								line = sr.ReadLine(); // heh
+
+//								if (String.Equals(_regkey, "TopView", StringComparison.OrdinalIgnoreCase))
+//								{
+//									DSLogFile.WriteLine(". _regkey IS TopView"); // these were to leave space for visible quadrants
+//									line = sr.ReadLine();
+//									line = sr.ReadLine();
+//									line = sr.ReadLine();
+//									line = sr.ReadLine(); // heheh
+//								}
+
+								object node = null;
+
+								switch (_regkey)
 								{
-									//DSLogFile.WriteLine(". . _regkey IS TopView");
-									node = new
+									case "TopView":
 									{
-										TopView = new
+										//DSLogFile.WriteLine(". . _regkey IS TopView");
+										node = new
 										{
-											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
-											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
-											Width  = _infoDictionary["Width"] .GetValue(_value, null),
-											Height = _infoDictionary["Height"].GetValue(_value, null)
-										},
-									};
-									break;
+											TopView = new
+											{
+												Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+												Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+												Width  = _infoDictionary["Width"] .GetValue(_value, null),
+												Height = _infoDictionary["Height"].GetValue(_value, null)
+											},
+										};
+										break;
+									}
+									case "RouteView":
+									{
+										//DSLogFile.WriteLine(". . _regkey IS RouteView");
+										node = new
+										{
+											RouteView = new
+											{
+												Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+												Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+												Width  = _infoDictionary["Width"] .GetValue(_value, null),
+												Height = _infoDictionary["Height"].GetValue(_value, null)
+											},
+										};
+										break;
+									}
+									case "TopRouteView":
+									{
+										//DSLogFile.WriteLine(". . _regkey IS TopRouteView");
+										node = new
+										{
+											TopRouteView = new
+											{
+												Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+												Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+												Width  = _infoDictionary["Width"] .GetValue(_value, null),
+												Height = _infoDictionary["Height"].GetValue(_value, null)
+											},
+										};
+										break;
+									}
+									case "TileView":
+									{
+										//DSLogFile.WriteLine(". . _regkey IS TileView");
+										node = new
+										{
+											TileView = new
+											{
+												Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+												Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+												Width  = _infoDictionary["Width"] .GetValue(_value, null),
+												Height = _infoDictionary["Height"].GetValue(_value, null)
+											},
+										};
+										break;
+									}
+									case "Console":
+									{
+										//DSLogFile.WriteLine(". . _regkey IS Console");
+										node = new
+										{
+											Console = new
+											{
+												Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+												Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+												Width  = _infoDictionary["Width"] .GetValue(_value, null),
+												Height = _infoDictionary["Height"].GetValue(_value, null)
+											},
+										};
+										break;
+									}
+									case "Options":
+									{
+										//DSLogFile.WriteLine(". . _regkey IS Options");
+										node = new
+										{
+											Options = new
+											{
+												Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+												Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+												Width  = _infoDictionary["Width"] .GetValue(_value, null),
+												Height = _infoDictionary["Height"].GetValue(_value, null)
+											},
+										};
+										break;
+									}
+									case "PckView":
+									{
+										//DSLogFile.WriteLine(". . _regkey IS PckView");
+										node = new
+										{
+											PckView = new
+											{
+												Left   = _infoDictionary["Left"]  .GetValue(_value, null),
+												Top    = _infoDictionary["Top"]   .GetValue(_value, null),
+												Width  = _infoDictionary["Width"] .GetValue(_value, null),
+												Height = _infoDictionary["Height"].GetValue(_value, null)
+											},
+										};
+										break;
+									}
 								}
-								case "RouteView":
+
+								if (node != null)
 								{
-									//DSLogFile.WriteLine(". . _regkey IS RouteView");
-									node = new
-									{
-										RouteView = new
-										{
-											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
-											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
-											Width  = _infoDictionary["Width"] .GetValue(_value, null),
-											Height = _infoDictionary["Height"].GetValue(_value, null)
-										},
-									};
-									break;
-								}
-								case "TopRouteView":
-								{
-									//DSLogFile.WriteLine(". . _regkey IS TopRouteView");
-									node = new
-									{
-										TopRouteView = new
-										{
-											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
-											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
-											Width  = _infoDictionary["Width"] .GetValue(_value, null),
-											Height = _infoDictionary["Height"].GetValue(_value, null)
-										},
-									};
-									break;
-								}
-								case "TileView":
-								{
-									//DSLogFile.WriteLine(". . _regkey IS TileView");
-									node = new
-									{
-										TileView = new
-										{
-											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
-											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
-											Width  = _infoDictionary["Width"] .GetValue(_value, null),
-											Height = _infoDictionary["Height"].GetValue(_value, null)
-										},
-									};
-									break;
-								}
-								case "Console":
-								{
-									//DSLogFile.WriteLine(". . _regkey IS Console");
-									node = new
-									{
-										Console = new
-										{
-											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
-											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
-											Width  = _infoDictionary["Width"] .GetValue(_value, null),
-											Height = _infoDictionary["Height"].GetValue(_value, null)
-										},
-									};
-									break;
-								}
-								case "Options":
-								{
-									//DSLogFile.WriteLine(". . _regkey IS Options");
-									node = new
-									{
-										Options = new
-										{
-											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
-											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
-											Width  = _infoDictionary["Width"] .GetValue(_value, null),
-											Height = _infoDictionary["Height"].GetValue(_value, null)
-										},
-									};
-									break;
-								}
-								case "PckView":
-								{
-									//DSLogFile.WriteLine(". . _regkey IS PckView");
-									node = new
-									{
-										PckView = new
-										{
-											Left   = _infoDictionary["Left"]  .GetValue(_value, null),
-											Top    = _infoDictionary["Top"]   .GetValue(_value, null),
-											Width  = _infoDictionary["Width"] .GetValue(_value, null),
-											Height = _infoDictionary["Height"].GetValue(_value, null)
-										},
-									};
-									break;
+									//DSLogFile.WriteLine(". node VALID -> serialize");
+									var ser = new Serializer();
+									ser.Serialize(sw, node);
 								}
 							}
-
-							if (node != null)
-							{
-								//DSLogFile.WriteLine(". node VALID -> serialize");
-								var ser = new Serializer();
-								ser.Serialize(sw, node);
-							}
+							else
+								sw.WriteLine(line);
 						}
-						else
-							sw.WriteLine(line);
 					}
+					File.Delete(pfeViewersOld);
 				}
-				File.Delete(dst);
 //			}
 			}
 		}

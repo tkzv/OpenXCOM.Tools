@@ -80,7 +80,7 @@ namespace MapView
 		internal XCMainWindow()
 		{
 			string dirApplication = Path.GetDirectoryName(Application.ExecutablePath);
-			string dirSettings    = Path.Combine(dirApplication, "settings");
+			string dirSettings    = Path.Combine(dirApplication, PathInfo.SettingsDirectory);
 #if DEBUG
 			LogFile.SetLogFilePath(dirApplication); // creates a logfile/ wipes the old one.
 #endif
@@ -1203,6 +1203,8 @@ namespace MapView
 												+ " It needs to start with UFO or TFTD, since"
 												+ " the prefix will set the default path and"
 												+ " palette of its tilesets.",
+											"Note that groups that do not contain"
+												+ " tilesets will not be saved.",
 											MapTreeInputBox.BoxType.AddGroup,
 											String.Empty))
 			{
@@ -1232,6 +1234,8 @@ namespace MapView
 												+ " It needs to start with UFO or TFTD, since"
 												+ " the prefix will set the default path and"
 												+ " palette of its tilesets.",
+											"Note that groups that do not contain"
+												+ " tilesets will not be saved.",
 											MapTreeInputBox.BoxType.EditGroup,
 											String.Empty))
 			{
@@ -1303,6 +1307,8 @@ namespace MapView
 
 			using (var f = new MapTreeInputBox(
 											"Enter the label for a new Map category.",
+											"Note that categories that do not contain"
+												+ " tilesets will not be saved.",
 											MapTreeInputBox.BoxType.AddCategory,
 											labelGroup))
 			{
@@ -1332,6 +1338,8 @@ namespace MapView
 
 			using (var f = new MapTreeInputBox(
 											"Enter a new label for the Map category.",
+											"Note that categories that do not contain"
+												+ " tilesets will not be saved.",
 											MapTreeInputBox.BoxType.EditCategory,
 											labelGroup))
 			{

@@ -22,7 +22,5 @@ MAKE BACKUPS OF ALL YOUR STUFF. i mean it. Stuff being your MAPS and ROUTES, mos
 - kevL
 
 
-ps. Open MapView at least once before trying to run PckView (the latter needs some settings that at present only the former creates).
-
-pps. This is a work in progress.
-ppps. I don't have TFTD so that's untested.
+ps. This is a work in progress.
+pps. I don't have TFTD so that's untested.

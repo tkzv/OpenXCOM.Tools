@@ -31,6 +31,8 @@ namespace DSShared
 
 
 		public const string NotConfigured = "notconfigured"; // used in MapResources.yml in case UFO or TFTD installation is not configured.
+
+		public const string SettingsDirectory = "settings";
 		#endregion
 
 

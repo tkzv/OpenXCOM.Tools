@@ -53,19 +53,22 @@ namespace MapView
 		/// cTor. Constructs an inputbox for adding/editing the group- or
 		/// category-labels of MainView's map-tree.
 		/// </summary>
-		/// <param name="notice">info about the add/edit</param>
+		/// <param name="infoAbove">info about the add/edit</param>
+		/// <param name="infoBelow">more info about the add/edit</param>
 		/// <param name="boxType">type of box</param>
 		/// <param name="parentGroupLabel">label of the category-group if the
 		/// add/edit is for a category-label, else blank if add/edit is for a
 		/// group-label</param>
 		internal MapTreeInputBox(
-				string notice,
+				string infoAbove,
+				string infoBelow,
 				BoxType boxType,
 				string parentGroupLabel)
 		{
 			InitializeComponent();
 
-			lblNotice.Text = notice;
+			lblInfoTop.Text    = infoAbove;
+			lblInfoBottom.Text = infoBelow;
 
 			switch (InputBoxType = boxType)
 			{

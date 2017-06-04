@@ -641,9 +641,11 @@ namespace MapView
 								string pfeRoutes = GetFullPathRoutes(Tileset);
 								LogFile.WriteLine(". . . fileRoutes= " + pfeRoutes);
 
+								Directory.CreateDirectory(Path.GetDirectoryName(pfeRoutes));
 								using (var fs = File.Create(pfeRoutes)) // create a blank Route-file and release its handle.
 								{}
 
+								Directory.CreateDirectory(Path.GetDirectoryName(pfeMap));
 								using (var fs = File.Create(pfeMap))	// create the Map-file and release its handle.
 								{										// NOTE: This has to happen now because once the MapTree node
 									MapFileChild.CreateMap(				// is selected it will try to load the .MAP file etc.

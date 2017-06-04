@@ -78,9 +78,8 @@ namespace PckView
 
 
 			#region SharedSpace information
-
-			var consoleShare = new ConsoleSharedSpace(new SharedSpace());
-			_console = consoleShare.Console;
+			var shareConsole = new ConsoleSharedSpace(new SharedSpace());
+			_console = shareConsole.Console;
 			_console.FormClosing += (sender, e) =>
 			{
 				e.Cancel = true;
@@ -89,12 +88,20 @@ namespace PckView
 			FormClosed += (sender, e) => _console.Close();
 
 			_share = SharedSpace.Instance;
-			_share.SetShare("PckView", this);
+//			_share.SetShare("PckView", this);
 
 //			_share.SetShare(PathInfo.MapViewers, infoViewers);
 
-			_share.SetShare(SharedSpace.ApplicationDirectory, Environment.CurrentDirectory);
-			_share.SetShare(SharedSpace.SettingsDirectory,    Environment.CurrentDirectory + @"\settings");
+			string dirApplication = Path.GetDirectoryName(Application.ExecutablePath);
+			string dirSettings    = Path.Combine(dirApplication, DSShared.PathInfo.SettingsDirectory);
+
+			_share.SetShare(
+						SharedSpace.ApplicationDirectory,
+						dirApplication);
+			_share.SetShare(
+						SharedSpace.SettingsDirectory,
+						dirSettings);
+
 //			_share.SetShare(SharedSpace.CustomDirectory,      Environment.CurrentDirectory + @"\custom");
 		
 //			XConsole.AdZerg("Application directory: "  + _share[SharedSpace.ApplicationDirectory]);			// TODO: I don't trust that since changing SharedSpace.
@@ -203,7 +210,7 @@ namespace PckView
 		private void OnSpriteClick(object sender, EventArgs e)
 		{
 			if (   _viewPanel.SelectedSprites != null // isSelected
-				&& _viewPanel.SelectedSprites.Count > 0)
+				&& _viewPanel.SelectedSprites.Count != 0)
 			{
 				_miEdit.Enabled   = true;
 //				_miSave.Enabled   =

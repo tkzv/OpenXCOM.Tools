@@ -87,8 +87,8 @@ namespace XCom
 		/// <returns>true if no exception was thrown</returns>
 		public bool SaveTileGroups()
 		{
-			//LogFile.WriteLine("");
-			//LogFile.WriteLine("TileGroupManager.SaveTileGroups");
+			LogFile.WriteLine("");
+			LogFile.WriteLine("TileGroupManager.SaveTileGroups");
 
 			string dirSettings   = SharedSpace.Instance.GetShare(SharedSpace.SettingsDirectory);
 			string pfeMapTree    = Path.Combine(dirSettings, PathInfo.ConfigTilesets);		// "MapTilesets.yml"
@@ -132,6 +132,8 @@ namespace XCom
 					var oGroup = TileGroups[labelGroup] as TileGroupChild;	// <- fuck inheritance btw. It's not been used properly and is
 					foreach (var labelCategory in oGroup.Categories.Keys)	// largely irrelevant and needlessly confusing in this codebase.
 					{
+						//LogFile.WriteLine(". . saving Category= " + labelCategory);
+
 						if (!blankline)
 							sw.WriteLine("");
 
@@ -141,6 +143,8 @@ namespace XCom
 						var category = oGroup.Categories[labelCategory];
 						foreach (var labelTileset in category.Keys)
 						{
+							//LogFile.WriteLine(". . saving Tileset= " + labelTileset);
+
 							var descriptor = category[labelTileset];
 
 							sw.WriteLine("  - type: " + descriptor.Label); // =labelTileset
