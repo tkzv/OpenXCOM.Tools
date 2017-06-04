@@ -290,10 +290,10 @@ namespace XCom
 		/// <param name="basepath"></param>
 		internal RouteNodeCollection(string file, string basepath)
 		{
+			_nodes = new List<RouteNode>();
+
 			FullPath = Path.Combine(basepath, RoutesDir);
 			FullPath = Path.Combine(FullPath, file + RouteExt);
-
-			_nodes = new List<RouteNode>();
 
 			if (File.Exists(FullPath))
 			{

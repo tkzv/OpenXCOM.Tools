@@ -54,14 +54,21 @@ namespace MapView
 		}
 
 		private bool _maptreeChanged;
-		private bool MaptreeChanged
+		internal bool MaptreeChanged
 		{
-			get { return _maptreeChanged; }
+			private get { return _maptreeChanged; }
 			set
 			{
 				_maptreeChanged       =
 				miSaveMaptree.Enabled = value;
 			}
+		}
+
+		private List<string> _tilesetTerrains = new List<string>();
+		internal List<string> TilesetTerrains
+		{
+			get { return _tilesetTerrains; }
+			set { _tilesetTerrains = value; }
 		}
 		#endregion
 
@@ -1114,8 +1121,8 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnMapTreeMouseDown(object sender, MouseEventArgs e)
 		{
-			LogFile.WriteLine("XCMainWindow.OnMapTreeMouseDown");
-			if (tvMaps.SelectedNode != null) LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
+			//LogFile.WriteLine("XCMainWindow.OnMapTreeMouseDown");
+			//if (tvMaps.SelectedNode != null) LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
 
 			switch (e.Button)
 			{
@@ -1189,7 +1196,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnAddGroupClick(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("XCMainWindow.OnAddGroupClick");
+			//LogFile.WriteLine("XCMainWindow.OnAddGroupClick");
 
 			using (var f = new MapTreeInputBox(
 											"Enter the label for a new Map group."
@@ -1218,7 +1225,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnEditGroupClick(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("XCMainWindow.OnEditGroupClick");
+			//LogFile.WriteLine("XCMainWindow.OnEditGroupClick");
 
 			using (var f = new MapTreeInputBox(
 											"Enter a new label for the Map group."
@@ -1251,7 +1258,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnDeleteGroupClick(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("XCMainWindow.OnDeleteGroupClick");
+			//LogFile.WriteLine("XCMainWindow.OnDeleteGroupClick");
 
 			// TODO: Make a custom box for delete Group/Category/Tileset.
 
@@ -1290,7 +1297,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnAddCategoryClick(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("XCMainWindow.OnAddCategoryClick");
+			//LogFile.WriteLine("XCMainWindow.OnAddCategoryClick");
 
 			string labelGroup = tvMaps.SelectedNode.Text;
 
@@ -1319,7 +1326,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnEditCategoryClick(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("XCMainWindow.OnEditCategoryClick");
+			//LogFile.WriteLine("XCMainWindow.OnEditCategoryClick");
 
 			string labelGroup = tvMaps.SelectedNode.Parent.Text;
 
@@ -1352,7 +1359,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnDeleteCategoryClick(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("XCMainWindow.OnDeleteCategoryClick");
+			//LogFile.WriteLine("XCMainWindow.OnDeleteCategoryClick");
 
 			// TODO: Make a custom box for delete Group/Category/Tileset.
 
@@ -1394,7 +1401,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnAddTilesetClick(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("XCMainWindow.OnAddTilesetClick");
+			//LogFile.WriteLine("XCMainWindow.OnAddTilesetClick");
 
 			string labelGroup    = tvMaps.SelectedNode.Parent.Text;
 			string labelCategory = tvMaps.SelectedNode.Text;
@@ -1425,7 +1432,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnEditTilesetClick(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("XCMainWindow.OnEditTilesetClick");
+			//LogFile.WriteLine("XCMainWindow.OnEditTilesetClick");
 
 			string labelGroup    = tvMaps.SelectedNode.Parent.Parent.Text;
 			string labelCategory = tvMaps.SelectedNode.Parent.Text;
@@ -1456,7 +1463,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnDeleteTilesetClick(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("XCMainWindow.OnDeleteTilesetClick");
+			//LogFile.WriteLine("XCMainWindow.OnDeleteTilesetClick");
 
 			// TODO: Make a custom box for delete Group/Category/Tileset.
 
@@ -1500,8 +1507,8 @@ namespace MapView
 		/// </summary>
 		private void SelectGroupNodeTop()
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("SelectGroupNodeTop");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("SelectGroupNodeTop");
 
 			if (tvMaps.Nodes.Count != 0)
 				tvMaps.SelectedNode = tvMaps.Nodes[0];
@@ -1515,8 +1522,8 @@ namespace MapView
 		/// <param name="labelGroup"></param>
 		private void SelectCategoryNodeTop(string labelGroup)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("SelectCategoryNodeTop");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("SelectCategoryNodeTop");
 
 			foreach (TreeNode nodeGroup in tvMaps.Nodes)
 			{
@@ -1538,8 +1545,8 @@ namespace MapView
 		/// <param name="labelCategory"></param>
 		private void SelectTilesetNodeTop(string labelCategory)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("SelectTilesetNodeTop");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("SelectTilesetNodeTop");
 
 			foreach (TreeNode nodeGroup in tvMaps.Nodes)
 			{
@@ -1562,8 +1569,8 @@ namespace MapView
 		/// <param name="labelGroup"></param>
 		private void SelectGroupNode(string labelGroup)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("SelectGroupNode");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("SelectGroupNode");
 
 			foreach (TreeNode nodeGroup in tvMaps.Nodes)
 			{
@@ -1582,8 +1589,8 @@ namespace MapView
 		/// <param name="labelCategory"></param>
 		private void SelectCategoryNode(string labelCategory)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("SelectCategoryNode");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("SelectCategoryNode");
 
 			bool found = false;
 
@@ -1612,8 +1619,8 @@ namespace MapView
 		/// <param name="labelTileset"></param>
 		private void SelectTilesetNode(string labelTileset)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("SelectTilesetNode");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("SelectTilesetNode");
 
 			bool found = false;
 
@@ -1621,19 +1628,19 @@ namespace MapView
 			{
 				if (found) break;
 
-				LogFile.WriteLine(". group= " + nodeGroup.Text);
+				//LogFile.WriteLine(". group= " + nodeGroup.Text);
 
 				var groupCollection = nodeGroup.Nodes;
 				foreach (TreeNode nodeCategory in groupCollection)
 				{
 					if (found) break;
 
-					LogFile.WriteLine(". . category= " + nodeCategory.Text);
+					//LogFile.WriteLine(". . category= " + nodeCategory.Text);
 
 					var categoryCollection = nodeCategory.Nodes;
 					foreach (TreeNode nodeTileset in categoryCollection)
 					{
-						LogFile.WriteLine(". . . tileset= " + nodeTileset.Text);
+						//LogFile.WriteLine(". . . tileset= " + nodeTileset.Text);
 
 						if (nodeTileset.Text == labelTileset)
 						{
@@ -1664,8 +1671,8 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnMapTreeBeforeSelect(object sender, CancelEventArgs e)
 		{
-			LogFile.WriteLine("XCMainWindow.OnMapTreeBeforeSelect");
-			if (tvMaps.SelectedNode != null) LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
+			//LogFile.WriteLine("XCMainWindow.OnMapTreeBeforeSelect");
+			//if (tvMaps.SelectedNode != null) LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
 
 			e.Cancel = (SaveAlert() == DialogResult.Cancel);
 		}
@@ -1677,8 +1684,8 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnMapTreeAfterSelected(object sender, TreeViewEventArgs e)
 		{
-			LogFile.WriteLine("XCMainWindow.OnMapTreeAfterSelected");
-			if (tvMaps.SelectedNode != null) LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
+			//LogFile.WriteLine("XCMainWindow.OnMapTreeAfterSelected");
+			//if (tvMaps.SelectedNode != null) LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
 
 			LoadSelectedMap();
 		}
@@ -1715,7 +1722,7 @@ namespace MapView
 
 				_mainViewUnderlay.MainViewOverlay.FirstClick = false;
 
-				var mapBase = XCMapFileService.LoadTileset(descriptor as Descriptor);
+				var mapBase = MapFileService.LoadTileset(descriptor as Descriptor);
 				_mainViewUnderlay.MapBase = mapBase;
 
 				tsEdit.Enabled = true;

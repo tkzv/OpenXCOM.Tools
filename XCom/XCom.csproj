@@ -118,7 +118,7 @@
     <Compile Include="Resources\Map\RouteData\RouteNode.cs" />
     <Compile Include="Resources\Map\RouteData\RouteCheckService.cs" />
     <Compile Include="Resources\Map\SpecialType.cs" />
-    <Compile Include="Resources\Map\XCMapFileService.cs" />
+    <Compile Include="Resources\Map\MapFileService.cs" />
     <Compile Include="Resources\Map\XCTileFactory.cs" />
     <Compile Include="Interfaces\Base\MapPosition.cs" />
     <Compile Include="Interfaces\Base\MapTileList.cs" />

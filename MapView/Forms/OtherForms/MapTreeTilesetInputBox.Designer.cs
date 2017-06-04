@@ -43,6 +43,8 @@
 			this.lblAllocated = new System.Windows.Forms.Label();
 			this.lblAvailable = new System.Windows.Forms.Label();
 			this.pnlSpacer = new System.Windows.Forms.Panel();
+			this.btnTerrainPaste = new System.Windows.Forms.Button();
+			this.btnTerrainCopy = new System.Windows.Forms.Button();
 			this.btnMoveLeft = new System.Windows.Forms.Button();
 			this.btnMoveDown = new System.Windows.Forms.Button();
 			this.btnMoveRight = new System.Windows.Forms.Button();
@@ -103,9 +105,9 @@
 			this.tbTileset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.tbTileset.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.tbTileset.Location = new System.Drawing.Point(45, 35);
+			this.tbTileset.Location = new System.Drawing.Point(50, 35);
 			this.tbTileset.Name = "tbTileset";
-			this.tbTileset.Size = new System.Drawing.Size(455, 19);
+			this.tbTileset.Size = new System.Drawing.Size(450, 19);
 			this.tbTileset.TabIndex = 4;
 			this.tbTileset.TextChanged += new System.EventHandler(this.OnTilesetLabelChanged);
 			this.tbTileset.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnTilesetKeyUp);
@@ -127,6 +129,7 @@
 			this.lblAddType.Name = "lblAddType";
 			this.lblAddType.Size = new System.Drawing.Size(200, 15);
 			this.lblAddType.TabIndex = 0;
+			this.lblAddType.Text = "lblAddType";
 			// 
 			// pnlTop
 			// 
@@ -160,7 +163,7 @@
 			this.lbTerrainsAllocated.ItemHeight = 12;
 			this.lbTerrainsAllocated.Location = new System.Drawing.Point(3, 45);
 			this.lbTerrainsAllocated.Name = "lbTerrainsAllocated";
-			this.lbTerrainsAllocated.Size = new System.Drawing.Size(262, 268);
+			this.lbTerrainsAllocated.Size = new System.Drawing.Size(267, 268);
 			this.lbTerrainsAllocated.TabIndex = 1;
 			this.lbTerrainsAllocated.SelectedIndexChanged += new System.EventHandler(this.OnAllocatedIndexChanged);
 			// 
@@ -216,22 +219,46 @@
 			// pnlSpacer
 			// 
 			this.pnlSpacer.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.pnlSpacer.Controls.Add(this.btnTerrainPaste);
+			this.pnlSpacer.Controls.Add(this.btnTerrainCopy);
 			this.pnlSpacer.Controls.Add(this.btnMoveLeft);
 			this.pnlSpacer.Controls.Add(this.btnMoveDown);
 			this.pnlSpacer.Controls.Add(this.btnMoveRight);
 			this.pnlSpacer.Controls.Add(this.btnMoveUp);
-			this.pnlSpacer.Location = new System.Drawing.Point(265, 45);
+			this.pnlSpacer.Location = new System.Drawing.Point(270, 45);
 			this.pnlSpacer.Name = "pnlSpacer";
-			this.pnlSpacer.Size = new System.Drawing.Size(60, 110);
+			this.pnlSpacer.Size = new System.Drawing.Size(55, 170);
 			this.pnlSpacer.TabIndex = 3;
+			// 
+			// btnTerrainPaste
+			// 
+			this.btnTerrainPaste.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.btnTerrainPaste.Location = new System.Drawing.Point(5, 140);
+			this.btnTerrainPaste.Name = "btnTerrainPaste";
+			this.btnTerrainPaste.Size = new System.Drawing.Size(45, 25);
+			this.btnTerrainPaste.TabIndex = 5;
+			this.btnTerrainPaste.Text = "clear";
+			this.btnTerrainPaste.UseVisualStyleBackColor = true;
+			this.btnTerrainPaste.Click += new System.EventHandler(this.OnTerrainPasteClick);
+			// 
+			// btnTerrainCopy
+			// 
+			this.btnTerrainCopy.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.btnTerrainCopy.Location = new System.Drawing.Point(5, 115);
+			this.btnTerrainCopy.Name = "btnTerrainCopy";
+			this.btnTerrainCopy.Size = new System.Drawing.Size(45, 25);
+			this.btnTerrainCopy.TabIndex = 4;
+			this.btnTerrainCopy.Text = "copy";
+			this.btnTerrainCopy.UseVisualStyleBackColor = true;
+			this.btnTerrainCopy.Click += new System.EventHandler(this.OnTerrainCopyClick);
 			// 
 			// btnMoveLeft
 			// 
 			this.btnMoveLeft.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.btnMoveLeft.Enabled = false;
-			this.btnMoveLeft.Location = new System.Drawing.Point(8, 5);
+			this.btnMoveLeft.Location = new System.Drawing.Point(5, 5);
 			this.btnMoveLeft.Name = "btnMoveLeft";
-			this.btnMoveLeft.Size = new System.Drawing.Size(45, 23);
+			this.btnMoveLeft.Size = new System.Drawing.Size(45, 25);
 			this.btnMoveLeft.TabIndex = 0;
 			this.btnMoveLeft.Text = "Left";
 			this.btnMoveLeft.UseVisualStyleBackColor = true;
@@ -241,9 +268,9 @@
 			// 
 			this.btnMoveDown.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.btnMoveDown.Enabled = false;
-			this.btnMoveDown.Location = new System.Drawing.Point(8, 80);
+			this.btnMoveDown.Location = new System.Drawing.Point(5, 80);
 			this.btnMoveDown.Name = "btnMoveDown";
-			this.btnMoveDown.Size = new System.Drawing.Size(45, 23);
+			this.btnMoveDown.Size = new System.Drawing.Size(45, 25);
 			this.btnMoveDown.TabIndex = 3;
 			this.btnMoveDown.Text = "Down";
 			this.btnMoveDown.UseVisualStyleBackColor = true;
@@ -253,9 +280,9 @@
 			// 
 			this.btnMoveRight.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.btnMoveRight.Enabled = false;
-			this.btnMoveRight.Location = new System.Drawing.Point(8, 30);
+			this.btnMoveRight.Location = new System.Drawing.Point(5, 30);
 			this.btnMoveRight.Name = "btnMoveRight";
-			this.btnMoveRight.Size = new System.Drawing.Size(45, 23);
+			this.btnMoveRight.Size = new System.Drawing.Size(45, 25);
 			this.btnMoveRight.TabIndex = 1;
 			this.btnMoveRight.Text = "Right";
 			this.btnMoveRight.UseVisualStyleBackColor = true;
@@ -265,9 +292,9 @@
 			// 
 			this.btnMoveUp.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.btnMoveUp.Enabled = false;
-			this.btnMoveUp.Location = new System.Drawing.Point(8, 55);
+			this.btnMoveUp.Location = new System.Drawing.Point(5, 55);
 			this.btnMoveUp.Name = "btnMoveUp";
-			this.btnMoveUp.Size = new System.Drawing.Size(45, 23);
+			this.btnMoveUp.Size = new System.Drawing.Size(45, 25);
 			this.btnMoveUp.TabIndex = 2;
 			this.btnMoveUp.Text = "Up";
 			this.btnMoveUp.UseVisualStyleBackColor = true;
@@ -487,5 +514,7 @@
 		private System.Windows.Forms.Label lblHeaderTileset;
 		private System.Windows.Forms.Label lblAddType;
 		private System.Windows.Forms.Label lblTerrainChanges;
+		private System.Windows.Forms.Button btnTerrainCopy;
+		private System.Windows.Forms.Button btnTerrainPaste;
 	}
 }

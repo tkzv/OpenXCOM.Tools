@@ -165,6 +165,8 @@ namespace MapView
 			Invalid = invalid.ToArray();
 			// TODO: should disallow filenames like 'CON' and 'PRN' etc. also
 
+			SetPasteButtonStuffer();
+
 
 			TileGroup = ResourceInfo.TileGroupInfo.TileGroups[Group] as TileGroup;
 
@@ -176,9 +178,9 @@ namespace MapView
 					lblAddType.Text = "Modify existing tileset";
 					lblTilesetCurrent.Text = Tileset;
 
-					btnCreateMap.Visible     =
 					btnFindTileset.Visible   =
-					btnFindDirectory.Visible = false;
+					btnFindDirectory.Visible =
+					btnCreateMap.Visible     = false;
 
 					TilesetOriginal = String.Copy(Tileset);
 
@@ -200,7 +202,9 @@ namespace MapView
 					lblHeaderTileset.Visible  =
 					lblTilesetCurrent.Visible = false;
 
-					btnCreateMap.Enabled = false;
+					btnCreateMap.Enabled    =
+					btnTerrainCopy.Enabled  =
+					btnTerrainPaste.Enabled = false;
 
 					string keyBaseDir = null;
 					switch (TileGroup.GroupType)
@@ -362,10 +366,10 @@ namespace MapView
 			LogFile.WriteLine("");
 			LogFile.WriteLine("ListTerrains");
 
-			btnMoveUp.Enabled    =
-			btnMoveDown.Enabled  =
-			btnMoveRight.Enabled =
-			btnMoveLeft.Enabled  = false;
+			btnMoveUp.Enabled      =
+			btnMoveDown.Enabled    =
+			btnMoveRight.Enabled   =
+			btnMoveLeft.Enabled    = false;
 
 			lbTerrainsAllocated.Items.Clear();
 			lbTerrainsAvailable.Items.Clear();
@@ -377,7 +381,7 @@ namespace MapView
 					if (Tileset == TilesetOriginal
 						|| (!IsTilesetInGroups(Tileset) && !MapFileExists(Tileset)))
 					{
-						Descriptor = TileGroup.Categories[Category][Tileset];
+						Descriptor = TileGroup.Categories[Category][TilesetOriginal];
 					}
 					else
 						Descriptor = null;
@@ -397,6 +401,10 @@ namespace MapView
 				foreach (string terrain in Descriptor.Terrains)
 					lbTerrainsAllocated.Items.Add(terrain);
 			}
+
+			btnTerrainCopy.Enabled  =
+			btnTerrainPaste.Enabled = (Descriptor != null);
+
 
 			string dirTerrains = Path.Combine(BasePath, "TERRAIN");
 			if (Directory.Exists(dirTerrains))
@@ -421,8 +429,8 @@ namespace MapView
 
 		/// <summary>
 		/// Creates a tileset as a valid Descriptor. This is allowed iff a
-		/// tileset is being Added; it's disallowed if a tileset is only being
-		/// Edited.
+		/// tileset is being Added/Created; it's disallowed if a tileset is only
+		/// being Edited.
 		/// NOTE: A Map's descriptor must be created/valid before terrains can
 		/// be added.
 		/// </summary>
@@ -431,7 +439,7 @@ namespace MapView
 		private void OnCreateDescriptorClick(object sender, EventArgs e)
 		{
 			LogFile.WriteLine("");
-			LogFile.WriteLine("OnCreateTilesetClick");
+			LogFile.WriteLine("OnCreateDescriptorClick");
 
 			if (!IsTilesetInGroups(Tileset))
 			{
@@ -659,18 +667,24 @@ namespace MapView
 
 		private void OnTerrainLeftClick(object sender, EventArgs e)
 		{
+			XCMainWindow.Instance.MaptreeChanged = (InputBoxType == BoxType.EditTileset);
+
 			Descriptor.Terrains.Add(lbTerrainsAvailable.SelectedItem as String);
 			ListTerrains();
 		}
 
 		private void OnTerrainRightClick(object sender, EventArgs e)
 		{
+			XCMainWindow.Instance.MaptreeChanged = (InputBoxType == BoxType.EditTileset);
+
 			Descriptor.Terrains.Remove(lbTerrainsAllocated.SelectedItem as String);
 			ListTerrains();
 		}
 
 		private void OnTerrainUpClick(object sender, EventArgs e)
 		{
+			XCMainWindow.Instance.MaptreeChanged = (InputBoxType == BoxType.EditTileset);
+
 			var terrains = Descriptor.Terrains;
 
 			for (int id = 1; id != terrains.Count; ++id)
@@ -696,6 +710,8 @@ namespace MapView
 
 		private void OnTerrainDownClick(object sender, EventArgs e)
 		{
+			XCMainWindow.Instance.MaptreeChanged = (InputBoxType == BoxType.EditTileset);
+
 			var terrains = Descriptor.Terrains;
 
 			for (int id = 0; id != terrains.Count - 1; ++id)
@@ -717,6 +733,48 @@ namespace MapView
 					break;
 				}
 			}
+		}
+
+		private void OnTerrainCopyClick(object sender, EventArgs e)
+		{
+			XCMainWindow.Instance.TilesetTerrains.Clear();
+
+			foreach (var terrain in Descriptor.Terrains)
+				XCMainWindow.Instance.TilesetTerrains.Add(terrain);
+
+			SetPasteButtonStuffer();
+//			btnTerrainPaste.Enabled = true;
+		}
+
+		private void OnTerrainPasteClick(object sender, EventArgs e)
+		{
+			XCMainWindow.Instance.MaptreeChanged = (InputBoxType == BoxType.EditTileset);
+
+			Descriptor.Terrains.Clear();
+
+			var terrains = XCMainWindow.Instance.TilesetTerrains;
+			foreach (var terrain in terrains)
+				Descriptor.Terrains.Add(terrain);
+
+			ListTerrains();
+		}
+
+		private void SetPasteButtonStuffer()
+		{
+			btnTerrainPaste.Text = (XCMainWindow.Instance.TilesetTerrains.Count != 0) ? "paste"
+																					  : "clear";
+			string tipPaste = String.Empty;
+			bool first = true;
+			foreach (var terrain in XCMainWindow.Instance.TilesetTerrains)
+			{
+				if (first)
+					first = false;
+				else
+					tipPaste += Environment.NewLine;
+
+				tipPaste += terrain.ToLowerInvariant();
+			}
+			toolTip1.SetToolTip(btnTerrainPaste, tipPaste);
 		}
 
 		private void OnAllocatedIndexChanged(object sender, EventArgs e)
