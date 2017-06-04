@@ -469,25 +469,29 @@ namespace MapView
 					string viewer = ((YamlScalarNode)node.Key).Value;
 					if (String.Equals(viewer, "MainView", StringComparison.OrdinalIgnoreCase))
 					{
+						int w = 0;
+						int h = 0;
+
 						var keyvals = (YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)];
-						foreach (var keyval in keyvals)
+						foreach (var keyval in keyvals) // NOTE: There is a better way to do this. See TilesetManager..cTor
 						{
 							switch (keyval.Key.ToString().ToUpperInvariant())
 							{
 								case "LEFT": // TODO: Error handling. ->
-									Left   = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+									Left = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 								case "TOP":
-									Top    = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+									Top  = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 								case "WIDTH":
-									Width  = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+									w    = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 								case "HEIGHT":
-									Height = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+									h    = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
 									break;
 							}
 						}
+						ClientSize = new Size(w, h);
 					}
 				}
 			}
@@ -751,14 +755,17 @@ namespace MapView
 								line = sr.ReadLine();
 								line = sr.ReadLine(); // heh
 
+								int x = Math.Max(0, Location.X);
+								int y = Math.Max(0, Location.Y);
+
 								object node = new
 								{
 									MainView = new
 									{
-										Left   = Left, // relax, YamlDotNet figures it out.
-										Top    = Top,
-										Width  = Width,
-										Height = Height - SystemInformation.MenuBarButtonSize.Height - 1 // total guess here.
+										Left   = x, // relax. YamlDotNet figures it out.
+										Top    = y,
+										Width  = ClientSize.Width,
+										Height = ClientSize.Height
 									}
 								};
 
