@@ -236,11 +236,13 @@ namespace MapView
 			base.OnResize(e);
 
 			int lbWidth = gbTerrains.Width / 2 - pnlSpacer.Width * 2 / 3; // not sure why 2/3 works.
-			lbTerrainsAllocated.Width =
-			lbTerrainsAvailable.Width = lbWidth;
+			lbTerrainsAllocated.Width = lbWidth - SystemInformation.VerticalScrollBarWidth / 2;
+			lbTerrainsAvailable.Width = lbWidth + SystemInformation.VerticalScrollBarWidth / 2;
 
 			lblAllocated.Left = lbTerrainsAllocated.Right - lblAllocated.Width - 5;
 			lblAvailable.Left = lbTerrainsAvailable.Left;
+
+			pnlSpacer.Left = gbTerrains.Width / 2 - pnlSpacer.Width / 2 - SystemInformation.VerticalScrollBarWidth / 2;
 		}
 
 		/// <summary>
