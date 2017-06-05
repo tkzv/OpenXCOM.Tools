@@ -18,16 +18,18 @@ namespace DSShared.Windows
 	{
 		#region Fields (static)
 		// viewer labels (keys)
-		public const string MainView     = "MainView";
-		public const string TopView      = "TopView";
-		public const string RouteView    = "RouteView";
-		public const string TopRouteView = "TopRouteView";
-		public const string TileView     = "TileView";
+		public const string MainView      = "MainView";
+		public const string TopView       = "TopView";
+		public const string RouteView     = "RouteView";
+		public const string TopRouteView  = "TopRouteView";
+		public const string TileView      = "TileView";
 
-		public const string Console      = "Console";
-		public const string Options      = "Options";
+		public const string Console       = "Console";
+		public const string Options       = "Options";
 
-		public const string PckView      = "PckView";
+		public const string PckView       = "PckView";
+
+		public const string TilesetEditor = "TilesetEditor";
 
 		// viewer property metrics
 		private const string PropLeft   = "Left";

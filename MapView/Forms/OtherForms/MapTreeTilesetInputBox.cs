@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
+using DSShared.Windows;
+
 using XCom;
 using XCom.Interfaces;
 
@@ -143,6 +145,8 @@ namespace MapView
 			LogFile.WriteLine(". labelTileset= " + labelTileset);
 
 			InitializeComponent();
+
+			var regInfo = new RegistryInfo(RegistryInfo.TilesetEditor, this); // subscribe to Load and Closing events.
 
 			Group    = labelGroup;
 			Category = labelCategory;

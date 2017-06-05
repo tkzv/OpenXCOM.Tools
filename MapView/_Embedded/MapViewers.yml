@@ -43,3 +43,8 @@ PckView:
   top: 160
   width: 480
   height: 640
+TilesetEditor:
+  left: 210
+  top: 180
+  width: 480
+  height: 640
