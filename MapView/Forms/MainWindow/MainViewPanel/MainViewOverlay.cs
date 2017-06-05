@@ -653,7 +653,7 @@ namespace MapView
 							{
 								Cuboid.DrawCuboid(
 												_graphics,
-												x + 1, y - 1,
+												x, y,
 												HalfWidth,
 												HalfHeight,
 												false,
@@ -674,7 +674,7 @@ namespace MapView
 							{
 								Cuboid.DrawCuboid(
 												_graphics,
-												x + 1, y - 1,
+												x, y,
 												HalfWidth,
 												HalfHeight,
 												true,
@@ -687,7 +687,7 @@ namespace MapView
 							{
 								Cuboid.DrawTargeter(
 												_graphics,
-												x + 1, y - 1,
+												x, y,
 												HalfWidth,
 												HalfHeight);
 							}

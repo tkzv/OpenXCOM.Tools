@@ -66,7 +66,11 @@ namespace XCom
 		/// <returns></returns>
 		public McdRecordCollection GetTerrainRecords(string terrain)
 		{
-			string dirTerrain = Path.Combine(BasePath, PathTerrain);
+//			string dirTerrain = Path.Combine(BasePath, PathTerrain);
+			string dirTerrain = (Pal == Palette.UfoBattle) ? SharedSpace.ResourceDirectoryUfo
+														   : SharedSpace.ResourceDirectoryTftd;
+			dirTerrain = Path.Combine(SharedSpace.Instance.GetShare(dirTerrain), PathTerrain);
+
 			var tiles = XCTileFactory.CreateRecords(
 												terrain,
 												dirTerrain,
@@ -80,8 +84,12 @@ namespace XCom
 		/// <returns></returns>
 		public SpriteCollection GetTerrainSpriteset(string terrain)
 		{
-			string dirTerrain = Path.Combine(BasePath, PathTerrain);
-			return ResourceInfo.LoadSpriteset(terrain, dirTerrain, 2, Pal); // TODO: should '2' be '4' for TFTD
+//			string dirTerrain = Path.Combine(BasePath, PathTerrain);
+			string dirTerrain = (Pal == Palette.UfoBattle) ? SharedSpace.ResourceDirectoryUfo
+														   : SharedSpace.ResourceDirectoryTftd;
+			dirTerrain = Path.Combine(SharedSpace.Instance.GetShare(dirTerrain), PathTerrain);
+
+			return ResourceInfo.LoadSpriteset(terrain, dirTerrain, 2, Pal); // TODO: Should the '2' be '4' for TFTD ...
 		}
 
 		/// <summary>

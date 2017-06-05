@@ -105,9 +105,9 @@
 			this.tbTileset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.tbTileset.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.tbTileset.Location = new System.Drawing.Point(50, 35);
+			this.tbTileset.Location = new System.Drawing.Point(55, 35);
 			this.tbTileset.Name = "tbTileset";
-			this.tbTileset.Size = new System.Drawing.Size(470, 19);
+			this.tbTileset.Size = new System.Drawing.Size(465, 19);
 			this.tbTileset.TabIndex = 4;
 			this.tbTileset.TextChanged += new System.EventHandler(this.OnTilesetLabelChanged);
 			this.tbTileset.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnTilesetKeyUp);
@@ -325,7 +325,7 @@
 			this.btnCreateMap.Size = new System.Drawing.Size(50, 25);
 			this.btnCreateMap.TabIndex = 5;
 			this.btnCreateMap.Text = "Create";
-			this.toolTip1.SetToolTip(this.btnCreateMap, "the Map descriptor must be created before terrains can be added");
+			this.toolTip1.SetToolTip(this.btnCreateMap, "a Map descriptor must be created before terrains can be added");
 			this.btnCreateMap.UseVisualStyleBackColor = true;
 			this.btnCreateMap.Click += new System.EventHandler(this.OnCreateDescriptorClick);
 			// 
@@ -344,7 +344,7 @@
 			// 
 			this.lblTilesetMap.Location = new System.Drawing.Point(10, 35);
 			this.lblTilesetMap.Name = "lblTilesetMap";
-			this.lblTilesetMap.Size = new System.Drawing.Size(30, 20);
+			this.lblTilesetMap.Size = new System.Drawing.Size(40, 20);
 			this.lblTilesetMap.TabIndex = 3;
 			this.lblTilesetMap.Text = "Map";
 			this.lblTilesetMap.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -364,9 +364,9 @@
 			// 
 			this.lblPathCurrent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
-			this.lblPathCurrent.Location = new System.Drawing.Point(105, 15);
+			this.lblPathCurrent.Location = new System.Drawing.Point(55, 15);
 			this.lblPathCurrent.Name = "lblPathCurrent";
-			this.lblPathCurrent.Size = new System.Drawing.Size(475, 15);
+			this.lblPathCurrent.Size = new System.Drawing.Size(525, 15);
 			this.lblPathCurrent.TabIndex = 1;
 			this.lblPathCurrent.Text = "lblPathCurrent";
 			this.lblPathCurrent.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -375,9 +375,9 @@
 			// 
 			this.lblTilesetPath.Location = new System.Drawing.Point(10, 15);
 			this.lblTilesetPath.Name = "lblTilesetPath";
-			this.lblTilesetPath.Size = new System.Drawing.Size(85, 15);
+			this.lblTilesetPath.Size = new System.Drawing.Size(40, 15);
 			this.lblTilesetPath.TabIndex = 0;
-			this.lblTilesetPath.Text = "Resource Path";
+			this.lblTilesetPath.Text = "Path";
 			this.lblTilesetPath.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// gbHeader

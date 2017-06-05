@@ -33,26 +33,26 @@ namespace XCom
 		/// except the XCOM cursor-sprites load w/out a descriptor. So do the
 		/// 'ExtraSprites'.
 		/// </summary>
-		/// <param name="file"></param>
-		/// <param name="path"></param>
+		/// <param name="terrain"></param>
+		/// <param name="dirTerrain"></param>
 		/// <param name="lenTabOffset"></param>
 		/// <param name="pal"></param>
 		/// <returns></returns>
 		public static SpriteCollection LoadSpriteset(
-				string file,
-				string path,
+				string terrain,
+				string dirTerrain,
 				int lenTabOffset,
 				Palette pal)
 		{
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("ResourceInfo.LoadSpriteset");
 
-			if (!String.IsNullOrEmpty(path))
+			if (!String.IsNullOrEmpty(dirTerrain))
 			{
 				//LogFile.WriteLine(". path= " + path);
 				//LogFile.WriteLine(". file= " + file);
 
-				var pfSpriteset = Path.Combine(path, file);
+				var pfSpriteset = Path.Combine(dirTerrain, terrain);
 				//LogFile.WriteLine(". pf= " + pf);
 
 				string pfePck = pfSpriteset + SpriteCollection.PckExt;

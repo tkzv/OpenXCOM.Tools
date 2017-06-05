@@ -406,12 +406,16 @@ namespace MapView
 			btnTerrainPaste.Enabled = (Descriptor != null);
 
 
-			string dirTerrains = Path.Combine(BasePath, "TERRAIN");
-			if (Directory.Exists(dirTerrains))
+//			string dirTerrain = Path.Combine(BasePath, XCom.Descriptor.PathTerrain);
+			string dirTerrain = (TileGroup.Pal == Palette.UfoBattle) ? SharedSpace.ResourceDirectoryUfo
+																	 : SharedSpace.ResourceDirectoryTftd;
+			dirTerrain = Path.Combine(SharedSpace.Instance.GetShare(dirTerrain), XCom.Descriptor.PathTerrain);
+
+			if (Directory.Exists(dirTerrain))
 			{
 				string terrain = String.Empty;
 				string[] terrains = Directory.GetFiles(
-													dirTerrains,
+													dirTerrain,
 													"*.pck",
 													SearchOption.TopDirectoryOnly);
 				for (int i = 0; i != terrains.Length; ++i)
