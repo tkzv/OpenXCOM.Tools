@@ -16,7 +16,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			InitializeComponent();
 
-			var regInfo = new RegistryInfo(this, "TopRouteView"); // subscribe to Load and Closing events.
+			var regInfo = new RegistryInfo(RegistryInfo.TopRouteView, this); // subscribe to Load and Closing events.
 		}
 
 

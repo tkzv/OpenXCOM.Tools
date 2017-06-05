@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows.Forms;
 
 using DSShared;
+using DSShared.Windows;
 
 using MapView.Forms.MainWindow;
 //using MapView.Forms.XCError.WarningConsole;
@@ -467,30 +468,47 @@ namespace MapView
 				foreach (var node in nodeRoot.Children)
 				{
 					string viewer = ((YamlScalarNode)node.Key).Value;
-					if (String.Equals(viewer, "MainView", StringComparison.OrdinalIgnoreCase))
+					if (String.Equals(viewer, RegistryInfo.MainView, StringComparison.Ordinal))
 					{
+						int x = 0;
+						int y = 0;
 						int w = 0;
 						int h = 0;
+
+						var cultureInfo = System.Globalization.CultureInfo.InvariantCulture;
+
+						string key = String.Empty;
 
 						var keyvals = (YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)];
 						foreach (var keyval in keyvals) // NOTE: There is a better way to do this. See TilesetManager..cTor
 						{
-							switch (keyval.Key.ToString().ToUpperInvariant())
+							switch (keyval.Key.ToString()) // TODO: Error handling. ->
 							{
-								case "LEFT": // TODO: Error handling. ->
-									Left = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+								case "left":
+									x = Int32.Parse(keyval.Value.ToString(), cultureInfo);
 									break;
-								case "TOP":
-									Top  = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+								case "top":
+									y = Int32.Parse(keyval.Value.ToString(), cultureInfo);
 									break;
-								case "WIDTH":
-									w    = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+								case "width":
+									w = Int32.Parse(keyval.Value.ToString(), cultureInfo);
 									break;
-								case "HEIGHT":
-									h    = Int32.Parse(keyval.Value.ToString(), System.Globalization.CultureInfo.InvariantCulture);
+								case "height":
+									h = Int32.Parse(keyval.Value.ToString(), cultureInfo);
 									break;
 							}
 						}
+
+						var rectScreen = Screen.GetWorkingArea(new Point(x, y));
+						if (!rectScreen.Contains(x + 200, y + 100)) // check to ensure that MainView is at least partly onscreen.
+						{
+							x = 100;
+							y =  50;
+						}
+
+						Left = x;
+						Top  = y;
+
 						ClientSize = new Size(w, h);
 					}
 				}
@@ -741,36 +759,43 @@ namespace MapView
 
 					using (var sr = new StreamReader(File.OpenRead(dst))) // but now use dst as src ->
 
-					using (var fs = new FileStream(src, FileMode.Create)) // overwrite previous config.
+					using (var fs = new FileStream(src, FileMode.Create)) // overwrite previous viewers-config.
 					using (var sw = new StreamWriter(fs))
 					{
 						while (sr.Peek() != -1)
 						{
-							string line = sr.ReadLine();
+							string line = sr.ReadLine().TrimEnd();
 
-							if (String.Equals(line, "MainView:", StringComparison.OrdinalIgnoreCase))
+							if (String.Equals(line, RegistryInfo.MainView + ":", StringComparison.Ordinal))
 							{
+								sw.WriteLine(line);
+
 								line = sr.ReadLine();
 								line = sr.ReadLine();
 								line = sr.ReadLine();
 								line = sr.ReadLine(); // heh
 
-								int x = Math.Max(0, Location.X);
-								int y = Math.Max(0, Location.Y);
+								sw.WriteLine("  left: "   + Math.Max(0, Location.X));	// =Left
+								sw.WriteLine("  top: "    + Math.Max(0, Location.Y));	// =Top
+								sw.WriteLine("  width: "  + ClientSize.Width);			// <- use ClientSize, since Width and Height
+								sw.WriteLine("  height: " + ClientSize.Height);			// screw up due to the titlebar/menubar area.
 
-								object node = new
-								{
-									MainView = new
-									{
-										Left   = x, // relax. YamlDotNet figures it out.
-										Top    = y,
-										Width  = ClientSize.Width,
-										Height = ClientSize.Height
-									}
-								};
-
-								var ser = new Serializer();
-								ser.Serialize(sw, node);
+//								int x = Math.Max(1, Location.X); // YamlDotNet doesn't like serializing values < 1
+//								int y = Math.Max(1, Location.Y);
+//
+//								object node = new
+//								{
+//									MainView = new
+//									{
+//										left   = x,
+//										top    = y,
+//										width  = ClientSize.Width,
+//										height = ClientSize.Height
+//									}
+//								};
+//
+//								var ser = new Serializer();
+//								ser.Serialize(sw, node);
 							}
 							else
 								sw.WriteLine(line);

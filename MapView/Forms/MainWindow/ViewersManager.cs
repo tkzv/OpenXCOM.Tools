@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+using DSShared.Windows;
+
 using MapView.Forms.MapObservers;
 
 using XCom;
@@ -36,14 +38,14 @@ namespace MapView.Forms.MainWindow
 			ViewerFormsManager.TopRouteView.ControlRoute.LoadControl0Options();
 
 
-			AddViewer("Top View",    ViewerFormsManager.TopView);
-			SetAsObserver("TopView", ViewerFormsManager.TopView);
+			AddViewer("Top View",               ViewerFormsManager.TopView);
+			SetAsObserver(RegistryInfo.TopView, ViewerFormsManager.TopView);
 
-			AddViewer("Route View",    ViewerFormsManager.RouteView);
-			SetAsObserver("RouteView", ViewerFormsManager.RouteView);
+			AddViewer("Route View",               ViewerFormsManager.RouteView);
+			SetAsObserver(RegistryInfo.RouteView, ViewerFormsManager.RouteView);
 
-			AddViewer("Tile View",    ViewerFormsManager.TileView);
-			SetAsObserver("TileView", ViewerFormsManager.TileView);
+			AddViewer("Tile View",               ViewerFormsManager.TileView);
+			SetAsObserver(RegistryInfo.TileView, ViewerFormsManager.TileView);
 
 			AddViewer("TopRoute View", ViewerFormsManager.TopRouteView);
 
@@ -75,7 +77,7 @@ namespace MapView.Forms.MainWindow
 //			f.FormBorderStyle = FormBorderStyle.SizableToolWindow;
 		}
 
-		private void SetAsObserver(string key, Form f)
+		private void SetAsObserver(string viewer, Form f)
 		{
 			//LogFile.WriteLine("SetAsObserver regkey= " + regkey);
 			var fobserver = f as IMapObserverProvider; // TopViewForm, RouteViewForm, TileViewForm only.
@@ -85,9 +87,9 @@ namespace MapView.Forms.MainWindow
 				var fcontrol = fobserver.ObserverControl0; // ie. TopView, RouteView, TileView.
 				fcontrol.LoadControl0Options();
 
-				var regInfo = new DSShared.Windows.RegistryInfo(f, key); // subscribe to Load and Closing events.
+				var regInfo = new RegistryInfo(viewer, f); // subscribe to Load and Closing events.
 
-				_optionsManager.Add(key, fcontrol.Options);
+				_optionsManager.Add(viewer, fcontrol.Options);
 			}
 		}
 /*		private void SetAsObserver(Form f, string caption, string regkey = null)

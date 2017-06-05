@@ -146,7 +146,7 @@ namespace PckView
 			_editor.Palette = _palette;
 
 
-			var regInfo = new RegistryInfo(this, "PckView"); // subscribe to Load and Closing events.
+			var regInfo = new RegistryInfo(RegistryInfo.PckView, this); // subscribe to Load and Closing events.
 //			regInfo.AddProperty("SelectedPalette");
 		}
 		#endregion
