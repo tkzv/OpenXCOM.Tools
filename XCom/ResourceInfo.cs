@@ -23,12 +23,9 @@ namespace XCom
 		/// <param name="pathConfig"></param>
 		public static void InitializeResources(PathInfo pathConfig)
 		{
-//			Directory.SetCurrentDirectory(pathConfig.DirectoryPath); // change to /settings dir // TODO: screw settings dir.
 //			XConsole.Init(20);
 
 			TileGroupInfo = new TileGroupManager(new TilesetManager(pathConfig.FullPath));
-
-//			Directory.SetCurrentDirectory(SharedSpace.Instance.GetShare(SharedSpace.ApplicationDirectory)); // change back to app dir
 		}
 
 		/// <summary>

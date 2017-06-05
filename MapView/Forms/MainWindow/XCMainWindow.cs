@@ -779,23 +779,6 @@ namespace MapView
 								sw.WriteLine("  top: "    + Math.Max(0, Location.Y));	// =Top
 								sw.WriteLine("  width: "  + ClientSize.Width);			// <- use ClientSize, since Width and Height
 								sw.WriteLine("  height: " + ClientSize.Height);			// screw up due to the titlebar/menubar area.
-
-//								int x = Math.Max(1, Location.X); // YamlDotNet doesn't like serializing values < 1
-//								int y = Math.Max(1, Location.Y);
-//
-//								object node = new
-//								{
-//									MainView = new
-//									{
-//										left   = x,
-//										top    = y,
-//										width  = ClientSize.Width,
-//										height = ClientSize.Height
-//									}
-//								};
-//
-//								var ser = new Serializer();
-//								ser.Serialize(sw, node);
 							}
 							else
 								sw.WriteLine(line);

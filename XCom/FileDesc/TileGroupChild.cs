@@ -72,18 +72,14 @@ namespace XCom
 			progress.Hide();
 		}
 
+		/// <summary>
+		/// cTor for editing the label of the TileGroup.
+		/// </summary>
+		/// <param name="labelGroup"></param>
 		internal TileGroupChild(string labelGroup)
 			:
 				base(labelGroup)
 		{}
-		#endregion
-
-
-		#region Methods
-//		public override void SaveTileGroup(StreamWriter sw, Varidia vars)
-//		{
-//			// TODO: possibly save YAML Config here.
-//		}
 		#endregion
 	}
 }

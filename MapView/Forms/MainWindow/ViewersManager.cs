@@ -13,12 +13,20 @@ namespace MapView.Forms.MainWindow
 {
 	internal sealed class ViewersManager
 	{
+		#region Fields
 		private readonly Dictionary<string, Form> _viewersDictionary = new Dictionary<string, Form>();
 
 		private readonly OptionsManager     _optionsManager;
 		private readonly ConsoleSharedSpace _consoleShare;
+		#endregion
 
 
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="optionsManager"></param>
+		/// <param name="consoleShare"></param>
 		internal ViewersManager(
 				OptionsManager optionsManager,
 				ConsoleSharedSpace consoleShare)
@@ -26,57 +34,48 @@ namespace MapView.Forms.MainWindow
 			_optionsManager = optionsManager;
 			_consoleShare   = consoleShare;
 		}
+		#endregion
 
 
+		#region Methods
+		/// <summary>
+		/// Sets up all subsidiary viewers.
+		/// </summary>
 		internal void ManageViewers()
 		{
 			//LogFile.WriteLine("ManageViewers");
 			ViewerFormsManager.TopRouteView.ControlTop.Options   = ViewerFormsManager.TopView.Control.Options;
 			ViewerFormsManager.TopRouteView.ControlRoute.Options = ViewerFormsManager.RouteView.Control.Options;
 
-			ViewerFormsManager.TopRouteView.ControlTop.LoadControl0Options();
+			ViewerFormsManager.TopRouteView.ControlTop  .LoadControl0Options();
 			ViewerFormsManager.TopRouteView.ControlRoute.LoadControl0Options();
 
 
-			AddViewer("Top View",               ViewerFormsManager.TopView);
+			_viewersDictionary.Add("Top View",  ViewerFormsManager.TopView);
 			SetAsObserver(RegistryInfo.TopView, ViewerFormsManager.TopView);
 
-			AddViewer("Route View",               ViewerFormsManager.RouteView);
+			_viewersDictionary.Add("Route View",  ViewerFormsManager.RouteView);
 			SetAsObserver(RegistryInfo.RouteView, ViewerFormsManager.RouteView);
 
-			AddViewer("Tile View",               ViewerFormsManager.TileView);
+			_viewersDictionary.Add("Tile View",  ViewerFormsManager.TileView);
 			SetAsObserver(RegistryInfo.TileView, ViewerFormsManager.TileView);
 
-			AddViewer("TopRoute View", ViewerFormsManager.TopRouteView);
+			_viewersDictionary.Add("TopRoute View", ViewerFormsManager.TopRouteView);
 
-			AddViewer("Console", _consoleShare.Console);
+			_viewersDictionary.Add("Console", _consoleShare.Console);
 
-			AddViewer("Help",  ViewerFormsManager.HelpScreen);
-			AddViewer("About", ViewerFormsManager.AboutScreen);
-
-
-//			SetAsObserver(MainWindowsManager.TopView,      "Top View",      "TopView");
-//			SetAsObserver(MainWindowsManager.RouteView,    "Route View",    "RouteView");
-//			SetAsObserver(MainWindowsManager.TopRouteView, "TopRoute View", "TopRouteView");
-//			SetAsObserver(MainWindowsManager.TileView,     "Tile View",     "TileView");
-//			SetAsObserver(_consoleShare.GetNewConsole(),   "Console",       "Console");
-//			SetAsObserver(MainWindowsManager.HelpScreen,   "Help");
-//			SetAsObserver(MainWindowsManager.AboutWindow,  "About");
+			_viewersDictionary.Add("Help",  ViewerFormsManager.HelpScreen);
+			_viewersDictionary.Add("About", ViewerFormsManager.AboutScreen);
 
 //			MainWindowsManager.TopRouteView.ControlTop.RegistryInfo   = MainWindowsManager.TopView.Control.RegistryInfo;
 //			MainWindowsManager.TopRouteView.ControlRoute.RegistryInfo = MainWindowsManager.RouteView.Control.RegistryInfo;
 		}
 
-		private void AddViewer(string caption, Form f)
-		{
-			//LogFile.WriteLine("AddViewer caption= " + caption);
-			_viewersDictionary.Add(caption, f);
-
-//			f.Text = caption;
-//			f.ShowInTaskbar = false;
-//			f.FormBorderStyle = FormBorderStyle.SizableToolWindow;
-		}
-
+		/// <summary>
+		/// Sets a viewer as an Observer.
+		/// </summary>
+		/// <param name="viewer"></param>
+		/// <param name="f"></param>
 		private void SetAsObserver(string viewer, Form f)
 		{
 			//LogFile.WriteLine("SetAsObserver regkey= " + regkey);
@@ -92,22 +91,6 @@ namespace MapView.Forms.MainWindow
 				_optionsManager.Add(viewer, fcontrol.Options);
 			}
 		}
-/*		private void SetAsObserver(Form f, string caption, string regkey = null)
-		{
-			f.Text = caption;
-			var fObserver = f as IMapObserverProvider;
-			if (fObserver != null)
-			{
-				var observerType0 = fObserver.MapObserver;
-				observerType0.LoadControl0Options();
-//				observerType0.RegistryInfo = new DSShared.Windows.RegistryInfo(f, regkey); // subscribe to Load and Closing events.
-				var regInfo = new DSShared.Windows.RegistryInfo(f, regkey); // subscribe to Load and Closing events.
-				_optionsManager.Add(regkey, observerType0.Options);
-			}
-//			f.ShowInTaskbar = false;
-//			f.FormBorderStyle = FormBorderStyle.SizableToolWindow;
-			_viewersDictionary.Add(caption, f);
-		} */
 
 		/// <summary>
 		/// Closes the following viewers: TopView, RouteView, TopRouteView,
@@ -123,5 +106,6 @@ namespace MapView.Forms.MainWindow
 				f.Close();
 			}
 		}
+		#endregion
 	}
 }
