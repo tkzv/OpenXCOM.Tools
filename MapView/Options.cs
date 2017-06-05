@@ -49,17 +49,6 @@ namespace MapView
 				return (_options.ContainsKey(key)) ? _options[key]
 												   : null;
 			}
-/*			set
-			{
-				key = key.Replace(" ", String.Empty);
-				if (!_options.ContainsKey(key))
-					_options.Add(key, value);
-				else
-				{
-					_options[key] = value;
-//					value.Key = key;
-				}
-			} */
 		}
 		#endregion
 
@@ -153,7 +142,7 @@ namespace MapView
 				OptionChangedEventHandler optionChangedEvent = null,
 				object target = null)
 		{
-			key = key.Replace(" ", String.Empty);
+//			key = key.Replace(" ", String.Empty); // nobody be stupid ...
 
 			ViewerOption option;
 			if (!_options.ContainsKey(key))
@@ -264,6 +253,9 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// Checks if 'Value' is a boolean and TRUE. else false.
+		/// </summary>
 		internal bool IsTrue
 		{
 			get

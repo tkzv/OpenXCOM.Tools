@@ -250,7 +250,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				it.Checked = true;
 
 				_foptions = new OptionsForm("RouteViewOptions", Options);
-				_foptions.Text = "Route View Options";
+				_foptions.Text = "RouteView Options";
 
 				_foptions.Show();
 

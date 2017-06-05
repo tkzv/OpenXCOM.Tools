@@ -79,7 +79,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage1.Size = new System.Drawing.Size(624, 429);
 			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "Top View";
+			this.tabPage1.Text = "TopView";
 			// 
 			// tabPage2
 			// 
@@ -89,7 +89,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage2.Size = new System.Drawing.Size(624, 429);
 			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "Route View";
+			this.tabPage2.Text = "RouteView";
 			// 
 			// TopRouteView
 			// 
@@ -101,7 +101,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			this.MinimumSize = new System.Drawing.Size(640, 480);
 			this.Name = "TopRouteView";
 			this.ShowInTaskbar = false;
-			this.Text = "Top/Route View";
+			this.Text = "Top/Route Views";
 			this.tabControl.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage2.ResumeLayout(false);

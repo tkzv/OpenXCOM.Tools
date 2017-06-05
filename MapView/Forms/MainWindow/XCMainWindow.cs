@@ -930,7 +930,7 @@ namespace MapView
 				it.Checked = true;
 
 				_foptions = new OptionsForm("MainViewOptions", Options);
-				_foptions.Text = "Main View Options";
+				_foptions.Text = "MainView Options";
 
 				_foptions.Show();
 

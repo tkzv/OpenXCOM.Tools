@@ -159,7 +159,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				it.Checked = true;
 
 				_foptions = new OptionsForm("TopViewOptions", Options);
-				_foptions.Text = "Top View Options";
+				_foptions.Text = "TopView Options";
 
 				_foptions.Show();
 

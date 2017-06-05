@@ -149,7 +149,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				record = SelectedTilePart.Record;
 			}
 			else
-				f.Text = "Tile View";
+				f.Text = "TileView";
 
 			if (_mcdInfoForm != null)
 				_mcdInfoForm.UpdateData(record);
@@ -172,7 +172,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				record = part.Record;
 			}
 			else
-				f.Text = "Tile View";
+				f.Text = "TileView";
 
 			if (_mcdInfoForm != null)
 				_mcdInfoForm.UpdateData(record);
@@ -343,7 +343,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				it.Checked = true;
 
 				_foptions = new OptionsForm("TileViewOptions", Options);
-				_foptions.Text = "Tile View Options";
+				_foptions.Text = "TileView Options";
 
 				_foptions.Show();
 
@@ -391,7 +391,7 @@ namespace MapView.Forms.MapObservers.TileViews
 						record = tile.Record;
 					}
 					else
-						f.Text = "Tile View";
+						f.Text = "TileView";
 
 					_mcdInfoForm.UpdateData(record);
 				}
@@ -550,7 +550,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			return String.Format(
 							System.Globalization.CultureInfo.CurrentCulture,
-							"Tile View - id {0}  mcd {1}  file {2}",
+							"TileView - id {0}  mcd {1}  file {2}",
 							id, mcd, GetTerrainLabel() ?? "unknown");
 		}
 

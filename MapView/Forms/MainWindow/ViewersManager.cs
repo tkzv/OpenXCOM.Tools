@@ -51,18 +51,19 @@ namespace MapView.Forms.MainWindow
 			ViewerFormsManager.TopRouteView.ControlRoute.LoadControl0Options();
 
 
-			_viewersDictionary.Add("Top View",  ViewerFormsManager.TopView);
-			SetAsObserver(RegistryInfo.TopView, ViewerFormsManager.TopView);
+			_viewersDictionary.Add(RegistryInfo.TopView, ViewerFormsManager.TopView);
+			SetAsObserver(         RegistryInfo.TopView, ViewerFormsManager.TopView);
 
-			_viewersDictionary.Add("Route View",  ViewerFormsManager.RouteView);
-			SetAsObserver(RegistryInfo.RouteView, ViewerFormsManager.RouteView);
+			_viewersDictionary.Add(RegistryInfo.RouteView, ViewerFormsManager.RouteView);
+			SetAsObserver(         RegistryInfo.RouteView, ViewerFormsManager.RouteView);
 
-			_viewersDictionary.Add("Tile View",  ViewerFormsManager.TileView);
-			SetAsObserver(RegistryInfo.TileView, ViewerFormsManager.TileView);
+			_viewersDictionary.Add(RegistryInfo.TileView, ViewerFormsManager.TileView);
+			SetAsObserver(         RegistryInfo.TileView, ViewerFormsManager.TileView);
 
-			_viewersDictionary.Add("TopRoute View", ViewerFormsManager.TopRouteView);
+			_viewersDictionary.Add(RegistryInfo.TopRouteView, ViewerFormsManager.TopRouteView);
 
-			_viewersDictionary.Add("Console", _consoleShare.Console);
+			_viewersDictionary.Add(RegistryInfo.Console, _consoleShare.Console);
+
 
 			_viewersDictionary.Add("Help",  ViewerFormsManager.HelpScreen);
 			_viewersDictionary.Add("About", ViewerFormsManager.AboutScreen);

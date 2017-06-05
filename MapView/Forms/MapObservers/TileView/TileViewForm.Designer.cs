@@ -47,7 +47,7 @@
 			this.MinimumSize = new System.Drawing.Size(322, 122);
 			this.Name = "TileViewForm";
 			this.ShowInTaskbar = false;
-			this.Text = "Tile View";
+			this.Text = "TileView";
 			this.ResumeLayout(false);
 
 		}

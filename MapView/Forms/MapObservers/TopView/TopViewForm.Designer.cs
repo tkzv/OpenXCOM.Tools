@@ -48,7 +48,7 @@
 			this.Name = "TopViewForm";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-			this.Text = "Top View";
+			this.Text = "TopView";
 			this.ResumeLayout(false);
 
 		}

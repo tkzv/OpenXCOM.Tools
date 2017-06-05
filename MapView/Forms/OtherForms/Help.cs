@@ -439,7 +439,7 @@ namespace MapView
 			this.tpMainView.Name = "tpMainView";
 			this.tpMainView.Size = new System.Drawing.Size(446, 251);
 			this.tpMainView.TabIndex = 0;
-			this.tpMainView.Text = "Main View";
+			this.tpMainView.Text = "MainView";
 			// 
 			// label17
 			// 
@@ -487,7 +487,7 @@ namespace MapView
 			this.tpTopView.Name = "tpTopView";
 			this.tpTopView.Size = new System.Drawing.Size(446, 251);
 			this.tpTopView.TabIndex = 1;
-			this.tpTopView.Text = "Top View";
+			this.tpTopView.Text = "TopView";
 			// 
 			// gbTopViewColors
 			// 
@@ -586,7 +586,7 @@ namespace MapView
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(440, 15);
 			this.label5.TabIndex = 2;
-			this.label5.Text = "Right click to set the currently selected tile to the one selected in Tile View.";
+			this.label5.Text = "Right click to set the currently selected tile to the one selected in TileView.";
 			// 
 			// label4
 			// 
@@ -594,7 +594,7 @@ namespace MapView
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(440, 15);
 			this.label4.TabIndex = 1;
-			this.label4.Text = "Double left click to set the currently selected tile in Tile View.";
+			this.label4.Text = "Double left click to set the currently selected tile in TileView.";
 			// 
 			// label3
 			// 
@@ -615,7 +615,7 @@ namespace MapView
 			this.tpRouteView.Name = "tpRouteView";
 			this.tpRouteView.Size = new System.Drawing.Size(446, 250);
 			this.tpRouteView.TabIndex = 2;
-			this.tpRouteView.Text = "Route View";
+			this.tpRouteView.Text = "RouteView";
 			// 
 			// gbRouteViewColors
 			// 
@@ -710,7 +710,7 @@ namespace MapView
 			this.tpTileView.Name = "tpTileView";
 			this.tpTileView.Size = new System.Drawing.Size(446, 251);
 			this.tpTileView.TabIndex = 3;
-			this.tpTileView.Text = "Tile View";
+			this.tpTileView.Text = "TileView";
 			// 
 			// label26
 			// 
