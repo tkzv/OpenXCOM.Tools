@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -57,7 +58,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			}
 		}
 
-		private System.Collections.Generic.IList<TilepartBase> TileParts
+		private IList<TilepartBase> TileParts
 		{
 			set
 			{
@@ -425,16 +426,18 @@ namespace MapView.Forms.MapObservers.TileViews
 			if ((MapBase as MapFileChild) != null)
 			{
 				var service = new VolutarSettingService(Options);
-				var pfe = service.FullPath;	// this will invoke a box for the user to input the
-											// executable's path if it doesn't exist in Options.
-				if (File.Exists(pfe))
+				var pfeService = service.FullPath;	// this will invoke a box for the user to input the
+													// executable's path if it doesn't exist in Options.
+				if (File.Exists(pfeService))
 				{
-					string dir = Path.GetDirectoryName(pfe); // change to MCDEdit dir so that accessing MCDEdit.txt doesn't cause probs.
-					Directory.SetCurrentDirectory(dir);
+					// change to MCDEdit dir so that accessing MCDEdit.txt doesn't cause probls.
+					string dirService = Path.GetDirectoryName(pfeService);
+					Directory.SetCurrentDirectory(dirService);
 
-					Process.Start(new ProcessStartInfo(pfe));
+					Process.Start(new ProcessStartInfo(pfeService));
 
-					Directory.SetCurrentDirectory(SharedSpace.Instance.GetShare(SharedSpace.ApplicationDirectory)); // change back to app dir
+					// change back to app dir
+					Directory.SetCurrentDirectory(SharedSpace.Instance.GetShare(SharedSpace.ApplicationDirectory));
 				}
 			}
 		}
@@ -446,22 +449,27 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <param name="e"></param>
 		private void OnPckEditorClick(object sender, EventArgs e)
 		{
-			string label = GetTerrainLabel();
-			if (!String.IsNullOrEmpty(label))
+			string terrain = GetTerrainLabel();
+			if (!String.IsNullOrEmpty(terrain))
 			{
-				string path = Path.Combine(MapBase.Descriptor.BasePath, Descriptor.PathTerrain);
+//				string dirTerrain = Path.Combine(MapBase.Descriptor.BasePath, Descriptor.PathTerrain);
+				string dirTerrain = (MapBase.Descriptor.Pal == Palette.UfoBattle) ? SharedSpace.ResourceDirectoryUfo
+																				  : SharedSpace.ResourceDirectoryTftd;
+				dirTerrain = Path.Combine(SharedSpace.Instance.GetShare(dirTerrain), Descriptor.PathTerrain);
 				string pfePck = Path.Combine(
-										path,
-										label + SpriteCollection.PckExt);
+										dirTerrain,
+										terrain + SpriteCollection.PckExt);
 				string pfeTab = Path.Combine(
-										path,
-										label + SpriteCollection.TabExt);
+										dirTerrain,
+										terrain + SpriteCollection.TabExt);
 
 				if (!File.Exists(pfePck))
 				{
 					MessageBox.Show(
 								this,
-								"File does not exist" + Environment.NewLine + Environment.NewLine + pfePck,
+								"File does not exist"
+									+ Environment.NewLine + Environment.NewLine
+									+ pfePck,
 								"Error",
 								MessageBoxButtons.OK,
 								MessageBoxIcon.Error,
@@ -472,7 +480,9 @@ namespace MapView.Forms.MapObservers.TileViews
 				{
 					MessageBox.Show(
 								this,
-								"File does not exist" + Environment.NewLine + Environment.NewLine + pfeTab,
+								"File does not exist"
+									+ Environment.NewLine + Environment.NewLine
+									+ pfeTab,
 								"Error",
 								MessageBoxButtons.OK,
 								MessageBoxIcon.Error,

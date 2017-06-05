@@ -18,11 +18,14 @@ namespace MapView
 	/// </summary>
 	public sealed class Options
 	{
-		#region Fields
-		private readonly Dictionary<string, Property> _properties;
-		private Dictionary<string, ViewerOption> _options;
-
+		#region Fields (static)
 		private static Dictionary<Type, ConvertObjectHandler> _converters;
+		#endregion
+
+
+		#region Fields
+		private readonly Dictionary<string, Property> _properties = new Dictionary<string, Property>();
+		private Dictionary<string, ViewerOption>      _options    = new Dictionary<string, ViewerOption>();
 		#endregion
 
 
@@ -36,7 +39,7 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Gets/Sets the Option tied to the input string.
+		/// Gets/Sets the ViewerOption keyed by a given key.
 		/// </summary>
 		internal ViewerOption this[string key]
 		{
@@ -64,9 +67,6 @@ namespace MapView
 		#region cTor
 		internal Options()
 		{
-			_options    = new Dictionary<string, ViewerOption>();
-			_properties = new Dictionary<string, Property>();
-
 			if (_converters == null)
 			{
 				_converters = new Dictionary<Type, ConvertObjectHandler>();

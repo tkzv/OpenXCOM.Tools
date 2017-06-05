@@ -105,9 +105,6 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Parser\DSVaridia.cs" />
-    <Compile Include="Parser\DSVaridiaStructured.cs" />
-    <Compile Include="Parser\DSVariable.cs" />
     <Compile Include="PathInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
