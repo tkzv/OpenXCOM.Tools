@@ -1092,36 +1092,47 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnAllNodeSpawnRank0Click(object sender, EventArgs e)
 		{
-			int changed = 0;
-			foreach (RouteNode node in _mapFile.Routes)
-				if (node.SpawnRank != 0)
-				{
-					++changed;
-					node.SpawnRank = 0;
-				}
-
-			if (changed != 0)
+			if (MessageBox.Show(
+							this,
+							"Are you sure you want to make all nodes spawn Rank"
+								+ " 0 Civ-Scout?",
+							"Warning",
+							MessageBoxButtons.YesNo,
+							MessageBoxIcon.Exclamation,
+							MessageBoxDefaultButton.Button2,
+							0) == DialogResult.Yes)
 			{
-				_mapFile.MapChanged = true;
+				int changed = 0;
+				foreach (RouteNode node in _mapFile.Routes)
+					if (node.SpawnRank != 0)
+					{
+						++changed;
+						node.SpawnRank = 0;
+					}
 
-				UpdateNodeInformation();
+				if (changed != 0)
+				{
+					_mapFile.MapChanged = true;
 
-				MessageBox.Show(
-							changed + " nodes were changed.",
-							"All nodes spawn Rank 0",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Information,
-							MessageBoxDefaultButton.Button1,
-							0);
+					UpdateNodeInformation();
+
+					MessageBox.Show(
+								changed + " nodes were changed.",
+								"All nodes spawn Rank 0",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Information,
+								MessageBoxDefaultButton.Button1,
+								0);
+				}
+				else
+					MessageBox.Show(
+								"All nodes are already rank 0.",
+								"All nodes spawn Rank 0",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Asterisk,
+								MessageBoxDefaultButton.Button1,
+								0);
 			}
-			else
-				MessageBox.Show(
-							"All nodes are already rank 0.",
-							"All nodes spawn Rank 0",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Asterisk,
-							MessageBoxDefaultButton.Button1,
-							0);
 		}
 
 		private void OnClearLinkDataClick(object sender, EventArgs e)

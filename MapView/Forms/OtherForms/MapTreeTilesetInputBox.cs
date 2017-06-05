@@ -126,7 +126,7 @@ namespace MapView
 
 		#region cTor
 		/// <summary>
-		/// cTor.
+		/// Creates the tileset editor.
 		/// </summary>
 		/// <param name="boxType"></param>
 		/// <param name="labelGroup"></param>
@@ -771,8 +771,8 @@ namespace MapView
 
 		private void SetPasteButtonStuffer()
 		{
-			btnTerrainPaste.Text = (XCMainWindow.Instance.TilesetTerrains.Count != 0) ? "paste"
-																					  : "clear";
+			btnTerrainPaste.Text = (XCMainWindow.Instance.TilesetTerrains.Count != 0) ? "Paste"
+																					  : "Clear";
 			string tipPaste = String.Empty;
 			bool first = true;
 			foreach (var terrain in XCMainWindow.Instance.TilesetTerrains)
@@ -884,7 +884,7 @@ namespace MapView
 			return (pfeMap != null && File.Exists(pfeMap));
 		}
 
-		private bool IsTilesetInGroups(string labelMap)
+		private static bool IsTilesetInGroups(string labelMap)
 		{
 			LogFile.WriteLine("IsDescriptorInGroups");
 

@@ -212,16 +212,16 @@ namespace MapView
 			LogFile.WriteLine("Palette transparencies set.");
 
 
-			var shareConsole = new ConsoleSharedSpace(share);
+//			var shareConsole = new ConsoleSharedSpace(share);
 //			_warningHandler  = new ConsoleWarningHandler(consoleShare);
 
 
 			_viewerFormsManager = new ViewerFormsManager();
-			_viewersManager     = new ViewersManager(_optionsManager, shareConsole);
+			_viewersManager     = new ViewersManager(_optionsManager/*, shareConsole*/);
 			LogFile.WriteLine("Viewer managers instantiated.");
 
 			_mainMenusManager = new MainMenusManager(menuView, menuHelp);
-			_mainMenusManager.PopulateMenus(shareConsole.Console, Options);
+			_mainMenusManager.PopulateMenus(/*shareConsole.Console,*/ Options);
 			LogFile.WriteLine("MainView menus populated.");
 
 			ViewerFormsManager.HideViewersManager = _mainMenusManager.CreateShowHideManager(); // subsidiary viewers hide when PckView is invoked from TileView.
@@ -1764,7 +1764,7 @@ namespace MapView
 				ToggleDoorSprites(false);
 
 				if (!menuView.Enabled) // open/close the forms that appear in the Views menu.
-					_mainMenusManager.StartAllViewers();
+					_mainMenusManager.StartViewers();
 
 				_viewerFormsManager.SetObservers(mapBase); // reset all observer events
 			}

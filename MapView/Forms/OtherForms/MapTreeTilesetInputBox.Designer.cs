@@ -237,7 +237,7 @@
 			this.btnTerrainPaste.Name = "btnTerrainPaste";
 			this.btnTerrainPaste.Size = new System.Drawing.Size(45, 25);
 			this.btnTerrainPaste.TabIndex = 5;
-			this.btnTerrainPaste.Text = "clear";
+			this.btnTerrainPaste.Text = "Clear";
 			this.btnTerrainPaste.UseVisualStyleBackColor = true;
 			this.btnTerrainPaste.Click += new System.EventHandler(this.OnTerrainPasteClick);
 			// 
@@ -248,7 +248,7 @@
 			this.btnTerrainCopy.Name = "btnTerrainCopy";
 			this.btnTerrainCopy.Size = new System.Drawing.Size(45, 25);
 			this.btnTerrainCopy.TabIndex = 4;
-			this.btnTerrainCopy.Text = "copy";
+			this.btnTerrainCopy.Text = "Copy";
 			this.btnTerrainCopy.UseVisualStyleBackColor = true;
 			this.btnTerrainCopy.Click += new System.EventHandler(this.OnTerrainCopyClick);
 			// 
@@ -268,7 +268,7 @@
 			// 
 			this.btnMoveDown.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.btnMoveDown.Enabled = false;
-			this.btnMoveDown.Location = new System.Drawing.Point(5, 75);
+			this.btnMoveDown.Location = new System.Drawing.Point(5, 80);
 			this.btnMoveDown.Name = "btnMoveDown";
 			this.btnMoveDown.Size = new System.Drawing.Size(45, 25);
 			this.btnMoveDown.TabIndex = 3;
@@ -292,7 +292,7 @@
 			// 
 			this.btnMoveUp.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.btnMoveUp.Enabled = false;
-			this.btnMoveUp.Location = new System.Drawing.Point(5, 50);
+			this.btnMoveUp.Location = new System.Drawing.Point(5, 55);
 			this.btnMoveUp.Name = "btnMoveUp";
 			this.btnMoveUp.Size = new System.Drawing.Size(45, 25);
 			this.btnMoveUp.TabIndex = 2;

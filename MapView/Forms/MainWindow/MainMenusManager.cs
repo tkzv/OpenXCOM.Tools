@@ -74,9 +74,9 @@ namespace MapView.Forms.MainWindow
 		/// <summary>
 		/// Adds menuitems to MapView's dropdown list.
 		/// </summary>
-		/// <param name="fconsole">pointer to the console-form</param>
+//		/// <param name="fconsole">pointer to the console-form</param>
 		/// <param name="options">pointer to MV_OptionsFile options</param>
-		internal void PopulateMenus(Form fconsole, Options options)
+		internal void PopulateMenus(/*Form fconsole,*/ Options options)
 		{
 			_options = options;
 
@@ -89,9 +89,8 @@ namespace MapView.Forms.MainWindow
 			CreateMenuItem(ViewerFormsManager.RouteView,    RegistryInfo.RouteView,    _menuViewers);
 			CreateMenuItem(ViewerFormsManager.TopRouteView, RegistryInfo.TopRouteView, _menuViewers);
 
-			_menuViewers.MenuItems.Add(new MenuItem(Divider));
-
-			CreateMenuItem(fconsole,                        RegistryInfo.Console,      _menuViewers);
+//			_menuViewers.MenuItems.Add(new MenuItem(Divider));
+//			CreateMenuItem(fconsole, RegistryInfo.Console, _menuViewers); // TODO: either use the Console or lose it.
 
 			// Help menuitems ->
 			CreateMenuItem(ViewerFormsManager.HelpScreen,  "Help",  _menuHelp);
@@ -133,21 +132,17 @@ namespace MapView.Forms.MainWindow
 		}
 
 		/// <summary>
-		/// Adds the user Options for each viewer.
+		/// Adds each viewer's opened/closed flag to user Options.
 		/// </summary>
 		private void AddViewersOptions()
 		{
 			foreach (MenuItem it in _menuViewers.MenuItems)
 			{
-//				string key = GetViewerKey(it);
-//				if (!String.IsNullOrEmpty(key))
-
 				string key = it.Text;
 				if (!key.Equals(Divider, StringComparison.Ordinal))
 				{
 					_options.AddOption(
 									key,
-//									!(it.Tag is XCom.ConsoleForm)
 //									!(it.Tag is MapView.Forms.MapObservers.TileViews.TopRouteViewForm),	// q. why is TopRouteViewForm under 'TileViews'
 																										// a. why not.
 									(       it.Tag is TopViewForm)	// true to have the viewer open on 1st run.
@@ -173,49 +168,25 @@ namespace MapView.Forms.MainWindow
 		}
 
 		/// <summary>
-		/// Opens the subsidiary viewers. All viewers will open and those that
-		/// the user has flagged false in Options will be closed.
+		/// Opens the subsidiary viewers that are flagged to open when a Map
+		/// loads.
 		/// </summary>
-		internal void StartAllViewers()
+		internal void StartViewers()
 		{
 			foreach (MenuItem it in _menuViewers.MenuItems)
 			{
-//				string key = GetViewerKey(it);
-//				if (key != null)
-
 				string key = it.Text;
-				if (!key.Equals(Divider, StringComparison.Ordinal))
+				if (!key.Equals(Divider, StringComparison.Ordinal)
+					&& _options[key].IsTrue)
 				{
-					if (_options[key].IsTrue)
-						it.PerformClick();
-
-//					else					// NOTE: does not run unless a viewer's key was
-//					{						// set "false" in AddMenuItemOptions() above^
-//						it.PerformClick();	// not sure that this double-click gimmick
-//						it.PerformClick();	// is necessary even then ...
-//					}
+					it.PerformClick();
 				}
 			}
-//			foreach (MenuItem it in _show.MenuItems) // NOTE: Don't do this. Go figure.
-//			{
-//				it.PerformClick();
-//				var key = GetViewerKey(it);
-//				if (!(_options[key].IsTrue))
-//					it.PerformClick();
-//			}
-
 			_menuViewers.Enabled = true;
 		}
 
-//		private static string GetViewerKey(MenuItem it)
-//		{
-//			string suffix = it.Text;
-//			return (suffix != Divider) ? "Window" + Divider + suffix
-//									   : null;
-//		}
-
 		/// <summary>
-		/// Effectively disables the VisibleChanged event for all subsidiary
+		/// Effectively disables the 'VisibleChanged' event for all subsidiary
 		/// viewers.
 		/// </summary>
 		internal void IsQuitting()
@@ -225,7 +196,7 @@ namespace MapView.Forms.MainWindow
 
 		/// <summary>
 		/// Creates a device that minimizes and restores all subsidiary viewers
-		/// when PckView is opened in TileView.
+		/// when PckView is opened via TileView.
 		/// </summary>
 		/// <returns></returns>
 		internal ShowHideManager CreateShowHideManager()

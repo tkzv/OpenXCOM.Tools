@@ -17,7 +17,7 @@ namespace MapView.Forms.MainWindow
 		private readonly Dictionary<string, Form> _viewersDictionary = new Dictionary<string, Form>();
 
 		private readonly OptionsManager     _optionsManager;
-		private readonly ConsoleSharedSpace _consoleShare;
+//		private readonly ConsoleSharedSpace _consoleShare;
 		#endregion
 
 
@@ -26,13 +26,12 @@ namespace MapView.Forms.MainWindow
 		/// cTor.
 		/// </summary>
 		/// <param name="optionsManager"></param>
-		/// <param name="consoleShare"></param>
-		internal ViewersManager(
-				OptionsManager optionsManager,
-				ConsoleSharedSpace consoleShare)
+//		/// <param name="shareConsole"></param>
+		internal ViewersManager(OptionsManager optionsManager)
+//				ConsoleSharedSpace shareConsole)
 		{
 			_optionsManager = optionsManager;
-			_consoleShare   = consoleShare;
+//			_consoleShare   = shareConsole;
 		}
 		#endregion
 
@@ -50,20 +49,13 @@ namespace MapView.Forms.MainWindow
 			ViewerFormsManager.TopRouteView.ControlTop  .LoadControl0Options();
 			ViewerFormsManager.TopRouteView.ControlRoute.LoadControl0Options();
 
-
-			_viewersDictionary.Add(RegistryInfo.TopView, ViewerFormsManager.TopView);
-			SetAsObserver(         RegistryInfo.TopView, ViewerFormsManager.TopView);
-
-			_viewersDictionary.Add(RegistryInfo.RouteView, ViewerFormsManager.RouteView);
-			SetAsObserver(         RegistryInfo.RouteView, ViewerFormsManager.RouteView);
-
-			_viewersDictionary.Add(RegistryInfo.TileView, ViewerFormsManager.TileView);
-			SetAsObserver(         RegistryInfo.TileView, ViewerFormsManager.TileView);
+			SetAsObserver(RegistryInfo.TopView,   ViewerFormsManager.TopView);
+			SetAsObserver(RegistryInfo.RouteView, ViewerFormsManager.RouteView);
+			SetAsObserver(RegistryInfo.TileView,  ViewerFormsManager.TileView);
 
 			_viewersDictionary.Add(RegistryInfo.TopRouteView, ViewerFormsManager.TopRouteView);
 
-			_viewersDictionary.Add(RegistryInfo.Console, _consoleShare.Console);
-
+//			_viewersDictionary.Add(RegistryInfo.Console, _consoleShare.Console);
 
 			_viewersDictionary.Add("Help",  ViewerFormsManager.HelpScreen);
 			_viewersDictionary.Add("About", ViewerFormsManager.AboutScreen);
@@ -79,7 +71,9 @@ namespace MapView.Forms.MainWindow
 		/// <param name="f"></param>
 		private void SetAsObserver(string viewer, Form f)
 		{
-			//LogFile.WriteLine("SetAsObserver regkey= " + regkey);
+			//LogFile.WriteLine("SetAsObserver viewer= " + viewer);
+			_viewersDictionary.Add(viewer, f);
+
 			var fobserver = f as IMapObserverProvider; // TopViewForm, RouteViewForm, TileViewForm only.
 			if (fobserver != null)
 			{
