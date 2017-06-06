@@ -138,11 +138,11 @@ namespace MapView
 				string labelCategory,
 				string labelTileset)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("MapTreeTilesetInputBox cTor");
-			LogFile.WriteLine(". labelGroup= " + labelGroup);
-			LogFile.WriteLine(". labelCategory= " + labelCategory);
-			LogFile.WriteLine(". labelTileset= " + labelTileset);
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("MapTreeTilesetInputBox cTor");
+			//LogFile.WriteLine(". labelGroup= " + labelGroup);
+			//LogFile.WriteLine(". labelCategory= " + labelCategory);
+			//LogFile.WriteLine(". labelTileset= " + labelTileset);
 
 			InitializeComponent();
 
@@ -307,8 +307,8 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnTilesetLabelChanged(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("OnTilesetLabelChanged");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("OnTilesetLabelChanged");
 
 			if (Inited) // do not run until text has been initialized.
 			{
@@ -369,8 +369,8 @@ namespace MapView
 		/// </summary>
 		private void ListTerrains()
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("ListTerrains");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("ListTerrains");
 
 			btnMoveUp.Enabled      =
 			btnMoveDown.Enabled    =
@@ -400,7 +400,7 @@ namespace MapView
 					}
 					break;
 			}
-			LogFile.WriteLine(". Descriptor= " + ((Descriptor != null) ? Descriptor.Label : "NULL"));
+			//LogFile.WriteLine(". Descriptor= " + ((Descriptor != null) ? Descriptor.Label : "NULL"));
 
 			if (Descriptor != null)
 			{
@@ -448,12 +448,12 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnCreateDescriptorClick(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("OnCreateDescriptorClick");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("OnCreateDescriptorClick");
 
 			if (!IsTilesetInGroups(Tileset))
 			{
-				LogFile.WriteLine(". descriptor Instantiated= " + Tileset);
+				//LogFile.WriteLine(". descriptor Instantiated= " + Tileset);
 
 				Descriptor = new Descriptor(		// be careful with that; it isn't being deleted if user clicks Cancel
 										Tileset,	// or chooses instead to create yet another descriptor.
@@ -495,46 +495,46 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnAcceptClick(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("OnAcceptClick");
-			LogFile.WriteLine(". Tileset= " + Tileset);
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("OnAcceptClick");
+			//LogFile.WriteLine(". Tileset= " + Tileset);
 
 			switch (InputBoxType)
 			{
 				case BoxType.EditTileset:
-					LogFile.WriteLine(". . MODE:EditTileset");
+					//LogFile.WriteLine(". . MODE:EditTileset");
 
 					if (String.IsNullOrEmpty(Tileset))
 					{
-						LogFile.WriteLine(". The Map label cannot be blank.");
+						//LogFile.WriteLine(". The Map label cannot be blank.");
 						ShowErrorDialog("The Map label cannot be blank.");
 
 						tbTileset.Select();
 					}
 					else if (lbTerrainsAllocated.Items.Count == 0)
 					{
-						LogFile.WriteLine(". The Map must have at least one terrain allocated.");
+						//LogFile.WriteLine(". The Map must have at least one terrain allocated.");
 						ShowErrorDialog("The Map must have at least one terrain allocated.");
 					}
 					else
 					{
-						foreach (string t in TerrainsOriginal)
-							LogFile.WriteLine(". terrain original= " + t);
-						foreach (string t in Descriptor.Terrains)
-							LogFile.WriteLine(". terrain= " + t);
+						//foreach (string t in TerrainsOriginal)
+						//	LogFile.WriteLine(". terrain original= " + t);
+						//foreach (string t in Descriptor.Terrains)
+						//	LogFile.WriteLine(". terrain= " + t);
 
 						if (Tileset == TilesetOriginal) // label didn't change; check if terrains changed ->
 						{
-							LogFile.WriteLine(". . label did *not* change");
+							//LogFile.WriteLine(". . label did *not* change");
 
 							if (Descriptor.Terrains.SequenceEqual(TerrainsOriginal))
 							{
-								LogFile.WriteLine(". . . No changes were made.");
+								//LogFile.WriteLine(". . . No changes were made.");
 								ShowInfoDialog("No changes were made.");
 							}
 							else
 							{
-								LogFile.WriteLine(". . . DialogResult OK");
+								//LogFile.WriteLine(". . . DialogResult OK");
 								DialogResult = DialogResult.OK;
 							}
 
@@ -542,7 +542,7 @@ namespace MapView
 						}
 						else // label changed; rewrite the descriptor ->
 						{
-							LogFile.WriteLine(". . change label");
+							//LogFile.WriteLine(". . change label");
 
 							// NOTE: user cannot edit a Map-label to be another already existing file.
 							// There are other ways to do that: either let the user delete the target-
@@ -552,7 +552,7 @@ namespace MapView
 
 							if (MapFileExists(Tileset))
 							{
-								LogFile.WriteLine(". The Map file already exists on disk.");
+								//LogFile.WriteLine(". The Map file already exists on disk.");
 								ShowErrorDialog("The Map file already exists on disk. The Tileset Editor is"
 												+ " not sophisticated enough to deal with this eventuality."
 												+ " Either edit that Map directly if it's already in the Maptree,"
@@ -566,7 +566,7 @@ namespace MapView
 							{
 								if (IsTilesetInGroups(Tileset))
 								{
-									LogFile.WriteLine(". The tileset already exists in the Maptree.");
+									//LogFile.WriteLine(". The tileset already exists in the Maptree.");
 									ShowErrorDialog("The tileset already exists in the Maptree."
 												+ Environment.NewLine + Environment.NewLine
 												+ Tileset
@@ -576,13 +576,13 @@ namespace MapView
 								}
 								else
 								{
-									LogFile.WriteLine(". . . tileset Created");
+									//LogFile.WriteLine(". . . tileset Created");
 
 									string pfeMap    = GetFullPathMap(Tileset);
 									string pfeMapPre = GetFullPathMap(TilesetOriginal);
 
-									LogFile.WriteLine(". . . . fileMapPre= " + pfeMapPre);
-									LogFile.WriteLine(". . . . fileMap= " + pfeMap);
+									//LogFile.WriteLine(". . . . fileMapPre= " + pfeMapPre);
+									//LogFile.WriteLine(". . . . fileMap= " + pfeMap);
 
 									File.Move(pfeMapPre, pfeMap);	// NOTE: This has to happen now because once the MapTree node
 																	// is selected it will try to load the .MAP file etc.
@@ -592,8 +592,8 @@ namespace MapView
 										string pfeRoutes    = GetFullPathRoutes(Tileset);
 										string pfeRoutesPre = GetFullPathRoutes(TilesetOriginal);
 
-										LogFile.WriteLine(". . . . fileRoutesPre= " + pfeRoutesPre);
-										LogFile.WriteLine(". . . . fileRoutes= " + pfeRoutes);
+										//LogFile.WriteLine(". . . . fileRoutesPre= " + pfeRoutesPre);
+										//LogFile.WriteLine(". . . . fileRoutes= " + pfeRoutes);
 
 										File.Move(pfeRoutesPre, pfeRoutes);
 
@@ -617,18 +617,18 @@ namespace MapView
 					break;
 
 				case BoxType.AddTileset:
-					LogFile.WriteLine(". . MODE:AddTileset");
+					//LogFile.WriteLine(". . MODE:AddTileset");
 
-					if (String.IsNullOrEmpty(Tileset))							// NOTE: The tileset-label should already have been
-					{															// checked for validity by here before the Create button.
-						LogFile.WriteLine(". The Map label cannot be blank.");	// But these handle the case when user immediately clicks the Ok button.
-						ShowErrorDialog("The Map label cannot be blank.");		// ... TODO: so disable the Ok button, unless a descriptor is valid
+					if (String.IsNullOrEmpty(Tileset))								// NOTE: The tileset-label should already have been
+					{																// checked for validity by here before the Create button.
+						//LogFile.WriteLine(". The Map label cannot be blank.");	// But these handle the case when user immediately clicks the Ok button.
+						ShowErrorDialog("The Map label cannot be blank.");			// ... TODO: so disable the Ok button, unless a descriptor is valid
 
 						tbTileset.Select();
 					}
 					else if (lbTerrainsAllocated.Items.Count == 0)
 					{
-						LogFile.WriteLine(". The Map must have at least one terrain allocated.");
+						//LogFile.WriteLine(". The Map must have at least one terrain allocated.");
 						ShowErrorDialog("The Map must have at least one terrain allocated.");
 					}
 					else
@@ -636,20 +636,20 @@ namespace MapView
 						switch (FileAddType)
 						{
 							case AddType.MapExists:
-								LogFile.WriteLine(". . Map file EXISTS");
+								//LogFile.WriteLine(". . Map file EXISTS");
 
 								TileGroup.AddTileset(Descriptor, Category);
 								DialogResult = DialogResult.OK;
 								break;
 
 							case AddType.MapCreate:
-								LogFile.WriteLine(". . Map file does NOT exist - Create new Map file");
+								//LogFile.WriteLine(". . Map file does NOT exist - Create new Map file");
 
 								string pfeMap = GetFullPathMap(Tileset);
-								LogFile.WriteLine(". . . fileMap= " + pfeMap);
+								//LogFile.WriteLine(". . . fileMap= " + pfeMap);
 
 								string pfeRoutes = GetFullPathRoutes(Tileset);
-								LogFile.WriteLine(". . . fileRoutes= " + pfeRoutes);
+								//LogFile.WriteLine(". . . fileRoutes= " + pfeRoutes);
 
 								Directory.CreateDirectory(Path.GetDirectoryName(pfeRoutes));
 								using (var fs = File.Create(pfeRoutes)) // create a blank Route-file and release its handle.
@@ -665,7 +665,7 @@ namespace MapView
 
 								if (File.Exists(pfeMap) && File.Exists(pfeRoutes)) // NOTE: The descriptor has already been created with the Create descriptor button.
 								{
-									LogFile.WriteLine(". tileset Created");
+									//LogFile.WriteLine(". tileset Created");
 
 									TileGroup.AddTileset(Descriptor, Category);
 									DialogResult = DialogResult.OK;
@@ -793,8 +793,8 @@ namespace MapView
 		{
 			if (lbTerrainsAllocated.SelectedIndex != -1)
 			{
-				LogFile.WriteLine("OnAllocatedIndexChanged");
-				LogFile.WriteLine(". descriptor= " + ((Descriptor != null) ? Descriptor.Label : "NULL"));
+				//LogFile.WriteLine("OnAllocatedIndexChanged");
+				//LogFile.WriteLine(". descriptor= " + ((Descriptor != null) ? Descriptor.Label : "NULL"));
 
 				btnMoveRight.Enabled = true;
 
@@ -808,8 +808,8 @@ namespace MapView
 
 		private void OnAvailableIndexChanged(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("OnAvailableIndexChanged");
-			LogFile.WriteLine(". descriptor= " + ((Descriptor != null) ? Descriptor.Label : "NULL"));
+			//LogFile.WriteLine("OnAvailableIndexChanged");
+			//LogFile.WriteLine(". descriptor= " + ((Descriptor != null) ? Descriptor.Label : "NULL"));
 
 			btnMoveLeft.Enabled = (lbTerrainsAvailable.SelectedIndex != -1)
 							   && (Descriptor != null);
@@ -873,22 +873,22 @@ namespace MapView
 		/// <returns></returns>
 		private bool MapFileExists(string labelMap)
 		{
-			LogFile.WriteLine("MapFileExists");
+			//LogFile.WriteLine("MapFileExists");
 
 			string pfeMap = null;
 			if (!String.IsNullOrEmpty(labelMap))
 			{
 				pfeMap = GetFullPathMap(labelMap);
-				LogFile.WriteLine(". pfeMap= " + pfeMap);
+				//LogFile.WriteLine(". pfeMap= " + pfeMap);
 			}
 
-			LogFile.WriteLine(". ret= " + (pfeMap != null && File.Exists(pfeMap)));
+			//LogFile.WriteLine(". ret= " + (pfeMap != null && File.Exists(pfeMap)));
 			return (pfeMap != null && File.Exists(pfeMap));
 		}
 
 		private static bool IsTilesetInGroups(string labelMap)
 		{
-			LogFile.WriteLine("IsDescriptorInGroups");
+			//LogFile.WriteLine("IsDescriptorInGroups");
 
 			foreach (var tileGroup in ResourceInfo.TileGroupInfo.TileGroups)
 			foreach (var category in tileGroup.Value.Categories)
@@ -934,27 +934,27 @@ namespace MapView
 		#endregion
 
 
-		/// <summary>
-		/// Calls OnCreateTilesetClick() if Enter is key-upped in the
-		/// tileset-label textbox.
-		/// NOTE: KeyDown event doesn't work for an Enter key. Be careful 'cause
-		/// the keydown gets intercepted by the form itself.
-		/// TODO: Bypass triggering OnAcceptClick() ...
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnTilesetKeyUp(object sender, KeyEventArgs e)
-		{
-			//LogFile.WriteLine("");
-			//LogFile.WriteLine("OnTilesetLabelKeyUp");
-
+//		/// <summary>
+//		/// Calls OnCreateTilesetClick() if Enter is key-upped in the
+//		/// tileset-label textbox.
+//		/// NOTE: KeyDown event doesn't work for an Enter key. Be careful 'cause
+//		/// the keydown gets intercepted by the form itself.
+//		/// TODO: Bypass triggering OnAcceptClick() ... was raised by tbTileset.KeyUp event.
+//		/// </summary>
+//		/// <param name="sender"></param>
+//		/// <param name="e"></param>
+//		private void OnTilesetKeyUp(object sender, KeyEventArgs e)
+//		{
+//			//LogFile.WriteLine("");
+//			//LogFile.WriteLine("OnTilesetLabelKeyUp");
+//
 //			if (InputBoxType == BoxType.AddTileset	// NOTE: have to remove this. If a user enters an invalid char in the label
 //				&& btnCreateMap.Enabled				// then uses Enter to get rid of the error-popup, the KeyDown dismisses the
 //				&& e.KeyCode == Keys.Enter)			// error but then the KeyUp will instantiate a descriptor ....
 //			{										// Am sick of fighting with WinForms in an already complicated class like this.
 //				OnCreateDescriptorClick(null, EventArgs.Empty);
 //			}
-		}
+//		}
 	}
 }
 

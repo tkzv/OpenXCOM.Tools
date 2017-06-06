@@ -110,7 +110,6 @@
 			this.tbTileset.Size = new System.Drawing.Size(465, 19);
 			this.tbTileset.TabIndex = 4;
 			this.tbTileset.TextChanged += new System.EventHandler(this.OnTilesetLabelChanged);
-			this.tbTileset.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnTilesetKeyUp);
 			// 
 			// pnlBottom
 			// 

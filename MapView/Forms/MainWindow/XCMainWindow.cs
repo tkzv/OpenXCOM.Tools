@@ -722,8 +722,8 @@ namespace MapView
 		/// <param name="args"></param>
 		private void OnSaveOptionsFormClosing(object sender, CancelEventArgs args)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("XCMainWindow.OnSaveOptionsFormClosing");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("XCMainWindow.OnSaveOptionsFormClosing");
 
 			_quit = true;
 			args.Cancel = false;
@@ -909,8 +909,8 @@ namespace MapView
 
 		private void OnQuitClick(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("XCMainWindow.OnQuitClick");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("XCMainWindow.OnQuitClick");
 
 			OnSaveOptionsFormClosing(null, new CancelEventArgs()); // set '_quit' flag
 
@@ -1437,7 +1437,7 @@ namespace MapView
 			{
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
-					LogFile.WriteLine(". f.Tileset= " + f.Tileset);
+					//LogFile.WriteLine(". f.Tileset= " + f.Tileset);
 
 					MaptreeChanged = true;
 
@@ -1468,7 +1468,7 @@ namespace MapView
 			{
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
-					LogFile.WriteLine(". f.Tileset= " + f.Tileset);
+					//LogFile.WriteLine(". f.Tileset= " + f.Tileset);
 
 					MaptreeChanged = true;
 
@@ -1725,13 +1725,13 @@ namespace MapView
 		#region Methods
 		private void LoadSelectedMap()
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("XCMainWindow.LoadSelectedMap");
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("XCMainWindow.LoadSelectedMap");
 
 			var descriptor = tvMaps.SelectedNode.Tag as Descriptor;
 			if (descriptor != null)
 			{
-				LogFile.WriteLine(". descriptor= " + descriptor);
+				//LogFile.WriteLine(". descriptor= " + descriptor);
 
 				miSave.Enabled        =
 //				miSaveMaptree.Enabled =
