@@ -58,9 +58,6 @@ namespace XCom.Interfaces.Base
 		public bool MapChanged
 		{ get; set; }
 
-		public string Label
-		{ get; private set; }
-
 		internal MapTileList MapTiles
 		{ get; set; }
 
@@ -141,8 +138,6 @@ namespace XCom.Interfaces.Base
 		protected MapFileBase(Descriptor descriptor, List<TilepartBase> parts)
 		{
 			Descriptor = descriptor;
-
-			Label = Descriptor.Label;
 			Parts = parts;
 		}
 		#endregion

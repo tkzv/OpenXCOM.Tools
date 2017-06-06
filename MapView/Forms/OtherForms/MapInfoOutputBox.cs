@@ -22,7 +22,7 @@ namespace MapView
 
 		internal void Analyze(MapFileChild mapFile)
 		{
-			groupInfo.Text = "Map: " + mapFile.Label;
+			groupInfo.Text = "Map: " + mapFile.Descriptor.Label;
 
 			lbl2Dimensions.Text = mapFile.MapSize.Cols + ","
 								+ mapFile.MapSize.Rows + ","
