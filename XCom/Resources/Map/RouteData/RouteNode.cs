@@ -97,10 +97,10 @@ namespace XCom
 			_links = new Link[LinkSlots];
 
 			int offset = 4;
-			for (int i = 0; i != LinkSlots; ++i)
+			for (int slotId = 0; slotId != LinkSlots; ++slotId)
 			{
-				_links[i] = new Link(
-									bindata[offset], // note that x & y are switched in the RMP-file.
+				_links[slotId] = new Link(
+									bindata[offset], // note that x & y are reversed in the RMP-file.
 									bindata[offset + 1],
 									bindata[offset + 2]);
 				offset += 3;
@@ -129,8 +129,8 @@ namespace XCom
 			Lev  = lev; // NOTE: auto-converts to int-type.
 
 			_links = new Link[LinkSlots];
-			for (int i = 0; i != LinkSlots; ++i)
-				_links[i] = new Link(Link.NotUsed, 0, 0);
+			for (int slotId = 0; slotId != LinkSlots; ++slotId)
+				_links[slotId] = new Link(Link.NotUsed, 0, 0);
 
 			UsableType  = UnitType.Any;
 			SpawnRank   = 0;
@@ -145,26 +145,26 @@ namespace XCom
 		/// <summary>
 		/// Writes data to the stream provided by RouteNodeCollection.Save().
 		/// </summary>
-		/// <param name="str">the Stream provided by RouteNodeCollection.Save()</param>
-		internal void Save(Stream str)
+		/// <param name="fs">the Stream provided by RouteNodeCollection.Save()</param>
+		internal void SaveNode(Stream fs)
 		{
-			str.WriteByte(_row);
-			str.WriteByte(_col);
-			str.WriteByte((byte)Lev);
-			str.WriteByte((byte)0);
+			fs.WriteByte(_row);
+			fs.WriteByte(_col);
+			fs.WriteByte((byte)Lev);
+			fs.WriteByte((byte)0);
 
-			for (int i = 0; i != LinkSlots; ++i)
+			for (int id = 0; id != LinkSlots; ++id)
 			{
-				str.WriteByte(_links[i].Destination);
-				str.WriteByte(_links[i].Distance);
-				str.WriteByte((byte)_links[i].UsableType);
+				fs.WriteByte(_links[id].Destination);
+				fs.WriteByte(_links[id].Distance);
+				fs.WriteByte((byte)_links[id].UsableType);
 			}
 
-			str.WriteByte((byte)UsableType);
-			str.WriteByte((byte)SpawnRank); // NOTE: is already a byte-type.
-			str.WriteByte((byte)Priority);
-			str.WriteByte((byte)Attack);
-			str.WriteByte((byte)SpawnWeight);
+			fs.WriteByte((byte)UsableType);
+			fs.WriteByte((byte)SpawnRank); // NOTE: is already a byte-type.
+			fs.WriteByte((byte)Priority);
+			fs.WriteByte((byte)Attack);
+			fs.WriteByte((byte)SpawnWeight);
 		}
 
 		public override bool Equals(object obj)

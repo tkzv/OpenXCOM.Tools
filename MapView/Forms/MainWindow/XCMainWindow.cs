@@ -728,7 +728,13 @@ namespace MapView
 			_quit = true;
 			args.Cancel = false;
 
-			if (SaveAlert() == DialogResult.Cancel)
+			if (SaveAlertMap() == DialogResult.Cancel)
+			{
+				_quit = false;
+				args.Cancel = true;
+			}
+
+			if (SaveAlertRoutes() == DialogResult.Cancel)
 			{
 				_quit = false;
 				args.Cancel = true;
@@ -847,10 +853,16 @@ namespace MapView
 			OnOptionChange(this, Doors, !miDoors.Checked);
 		}
 
-		private void OnSaveClick(object sender, EventArgs e)
+		private void OnSaveMapClick(object sender, EventArgs e)
 		{
 			if (_mainViewUnderlay.MapBase != null)
-				_mainViewUnderlay.MapBase.Save();
+				_mainViewUnderlay.MapBase.SaveMap();
+		}
+
+		private void OnSaveRoutesClick(object sender, EventArgs e)
+		{
+			if (_mainViewUnderlay.MapBase != null)
+				_mainViewUnderlay.MapBase.SaveRoutes();
 		}
 
 		private void OnSaveMaptreeClick(object sender, EventArgs e)
@@ -870,14 +882,27 @@ namespace MapView
 
 		private void OnConfiguratorClick(object sender, EventArgs e)
 		{
-			if (_mainViewUnderlay.MainViewOverlay.MapBase != null
-				&& _mainViewUnderlay.MainViewOverlay.MapBase.MapChanged) // TODO: offer to save the Map. And if necessary the Maptree.
+			if (_mainViewUnderlay.MainViewOverlay.MapBase != null			// TODO: offer to save the Map. And the Routes.
+				&& _mainViewUnderlay.MainViewOverlay.MapBase.MapChanged)	// And if necessary the Maptree.
 			{
 				MessageBox.Show(
 							this,
 							"The current Map must be saved, or its changes"
 								+ " cancelled before using the Configurator.",
 							"Map Changed",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Asterisk,
+							MessageBoxDefaultButton.Button1,
+							0);
+			}
+			else if (_mainViewUnderlay.MainViewOverlay.MapBase != null
+				&& _mainViewUnderlay.MainViewOverlay.MapBase.RoutesChanged)
+			{
+				MessageBox.Show(
+							this,
+							"The current Routes must be saved, or its changes"
+								+ " cancelled before using the Configurator.",
+							"Routes Changed",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Asterisk,
 							MessageBoxDefaultButton.Button1,
@@ -1153,7 +1178,8 @@ namespace MapView
 //					goodnode.ForeColor = SystemColors.HighlightText;
 
 
-					if (_mainViewUnderlay.MapBase == null || !_mainViewUnderlay.MapBase.MapChanged) // prevents a bunch of .net.problems, like looping dialogs.
+					if (_mainViewUnderlay.MapBase == null // prevents a bunch of .net.problems, like looping dialogs.
+						|| (!_mainViewUnderlay.MapBase.MapChanged && !_mainViewUnderlay.MapBase.RoutesChanged))
 					{
 						cmMapTreeMenu.MenuItems.Clear();
 
@@ -1696,7 +1722,8 @@ namespace MapView
 			//LogFile.WriteLine("XCMainWindow.OnMapTreeBeforeSelect");
 			//if (tvMaps.SelectedNode != null) LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
 
-			e.Cancel = (SaveAlert() == DialogResult.Cancel);
+			e.Cancel  = (SaveAlertMap()    == DialogResult.Cancel);
+			e.Cancel |= (SaveAlertRoutes() == DialogResult.Cancel); // NOTE: that bitwise had better execute ....
 		}
 
 		/// <summary>
@@ -1723,6 +1750,9 @@ namespace MapView
 
 
 		#region Methods
+		/// <summary>
+		/// Loads the Map that's selected in the Maptree.
+		/// </summary>
 		private void LoadSelectedMap()
 		{
 			//LogFile.WriteLine("");
@@ -1733,7 +1763,8 @@ namespace MapView
 			{
 				//LogFile.WriteLine(". descriptor= " + descriptor);
 
-				miSave.Enabled        =
+				miSaveMap.Enabled     =
+				miSaveRoutes.Enabled  =
 //				miSaveMaptree.Enabled =
 				miSaveImage.Enabled   =
 				miResize.Enabled      =
@@ -1744,12 +1775,12 @@ namespace MapView
 
 				_mainViewUnderlay.MainViewOverlay.FirstClick = false;
 
-				var mapBase = MapFileService.LoadTileset(descriptor as Descriptor);
+				var mapBase = MapFileService.LoadTileset(descriptor);
 				_mainViewUnderlay.MapBase = mapBase;
 
 				tsEdit.Enabled = true;
 
-				RouteCheckService.CheckNodeBounds(mapBase);
+				RouteCheckService.CheckNodeBounds(mapBase as MapFileChild);
 
 				Text = "Map Editor - " + descriptor.BasePath;
 
@@ -1784,18 +1815,18 @@ namespace MapView
 
 		/// <summary>
 		/// Shows the user a dialog-box asking to Save if the currently
-		/// displayed Map or Routes have changed.
-		/// NOTE: Is called when either (a) MapView is closing (b) the Map is
-		/// about to change.
+		/// displayed Map has changed.
+		/// NOTE: Is called when either (a) MapView is closing (b) another Map
+		/// is about to load.
 		/// </summary>
 		/// <returns></returns>
-		private DialogResult SaveAlert()
+		private DialogResult SaveAlertMap()
 		{
 			if (_mainViewUnderlay.MapBase != null && _mainViewUnderlay.MapBase.MapChanged)
 			{
 				switch (MessageBox.Show(
 									this,
-									"Do you want to save changes to the Map and its Routes?",
+									"Do you want to save changes to the Map?",
 									"Map Changed",
 									MessageBoxButtons.YesNoCancel,
 									MessageBoxIcon.Question,
@@ -1803,11 +1834,46 @@ namespace MapView
 									0))
 				{
 					case DialogResult.Yes:		// save & clear MapChanged flag
-						_mainViewUnderlay.MapBase.Save();
+						_mainViewUnderlay.MapBase.SaveMap();
 						break;
 
 					case DialogResult.No:		// don't save & clear MapChanged flag
 						_mainViewUnderlay.MapBase.ClearMapChanged(); // not really relevant since 'MapBase' is about to go by-bye.
+						break;
+
+					case DialogResult.Cancel:	// dismiss confirmation dialog & leave state unaffected
+						return DialogResult.Cancel;
+				}
+			}
+			return DialogResult.OK;
+		}
+
+		/// <summary>
+		/// Shows the user a dialog-box asking to Save if the currently
+		/// displayed Routes has changed.
+		/// NOTE: Is called when either (a) MapView is closing (b) another Map
+		/// is about to load.
+		/// </summary>
+		/// <returns></returns>
+		private DialogResult SaveAlertRoutes()
+		{
+			if (_mainViewUnderlay.MapBase != null && _mainViewUnderlay.MapBase.RoutesChanged)
+			{
+				switch (MessageBox.Show(
+									this,
+									"Do you want to save changes to the Routes?",
+									"Routes Changed",
+									MessageBoxButtons.YesNoCancel,
+									MessageBoxIcon.Question,
+									MessageBoxDefaultButton.Button1,
+									0))
+				{
+					case DialogResult.Yes:		// save & clear RoutesChanged flag
+						_mainViewUnderlay.MapBase.SaveRoutes();
+						break;
+
+					case DialogResult.No:		// don't save & clear RoutesChanged flag
+						_mainViewUnderlay.MapBase.ClearRoutesChanged(); // not really relevant since 'MapBase' is about to go by-bye.
 						break;
 
 					case DialogResult.Cancel:	// dismiss confirmation dialog & leave state unaffected

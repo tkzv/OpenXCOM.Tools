@@ -53,9 +53,15 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// User will be shown a dialog asking to save if true.
+		/// User will be shown a dialog asking to save if the Map changed.
 		/// </summary>
 		public bool MapChanged
+		{ get; set; }
+
+		/// <summary>
+		/// User will be shown a dialog asking to save if the Routes changed.
+		/// </summary>
+		public bool RoutesChanged
 		{ get; set; }
 
 		internal MapTileList MapTiles
@@ -144,13 +150,19 @@ namespace XCom.Interfaces.Base
 
 
 		#region Methods
-		public virtual void Save()
+		public virtual void SaveMap()
+		{}
+
+		public virtual void SaveRoutes()
 		{}
 
 		public virtual void ClearMapChanged()
 		{}
 
-		/// <summary>
+		public virtual void ClearRoutesChanged()
+		{}
+
+			/// <summary>
 		/// Changes the 'Level' property and fires a LevelChanged event.
 		/// </summary>
 		public void LevelUp()

@@ -186,7 +186,6 @@ namespace MapView.Forms.MapObservers.TopViews
 							MapBase.MapChanged = true;
 							Refresh();
 						}
-
 						break;
 					}
 				}

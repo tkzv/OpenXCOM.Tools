@@ -26,6 +26,10 @@
 			<param name="Name" value="Overview">
 			<param name="Local" value="html\overview.htm">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Requirements">
+			<param name="Local" value="html\requirements.htm">
+			</OBJECT>
 	</UL>
 </UL>
 </BODY>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using XCom.Interfaces.Base;
+using XCom.Resources.Map.RouteData;
 using XCom.Services;
 
 
@@ -262,14 +263,16 @@ namespace XCom
 		/// <returns></returns>
 		public RouteNode AddRouteNode(MapLocation location)
 		{
-			MapChanged = true;
+			RoutesChanged = true;
 
 			var node = Routes.AddNode(
 									(byte)location.Row,
 									(byte)location.Col,
 									(byte)location.Lev);
 
-			return (((XCMapTile)this[node.Row, node.Col, node.Lev]).Node = node);
+			return (((XCMapTile)this[node.Row,
+									 node.Col,
+									 node.Lev]).Node = node);
 		}
 
 		/// <summary>
@@ -301,16 +304,12 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// Saves the .MAP file and the .RMP file.
+		/// Saves the .MAP file.
 		/// </summary>
-		public override void Save()
+		public override void SaveMap()
 		{
-			MapChanged = false;
-
 			using (var fs = File.Create(FullPath))
 			{
-				Routes.Save(); // <- saves the .RMP file
-
 				fs.WriteByte((byte)MapSize.Rows); // http://www.ufopaedia.org/index.php/MAPS
 				fs.WriteByte((byte)MapSize.Cols); // - says this header is "height, width and depth (in that order)"
 				fs.WriteByte((byte)MapSize.Levs);
@@ -342,6 +341,16 @@ namespace XCom
 						fs.WriteByte((byte)(tile.Content.TilesetId + 2));
 				}
 			}
+			MapChanged = false;
+		}
+
+		/// <summary>
+		/// Saves the .RMP file.
+		/// </summary>
+		public override void SaveRoutes()
+		{
+			Routes.SaveRoutes();
+			RoutesChanged = false;
 		}
 
 		/// <summary>
@@ -350,6 +359,14 @@ namespace XCom
 		public override void ClearMapChanged()
 		{
 			MapChanged = false;
+		}
+
+		/// <summary>
+		/// Clears the 'RouteChanged' flag.
+		/// </summary>
+		public override void ClearRoutesChanged()
+		{
+			RoutesChanged = false;
 		}
 
 		/// <summary>
@@ -387,7 +404,7 @@ namespace XCom
 					|| rows < MapSize.Rows
 					|| levs < MapSize.Levs)
 				{
-					Routes.CheckNodeBounds(cols, rows, levs);
+					RouteCheckService.CheckNodeBounds(this);
 				}
 
 				MapTiles = tileList;

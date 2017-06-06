@@ -378,7 +378,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				int linkId = GetOpenLinkSlot(NodeSelected, node.Index);
 				if (linkId != -1)
 				{
-					_mapFile.MapChanged = true;
+					_mapFile.RoutesChanged = true;
 					NodeSelected[linkId].Destination = node.Index;
 					NodeSelected[linkId].Distance = CalculateLinkDistance(NodeSelected, node);
 				}
@@ -388,7 +388,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					linkId = GetOpenLinkSlot(node, NodeSelected.Index);
 					if (linkId != -1)
 					{
-						_mapFile.MapChanged = true;
+						_mapFile.RoutesChanged = true;
 						node[linkId].Destination = NodeSelected.Index;
 						node[linkId].Distance = CalculateLinkDistance(node, NodeSelected);
 					}
@@ -660,7 +660,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+				_mapFile.RoutesChanged = true;
 
 				NodeSelected.UsableType = (UnitType)cbUnitType.SelectedItem;
 			}
@@ -670,7 +670,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+				_mapFile.RoutesChanged = true;
 
 				NodeSelected.Priority = (NodeImportance)cbPriority.SelectedItem;
 				Refresh(); // update the importance bar
@@ -681,7 +681,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+				_mapFile.RoutesChanged = true;
 
 				NodeSelected.Attack = (BaseModuleAttack)cbAttack.SelectedItem;
 			}
@@ -691,7 +691,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+				_mapFile.RoutesChanged = true;
 
 				NodeSelected.SpawnRank = (byte)((EnumString)cbSpawnRank.SelectedItem).Enum;
 			}
@@ -701,7 +701,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+				_mapFile.RoutesChanged = true;
 
 				NodeSelected.SpawnWeight = (SpawnUsage)((EnumString)cbSpawnWeight.SelectedItem).Enum;
 				Refresh(); // update the importance bar
@@ -736,7 +736,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 //					try
 //					{
-					_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+					_mapFile.RoutesChanged = true;
 
 					switch (NodeSelected[slotId].Destination = dst.Value)
 					{
@@ -886,7 +886,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+				_mapFile.RoutesChanged = true;
 
 				NodeSelected[0].UsableType = (UnitType)cbLink1UnitType.SelectedItem;
 				Refresh();
@@ -897,7 +897,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+				_mapFile.RoutesChanged = true;
 
 				NodeSelected[1].UsableType = (UnitType)cbLink2UnitType.SelectedItem;
 				Refresh();
@@ -908,7 +908,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+				_mapFile.RoutesChanged = true;
 
 				NodeSelected[2].UsableType = (UnitType)cbLink3UnitType.SelectedItem;
 				Refresh();
@@ -919,7 +919,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+				_mapFile.RoutesChanged = true;
 
 				NodeSelected[3].UsableType = (UnitType)cbLink4UnitType.SelectedItem;
 				Refresh();
@@ -930,7 +930,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+				_mapFile.RoutesChanged = true;
 
 				NodeSelected[4].UsableType = (UnitType)cbLink5UnitType.SelectedItem;
 				Refresh();
@@ -981,7 +981,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				var nodeData = Clipboard.GetText().Split(NodeCopySeparator);
 				if (nodeData[0] == NodeCopyPrefix)// TODO: include Link info ... perhaps.
 				{
-					_mapFile.MapChanged = true;
+					_mapFile.RoutesChanged = true;
 
 					cbUnitType.SelectedIndex    = Int32.Parse(nodeData[1], System.Globalization.CultureInfo.InvariantCulture);
 					cbPriority.SelectedIndex    = Int32.Parse(nodeData[2], System.Globalization.CultureInfo.InvariantCulture);
@@ -1000,7 +1000,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (NodeSelected != null)
 			{
-				_mapFile.MapChanged = true;
+				_mapFile.RoutesChanged = true;
 
 				_mapFile.Routes.DeleteNode(NodeSelected);
 
@@ -1112,7 +1112,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				if (changed != 0)
 				{
-					_mapFile.MapChanged = true;
+					_mapFile.RoutesChanged = true;
 
 					UpdateNodeInformation();
 
@@ -1148,7 +1148,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 								MessageBoxDefaultButton.Button2,
 								0) == DialogResult.Yes)
 				{
-					_mapFile.MapChanged = true; // TODO: investigate and separate saving of the MAP and the RMP files.
+					_mapFile.RoutesChanged = true;
 
 					for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
 					{

@@ -286,14 +286,14 @@ namespace XCom
 		/// <summary>
 		/// cTor. Reads the .RMP file and adds its data as RouteNodes to a List.
 		/// </summary>
-		/// <param name="file"></param>
+		/// <param name="routes"></param>
 		/// <param name="basepath"></param>
-		internal RouteNodeCollection(string file, string basepath)
+		internal RouteNodeCollection(string routes, string basepath)
 		{
 			_nodes = new List<RouteNode>();
 
 			FullPath = Path.Combine(basepath, RoutesDir);
-			FullPath = Path.Combine(FullPath, file + RouteExt);
+			FullPath = Path.Combine(FullPath, routes + RouteExt);
 
 			if (File.Exists(FullPath))
 			{
@@ -337,13 +337,14 @@ namespace XCom
 		/// <summary>
 		/// Saves the .RMP file.
 		/// </summary>
-		internal void Save()
+		internal void SaveRoutes()
 		{
 			using (var fs = File.Create(FullPath))
 			{
-				for (int i = 0; i != _nodes.Count; ++i)
-					_nodes[i].Save(fs); // -> RouteNode.Save() writes the node-data
+				for (int id = 0; id != _nodes.Count; ++id)
+					_nodes[id].SaveNode(fs); // -> RouteNode.Save() writes each node-data
 			}
+			
 		}
 
 		/// <summary>
@@ -376,9 +377,9 @@ namespace XCom
 				if (node0.Index > nodeId) // shuffle all higher-indexed nodes down 1
 					--node0.Index;
 
-				for (int i = 0; i != RouteNode.LinkSlots; ++i)
+				for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
 				{
-					var link = node0[i];
+					var link = node0[slotId];
 
 					if (link.Destination == nodeId)
 					{
@@ -390,25 +391,6 @@ namespace XCom
 					}
 				}
 			}
-		}
-
-		/// <summary>
-		/// Checks for and if necessary deletes nodes that are outside of a
-		/// Map's x/y/z bounds. See also RouteCheckService.CheckNodeBounds().
-		/// </summary>
-		/// <param name="cols"></param>
-		/// <param name="rows"></param>
-		/// <param name="levs"></param>
-		internal void CheckNodeBounds(int cols, int rows, int levs)
-		{
-			var deletions = new List<RouteNode>();
-
-			foreach (var node in _nodes)
-				if (IsOutsideMap(node, cols, rows, levs))
-					deletions.Add(node);
-
-			foreach (var entry in deletions)
-				DeleteNode(entry);
 		}
 
 		/// <summary>
