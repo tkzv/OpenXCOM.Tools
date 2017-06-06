@@ -1,0 +1,23 @@
+<html>
+	<body>
+		<p>Overview</p>
+		<p>XCOM battlefields are comprised of several files.</p>
+		<p>- a .MAP file</p>
+		<p>- a .RMP file</p>
+		<p>- one or more .PCK files</p>
+		<p>- one or more .TAB files</p>
+		<p>- one or more .MCD files</p>
+		<p>To play the game, these files must be located in subdirectories of XCOM's installation folder.</p>
+		<p>- MAPS contains .MAP files</p>
+		<p>- ROUTES contains .RMP files</p>
+		<p>- TERRAIN contains .PCK, .TAB, and .MCD files</p>
+		<p>The filenames of the .MAP and .RMP files must be the same. The filenames of the .PCK, .TAB, and .MCD files must also all be the same, but are usually different than the .MAP and .RMP files</p>
+		<p>Each map, or tileset, is a 3 dimensional cuboid with width (x or col), height (y or row), and level (z or lev). The .MAP file specifies the dimensions of a map-block aka map-module, and it also contains generic references to tileparts, the specific parts being determined by the terrains that are allocated to the tileset.</p>
+		<p>Each tileset must also have a routes file. This file may be empty, but usually it contains the x,y,z coordinates of route-nodes, each of which has characteristics that determine how the node may be used during gameplay. Nodes are not visible to a player.</p>
+		<p>MapView directly creates or edits the Map-files, the Route-files, and which terrains are used in any tileset.</p>
+		<p>It does *not* directly edit Pck-files, Tab-files, or Mcd-files. Pck-files contain sprites and a Pck-file is a spriteset. Tab-files contain indexes into its corresponding spriteset for the retrieval of a specific sprite to display the tilepart. Mcd-files contain data-records of tilepart characteristics, such as whether a particular tilepart is passable, explosive, blocks fire from spreading, and about 60 other things.</p>
+		<p>That's almost inarguably what makes XCOM battles so great. The permutations of the ways in which tileparts go together to make tilesets is what MapView is all about.</p>
+		<p>MapView allows the viewing of spritesets (PCK/TAB) and terrain records (MCD), while Volutar's MCD Editor is the generally accepted application for their modification. There are other methods available such as BB's Toolkit.</p>
+		<p></p>
+	</body>
+</html>
