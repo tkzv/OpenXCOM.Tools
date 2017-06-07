@@ -185,6 +185,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 							MapBase.MapChanged = true;
 							Refresh();
+							ViewerFormsManager.TopView.Control.TopViewPanel.Refresh();
 						}
 						break;
 					}

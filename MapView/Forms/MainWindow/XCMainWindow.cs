@@ -882,42 +882,70 @@ namespace MapView
 
 		private void OnConfiguratorClick(object sender, EventArgs e)
 		{
-			if (_mainViewUnderlay.MainViewOverlay.MapBase != null			// TODO: offer to save the Map. And the Routes.
-				&& _mainViewUnderlay.MainViewOverlay.MapBase.MapChanged)	// And if necessary the Maptree.
+			string changed = null;
+
+			if (_mainViewUnderlay.MainViewOverlay.MapBase != null
+				&& _mainViewUnderlay.MainViewOverlay.MapBase.MapChanged)
 			{
-				MessageBox.Show(
-							this,
-							"The current Map must be saved, or its changes"
-								+ " cancelled before using the Configurator.",
-							"Map Changed",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Asterisk,
-							MessageBoxDefaultButton.Button1,
-							0);
+				changed = "Map";
 			}
 			else if (_mainViewUnderlay.MainViewOverlay.MapBase != null
 				&& _mainViewUnderlay.MainViewOverlay.MapBase.RoutesChanged)
 			{
-				MessageBox.Show(
-							this,
-							"The current Routes must be saved, or its changes"
-								+ " cancelled before using the Configurator.",
-							"Routes Changed",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Asterisk,
-							MessageBoxDefaultButton.Button1,
-							0);
+				if (!String.IsNullOrEmpty(changed))
+					changed += " and ";
+				changed += "Routes";
 			}
 			else if (MaptreeChanged)
 			{
-				MessageBox.Show(
-							this,
-							"The Map Tree must be saved before using the Configurator.",
-							"Maptree Changed",
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Asterisk,
-							MessageBoxDefaultButton.Button1,
-							0);
+				if (!String.IsNullOrEmpty(changed))
+					changed += " and ";
+				changed += "Maptree";
+			}
+
+			if (!String.IsNullOrEmpty(changed))
+			{
+				switch (MessageBox.Show(
+									this,
+									"The current " + changed + " must be saved before"
+										+ " using the Configurator." + Environment.NewLine + Environment.NewLine
+										+ "Abort\treturn to state" + Environment.NewLine
+										+ "Retry\tsave changes and open the Configurator" + Environment.NewLine
+										+ "Ignore\tclear flags and open the Configurator (this will"
+										+ " result in all changes to the current " + changed + " to be lost)",
+									"Changes detected",
+									MessageBoxButtons.AbortRetryIgnore,
+									MessageBoxIcon.Asterisk,
+									MessageBoxDefaultButton.Button1,
+									0))
+				{
+					case DialogResult.Abort:
+						break;
+
+					case DialogResult.Retry:
+						if (_mainViewUnderlay.MapBase.MapChanged)
+							_mainViewUnderlay.MapBase.SaveMap();
+
+						if (_mainViewUnderlay.MapBase.RoutesChanged)
+							_mainViewUnderlay.MapBase.SaveRoutes();
+
+						if (MaptreeChanged)
+						{
+							ResourceInfo.TileGroupInfo.SaveTileGroups();
+							MaptreeChanged = false;
+						}
+
+						OnConfiguratorClick(null, EventArgs.Empty);
+						break;
+
+					case DialogResult.Ignore:
+						_mainViewUnderlay.MapBase.ClearMapChanged();
+						_mainViewUnderlay.MapBase.ClearRoutesChanged();
+						MaptreeChanged = false;
+
+						OnConfiguratorClick(null, EventArgs.Empty);
+						break;
+				}
 			}
 			else
 			{
@@ -1166,7 +1194,7 @@ namespace MapView
 			switch (e.Button)
 			{
 				case MouseButtons.Right:
-					var badnode = tvMaps.GetNodeAt(e.Location);	// The right-clicked node is NOT selected
+					var badnode = tvMaps.GetNodeAt(e.Location);		// The right-clicked node is NOT selected
 					if (badnode != null)
 					{
 						badnode.BackColor = SystemColors.Control;	// so quit highlighting it as if it were.
@@ -1178,10 +1206,10 @@ namespace MapView
 //					goodnode.ForeColor = SystemColors.HighlightText;
 
 
-					if (_mainViewUnderlay.MapBase == null // prevents a bunch of .net.problems, like looping dialogs.
-						|| (!_mainViewUnderlay.MapBase.MapChanged && !_mainViewUnderlay.MapBase.RoutesChanged))
-					{
-						cmMapTreeMenu.MenuItems.Clear();
+					if (_mainViewUnderlay.MapBase == null														// prevents a bunch of problems, like looping dialogs when
+						|| (!_mainViewUnderlay.MapBase.MapChanged && !_mainViewUnderlay.MapBase.RoutesChanged))	// returning from the Tileset Editor and the Maptree-node
+					{																							// gets re-selected, causing this class-object to react as
+						cmMapTreeMenu.MenuItems.Clear();														// if a different Map is going to load ... cf, LoadSelectedMap()
 
 						cmMapTreeMenu.MenuItems.Add("Add Group ...", new EventHandler(OnAddGroupClick));
 
@@ -1216,15 +1244,43 @@ namespace MapView
 						cmMapTreeMenu.Show(tvMaps, e.Location);
 					}
 					else
-						MessageBox.Show( // TODO: offer to save the Map.
-									this,
-									"The current Map must be saved, or its changes"
-										+ " cancelled before modifying the Map Tree.",
-									"Map Changed",
-									MessageBoxButtons.OK,
-									MessageBoxIcon.Asterisk,
-									MessageBoxDefaultButton.Button1,
-									0);
+					{
+						switch (MessageBox.Show(
+											this,
+											"The current Map and its Routes must be saved, or any changes"
+												+ " ignored before opening the Tileset Editor. How do you"
+												+ " wish to proceed?" + Environment.NewLine + Environment.NewLine
+												+ "Abort\treturn to state" + Environment.NewLine
+												+ "Retry\tsave all changes and open the Editor" + Environment.NewLine
+												+ "Ignore\tclear flags and open the Editor (but you will *not* be asked if"
+												+ " you want to save, unless further changes are made to the Map or Routes)",
+											"Changes detected",
+											MessageBoxButtons.AbortRetryIgnore,
+											MessageBoxIcon.Asterisk,
+											MessageBoxDefaultButton.Button1,
+											0))
+						{
+							case DialogResult.Abort:
+								break;
+
+							case DialogResult.Retry:
+								if (_mainViewUnderlay.MapBase.MapChanged)
+									_mainViewUnderlay.MapBase.SaveMap();
+
+								if (_mainViewUnderlay.MapBase.RoutesChanged)
+									_mainViewUnderlay.MapBase.SaveRoutes();
+
+								OnMapTreeMouseDown(null, e);
+								break;
+
+							case DialogResult.Ignore:
+								_mainViewUnderlay.MapBase.ClearMapChanged();
+								_mainViewUnderlay.MapBase.ClearRoutesChanged();
+
+								OnMapTreeMouseDown(null, e);
+								break;
+						}
+					}
 					break;
 			}
 		}

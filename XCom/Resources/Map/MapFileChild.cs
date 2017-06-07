@@ -362,7 +362,7 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// Clears the 'RouteChanged' flag.
+		/// Clears the 'RoutesChanged' flag.
 		/// </summary>
 		public override void ClearRoutesChanged()
 		{
