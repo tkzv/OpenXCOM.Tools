@@ -220,7 +220,7 @@ namespace MapView
 			_viewersManager     = new ViewersManager(_optionsManager/*, shareConsole*/);
 			LogFile.WriteLine("Viewer managers instantiated.");
 
-			_mainMenusManager = new MainMenusManager(menuView, menuHelp);
+			_mainMenusManager = new MainMenusManager(menuViewers, menuHelp);
 			_mainMenusManager.PopulateMenus(/*shareConsole.Console,*/ Options);
 			LogFile.WriteLine("MainView menus populated.");
 
@@ -1116,7 +1116,7 @@ namespace MapView
 			{
 				_windowFlag = true;
 
-				foreach (MenuItem it in menuView.MenuItems)
+				foreach (MenuItem it in menuViewers.MenuItems)
 					if (it.Checked)
 						((Form)it.Tag).BringToFront();
 
@@ -1892,7 +1892,7 @@ namespace MapView
 				miDoors.Checked = false;
 				ToggleDoorSprites(false);
 
-				if (!menuView.Enabled) // open/close the forms that appear in the Views menu.
+				if (!menuViewers.Enabled) // open/close the forms that appear in the Views menu.
 					_mainMenusManager.StartViewers();
 
 				_viewerFormsManager.SetObservers(mapBase); // reset all observer events
