@@ -853,6 +853,16 @@ namespace MapView
 			OnOptionChange(this, Doors, !miDoors.Checked);
 		}
 
+		private void OnSaveAllClick(object sender, EventArgs e)
+		{
+			if (_mainViewUnderlay.MapBase != null)
+			{
+				_mainViewUnderlay.MapBase.SaveMap();
+				_mainViewUnderlay.MapBase.SaveRoutes();
+			}
+			MaptreeChanged = !ResourceInfo.TileGroupInfo.SaveTileGroups();
+		}
+
 		private void OnSaveMapClick(object sender, EventArgs e)
 		{
 			if (_mainViewUnderlay.MapBase != null)
@@ -1819,6 +1829,7 @@ namespace MapView
 			{
 				//LogFile.WriteLine(". descriptor= " + descriptor);
 
+				miSaveAll.Enabled     =
 				miSaveMap.Enabled     =
 				miSaveRoutes.Enabled  =
 //				miSaveMaptree.Enabled =

@@ -33,6 +33,7 @@ namespace MapView
 			this.mmMain = new System.Windows.Forms.MainMenu(this.components);
 			this.menuFile = new System.Windows.Forms.MenuItem();
 			this.miOpen = new System.Windows.Forms.MenuItem();
+			this.miSaveAll = new System.Windows.Forms.MenuItem();
 			this.miSaveMap = new System.Windows.Forms.MenuItem();
 			this.miSaveRoutes = new System.Windows.Forms.MenuItem();
 			this.miSaveMaptree = new System.Windows.Forms.MenuItem();
@@ -88,6 +89,7 @@ namespace MapView
 			this.menuFile.Index = 0;
 			this.menuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miOpen,
+			this.miSaveAll,
 			this.miSaveMap,
 			this.miSaveRoutes,
 			this.miSaveMaptree,
@@ -108,10 +110,18 @@ namespace MapView
 			this.miOpen.Visible = false;
 			this.miOpen.Click += new System.EventHandler(this.OnOpenClick);
 			// 
+			// miSaveAll
+			// 
+			this.miSaveAll.Enabled = false;
+			this.miSaveAll.Index = 1;
+			this.miSaveAll.Shortcut = System.Windows.Forms.Shortcut.CtrlA;
+			this.miSaveAll.Text = "Save &All";
+			this.miSaveAll.Click += new System.EventHandler(this.OnSaveAllClick);
+			// 
 			// miSaveMap
 			// 
 			this.miSaveMap.Enabled = false;
-			this.miSaveMap.Index = 1;
+			this.miSaveMap.Index = 2;
 			this.miSaveMap.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
 			this.miSaveMap.Text = "&Save Map";
 			this.miSaveMap.Click += new System.EventHandler(this.OnSaveMapClick);
@@ -119,7 +129,7 @@ namespace MapView
 			// miSaveRoutes
 			// 
 			this.miSaveRoutes.Enabled = false;
-			this.miSaveRoutes.Index = 2;
+			this.miSaveRoutes.Index = 3;
 			this.miSaveRoutes.Shortcut = System.Windows.Forms.Shortcut.CtrlR;
 			this.miSaveRoutes.Text = "Save &Routes";
 			this.miSaveRoutes.Click += new System.EventHandler(this.OnSaveRoutesClick);
@@ -127,7 +137,7 @@ namespace MapView
 			// miSaveMaptree
 			// 
 			this.miSaveMaptree.Enabled = false;
-			this.miSaveMaptree.Index = 3;
+			this.miSaveMaptree.Index = 4;
 			this.miSaveMaptree.Shortcut = System.Windows.Forms.Shortcut.CtrlT;
 			this.miSaveMaptree.Text = "Save Map&tree";
 			this.miSaveMaptree.Click += new System.EventHandler(this.OnSaveMaptreeClick);
@@ -135,13 +145,13 @@ namespace MapView
 			// miSaveImage
 			// 
 			this.miSaveImage.Enabled = false;
-			this.miSaveImage.Index = 4;
+			this.miSaveImage.Index = 5;
 			this.miSaveImage.Text = "Save &Image";
 			this.miSaveImage.Click += new System.EventHandler(this.OnSaveImageClick);
 			// 
 			// miExport
 			// 
-			this.miExport.Index = 5;
+			this.miExport.Index = 6;
 			this.miExport.Text = "&Export";
 			this.miExport.Visible = false;
 			this.miExport.Click += new System.EventHandler(this.OnExportClick);
@@ -149,38 +159,38 @@ namespace MapView
 			// miResize
 			// 
 			this.miResize.Enabled = false;
-			this.miResize.Index = 6;
+			this.miResize.Index = 7;
 			this.miResize.Text = "Resi&ze map";
 			this.miResize.Click += new System.EventHandler(this.OnMapResizeClick);
 			// 
 			// miInfo
 			// 
 			this.miInfo.Enabled = false;
-			this.miInfo.Index = 7;
+			this.miInfo.Index = 8;
 			this.miInfo.Text = "&Map Info";
 			this.miInfo.Click += new System.EventHandler(this.OnInfoClick);
 			// 
 			// miRegenOccult
 			// 
 			this.miRegenOccult.Enabled = false;
-			this.miRegenOccult.Index = 8;
+			this.miRegenOccult.Index = 9;
 			this.miRegenOccult.Text = "Regen &Occult";
 			this.miRegenOccult.Click += new System.EventHandler(this.OnRegenOccultClick);
 			// 
 			// miHq
 			// 
-			this.miHq.Index = 9;
+			this.miHq.Index = 10;
 			this.miHq.Text = "Hq&2x";
 			this.miHq.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
 			// miBarHori
 			// 
-			this.miBarHori.Index = 10;
+			this.miBarHori.Index = 11;
 			this.miBarHori.Text = "-";
 			// 
 			// miQuit
 			// 
-			this.miQuit.Index = 11;
+			this.miQuit.Index = 12;
 			this.miQuit.Text = "&Quit";
 			this.miQuit.Click += new System.EventHandler(this.OnQuitClick);
 			// 
@@ -466,6 +476,7 @@ namespace MapView
 
 		private System.Windows.Forms.MenuItem menuFile;
 		private System.Windows.Forms.MenuItem miOpen;
+		private System.Windows.Forms.MenuItem miSaveAll;
 		private System.Windows.Forms.MenuItem miSaveMap;
 		private System.Windows.Forms.MenuItem miSaveRoutes;
 		private System.Windows.Forms.MenuItem miSaveMaptree;
