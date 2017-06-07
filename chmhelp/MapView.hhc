@@ -31,6 +31,10 @@
 			<param name="Local" value="html\requirements.htm">
 			</OBJECT>
 	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="MainView">
+		<param name="Local" value="html\mainview.htm">
+		</OBJECT>
 </UL>
 </BODY>
 </HTML>

@@ -946,6 +946,11 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// Opens the Configuration Editor.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnConfiguratorClick(object sender, EventArgs e)
 		{
 			string changed = null;
@@ -955,14 +960,16 @@ namespace MapView
 			{
 				changed = "Map";
 			}
-			else if (_mainViewUnderlay.MainViewOverlay.MapBase != null
+
+			if (_mainViewUnderlay.MainViewOverlay.MapBase != null
 				&& _mainViewUnderlay.MainViewOverlay.MapBase.RoutesChanged)
 			{
 				if (!String.IsNullOrEmpty(changed))
 					changed += " and ";
 				changed += "Routes";
 			}
-			else if (MaptreeChanged)
+
+			if (MaptreeChanged)
 			{
 				if (!String.IsNullOrEmpty(changed))
 					changed += " and ";
