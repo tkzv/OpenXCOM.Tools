@@ -110,6 +110,9 @@ namespace MapView
 						&&   !Input.StartsWith("tftd", StringComparison.OrdinalIgnoreCase))
 					{
 						ShowErrorDialog("The group label needs to start with UFO or TFTD.");
+						tbInput.Select();
+						tbInput.SelectionStart  =
+						tbInput.SelectionLength = 0;
 					}
 					else if (Input.StartsWith("ufo", StringComparison.OrdinalIgnoreCase)
 						&& String.IsNullOrEmpty(SharedSpace.Instance.GetShare(SharedSpace.ResourceDirectoryUfo)))
