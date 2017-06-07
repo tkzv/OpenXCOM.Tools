@@ -15,8 +15,8 @@ namespace XCom
 		#region Methods
 		public static MapFileBase LoadTileset(Descriptor descriptor)
 		{
-			LogFile.WriteLine("");
-			LogFile.WriteLine("MapFileService.LoadTileset descriptor= " + descriptor);
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("MapFileService.LoadTileset descriptor= " + descriptor);
 
 			if (descriptor != null)
 			{
@@ -24,11 +24,11 @@ namespace XCom
 				string pfeMap = Path.Combine(
 										dirMap,
 										descriptor.Label + MapFileChild.MapExt);
-				LogFile.WriteLine(". pfeMap= " + pfeMap);
+				//LogFile.WriteLine(". pfeMap= " + pfeMap);
 
 				if (File.Exists(pfeMap))
 				{
-					LogFile.WriteLine(". . Map file exists");
+					//LogFile.WriteLine(". . Map file exists");
 
 					var parts = new List<TilepartBase>();
 
@@ -49,7 +49,7 @@ namespace XCom
 						return MAP;
 					}
 
-					LogFile.WriteLine(". . . descriptor has no terrains");
+					//LogFile.WriteLine(". . . descriptor has no terrains");
 					MessageBox.Show(
 								"There are no terrains allocated or they do not contain MCD records.",
 								"Warning",
@@ -60,7 +60,7 @@ namespace XCom
 				}
 				else
 				{
-					LogFile.WriteLine(". . Mapfile does NOT exist");
+					//LogFile.WriteLine(". . Mapfile does NOT exist");
 					MessageBox.Show(
 								"The Mapfile does not exist.",
 								"Warning",
@@ -72,7 +72,7 @@ namespace XCom
 			}
 			else
 			{
-				LogFile.WriteLine(". descriptor NOT Valid");
+				//LogFile.WriteLine(". descriptor NOT Valid");
 				MessageBox.Show(
 							"The tileset is not valid.",
 							"Warning",

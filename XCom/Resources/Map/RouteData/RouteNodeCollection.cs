@@ -339,12 +339,31 @@ namespace XCom
 		/// </summary>
 		internal void SaveRoutes()
 		{
-			using (var fs = File.Create(FullPath))
+			SaveNodes(FullPath);
+		}
+
+		/// <summary>
+		/// Saves the .RMP file as a different file.
+		/// </summary>
+		/// <param name="pf">the path+file to save as</param>
+		internal void SaveRoutes(string pf)
+		{
+			string pfe = pf + RouteExt;
+			Directory.CreateDirectory(Path.GetDirectoryName(pfe));
+			SaveNodes(pfe);
+		}
+
+		/// <summary>
+		/// Saves the route-nodes to a .RMP file.
+		/// </summary>
+		/// <param name="pfe">path+file+extension</param>
+		private void SaveNodes(string pfe)
+		{
+			using (var fs = File.Create(pfe))
 			{
 				for (int id = 0; id != _nodes.Count; ++id)
-					_nodes[id].SaveNode(fs); // -> RouteNode.Save() writes each node-data
+					_nodes[id].SaveNode(fs); // -> RouteNode.SaveNode() writes each node-data
 			}
-			
 		}
 
 		/// <summary>

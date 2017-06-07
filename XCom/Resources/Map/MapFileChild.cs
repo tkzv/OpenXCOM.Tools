@@ -308,7 +308,28 @@ namespace XCom
 		/// </summary>
 		public override void SaveMap()
 		{
-			using (var fs = File.Create(FullPath))
+			SaveMapData(FullPath);
+			MapChanged = false;
+		}
+
+		/// <summary>
+		/// Saves the .MAP file as a different file.
+		/// </summary>
+		/// <param name="pf">the path+file to save as</param>
+		public override void SaveMap(string pf)
+		{
+			string pfe = pf + MapExt;
+			Directory.CreateDirectory(Path.GetDirectoryName(pfe));
+			SaveMapData(pfe);
+		}
+
+		/// <summary>
+		/// Saves the current mapdata to a .MAP file.
+		/// </summary>
+		/// <param name="pfe">path+file+extension</param>
+		private void SaveMapData(string pfe)
+		{
+			using (var fs = File.Create(pfe))
 			{
 				fs.WriteByte((byte)MapSize.Rows); // http://www.ufopaedia.org/index.php/MAPS
 				fs.WriteByte((byte)MapSize.Cols); // - says this header is "height, width and depth (in that order)"
@@ -341,7 +362,6 @@ namespace XCom
 						fs.WriteByte((byte)(tile.Content.TilesetId + 2));
 				}
 			}
-			MapChanged = false;
 		}
 
 		/// <summary>
@@ -351,6 +371,15 @@ namespace XCom
 		{
 			Routes.SaveRoutes();
 			RoutesChanged = false;
+		}
+
+		/// <summary>
+		/// Saves the .RMP file as a different file.
+		/// </summary>
+		/// <param name="pf">the path+file to save as</param>
+		public override void SaveRoutes(string pf)
+		{
+			Routes.SaveRoutes(pf);
 		}
 
 		/// <summary>

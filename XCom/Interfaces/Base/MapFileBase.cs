@@ -152,8 +152,12 @@ namespace XCom.Interfaces.Base
 		#region Methods
 		public virtual void SaveMap()
 		{}
+		public virtual void SaveMap(string pf)
+		{}
 
 		public virtual void SaveRoutes()
+		{}
+		public virtual void SaveRoutes(string pf)
 		{}
 
 		public virtual void ClearMapChanged()

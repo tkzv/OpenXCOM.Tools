@@ -875,6 +875,36 @@ namespace MapView
 				_mainViewUnderlay.MapBase.SaveRoutes();
 		}
 
+		private void OnSaveAsClick(object sender, EventArgs e)
+		{
+			if (_mainViewUnderlay.MapBase != null
+				&& _mainViewUnderlay.MapBase.Descriptor != null)	// safety. Not sure if a 'MapBase' could be
+			{														// instantiated without a 'Descriptor'.
+				var sfd = new SaveFileDialog();
+
+				sfd.FileName = _mainViewUnderlay.MapBase.Descriptor.Label + MapFileChild.MapExt;
+				sfd.Filter = "Map files (*.MAP)|*.MAP|All files (*.*)|*.*";
+				sfd.Title = "Save Map and subordinate Route file as ...";
+				sfd.InitialDirectory = Path.Combine(_mainViewUnderlay.MapBase.Descriptor.BasePath, MapFileChild.MapsDir);
+
+				if (sfd.ShowDialog() == DialogResult.OK)
+				{
+					string dir = Path.GetDirectoryName(sfd.FileName); // 'FileName' is fullpath.
+					string basepath = dir.Substring(0, dir.LastIndexOf(@"\", StringComparison.Ordinal));
+
+					string dirMaps   = Path.Combine(basepath, MapFileChild.MapsDir);
+					string dirRoutes = Path.Combine(basepath, RouteNodeCollection.RoutesDir);
+
+					string file = Path.GetFileNameWithoutExtension(sfd.FileName);
+					string pfMaps   = Path.Combine(dirMaps, file);
+					string pfRoutes = Path.Combine(dirRoutes, file);
+
+					_mainViewUnderlay.MapBase.SaveMap(pfMaps);
+					_mainViewUnderlay.MapBase.SaveRoutes(pfRoutes);
+				}
+			}
+		}
+
 		private void OnSaveMaptreeClick(object sender, EventArgs e)
 		{
 			MaptreeChanged = !ResourceInfo.TileGroupInfo.SaveTileGroups();
@@ -1832,6 +1862,7 @@ namespace MapView
 				miSaveAll.Enabled     =
 				miSaveMap.Enabled     =
 				miSaveRoutes.Enabled  =
+				miSaveAs.Enabled      =
 //				miSaveMaptree.Enabled =
 				miSaveImage.Enabled   =
 				miResize.Enabled      =
