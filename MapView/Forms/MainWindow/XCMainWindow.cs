@@ -890,17 +890,43 @@ namespace MapView
 				if (sfd.ShowDialog() == DialogResult.OK)
 				{
 					string dir = Path.GetDirectoryName(sfd.FileName); // 'FileName' is fullpath.
-					string basepath = dir.Substring(0, dir.LastIndexOf(@"\", StringComparison.Ordinal));
+					//LogFile.WriteLine("dir= " + dir);
+					// NOTE: GetDirectoryName() will return a string ending with a
+					// path-separator if it's the root dir, and without one if it's
+					// not. But Path.Combine() doesn't figure out the difference.
 
-					string dirMaps   = Path.Combine(basepath, MapFileChild.MapsDir);
-					string dirRoutes = Path.Combine(basepath, RouteNodeCollection.RoutesDir);
+					//LogFile.WriteLine("pathroot= " + Path.GetPathRoot(dir));
+					if (dir != Path.GetPathRoot(dir))
+					{
+						string basepath = dir.Substring(0, dir.LastIndexOf(@"\", StringComparison.Ordinal));
+						//LogFile.WriteLine("basepath= " + basepath);
+						if (basepath.IndexOf(@"\", StringComparison.Ordinal) == -1)	// check if root dir, again
+							basepath += @"\";										// account for awkward path at the root dir.
+																					// NOTE: But that's probly not valid for
+																					// things like mounted or network drives.
+						string dirMaps   = Path.Combine(basepath, MapFileChild.MapsDir);
+						string dirRoutes = Path.Combine(basepath, RouteNodeCollection.RoutesDir);
+						//LogFile.WriteLine("dirMaps= " + dirMaps);
+						//LogFile.WriteLine("dirRoutes= " + dirRoutes);
 
-					string file = Path.GetFileNameWithoutExtension(sfd.FileName);
-					string pfMaps   = Path.Combine(dirMaps, file);
-					string pfRoutes = Path.Combine(dirRoutes, file);
+						string file = Path.GetFileNameWithoutExtension(sfd.FileName);
+						string pfMaps   = Path.Combine(dirMaps, file);
+						string pfRoutes = Path.Combine(dirRoutes, file);
+						//LogFile.WriteLine("pfMaps= " + pfMaps);
+						//LogFile.WriteLine("pfRoutes= " + pfRoutes);
 
-					_mainViewUnderlay.MapBase.SaveMap(pfMaps);
-					_mainViewUnderlay.MapBase.SaveRoutes(pfRoutes);
+						_mainViewUnderlay.MapBase.SaveMap(pfMaps);
+						_mainViewUnderlay.MapBase.SaveRoutes(pfRoutes);
+					}
+					else
+						MessageBox.Show(
+									this,
+									"Saving to a root folder is not allowed. raesons.",
+									"Error",
+									MessageBoxButtons.OK,
+									MessageBoxIcon.Error,
+									MessageBoxDefaultButton.Button1,
+									0);
 				}
 			}
 		}
