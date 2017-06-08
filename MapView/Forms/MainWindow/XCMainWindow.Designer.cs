@@ -34,19 +34,19 @@ namespace MapView
 			this.menuFile = new System.Windows.Forms.MenuItem();
 			this.miOpen = new System.Windows.Forms.MenuItem();
 			this.miSaveAll = new System.Windows.Forms.MenuItem();
+			this.miSeparator1 = new System.Windows.Forms.MenuItem();
 			this.miSaveMap = new System.Windows.Forms.MenuItem();
 			this.miSaveRoutes = new System.Windows.Forms.MenuItem();
 			this.miSaveAs = new System.Windows.Forms.MenuItem();
+			this.miSeparator2 = new System.Windows.Forms.MenuItem();
 			this.miSaveMaptree = new System.Windows.Forms.MenuItem();
+			this.miSeparator3 = new System.Windows.Forms.MenuItem();
 			this.miSaveImage = new System.Windows.Forms.MenuItem();
 			this.miExport = new System.Windows.Forms.MenuItem();
 			this.miResize = new System.Windows.Forms.MenuItem();
 			this.miInfo = new System.Windows.Forms.MenuItem();
 			this.miRegenOccult = new System.Windows.Forms.MenuItem();
 			this.miHq = new System.Windows.Forms.MenuItem();
-			this.miSeparator1 = new System.Windows.Forms.MenuItem();
-			this.miSeparator2 = new System.Windows.Forms.MenuItem();
-			this.miSeparator3 = new System.Windows.Forms.MenuItem();
 			this.miSeparator4 = new System.Windows.Forms.MenuItem();
 			this.miQuit = new System.Windows.Forms.MenuItem();
 			this.menuEdit = new System.Windows.Forms.MenuItem();
@@ -190,7 +190,7 @@ namespace MapView
 			// 
 			this.miResize.Enabled = false;
 			this.miResize.Index = 11;
-			this.miResize.Text = "Resi&ze map";
+			this.miResize.Text = "Resi&ze Map";
 			this.miResize.Click += new System.EventHandler(this.OnMapResizeClick);
 			// 
 			// miInfo

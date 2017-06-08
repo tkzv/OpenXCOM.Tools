@@ -36,8 +36,6 @@ namespace MapView.Forms.MapObservers.TileViews
 		#region Fields
 		private ShowHideManager _showHideManager;
 
-		private IContainer components = null; // quahhaha
-
 		private TilePanel _allTiles;
 		private TilePanel[] _panels;
 

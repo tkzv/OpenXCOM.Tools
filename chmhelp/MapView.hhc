@@ -35,6 +35,10 @@
 		<param name="Name" value="MainView">
 		<param name="Local" value="html\mainview.htm">
 		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="TileView">
+		<param name="Local" value="html\tileview.htm">
+		</OBJECT>
 </UL>
 </BODY>
 </HTML>

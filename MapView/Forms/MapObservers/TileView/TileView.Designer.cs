@@ -2,8 +2,15 @@
 {
 	partial class TileView
 	{
-		#region Windows Form Designer generated code
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && components != null)
+				components.Dispose();
 
+			base.Dispose(disposing);
+		}
+
+		#region Windows Form Designer generated code
 		/// <summary>
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
@@ -73,7 +80,7 @@
 			this.tpNorthwalls.Location = new System.Drawing.Point(4, 21);
 			this.tpNorthwalls.Name = "tpNorthwalls";
 			this.tpNorthwalls.Size = new System.Drawing.Size(632, 430);
-			this.tpNorthwalls.TabIndex = 4;
+			this.tpNorthwalls.TabIndex = 3;
 			this.tpNorthwalls.Text = "North Walls";
 			// 
 			// tpObjects
@@ -81,22 +88,42 @@
 			this.tpObjects.Location = new System.Drawing.Point(4, 21);
 			this.tpObjects.Name = "tpObjects";
 			this.tpObjects.Size = new System.Drawing.Size(632, 430);
-			this.tpObjects.TabIndex = 3;
-			this.tpObjects.Text = "Objects";
+			this.tpObjects.TabIndex = 4;
+			this.tpObjects.Text = "Content";
 			// 
 			// tsMain
 			// 
 			this.tsMain.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tsMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.tsMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.tsddbMcd,
 			this.tsddbPck,
+			this.tsddbMcd,
 			this.tsddbEdit});
 			this.tsMain.Location = new System.Drawing.Point(0, 0);
 			this.tsMain.Name = "tsMain";
 			this.tsMain.Size = new System.Drawing.Size(640, 25);
 			this.tsMain.TabIndex = 1;
 			this.tsMain.Text = "tsMain";
+			// 
+			// tsddbPck
+			// 
+			this.tsddbPck.AutoToolTip = false;
+			this.tsddbPck.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.tsddbPck.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.tsmiEditPck});
+			this.tsddbPck.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsddbPck.Image = ((System.Drawing.Image)(resources.GetObject("tsddbPck.Image")));
+			this.tsddbPck.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsddbPck.Name = "tsddbPck";
+			this.tsddbPck.Size = new System.Drawing.Size(110, 22);
+			this.tsddbPck.Text = "PCK";
+			// 
+			// tsmiEditPck
+			// 
+			this.tsmiEditPck.Name = "tsmiEditPck";
+			this.tsmiEditPck.Size = new System.Drawing.Size(116, 22);
+			this.tsmiEditPck.Text = "Open spriteset in PckView";
+			this.tsmiEditPck.Click += new System.EventHandler(this.OnPckEditorClick);
 			// 
 			// tsddbMcd
 			// 
@@ -110,13 +137,13 @@
 			this.tsddbMcd.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsddbMcd.Name = "tsddbMcd";
 			this.tsddbMcd.Size = new System.Drawing.Size(103, 22);
-			this.tsddbMcd.Text = "MCD - Tile Info";
+			this.tsddbMcd.Text = "MCD";
 			// 
 			// tsmiMcdInfo
 			// 
 			this.tsmiMcdInfo.Name = "tsmiMcdInfo";
 			this.tsmiMcdInfo.Size = new System.Drawing.Size(173, 22);
-			this.tsmiMcdInfo.Text = "MCD Information";
+			this.tsmiMcdInfo.Text = "Tilepart Information";
 			this.tsmiMcdInfo.Click += new System.EventHandler(this.OnMcdInfoClick);
 			// 
 			// tsmiVolutarMcdEditor
@@ -125,26 +152,6 @@
 			this.tsmiVolutarMcdEditor.Size = new System.Drawing.Size(173, 22);
 			this.tsmiVolutarMcdEditor.Text = "Volutar MCD Editor";
 			this.tsmiVolutarMcdEditor.Click += new System.EventHandler(this.OnVolutarMcdEditorClick);
-			// 
-			// tsddbPck
-			// 
-			this.tsddbPck.AutoToolTip = false;
-			this.tsddbPck.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tsddbPck.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.tsmiEditPck});
-			this.tsddbPck.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tsddbPck.Image = ((System.Drawing.Image)(resources.GetObject("tsddbPck.Image")));
-			this.tsddbPck.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsddbPck.Name = "tsddbPck";
-			this.tsddbPck.Size = new System.Drawing.Size(110, 22);
-			this.tsddbPck.Text = "PCK - Tile Group";
-			// 
-			// tsmiEditPck
-			// 
-			this.tsmiEditPck.Name = "tsmiEditPck";
-			this.tsmiEditPck.Size = new System.Drawing.Size(116, 22);
-			this.tsmiEditPck.Text = "Edit PCK";
-			this.tsmiEditPck.Click += new System.EventHandler(this.OnPckEditorClick);
 			// 
 			// tsddbEdit
 			// 
@@ -178,17 +185,10 @@
 			this.tsMain.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
-
-		}
-
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && components != null)
-				components.Dispose();
-
-			base.Dispose(disposing);
 		}
 		#endregion
+
+		private System.ComponentModel.IContainer components = null;
 
 		private System.Windows.Forms.ToolStrip tsMain;
 		private System.Windows.Forms.ToolStripDropDownButton tsddbMcd;

@@ -12,10 +12,17 @@ namespace MapView.OptionsServices
 	/// </summary>
 	internal sealed class VolutarSettingService
 	{
+		#region Fields (static)
 		private const string VolutarMcdEditorPath = "VolutarMcdEditorPath";
+		#endregion
 
+
+		#region Fields
 		private readonly Options _options;
+		#endregion
 
+
+		#region Properties
 		private string _fullpath;
 		internal string FullPath
 		{
@@ -49,14 +56,22 @@ namespace MapView.OptionsServices
 				return _fullpath;
 			}
 		}
+		#endregion
 
 
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="options"></param>
 		internal VolutarSettingService(Options options)
 		{
 			_options = options;
 		}
+		#endregion
 
 
+		#region Methods (static)
 		public static void LoadOptions(Options options)
 		{
 			options.AddOption(
@@ -65,8 +80,9 @@ namespace MapView.OptionsServices
 							"Path to Volutar MCD Editor" + Environment.NewLine
 								+ "note: The path specified can actually be "
 								+ "used to start any valid program or to open "
-								+ "a specific file with its associated viewer.",
+								+ "a specific file with its associated application.",
 							"McdViewer");
 		}
+		#endregion
 	}
 }

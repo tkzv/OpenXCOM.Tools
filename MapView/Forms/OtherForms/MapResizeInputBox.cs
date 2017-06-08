@@ -250,7 +250,7 @@ namespace MapView
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(45, 15);
 			this.label5.TabIndex = 3;
-			this.label5.Text = "h";
+			this.label5.Text = "L";
 			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// txtC
@@ -291,15 +291,14 @@ namespace MapView
 			// 
 			// cbCeiling
 			// 
-			this.cbCeiling.AutoSize = true;
 			this.cbCeiling.Checked = true;
 			this.cbCeiling.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.cbCeiling.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.cbCeiling.Location = new System.Drawing.Point(190, 95);
+			this.cbCeiling.Location = new System.Drawing.Point(170, 95);
 			this.cbCeiling.Name = "cbCeiling";
-			this.cbCeiling.Size = new System.Drawing.Size(99, 16);
+			this.cbCeiling.Size = new System.Drawing.Size(85, 21);
 			this.cbCeiling.TabIndex = 13;
-			this.cbCeiling.Text = "add to ceiling";
+			this.cbCeiling.Text = "add to top";
 			this.cbCeiling.UseVisualStyleBackColor = true;
 			this.cbCeiling.Visible = false;
 			// 
@@ -309,7 +308,7 @@ namespace MapView
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(45, 15);
 			this.label1.TabIndex = 9;
-			this.label1.Text = "h";
+			this.label1.Text = "L";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// label6
@@ -336,10 +335,10 @@ namespace MapView
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(305, 28);
 			this.label2.TabIndex = 0;
-			this.label2.Text = "Columns and Rows must be multiples of 10 (10, 20, 30, etc) and Height must be 1 o" +
+			this.label2.Text = "Columns and Rows must be multiples of 10 (10, 20, 30, etc) and Levels must be 1 o" +
 	"r more.";
 			// 
-			// MapResizeForm
+			// MapResizeInputBox
 			// 
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
@@ -365,7 +364,7 @@ namespace MapView
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "MapResizeForm";
+			this.Name = "MapResizeInputBox";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Modify Map Size";

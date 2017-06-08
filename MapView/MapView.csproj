@@ -158,9 +158,6 @@
     <Compile Include="Forms\MapObservers\TileView\TileViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MapObservers\TileView\TileViewForm.Designer.cs">
-      <DependentUpon>TileViewForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\MapObservers\TopView\ColorTools.cs" />
     <Compile Include="Forms\MapObservers\TopView\DrawBlobService.cs" />
     <Compile Include="Forms\MapObservers\TopView\TopViewForm.cs">

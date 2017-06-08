@@ -223,8 +223,10 @@ namespace MapView
 				}
 			}
 
-			if (!_bork && cbTilesets.Checked) // deal with MapTilesets.yml/.tpl ->
+			if (!_bork && cbTilesets.Checked) // deal with MapTilesets.yml/.tpl -> // TODO: use 'DialogResult.OK' instead of '_bork'
 			{
+				// TODO: make a backup of the user's MapTilesets.yml if it exists.
+
 				var pathTilesets = SharedSpace.Instance[PathInfo.ShareTilesets] as PathInfo;
 				pathTilesets.CreateDirectory();
 

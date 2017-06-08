@@ -1,6 +1,6 @@
 <html>
 	<body>
-		<p>MainView</p>
+		<h2>MainView</h2>
 		<img src="../png/mainview.png" />
 		<p>On the left is the Map Tree. This is where tilesets are listed. The toplevel branch is the Group, under that is the Category, and under that are the Tilesets.</p>
 		<p>The Group's label must start with either "ufo" or "tftd" (case insensitive). This determines the palette and the default basepath for all tilesets in that group.</p>
@@ -27,5 +27,35 @@
 		<p>In the viewer panel, a left-click selects a tile, and a left-click drag motion will select multiple tiles over a rectangular area.</p>
 		<p>Autozoom turns off when zoomin or zoomout are used.</p>
 		<p>The top of the map, north, is to the upper right direction.</p>
+
+		<br>
+		<h3>File menu</h3>
+		<p>Save All [Ctrl+A] - forces a save of the current Map, Route, and Maptree files.</p>
+		<p>Save Map [Ctrl+S] - forces a save of the current Map file.</p>
+		<p>Save Routes [Ctrl+R] - forces a save of the current Routes file.</p>
+		<p>Save As ... - saves the current Map and Route files as a user-specified path and label. The path cannot be the root directory of a drive. The reason for this is that when you save the Map, the routine finds the parent folder of the chosen folder, then ensures that the Map gets saved in a subfolder called \MAPS and the Routes get saved in a subfolder called \ROUTES. This allows the saved Map to be added to MainView's Maptree while maintaining consistency of design.</p>
+		<p>Save Maptree [Ctrl+T] - forces a save of the Maptree.</p>
+		<p>Save Image - saves a .gif of the tileset that's currently displayed in the viewer panel to a specified path.</p>
+		<p>Resize Map - opens a dialog box for modifying the dimensions of the currently loaded Map.</p>
+		<p>Map Info - displays a bit of information about the currently loaded tileset.</p>
+		<p>Regen Occult [Ctrl+O] - to draw all the sprites in the viewer panel faster, any parts that are hidden beneath floors will be ignored, or occulted. But if you strip a floor off of a level above the ground floor this means you could be left looking into a big hole of what appears to be nothing. The tileparts are still there but they've been occulted for faster drawing. Use Regen Occult to make them appear as expected. Also mind that the reverse happens. If a floor is laid down above ground level, and MainView starts lagging, try issuing the Regen Occult command which will stop any sprites that have been hidden from drawing. Occulted tiles are re-calculated every time a Map loads.</p>
+		<p>Quit [Ctrl+Q] - quits MapView II</p>
+
+		<br>
+		<h3>Edit menu</h3>
+		<p>Options - opens the Options for MainView. Descriptions for the entries appear at the bottom of the window.</p>
+		<p>Configurator - opens the Configuration Editor. This is where to specify or modify the paths to your XCOM installation folder(s) for UFO and/or TFTD. It can also replace your Maptree file with a fresh one that's hardcoded. WARNING: doing that would obliterate all customizations that have been done to the Maptree. Alternately, the Configurator can generate a file of the hardcoded, or default tileset-data to a template file. The template would be useful if MapView II had been configured for UFO (or TFTD) and subsequently requires the data for TFTD (or UFO) tilesets. That default data can be copied from the template into your MapTilesets.yml file. Note that the tileset-data for both games will exist in your MapTilesets.yml until the first time that the Maptree is saved, at which point the data for either game that is not configured will be erased. Hint: force a save of the Maptree to get the application to initialize a fraction of a second faster.</p>
+
+		<br>
+		<h3>Viewers menu</h3>
+		<p>TileView - opens and closes the window that shows the tileparts of the terrains of the currently loaded tileset.</p>
+		<p>TopView - opens and closes the window that shows an editable, 2-dimensional view of the currently loaded Map. This can be quicker and handier than working directly with the MainView window.</p>
+		<p>RouteView - opens and closes the window that shows an editable, 2-dimensional view of the currently loaded Routes.</p>
+		<p>TopRouteView - opens and closes a window that conflates TopView and RouteView as separate tab-pages but in a single viewer.</p>
+
+		<br>
+		<h3>Help menu</h3>
+		<p>Help - shows some help, some of which may be obsolete. Of particular interest is that on the TileView help-tab, the background colors for tileparts' special properties are tabled.</p>
+		<p>About - version, build date, you know the drill.</p>
 	</body>
 </html>
