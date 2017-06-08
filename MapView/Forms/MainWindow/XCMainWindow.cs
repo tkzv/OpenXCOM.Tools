@@ -172,10 +172,9 @@ namespace MapView
 			// opening the designer; it appears to run only when actually
 			// running the application:
 
-			var size = new Size();
-			size.Width  =
-			size.Height = 0;
-			MaximumSize = size; // fu.net
+			var size = new Size(0,0);
+			MaximumSize = size;
+			MinimumSize = size; // fu.net
 
 
 //			tvMaps.NodeMouseClick += (sender, args) => tvMaps.SelectedNode = args.Node;

@@ -23,8 +23,14 @@ namespace MapView.Forms.MapObservers.TileViews
 			base.Dispose(disposing);
 		}
 
-		#region Windows Form Designer generated code
+		/* The #develop designer is going to delete this:
 
+			this.controlTopView = new MapView.Forms.MapObservers.TopViews.TopView();
+			this.controlRouteView = new MapView.Forms.MapObservers.RouteViews.RouteView();
+
+		- so copy it back into InitializeComponent() */
+
+		#region Windows Form Designer generated code
 		/// <summary>
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
@@ -91,15 +97,14 @@ namespace MapView.Forms.MapObservers.TileViews
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "RouteView";
 			// 
-			// TopRouteView
+			// TopRouteViewForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(632, 454);
 			this.Controls.Add(this.tabControl);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.MinimumSize = new System.Drawing.Size(640, 480);
-			this.Name = "TopRouteView";
+			this.Name = "TopRouteViewForm";
 			this.ShowInTaskbar = false;
 			this.Text = "Top/Route Views";
 			this.tabControl.ResumeLayout(false);
@@ -108,7 +113,6 @@ namespace MapView.Forms.MapObservers.TileViews
 			this.ResumeLayout(false);
 
 		}
-
 		#endregion
 
 		private TopView controlTopView;

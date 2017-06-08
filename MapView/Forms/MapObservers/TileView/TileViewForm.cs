@@ -10,8 +10,6 @@ namespace MapView.Forms.MapObservers.TileViews
 			Form,
 			IMapObserverProvider
 	{
-		private TileView TileViewControl;
-
 		internal TileViewForm()
 		{
 			InitializeComponent();
@@ -78,21 +76,20 @@ namespace MapView.Forms.MapObservers.TileViews
 			// 
 			// TileViewControl
 			// 
-			this.TileViewControl.Dock = DockStyle.Fill;
-			this.TileViewControl.Font = new Font("Verdana", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+			this.TileViewControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.TileViewControl.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TileViewControl.Location = new System.Drawing.Point(0, 0);
 			this.TileViewControl.Name = "TileViewControl";
-			this.TileViewControl.Size = new Size(632, 454);
+			this.TileViewControl.Size = new System.Drawing.Size(632, 454);
 			this.TileViewControl.TabIndex = 0;
 			// 
 			// TileViewForm
 			// 
-			this.AutoScaleDimensions = new SizeF(6F, 12F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(632, 454);
 			this.Controls.Add(this.TileViewControl);
-			this.Font = new Font("Verdana", 7F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
-			this.MinimumSize = new Size(322, 122);
+			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "TileViewForm";
 			this.ShowInTaskbar = false;
 			this.Text = "TileView";
@@ -100,5 +97,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		}
 		#endregion
+
+		private TileView TileViewControl;
 	}
 }

@@ -10,7 +10,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 	{
 		internal RouteViewForm()
 		{
-//			this.RouteViewControl = new RouteView();
 			InitializeComponent();
 		}
 

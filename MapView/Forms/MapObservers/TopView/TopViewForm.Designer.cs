@@ -19,6 +19,12 @@
 			base.Dispose(disposing);
 		}
 
+		/* The #develop designer is going to delete this:
+
+			TopViewControl = new TopView();
+
+		- so copy it back into InitializeComponent() */
+
 		#region Windows Form Designer generated code
 		/// <summary>
 		/// Required method for Designer support - do not modify
@@ -26,6 +32,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			TopViewControl = new TopView();
 			this.SuspendLayout();
 			// 
 			// TopViewControl
@@ -44,7 +51,6 @@
 			this.ClientSize = new System.Drawing.Size(632, 454);
 			this.Controls.Add(this.TopViewControl);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.MinimumSize = new System.Drawing.Size(197, 205);
 			this.Name = "TopViewForm";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
