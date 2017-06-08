@@ -173,7 +173,7 @@ namespace MapView
 			// running the application:
 
 			var size = new Size(0,0);
-			MaximumSize = size;
+			MaximumSize =
 			MinimumSize = size; // fu.net
 
 

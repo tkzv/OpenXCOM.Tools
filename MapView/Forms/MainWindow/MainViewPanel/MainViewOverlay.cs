@@ -433,8 +433,8 @@ namespace MapView
 				var end = GetTileLocation(e.X, e.Y);
 
 				_suppressTargeter = false;
-				_col = end.X;
-				_row = end.Y;
+				_colOver = end.X;
+				_rowOver = end.Y;
 
 				if (_isMouseDrag
 					&& (end.X != DragEnd.X || end.Y != DragEnd.Y))
@@ -541,9 +541,12 @@ namespace MapView
 		#endregion
 
 
-		private int _col; // these are used to track the cursor location and to
-		private int _row; // print the clicked location info.
-		private int _lev; // this is used only to print the clicked location info.
+		private int _colOver; // these are used to track the cursor location
+		private int _rowOver;
+
+		private int _col; // these are used to print the clicked location info
+		private int _row;
+		private int _lev;
 
 		private bool _suppressTargeter = true;
 
@@ -562,6 +565,8 @@ namespace MapView
 			_col = args.Location.Col;
 			_row = args.Location.Row;
 			_lev = args.Location.Lev;
+			//LogFile.WriteLine(". " + _col + "," + _row + "," + _lev);
+
 			XCMainWindow.Instance.StatusBarPrintPosition(
 													_col, _row,
 													MapBase.MapSize.Levs - _lev);
@@ -573,9 +578,14 @@ namespace MapView
 		/// <param name="args"></param>
 		internal void OnLevelChanged_Main(LevelChangedEventArgs args)
 		{
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine("MainViewOverlay.OnLevelChanged_Main");
+
 			_suppressTargeter = true;
 
 			_lev = args.Level;
+			//LogFile.WriteLine(". " + _col + "," + _row + "," + _lev);
+
 			XCMainWindow.Instance.StatusBarPrintPosition(
 													_col, _row,
 													MapBase.MapSize.Levs - _lev);
@@ -681,8 +691,8 @@ namespace MapView
 												lev == MapBase.Level);
 							}
 							else if (!_suppressTargeter
-									&& col == _col
-									&& row == _row
+									&& col == _colOver
+									&& row == _rowOver
 									&& lev == MapBase.Level)
 							{
 								Cuboid.DrawTargeter(
