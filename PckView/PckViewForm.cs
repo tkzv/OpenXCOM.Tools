@@ -234,6 +234,7 @@ namespace PckView
 			if (_viewPanel.SelectedSprites.Count != 1)
 			{
 				MessageBox.Show(
+							this,
 							"Must select 1 item only.",
 							Text,
 							MessageBoxButtons.OK,
@@ -446,7 +447,7 @@ namespace PckView
 					_viewPanel.SpritePack = spriteset;
 
 
-					UpdateCaption();
+					UpdateCaption(pfePck);
 
 //					if (help) // disabled until editing and saving get reinstated.
 //					{
@@ -456,12 +457,28 @@ namespace PckView
 				}
 			}
 			else
-				XConsole.AdZerg("ERROR: tab file does not exist: " + pfeTab);
+			{
+//				XConsole.AdZerg("ERROR: tab file does not exist: " + pfeTab);
+				MessageBox.Show(
+							this,
+							"Tab file does not exist"
+								+ Environment.NewLine + Environment.NewLine
+								+ pfeTab,
+							Text,
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Exclamation,
+							MessageBoxDefaultButton.Button1,
+							0);
+			}
 		}
 
-		private void UpdateCaption()
+		private void UpdateCaption() // TODO: replace calls w/ UpdateCaption(string)
 		{
-			Text = "Pck View - " + _viewPanel.SpritePack.Label + " [" + _viewPanel.SpritePack.Count + "] total";
+			Text = "PckView - " + _viewPanel.SpritePack.Label + " [" + _viewPanel.SpritePack.Count + "] total";
+		}
+		private void UpdateCaption(string fullpath)
+		{
+			Text = "PckView - " + fullpath;
 		}
 
 		private void OnSaveAsClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE

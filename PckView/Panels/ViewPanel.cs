@@ -25,6 +25,7 @@ namespace PckView
 		private readonly VScrollBar _scrollBar;
 		private readonly StatusBar  _statusBar;
 
+		private StatusBarPanel _statusTilesTotal;
 		private StatusBarPanel _statusTileSelected;
 		private StatusBarPanel _statusTileOver;
 
@@ -48,7 +49,7 @@ namespace PckView
 				_selectedSprites.Clear();
 
 				_largeChange           =
-				_scrollBar.LargeChange = value.ImageFile.ImageSize.Height + SpriteMargin * 2;
+				_scrollBar.LargeChange = _spriteHeight;
 
 				UpdateScrollbar(true);
 
@@ -57,6 +58,10 @@ namespace PckView
 
 				OnSpriteClick(-1);
 				OnSpriteOver(-1);
+
+				_statusTilesTotal.Text = String.Format(
+													System.Globalization.CultureInfo.InvariantCulture,
+													"Total {0}", _spritePack.Count);
 
 				if (SpritePackChangedEvent != null)
 					SpritePackChangedEvent(new SpritePackChangedEventArgs(value));
@@ -137,6 +142,12 @@ namespace PckView
 //			_scrollBar.LargeChange = 44; // NOTE: this won't stick unless Visible, perhaps. else "1"
 			_scrollBar.ValueChanged += OnScrollBarValueChanged;
 
+			_statusTilesTotal = new StatusBarPanel();
+			_statusTilesTotal.Width = 85;
+			_statusTilesTotal.Text = String.Format(
+												System.Globalization.CultureInfo.InvariantCulture,
+												"Total n/a");
+
 			_statusTileSelected = new StatusBarPanel();
 			_statusTileSelected.Width = 100;
 
@@ -146,6 +157,7 @@ namespace PckView
 			_statusBar = new StatusBar();
 			_statusBar.Dock = DockStyle.Bottom;
 			_statusBar.ShowPanels = true;
+			_statusBar.Panels.Add(_statusTilesTotal);
 			_statusBar.Panels.Add(_statusTileSelected);
 			_statusBar.Panels.Add(_statusTileOver);
 
