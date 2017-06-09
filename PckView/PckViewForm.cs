@@ -466,7 +466,7 @@ namespace PckView
 								+ pfeTab,
 							Text,
 							MessageBoxButtons.OK,
-							MessageBoxIcon.Exclamation,
+							MessageBoxIcon.Error,
 							MessageBoxDefaultButton.Button1,
 							0);
 			}

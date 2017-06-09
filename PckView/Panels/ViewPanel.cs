@@ -18,18 +18,53 @@ namespace PckView
 		:
 			Panel
 	{
+		#region Events
 		internal event SpritePackChangedEventHandler SpritePackChangedEvent;
+		#endregion
 
 
-		#region Fields & Properties
-		private readonly VScrollBar _scrollBar;
-		private readonly StatusBar  _statusBar;
-
-		private StatusBarPanel _statusTilesTotal;
-		private StatusBarPanel _statusTileSelected;
-		private StatusBarPanel _statusTileOver;
+		#region Fields (static)
+		private const int SpriteMargin = 2;
+		private const string None = "n/a";
+		#endregion
 
 
+		#region Fields
+		private readonly VScrollBar _scrollBar = new VScrollBar();
+		private readonly StatusBar  _statusBar = new StatusBar();
+
+		private StatusBarPanel _statusTilesTotal   = new StatusBarPanel();
+		private StatusBarPanel _statusTileSelected = new StatusBarPanel();
+		private StatusBarPanel _statusTileOver     = new StatusBarPanel();
+		private StatusBarPanel _statusLabel        = new StatusBarPanel();
+
+		private int _spriteWidth;
+		private int _spriteHeight;
+
+		private int _tilesX = 1;
+
+		private int _startY;
+
+		private int _idSelected;
+		private int _idOver;
+
+		private int _overX = -1;
+		private int _overY = -1;
+
+		private Pen   _penBlack        = new Pen(Brushes.Black, 1);
+		private Pen   _penControlLight = new Pen(SystemColors.ControlLight, 1);
+		private Brush _brushCrimson    = new SolidBrush(Color.Crimson);
+
+		/// <summary>
+		/// The LargeChange value for the scrollbar will return "1" when the bar
+		/// isn't visible. Therefore this value needs to be used instead of the
+		/// actual LargeValue in order to calculate the panel's various dynamics.
+		/// </summary>
+		private int _largeChange;
+		#endregion
+
+
+		#region Properties
 		private XCImageCollection _spritePack;
 		internal XCImageCollection SpritePack
 		{
@@ -56,12 +91,13 @@ namespace PckView
 				Refresh();
 //				Select(); // done in OnShown() of PckViewForm.
 
-				OnSpriteClick(-1);
-				OnSpriteOver(-1);
-
 				_statusTilesTotal.Text = String.Format(
 													System.Globalization.CultureInfo.InvariantCulture,
 													"Total {0}", _spritePack.Count);
+				_statusLabel.Text = _spritePack.Label;
+
+				OnSpriteClick(-1);
+				OnSpriteOver(-1);
 
 				if (SpritePackChangedEvent != null)
 					SpritePackChangedEvent(new SpritePackChangedEventArgs(value));
@@ -70,24 +106,6 @@ namespace PckView
 
 		internal Palette Pal
 		{ get; set; }
-
-
-		private const int SpriteMargin = 2;
-
-		private int _spriteWidth;
-		private int _spriteHeight;
-
-		private int _tilesX = 1;
-
-		private int _startY;
-
-		private int _idSelected;
-		private int _idOver;
-
-		private int _overX = -1;
-		private int _overY = -1;
-
-		private const string None = "n/a";
 
 
 		private readonly List<SpriteSelected> _selectedSprites = new List<SpriteSelected>();
@@ -113,21 +131,13 @@ namespace PckView
 				return height;
 			}
 		}
-
-		/// <summary>
-		/// The LargeChange value for the scrollbar will return "1" when the bar
-		/// isn't visible. Therefore this value needs to be used instead of the
-		/// actual LargeValue in order to calculate the panel's various dynamics.
-		/// </summary>
-		private int _largeChange;
-
-		private Pen   _penBlack        = new Pen(Brushes.Black, 1);
-		private Pen   _penControlLight = new Pen(SystemColors.ControlLight, 1);
-		private Brush _brushCrimson    = new SolidBrush(Color.Crimson);
 		#endregion
 
 
 		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
 		internal ViewPanel()
 		{
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
@@ -136,30 +146,27 @@ namespace PckView
 				   | ControlStyles.ResizeRedraw, true);
 
 
-			_scrollBar = new VScrollBar();
 			_scrollBar.Dock = DockStyle.Right;
 			_scrollBar.SmallChange = 1;
 //			_scrollBar.LargeChange = 44; // NOTE: this won't stick unless Visible, perhaps. else "1"
 			_scrollBar.ValueChanged += OnScrollBarValueChanged;
 
-			_statusTilesTotal = new StatusBarPanel();
 			_statusTilesTotal.Width = 85;
 			_statusTilesTotal.Text = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
-												"Total n/a");
-
-			_statusTileSelected = new StatusBarPanel();
+												"Total " + None);
 			_statusTileSelected.Width = 100;
-
-			_statusTileOver = new StatusBarPanel();
 			_statusTileOver.Width = 75;
 
-			_statusBar = new StatusBar();
+			_statusLabel.AutoSize = StatusBarPanelAutoSize.Spring;
+			_statusLabel.Alignment = HorizontalAlignment.Center;
+
 			_statusBar.Dock = DockStyle.Bottom;
 			_statusBar.ShowPanels = true;
 			_statusBar.Panels.Add(_statusTilesTotal);
 			_statusBar.Panels.Add(_statusTileSelected);
 			_statusBar.Panels.Add(_statusTileOver);
+			_statusBar.Panels.Add(_statusLabel);
 
 			Controls.AddRange(new Control[]
 			{
