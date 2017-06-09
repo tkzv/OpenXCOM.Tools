@@ -1432,7 +1432,7 @@ namespace MapView
 										"Are you sure you want to remove this Map group?"
 											+ " This will also remove all its categories and"
 											+ " tilesets, but files on disk are unaffected.{0}{0}"
-											+ "group:\t\t{1}",
+											+ "group\t{1}",
 										Environment.NewLine,
 										labelGroup);
 			if (MessageBox.Show(
@@ -1538,8 +1538,8 @@ namespace MapView
 										"Are you sure you want to remove this Map category?"
 											+ " This will also remove all its tilesets, but"
 											+ " files on disk are unaffected.{0}{0}"
-											+ "group:\t\t{1}{0}"
-											+ "category:\t\t{2}",
+											+ "group\t{1}{0}"
+											+ "category\t{2}",
 										Environment.NewLine,
 										labelGroup, labelCategory);
 			if (MessageBox.Show(
@@ -1642,9 +1642,9 @@ namespace MapView
 										System.Globalization.CultureInfo.CurrentCulture,
 										"Are you sure you want to remove this Map tileset?"
 											+ " Files on disk are unaffected.{0}{0}"
-											+ "group:\t\t{1}{0}"
-											+ "category:\t\t{2}{0}"
-											+ "tileset:\t\t{3}",
+											+ "group\t{1}{0}"
+											+ "category\t{2}{0}"
+											+ "tileset\t{3}",
 										Environment.NewLine,
 										labelGroup, labelCategory, labelTileset);
 			if (MessageBox.Show(

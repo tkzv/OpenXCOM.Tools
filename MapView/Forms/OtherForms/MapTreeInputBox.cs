@@ -23,10 +23,10 @@ namespace MapView
 
 
 		#region Fields (static)
-		private const string NewGroup    = "New Group";
-		private const string NewCategory = "New Category";
-		private const string RenGroup    = "Rename Group";
-		private const string RenCategory = "Rename Category";
+		private const string NewGroup    = "Add Group";
+		private const string NewCategory = "Add Category";
+		private const string RenGroup    = "Relabel Group";
+		private const string RenCategory = "Relabel Category";
 		#endregion
 
 
@@ -34,7 +34,7 @@ namespace MapView
 		private BoxType InputBoxType
 		{ get; set; }
 
-		private string ParentGroup
+		private string GroupLabel
 		{ get; set; }
 
 		/// <summary>
@@ -56,14 +56,12 @@ namespace MapView
 		/// <param name="infoAbove">info about the add/edit</param>
 		/// <param name="infoBelow">more info about the add/edit</param>
 		/// <param name="boxType">type of box</param>
-		/// <param name="parentGroupLabel">label of the category-group if the
-		/// add/edit is for a category-label, else blank if add/edit is for a
-		/// group-label</param>
+		/// <param name="labelGroup">label of the group if applicable</param>
 		internal MapTreeInputBox(
 				string infoAbove,
 				string infoBelow,
 				BoxType boxType,
-				string parentGroupLabel)
+				string labelGroup)
 		{
 			InitializeComponent();
 
@@ -74,19 +72,23 @@ namespace MapView
 			{
 				case BoxType.AddGroup:
 					Text = NewGroup;
-					break;
-				case BoxType.AddCategory:
-					Text = NewCategory;
+					lblCurrent.Text = "@root";
 					break;
 				case BoxType.EditGroup:
 					Text = RenGroup;
+					lblCurrent.Text = "@root";
+					break;
+				case BoxType.AddCategory:
+					Text = NewCategory;
+					lblCurrent.Text = "@" + labelGroup;
 					break;
 				case BoxType.EditCategory:
 					Text = RenCategory;
+					lblCurrent.Text = "@" + labelGroup;
 					break;
 			}
 
-			ParentGroup = parentGroupLabel;
+			GroupLabel = labelGroup;
 
 			tbInput.Select();
 		}
@@ -149,7 +151,7 @@ namespace MapView
 					{
 						bool bork = false;
 
-						var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[ParentGroup];
+						var tilegroup = ResourceInfo.TileGroupInfo.TileGroups[GroupLabel];
 						foreach (var labelCategory in tilegroup.Categories.Keys)
 						{
 							if (String.Equals(labelCategory, Input, StringComparison.OrdinalIgnoreCase))
