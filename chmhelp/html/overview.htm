@@ -1,22 +1,25 @@
 <html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../css/mapview.css">
+	</head>
 	<body>
 		<h2>Overview</h2>
 
-		<p>XCOM battlefields are comprised of several files.<br>
+		<p>XCOM battlefields are comprised of several files.<br><br>
 &nbsp;&nbsp;- a .MAP file<br>
 &nbsp;&nbsp;- a .RMP file<br>
 &nbsp;&nbsp;- one or more .PCK files<br>
 &nbsp;&nbsp;- one or more .TAB files<br>
 &nbsp;&nbsp;- one or more .MCD files</p>
 
-		<p>To play the game, these files must be located in subdirectories of XCOM's installation folder.<br>
+		<p>To play the game, these files must be located in subdirectories of XCOM's installation folder.<br><br>
 &nbsp;&nbsp;- MAPS contains .MAP files<br>
 &nbsp;&nbsp;- ROUTES contains .RMP files<br>
 &nbsp;&nbsp;- TERRAIN contains .PCK, .TAB, and .MCD files<br>
 
-		<p>The filenames of the .MAP and .RMP files must be the same. The filenames of the .PCK, .TAB, and .MCD files must also all be the same, but are usually different than the .MAP and .RMP files</p>
+		<p>The filenames of the .MAP and .RMP files must be the same. The filenames of the .PCK, .TAB, and .MCD files must also all be the same, but are usually different than the .MAP and .RMP files.</p>
 
-		<p>Each map, or tileset, is a 3 dimensional cuboid with width (x or col), height (y or row), and level (z or lev). The .MAP file specifies the dimensions of a map-block aka map-module, and it also contains generic references to tileparts, the specific parts being determined by the terrains that are allocated to the tileset.</p>
+		<p>Each map, or tileset, is a 3-dimensional cuboid with width (x/column), height (y/row), and depth (z/level). The .MAP file specifies the dimensions of a map-block aka map-module, and it also contains generic references to tileparts, the specific parts being determined by the terrains that are allocated to the tileset.</p>
 
 		<p>Each tileset must also have a routes file. This file may be empty, but usually it contains the x,y,z coordinates of route-nodes, each of which has characteristics that determine how the node may be used during gameplay. Nodes are not visible to a player.</p>
 
@@ -26,7 +29,7 @@
 
 		<p>That's almost inarguably what makes XCOM battles so great. The permutations of the ways in which tileparts go together to make tilesets is what MapView is all about.</p>
 
-		<p>MapView allows the viewing of spritesets (PCK/TAB) and terrain records (MCD), while Volutar's MCD Editor is the generally accepted application for their modification. There are other methods available such as BB's Toolkit and hex-editors.</p>
+		<p>MapView allows the viewing of spritesets (PCK/TAB) and terrain records (MCD), while Volutar's MCD Editor is one of the generally accepted applications for their modification. There are other methods available such as BB's Toolkit and hex-editors.</p>
 
 		<br>
 		<h3>Technical information at Ufopaedia.org</h3>
@@ -37,7 +40,7 @@
 &nbsp;&nbsp;<a href="http://www.ufopaedia.org/index.php/Image_Formats">Image Formats</a><br>
 &nbsp;&nbsp;<a href="http://www.ufopaedia.org/index.php/PALETTES.DAT">PALETTES</a><br>
 &nbsp;&nbsp;<a href="http://www.ufopaedia.org/index.php/MCD">MCD</a><br>
-&nbsp;&nbsp;<a href="http://www.ufopaedia.org/index.php/LOFTEMPS.DAT">LOFTEMPS</a><br>
+&nbsp;&nbsp;<a href="http://www.ufopaedia.org/index.php/LOFTEMPS.DAT">LOFTEMPS</a></p>
 		<br>
 	</body>
 </html>
