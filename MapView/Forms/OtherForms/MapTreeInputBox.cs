@@ -72,19 +72,19 @@ namespace MapView
 			{
 				case BoxType.AddGroup:
 					Text = NewGroup;
-					lblCurrent.Text = "@root";
+					lblParent.Text = "@root";
 					break;
 				case BoxType.EditGroup:
 					Text = RenGroup;
-					lblCurrent.Text = "@root";
+					lblParent.Text = "@root";
 					break;
 				case BoxType.AddCategory:
 					Text = NewCategory;
-					lblCurrent.Text = "@" + labelGroup;
+					lblParent.Text = "@" + labelGroup;
 					break;
 				case BoxType.EditCategory:
 					Text = RenCategory;
-					lblCurrent.Text = "@" + labelGroup;
+					lblParent.Text = "@" + labelGroup;
 					break;
 			}
 

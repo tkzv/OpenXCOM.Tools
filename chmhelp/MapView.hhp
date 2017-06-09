@@ -3,7 +3,7 @@
 Compatibility=1.1 or later
 Compiled file=MapView.chm
 Contents file=MapView.hhc
-Default Font=Verdana, 8, 000
+Default Font=Verdana,8,0
 Default Window=font
 Default topic=html\reason.htm
 Display compile progress=Yes
@@ -23,6 +23,7 @@ html\overview.htm
 html\requirements.htm
 html\mainview.htm
 html\tileview.htm
+html\topview.htm
 
 [INFOTYPES]
 

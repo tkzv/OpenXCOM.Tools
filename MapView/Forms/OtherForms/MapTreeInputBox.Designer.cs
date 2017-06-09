@@ -33,7 +33,7 @@
 			this.tbInput = new System.Windows.Forms.TextBox();
 			this.pnlBottom = new System.Windows.Forms.Panel();
 			this.pnlTop = new System.Windows.Forms.Panel();
-			this.lblCurrent = new System.Windows.Forms.Label();
+			this.lblParent = new System.Windows.Forms.Label();
 			this.lblInfoBottom = new System.Windows.Forms.Label();
 			this.pnlBottom.SuspendLayout();
 			this.pnlTop.SuspendLayout();
@@ -87,7 +87,7 @@
 			// 
 			// pnlTop
 			// 
-			this.pnlTop.Controls.Add(this.lblCurrent);
+			this.pnlTop.Controls.Add(this.lblParent);
 			this.pnlTop.Controls.Add(this.lblInfoBottom);
 			this.pnlTop.Controls.Add(this.tbInput);
 			this.pnlTop.Controls.Add(this.lblInfoTop);
@@ -97,17 +97,17 @@
 			this.pnlTop.Size = new System.Drawing.Size(394, 147);
 			this.pnlTop.TabIndex = 0;
 			// 
-			// lblCurrent
+			// lblParent
 			// 
-			this.lblCurrent.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblCurrent.ForeColor = System.Drawing.SystemColors.Highlight;
-			this.lblCurrent.Location = new System.Drawing.Point(5, 5);
-			this.lblCurrent.Name = "lblCurrent";
-			this.lblCurrent.Padding = new System.Windows.Forms.Padding(10, 0, 8, 0);
-			this.lblCurrent.Size = new System.Drawing.Size(385, 15);
-			this.lblCurrent.TabIndex = 0;
-			this.lblCurrent.Text = "lblCurrent";
-			this.lblCurrent.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.lblParent.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblParent.ForeColor = System.Drawing.SystemColors.Highlight;
+			this.lblParent.Location = new System.Drawing.Point(5, 5);
+			this.lblParent.Name = "lblParent";
+			this.lblParent.Padding = new System.Windows.Forms.Padding(10, 0, 8, 0);
+			this.lblParent.Size = new System.Drawing.Size(385, 15);
+			this.lblParent.TabIndex = 0;
+			this.lblParent.Text = "lblParent";
+			this.lblParent.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// lblInfoBottom
 			// 
@@ -150,6 +150,6 @@
 		private System.Windows.Forms.Panel pnlBottom;
 		private System.Windows.Forms.Panel pnlTop;
 		private System.Windows.Forms.Label lblInfoBottom;
-		private System.Windows.Forms.Label lblCurrent;
+		private System.Windows.Forms.Label lblParent;
 	}
 }
