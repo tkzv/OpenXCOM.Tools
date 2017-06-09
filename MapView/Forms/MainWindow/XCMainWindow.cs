@@ -54,16 +54,8 @@ namespace MapView
 			get { return _instance; }
 		}
 
-		private bool _maptreeChanged;
 		internal bool MaptreeChanged
-		{
-			private get { return _maptreeChanged; }
-			set
-			{
-				_maptreeChanged       =
-				miSaveMaptree.Enabled = value;
-			}
-		}
+		{ private get; set; }
 
 		private List<string> _tilesetTerrains = new List<string>();
 		internal List<string> TilesetTerrains
@@ -1894,7 +1886,6 @@ namespace MapView
 				miSaveMap.Enabled     =
 				miSaveRoutes.Enabled  =
 				miSaveAs.Enabled      =
-//				miSaveMaptree.Enabled =
 				miSaveImage.Enabled   =
 				miResize.Enabled      =
 				miInfo.Enabled        =

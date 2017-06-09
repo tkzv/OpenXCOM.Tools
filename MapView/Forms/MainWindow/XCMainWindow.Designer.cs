@@ -161,7 +161,6 @@ namespace MapView
 			// 
 			// miSaveMaptree
 			// 
-			this.miSaveMaptree.Enabled = false;
 			this.miSaveMaptree.Index = 7;
 			this.miSaveMaptree.Shortcut = System.Windows.Forms.Shortcut.CtrlT;
 			this.miSaveMaptree.Text = "Save Map&tree";
@@ -338,7 +337,7 @@ namespace MapView
 			| System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
 			this.tsslMapLabel.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tsslMapLabel.Name = "tsslMapLabel";
-			this.tsslMapLabel.Size = new System.Drawing.Size(99, 17);
+			this.tsslMapLabel.Size = new System.Drawing.Size(119, 17);
 			this.tsslMapLabel.Spring = true;
 			// 
 			// tsslDimensions

@@ -120,7 +120,7 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// 
+		/// Opens a dialog to find a UFO installation folder.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -136,7 +136,7 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// 
+		/// Opens a dialog to find a TFTD installation folder.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -152,7 +152,7 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// 
+		/// Applies new configuration settings and closes the form.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -198,12 +198,9 @@ namespace MapView
 					}
 					else
 					{
-						var pathResources = SharedSpace.Instance[PathInfo.ShareResources] as PathInfo;
-						pathResources.CreateDirectory();
+						_pathResources.CreateDirectory();
 
-						string pfeResources = pathResources.FullPath;
-
-						using (var fs = new FileStream(pfeResources, FileMode.Create))
+						using (var fs = new FileStream(_pathResources.FullPath, FileMode.Create))
 						using (var sw = new StreamWriter(fs))
 						{
 							object node = new
@@ -223,15 +220,19 @@ namespace MapView
 				}
 			}
 
-			if (!_bork && cbTilesets.Checked) // deal with MapTilesets.yml/.tpl -> // TODO: use 'DialogResult.OK' instead of '_bork'
+			if (!_bork && cbTilesets.Checked) // deal with MapTilesets.yml/.tpl ->
 			{
-				// TODO: make a backup of the user's MapTilesets.yml if it exists.
+				_pathTilesets.CreateDirectory();
 
-				var pathTilesets = SharedSpace.Instance[PathInfo.ShareTilesets] as PathInfo;
-				pathTilesets.CreateDirectory();
+				string pfeTilesets = _pathTilesets.FullPath;
 
-				string pfeTilesets = rbTilesets.Checked ? pathTilesets.FullPath
-														: Path.Combine(pathTilesets.DirectoryPath, PathInfo.ConfigTilesetsTpl);
+				if (rbTilesets.Checked) // make a backup of the user's MapTilesets.yml if it exists.
+				{
+					if (File.Exists(pfeTilesets))
+						File.Copy(pfeTilesets, Path.Combine(_pathTilesets.DirectoryPath, PathInfo.ConfigTilesetsOld), true);
+				}
+				else // rbTilesetsTpl.Checked
+					pfeTilesets = Path.Combine(_pathTilesets.DirectoryPath, PathInfo.ConfigTilesetsTpl);
 
 				using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
 												.GetManifestResourceStream("MapView._Embedded.MapTilesets.yml")))
@@ -244,9 +245,11 @@ namespace MapView
 				{
 					DialogResult = DialogResult.OK;
 				}
-				else //if (rbTilesetsTpl.Checked)
+				else // rbTilesetsTpl.Checked
 				{
-					ShowInfoDialog("Tileset template has been created in the settings subfolder.");
+					ShowInfoDialog("Tileset template has been created "
+									+ Environment.NewLine + Environment.NewLine
+									+ pfeTilesets);
 
 					if (!cbResources.Checked)
 						Close();
@@ -255,7 +258,7 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// 
+		/// Closes the form.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
