@@ -387,11 +387,11 @@ namespace PckView
 		/// <param name="palette"></param>
 		public void SetSelectedPalette(string palette)
 		{
-			foreach (Palette pal in _paletteItems.Keys)
+			foreach (var pal in _paletteItems.Keys)
 			{
 				if (pal.Label.Equals(palette))
 				{
-					OnPaletteClick(_paletteItems[pal], null);
+					OnPaletteClick(_paletteItems[pal], EventArgs.Empty);
 					break;
 				}
 			}
