@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
+using MapView.Forms.MainWindow;
+
 using XCom;
 using XCom.Interfaces.Base;
 
@@ -254,9 +256,19 @@ namespace MapView.Forms.MapObservers.TileViews
 		protected override void OnMouseDoubleClick(MouseEventArgs e)
 		{
 			int id = GetOverId(e);
-
 			if (id != -1 && id < _parts.Length)
-				MapView.Forms.MainWindow.ViewerFormsManager.TileView.Control.OnMcdInfoClick(null, null);
+			{
+				switch (e.Button)
+				{
+					case MouseButtons.Left:
+						ViewerFormsManager.TileView.Control.OnPckEditorClick(null, EventArgs.Empty);
+						break;
+
+					case MouseButtons.Right:
+						ViewerFormsManager.TileView.Control.OnMcdInfoClick(null, EventArgs.Empty);
+						break;
+				}
+			}
 		}
 
 		private int GetOverId(MouseEventArgs e)

@@ -193,6 +193,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 		#endregion
 
+
 		/// <summary>
 		/// Sets the ShowHideManager.
 		/// </summary>
@@ -445,7 +446,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnPckEditorClick(object sender, EventArgs e)
+		internal void OnPckEditorClick(object sender, EventArgs e)
 		{
 			string terrain = GetTerrainLabel();
 			if (!String.IsNullOrEmpty(terrain))
@@ -506,10 +507,9 @@ namespace MapView.Forms.MapObservers.TileViews
 							owner = parent;
 
 						f.ShowDialog(owner);
+
 						if (f.SavedFile)
-						{
-							PckSaved();
-						}
+							TriggerPckSaved(); // (re)loads the selected Map.
 					}
 					_showHideManager.RestoreViewers();
 				}
@@ -528,7 +528,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <summary>
 		/// Raised when a save is done in PckView.
 		/// </summary>
-		private void PckSaved()
+		private void TriggerPckSaved()
 		{
 			var handler = PckSavedEvent;
 			if (handler != null)
