@@ -44,21 +44,6 @@ namespace PckView
 		#region Properties
 		public bool SavedFile
 		{ get; private set; }
-
-		public string SelectedPalette
-		{
-			set
-			{
-				foreach (Palette pal in _paletteItems.Keys)
-				{
-					if (pal.Label.Equals(value))
-					{
-						OnPaletteClick(_paletteItems[pal], null);
-						break;
-					}
-				}
-			}
-		}
 		#endregion
 
 
@@ -391,10 +376,23 @@ namespace PckView
 				ofd.Title  = "Select a Pck File";
 //				ofd.InitialDirectory = _share.GetString(SharedSpace.ApplicationDirectory);
 
-				if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+				if (ofd.ShowDialog() == DialogResult.OK)
+					LoadSpriteCollectionFile(ofd.FileName, false);
+			}
+		}
+
+		/// <summary>
+		/// Sets the current palette.
+		/// </summary>
+		/// <param name="palette"></param>
+		public void SetSelectedPalette(string palette)
+		{
+			foreach (Palette pal in _paletteItems.Keys)
+			{
+				if (pal.Label.Equals(palette))
 				{
-					string pfePck = ofd.FileName;
-					LoadSpriteCollectionFile(pfePck, false);
+					OnPaletteClick(_paletteItems[pal], null);
+					break;
 				}
 			}
 		}
@@ -408,9 +406,7 @@ namespace PckView
 		/// <param name="help">true to show help-splash for a call from MapView</param>
 		public void LoadSpriteCollectionFile(string pfePck, bool help)
 		{
-			string pfeTab = pfePck.Substring(0, pfePck.Length - 4);
-			pfeTab += SpriteCollection.TabExt;
-
+			string pfeTab = pfePck.Substring(0, pfePck.Length - 4) + SpriteCollection.TabExt;
 			if (File.Exists(pfeTab))
 			{
 				var fileType = new XCImageFile(32, 40);
