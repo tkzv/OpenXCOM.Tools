@@ -58,7 +58,7 @@ namespace PckView
 
 		#region cTor
 		/// <summary>
-		/// 
+		/// cTor.
 		/// </summary>
 		internal PalettePanel()
 		{
@@ -70,7 +70,7 @@ namespace PckView
 			MouseDown += OnMouseDown;
 
 			_clickX =
-			_clickY = -100;
+			_clickY = -1;
 
 			_id = -1;
 		}

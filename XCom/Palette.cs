@@ -9,13 +9,125 @@ using System.Reflection;
 namespace XCom
 {
 	/// <summary>
-	/// A class defining a color array of 256 values
+	/// A class defining a color array of 256 values.
 	/// </summary>
 	//see http://support.microsoft.com/default.aspx?scid=kb%3Ben-us%3B319061
 	public class Palette
 	{
+		#region Fields (static)
 		internal const byte TransparentId = 0xFE;
 
+		private const string Embedded = "XCom._Embedded.";
+		private static readonly Hashtable _palettes = new Hashtable();
+		#endregion
+
+
+		#region Properties (static)
+		/// <summary>
+		/// The UFO Palette(s) embedded in this assembly.
+		/// </summary>
+		public static Palette UfoBattle
+		{
+			get
+			{
+				if (_palettes["ufo-battle"] == null)
+					_palettes["ufo-battle"] = new Palette(Assembly.GetExecutingAssembly()
+											  .GetManifestResourceStream(Embedded + "ufo-battle.pal"));
+
+				return _palettes["ufo-battle"] as Palette;
+			}
+		}
+
+		public static Palette UfoGeo
+		{
+			get
+			{
+				if (_palettes["ufo-geo"] == null)
+					_palettes["ufo-geo"] = new Palette(Assembly.GetExecutingAssembly()
+										   .GetManifestResourceStream(Embedded + "ufo-geo.pal"));
+
+				return _palettes["ufo-geo"] as Palette;
+			}
+		}
+
+		public static Palette UfoGraph
+		{
+			get
+			{
+				if (_palettes["ufo-graph"] == null)
+					_palettes["ufo-graph"] = new Palette(Assembly.GetExecutingAssembly()
+											 .GetManifestResourceStream(Embedded + "ufo-graph.pal"));
+
+				return _palettes["ufo-graph"] as Palette;
+			}
+		}
+
+		public static Palette UfoResearch
+		{
+			get
+			{
+				if (_palettes["ufo-research"] == null)
+					_palettes["ufo-research"] = new Palette(Assembly.GetExecutingAssembly()
+												.GetManifestResourceStream(Embedded + "ufo-research.pal"));
+
+				return _palettes["ufo-research"] as Palette;
+			}
+		}
+
+		/// <summary>
+		/// The TFTD Palette(s) embedded in this assembly.
+		/// </summary>
+		public static Palette TftdBattle
+		{
+			get
+			{
+				if (_palettes["tftd-battle"] == null)
+					_palettes["tftd-battle"] = new Palette(Assembly.GetExecutingAssembly()
+											   .GetManifestResourceStream(Embedded + "tftd-battle.pal"));
+
+				return _palettes["tftd-battle"] as Palette;
+			}
+		}
+
+		public static Palette TftdGeo
+		{
+			get
+			{
+				if (_palettes["tftd-geo"] == null)
+					_palettes["tftd-geo"] = new Palette(Assembly.GetExecutingAssembly()
+											.GetManifestResourceStream(Embedded + "tftd-geo.pal"));
+
+				return _palettes["tftd-geo"] as Palette;
+			}
+		}
+
+		public static Palette TftdGraph
+		{
+			get
+			{
+				if (_palettes["tftd-graph"] == null)
+					_palettes["tftd-graph"] = new Palette(Assembly.GetExecutingAssembly()
+											  .GetManifestResourceStream(Embedded + "tftd-graph.pal"));
+
+				return _palettes["tftd-graph"] as Palette;
+			}
+		}
+
+		public static Palette TftdResearch
+		{
+			get
+			{
+				if( _palettes["tftd-research"] == null)
+					_palettes["tftd-research"] = new Palette(Assembly.GetExecutingAssembly()
+												 .GetManifestResourceStream(Embedded + "tftd-research.pal"));
+
+				return _palettes["tftd-research"] as Palette;
+			}
+		}
+		#endregion
+
+
+		#region Properties
 		private readonly string _label;
 		/// <summary>
 		/// This palette's label.
@@ -25,246 +137,93 @@ namespace XCom
 			get { return _label; }
 		}
 
-		private ColorPalette _colors;
 		public ColorPalette Colors
-		{
-			get { return _colors; }
-		}
+		{ get; private set; }
+
 		/// <summary>
 		/// Gets/Sets indices for colors.
 		/// </summary>
-		public Color this[int i]
+		public Color this[int id]
 		{
-			get { return _colors.Entries[i]; }
-			set { _colors.Entries[i] = value; }
+			get { return Colors.Entries[id]; }
+			set { Colors.Entries[id] = value; }
 		}
-
-		private static readonly Hashtable _palHash = new Hashtable();
-
-		private const string EmbedPath = "XCom._Embedded.";
-
-		/// <summary>
-		/// The UFO Palette embedded in this assembly.
-		/// </summary>
-		public static Palette UfoBattle
-		{
-			get
-			{
-				if (_palHash["ufo-battle"] == null)
-				{
-					Assembly thisAssembly = Assembly.GetExecutingAssembly();
-					_palHash["ufo-battle"] = new Palette(thisAssembly.GetManifestResourceStream(EmbedPath + "ufo-battle.pal"));
-				}
-				return (Palette)_palHash["ufo-battle"];
-			}
-		}
-
-		public static Palette UfoGeo
-		{
-			get
-			{
-				if (_palHash["ufo-geo"] == null)
-				{
-					Assembly thisAssembly = Assembly.GetExecutingAssembly();
-					_palHash["ufo-geo"] = new Palette(thisAssembly.GetManifestResourceStream(EmbedPath + "ufo-geo.pal"));
-				}
-				return (Palette)_palHash["ufo-geo"];
-			}
-		}
-
-		public static Palette UfoGraph
-		{
-			get
-			{
-				if (_palHash["ufo-graph"] == null)
-				{
-					Assembly thisAssembly = Assembly.GetExecutingAssembly();
-					_palHash["ufo-graph"] = new Palette(thisAssembly.GetManifestResourceStream(EmbedPath + "ufo-graph.pal"));
-				}
-				return (Palette)_palHash["ufo-graph"];
-			}
-		}
-
-		public static Palette UfoResearch
-		{
-			get
-			{
-				if (_palHash["ufo-research"] == null)
-				{
-					Assembly thisAssembly = Assembly.GetExecutingAssembly();
-					_palHash["ufo-research"] = new Palette(thisAssembly.GetManifestResourceStream(EmbedPath + "ufo-research.pal"));
-				}
-				return (Palette)_palHash["ufo-research"];
-			}
-		}
-
-		/// <summary>
-		/// The TFTD Palette embedded in this assembly.
-		/// </summary>
-		public static Palette TftdBattle
-		{
-			get
-			{
-				if (_palHash["tftd-battle"] == null)
-				{
-					Assembly thisAssembly = Assembly.GetExecutingAssembly();
-					_palHash["tftd-battle"] = new Palette(thisAssembly.GetManifestResourceStream(EmbedPath + "tftd-battle.pal"));
-				}
-				return (Palette)_palHash["tftd-battle"];
-			}
-		}
-
-		public static Palette TftdGeo
-		{
-			get
-			{
-				if (_palHash["tftd-geo"] == null)
-				{
-					Assembly thisAssembly = Assembly.GetExecutingAssembly();
-					_palHash["tftd-geo"] = new Palette(thisAssembly.GetManifestResourceStream(EmbedPath + "tftd-geo.pal"));
-				}
-				return (Palette)_palHash["tftd-geo"];
-			}
-		}
-
-		public static Palette TftdGraph
-		{
-			get
-			{
-				if (_palHash["tftd-graph"] == null)
-				{
-					Assembly thisAssembly = Assembly.GetExecutingAssembly();
-					_palHash["tftd-graph"] = new Palette(thisAssembly.GetManifestResourceStream(EmbedPath + "tftd-graph.pal"));
-				}
-				return (Palette)_palHash["tftd-graph"];
-			}
-		}
-
-		public static Palette TftdResearch
-		{
-			get
-			{
-				if( _palHash["tftd-research"] == null)
-				{
-					Assembly thisAssembly = Assembly.GetExecutingAssembly();
-					_palHash["tftd-research"] = new Palette(thisAssembly.GetManifestResourceStream(EmbedPath + "tftd-research.pal"));
-				}
-				return (Palette)_palHash["tftd-research"];
-			}
-		}
-
-
-		private Palette(string name)
-		{
-			var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed);
-			_colors = b.Palette;
-			b.Dispose();
-			this._label = name;
-		}
-
-		private Palette(Stream str)
-		{
-			var input = new StreamReader(str);
-			var line = new string[0];
-			_label = input.ReadLine();
-
-			var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed);
-			_colors = b.Palette;
-
-			for (byte i = 0; i != 0xFF; ++i)
-			{
-				string allLine = input.ReadLine().Trim();
-				if (allLine[0] == '#')
-				{
-					--i;
-					continue;
-				}
-				line = allLine.Split(',');
-				_colors.Entries[i] = Color.FromArgb(
-												int.Parse(line[0], System.Globalization.CultureInfo.InvariantCulture),
-												int.Parse(line[1], System.Globalization.CultureInfo.InvariantCulture),
-												int.Parse(line[2], System.Globalization.CultureInfo.InvariantCulture));
-			}
-			b.Dispose();
-
-//			checkPalette();
-		}
-
-/*		private void checkPalette()
-		{
-			Bitmap b = new Bitmap(1,1,PixelFormat.Format8bppIndexed);
-			ColorPalette colors = b.Palette;
-			b.Dispose();
-
-			ArrayList cpList = new ArrayList(_colorPalette.Entries);
-			ArrayList colorList = new ArrayList();
-
-			for(int i=0;i<cpList.Count;i++)
-			{
-				if(!colorList.Contains(cpList[i]))
-				{
-					colorList.Add(cpList[i]);
-					colors.Entries[i]=(Color)cpList[i];
-				}
-				else
-				{
-					Color c = (Color)cpList[i];
-					int rc=c.R;
-					int gc=c.G;
-					int bc=c.B;
-
-					if(rc==0)
-						rc++;
-					else
-						rc--;
-
-					if(gc==0)
-						gc++;
-					else
-						gc--;
-
-					if(bc==0)
-						bc++;
-					else
-						bc--;
-
-					colorList.Add(Color.FromArgb(rc,gc,bc));
-					colors.Entries[i]=Color.FromArgb(rc,gc,bc);
-				}
-			}
-		} */
 
 		public Color Transparent
 		{
-			get { return _colors.Entries[TransparentId]; }
+			get { return Colors.Entries[TransparentId]; }
 		}
 
 		public Palette Grayscale
 		{
 			get
 			{
-				if (_palHash[_label + "#gray"] == null)
+				if (_palettes[_label + "#gray"] == null)
 				{
 					var pal = new Palette(_label + "#gray");
-					_palHash[pal._label] = pal;
-					for (int i = 0; i != _colors.Entries.Length; ++i)
+
+					_palettes[pal._label] = pal;
+
+					for (int id = 0; id != Colors.Entries.Length; ++id)
 					{
-						int st = (int)(this[i].R * 0.1 + this[i].G * 0.5 + this[i].B * 0.25);
-						pal[i] = Color.FromArgb(st, st, st);
+						int val = (int)(this[id].R * 0.1 + this[id].G * 0.5 + this[id].B * 0.25);
+						pal[id] = Color.FromArgb(val, val, val);
 					}
 				}
-				return (Palette)_palHash[_label + "#gray"];
+				return _palettes[_label + "#gray"] as Palette;
 			}
 		}
+		#endregion
 
-		/// <summary>
-		/// Enables or disables transparency for the TransparentId palette-id.
-		/// </summary>
-		/// <param name="transparent">true to enable the transparent-id</param>
-		public void EnableTransparency(bool transparent)
+
+		#region cTors
+		private Palette(string label)
 		{
-			_colors.Entries[TransparentId] = (transparent) ? Color.FromArgb(  0, _colors.Entries[TransparentId])
-														   : Color.FromArgb(255, _colors.Entries[TransparentId]);
+			using (var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed))
+				Colors = b.Palette;
+
+			_label = label;
+		}
+		private Palette(Stream fs)
+		{
+			using (var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed))
+				Colors = b.Palette;
+
+			using (var input = new StreamReader(fs))
+			{
+				_label = input.ReadLine(); // 1st line is the label.
+
+				var line = new string[3];
+
+				for (byte id = 0; id != 0xFF; )
+				{
+					string rgb = input.ReadLine().Trim();
+					if (rgb[0] != '#')
+					{
+						line = rgb.Split(',');
+						Colors.Entries[id++] = Color.FromArgb(
+														Int32.Parse(line[0], System.Globalization.CultureInfo.InvariantCulture),
+														Int32.Parse(line[1], System.Globalization.CultureInfo.InvariantCulture),
+														Int32.Parse(line[2], System.Globalization.CultureInfo.InvariantCulture));
+					}
+				}
+			}
+//			checkPalette();
+		}
+		#endregion
+
+
+		#region Methods
+		/// <summary>
+		/// Enables or disables transparency on the 'TransparentId'
+		/// palette-index.
+		/// </summary>
+		/// <param name="transparent">true to enable transparency</param>
+		public void SetAlpha(bool transparent)
+		{
+			Colors.Entries[TransparentId] = Color.FromArgb(
+														transparent ? 0 : 255,
+														Colors.Entries[TransparentId]);
 		}
 
 		public override string ToString()
@@ -273,19 +232,19 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// tests for palette equality
+		/// Checks for palette equality.
 		/// </summary>
 		/// <param name="obj">another palette</param>
 		/// <returns>true if the palette names are the same</returns>
 		public override bool Equals(Object obj)
 		{
 			var palette = obj as Palette;
-			return (palette != null && _colors.Equals(palette._colors));
+			return (palette != null && Colors.Equals(palette.Colors));
 		}
 
 		public override int GetHashCode()
 		{
-			return _colors.GetHashCode(); // FIX: "Non-readonly field referenced in GetHashCode()."
+			return Colors.GetHashCode(); // FIX: "Non-readonly field referenced in GetHashCode()."
 		}
 
 //		internal static Palette GetPalette(string label)
@@ -305,5 +264,50 @@ namespace XCom
 //			}
 //			return (Palette)_palHash[label];
 //		}
+
+//		private void checkPalette()
+//		{
+//			Bitmap b = new Bitmap(1,1,PixelFormat.Format8bppIndexed);
+//			ColorPalette colors = b.Palette;
+//			b.Dispose();
+//
+//			ArrayList cpList = new ArrayList(_colorPalette.Entries);
+//			ArrayList colorList = new ArrayList();
+//
+//			for(int i=0;i<cpList.Count;i++)
+//			{
+//				if(!colorList.Contains(cpList[i]))
+//				{
+//					colorList.Add(cpList[i]);
+//					colors.Entries[i]=(Color)cpList[i];
+//				}
+//				else
+//				{
+//					Color c = (Color)cpList[i];
+//					int rc=c.R;
+//					int gc=c.G;
+//					int bc=c.B;
+//
+//					if(rc==0)
+//						rc++;
+//					else
+//						rc--;
+//
+//					if(gc==0)
+//						gc++;
+//					else
+//						gc--;
+//
+//					if(bc==0)
+//						bc++;
+//					else
+//						bc--;
+//
+//					colorList.Add(Color.FromArgb(rc,gc,bc));
+//					colors.Entries[i]=Color.FromArgb(rc,gc,bc);
+//				}
+//			}
+//		}
+		#endregion
 	}
 }

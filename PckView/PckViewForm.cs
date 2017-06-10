@@ -20,12 +20,12 @@ namespace PckView
 			Form
 	{
 		#region Fields
-		private PckViewPanel _viewPanel;
+		private PckViewPanel _viewPanel = new PckViewPanel();
 
-		private EditorForm _editor;
-		private ConsoleForm _console;
+		private EditorForm _feditor = new EditorForm(null);
+		private ConsoleForm _fconsole;
 
-		private TabControl _tabs;
+		private TabControl _tcTabs;
 
 		private MenuItem _miEdit;
 //		private MenuItem _miReplace;
@@ -33,7 +33,7 @@ namespace PckView
 //		private MenuItem _miDelete;
 //		private MenuItem _miAdd;
 
-		private Palette _palette;
+		private Palette _palette = Palette.UfoBattle;
 
 		private SharedSpace _share;
 
@@ -56,21 +56,17 @@ namespace PckView
 			InitializeComponent();
 
 			// WORKAROUND: See note in 'XCMainWindow' cTor.
-			var size = new Size();
-			size.Width  =
-			size.Height = 0;
-			MaximumSize = size; // fu.net
+			MaximumSize = new Size(0, 0); // fu.net
 
 
 			#region SharedSpace information
-			var shareConsole = new ConsoleSharedSpace(new SharedSpace());
-			_console = shareConsole.Console;
-			_console.FormClosing += (sender, e) =>
-			{
+			_fconsole = new ConsoleSharedSpace(new SharedSpace()).Console;
+			_fconsole.FormClosing += (sender, e) => {
 				e.Cancel = true;
-				_console.Hide();
+				_fconsole.Hide();
 			};
-			FormClosed += (sender, e) => _console.Close();
+
+			FormClosed += (sender, e) => _fconsole.Close();
 
 			_share = SharedSpace.Instance;
 //			_share.SetShare("PckView", this);
@@ -89,7 +85,7 @@ namespace PckView
 						SharedSpace.SettingsDirectory,
 						dirSettings);
 
-//			_share.SetShare(SharedSpace.CustomDirectory,      Environment.CurrentDirectory + @"\custom");
+//			_share.SetShare(SharedSpace.CustomDirectory, Environment.CurrentDirectory + @"\custom");
 		
 //			XConsole.AdZerg("Application directory: "  + _share[SharedSpace.ApplicationDirectory]);			// TODO: I don't trust that since changing SharedSpace.
 //			XConsole.AdZerg("Settings directory: "     + _share[SharedSpace.SettingsDirectory].ToString());	// it may well need an explicit cast to (PathInfo)
@@ -97,12 +93,11 @@ namespace PckView
 			#endregion
 
 
-			_viewPanel = new PckViewPanel();
 			_viewPanel.Dock = DockStyle.Fill;
 			_viewPanel.ContextMenu = ViewerContextMenu();
 			_viewPanel.SpritePackChangedEvent += OnSpritePackChanged;
 			_viewPanel.Click                  += OnSpriteClick;
-			_viewPanel.DoubleClick            += OnSpriteEditClick;
+			_viewPanel.DoubleClick            += OnSpriteEditorClick;
 
 			pViewer.Controls.Add(_viewPanel);
 
@@ -112,25 +107,23 @@ namespace PckView
 			_share[SharedSpace.Palettes] = new Dictionary<string, Palette>();
 			_paletteItems = new Dictionary<Palette, MenuItem>();
 
-			AddPalette(Palette.UfoBattle,    miPaletteMenu);
-			AddPalette(Palette.UfoGeo,       miPaletteMenu);
-			AddPalette(Palette.UfoGraph,     miPaletteMenu);
-			AddPalette(Palette.UfoResearch,  miPaletteMenu);
-			AddPalette(Palette.TftdBattle,   miPaletteMenu);
-			AddPalette(Palette.TftdGeo,      miPaletteMenu);
-			AddPalette(Palette.TftdGraph,    miPaletteMenu);
-			AddPalette(Palette.TftdResearch, miPaletteMenu);
+			AddPalette(Palette.UfoBattle);
+			AddPalette(Palette.UfoGeo);
+			AddPalette(Palette.UfoGraph);
+			AddPalette(Palette.UfoResearch);
+			AddPalette(Palette.TftdBattle);
+			AddPalette(Palette.TftdGeo);
+			AddPalette(Palette.TftdGraph);
+			AddPalette(Palette.TftdResearch);
 
-			_palette = Palette.UfoBattle;
-			_palette.EnableTransparency(true);
+			_palette.SetAlpha(true);
 
 			_paletteItems[_palette].Checked = true;
 
 			_viewPanel.Pal = _palette;
 
-			_editor = new EditorForm(null);
-			_editor.FormClosing += OnEditorFormClosing;
-			_editor.Pal = _palette;
+			_feditor.FormClosing += OnEditorFormClosing;
+			_feditor.Pal = _palette;
 
 
 			var regInfo = new RegistryInfo(RegistryInfo.PckView, this); // subscribe to Load and Closing events.
@@ -144,7 +137,7 @@ namespace PckView
 			var menu = new ContextMenu();
 
 			_miEdit = new MenuItem("Edit");
-			_miEdit.Click += OnSpriteEditClick;
+			_miEdit.Click += OnSpriteEditorClick;
 			menu.MenuItems.Add(_miEdit);
 
 			menu.MenuItems.Add(new MenuItem("-"));
@@ -170,17 +163,16 @@ namespace PckView
 			return menu;
 		}
 
-		private MenuItem AddPalette(Palette pal, Menu it)
+		private void AddPalette(Palette pal)
 		{
 			var itPal = new MenuItem(pal.Label);
 			itPal.Tag = pal;
-			it.MenuItems.Add(itPal);
+			miPaletteMenu.MenuItems.Add(itPal);
 
 			itPal.Click += OnPaletteClick;
 			_paletteItems[pal] = itPal;
 
 			((Dictionary<string, Palette>)_share[SharedSpace.Palettes])[pal.Label] = pal;
-			return itPal;
 		}
 
 
@@ -309,7 +301,7 @@ namespace PckView
 
 		bool _editorInitDone;
 
-		private void OnSpriteEditClick(object sender, EventArgs e)
+		private void OnSpriteEditorClick(object sender, EventArgs e)
 		{
 			if (   _viewPanel.SelectedSprites != null
 				&& _viewPanel.SelectedSprites.Count != 0)
@@ -317,23 +309,23 @@ namespace PckView
 				var selected = _viewPanel.SelectedSprites[_viewPanel.SelectedSprites.Count - 1];
 				if (selected != null)
 				{
-					_editor.Sprite = selected.Image.Clone();
+					_feditor.Sprite = selected.Image.Clone();
 
-					if (!_editor.Visible)
+					if (!_feditor.Visible)
 					{
 						_miEdit.Checked = true;	// TODO: show as Checked only if currently selected
 												// sprite is actually open in the Editor.
 						if (!_editorInitDone)
 						{
 							_editorInitDone = true;
-							_editor.Left = Left + 20;
-							_editor.Top  = Top  + 20;
+							_feditor.Left = Left + 20;
+							_feditor.Top  = Top  + 20;
 						}
-						_editor.Pal = _palette;
-						_editor.Show();
+						_feditor.Pal = _palette;
+						_feditor.Show();
 					}
 					else
-						_editor.BringToFront();
+						_feditor.BringToFront();
 				}
 			}
 		}
@@ -343,32 +335,43 @@ namespace PckView
 			_miEdit.Checked = false;
 
 			e.Cancel = true;
-			_editor.Hide();
+			_feditor.Hide();
 		}
 
 		private void OnPaletteClick(object sender, EventArgs e)
 		{
-			//LogFile.WriteLine("OnPaletteClick");
-
 			var pal = ((MenuItem)sender).Tag as Palette;
-			//LogFile.WriteLine(". pal= " + pal);
 
 			if (pal != null && pal != _palette)
 			{
-				//LogFile.WriteLine(". switch palette");
-
 				if (_palette != null)
 					_paletteItems[_palette].Checked = false;
 
-				_palette = pal;
+				_palette       =
+				_viewPanel.Pal = pal;
+
+				_palette.SetAlpha(miTransparent.Checked);
+
+				if (_feditor != null)
+					_feditor.Pal = _palette;
+
 				_paletteItems[_palette].Checked = true;
 
-				_viewPanel.Pal = _palette;
-
-				if (_editor != null)
-					_editor.Pal = _palette;
-
 				_viewPanel.Refresh();
+			}
+		}
+
+		private void OnTransparencyClick(object sender, EventArgs e)
+		{
+			_palette.SetAlpha(miTransparent.Checked = !miTransparent.Checked);
+			_viewPanel.SpritePack.Pal = _palette;
+
+			_viewPanel.Refresh();
+
+			if (_feditor != null)
+			{
+				_feditor.Sprite.Pal = _palette;
+				_feditor.Refresh();
 			}
 		}
 
@@ -531,14 +534,6 @@ namespace PckView
 			miBytes.Checked = false;
 		}
 
-		private void OnTransparencyClick(object sender, EventArgs e)
-		{
-			_palette.EnableTransparency(miTransparent.Checked = !miTransparent.Checked);
-			_viewPanel.SpritePack.Pal = _palette;
-
-			_viewPanel.Refresh();
-		}
-
 		private void OnAboutClick(object sender, EventArgs e)
 		{
 			new About().ShowDialog(this);
@@ -610,13 +605,13 @@ namespace PckView
 					}
 
 					var progress = new ProgressWindow(this);
+					progress.Width  = 300;
+					progress.Height =  50;
 					progress.Minimum = 0;
 					progress.Maximum = _viewPanel.SpritePack.Count;
-					progress.Width = 300;
-					progress.Height = 50;
 
 					progress.Show();
-					foreach (XCImage xc in _viewPanel.SpritePack)
+					foreach (XCImage sprite in _viewPanel.SpritePack)
 					{
 						//Console.WriteLine("Save to: " + path + @"\" + fName + (xc.FileNum + countNum) + "." + ext);
 						//Console.WriteLine("Save: " + path + @"\" + fName + string.Format("{0:" + zeros + "}", xc.FileNum) + "." + ext);
@@ -624,10 +619,10 @@ namespace PckView
 								path + @"\" + fName + string.Format(
 																System.Globalization.CultureInfo.InvariantCulture,
 																"{0:" + zeros + "}",
-																xc.FileId) + "." + ext,
-								xc.Image);
+																sprite.FileId) + "." + ext,
+								sprite.Image);
 						//Console.WriteLine("---");
-						progress.Value = xc.FileId;
+						progress.Value = sprite.FileId;
 					}
 					progress.Hide();
 				}
@@ -636,19 +631,19 @@ namespace PckView
 
 		private void OnConsoleClick(object sender, EventArgs e)
 		{
-			if (_console.Visible)
-				_console.BringToFront();
+			if (_fconsole.Visible)
+				_fconsole.BringToFront();
 			else
-				_console.Show();
+				_fconsole.Show();
 		}
 
 		private void OnCompareClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
 		{
 			var original = _viewPanel.SpritePack;
 
-			OnOpenClick(null, null);
+			OnOpenClick(null, EventArgs.Empty);
 
-			var newCollection = _viewPanel.SpritePack;
+			var spriteset = _viewPanel.SpritePack;
 
 			_viewPanel.SpritePack = original;
 
@@ -656,27 +651,28 @@ namespace PckView
 			{
 				Controls.Remove(_viewPanel);
 
-				_tabs = new TabControl();
-				_tabs.Dock = DockStyle.Fill;
-				pViewer.Controls.Add(_tabs);
+				_tcTabs = new TabControl();
+				_tcTabs.Dock = DockStyle.Fill;
+				pViewer.Controls.Add(_tcTabs);
 
-				var tab = new TabPage();
-				tab.Controls.Add(_viewPanel);
-				tab.Text = "Original";
-				_tabs.TabPages.Add(tab);
+				var tabpage = new TabPage();
+				tabpage.Controls.Add(_viewPanel);
+				tabpage.Text = "Original";
+				_tcTabs.TabPages.Add(tabpage);
 
-				tab = new TabPage();
-				var panel = new PckViewPanel();
-				panel.ContextMenu = ViewerContextMenu();
-				panel.Dock = DockStyle.Fill;
-				panel.SpritePack = newCollection;
-				tab.Controls.Add(panel);
-				tab.Text = "New";
-				_tabs.TabPages.Add(tab);
+				var viewpanel = new PckViewPanel();
+				viewpanel.ContextMenu = ViewerContextMenu();
+				viewpanel.Dock = DockStyle.Fill;
+				viewpanel.SpritePack = spriteset;
+
+				tabpage = new TabPage();
+				tabpage.Controls.Add(viewpanel);
+				tabpage.Text = "New";
+				_tcTabs.TabPages.Add(tabpage);
 			}
 		}
 
-		private void OnSaveCollectionClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
+		private void OnSaveSpritesetClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
 		{
 /*			_dialogFilter.SetFilter(XCImageFile.Filter.Save);
 			_dictSaveFiles.Clear();

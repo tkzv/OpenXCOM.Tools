@@ -22,6 +22,7 @@ namespace PckView
 		private XCImage _sprite;
 		internal XCImage Sprite
 		{
+			get { return _sprite; }
 			set
 			{
 				_sprite = value;

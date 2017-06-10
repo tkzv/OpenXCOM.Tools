@@ -35,6 +35,7 @@ namespace PckView
 
 		internal XCImage Sprite
 		{
+			get { return _editorPanel.Sprite; }
 			set { _editorPanel.Sprite = value; }
 		}
 		#endregion
@@ -101,7 +102,7 @@ namespace PckView
 
 			_trackBar.Width     =
 			_editorPanel.Width  = ClientSize.Width;
-			_editorPanel.Height = ClientSize.Height - _trackBar.Height;// - SystemInformation.MenuHeight;
+			_editorPanel.Height = ClientSize.Height - _trackBar.Height;
 		}
 
 		private void OnShowPaletteClick(object sender, EventArgs e)
