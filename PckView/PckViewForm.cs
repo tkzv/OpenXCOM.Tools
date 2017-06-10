@@ -35,9 +35,9 @@ namespace PckView
 
 		private Palette _palette = Palette.UfoBattle;
 
-		private SharedSpace _share;
+		private SharedSpace _share = SharedSpace.Instance;
 
-		private Dictionary<Palette, MenuItem> _paletteItems;
+		private Dictionary<Palette, MenuItem> _paletteItems = new Dictionary<Palette, MenuItem>();
 		#endregion
 
 
@@ -68,10 +68,6 @@ namespace PckView
 
 			FormClosed += (sender, e) => _fconsole.Close();
 
-			_share = SharedSpace.Instance;
-//			_share.SetShare("PckView", this);
-
-//			_share.SetShare(PathInfo.MapViewers, infoViewers);
 
 			string dirApplication = Path.GetDirectoryName(Application.ExecutablePath);
 			string dirSettings    = Path.Combine(dirApplication, DSShared.PathInfo.SettingsDirectory);
@@ -85,8 +81,6 @@ namespace PckView
 						SharedSpace.SettingsDirectory,
 						dirSettings);
 
-//			_share.SetShare(SharedSpace.CustomDirectory, Environment.CurrentDirectory + @"\custom");
-		
 //			XConsole.AdZerg("Application directory: "  + _share[SharedSpace.ApplicationDirectory]);			// TODO: I don't trust that since changing SharedSpace.
 //			XConsole.AdZerg("Settings directory: "     + _share[SharedSpace.SettingsDirectory].ToString());	// it may well need an explicit cast to (PathInfo)
 //			XConsole.AdZerg("Custom directory: "       + _share[SharedSpace.CustomDirectory].ToString());
@@ -105,7 +99,6 @@ namespace PckView
 			miSave.Visible = false;
 
 			_share[SharedSpace.Palettes] = new Dictionary<string, Palette>();
-			_paletteItems = new Dictionary<Palette, MenuItem>();
 
 			AddPalette(Palette.UfoBattle);
 			AddPalette(Palette.UfoGeo);
@@ -116,10 +109,9 @@ namespace PckView
 			AddPalette(Palette.TftdGraph);
 			AddPalette(Palette.TftdResearch);
 
-			_palette.SetAlpha(true);
-
 			_paletteItems[_palette].Checked = true;
 
+			_palette.SetAlpha(true);
 			_viewPanel.Pal = _palette;
 
 			_feditor.FormClosing += OnEditorFormClosing;
@@ -397,7 +389,7 @@ namespace PckView
 		/// Sets the current palette.
 		/// </summary>
 		/// <param name="palette"></param>
-		public void SetSelectedPalette(string palette)
+		public void SetPalette(string palette)
 		{
 			foreach (var pal in _paletteItems.Keys)
 			{

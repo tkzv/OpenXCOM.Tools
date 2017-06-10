@@ -17,8 +17,21 @@ namespace XCom
 		#region Fields (static)
 		internal const byte TransparentId = 0xFE;
 
-		private const string Embedded = "XCom._Embedded.";
 		private static readonly Hashtable _palettes = new Hashtable();
+
+		private const string Embedded     = "XCom._Embedded.";
+
+		private const string ufobattle    = "ufo-battle";
+		private const string ufogeo       = "ufo-geo";
+		private const string ufograph     = "ufo-graph";
+		private const string uforesearch  = "ufo-research";
+
+		private const string tftdbattle   = "tftd-battle";
+		private const string tftdgeo      = "tftd-geo";
+		private const string tftdgraph    = "tftd-graph";
+		private const string tftdresearch = "tftd-research";
+
+		private const string PalExt       = ".pal";
 		#endregion
 
 
@@ -30,11 +43,11 @@ namespace XCom
 		{
 			get
 			{
-				if (_palettes["ufo-battle"] == null)
-					_palettes["ufo-battle"] = new Palette(Assembly.GetExecutingAssembly()
-											  .GetManifestResourceStream(Embedded + "ufo-battle.pal"));
+				if (_palettes[ufobattle] == null)
+					_palettes[ufobattle] = new Palette(Assembly.GetExecutingAssembly()
+											  .GetManifestResourceStream(Embedded + ufobattle + PalExt));
 
-				return _palettes["ufo-battle"] as Palette;
+				return _palettes[ufobattle] as Palette;
 			}
 		}
 
@@ -42,11 +55,11 @@ namespace XCom
 		{
 			get
 			{
-				if (_palettes["ufo-geo"] == null)
-					_palettes["ufo-geo"] = new Palette(Assembly.GetExecutingAssembly()
-										   .GetManifestResourceStream(Embedded + "ufo-geo.pal"));
+				if (_palettes[ufogeo] == null)
+					_palettes[ufogeo] = new Palette(Assembly.GetExecutingAssembly()
+										   .GetManifestResourceStream(Embedded + ufogeo + PalExt));
 
-				return _palettes["ufo-geo"] as Palette;
+				return _palettes[ufogeo] as Palette;
 			}
 		}
 
@@ -54,11 +67,11 @@ namespace XCom
 		{
 			get
 			{
-				if (_palettes["ufo-graph"] == null)
-					_palettes["ufo-graph"] = new Palette(Assembly.GetExecutingAssembly()
-											 .GetManifestResourceStream(Embedded + "ufo-graph.pal"));
+				if (_palettes[ufograph] == null)
+					_palettes[ufograph] = new Palette(Assembly.GetExecutingAssembly()
+											 .GetManifestResourceStream(Embedded + ufograph + PalExt));
 
-				return _palettes["ufo-graph"] as Palette;
+				return _palettes[ufograph] as Palette;
 			}
 		}
 
@@ -66,11 +79,11 @@ namespace XCom
 		{
 			get
 			{
-				if (_palettes["ufo-research"] == null)
-					_palettes["ufo-research"] = new Palette(Assembly.GetExecutingAssembly()
-												.GetManifestResourceStream(Embedded + "ufo-research.pal"));
+				if (_palettes[uforesearch] == null)
+					_palettes[uforesearch] = new Palette(Assembly.GetExecutingAssembly()
+												.GetManifestResourceStream(Embedded + uforesearch + PalExt));
 
-				return _palettes["ufo-research"] as Palette;
+				return _palettes[uforesearch] as Palette;
 			}
 		}
 
@@ -81,11 +94,11 @@ namespace XCom
 		{
 			get
 			{
-				if (_palettes["tftd-battle"] == null)
-					_palettes["tftd-battle"] = new Palette(Assembly.GetExecutingAssembly()
-											   .GetManifestResourceStream(Embedded + "tftd-battle.pal"));
+				if (_palettes[tftdbattle] == null)
+					_palettes[tftdbattle] = new Palette(Assembly.GetExecutingAssembly()
+											   .GetManifestResourceStream(Embedded + tftdbattle + PalExt));
 
-				return _palettes["tftd-battle"] as Palette;
+				return _palettes[tftdbattle] as Palette;
 			}
 		}
 
@@ -93,11 +106,11 @@ namespace XCom
 		{
 			get
 			{
-				if (_palettes["tftd-geo"] == null)
-					_palettes["tftd-geo"] = new Palette(Assembly.GetExecutingAssembly()
-											.GetManifestResourceStream(Embedded + "tftd-geo.pal"));
+				if (_palettes[tftdgeo] == null)
+					_palettes[tftdgeo] = new Palette(Assembly.GetExecutingAssembly()
+											.GetManifestResourceStream(Embedded + tftdgeo + PalExt));
 
-				return _palettes["tftd-geo"] as Palette;
+				return _palettes[tftdgeo] as Palette;
 			}
 		}
 
@@ -105,11 +118,11 @@ namespace XCom
 		{
 			get
 			{
-				if (_palettes["tftd-graph"] == null)
-					_palettes["tftd-graph"] = new Palette(Assembly.GetExecutingAssembly()
-											  .GetManifestResourceStream(Embedded + "tftd-graph.pal"));
+				if (_palettes[tftdgraph] == null)
+					_palettes[tftdgraph] = new Palette(Assembly.GetExecutingAssembly()
+											  .GetManifestResourceStream(Embedded + tftdgraph + PalExt));
 
-				return _palettes["tftd-graph"] as Palette;
+				return _palettes[tftdgraph] as Palette;
 			}
 		}
 
@@ -117,11 +130,11 @@ namespace XCom
 		{
 			get
 			{
-				if( _palettes["tftd-research"] == null)
-					_palettes["tftd-research"] = new Palette(Assembly.GetExecutingAssembly()
-												 .GetManifestResourceStream(Embedded + "tftd-research.pal"));
+				if( _palettes[tftdresearch] == null)
+					_palettes[tftdresearch] = new Palette(Assembly.GetExecutingAssembly()
+												 .GetManifestResourceStream(Embedded + tftdresearch + PalExt));
 
-				return _palettes["tftd-research"] as Palette;
+				return _palettes[tftdresearch] as Palette;
 			}
 		}
 		#endregion
