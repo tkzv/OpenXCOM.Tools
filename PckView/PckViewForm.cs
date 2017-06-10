@@ -370,7 +370,7 @@ namespace PckView
 
 			if (_feditor != null)
 			{
-				_feditor.Sprite.Pal = _palette;
+				_feditor.Pal = _palette;
 				_feditor.Refresh();
 			}
 		}
