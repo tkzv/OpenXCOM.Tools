@@ -20,9 +20,9 @@ namespace PckView
 			Form
 	{
 		#region Fields
-		private ViewPanel _viewPanel;
+		private PckViewPanel _viewPanel;
 
-		private Editor _editor;
+		private EditorForm _editor;
 		private ConsoleForm _console;
 
 		private TabControl _tabs;
@@ -79,7 +79,9 @@ namespace PckView
 
 			string dirApplication = Path.GetDirectoryName(Application.ExecutablePath);
 			string dirSettings    = Path.Combine(dirApplication, DSShared.PathInfo.SettingsDirectory);
-
+#if DEBUG
+			LogFile.SetLogFilePath(dirApplication); // creates a logfile/ wipes the old one.
+#endif
 			_share.SetShare(
 						SharedSpace.ApplicationDirectory,
 						dirApplication);
@@ -95,7 +97,7 @@ namespace PckView
 			#endregion
 
 
-			_viewPanel = new ViewPanel();
+			_viewPanel = new PckViewPanel();
 			_viewPanel.Dock = DockStyle.Fill;
 			_viewPanel.ContextMenu = ViewerContextMenu();
 			_viewPanel.SpritePackChangedEvent += OnSpritePackChanged;
@@ -126,9 +128,9 @@ namespace PckView
 
 			_viewPanel.Pal = _palette;
 
-			_editor = new Editor(null);
+			_editor = new EditorForm(null);
 			_editor.FormClosing += OnEditorFormClosing;
-			_editor.Palette = _palette;
+			_editor.Pal = _palette;
 
 
 			var regInfo = new RegistryInfo(RegistryInfo.PckView, this); // subscribe to Load and Closing events.
@@ -327,7 +329,7 @@ namespace PckView
 							_editor.Left = Left + 20;
 							_editor.Top  = Top  + 20;
 						}
-						_editor.Palette = _palette;
+						_editor.Pal = _palette;
 						_editor.Show();
 					}
 					else
@@ -346,9 +348,15 @@ namespace PckView
 
 		private void OnPaletteClick(object sender, EventArgs e)
 		{
-			var pal = (Palette)((MenuItem)sender).Tag;
+			//LogFile.WriteLine("OnPaletteClick");
+
+			var pal = ((MenuItem)sender).Tag as Palette;
+			//LogFile.WriteLine(". pal= " + pal);
+
 			if (pal != null && pal != _palette)
 			{
+				//LogFile.WriteLine(". switch palette");
+
 				if (_palette != null)
 					_paletteItems[_palette].Checked = false;
 
@@ -358,7 +366,7 @@ namespace PckView
 				_viewPanel.Pal = _palette;
 
 				if (_editor != null)
-					_editor.Palette = _palette;
+					_editor.Pal = _palette;
 
 				_viewPanel.Refresh();
 			}
@@ -442,7 +450,7 @@ namespace PckView
 							spriteset.Pal = Palette.UfoBattle;
 					}
 
-					OnPaletteClick((MenuItem)_paletteItems[spriteset.ImageFile.DefaultPalette], null);
+					OnPaletteClick((MenuItem)_paletteItems[spriteset.ImageFile.DefaultPalette], EventArgs.Empty);
 
 					_viewPanel.SpritePack = spriteset;
 
@@ -658,7 +666,7 @@ namespace PckView
 				_tabs.TabPages.Add(tab);
 
 				tab = new TabPage();
-				var panel = new ViewPanel();
+				var panel = new PckViewPanel();
 				panel.ContextMenu = ViewerContextMenu();
 				panel.Dock = DockStyle.Fill;
 				panel.SpritePack = newCollection;

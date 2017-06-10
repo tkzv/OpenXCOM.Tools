@@ -83,7 +83,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					cbSpawnRank.Items.Clear();
 
-					if (_mapFile.Parts[0][0].Palette == Palette.UfoBattle)				// ie. Get the palette of the 1st image of the
+					if (_mapFile.Parts[0][0].Pal == Palette.UfoBattle)					// ie. Get the palette of the 1st image of the
 						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);	// 1st tilepart ... of the MapFileChild object.
 					else
 						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankTftd);
@@ -467,7 +467,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbPriority.SelectedItem = NodeImportance.Zero;
 				cbAttack.SelectedItem   = BaseModuleAttack.Zero;
 
-				if (_mapFile.Parts[0][0].Palette == Palette.UfoBattle)
+				if (_mapFile.Parts[0][0].Pal == Palette.UfoBattle)
 					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[(int)UnitRankUfo.Civilian];
 				else
 					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[(int)UnitRankTftd.Civilian];
@@ -507,7 +507,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbPriority.SelectedItem = NodeSelected.Priority;
 				cbAttack.SelectedItem   = NodeSelected.Attack;
 
-				if (_mapFile.Parts[0][0].Palette == Palette.UfoBattle)
+				if (_mapFile.Parts[0][0].Pal == Palette.UfoBattle)
 					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[NodeSelected.SpawnRank];
 				else
 					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankTftd[NodeSelected.SpawnRank];

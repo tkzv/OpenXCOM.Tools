@@ -16,11 +16,21 @@ namespace PckView
 		:
 			Panel
 	{
+		#region Events
+		internal event PaletteIndexChangedEventHandler PaletteIndexChangedEvent;
+		#endregion
+
+
+		#region Fields (static)
+		private const int Across     = 16;
+		private const int Marginalia =  0; // well, you know ... why not create a variable when it's entirely possible to do so.
+		#endregion
+
+
+		#region Fields
 //		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
 
 		private Palette _palette;
-
-		private const int Marginalia = 0; // well, you know ...
 
 		private int _width  = 15;
 		private int _height = 10;
@@ -28,12 +38,28 @@ namespace PckView
 		private int _id;
 		private int _clickX;
 		private int _clickY;
-
-		internal const int Across = 16;
-
-		internal event PaletteIndexChangedEventHandler PaletteIndexChangedEvent;
+		#endregion
 
 
+		#region Properties
+		[DefaultValue(null)]
+		[Browsable(false)]
+		internal Palette Pal
+		{
+			get { return _palette; }
+			set
+			{
+				_palette = value;
+				Refresh();
+			}
+		}
+		#endregion
+
+
+		#region cTor
+		/// <summary>
+		/// 
+		/// </summary>
 		internal PalettePanel()
 		{
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
@@ -41,17 +67,17 @@ namespace PckView
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 
-			_palette = null;
-
 			MouseDown += OnMouseDown;
 
-			_clickX = -100;
+			_clickX =
 			_clickY = -100;
 
 			_id = -1;
 		}
+		#endregion
 
 
+		#region Eventcalls
 		protected override void OnResize(EventArgs eventargs)
 		{
 			_width  = (Width  / Across) - Marginalia * 2;
@@ -77,21 +103,9 @@ namespace PckView
 			}
 		}
 
-		[DefaultValue(null)]
-		[Browsable(false)]
-		internal Palette Palette
-		{
-			get { return _palette; }
-			set
-			{
-				_palette = value;
-				Refresh();
-			}
-		}
-
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			base.OnPaint(e);
+//			base.OnPaint(e);
 
 			if (_palette != null)
 			{
@@ -104,6 +118,7 @@ namespace PckView
 						i < Across;
 						++i,
 							y += _height + Marginalia * 2)
+				{
 					for (int
 							j = 0,
 								x = Marginalia;
@@ -116,6 +131,7 @@ namespace PckView
 															x, y,
 															_width, _height);
 					}
+				}
 
 				graphics.DrawRectangle(
 									Pens.Red,
@@ -123,5 +139,6 @@ namespace PckView
 									_width + Marginalia * 2 - 1, _height + Marginalia * 2 - 1);
 			}
 		}
+		#endregion
 	}
 }

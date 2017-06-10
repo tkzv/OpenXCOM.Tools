@@ -13,7 +13,12 @@ namespace PckView
 		:
 			Panel
 	{
-		#region Fields & Properties
+		#region Fields (static)
+		private const int Square = 1;
+		#endregion
+
+
+		#region Properties
 		private XCImage _sprite;
 		internal XCImage Sprite
 		{
@@ -25,7 +30,7 @@ namespace PckView
 		}
 
 		private Palette _palette;
-		internal Palette Palette
+		internal Palette Pal
 		{
 			set
 			{
@@ -48,8 +53,6 @@ namespace PckView
 			}
 		}
 
-		private const int Square = 1;
-
 		private int _scale = 10;
 		internal int ScaleFactor
 		{
@@ -58,19 +61,6 @@ namespace PckView
 				_scale = value;
 				Refresh();
 			}
-		}
-		#endregion
-
-
-		#region Static
-		internal static int PreferredWidth
-		{
-			get { return PckImage.Width * 10; }
-		}
-
-		internal static int PreferredHeight
-		{
-			get { return PckImage.Height * 10; }
 		}
 		#endregion
 

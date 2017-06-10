@@ -19,7 +19,7 @@ namespace XCom.Interfaces
 		{ get; protected set; }
 
 		private Palette _palette;
-		public Palette Palette
+		public Palette Pal
 		{
 			get { return _palette; }
 			set

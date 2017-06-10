@@ -11,23 +11,28 @@ namespace XCom
 		:
 			XCImage
 	{
-		#region Fields & Properties
-//		private int _mapId;
-
+		#region Fields (static)
 		private const byte TransparentId = 0xFE; // should that be '0x0'
+
+		public const int Width  = 32;
+		public const int Height = 40;
+
+		private static int _idCanonical;
+		#endregion
+
+
+		#region Fields
+//		private int _mapId;
 
 		private readonly SpriteCollection _spriteset;
 
 		private readonly byte[] _expanded; // i suspect this should be '_scaled'
 		private int _moveId = -1;
 //		private byte _moveVal = 0;
-
-		public const int Width  = 32;
-		public const int Height = 40;
+		#endregion
 
 
-		private static int _idCanonical;
-
+		#region Properties
 		/// <summary>
 		/// Id is used only by MapInfoForm.
 		/// </summary>
@@ -61,8 +66,8 @@ namespace XCom
 					null,
 					-1)
 		{
-			FileId  = fileId;
-			Palette = pal;
+			FileId = fileId;
+			Pal    = pal;
 			_spriteset = spriteset;
 
 //			this.imageNum = imageNum;

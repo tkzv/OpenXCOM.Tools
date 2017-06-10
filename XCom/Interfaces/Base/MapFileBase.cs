@@ -286,7 +286,7 @@ namespace XCom.Interfaces.Base
 			{
 				var tile = this[row, col, lev] as XCMapTile;
 				if (tile.Ground != null)
-					return tile.Ground[0].Palette;
+					return tile.Ground[0].Pal;
 			}
 
 			return null;

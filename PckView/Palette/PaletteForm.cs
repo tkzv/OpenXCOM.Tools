@@ -7,9 +7,9 @@ using XCom;
 namespace PckView
 {
 	/// <summary>
-	/// PaletteView form.
+	/// PaletteForm form.
 	/// </summary>
-	internal sealed class PaletteView
+	internal sealed class PaletteForm
 		:
 			System.Windows.Forms.Form
 	{
@@ -19,11 +19,11 @@ namespace PckView
 		private PalettePanel _pPalette;
 
 
-		internal PaletteView()
+		internal PaletteForm()
 		{
 			InitializeComponent();
 
-			OnResize(null);
+			OnResize(EventArgs.Empty);
 		}
 
 
@@ -34,7 +34,7 @@ namespace PckView
 									"id:{0} (0x{0:X2})",
 									id);
 
-			Color color = _pPalette.Palette[id];
+			var color = _pPalette.Pal[id];
 			text += string.Format(
 								System.Globalization.CultureInfo.CurrentCulture,
 								" r:{0} g:{1} b:{2} a:{3}",
@@ -49,9 +49,9 @@ namespace PckView
 //				PaletteIndexChangedEvent(id);
 		}
 
-		internal Palette Palette
+		internal Palette Pal
 		{
-			set { _pPalette.Palette = value; }
+			set { _pPalette.Pal = value; }
 		}
 
 		protected override void OnResize(EventArgs e)

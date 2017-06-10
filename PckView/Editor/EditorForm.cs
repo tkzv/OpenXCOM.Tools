@@ -9,26 +9,27 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	internal sealed class Editor
+	internal sealed class EditorForm
 		:
 			Form
 	{
 		#region Fields
 		private readonly EditorPanel _editorPanel;
-		private PaletteView _palView;
-		private TrackBar _trackBar;
 
-		bool _paletteInitDone;
+		private TrackBar _trackBar;
+		private PaletteForm _palView = new PaletteForm();
+
+		bool _paletteInited;
 		#endregion
 
 
 		#region Properties
-		internal Palette Palette
+		internal Palette Pal
 		{
 			set
 			{
-				_palView.Palette     =
-				_editorPanel.Palette = value;
+				_palView.Pal     =
+				_editorPanel.Pal = value;
 			}
 		}
 
@@ -43,8 +44,8 @@ namespace PckView
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		/// <param name="image"></param>
-		internal Editor(PckImage image)
+		/// <param name="sprite"></param>
+		internal EditorForm(PckImage sprite)
 		{
 			_trackBar = new TrackBar();
 			_trackBar.AutoSize    = false;
@@ -56,48 +57,51 @@ namespace PckView
 			_trackBar.BackColor   = Color.Silver;
 			_trackBar.Scroll += OnTrackScroll;
 
-			_editorPanel = new EditorPanel(image);
+			_editorPanel = new EditorPanel(sprite);
 			_editorPanel.Top = _trackBar.Bottom;
 
 
 			InitializeComponent();
 
 			// WORKAROUND: See note in 'XCMainWindow' cTor.
-			var size = new Size();
-			size.Width  =
-			size.Height = 0;
-			MaximumSize = size; // fu.net
+			MaximumSize = new Size(0, 0); // fu.net
 
 
 			Controls.Add(_editorPanel);
 			Controls.Add(_trackBar);
 
-			ClientSize = new Size(
-								EditorPanel.PreferredWidth,
-								EditorPanel.PreferredHeight + _trackBar.Height);
-
-			_palView = new PaletteView();
 			_palView.FormClosing += OnPaletteFormClosing;
 
-			OnTrackScroll(null, null);
+			OnTrackScroll(null, EventArgs.Empty);
 		}
 		#endregion
 
 
 		#region Eventcalls
+		/// <summary>
+		/// Sets the *proper* ClientSize.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnLoad(object sender, EventArgs e)
+		{
+			ClientSize = new Size(
+								PckImage.Width  * 10,
+								PckImage.Height * 10 + _trackBar.Height);
+		}
+
 		private void OnTrackScroll(object sender, EventArgs e)
 		{
-			_editorPanel.ScaleFactor =_trackBar.Value;
+			_editorPanel.ScaleFactor = _trackBar.Value;
 		}
 
 		protected override void OnResize(EventArgs e)
 		{
 //			base.OnResize(e);
 
+			_trackBar.Width     =
 			_editorPanel.Width  = ClientSize.Width;
-			_editorPanel.Height = ClientSize.Height - _trackBar.Height;
-
-			_trackBar.Width = _editorPanel.Width;
+			_editorPanel.Height = ClientSize.Height - _trackBar.Height;// - SystemInformation.MenuHeight;
 		}
 
 		private void OnShowPaletteClick(object sender, EventArgs e)
@@ -108,9 +112,9 @@ namespace PckView
 
 				if (!_palView.Visible)
 				{
-					if (!_paletteInitDone)
+					if (!_paletteInited)
 					{
-						_paletteInitDone = true;
+						_paletteInited = true;
 						_palView.Left = Left + 20;
 						_palView.Top  = Top  + 20;
 					}
@@ -158,57 +162,63 @@ namespace PckView
 		/// </summary>
 		private void InitializeComponent()
 		{
-			components = new Container();
-			mmMainMenu = new MainMenu(components);
-			miPaletteMenu = new MenuItem();
-			miPalette = new MenuItem();
-			miGridMenu = new MenuItem();
-			miGrid = new MenuItem();
-			SuspendLayout();
+			this.components = new System.ComponentModel.Container();
+			this.mmMainMenu = new System.Windows.Forms.MainMenu(this.components);
+			this.miPaletteMenu = new System.Windows.Forms.MenuItem();
+			this.miPalette = new System.Windows.Forms.MenuItem();
+			this.miGridMenu = new System.Windows.Forms.MenuItem();
+			this.miGrid = new System.Windows.Forms.MenuItem();
+			this.SuspendLayout();
 			// 
 			// mmMainMenu
 			// 
-			mmMainMenu.MenuItems.AddRange(new [] {
-			miPaletteMenu,
-			miGridMenu});
+			this.mmMainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miPaletteMenu,
+			this.miGridMenu});
 			// 
 			// miPaletteMenu
 			// 
-			miPaletteMenu.Index = 0;
-			miPaletteMenu.MenuItems.AddRange(new [] {
-			miPalette});
-			miPaletteMenu.Text = "Palette";
+			this.miPaletteMenu.Index = 0;
+			this.miPaletteMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miPalette});
+			this.miPaletteMenu.Text = "Palette";
 			// 
 			// miPalette
 			// 
-			miPalette.Index = 0;
-			miPalette.Text = "Show";
-			miPalette.Click += OnShowPaletteClick;
+			this.miPalette.Index = 0;
+			this.miPalette.Text = "Show Palette";
+			this.miPalette.Click += new System.EventHandler(this.OnShowPaletteClick);
 			// 
 			// miGridMenu
 			// 
-			miGridMenu.Index = 1;
-			miGridMenu.MenuItems.AddRange(new [] {
-			miGrid});
-			miGridMenu.Text = "Grid";
+			this.miGridMenu.Index = 1;
+			this.miGridMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miGrid});
+			this.miGridMenu.Text = "Grid";
 			// 
 			// miGrid
 			// 
-			miGrid.Index = 0;
-			miGrid.Text = "Show";
-			miGrid.Click += OnShowGridClick;
+			this.miGrid.Index = 0;
+			this.miGrid.Text = "Show Grid";
+			this.miGrid.Click += new System.EventHandler(this.OnShowGridClick);
 			// 
-			// Editor
+			// EditorForm
 			// 
-			AutoScaleBaseSize = new Size(5, 12);
-			ClientSize = new Size(292, 274);
-			Font = new Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			MaximumSize = new Size(300, 300);
-			Menu = mmMainMenu;
-			Name = "Editor";
-			StartPosition = FormStartPosition.Manual;
-			Text = "Editor";
-			ResumeLayout(false);
+			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
+			this.ClientSize = new System.Drawing.Size(294, 276);
+			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(300, 300);
+			this.Menu = this.mmMainMenu;
+			this.MinimizeBox = false;
+			this.Name = "EditorForm";
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+			this.Text = "Sprite Editor";
+			this.Load += new System.EventHandler(this.OnLoad);
+			this.ResumeLayout(false);
+
 		}
 		#endregion
 

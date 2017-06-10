@@ -14,7 +14,7 @@ namespace PckView
 	internal delegate void SpritePackChangedEventHandler(SpritePackChangedEventArgs e);
 
 
-	internal sealed class ViewPanel
+	internal sealed class PckViewPanel
 		:
 			Panel
 	{
@@ -138,7 +138,7 @@ namespace PckView
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		internal ViewPanel()
+		internal PckViewPanel()
 		{
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
 				   | ControlStyles.AllPaintingInWmPaint
@@ -197,10 +197,13 @@ namespace PckView
 		{
 			base.OnResize(eventargs);
 
-			UpdateScrollbar(false);
+			if (FindForm().WindowState != FormWindowState.Minimized)
+			{
+				UpdateScrollbar(false);
 
-			if (_selectedSprites.Count != 0)
-				ScrollToTile(_selectedSprites[0].Id);
+				if (_selectedSprites.Count != 0)
+					ScrollToTile(_selectedSprites[0].Id);
+			}
 		}
 
 		/// <summary>
@@ -471,6 +474,7 @@ namespace PckView
 											TableOffsetHori + _spriteWidth  - SpriteMargin * 2,
 											TableOffsetVert + _spriteHeight - SpriteMargin - 1);
 
+					SpritePack[id].Pal = Pal;
 					graphics.DrawImage(
 									SpritePack[id].Image,
 									TableOffsetHori + tileX * _spriteWidth  + SpriteMargin,
