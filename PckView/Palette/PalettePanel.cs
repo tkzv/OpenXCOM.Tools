@@ -22,28 +22,23 @@ namespace PckView
 
 
 		#region Fields (static)
-		private const int Across     = 16;
-		private const int Marginalia =  0; // well, you know ... why not create a variable when it's entirely possible to do so.
+		internal const int Across = 16; // 16 tiles across the panel.
 		#endregion
 
 
 		#region Fields
-//		private SolidBrush _brush = new SolidBrush(Color.FromArgb(204, 204, 255));
+		private int _tilesX;
+		private int _tilesY;
 
-		private Palette _palette;
-
-		private int _width  = 15;
-		private int _height = 10;
-
-		private int _id;
-		private int _clickX;
-		private int _clickY;
+		private int _id     = -1;
+		private int _clickX = -1;
+		private int _clickY = -1;
 		#endregion
 
 
 		#region Properties
-		[DefaultValue(null)]
-		[Browsable(false)]
+		private Palette _palette;
+		[DefaultValue(null)][Browsable(false)]
 		internal Palette Pal
 		{
 			get { return _palette; }
@@ -68,11 +63,6 @@ namespace PckView
 				   | ControlStyles.ResizeRedraw, true);
 
 			MouseDown += OnMouseDown;
-
-			_clickX =
-			_clickY = -1;
-
-			_id = -1;
 		}
 		#endregion
 
@@ -80,21 +70,26 @@ namespace PckView
 		#region Eventcalls
 		protected override void OnResize(EventArgs eventargs)
 		{
-			_width  = (Width  / Across) - Marginalia * 2;
-			_height = (Height / Across) - Marginalia * 2;
+			_tilesX = Width  / Across;
+			_tilesY = Height / Across;
 
-			_clickX = (_id % Across) * (_width  + Marginalia * 2);
-			_clickY = (_id / Across) * (_height + Marginalia * 2);
-
+			if (_id != -1)
+			{
+				_clickX = _id % Across * _tilesX + 1;
+				_clickY = _id / Across * _tilesY + 1;
+			}
 			Refresh();
 		}
 
 		private void OnMouseDown(object sender, MouseEventArgs e)
 		{
-			_clickX = (e.X / (_width  + Marginalia * 2)) * (_width  + Marginalia * 2);
-			_clickY = (e.Y / (_height + Marginalia * 2)) * (_height + Marginalia * 2);
+			int tileX = e.X / _tilesX;
+			int tileY = e.Y / _tilesY;
 
-			_id = (e.X / (_width + Marginalia * 2)) + (e.Y / (_height + Marginalia * 2)) * Across;
+			_clickX = tileX * _tilesX + 1;
+			_clickY = tileY * _tilesY + 1;
+
+			_id = tileY * Across + tileX;
 
 			if (PaletteIndexChangedEvent != null && _id < 256)
 			{
@@ -103,40 +98,51 @@ namespace PckView
 			}
 		}
 
+		/// <summary>
+		/// Draws the palette viewer.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnPaint(PaintEventArgs e)
 		{
 //			base.OnPaint(e);
 
-			if (_palette != null)
+			if (Pal != null) // ... 'Pal' shall not be null ...
 			{
 				var graphics = e.Graphics;
 				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
 				for (int
 						i = 0,
-							y = Marginalia;
-						i < Across;
+							y = 0;
+						i != Across;
 						++i,
-							y += _height + Marginalia * 2)
+							y += _tilesY)
 				{
 					for (int
 							j = 0,
-								x = Marginalia;
-							j < Across;
+								x = 0;
+							j != Across;
 							++j,
-								x += _width + Marginalia * 2)
+								x += _tilesX)
 					{
-						graphics.FillRectangle(new SolidBrush(
-															_palette[i * Across + j]),
-															x, y,
-															_width, _height);
+						graphics.FillRectangle(
+											new SolidBrush(Pal[i * Across + j]),
+											x,       y,
+											_tilesX, _tilesY);
 					}
 				}
 
-				graphics.DrawRectangle(
-									Pens.Red,
-									_clickX, _clickY,
-									_width + Marginalia * 2 - 1, _height + Marginalia * 2 - 1);
+				if (_id != -1)
+				{
+					graphics.DrawRectangle(
+										Pens.Red,
+										_clickX, _clickY,
+										_tilesX - 1, _tilesY - 1);
+					graphics.FillRectangle( // -> fill the darn hole that .NET leaves in the top-left corner.
+										Brushes.Red,
+										_clickX - 1, _clickY - 1,
+										1, 1);
+				}
 			}
 		}
 		#endregion

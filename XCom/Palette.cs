@@ -232,7 +232,7 @@ namespace XCom
 		/// palette-index.
 		/// </summary>
 		/// <param name="transparent">true to enable transparency</param>
-		public void SetAlpha(bool transparent)
+		public void SetTransparent(bool transparent)
 		{
 			Colors.Entries[TransparentId] = Color.FromArgb(
 														transparent ? 0 : 255,

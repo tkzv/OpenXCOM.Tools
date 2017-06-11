@@ -58,20 +58,7 @@ namespace XCom
 				string pfePck = pfSpriteset + SpriteCollection.PckExt;
 				string pfeTab = pfSpriteset + SpriteCollection.TabExt;
 
-				if (!File.Exists(pfePck) || !File.Exists(pfeTab))
-				{
-					MessageBox.Show(
-								"Can't find files for spriteset"
-									+ Environment.NewLine + Environment.NewLine
-									+ pfePck + Environment.NewLine
-									+ pfeTab,
-								"Error",
-								MessageBoxButtons.OK,
-								MessageBoxIcon.Error,
-								MessageBoxDefaultButton.Button1,
-								0);
-				}
-				else
+				if (File.Exists(pfePck) && File.Exists(pfeTab))
 				{
 					if (!_palSpritesets.ContainsKey(pal))
 						_palSpritesets.Add(pal, new Dictionary<string, SpriteCollection>());
@@ -93,6 +80,17 @@ namespace XCom
 					}
 					return _palSpritesets[pal][pfSpriteset];
 				}
+
+				MessageBox.Show(
+							"Can't find files for spriteset"
+								+ Environment.NewLine + Environment.NewLine
+								+ pfePck + Environment.NewLine
+								+ pfeTab,
+							"Error",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Error,
+							MessageBoxDefaultButton.Button1,
+							0);
 			}
 			return null;
 		}

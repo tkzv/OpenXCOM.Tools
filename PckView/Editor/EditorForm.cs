@@ -14,12 +14,10 @@ namespace PckView
 			Form
 	{
 		#region Fields
-		private readonly EditorPanel _editorPanel;
+		private readonly EditorPanel _pnlEditor;
 
 		private TrackBar _trackBar;
-		private PaletteForm _palView = new PaletteForm();
-
-		bool _paletteInited;
+		private PaletteForm _fpalette = new PaletteForm();
 		#endregion
 
 
@@ -28,15 +26,18 @@ namespace PckView
 		{
 			set
 			{
-				_palView.Pal     =
-				_editorPanel.Pal = value;
+				_fpalette.Pal  =
+				_pnlEditor.Pal = value;
 			}
 		}
 
 		internal XCImage Sprite
 		{
-			set { _editorPanel.Sprite = value; }
+			set { _pnlEditor.Sprite = value; }
 		}
+
+		private bool Inited
+		{ get; set; }
 		#endregion
 
 
@@ -44,8 +45,7 @@ namespace PckView
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		/// <param name="sprite"></param>
-		internal EditorForm(PckImage sprite)
+		internal EditorForm()
 		{
 			_trackBar = new TrackBar();
 			_trackBar.AutoSize    = false;
@@ -57,8 +57,8 @@ namespace PckView
 			_trackBar.BackColor   = Color.Silver;
 			_trackBar.Scroll += OnTrackScroll;
 
-			_editorPanel = new EditorPanel(sprite);
-			_editorPanel.Top = _trackBar.Bottom;
+			_pnlEditor = new EditorPanel();
+			_pnlEditor.Top = _trackBar.Bottom;
 
 
 			InitializeComponent();
@@ -67,10 +67,10 @@ namespace PckView
 			MaximumSize = new Size(0, 0); // fu.net
 
 
-			Controls.Add(_editorPanel);
+			Controls.Add(_pnlEditor);
 			Controls.Add(_trackBar);
 
-			_palView.FormClosing += OnPaletteFormClosing;
+			_fpalette.FormClosing += OnPaletteFormClosing;
 
 			OnTrackScroll(null, EventArgs.Empty);
 		}
@@ -92,16 +92,16 @@ namespace PckView
 
 		private void OnTrackScroll(object sender, EventArgs e)
 		{
-			_editorPanel.ScaleFactor = _trackBar.Value;
+			_pnlEditor.ScaleFactor = _trackBar.Value;
 		}
 
 		protected override void OnResize(EventArgs e)
 		{
 //			base.OnResize(e);
 
-			_trackBar.Width     =
-			_editorPanel.Width  = ClientSize.Width;
-			_editorPanel.Height = ClientSize.Height - _trackBar.Height;
+			_trackBar.Width   =
+			_pnlEditor.Width  = ClientSize.Width;
+			_pnlEditor.Height = ClientSize.Height - _trackBar.Height;
 		}
 
 		private void OnShowPaletteClick(object sender, EventArgs e)
@@ -110,21 +110,16 @@ namespace PckView
 			{
 				miPalette.Checked = true;
 
-				if (!_palView.Visible)
+				if (!Inited)
 				{
-					if (!_paletteInited)
-					{
-						_paletteInited = true;
-						_palView.Left = Left + 20;
-						_palView.Top  = Top  + 20;
-					}
-					_palView.Show();
+					Inited = true;
+					_fpalette.Left = Left + 20;
+					_fpalette.Top  = Top  + 20;
 				}
-				else
-					_palView.BringToFront(); // NOTE: this doesn't actually make sense under '!miPalette.Checked'
+				_fpalette.Show();
 			}
 			else
-				_palView.Close(); // see OnPaletteClosing()
+				_fpalette.Close(); // hide, not close -> see OnPaletteFormClosing()
 		}
 
 		private void OnPaletteFormClosing(object sender, CancelEventArgs e)
@@ -132,18 +127,15 @@ namespace PckView
 			miPalette.Checked = false;
 
 			e.Cancel = true;
-			_palView.Hide();
+			_fpalette.Hide();
 		}
 
 		private void OnShowGridClick(object sender, EventArgs e)
 		{
-			miGrid.Checked = !miGrid.Checked;
-			_editorPanel.Grid = miGrid.Checked;
+			_pnlEditor.Grid = (miGrid.Checked = !miGrid.Checked);
 		}
 		#endregion
 
-
-		#region Windows Form Designer generated code
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -156,6 +148,7 @@ namespace PckView
 			base.Dispose(disposing);
 		}
 
+		#region Windows Form Designer generated code
 		/// <summary>
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.

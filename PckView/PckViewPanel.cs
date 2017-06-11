@@ -33,10 +33,10 @@ namespace PckView
 		private readonly VScrollBar _scrollBar = new VScrollBar();
 		private readonly StatusBar  _statusBar = new StatusBar();
 
-		private StatusBarPanel _statusTilesTotal   = new StatusBarPanel();
-		private StatusBarPanel _statusTileSelected = new StatusBarPanel();
-		private StatusBarPanel _statusTileOver     = new StatusBarPanel();
-		private StatusBarPanel _statusLabel        = new StatusBarPanel();
+		private StatusBarPanel _sbpTilesTotal   = new StatusBarPanel();
+		private StatusBarPanel _sbpTileSelected = new StatusBarPanel();
+		private StatusBarPanel _sbpTileOver     = new StatusBarPanel();
+		private StatusBarPanel _sbpSpritesLabel = new StatusBarPanel();
 
 		private int _spriteWidth;
 		private int _spriteHeight;
@@ -65,13 +65,13 @@ namespace PckView
 
 
 		#region Properties
-		private XCImageCollection _spritePack;
-		internal XCImageCollection SpritePack
+		private XCImageCollection _spriteset;
+		internal XCImageCollection Spriteset
 		{
-			get { return _spritePack; }
+			get { return _spriteset; }
 			set
 			{
-				_spritePack = value;
+				_spriteset = value;
 
 				_spriteWidth  = value.ImageFile.ImageSize.Width  + SpriteMargin * 2;
 				_spriteHeight = value.ImageFile.ImageSize.Height + SpriteMargin * 2;
@@ -81,7 +81,7 @@ namespace PckView
 //				OnMouseDown(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 //				OnMouseMove(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 
-				_selectedSprites.Clear();
+				_selected.Clear();
 
 				_largeChange           =
 				_scrollBar.LargeChange = _spriteHeight;
@@ -91,10 +91,10 @@ namespace PckView
 				Refresh();
 //				Select(); // done in OnShown() of PckViewForm.
 
-				_statusTilesTotal.Text = String.Format(
-													System.Globalization.CultureInfo.InvariantCulture,
-													"Total {0}", _spritePack.Count);
-				_statusLabel.Text = _spritePack.Label;
+				_sbpTilesTotal.Text = String.Format(
+												System.Globalization.CultureInfo.InvariantCulture,
+												"Total {0}", _spriteset.Count);
+				_sbpSpritesLabel.Text = _spriteset.Label;
 
 				OnSpriteClick(-1);
 				OnSpriteOver(-1);
@@ -108,11 +108,11 @@ namespace PckView
 		{ get; set; }
 
 
-		private readonly List<SpriteSelected> _selectedSprites = new List<SpriteSelected>();
-		internal ReadOnlyCollection<SpriteSelected> SelectedSprites
+		private readonly List<SpriteSelected> _selected = new List<SpriteSelected>();
+		internal ReadOnlyCollection<SpriteSelected> Selected
 		{
-			get { return (SpritePack != null) ? _selectedSprites.AsReadOnly()
-											  : null; }
+			get { return (Spriteset != null) ? _selected.AsReadOnly()
+											 : null; }
 		}
 
 		/// <summary>
@@ -125,8 +125,8 @@ namespace PckView
 				SetTilesX();
 
 				int height = 0;
-				if (SpritePack != null)
-					height = (SpritePack.Count / _tilesX + 2) * _spriteHeight;
+				if (Spriteset != null)
+					height = (Spriteset.Count / _tilesX + 2) * _spriteHeight;
 
 				return height;
 			}
@@ -140,6 +140,9 @@ namespace PckView
 		/// </summary>
 		internal PckViewPanel()
 		{
+#if DEBUG
+			LogFile.SetLogFilePath(System.IO.Path.GetDirectoryName(Application.ExecutablePath)); // creates a logfile/ wipes the old one.
+#endif
 			SetStyle(ControlStyles.OptimizedDoubleBuffer
 				   | ControlStyles.AllPaintingInWmPaint
 				   | ControlStyles.UserPaint
@@ -151,22 +154,22 @@ namespace PckView
 //			_scrollBar.LargeChange = 44; // NOTE: this won't stick unless Visible, perhaps. else "1"
 			_scrollBar.ValueChanged += OnScrollBarValueChanged;
 
-			_statusTilesTotal.Width = 85;
-			_statusTilesTotal.Text = String.Format(
-												System.Globalization.CultureInfo.InvariantCulture,
-												"Total " + None);
-			_statusTileSelected.Width = 100;
-			_statusTileOver.Width = 75;
+			_sbpTilesTotal.Width = 85;
+			_sbpTilesTotal.Text = String.Format(
+											System.Globalization.CultureInfo.InvariantCulture,
+											"Total " + None);
+			_sbpTileSelected.Width = 100;
+			_sbpTileOver.Width = 75;
 
-			_statusLabel.AutoSize = StatusBarPanelAutoSize.Spring;
-			_statusLabel.Alignment = HorizontalAlignment.Center;
+			_sbpSpritesLabel.AutoSize = StatusBarPanelAutoSize.Spring;
+			_sbpSpritesLabel.Alignment = HorizontalAlignment.Center;
 
 			_statusBar.Dock = DockStyle.Bottom;
 			_statusBar.ShowPanels = true;
-			_statusBar.Panels.Add(_statusTilesTotal);
-			_statusBar.Panels.Add(_statusTileSelected);
-			_statusBar.Panels.Add(_statusTileOver);
-			_statusBar.Panels.Add(_statusLabel);
+			_statusBar.Panels.Add(_sbpTilesTotal);
+			_statusBar.Panels.Add(_sbpTileSelected);
+			_statusBar.Panels.Add(_sbpTileOver);
+			_statusBar.Panels.Add(_sbpSpritesLabel);
 
 			Controls.AddRange(new Control[]
 			{
@@ -201,20 +204,20 @@ namespace PckView
 			{
 				UpdateScrollbar(false);
 
-				if (_selectedSprites.Count != 0)
-					ScrollToTile(_selectedSprites[0].Id);
+				if (_selected.Count != 0)
+					ScrollToTile(_selected[0].Id);
 			}
 		}
 
 		/// <summary>
-		/// Updates the scrollbar after a resize event or a sprite-pack changed
+		/// Updates the scrollbar after a resize event or a spriteset changed
 		/// event.
 		/// </summary>
 		/// <param name="resetTrack">true to set the thing to the top of the track</param>
 		private void UpdateScrollbar(bool resetTrack)
 		{
 			int range = 0;
-			if (SpritePack != null && SpritePack.Count != 0)
+			if (Spriteset != null && Spriteset.Count != 0)
 			{
 				if (resetTrack)
 					_scrollBar.Value = 0;
@@ -231,7 +234,7 @@ namespace PckView
 		{
 			int tilesX = 1;
 
-			if (SpritePack != null && SpritePack.Count != 0)
+			if (Spriteset != null && Spriteset.Count != 0)
 			{
 //				tilesX = (Width - 1) / _spriteWidth; // calculate without widthScroll first
 
@@ -240,8 +243,8 @@ namespace PckView
 				// without the tiles re-arranging.
 				tilesX = (Width - TableOffsetHori - _scrollBar.Width - 1) / _spriteWidth;
 
-				if (tilesX > SpritePack.Count)
-					tilesX = SpritePack.Count;
+				if (tilesX > Spriteset.Count)
+					tilesX = Spriteset.Count;
 
 				// This was for, if extra width was *not* reserved for the
 				// scrollbar, deciding if that width now needs to be injected
@@ -292,12 +295,12 @@ namespace PckView
 		{
 //			base.OnMouseDown(e);
 
-//			Focus();	// also set in SpritePack setter. here in case user tabs away from this Panel.
+//			Focus();	// also set in Spriteset setter. here in case user tabs away from this Panel.
 						// but there's no tabbing atm.
 
 			bool clearSelected = true;
 
-			if (SpritePack != null && SpritePack.Count != 0)
+			if (Spriteset != null && Spriteset.Count != 0)
 			{
 				if (e.X < _spriteWidth * _tilesX + TableOffsetHori - 1) // not out of bounds to right
 				{
@@ -305,13 +308,13 @@ namespace PckView
 					int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _spriteHeight;
 
 					int id = tileX + tileY * _tilesX;
-					if (id < SpritePack.Count) // not out of bounds below
+					if (id < Spriteset.Count) // not out of bounds below
 					{
 						var selected   = new SpriteSelected();
 						selected.X     = tileX;
 						selected.Y     = tileY;
 						selected.Id    = id;
-						selected.Image = SpritePack[id];
+						selected.Image = Spriteset[id];
 
 //						if (ModifierKeys == Keys.Control)
 //						{
@@ -332,8 +335,8 @@ namespace PckView
 //						}
 //						else
 //						{
-						_selectedSprites.Clear();
-						_selectedSprites.Add(selected);
+						_selected.Clear();
+						_selected.Add(selected);
 //						}
 
 						OnSpriteClick(id);
@@ -346,7 +349,7 @@ namespace PckView
 
 			if (clearSelected)
 			{
-				_selectedSprites.Clear();
+				_selected.Clear();
 				OnSpriteClick(-1);
 			}
 
@@ -362,7 +365,7 @@ namespace PckView
 		{
 //			base.OnMouseMove(e);
 
-			if (SpritePack != null && SpritePack.Count != 0)
+			if (Spriteset != null && Spriteset.Count != 0)
 			{
 				if (e.X < _spriteWidth * _tilesX + TableOffsetHori - 1) // not out of bounds to right
 				{
@@ -375,7 +378,7 @@ namespace PckView
 						_overY = tileY;
 
 						int id = tileX + tileY * _tilesX;
-						if (id >= SpritePack.Count) // out of bounds below
+						if (id >= Spriteset.Count) // out of bounds below
 							id = -1;
 
 						OnSpriteOver(id);
@@ -424,10 +427,10 @@ namespace PckView
 			string over     = (_idOver != -1)     ? _idOver.ToString(System.Globalization.CultureInfo.InvariantCulture)
 												  : None;
 
-			_statusTileSelected.Text = String.Format(
+			_sbpTileSelected.Text = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
 												"Selected {0}", selected);
-			_statusTileOver.Text     = String.Format(
+			_sbpTileOver.Text     = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
 												"Over {0}", over);
 		}
@@ -444,7 +447,7 @@ namespace PckView
 		{
 //			base.OnPaint(e);
 
-			if (SpritePack != null && SpritePack.Count != 0)
+			if (Spriteset != null && Spriteset.Count != 0)
 			{
 				var graphics = e.Graphics;
 				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
@@ -458,10 +461,10 @@ namespace PckView
 
 
 				var selected = new List<int>(); // track currently selected spriteIds.
-				foreach (var sprite in _selectedSprites)
+				foreach (var sprite in _selected)
 					selected.Add(sprite.Id);
 
-				for (int id = 0; id != SpritePack.Count; ++id) // fill selected tiles and draw sprites.
+				for (int id = 0; id != Spriteset.Count; ++id) // fill selected tiles and draw sprites.
 				{
 					int tileX = id % _tilesX;
 					int tileY = id / _tilesX;
@@ -474,9 +477,9 @@ namespace PckView
 											TableOffsetHori + _spriteWidth  - SpriteMargin * 2,
 											TableOffsetVert + _spriteHeight - SpriteMargin - 1);
 
-					SpritePack[id].Pal = Pal;
+					Spriteset[id].Pal = Pal;
 					graphics.DrawImage(
-									SpritePack[id].Image,
+									Spriteset[id].Image,
 									TableOffsetHori + tileX * _spriteWidth  + SpriteMargin,
 									TableOffsetVert + tileY * _spriteHeight + SpriteMargin + _startY);
 				}
@@ -498,8 +501,8 @@ namespace PckView
 											TableOffsetHori + _spriteWidth * tileX,
 											TableOffsetVert - _startY + Height));
 
-				int tilesY = SpritePack.Count / _tilesX;
-				if (SpritePack.Count % _tilesX != 0)
+				int tilesY = Spriteset.Count / _tilesX;
+				if (Spriteset.Count % _tilesX != 0)
 					++tilesY;
 
 				for (int tileY = 0; tileY <= tilesY; ++tileY) // draw horizontal lines
@@ -519,7 +522,7 @@ namespace PckView
 		#region Methods
 		internal void SpriteReplace(int id, XCImage image) // currently disabled in PckViewForm
 		{
-			SpritePack[id] = image;
+			Spriteset[id] = image;
 		}
 
 		/// <summary>
@@ -527,12 +530,12 @@ namespace PckView
 		/// </summary>
 		internal void SpriteDelete() // currently disabled in PckViewForm
 		{
-			if (_selectedSprites.Count != 0)
+			if (_selected.Count != 0)
 			{
 				var lowestId = int.MaxValue;
 
 				var idList = new List<int>();
-				foreach (var sprite in _selectedSprites)
+				foreach (var sprite in _selected)
 					idList.Add(sprite.Id);
 
 				idList.Sort();
@@ -543,22 +546,22 @@ namespace PckView
 					if (id < lowestId)
 						lowestId = id;
 
-					SpritePack.Remove(id);
+					Spriteset.Remove(id);
 				}
 
-				if (lowestId > 0 && lowestId == SpritePack.Count)
-					lowestId = SpritePack.Count - 1;
+				if (lowestId > 0 && lowestId == Spriteset.Count)
+					lowestId = Spriteset.Count - 1;
 
-				_selectedSprites.Clear();
+				_selected.Clear();
 	
-				if (SpritePack.Count != 0)
+				if (Spriteset.Count != 0)
 				{
 					var selected = new SpriteSelected();
 					selected.Y   = lowestId / _tilesX;
 					selected.X   = lowestId - selected.Y;
 					selected.Id  = selected.X + selected.Y * _tilesX;
 	
-					_selectedSprites.Add(selected);
+					_selected.Add(selected);
 				}
 			}
 		}

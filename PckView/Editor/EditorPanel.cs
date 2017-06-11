@@ -13,15 +13,11 @@ namespace PckView
 		:
 			Panel
 	{
-		#region Fields (static)
-		private const int Square = 1;
-		#endregion
-
-
 		#region Properties
 		private XCImage _sprite;
 		internal XCImage Sprite
 		{
+			private get { return _sprite; }
 			set
 			{
 				_sprite = value;
@@ -35,9 +31,10 @@ namespace PckView
 			set
 			{
 				_palette = value;
-				if (_sprite != null)
+
+				if (Sprite != null)
 				{
-					_sprite.Image.Palette = _palette.Colors;
+					Sprite.Image.Palette = _palette.Colors;
 					Refresh();
 				}
 			}
@@ -66,7 +63,10 @@ namespace PckView
 
 
 		#region cTor
-		internal EditorPanel(XCImage sprite)
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		internal EditorPanel()
 		{
 			// form level code to fix flicker
 //			protected override CreateParams CreateParams
@@ -96,8 +96,6 @@ namespace PckView
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 //			UpdateStyles();
-
-			_sprite = sprite;
 		}
 		#endregion
 
@@ -123,37 +121,35 @@ namespace PckView
 			var graphics = e.Graphics;
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-			int width  = _sprite.Image.Width;
-			int height = _sprite.Image.Height;
-
-			int factor = Square * _scale;
+			int width  = Sprite.Image.Width;
+			int height = Sprite.Image.Height;
 
 			for (int y = 0; y != height; ++y)
 			for (int x = 0; x != width;  ++x)
 				graphics.FillRectangle(
-									new SolidBrush(_sprite.Image.GetPixel(x, y)),
-									x * factor,
-									y * factor,
-										factor,
-										factor);
+									new SolidBrush(Sprite.Image.GetPixel(x, y)),
+									x * _scale,
+									y * _scale,
+										_scale,
+										_scale);
 
 			if (_grid)
 			{
 				for (int x = 0; x != width + 1; ++x)
 					graphics.DrawLine(
 									Pens.Black,
-									x      * factor,
+									x      * _scale,
 									0,
-									x      * factor,
-									height * factor);
+									x      * _scale,
+									height * _scale);
 
 				for (int y = 0; y != height + 1; ++y)
 					graphics.DrawLine(
 									Pens.Black,
 									0,
-									y     * factor,
-									width * factor,
-									y     * factor);
+									y     * _scale,
+									width * _scale,
+									y     * _scale);
 			}
 		}
 		#endregion

@@ -495,7 +495,7 @@ namespace MapView.Forms.MapObservers.TileViews
 					using (var f = new PckViewForm())
 					{
 						f.SetPalette(MapBase.Descriptor.Pal.Label);
-						f.LoadSpriteCollectionFile(pfePck, true);
+						f.LoadSpriteset(pfePck, true);
 
 						var parent = FindForm();
 
