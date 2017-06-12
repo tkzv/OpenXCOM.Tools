@@ -242,10 +242,14 @@ namespace MapView
 					case Keys.X:
 						Copy();
 						ClearSelection();
+
+						EditButtonsFactory.Instance.EnablePasteButtons();
 						break;
 
 					case Keys.C:
 						Copy();
+
+						EditButtonsFactory.Instance.EnablePasteButtons();
 						break;
 
 					case Keys.V:

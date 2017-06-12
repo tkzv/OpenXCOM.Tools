@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
+using MapView.Forms.MainWindow;
+
 using XCom;
 using XCom.Interfaces.Base;
 
@@ -58,10 +60,14 @@ namespace MapView.Forms.MapObservers.TopViews
 					case Keys.X:
 						MainViewUnderlay.Instance.MainViewOverlay.Copy();
 						MainViewUnderlay.Instance.MainViewOverlay.ClearSelection();
+
+						EditButtonsFactory.Instance.EnablePasteButtons();
 						break;
 
 					case Keys.C:
 						MainViewUnderlay.Instance.MainViewOverlay.Copy();
+
+						EditButtonsFactory.Instance.EnablePasteButtons();
 						break;
 
 					case Keys.V:

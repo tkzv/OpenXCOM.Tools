@@ -10,23 +10,39 @@ namespace MapView.Forms.MainWindow
 {
 	internal sealed class EditButtonsFactory
 	{
-		private readonly MainViewUnderlay _mainViewPanel;
+		#region Properties (static)
+		internal static EditButtonsFactory Instance
+		{ get; set; }
+		#endregion
 
+
+		#region Fields
 		private readonly List<ToolStripButton> _pasteButtons = new List<ToolStripButton>();
+		private readonly MainViewUnderlay _mainViewPanel;
+		#endregion
 
 
-		public EditButtonsFactory(MainViewUnderlay panel)
+		#region cTor
+		/// <summary>
+		/// cTor.
+		/// </summary>
+		/// <param name="panel"></param>
+		internal EditButtonsFactory(MainViewUnderlay panel)
 		{
 			_mainViewPanel = panel;
+
+			Instance = this;
 		}
+		#endregion
 
 
+		#region Methods
 		/// <summary>
 		/// Adds buttons for Up,Down,Cut,Copy,Paste and Fill to the specified
 		/// toolstrip as well as sets some properties for the toolstrip.
 		/// </summary>
 		/// <param name="toolStrip"></param>
-		public void CreateEditorStrip(ToolStrip toolStrip)
+		internal void CreateEditorStrip(ToolStrip toolStrip)
 		{
 			//
 			// toolStripButtons
@@ -95,7 +111,7 @@ namespace MapView.Forms.MainWindow
 			tsbCut.ToolTipText = "Cut";
 			tsbCut.Click += (sender, e) =>
 			{
-				EnablePasteButton();
+				EnablePasteButtons();
 				_mainViewPanel.OnCut(sender, e);
 			};
 			//
@@ -111,7 +127,7 @@ namespace MapView.Forms.MainWindow
 			tsbCopy.ToolTipText = "Copy";
 			tsbCopy.Click += (sender, e) =>
 			{
-				EnablePasteButton();
+				EnablePasteButtons();
 				_mainViewPanel.OnCopy(sender, e);
 			};
 			//
@@ -147,14 +163,18 @@ namespace MapView.Forms.MainWindow
 		}
 
 		/// <summary>
-		/// Enables the paste button in each viewer after cut or copy is clicked.
+		/// Enables the paste button in each viewer after cut or copy is
+		/// clicked or Ctrl+X / Ctrl+C is pressed on the keyboard.
 		/// </summary>
-		private void EnablePasteButton()
+		internal void EnablePasteButtons()
 		{
 			foreach (var tsb in _pasteButtons)
 				tsb.Enabled = true;
 		}
+		#endregion
 
+
+		#region Eventcalls
 		private void OnUpClick(object sender, EventArgs e)
 		{
 			if (MainViewUnderlay.Instance.MainViewOverlay.MapBase != null)
@@ -166,5 +186,6 @@ namespace MapView.Forms.MainWindow
 			if (MainViewUnderlay.Instance.MainViewOverlay.MapBase != null)
 				MainViewUnderlay.Instance.MainViewOverlay.MapBase.LevelDown();
 		}
+		#endregion
 	}
 }
