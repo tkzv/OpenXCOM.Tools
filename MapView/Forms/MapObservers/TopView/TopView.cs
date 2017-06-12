@@ -16,15 +16,17 @@ namespace MapView.Forms.MapObservers.TopViews
 		:
 			MapObserverControl0
 	{
+//		private event EventHandler VisibleTileChangedEvent;
+
+
+		#region Fields (static)
+		private const string Floor   = "Floor";
+		private const string West    = "West";
+		private const string North   = "North";
+		private const string Content = "Content";
+		#endregion
+
 		#region Fields
-		private event EventHandler VisibleTileChangedEvent;
-
-		private readonly TopViewPanel _topViewPanel;
-		internal TopViewPanel TopViewPanel
-		{
-			get { return _topViewPanel; }
-		}
-
 		private EditButtonsFactory _editButtonsFactory;
 
 		private Dictionary<string, Pen> _topPens;
@@ -35,6 +37,12 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		#region Properties
+		private readonly TopViewPanel _topViewPanel;
+		internal TopViewPanel TopViewPanel
+		{
+			get { return _topViewPanel; }
+		}
+
 		internal QuadrantPanel QuadrantsPanel
 		{
 			get { return quadrants; }
@@ -87,25 +95,25 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			var visQuads = tsddbVisibleQuads.DropDown.Items;
 
-			_topViewPanel.Ground = new ToolStripMenuItem("Floor");
+			_topViewPanel.Ground = new ToolStripMenuItem(Floor);
 			visQuads.Add(_topViewPanel.Ground);
 			_topViewPanel.Ground.ShortcutKeys = Keys.F1;
 			_topViewPanel.Ground.Checked = true;
 //			_visQuadsDictionary[_topViewPanel.Ground] = 0;
 
-			_topViewPanel.West = new ToolStripMenuItem("West");
+			_topViewPanel.West = new ToolStripMenuItem(West);
 			visQuads.Add(_topViewPanel.West);
 			_topViewPanel.West.ShortcutKeys = Keys.F2;
 			_topViewPanel.West.Checked = true;
 //			_visQuadsDictionary[_topViewPanel.West] = 1;
 
-			_topViewPanel.North = new ToolStripMenuItem("North");
+			_topViewPanel.North = new ToolStripMenuItem(North);
 			visQuads.Add(_topViewPanel.North);
 			_topViewPanel.North.ShortcutKeys = Keys.F3;
 			_topViewPanel.North.Checked = true;
 //			_visQuadsDictionary[_topViewPanel.North] = 2;
 
-			_topViewPanel.Content = new ToolStripMenuItem("Content");
+			_topViewPanel.Content = new ToolStripMenuItem(Content);
 			visQuads.Add(_topViewPanel.Content);
 			_topViewPanel.Content.ShortcutKeys = Keys.F4;
 			_topViewPanel.Content.Checked = true;
@@ -135,8 +143,11 @@ namespace MapView.Forms.MapObservers.TopViews
 			var it = sender as ToolStripMenuItem;
 			it.Checked = !it.Checked;
 
-			if (VisibleTileChangedEvent != null)
-				VisibleTileChangedEvent(this, new EventArgs());
+			if (it.Text == Floor)
+				((MapFileChild)MapBase).CalculateOccultations(!it.Checked);
+
+//			if (VisibleTileChangedEvent != null)
+//				VisibleTileChangedEvent(this, new EventArgs());
 
 			MainViewUnderlay.Instance.Refresh();
 			Refresh();

@@ -8,8 +8,10 @@ using System.Drawing.Imaging;
 
 namespace XCom.Interfaces.Base
 {
+	#region Delegates
 	public delegate void LocationSelectedEventHandler(LocationSelectedEventArgs e);
 	public delegate void LevelChangedEventHandler(LevelChangedEventArgs e);
+	#endregion
 
 
 	/// <summary>
@@ -17,8 +19,10 @@ namespace XCom.Interfaces.Base
 	/// </summary>
 	public class MapFileBase
 	{
+		#region Events
 		public event LocationSelectedEventHandler LocationSelectedEvent;
 		public event LevelChangedEventHandler LevelChangedEvent;
+		#endregion
 
 
 		#region Fields (static)

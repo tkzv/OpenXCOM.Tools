@@ -196,9 +196,10 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// 
+		/// Generates occultation data for all tiles in the Map.
 		/// </summary>
-		public void CalculateOccultations()
+		/// <param name="forceVis">true to force visibility</param>
+		public void CalculateOccultations(bool forceVis = false)
 		{
 			if (MapSize.Levs > 1) // NOTE: Maps shall be at least 10x10x1 ...
 			{
@@ -210,7 +211,8 @@ namespace XCom
 				{
 					if ((tile = this[row, col, lev]) != null) // safety. The tile should always be valid.
 					{
-						if (   ((XCMapTile)this[row,     col,     lev - 1]).Ground != null // above
+						if (!forceVis
+							&& ((XCMapTile)this[row,     col,     lev - 1]).Ground != null // above
 
 							&& ((XCMapTile)this[row + 1, col,     lev - 1]).Ground != null // south
 							&& ((XCMapTile)this[row + 2, col,     lev - 1]).Ground != null
