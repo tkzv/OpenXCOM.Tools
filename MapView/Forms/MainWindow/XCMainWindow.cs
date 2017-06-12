@@ -927,7 +927,7 @@ namespace MapView
 			MaptreeChanged = !ResourceInfo.TileGroupInfo.SaveTileGroups();
 		}
 
-		private void OnRegenOccultClick(object sender, EventArgs e)
+		private void OnRegenOccultClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
 		{
 			var mapFile = MainViewUnderlay.Instance.MapBase as MapFileChild;
 			if (mapFile != null)

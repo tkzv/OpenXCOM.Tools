@@ -201,6 +201,7 @@ namespace MapView
 			// 
 			// miRegenOccult
 			// 
+			this.miRegenOccult.Visible = false;
 			this.miRegenOccult.Enabled = false;
 			this.miRegenOccult.Index = 13;
 			this.miRegenOccult.Shortcut = System.Windows.Forms.Shortcut.CtrlO;

@@ -3,8 +3,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-using XCom;
-
 
 namespace PckView
 {

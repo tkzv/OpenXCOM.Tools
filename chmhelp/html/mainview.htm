@@ -8,11 +8,11 @@
 
 		<p>On the left is the Map Tree. This is where tilesets are listed. The toplevel branch is the Group, under that is the Category, and under that are the Tilesets.</p>
 
-		<p>The Group's label must start with either "ufo" or "tftd" (case insensitive). This determines the palette and the default basepath for all tilesets in that group.</p>
+		<p>The Group's label must start with either "ufo" or "tftd" (case insensitive). This determines the palette and the default basepath for all tilesets in that group. The Group's label must be unique.</p>
 
-		<p>The Category can be labelled whatever.</p>
+		<p>The Category can be labelled whatever, but must be unique in its Group.</p>
 
-		<p>The Tileset is what gets displayed in the viewer panel. It appears very much like what is seen during gameplay. Using the mousewheel when the panel is focused raises and lowers the editing level.</p>
+		<p>The Tileset is what gets displayed in the viewer panel. It appears very much like what is seen during gameplay. Using the mousewheel when the panel is focused raises and lowers the editing level. The label of a Tileset must be unique across the entire Map Tree.</p>
 
 		<p>Left-click selects a branch, and a right-click opens a context menu that allows the selected branch to be edited. Groups and Categories can be created, re-labeled, or deleted. Tilesets can be created or modified with the Tileset Editor. They can also be deleted.</p>
 
@@ -64,7 +64,7 @@
 
 		<p>Map Info - displays a bit of information about the currently loaded tileset.</p>
 
-		<p>Regen Occult [Ctrl+O] - to draw all the sprites in the viewer panel faster, any parts that are hidden beneath floors will be ignored, or occulted. But if you strip a floor off of a level above the ground floor this means you could be left looking into a big hole of what appears to be nothing. The tileparts are still there but they've been occulted for faster drawing. Use Regen Occult to make them appear as expected. Also mind that the reverse happens. If a floor is laid down above ground level, and MainView starts lagging, try issuing the Regen Occult command which will stop any sprites that have been hidden from drawing. Occulted tiles are re-calculated every time a Map loads.</p>
+<!--	<p>Regen Occult [Ctrl+O] - to draw all the sprites in the viewer panel faster, any parts that are hidden beneath floors will be ignored, or occulted. But if you strip a floor off of a level above the ground floor this means you could be left looking into a big hole of what appears to be nothing. The tileparts are still there but they've been occulted for faster drawing. Use Regen Occult to make them appear as expected. Also mind that the reverse happens. If a floor is laid down above ground level, and MainView starts lagging, try issuing the Regen Occult command which will stop any sprites that have been hidden from drawing. Occulted tiles are re-calculated every time a Map loads.</p>-->
 
 		<p>Quit [Ctrl+Q] - quits MapView II</p>
 
