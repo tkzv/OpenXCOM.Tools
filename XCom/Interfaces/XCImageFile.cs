@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 
 
 namespace XCom.Interfaces
@@ -27,7 +28,7 @@ namespace XCom.Interfaces
 		/// <summary>
 		/// Image size that will be loaded.
 		/// </summary>
-		public System.Drawing.Size ImageSize
+		public Size ImageSize
 		{ get; private set; }
 		#endregion
 
@@ -42,7 +43,7 @@ namespace XCom.Interfaces
 				int width  = SpriteWidth,
 				int height = SpriteHeight)
 		{
-			ImageSize = new System.Drawing.Size(width, height);
+			ImageSize = new Size(width, height);
 		}
 		#endregion
 	}

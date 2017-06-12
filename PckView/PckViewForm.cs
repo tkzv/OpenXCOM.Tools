@@ -15,9 +15,6 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	internal delegate void PaletteChangedEventHandler(Palette pal);
-
-
 	public sealed partial class PckViewForm
 		:
 			Form
@@ -423,8 +420,6 @@ namespace PckView
 			string pfeTab = pfePck.Substring(0, pfePck.Length - 4) + SpriteCollection.TabExt;
 			if (File.Exists(pfeTab))
 			{
-				var fileType = new XCImageFile();
-
 				using (var strPck = File.OpenRead(pfePck))
 				using (var strTab = File.OpenRead(pfeTab))
 				{
@@ -448,7 +443,7 @@ namespace PckView
 
 					if (spriteset != null)
 					{
-						spriteset.ImageFile = fileType;
+						spriteset.ImageFile = new XCImageFile();
 						spriteset.Label = Path.GetFileNameWithoutExtension(pfePck);
 
 						if (spriteset.Pal == null)
@@ -721,4 +716,7 @@ namespace PckView
 		}
 		#endregion
 	}
+
+
+	internal delegate void PaletteChangedEventHandler(Palette pal);
 }
