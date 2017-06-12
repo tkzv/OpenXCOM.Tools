@@ -38,8 +38,10 @@ namespace PckView
 		private StatusBarPanel _sbpTileOver     = new StatusBarPanel();
 		private StatusBarPanel _sbpSpritesLabel = new StatusBarPanel();
 
-		private int _tileWidth;
-		private int _tileHeight;
+		// NOTE: if sprite-size is ever allowed to change these need to be replaced
+		// w/ 'Spriteset.ImageFile.ImageSize.Width/Height' here and elsewhere.
+		private const int _tileWidth  = XCImageFile.SpriteWidth  + SpriteMargin * 2 + 1;
+		private const int _tileHeight = XCImageFile.SpriteHeight + SpriteMargin * 2 + 1;
 
 		private int _tilesX = 1;
 
@@ -75,8 +77,8 @@ namespace PckView
 
 				_spriteset.Pal = PckViewForm.Pal;
 
-				_tileWidth  = value.ImageFile.ImageSize.Width  + SpriteMargin * 2 + 1;
-				_tileHeight = value.ImageFile.ImageSize.Height + SpriteMargin * 2 + 1;
+//				_tileWidth  = value.ImageFile.ImageSize.Width  + SpriteMargin * 2 + 1;
+//				_tileHeight = value.ImageFile.ImageSize.Height + SpriteMargin * 2 + 1;
 
 //				Height = TableHeight; ... nobody cares about the Height. Let .NET deal with it.
 

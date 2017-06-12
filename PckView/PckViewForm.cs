@@ -261,8 +261,8 @@ namespace PckView
 					var image = XCBitmap.LoadSpriteset(
 													b,
 													Pal,
-													_pnlView.Spriteset.ImageFile.ImageSize.Width,
-													_pnlView.Spriteset.ImageFile.ImageSize.Height,
+													XCImageFile.SpriteWidth,
+													XCImageFile.SpriteHeight,
 													1)[0];
 					_pnlView.SpriteReplace(_pnlView.Selected[0].Id, image);
 					Refresh();
@@ -288,8 +288,8 @@ namespace PckView
 																0,
 																Pal,
 																0, 0,
-																_pnlView.Spriteset.ImageFile.ImageSize.Width,
-																_pnlView.Spriteset.ImageFile.ImageSize.Height));
+																XCImageFile.SpriteWidth,
+																XCImageFile.SpriteHeight));
 					}
 					Refresh();
 				}
