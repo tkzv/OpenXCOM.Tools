@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using MapView.Forms.MainWindow;
+using MapView.Forms.MapObservers.RouteViews;
+using MapView.Forms.MapObservers.TopViews;
 
 using XCom;
 
@@ -13,7 +15,7 @@ namespace MapView
 	/// <summary>
 	/// General HelpScreen.
 	/// </summary>
-	internal sealed class Help
+	internal sealed class ColorHelp
 		:
 			Form
 	{
@@ -21,7 +23,7 @@ namespace MapView
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		internal Help()
+		internal ColorHelp()
 		{
 			InitializeComponent();
 
@@ -52,7 +54,7 @@ namespace MapView
 
 			Color color = Color.Empty;
 
-			string partType = MapView.Forms.MapObservers.TopViews.TopView.FloorColor;
+			string partType = TopView.FloorColor;
 			if (brushes.ContainsKey(partType))
 			{
 				color = ((SolidBrush)brushes[partType]).Color;
@@ -60,7 +62,7 @@ namespace MapView
 				label7.ForeColor = GetTextColor(color);
 			}
 
-			partType = MapView.Forms.MapObservers.TopViews.TopView.WestColor;
+			partType = TopView.WestColor;
 			if (pens.ContainsKey(partType))
 			{
 				color = ((Pen)pens[partType]).Color;
@@ -68,7 +70,7 @@ namespace MapView
 				label8.ForeColor = GetTextColor(color);
 			}
 
-			partType = MapView.Forms.MapObservers.TopViews.TopView.NorthColor;
+			partType = TopView.NorthColor;
 			if (pens.ContainsKey(partType))
 			{
 				color = ((Pen)pens[partType]).Color;
@@ -76,7 +78,7 @@ namespace MapView
 				label9.ForeColor = GetTextColor(color);
 			}
 
-			partType = MapView.Forms.MapObservers.TopViews.TopView.ContentColor;
+			partType = TopView.ContentColor;
 			if (brushes.ContainsKey(partType))
 			{
 				color = ((SolidBrush)brushes[partType]).Color;
@@ -96,7 +98,7 @@ namespace MapView
 
 			Color color = Color.Empty;
 
-			string partType = MapView.Forms.MapObservers.RouteViews.RouteView.WallColor;
+			string partType = RouteView.WallColor;
 			if (penWall.ContainsKey(partType))
 			{
 				color = ((Pen)penWall[partType]).Color;
@@ -108,7 +110,7 @@ namespace MapView
 				label15.ForeColor = GetTextColor(color);
 			}
 
-			partType = MapView.Forms.MapObservers.RouteViews.RouteView.ContentColor;
+			partType = RouteView.ContentColor;
 			if (brushContent.ContainsKey(partType))
 			{
 				color = ((SolidBrush)brushContent[partType]).Color;
@@ -372,7 +374,6 @@ namespace MapView
 			this.label15 = new System.Windows.Forms.Label();
 			this.label14 = new System.Windows.Forms.Label();
 			this.tpTileView = new System.Windows.Forms.TabPage();
-			this.label26 = new System.Windows.Forms.Label();
 			this.label25 = new System.Windows.Forms.Label();
 			this.rbTftd = new System.Windows.Forms.RadioButton();
 			this.rbUfo = new System.Windows.Forms.RadioButton();
@@ -392,6 +393,7 @@ namespace MapView
 			this.lblType02 = new System.Windows.Forms.Label();
 			this.lblType01 = new System.Windows.Forms.Label();
 			this.lblType00 = new System.Windows.Forms.Label();
+			this.label26 = new System.Windows.Forms.Label();
 			this.tabMain.SuspendLayout();
 			this.tpTopView.SuspendLayout();
 			this.gbTopViewColors.SuspendLayout();
@@ -410,15 +412,16 @@ namespace MapView
 			this.tabMain.Location = new System.Drawing.Point(0, 0);
 			this.tabMain.Name = "tabMain";
 			this.tabMain.SelectedIndex = 0;
-			this.tabMain.Size = new System.Drawing.Size(454, 276);
+			this.tabMain.Size = new System.Drawing.Size(454, 256);
 			this.tabMain.TabIndex = 0;
 			// 
 			// tpTopView
 			// 
+			this.tpTopView.Controls.Add(this.label26);
 			this.tpTopView.Controls.Add(this.gbTopViewColors);
 			this.tpTopView.Location = new System.Drawing.Point(4, 21);
 			this.tpTopView.Name = "tpTopView";
-			this.tpTopView.Size = new System.Drawing.Size(446, 251);
+			this.tpTopView.Size = new System.Drawing.Size(446, 231);
 			this.tpTopView.TabIndex = 1;
 			this.tpTopView.Text = "TopView";
 			// 
@@ -434,7 +437,7 @@ namespace MapView
 			this.gbTopViewColors.Size = new System.Drawing.Size(430, 55);
 			this.gbTopViewColors.TabIndex = 11;
 			this.gbTopViewColors.TabStop = false;
-			this.gbTopViewColors.Text = "Tile Colors";
+			this.gbTopViewColors.Text = "Blob Colors";
 			// 
 			// label7
 			// 
@@ -493,7 +496,7 @@ namespace MapView
 			this.tpRouteView.Controls.Add(this.gbRouteViewColors);
 			this.tpRouteView.Location = new System.Drawing.Point(4, 21);
 			this.tpRouteView.Name = "tpRouteView";
-			this.tpRouteView.Size = new System.Drawing.Size(446, 251);
+			this.tpRouteView.Size = new System.Drawing.Size(446, 231);
 			this.tpRouteView.TabIndex = 2;
 			this.tpRouteView.Text = "RouteView";
 			// 
@@ -508,7 +511,7 @@ namespace MapView
 			this.gbRouteViewColors.Size = new System.Drawing.Size(325, 55);
 			this.gbRouteViewColors.TabIndex = 21;
 			this.gbRouteViewColors.TabStop = false;
-			this.gbRouteViewColors.Text = "Tile Colors";
+			this.gbRouteViewColors.Text = "Blob Colors";
 			// 
 			// label16
 			// 
@@ -548,31 +551,21 @@ namespace MapView
 			// 
 			// tpTileView
 			// 
-			this.tpTileView.Controls.Add(this.label26);
 			this.tpTileView.Controls.Add(this.label25);
 			this.tpTileView.Controls.Add(this.rbTftd);
 			this.tpTileView.Controls.Add(this.rbUfo);
 			this.tpTileView.Controls.Add(this.gbTileViewColors);
 			this.tpTileView.Location = new System.Drawing.Point(4, 21);
 			this.tpTileView.Name = "tpTileView";
-			this.tpTileView.Size = new System.Drawing.Size(446, 251);
+			this.tpTileView.Size = new System.Drawing.Size(446, 231);
 			this.tpTileView.TabIndex = 3;
 			this.tpTileView.Text = "TileView";
 			// 
-			// label26
-			// 
-			this.label26.Location = new System.Drawing.Point(160, 35);
-			this.label26.Name = "label26";
-			this.label26.Size = new System.Drawing.Size(275, 25);
-			this.label26.TabIndex = 15;
-			this.label26.Text = "note: Help must be closed and re-opened to update any colors that were changed in" +
-	" Options.";
-			// 
 			// label25
 			// 
-			this.label25.Location = new System.Drawing.Point(5, 10);
+			this.label25.Location = new System.Drawing.Point(10, 10);
 			this.label25.Name = "label25";
-			this.label25.Size = new System.Drawing.Size(440, 15);
+			this.label25.Size = new System.Drawing.Size(335, 15);
 			this.label25.TabIndex = 14;
 			this.label25.Text = "These are background colors for the special tile properties.";
 			// 
@@ -789,10 +782,19 @@ namespace MapView
 			this.lblType00.Text = "00";
 			this.lblType00.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
+			// label26
+			// 
+			this.label26.Location = new System.Drawing.Point(10, 195);
+			this.label26.Name = "label26";
+			this.label26.Size = new System.Drawing.Size(425, 25);
+			this.label26.TabIndex = 16;
+			this.label26.Text = "The Colors viewer must be closed and re-opened to update any colors that may have" +
+	" changed in Options.";
+			// 
 			// Help
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
-			this.ClientSize = new System.Drawing.Size(454, 276);
+			this.ClientSize = new System.Drawing.Size(454, 256);
 			this.Controls.Add(this.tabMain);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -803,7 +805,7 @@ namespace MapView
 			this.ShowIcon = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Help";
+			this.Text = "Colors help";
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
 			this.tabMain.ResumeLayout(false);
 			this.tpTopView.ResumeLayout(false);
@@ -847,8 +849,8 @@ namespace MapView
 		private Label lblType14;
 		private RadioButton rbTftd;
 		private RadioButton rbUfo;
-		private System.Windows.Forms.Label label26;
-		private System.Windows.Forms.GroupBox gbTopViewColors;
-		private System.Windows.Forms.GroupBox gbRouteViewColors;
+		private Label label26;
+		private GroupBox gbTopViewColors;
+		private GroupBox gbRouteViewColors;
 	}
 }

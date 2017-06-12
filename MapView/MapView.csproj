@@ -240,7 +240,7 @@
     <Compile Include="Globals.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Forms\OtherForms\Help.cs">
+    <Compile Include="Forms\OtherForms\ColorHelp.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\OtherForms\MapInfoOutputBox.cs">
@@ -327,8 +327,8 @@
     <EmbeddedResource Include="Forms\OtherForms\MapResizeInputBox.resx">
       <DependentUpon>MapResizeInputBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\OtherForms\Help.resx">
-      <DependentUpon>Help.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\OtherForms\ColorHelp.resx">
+      <DependentUpon>ColorHelp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\OtherForms\MapInfoOutputBox.resx">
       <DependentUpon>MapInfoOutputBox.cs</DependentUpon>

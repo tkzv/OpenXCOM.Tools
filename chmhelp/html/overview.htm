@@ -5,31 +5,33 @@
 	<body>
 		<h2>Overview</h2>
 
-		<p>XCOM battlefields are comprised of several files.<br><br>
-&nbsp;&nbsp;- a .MAP file<br>
-&nbsp;&nbsp;- a .RMP file<br>
+		<p>Every XCOM battlefield-block/ -module is comprised of several files.<br><br>
+&nbsp;&nbsp;- one .MAP file<br>
+&nbsp;&nbsp;- one .RMP file<br>
 &nbsp;&nbsp;- one or more .PCK files<br>
 &nbsp;&nbsp;- one or more .TAB files<br>
 &nbsp;&nbsp;- one or more .MCD files</p>
 
-		<p>To play the game, these files must be located in subdirectories of XCOM's installation folder.<br><br>
-&nbsp;&nbsp;- MAPS contains .MAP files<br>
-&nbsp;&nbsp;- ROUTES contains .RMP files<br>
-&nbsp;&nbsp;- TERRAIN contains .PCK, .TAB, and .MCD files<br>
+		<p>To play the game, these files must be located in the subdirectories of XCOM's installation folder.<br><br>
+&nbsp;&nbsp;\MAPS contains .MAP files<br>
+&nbsp;&nbsp;\ROUTES contains .RMP files<br>
+&nbsp;&nbsp;\TERRAIN contains .PCK, .TAB, and .MCD files<br>
 
 		<p>The filenames of the .MAP and .RMP files must be the same. The filenames of the .PCK, .TAB, and .MCD files must also all be the same, but are usually different than the .MAP and .RMP files.</p>
 
-		<p>Each map, or tileset, is a 3-dimensional cuboid with width (x/column), height (y/row), and depth (z/level). The .MAP file specifies the dimensions of a map-block aka map-module, and it also contains generic references to tileparts, the specific parts being determined by the terrains that are allocated to the tileset.</p>
+		<p>Each map, or tileset, is a 3-dimensional space with width (x/column), height (y/row), and depth (z/level). The .MAP file specifies the dimensions of a map-block aka map-module, and it also contains generic references to tileparts, the specific parts being determined by the terrains that are allocated to the tileset.</p>
 
-		<p>Each tileset must also have a routes file. This file may be empty, but usually it contains the x,y,z coordinates of route-nodes, each of which has characteristics that determine how the node may be used during gameplay. Nodes are not visible to a player.</p>
+		<p>Each tileset must also have a routes file. This file may be empty, but usually it contains the x,y,z coordinates of route-nodes, each of which has characteristics that determine how each node may be used during gameplay. Nodes are not visible to a player.</p>
+
+		<p>Note that this documentation refers to each Map with all its associated files as a tileset. The three files that make up a terrain are called a terrain, and multiple terrains that have been added to a tileset may be called a terrainset.</p>
 
 		<p>MapView directly creates or edits the Map-files, the Route-files, and which terrains are used in any tileset.</p>
 
-		<p>It does *not* directly edit Pck-files, Tab-files, or Mcd-files. Pck-files contain sprites and a Pck-file is a spriteset. Tab-files contain indexes into its corresponding spriteset for the retrieval of a specific sprite to display the tilepart. Mcd-files contain data-records of tilepart characteristics, such as whether a particular tilepart is passable, explosive, blocks fire from spreading, and about 60 other things.</p>
+		<p>It does *not* directly edit Pck-files, Tab-files, or Mcd-files. Pck-files contain sprites and a Pck-file is a spriteset. Tab-files contain indices into its corresponding spriteset for the retrieval of a specific sprite to display a tilepart. Mcd-files contain records of tilepart characteristics, such as whether a particular tilepart is passable, explosive, blocks fire from spreading, and about 60 other things.</p>
 
 		<p>That's almost inarguably what makes XCOM battles so great. The permutations of the ways in which tileparts go together to make tilesets is what MapView is all about.</p>
 
-		<p>MapView allows the viewing of spritesets (PCK/TAB) and terrain records (MCD), while Volutar's MCD Editor is one of the generally accepted applications for their modification. There are other methods available such as BB's Toolkit and hex-editors.</p>
+		<p>MapView allows the viewing of spritesets (PCK+TAB files) and terrain records (MCD files), while Volutar's <a href="http://ufopaedia.org/index.php/MCDEdit">MCDEdit</a> is one of the generally accepted applications for their modification. There are other methods available such as <a href="https://www.google.ca/#q=bb%27s+toolkit">BB's Toolkit</a> or any decent hex-editor if you're <b>that</b> good.</p>
 
 		<br>
 		<h3>Technical information at Ufopaedia.org</h3>

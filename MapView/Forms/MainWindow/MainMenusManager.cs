@@ -59,7 +59,7 @@ namespace MapView.Forms.MainWindow
 				((Form)it.Tag).Show();
 				((Form)it.Tag).WindowState = FormWindowState.Normal;
 
-				if (it.Tag is Help) // update colors that user might have set in TileView's Option-settings.
+				if (it.Tag is ColorHelp) // update colors that user might have set in TileView's Option-settings.
 					ViewerFormsManager.HelpScreen.UpdateColors();
 			}
 			else
@@ -78,7 +78,7 @@ namespace MapView.Forms.MainWindow
 		{
 			string help = Path.GetDirectoryName(Application.ExecutablePath);
 				   help = Path.Combine(help, "MapView.chm");
-			System.Windows.Forms.Help.ShowHelp(XCMainWindow.Instance, "file://" + help);
+			Help.ShowHelp(XCMainWindow.Instance, "file://" + help);
 		}
 		#endregion
 
