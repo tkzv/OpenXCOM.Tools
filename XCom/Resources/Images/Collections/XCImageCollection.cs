@@ -14,10 +14,6 @@ namespace XCom
 
 		public string Label
 		{ get; set; }
-//		{ get; internal set; }
-
-//		public string Path
-//		{ get; set; }
 
 		public XCImageFile ImageFile
 		{ get; set; }
@@ -30,8 +26,8 @@ namespace XCom
 			{
 				_pal = value;
 
-				foreach (XCImage image in this)
-					image.Image.Palette = _pal.Colors;
+				foreach (XCImage sprite in this)
+					sprite.Image.Palette = _pal.Colors;
 			}
 		}
 
@@ -68,6 +64,5 @@ namespace XCom
 		{
 			foreach (XCImage image in this)
 				image.HQ2X();
-
 			_scale *= 2;
 		} */

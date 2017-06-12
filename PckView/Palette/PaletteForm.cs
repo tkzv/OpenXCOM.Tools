@@ -9,25 +9,14 @@ using XCom;
 namespace PckView
 {
 	/// <summary>
-	/// PaletteForm form.
+	/// Displays the currently active 256-color palette.
 	/// </summary>
 	internal sealed class PaletteForm
 		:
 			Form
 	{
-//		internal event PaletteIndexChangedEventHandler PaletteIndexChangedEvent;
-
-
 		#region Fields
 		private PalettePanel _pnlPalette;
-		#endregion
-
-
-		#region Properties
-		internal Palette Pal
-		{
-			set { _pnlPalette.Pal = value; }
-		}
 		#endregion
 
 
@@ -51,7 +40,6 @@ namespace PckView
 		#region Eventcalls
 		protected override void OnResize(EventArgs e)
 		{
-			LogFile.WriteLine("OnResize");
 //			base.OnResize(e);
 
 			if (_pnlPalette != null)
@@ -74,7 +62,7 @@ namespace PckView
 									"id:{0} (0x{0:X2})",
 									id);
 
-			var color = _pnlPalette.Pal[id];
+			var color = PckViewForm.Pal[id];
 			text += String.Format(
 								System.Globalization.CultureInfo.CurrentCulture,
 								" r:{0} g:{1} b:{2} a:{3}",
@@ -84,9 +72,6 @@ namespace PckView
 								color.A);
 
 			lblStatus.Text = text;
-
-//			if (PaletteIndexChangedEvent != null)
-//				PaletteIndexChangedEvent(id);
 		}
 		#endregion
 

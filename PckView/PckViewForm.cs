@@ -15,10 +15,35 @@ using XCom.Interfaces;
 
 namespace PckView
 {
+	internal delegate void PaletteChangedEventHandler(Palette pal);
+
+
 	public sealed partial class PckViewForm
 		:
 			Form
 	{
+		#region Events (static)
+		internal static event PaletteChangedEventHandler PaletteChangedEvent;
+		#endregion
+
+
+		#region Properties (static)
+		private static Palette _palette;
+		internal static Palette Pal
+		{
+			get { return _palette; }
+			set
+			{
+				_palette = value;
+
+				var handler = PaletteChangedEvent;
+				if (handler != null)
+					handler(_palette);
+			}
+		}
+		#endregion
+
+
 		#region Fields
 		private PckViewPanel _pnlView = new PckViewPanel();
 
@@ -42,9 +67,6 @@ namespace PckView
 		#region Properties
 		public bool SavedFile
 		{ get; private set; }
-
-		internal static Palette Pal
-		{ get; set; }
 		#endregion
 
 
@@ -115,9 +137,6 @@ namespace PckView
 
 			_paletteItems[Pal].Checked = true;
 
-			_pnlView.Pal =
-			_feditor.Pal = Pal;
-
 			_feditor.FormClosing += OnEditorFormClosing;
 
 
@@ -174,33 +193,30 @@ namespace PckView
 		#region EventCalls
 		private void OnSpritePackChanged(SpritePackChangedEventArgs e)
 		{
-			bool enabled = (e.Sprites != null);
+			bool valid = (e.Sprites != null);
+
 			miSaveAs.Enabled          =
 			miTransparentMenu.Enabled =
 			miBytesMenu.Enabled       =
-			miPaletteMenu.Enabled     = enabled;
+			miPaletteMenu.Enabled     = valid;
 		}
 
 		private void OnSpriteClick(object sender, EventArgs e)
 		{
-			if (   _pnlView.Selected != null // isSelected
-				&& _pnlView.Selected.Count != 0)
-			{
-				_miEdit.Enabled   = true;
-//				_miSave.Enabled   =
-//				_miDelete.Enabled = true;
+			bool valid = _pnlView.Selected != null
+					  && _pnlView.Selected.Count != 0;
 
+			_miEdit.Enabled   = valid;
+//			_miSave.Enabled   =
+//			_miDelete.Enabled = valid;
+
+			if (valid)
+			{
 				var selected = _pnlView.Selected[_pnlView.Selected.Count - 1];
 				BytesFormHelper.ReloadBytes(selected);
 			}
-			else // selected is null
-			{
-				_miEdit.Enabled   = false;
-//				_miSave.Enabled   =
-//				_miDelete.Enabled = false;
-
+			else
 				BytesFormHelper.ReloadBytes(null);
-			}
 		}
 
 		private void OnSpriteSaveClick(object sender, EventArgs e) // disabled in BuildViewerContextMenu()
@@ -249,7 +265,7 @@ namespace PckView
 					var b = new Bitmap(ofdBmp.FileName);
 					var image = XCBitmap.Load(
 											b,
-											_pnlView.Pal,
+											Pal,
 											_pnlView.Spriteset.ImageFile.ImageSize.Width,
 											_pnlView.Spriteset.ImageFile.ImageSize.Height,
 											1)[0];
@@ -275,7 +291,7 @@ namespace PckView
 						_pnlView.Spriteset.Add(XCBitmap.LoadTile(
 																b,
 																0,
-																_pnlView.Pal,
+																Pal,
 																0, 0,
 																_pnlView.Spriteset.ImageFile.ImageSize.Width,
 																_pnlView.Spriteset.ImageFile.ImageSize.Height));
@@ -304,7 +320,7 @@ namespace PckView
 				var selected = _pnlView.Selected[_pnlView.Selected.Count - 1];
 				if (selected != null)
 				{
-					_feditor.Sprite = selected.Image.Clone(); // NOTE: that's only a *clone***
+					_feditor.Sprite = selected.Image.Clone(); // NOTE: that's only a *clone**
 
 					if (!_feditor.Visible)
 					{
@@ -316,7 +332,6 @@ namespace PckView
 							_feditor.Left = Left + 20;
 							_feditor.Top  = Top  + 20;
 						}
-						_feditor.Pal = Pal;
 						_feditor.Show();
 					}
 					else
@@ -340,10 +355,7 @@ namespace PckView
 			{
 				_paletteItems[Pal].Checked = false;
 
-				Pal          =
-				_pnlView.Pal =
-				_feditor.Pal = pal; // ludicrous ..... It's all the same palette; but there's even more vars of it than seen here.
-
+				Pal = pal;
 				Pal.SetTransparent(miTransparent.Checked);
 
 				_paletteItems[Pal].Checked = true;
@@ -356,9 +368,7 @@ namespace PckView
 		{
 			Pal.SetTransparent(miTransparent.Checked = !miTransparent.Checked);
 
-			_pnlView.Spriteset.Pal =
-//			_viewPanel.Pal =
-			_feditor.Pal           = Pal;
+			_pnlView.Spriteset.Pal = Pal;
 
 			_pnlView.Refresh();
 			_feditor.Refresh();
@@ -384,6 +394,7 @@ namespace PckView
 
 		/// <summary>
 		/// Sets the current palette.
+		/// NOTE: Called only from TileView to set the palette externally.
 		/// </summary>
 		/// <param name="palette"></param>
 		public void SetPalette(string palette)
@@ -443,7 +454,7 @@ namespace PckView
 					}
 
 					OnPaletteClick(
-								_paletteItems[spriteset.ImageFile.DefaultPalette] as MenuItem,
+								_paletteItems[spriteset.ImageFile.DefaultPalette],
 								EventArgs.Empty);
 
 					_pnlView.Spriteset = spriteset;

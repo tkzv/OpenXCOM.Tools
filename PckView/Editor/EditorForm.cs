@@ -22,15 +22,6 @@ namespace PckView
 
 
 		#region Properties
-		internal Palette Pal
-		{
-			set
-			{
-				_fpalette.Pal  =
-				_pnlEditor.Pal = value;
-			}
-		}
-
 		internal XCImage Sprite
 		{
 			set { _pnlEditor.Sprite = value; }

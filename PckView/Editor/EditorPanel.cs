@@ -25,21 +25,6 @@ namespace PckView
 			}
 		}
 
-		private Palette _palette;
-		internal Palette Pal
-		{
-			set
-			{
-				_palette = value;
-
-				if (Sprite != null)
-				{
-					Sprite.Image.Palette = _palette.Colors;
-					Refresh();
-				}
-			}
-		}
-
 		private bool _grid;
 		internal bool Grid
 		{
@@ -96,6 +81,8 @@ namespace PckView
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 //			UpdateStyles();
+
+			PckViewForm.PaletteChangedEvent += OnPaletteChanged; // NOTE: lives the life of the app, so no leak.
 		}
 		#endregion
 
@@ -116,6 +103,15 @@ namespace PckView
 
 
 		#region EventCalls
+		private void OnPaletteChanged(Palette pal)
+		{
+			if (Sprite != null)
+			{
+				Sprite.Image.Palette = pal.Colors;
+				Refresh();
+			}
+		}
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			var graphics = e.Graphics;

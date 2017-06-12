@@ -104,9 +104,6 @@ namespace PckView
 			}
 		}
 
-		internal Palette Pal
-		{ get; set; }
-
 
 		private readonly List<SpriteSelected> _selected = new List<SpriteSelected>();
 		internal ReadOnlyCollection<SpriteSelected> Selected
@@ -477,7 +474,7 @@ namespace PckView
 											TableOffsetHori + _spriteWidth  - SpriteMargin * 2,
 											TableOffsetVert + _spriteHeight - SpriteMargin - 1);
 
-					Spriteset[id].Pal = Pal;
+					Spriteset[id].Pal = PckViewForm.Pal;
 					graphics.DrawImage(
 									Spriteset[id].Image,
 									TableOffsetHori + tileX * _spriteWidth  + SpriteMargin,
