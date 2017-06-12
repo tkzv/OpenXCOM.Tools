@@ -104,17 +104,17 @@ namespace PckView
 //						SharedSpace.SettingsDirectory,
 //						dirSettings);
 
-//			XConsole.AdZerg("Application directory: "  + _share[SharedSpace.ApplicationDirectory]);			// TODO: I don't trust that since changing SharedSpace.
-//			XConsole.AdZerg("Settings directory: "     + _share[SharedSpace.SettingsDirectory].ToString());	// it may well need an explicit cast to (PathInfo)
-//			XConsole.AdZerg("Custom directory: "       + _share[SharedSpace.CustomDirectory].ToString());
+//			XConsole.AdZerg("Application directory: " + _share[SharedSpace.ApplicationDirectory]);			// TODO: I don't trust that since changing SharedSpace.
+//			XConsole.AdZerg("Settings directory: "    + _share[SharedSpace.SettingsDirectory].ToString());	// it may well need an explicit cast to (PathInfo)
+//			XConsole.AdZerg("Custom directory: "      + _share[SharedSpace.CustomDirectory].ToString());
 			#endregion
 
 
 			_pnlView.Dock = DockStyle.Fill;
 			_pnlView.ContextMenu = ViewerContextMenu();
-			_pnlView.SpritePackChangedEvent += OnSpritePackChanged;
-			_pnlView.Click                  += OnSpriteClick;
-			_pnlView.DoubleClick            += OnSpriteEditorClick;
+			_pnlView.SpritesetChangedEvent += OnSpritesetChanged;
+			_pnlView.Click                 += OnSpriteClick;
+			_pnlView.DoubleClick           += OnSpriteEditorClick;
 
 			pnlView.Controls.Add(_pnlView);
 
@@ -191,10 +191,8 @@ namespace PckView
 
 
 		#region EventCalls
-		private void OnSpritePackChanged(SpritePackChangedEventArgs e)
+		private void OnSpritesetChanged(bool valid)
 		{
-			bool valid = (e.Sprites != null);
-
 			miSaveAs.Enabled          =
 			miTransparentMenu.Enabled =
 			miBytesMenu.Enabled       =
@@ -376,9 +374,6 @@ namespace PckView
 			var handler = PaletteChangedEvent;
 			if (handler != null)
 				handler(_palette);
-
-//			_pnlView.Refresh();
-//			_feditor.Refresh();
 		}
 
 		private void OnQuitClick(object sender, EventArgs e)

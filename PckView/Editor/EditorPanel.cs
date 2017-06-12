@@ -13,6 +13,12 @@ namespace PckView
 		:
 			Panel
 	{
+		#region Properties (static)
+		internal static EditorPanel Instance
+		{ get; set; }
+		#endregion
+
+
 		#region Properties
 		private XCImage _sprite;
 		internal XCImage Sprite
@@ -53,6 +59,8 @@ namespace PckView
 		/// </summary>
 		internal EditorPanel()
 		{
+			Instance = this;
+
 			// form level code to fix flicker
 //			protected override CreateParams CreateParams
 //			{
@@ -117,17 +125,23 @@ namespace PckView
 			var graphics = e.Graphics;
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-			int width  = Sprite.Image.Width;
-			int height = Sprite.Image.Height;
+			int width  = 32;
+			int height = 40;
 
-			for (int y = 0; y != height; ++y)
-			for (int x = 0; x != width;  ++x)
-				graphics.FillRectangle(
-									new SolidBrush(Sprite.Image.GetPixel(x, y)),
-									x * _scale,
-									y * _scale,
-										_scale,
-										_scale);
+			if (Sprite != null)
+			{
+				width  = Sprite.Image.Width;
+				height = Sprite.Image.Height;
+
+				for (int y = 0; y != height; ++y)
+				for (int x = 0; x != width;  ++x)
+					graphics.FillRectangle(
+										new SolidBrush(Sprite.Image.GetPixel(x, y)),
+										x * _scale,
+										y * _scale,
+											_scale,
+											_scale);
+			}
 
 			if (_grid)
 			{
@@ -147,6 +161,15 @@ namespace PckView
 									width * _scale,
 									y     * _scale);
 			}
+		}
+		#endregion
+
+
+		#region Methods
+		internal void ClearSprite()
+		{
+			Sprite = null;
+			Refresh();
 		}
 		#endregion
 	}

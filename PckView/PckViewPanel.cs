@@ -11,7 +11,7 @@ using XCom.Interfaces;					// XCImage
 
 namespace PckView
 {
-	internal delegate void SpritePackChangedEventHandler(SpritePackChangedEventArgs e);
+	internal delegate void SpritePackChangedEventHandler(bool valid);
 
 
 	internal sealed class PckViewPanel
@@ -19,7 +19,7 @@ namespace PckView
 			Panel
 	{
 		#region Events
-		internal event SpritePackChangedEventHandler SpritePackChangedEvent;
+		internal event SpritePackChangedEventHandler SpritesetChangedEvent;
 		#endregion
 
 
@@ -101,14 +101,16 @@ namespace PckView
 				OnSpriteClick(-1);
 				OnSpriteOver(-1);
 
-				if (SpritePackChangedEvent != null)
-					SpritePackChangedEvent(new SpritePackChangedEventArgs(value));
+				if (SpritesetChangedEvent != null)
+					SpritesetChangedEvent(value != null);
+
+				EditorPanel.Instance.ClearSprite();
 			}
 		}
 
 
-		private readonly List<SpriteSelected> _selected = new List<SpriteSelected>();
-		internal ReadOnlyCollection<SpriteSelected> Selected
+		private readonly List<SelectedSprite> _selected = new List<SelectedSprite>();
+		internal ReadOnlyCollection<SelectedSprite> Selected
 		{
 			get { return (Spriteset != null) ? _selected.AsReadOnly()
 											 : null; }
@@ -146,7 +148,6 @@ namespace PckView
 				   | ControlStyles.AllPaintingInWmPaint
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
-
 
 			_scrollBar.Dock = DockStyle.Right;
 			_scrollBar.SmallChange = 1;
@@ -315,7 +316,7 @@ namespace PckView
 					int id = tileX + tileY * _tilesX;
 					if (id < Spriteset.Count) // not out of bounds below
 					{
-						var selected   = new SpriteSelected();
+						var selected   = new SelectedSprite();
 						selected.X     = tileX;
 						selected.Y     = tileY;
 						selected.Id    = id;
@@ -560,7 +561,7 @@ namespace PckView
 	
 				if (Spriteset.Count != 0)
 				{
-					var selected = new SpriteSelected();
+					var selected = new SelectedSprite();
 					selected.Y   = lowestId / _tilesX;
 					selected.X   = lowestId - selected.Y;
 					selected.Id  = selected.X + selected.Y * _tilesX;
@@ -626,7 +627,7 @@ namespace PckView
 
 	#region SpritePackChanged args
 	/// <summary>
-	/// EventArgs for SpritePackChangedEvent.
+	/// EventArgs for SpritesetChangedEvent.
 	/// </summary>
 	internal sealed class SpritePackChangedEventArgs
 	{

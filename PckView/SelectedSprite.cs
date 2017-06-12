@@ -5,7 +5,7 @@ using XCom.Interfaces;
 
 namespace PckView
 {
-	internal sealed class SpriteSelected
+	internal sealed class SelectedSprite
 	{
 		internal int X
 		{ get; set; }

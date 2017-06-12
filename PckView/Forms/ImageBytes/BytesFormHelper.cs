@@ -12,13 +12,13 @@ namespace PckView.Forms.ImageBytes
 	/// </summary>
 	internal static class BytesFormHelper
 	{
-		private static SpriteSelected _selected;
+		private static SelectedSprite _selected;
 
 		private static Form fBytes;
 		private static RichTextBox rtbBytes;
 
 		internal static void ShowBytes(
-				SpriteSelected selected,
+				SelectedSprite selected,
 				MethodInvoker formClosedCallBack,
 				Point location)
 		{
@@ -26,7 +26,7 @@ namespace PckView.Forms.ImageBytes
 			ShowBytesCore(formClosedCallBack, location);
 		}
 
-		internal static void ReloadBytes(SpriteSelected selected)
+		internal static void ReloadBytes(SelectedSprite selected)
 		{
 			_selected = selected;
 			ReloadBytesCore();
