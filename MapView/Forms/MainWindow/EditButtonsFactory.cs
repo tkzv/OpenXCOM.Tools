@@ -109,8 +109,7 @@ namespace MapView.Forms.MainWindow
 			tsbCut.Size = new Size(25, 25);
 //			tsbCut.Text = "Cut";
 			tsbCut.ToolTipText = "Cut";
-			tsbCut.Click += (sender, e) =>
-			{
+			tsbCut.Click += (sender, e) => {
 				EnablePasteButtons();
 				_mainViewPanel.OnCut(sender, e);
 			};
@@ -125,8 +124,7 @@ namespace MapView.Forms.MainWindow
 			tsbCopy.Size = new Size(25, 25);
 //			tsbCopy.Text = "Copy";
 			tsbCopy.ToolTipText = "Copy";
-			tsbCopy.Click += (sender, e) =>
-			{
+			tsbCopy.Click += (sender, e) => {
 				EnablePasteButtons();
 				_mainViewPanel.OnCopy(sender, e);
 			};

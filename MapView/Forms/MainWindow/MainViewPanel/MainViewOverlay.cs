@@ -285,6 +285,8 @@ namespace MapView
 					((XCMapTile)MapBase[row, col]).Node = node;
 				}
 
+				((MapFileChild)MapBase).CalculateOccultations();
+
 				RefreshViewers();
 			}
 		}
@@ -323,6 +325,7 @@ namespace MapView
 						row = DragStart.Y;
 						row != MapBase.MapSize.Rows && (row - DragStart.Y) < _copied.GetLength(0);
 						++row)
+				{
 					for (int
 							col = DragStart.X;
 							col != MapBase.MapSize.Cols && (col - DragStart.X) < _copied.GetLength(1);
@@ -340,6 +343,9 @@ namespace MapView
 							}
 						}
 					}
+				}
+
+				((MapFileChild)MapBase).CalculateOccultations();
 
 				RefreshViewers();
 			}
