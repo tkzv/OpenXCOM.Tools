@@ -3,6 +3,8 @@ using System.Collections;
 using System.Drawing;
 using System.Windows.Forms;
 
+using MapView.Forms.MainWindow;
+
 using XCom;
 
 
@@ -23,7 +25,7 @@ namespace MapView
 		{
 			InitializeComponent();
 
-			OnCheckChanged(null, null);
+			OnCheckChanged(null, EventArgs.Empty);
 		}
 		#endregion
 
@@ -45,8 +47,8 @@ namespace MapView
 		/// </summary>
 		private void UpdateTopViewBlobColors()
 		{
-			var pens    = MapView.Forms.MainWindow.ViewerFormsManager.TopView.Control.GetWallPens();
-			var brushes = MapView.Forms.MainWindow.ViewerFormsManager.TopView.Control.GetFloorContentBrushes();
+			var pens    = ViewerFormsManager.TopView.Control.GetWallPens();
+			var brushes = ViewerFormsManager.TopView.Control.GetFloorContentBrushes();
 
 			Color color = Color.Empty;
 
@@ -89,8 +91,8 @@ namespace MapView
 		/// </summary>
 		private void UpdateRouteViewBlobColors()
 		{
-			var penWall      = MapView.Forms.MainWindow.ViewerFormsManager.RouteView.Control.GetWallPens();
-			var brushContent = MapView.Forms.MainWindow.ViewerFormsManager.RouteView.Control.GetContentBrushes();
+			var penWall      = ViewerFormsManager.RouteView.Control.GetWallPens();
+			var brushContent = ViewerFormsManager.RouteView.Control.GetContentBrushes();
 
 			Color color = Color.Empty;
 
@@ -125,7 +127,7 @@ namespace MapView
 			// requiring that the Help screen be reloaded. Neither form
 			// (Options or Help) is modal, so the code can't rely on that
 			// user-forced effect.
-			var brushesSpecial = MapView.Forms.MainWindow.ViewerFormsManager.TileView.Control.GetSpecialPropertyBrushes();
+			var brushesSpecial = ViewerFormsManager.TileView.Control.GetSpecialPropertyBrushes();
 
 			Color color = Color.Empty;
 
@@ -358,32 +360,17 @@ namespace MapView
 		private void InitializeComponent()
 		{
 			this.tabMain = new System.Windows.Forms.TabControl();
-			this.tpMainView = new System.Windows.Forms.TabPage();
-			this.label17 = new System.Windows.Forms.Label();
-			this.label12 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
 			this.tpTopView = new System.Windows.Forms.TabPage();
 			this.gbTopViewColors = new System.Windows.Forms.GroupBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
-			this.label22 = new System.Windows.Forms.Label();
-			this.label11 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
 			this.tpRouteView = new System.Windows.Forms.TabPage();
 			this.gbRouteViewColors = new System.Windows.Forms.GroupBox();
 			this.label16 = new System.Windows.Forms.Label();
 			this.label15 = new System.Windows.Forms.Label();
 			this.label14 = new System.Windows.Forms.Label();
-			this.label20 = new System.Windows.Forms.Label();
-			this.label18 = new System.Windows.Forms.Label();
-			this.label13 = new System.Windows.Forms.Label();
-			this.label21 = new System.Windows.Forms.Label();
 			this.tpTileView = new System.Windows.Forms.TabPage();
 			this.label26 = new System.Windows.Forms.Label();
 			this.label25 = new System.Windows.Forms.Label();
@@ -405,9 +392,7 @@ namespace MapView
 			this.lblType02 = new System.Windows.Forms.Label();
 			this.lblType01 = new System.Windows.Forms.Label();
 			this.lblType00 = new System.Windows.Forms.Label();
-			this.label19 = new System.Windows.Forms.Label();
 			this.tabMain.SuspendLayout();
-			this.tpMainView.SuspendLayout();
 			this.tpTopView.SuspendLayout();
 			this.gbTopViewColors.SuspendLayout();
 			this.tpRouteView.SuspendLayout();
@@ -418,7 +403,6 @@ namespace MapView
 			// 
 			// tabMain
 			// 
-			this.tabMain.Controls.Add(this.tpMainView);
 			this.tabMain.Controls.Add(this.tpTopView);
 			this.tabMain.Controls.Add(this.tpRouteView);
 			this.tabMain.Controls.Add(this.tpTileView);
@@ -429,60 +413,9 @@ namespace MapView
 			this.tabMain.Size = new System.Drawing.Size(454, 276);
 			this.tabMain.TabIndex = 0;
 			// 
-			// tpMainView
-			// 
-			this.tpMainView.Controls.Add(this.label17);
-			this.tpMainView.Controls.Add(this.label12);
-			this.tpMainView.Controls.Add(this.label2);
-			this.tpMainView.Controls.Add(this.label1);
-			this.tpMainView.Location = new System.Drawing.Point(4, 21);
-			this.tpMainView.Name = "tpMainView";
-			this.tpMainView.Size = new System.Drawing.Size(446, 251);
-			this.tpMainView.TabIndex = 0;
-			this.tpMainView.Text = "MainView";
-			// 
-			// label17
-			// 
-			this.label17.Location = new System.Drawing.Point(5, 95);
-			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(440, 15);
-			this.label17.TabIndex = 3;
-			this.label17.Text = "You MUST SAVE before selecting another map or your changes will be lost.";
-			// 
-			// label12
-			// 
-			this.label12.Location = new System.Drawing.Point(5, 70);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(440, 15);
-			this.label12.TabIndex = 2;
-			this.label12.Text = "Your window locations will be saved on program exit.";
-			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(5, 35);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(440, 25);
-			this.label2.TabIndex = 1;
-			this.label2.Text = "Turning the animation off makes it harder to see which tile you are going to clic" +
-	"k on.";
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(5, 10);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(440, 15);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Click anywhere to set the tile to edit.";
-			// 
 			// tpTopView
 			// 
 			this.tpTopView.Controls.Add(this.gbTopViewColors);
-			this.tpTopView.Controls.Add(this.label22);
-			this.tpTopView.Controls.Add(this.label11);
-			this.tpTopView.Controls.Add(this.label6);
-			this.tpTopView.Controls.Add(this.label5);
-			this.tpTopView.Controls.Add(this.label4);
-			this.tpTopView.Controls.Add(this.label3);
 			this.tpTopView.Location = new System.Drawing.Point(4, 21);
 			this.tpTopView.Name = "tpTopView";
 			this.tpTopView.Size = new System.Drawing.Size(446, 251);
@@ -496,7 +429,7 @@ namespace MapView
 			this.gbTopViewColors.Controls.Add(this.label9);
 			this.gbTopViewColors.Controls.Add(this.label10);
 			this.gbTopViewColors.Controls.Add(this.label8);
-			this.gbTopViewColors.Location = new System.Drawing.Point(10, 175);
+			this.gbTopViewColors.Location = new System.Drawing.Point(10, 10);
 			this.gbTopViewColors.Name = "gbTopViewColors";
 			this.gbTopViewColors.Size = new System.Drawing.Size(430, 55);
 			this.gbTopViewColors.TabIndex = 11;
@@ -555,65 +488,12 @@ namespace MapView
 			this.label8.Text = "west";
 			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// label22
-			// 
-			this.label22.Location = new System.Drawing.Point(5, 135);
-			this.label22.Name = "label22";
-			this.label22.Size = new System.Drawing.Size(440, 25);
-			this.label22.TabIndex = 9;
-			this.label22.Text = "Right clicking on the grid will set the selected tile in TileView in the selected" +
-	" portion on the bottom.";
-			// 
-			// label11
-			// 
-			this.label11.Location = new System.Drawing.Point(5, 110);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(440, 15);
-			this.label11.TabIndex = 8;
-			this.label11.Text = "Setting the size will make things larger/smaller.";
-			// 
-			// label6
-			// 
-			this.label6.Location = new System.Drawing.Point(5, 85);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(440, 15);
-			this.label6.TabIndex = 3;
-			this.label6.Text = "Double right click to clear the clicked on tile.";
-			// 
-			// label5
-			// 
-			this.label5.Location = new System.Drawing.Point(5, 60);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(440, 15);
-			this.label5.TabIndex = 2;
-			this.label5.Text = "Right click to set the currently selected tile to the one selected in TileView.";
-			// 
-			// label4
-			// 
-			this.label4.Location = new System.Drawing.Point(5, 35);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(440, 15);
-			this.label4.TabIndex = 1;
-			this.label4.Text = "Double left click to set the currently selected tile in TileView.";
-			// 
-			// label3
-			// 
-			this.label3.Location = new System.Drawing.Point(5, 10);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(440, 15);
-			this.label3.TabIndex = 0;
-			this.label3.Text = "Click anywhere to set the tile to edit.";
-			// 
 			// tpRouteView
 			// 
 			this.tpRouteView.Controls.Add(this.gbRouteViewColors);
-			this.tpRouteView.Controls.Add(this.label20);
-			this.tpRouteView.Controls.Add(this.label18);
-			this.tpRouteView.Controls.Add(this.label13);
-			this.tpRouteView.Controls.Add(this.label21);
-			this.tpRouteView.Location = new System.Drawing.Point(4, 22);
+			this.tpRouteView.Location = new System.Drawing.Point(4, 21);
 			this.tpRouteView.Name = "tpRouteView";
-			this.tpRouteView.Size = new System.Drawing.Size(446, 250);
+			this.tpRouteView.Size = new System.Drawing.Size(446, 251);
 			this.tpRouteView.TabIndex = 2;
 			this.tpRouteView.Text = "RouteView";
 			// 
@@ -623,7 +503,7 @@ namespace MapView
 			this.gbRouteViewColors.Controls.Add(this.label16);
 			this.gbRouteViewColors.Controls.Add(this.label15);
 			this.gbRouteViewColors.Controls.Add(this.label14);
-			this.gbRouteViewColors.Location = new System.Drawing.Point(10, 115);
+			this.gbRouteViewColors.Location = new System.Drawing.Point(10, 10);
 			this.gbRouteViewColors.Name = "gbRouteViewColors";
 			this.gbRouteViewColors.Size = new System.Drawing.Size(325, 55);
 			this.gbRouteViewColors.TabIndex = 21;
@@ -666,38 +546,6 @@ namespace MapView
 			this.label14.Text = "west";
 			this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// label20
-			// 
-			this.label20.Location = new System.Drawing.Point(5, 85);
-			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(440, 15);
-			this.label20.TabIndex = 19;
-			this.label20.Text = "Right click on the grid to place a new node.";
-			// 
-			// label18
-			// 
-			this.label18.Location = new System.Drawing.Point(5, 60);
-			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(440, 15);
-			this.label18.TabIndex = 18;
-			this.label18.Text = "After editing the distance, you must press enter to save the change.";
-			// 
-			// label13
-			// 
-			this.label13.Location = new System.Drawing.Point(5, 35);
-			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(440, 15);
-			this.label13.TabIndex = 17;
-			this.label13.Text = "Clicking a green square will select a node to edit.";
-			// 
-			// label21
-			// 
-			this.label21.Location = new System.Drawing.Point(5, 10);
-			this.label21.Name = "label21";
-			this.label21.Size = new System.Drawing.Size(440, 15);
-			this.label21.TabIndex = 9;
-			this.label21.Text = "Click anywhere to set the tile to edit.";
-			// 
 			// tpTileView
 			// 
 			this.tpTileView.Controls.Add(this.label26);
@@ -705,7 +553,6 @@ namespace MapView
 			this.tpTileView.Controls.Add(this.rbTftd);
 			this.tpTileView.Controls.Add(this.rbUfo);
 			this.tpTileView.Controls.Add(this.gbTileViewColors);
-			this.tpTileView.Controls.Add(this.label19);
 			this.tpTileView.Location = new System.Drawing.Point(4, 21);
 			this.tpTileView.Name = "tpTileView";
 			this.tpTileView.Size = new System.Drawing.Size(446, 251);
@@ -714,7 +561,7 @@ namespace MapView
 			// 
 			// label26
 			// 
-			this.label26.Location = new System.Drawing.Point(160, 60);
+			this.label26.Location = new System.Drawing.Point(160, 35);
 			this.label26.Name = "label26";
 			this.label26.Size = new System.Drawing.Size(275, 25);
 			this.label26.TabIndex = 15;
@@ -723,7 +570,7 @@ namespace MapView
 			// 
 			// label25
 			// 
-			this.label25.Location = new System.Drawing.Point(5, 35);
+			this.label25.Location = new System.Drawing.Point(5, 10);
 			this.label25.Name = "label25";
 			this.label25.Size = new System.Drawing.Size(440, 15);
 			this.label25.TabIndex = 14;
@@ -731,7 +578,7 @@ namespace MapView
 			// 
 			// rbTftd
 			// 
-			this.rbTftd.Location = new System.Drawing.Point(20, 75);
+			this.rbTftd.Location = new System.Drawing.Point(20, 50);
 			this.rbTftd.Name = "rbTftd";
 			this.rbTftd.Size = new System.Drawing.Size(55, 15);
 			this.rbTftd.TabIndex = 13;
@@ -742,7 +589,7 @@ namespace MapView
 			// rbUfo
 			// 
 			this.rbUfo.Checked = true;
-			this.rbUfo.Location = new System.Drawing.Point(20, 55);
+			this.rbUfo.Location = new System.Drawing.Point(20, 30);
 			this.rbUfo.Name = "rbUfo";
 			this.rbUfo.Size = new System.Drawing.Size(55, 15);
 			this.rbUfo.TabIndex = 12;
@@ -769,7 +616,7 @@ namespace MapView
 			this.gbTileViewColors.Controls.Add(this.lblType02);
 			this.gbTileViewColors.Controls.Add(this.lblType01);
 			this.gbTileViewColors.Controls.Add(this.lblType00);
-			this.gbTileViewColors.Location = new System.Drawing.Point(10, 100);
+			this.gbTileViewColors.Location = new System.Drawing.Point(10, 75);
 			this.gbTileViewColors.Name = "gbTileViewColors";
 			this.gbTileViewColors.Size = new System.Drawing.Size(430, 150);
 			this.gbTileViewColors.TabIndex = 11;
@@ -942,14 +789,6 @@ namespace MapView
 			this.lblType00.Text = "00";
 			this.lblType00.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// label19
-			// 
-			this.label19.Location = new System.Drawing.Point(5, 10);
-			this.label19.Name = "label19";
-			this.label19.Size = new System.Drawing.Size(440, 15);
-			this.label19.TabIndex = 10;
-			this.label19.Text = "Left click to select the tile to place.";
-			// 
 			// Help
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
@@ -967,7 +806,6 @@ namespace MapView
 			this.Text = "Help";
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
 			this.tabMain.ResumeLayout(false);
-			this.tpMainView.ResumeLayout(false);
 			this.tpTopView.ResumeLayout(false);
 			this.gbTopViewColors.ResumeLayout(false);
 			this.tpRouteView.ResumeLayout(false);
@@ -980,30 +818,14 @@ namespace MapView
 		#endregion
 
 		private TabControl tabMain;
-		private TabPage tpMainView;
 		private TabPage tpTopView;
 		private TabPage tpRouteView;
 		private TabPage tpTileView;
-		private Label label1;
-		private Label label2;
-		private Label label3;
-		private Label label4;
-		private Label label5;
-		private Label label6;
 		private Label label7;
 		private Label label10;
 		private Label label8;
-		private Label label11;
-		private Label label12;
 		private Label label14;
 		private Label label16;
-		private Label label21;
-		private Label label13;
-		private Label label17;
-		private Label label18;
-		private Label label19;
-		private Label label20;
-		private Label label22;
 		private Label label9;
 		private Label label15;
 		private Label label25;

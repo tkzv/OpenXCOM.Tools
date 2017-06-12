@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 
 using DSShared.Windows;
@@ -67,6 +68,18 @@ namespace MapView.Forms.MainWindow
 				((Form)it.Tag).Close();
 			}
 		}
+
+		/// <summary>
+		/// Shows the CHM helpfile.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnHelpClick(object sender, EventArgs e)
+		{
+			string help = Path.GetDirectoryName(Application.ExecutablePath);
+				   help = Path.Combine(help, "MapView.chm");
+			System.Windows.Forms.Help.ShowHelp(XCMainWindow.Instance, "file://" + help);
+		}
 		#endregion
 
 
@@ -93,8 +106,12 @@ namespace MapView.Forms.MainWindow
 //			CreateMenuItem(fconsole, RegistryInfo.Console, _menuViewers); // TODO: either use the Console or lose it.
 
 			// Help menuitems ->
-			CreateMenuItem(ViewerFormsManager.HelpScreen,  "Help",  _menuHelp);
-			CreateMenuItem(ViewerFormsManager.AboutScreen, "About", _menuHelp);
+			var miHelp = new MenuItem("Help");
+			miHelp.Click += OnHelpClick;
+			_menuHelp.MenuItems.Add(miHelp);
+
+			CreateMenuItem(ViewerFormsManager.HelpScreen,  "Colors", _menuHelp);
+			CreateMenuItem(ViewerFormsManager.AboutScreen, "About",  _menuHelp);
 
 
 			AddViewersOptions();

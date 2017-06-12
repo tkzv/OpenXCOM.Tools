@@ -65,6 +65,7 @@ namespace XCom
 		{
 			FileId = fileId;
 			Pal    = pal;
+
 			_spriteset = spriteset;
 
 //			this.imageNum = imageNum;
