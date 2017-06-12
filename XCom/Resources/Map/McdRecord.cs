@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-//using System.Drawing;
 
 
-#region About the mcdEntry
+#region About the MCD record
 // http://ufo2k-allegro.lxnt.info/srcdocs/terrapck_8h-source.html
 /* struct MCD
 {
@@ -89,11 +88,6 @@ namespace XCom
 		public int Id
 		{ get; private set; }
 
-//		public Rectangle Bounds { get; set; }
-
-//		public int Width  { get; set; }
-//		public int Height { get; set; }
-
 		public byte Image1 { get; set; }
 		public byte Image2 { get; set; }
 		public byte Image3 { get; set; }
@@ -169,8 +163,6 @@ namespace XCom
 //		unsigned char LOFT[12]; // The 12 levels of references into GEODATA\LOFTEMPS.DAT
 		public string LoftReference   { get; set; }
 
-//		public string Reference0To30  { get; set; }
-//		public string Reference30To62 { get; set; }
 		public string ByteTable       { get; set; }
 		#endregion
 
@@ -178,7 +170,7 @@ namespace XCom
 		#region Methods
 		public List<byte> GetLoftList()
 		{
-			var list = new List<byte>(); // question: why is this a List
+			var list = new List<byte>();
 
 			list.Add(Loft1);
 			list.Add(Loft2);

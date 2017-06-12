@@ -621,14 +621,14 @@ namespace XCom
 		/// <param name="height"></param>
 		/// <param name="pad"></param>
 		/// <returns></returns>
-		public static XCImageCollection LoadSpriteset(
+		public static SpriteCollectionBase LoadSpriteset(
 				Bitmap bmp,
 				Palette pal,
 				int width,
 				int height,
 				int pad)
 		{
-			var list = new XCImageCollection();
+			var list = new SpriteCollectionBase();
 
 			int cols = (bmp.Width  + pad) / (width  + pad);
 			int rows = (bmp.Height + pad) / (height + pad);

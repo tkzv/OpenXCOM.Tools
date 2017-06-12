@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-//using System.Drawing;
 
 
 namespace XCom
@@ -10,7 +9,7 @@ namespace XCom
 		// TODO: do some basic checks, like issue a warning if the Die or
 		// Alternate MCD entry is outside the range, etc.
 
-		internal static McdRecord CreateRecord(IList<byte> bindata) // question: why is this a List
+		internal static McdRecord CreateRecord(IList<byte> bindata)
 		{
 			var record = new McdRecord();
 
@@ -125,22 +124,6 @@ namespace XCom
 			#endregion
 
 			record.ByteTable = BytesTable(bindata);
-//			record.Reference0To30 = string.Empty;
-//			for (int i = 0; i != 30; ++i)
-//				record.Reference0To30 += bindata[i] + " ";
-//			
-//			record.Reference30To62 = string.Empty;
-//			for (int i = 30; i != 62; ++i)
-//				record.Reference30To62 += bindata[i] + " ";
-
-//			record.Bounds = new Rectangle(
-//										0,
-//										record.TileOffset,
-//										PckImage.Width,
-//										PckImage.Height - record.TileOffset);
-//			record.Width  = PckImage.Width;
-//			record.Height = PckImage.Height - record.TileOffset;
-
 			return record;
 		}
 
@@ -153,8 +136,8 @@ namespace XCom
 			string text = String.Empty;
 
 			const int wrap = 8;
-			int wrapCount = 0;
-			int row = 0;
+			int wrapCount  = 0;
+			int row        = 0;
 
 			foreach (byte b in bindata)
 			{

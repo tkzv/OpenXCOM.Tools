@@ -423,12 +423,12 @@ namespace PckView
 			string pfeTab = pfePck.Substring(0, pfePck.Length - 4) + SpriteCollection.TabExt;
 			if (File.Exists(pfeTab))
 			{
-				var fileType = new XCImageFile(32, 40);
+				var fileType = new XCImageFile();
 
 				using (var strPck = File.OpenRead(pfePck))
 				using (var strTab = File.OpenRead(pfeTab))
 				{
-					XCImageCollection spriteset = null;
+					SpriteCollectionBase spriteset = null;
 					try
 					{
 						spriteset = new SpriteCollection(

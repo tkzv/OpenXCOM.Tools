@@ -125,16 +125,10 @@ namespace PckView
 			var graphics = e.Graphics;
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-			int width  = 32;
-			int height = 40;
-
 			if (Sprite != null)
 			{
-				width  = Sprite.Image.Width;
-				height = Sprite.Image.Height;
-
-				for (int y = 0; y != height; ++y)
-				for (int x = 0; x != width;  ++x)
+				for (int y = 0; y != XCImageFile.SpriteHeight; ++y)
+				for (int x = 0; x != XCImageFile.SpriteWidth;  ++x)
 					graphics.FillRectangle(
 										new SolidBrush(Sprite.Image.GetPixel(x, y)),
 										x * _scale,
@@ -145,21 +139,21 @@ namespace PckView
 
 			if (_grid)
 			{
-				for (int x = 0; x != width + 1; ++x)
+				for (int x = 0; x != XCImageFile.SpriteWidth + 1; ++x)
 					graphics.DrawLine(
 									Pens.Black,
-									x      * _scale,
+									x * _scale,
 									0,
-									x      * _scale,
-									height * _scale);
+									x * _scale,
+									XCImageFile.SpriteHeight * _scale);
 
-				for (int y = 0; y != height + 1; ++y)
+				for (int y = 0; y != XCImageFile.SpriteHeight + 1; ++y)
 					graphics.DrawLine(
 									Pens.Black,
 									0,
-									y     * _scale,
-									width * _scale,
-									y     * _scale);
+									y * _scale,
+									XCImageFile.SpriteWidth * _scale,
+									y * _scale);
 			}
 		}
 		#endregion

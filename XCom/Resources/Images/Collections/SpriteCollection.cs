@@ -11,15 +11,15 @@ namespace XCom
 	/// </summary>
 	public sealed class SpriteCollection
 		:
-			XCImageCollection
+			SpriteCollectionBase
 	{
-		#region Constants
+		#region Fields (static)
 		public const string PckExt = ".PCK";
 		public const string TabExt = ".TAB";
 		#endregion
 
 
-		#region Fields & Properties
+		#region Properties
 		private int _bpp;
 		public int Bpp
 		{
@@ -103,7 +103,7 @@ namespace XCom
 		public static void SaveSpriteset(
 				string dir,
 				string file,
-				XCImageCollection imageset,
+				SpriteCollectionBase imageset,
 				int lenTabOffset)
 		{
 			string pfePck = Path.Combine(dir, file + PckExt);

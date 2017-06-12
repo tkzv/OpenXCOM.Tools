@@ -7,16 +7,13 @@ using XCom.Interfaces;
 
 namespace XCom
 {
-	public sealed class PckImage // [xImage(32,40)]
+	public sealed class PckImage
 		:
 			XCImage
 	{
 		#region Fields (static)
 		private const byte TransparentId = 0xFE;	// should that be '0x0' - there's something "funny"
 													// going on with using id=254 as the transparent index.
-		public const int Width  = 32;
-		public const int Height = 40;
-
 		private static int _idCanonical;
 		#endregion
 
@@ -76,7 +73,7 @@ namespace XCom
 			Id = _idCanonical++;
 
 //			image = new Bitmap(Width, Height, PixelFormat.Format8bppIndexed);
-			_expanded = new byte[Width * Height];
+			_expanded = new byte[XCImageFile.SpriteWidth * XCImageFile.SpriteHeight];
 
 			for (int i = 0; i != _expanded.Length; ++i)
 				_expanded[i] = TransparentId;
@@ -85,7 +82,7 @@ namespace XCom
 			int posExpanded = 0;
 
 			if (bindata[0] != 254)
-				posExpanded = bindata[posStart++] * Width;
+				posExpanded = bindata[posStart++] * XCImageFile.SpriteWidth;
 
 			for (int i = posStart; i < bindata.Length; ++i)
 			{
@@ -112,13 +109,13 @@ namespace XCom
 			Bindata = _expanded;
 		
 			Image = XCBitmap.MakeBitmap8(
-										Width,
-										Height,
+										XCImageFile.SpriteWidth,
+										XCImageFile.SpriteHeight,
 										_expanded,
 										pal.Colors);
 			SpriteGray = XCBitmap.MakeBitmap8(
-										Width,
-										Height,
+										XCImageFile.SpriteWidth,
+										XCImageFile.SpriteHeight,
 										_expanded,
 										pal.Grayscale.Colors);
 		}

@@ -6,11 +6,11 @@ using XCom.Interfaces;
 
 namespace XCom
 {
-	public class XCImageCollection
+	public class SpriteCollectionBase
 		:
 			List<XCImage>
 	{
-		#region Fields and Properties
+		#region Properties
 
 		public string Label
 		{ get; set; }
@@ -50,7 +50,6 @@ namespace XCom
 
 
 		#region Methods
-
 		public void Remove(int id)
 		{
 			RemoveAt(id);

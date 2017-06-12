@@ -77,8 +77,8 @@ namespace PckView
 		private void OnLoad(object sender, EventArgs e)
 		{
 			ClientSize = new Size(
-								PckImage.Width  * 10,
-								PckImage.Height * 10 + _trackBar.Height);
+								XCImageFile.SpriteWidth  * 10,
+								XCImageFile.SpriteHeight * 10 + _trackBar.Height);
 		}
 
 		private void OnTrackScroll(object sender, EventArgs e)

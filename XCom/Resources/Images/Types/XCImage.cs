@@ -62,11 +62,11 @@ namespace XCom.Interfaces
 										bindata,
 										Pal.Colors);
 		}
-		private XCImage(Bitmap image, int id)
-		{
-			Image = image;
-			FileId = id;
-		}
+//		private XCImage(Bitmap image, int id)
+//		{
+//			Image = image;
+//			FileId = id;
+//		}
 //		public XCImage()
 //			:
 //				this(
@@ -78,37 +78,36 @@ namespace XCom.Interfaces
 		#endregion
 
 
-		#region Methods
-		/// <summary>
-		/// Clones this image for use by PckView.
-		/// </summary>
-		/// <returns>pointer to a new XCImage or null</returns>
-		public XCImage Clone()
-		{
-			if (Bindata != null)
-			{
-				var bindata = new byte[Bindata.Length];
-				for (int i = 0; i != bindata.Length; ++i)
-					bindata[i] = Bindata[i];
-
-				return new XCImage(
-								bindata,
-								Image.Width,
-								Image.Height,
-								Pal,
-								FileId);
-			}
-
-			// TODO: this arbitrary Clone() method should probably be disallowed:
-			return (Image != null) ? new XCImage((Bitmap)Image.Clone(), FileId)
-								   : null;
-
-		}
+//		#region Methods
+//		/// <summary>
+//		/// Clones this image for use by PckView.
+//		/// </summary>
+//		/// <returns>pointer to a new XCImage or null</returns>
+//		public XCImage Clone()
+//		{
+//			if (Bindata != null)
+//			{
+//				var bindata = new byte[Bindata.Length];
+//				for (int i = 0; i != bindata.Length; ++i)
+//					bindata[i] = Bindata[i];
+//
+//				return new XCImage(
+//								bindata,
+//								Image.Width,
+//								Image.Height,
+//								Pal,
+//								FileId);
+//			}
+//
+//			// TODO: this arbitrary Clone() method should probably be disallowed:
+//			return (Image != null) ? new XCImage(Image.Clone() as Bitmap, FileId)
+//								   : null;
+//		}
 
 //		internal void HQ2X()
 //		{
 //			Image = Bmp.HQ2X(/*Image*/);
 //		}
-		#endregion
+//		#endregion
 	}
 }

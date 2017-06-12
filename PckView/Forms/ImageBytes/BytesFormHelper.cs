@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
+using XCom.Interfaces;
+
 
 namespace PckView.Forms.ImageBytes
 {
@@ -85,17 +87,14 @@ namespace PckView.Forms.ImageBytes
 		{
 			string text = String.Empty;
 
-			const int wrap = 32;	// width of a typical sprite.
-			int wrapCount = 0;		// typical sprites have only 40 rows.
-			int row = 0;
+			int wrapCount = 0;
+			int row       = 0;
 
 			foreach (byte b in _selected.Image.Bindata)
 			{
-				if (wrapCount % wrap == 0)
+				if (wrapCount % XCImageFile.SpriteWidth == 0)
 				{
-					if (++row < 10)
-						text += " ";
-
+					if (++row < 10) text += " ";
 					text += row + ": ";
 				}
 
@@ -105,8 +104,8 @@ namespace PckView.Forms.ImageBytes
 					text += " ";
 
 				text += " " + b;
-				text += (++wrapCount % wrap == 0) ? Environment.NewLine
-												  : " ";
+				text += (++wrapCount % XCImageFile.SpriteWidth == 0) ? Environment.NewLine
+																	 : " ";
 			}
 
 			rtbBytes.Text = text;

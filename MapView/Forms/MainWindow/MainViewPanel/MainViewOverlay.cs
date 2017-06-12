@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using MapView.Forms.MainWindow;
 
 using XCom;
+using XCom.Interfaces;
 using XCom.Interfaces.Base;
 
 
@@ -762,9 +763,6 @@ namespace MapView
 		}
 
 
-		private const int SpriteWidth  = 32;
-		private const int SpriteHeight = 40;
-
 		/// <summary>
 		/// Draws the tileparts in the Tile.
 		/// </summary>
@@ -854,7 +852,7 @@ namespace MapView
 				_graphics.DrawImage(
 								sprite,
 								rect,
-								0, 0, SpriteWidth, SpriteHeight,
+								0, 0, XCImageFile.SpriteWidth, XCImageFile.SpriteHeight,
 								GraphicsUnit.Pixel,
 								_spriteAttributes);
 			else

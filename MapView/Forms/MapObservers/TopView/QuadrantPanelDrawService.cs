@@ -6,6 +6,7 @@ using System.Drawing.Drawing2D;
 using MapView.Forms.MainWindow;
 
 using XCom;
+using XCom.Interfaces;
 
 
 namespace MapView.Forms.MapObservers.TopViews
@@ -15,13 +16,10 @@ namespace MapView.Forms.MapObservers.TopViews
 			IDisposable
 	{
 		#region Fields
-		private const int SpriteWidth  = 32; // PckImage.Width
-		private const int SpriteHeight = 40; // PckImage.Height
-
 		private const int MarginHori = 5;
 		private const int MarginVert = 3;
 
-		internal const int QuadWidthTotal = SpriteWidth + MarginHori * 2;
+		internal const int QuadWidthTotal = XCImageFile.SpriteWidth + MarginHori * 2;
 
 		internal const int StartX = 26;
 		private  const int StartY =  3;
@@ -83,14 +81,14 @@ namespace MapView.Forms.MapObservers.TopViews
 								StartX + QuadWidthTotal * quad - 1,
 								StartY);
 				var p1 = new Point(
-								StartX + QuadWidthTotal * quad + SpriteWidth + 1,
+								StartX + QuadWidthTotal * quad + XCImageFile.SpriteWidth + 1,
 								StartY);
 				var p2 = new Point(
-								StartX + QuadWidthTotal * quad + SpriteWidth + 1,
-								StartY + SpriteHeight + 1);
+								StartX + QuadWidthTotal * quad + XCImageFile.SpriteWidth + 1,
+								StartY + XCImageFile.SpriteHeight + 1);
 				var p3 = new Point(
 								StartX + QuadWidthTotal * quad,
-								StartY + SpriteHeight + 1);
+								StartY + XCImageFile.SpriteHeight + 1);
 				var p4 = new Point(
 								StartX + QuadWidthTotal * quad,
 								StartY);
@@ -274,8 +272,8 @@ namespace MapView.Forms.MapObservers.TopViews
 							Door,
 							Font,
 							System.Drawing.Brushes.Black,
-							StartX + (SpriteWidth  - DoorWidth) / 2 + QuadWidthTotal * (int)quadType + 1,
-							StartY +  SpriteHeight - Font.Height + PrintOffsetY);
+							StartX + (XCImageFile.SpriteWidth  - DoorWidth) / 2 + QuadWidthTotal * (int)quadType + 1,
+							StartY +  XCImageFile.SpriteHeight - Font.Height + PrintOffsetY);
 		}
 
 		/// <summary>
@@ -312,8 +310,8 @@ namespace MapView.Forms.MapObservers.TopViews
 							type,
 							Font,
 							System.Drawing.Brushes.Black,
-							StartX + (SpriteWidth  - width) / 2 + QuadWidthTotal * (int)quadType + 1,
-							StartY +  SpriteHeight + MarginVert);
+							StartX + (XCImageFile.SpriteWidth  - width) / 2 + QuadWidthTotal * (int)quadType + 1,
+							StartY +  XCImageFile.SpriteHeight + MarginVert);
 		}
 
 		/// <summary>
@@ -344,8 +342,8 @@ namespace MapView.Forms.MapObservers.TopViews
 								brush,
 								new RectangleF(
 											StartX + QuadWidthTotal * (int)quadType,
-											StartY + SpriteHeight + MarginVert + Font.Height + 1,
-											SpriteWidth,
+											StartY + XCImageFile.SpriteHeight + MarginVert + Font.Height + 1,
+											XCImageFile.SpriteWidth,
 											SwatchHeight));
 		}
 

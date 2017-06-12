@@ -65,8 +65,8 @@ namespace PckView
 
 
 		#region Properties
-		private XCImageCollection _spriteset;
-		internal XCImageCollection Spriteset
+		private SpriteCollectionBase _spriteset;
+		internal SpriteCollectionBase Spriteset
 		{
 			get { return _spriteset; }
 			set
@@ -623,22 +623,4 @@ namespace PckView
 //			Bmp.SendToSaver(file, _collection, pal, numAcross(), 1);
 //		}
 	}
-
-
-	#region SpritePackChanged args
-	/// <summary>
-	/// EventArgs for SpritesetChangedEvent.
-	/// </summary>
-	internal sealed class SpritePackChangedEventArgs
-	{
-		internal XCImageCollection Sprites
-		{ get; private set; }
-
-
-		internal SpritePackChangedEventArgs(XCImageCollection sprites)
-		{
-			Sprites = sprites;
-		}
-	}
-	#endregion
 }
