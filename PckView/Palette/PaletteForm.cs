@@ -50,7 +50,6 @@ namespace PckView
 				lblStatus.Location = new Point(
 											_pnlPalette.Left,
 											_pnlPalette.Bottom);
-
 				lblStatus.Width = ClientSize.Width;
 			}
 		}

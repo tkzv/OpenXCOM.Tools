@@ -12,8 +12,8 @@ namespace XCom
 			XCImage
 	{
 		#region Fields (static)
-		private const byte TransparentId = 0xFE; // should that be '0x0'
-
+		private const byte TransparentId = 0xFE;	// should that be '0x0' - there's something "funny"
+													// going on with using id=254 as the transparent index.
 		public const int Width  = 32;
 		public const int Height = 40;
 

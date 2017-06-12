@@ -6,6 +6,7 @@ namespace XCom.Interfaces
 {
 	public class XCImage
 	{
+		#region Properties
 		public byte[] Bindata
 		{ get; protected set; }
 
@@ -30,8 +31,10 @@ namespace XCom.Interfaces
 					Image.Palette = _palette.Colors;
 			}
 		}
+		#endregion
 
 
+		#region cTor
 		/// <summary>
 		/// Creates an XCImage.
 		/// NOTE: Entries must not be compressed.
@@ -48,16 +51,16 @@ namespace XCom.Interfaces
 				Palette pal,
 				int id)
 		{
-			FileId   = id;
-			Bindata  = bindata;
-			_palette = pal;
+			FileId  = id;
+			Bindata = bindata;
+			Pal     = pal;
 
-			if (pal != null)
+			if (Pal != null)
 				Image = XCBitmap.MakeBitmap8(
 										width,
 										height,
 										bindata,
-										pal.Colors);
+										Pal.Colors);
 		}
 		private XCImage(Bitmap image, int id)
 		{
@@ -72,8 +75,10 @@ namespace XCom.Interfaces
 //					null,
 //					-1)
 //		{}
+		#endregion
 
 
+		#region Methods
 		/// <summary>
 		/// Clones this image for use by PckView.
 		/// </summary>
@@ -90,7 +95,7 @@ namespace XCom.Interfaces
 								bindata,
 								Image.Width,
 								Image.Height,
-								_palette,
+								Pal,
 								FileId);
 			}
 
@@ -104,5 +109,6 @@ namespace XCom.Interfaces
 //		{
 //			Image = Bmp.HQ2X(/*Image*/);
 //		}
+		#endregion
 	}
 }

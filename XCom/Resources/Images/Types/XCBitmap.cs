@@ -159,14 +159,14 @@ namespace XCom
 		/// </summary>
 		/// <param name="width">width of final bitmap</param>
 		/// <param name="height">height of final bitmap</param>
-		/// <param name="binData">image data</param>
-		/// <param name="palette">Palette to color the image with</param>
+		/// <param name="bindata">image data</param>
+		/// <param name="pal">palette to color the image with</param>
 		/// <returns></returns>
 		public static Bitmap MakeBitmap8(
 				int width,
 				int height,
-				byte[] binData,
-				ColorPalette palette)
+				byte[] bindata,
+				ColorPalette pal)
 		{
 			var image = new Bitmap(
 								width, height,
@@ -208,18 +208,18 @@ namespace XCom
 
 				int ex = 0;
 				for (uint row = 0; row != height; ++row)
-					for (uint col = 0; col != width && ex < binData.Length; ++col)
+					for (uint col = 0; col != width && ex < bindata.Length; ++col)
 					{
 						// The destination pixel.
 						// The pointer to the color index byte of the
 						// destination; this real pointer causes this
 						// code to be considered unsafe.
 						byte* p8bppPixel = pBits + row * stride + col;
-						*p8bppPixel = binData[ex++];
+						*p8bppPixel = bindata[ex++];
 					}
 			}
 			image.UnlockBits(data);
-			image.Palette = palette;
+			image.Palette = pal;
 			return image;
 		}
 
@@ -621,7 +621,7 @@ namespace XCom
 		/// <param name="height"></param>
 		/// <param name="pad"></param>
 		/// <returns></returns>
-		public static XCImageCollection Load(
+		public static XCImageCollection LoadSpriteset(
 				Bitmap bmp,
 				Palette pal,
 				int width,
@@ -639,7 +639,7 @@ namespace XCom
 			{
 				int x = (i % cols) * (width  + pad);
 				int y = (i / cols) * (height + pad);
-				list.Add(LoadTile(
+				list.Add(LoadSprite(
 								bmp,
 								aniSprite++,
 								pal,
@@ -653,7 +653,7 @@ namespace XCom
 			return list;
 		}
 
-		public static XCImage LoadTile(
+		public static XCImage LoadSprite(
 				Bitmap src,
 				int frame,
 				Palette pal,

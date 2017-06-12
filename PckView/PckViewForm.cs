@@ -58,7 +58,7 @@ namespace PckView
 //		private MenuItem _miDelete;
 //		private MenuItem _miAdd;
 
-		private SharedSpace _share = SharedSpace.Instance;
+//		private SharedSpace _share = SharedSpace.Instance;
 
 		private Dictionary<Palette, MenuItem> _paletteItems = new Dictionary<Palette, MenuItem>();
 		#endregion
@@ -94,15 +94,15 @@ namespace PckView
 			FormClosed += (sender, e) => _fconsole.Close();
 
 
-			string dirApplication = Path.GetDirectoryName(Application.ExecutablePath);
-			string dirSettings    = Path.Combine(dirApplication, DSShared.PathInfo.SettingsDirectory);
-
-			_share.SetShare(
-						SharedSpace.ApplicationDirectory,
-						dirApplication);
-			_share.SetShare(
-						SharedSpace.SettingsDirectory,
-						dirSettings);
+//			string dirApplication = Path.GetDirectoryName(Application.ExecutablePath);
+//			string dirSettings    = Path.Combine(dirApplication, DSShared.PathInfo.SettingsDirectory);
+//
+//			_share.SetShare(
+//						SharedSpace.ApplicationDirectory,
+//						dirApplication);
+//			_share.SetShare(
+//						SharedSpace.SettingsDirectory,
+//						dirSettings);
 
 //			XConsole.AdZerg("Application directory: "  + _share[SharedSpace.ApplicationDirectory]);			// TODO: I don't trust that since changing SharedSpace.
 //			XConsole.AdZerg("Settings directory: "     + _share[SharedSpace.SettingsDirectory].ToString());	// it may well need an explicit cast to (PathInfo)
@@ -116,12 +116,12 @@ namespace PckView
 			_pnlView.Click                  += OnSpriteClick;
 			_pnlView.DoubleClick            += OnSpriteEditorClick;
 
-			pViewer.Controls.Add(_pnlView);
+			pnlView.Controls.Add(_pnlView);
 
 
 			miSave.Visible = false;
 
-			_share[SharedSpace.Palettes] = new Dictionary<string, Palette>();
+//			_share[SharedSpace.Palettes] = new Dictionary<string, Palette>();
 
 			AddPalette(Palette.UfoBattle);
 			AddPalette(Palette.UfoGeo);
@@ -172,7 +172,7 @@ namespace PckView
 //			_miDelete.Click += OnSpriteDeleteClick;
 //			menu.MenuItems.Add(_miDelete);
 
-			_miEdit.Enabled = false;
+//			_miEdit.Enabled = false;
 
 			return menu;
 		}
@@ -186,7 +186,7 @@ namespace PckView
 			itPal.Click += OnPaletteClick;
 			_paletteItems[pal] = itPal;
 
-			((Dictionary<string, Palette>)_share[SharedSpace.Palettes])[pal.Label] = pal;
+//			((Dictionary<string, Palette>)_share[SharedSpace.Palettes])[pal.Label] = pal;
 		}
 
 
@@ -263,12 +263,12 @@ namespace PckView
 				if (ofdBmp.ShowDialog() == DialogResult.OK)
 				{
 					var b = new Bitmap(ofdBmp.FileName);
-					var image = XCBitmap.Load(
-											b,
-											Pal,
-											_pnlView.Spriteset.ImageFile.ImageSize.Width,
-											_pnlView.Spriteset.ImageFile.ImageSize.Height,
-											1)[0];
+					var image = XCBitmap.LoadSpriteset(
+													b,
+													Pal,
+													_pnlView.Spriteset.ImageFile.ImageSize.Width,
+													_pnlView.Spriteset.ImageFile.ImageSize.Height,
+													1)[0];
 					_pnlView.SpriteReplace(_pnlView.Selected[0].Id, image);
 					Refresh();
 				}
@@ -288,7 +288,7 @@ namespace PckView
 					foreach (string file in ofdBmp.FileNames)
 					{
 						var b = new Bitmap(file);
-						_pnlView.Spriteset.Add(XCBitmap.LoadTile(
+						_pnlView.Spriteset.Add(XCBitmap.LoadSprite(
 																b,
 																0,
 																Pal,
@@ -320,7 +320,8 @@ namespace PckView
 				var selected = _pnlView.Selected[_pnlView.Selected.Count - 1];
 				if (selected != null)
 				{
-					_feditor.Sprite = selected.Image.Clone(); // NOTE: that's only a *clone**
+//					_feditor.Sprite = selected.Image.Clone(); // NOTE: that's only a *clone**
+					_feditor.Sprite = selected.Image;
 
 					if (!_feditor.Visible)
 					{
@@ -355,10 +356,12 @@ namespace PckView
 			{
 				_paletteItems[Pal].Checked = false;
 
+				pal.SetTransparent(miTransparent.Checked);
 				Pal = pal;
-				Pal.SetTransparent(miTransparent.Checked);
 
 				_paletteItems[Pal].Checked = true;
+
+				_pnlView.Spriteset.Pal = Pal;
 
 				_pnlView.Refresh();
 			}
@@ -370,8 +373,12 @@ namespace PckView
 
 			_pnlView.Spriteset.Pal = Pal;
 
-			_pnlView.Refresh();
-			_feditor.Refresh();
+			var handler = PaletteChangedEvent;
+			if (handler != null)
+				handler(_palette);
+
+//			_pnlView.Refresh();
+//			_feditor.Refresh();
 		}
 
 		private void OnQuitClick(object sender, EventArgs e)
@@ -655,7 +662,7 @@ namespace PckView
 
 				_tcTabs = new TabControl();
 				_tcTabs.Dock = DockStyle.Fill;
-				pViewer.Controls.Add(_tcTabs);
+				pnlView.Controls.Add(_tcTabs);
 
 				var tabpage = new TabPage();
 				tabpage.Controls.Add(_pnlView);
@@ -696,13 +703,13 @@ namespace PckView
 
 		private void OnMapViewHelpClick(object sender, EventArgs e)
 		{
-			pMapViewHelp.Visible = !pMapViewHelp.Visible;
-			miMapViewHelp.Checked = pMapViewHelp.Visible;
+			pnlMapViewHelp.Visible = !pnlMapViewHelp.Visible;
+			miMapViewHelp.Checked = pnlMapViewHelp.Visible;
 		}
 
 		private void OnMapViewGotItClick(object sender, EventArgs e)
 		{
-			pMapViewHelp.Visible  =
+			pnlMapViewHelp.Visible  =
 			miMapViewHelp.Checked = false;
 		}
 

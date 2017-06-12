@@ -38,8 +38,8 @@ namespace PckView
 		private StatusBarPanel _sbpTileOver     = new StatusBarPanel();
 		private StatusBarPanel _sbpSpritesLabel = new StatusBarPanel();
 
-		private int _spriteWidth;
-		private int _spriteHeight;
+		private int _tileWidth;
+		private int _tileHeight;
 
 		private int _tilesX = 1;
 
@@ -73,8 +73,10 @@ namespace PckView
 			{
 				_spriteset = value;
 
-				_spriteWidth  = value.ImageFile.ImageSize.Width  + SpriteMargin * 2;
-				_spriteHeight = value.ImageFile.ImageSize.Height + SpriteMargin * 2;
+				_spriteset.Pal = PckViewForm.Pal;
+
+				_tileWidth  = value.ImageFile.ImageSize.Width  + SpriteMargin * 2 + 1;
+				_tileHeight = value.ImageFile.ImageSize.Height + SpriteMargin * 2 + 1;
 
 //				Height = TableHeight; ... nobody cares about the Height. Let .NET deal with it.
 
@@ -84,7 +86,7 @@ namespace PckView
 				_selected.Clear();
 
 				_largeChange           =
-				_scrollBar.LargeChange = _spriteHeight;
+				_scrollBar.LargeChange = _tileHeight;
 
 				UpdateScrollbar(true);
 
@@ -123,7 +125,7 @@ namespace PckView
 
 				int height = 0;
 				if (Spriteset != null)
-					height = (Spriteset.Count / _tilesX + 2) * _spriteHeight;
+					height = (Spriteset.Count / _tilesX + 2) * _tileHeight;
 
 				return height;
 			}
@@ -176,11 +178,17 @@ namespace PckView
 
 			OnSpriteClick(-1);
 			OnSpriteOver(-1);
+
+			PckViewForm.PaletteChangedEvent += OnPaletteChanged; // NOTE: lives the life of the app, so no leak.
 		}
 		#endregion
 
 
 		#region EventCalls
+		private void OnPaletteChanged(Palette pal)
+		{
+			Refresh();
+		}
 
 		/// <summary>
 		/// Fires when anything changes the Value of the scroll-bar.
@@ -238,7 +246,7 @@ namespace PckView
 				// On 2nd thought always reserve width for the scrollbar.
 				// So user can increase/decrease the Height of the window
 				// without the tiles re-arranging.
-				tilesX = (Width - TableOffsetHori - _scrollBar.Width - 1) / _spriteWidth;
+				tilesX = (Width - TableOffsetHori - _scrollBar.Width - 1) / _tileWidth;
 
 				if (tilesX > Spriteset.Count)
 					tilesX = Spriteset.Count;
@@ -299,10 +307,10 @@ namespace PckView
 
 			if (Spriteset != null && Spriteset.Count != 0)
 			{
-				if (e.X < _spriteWidth * _tilesX + TableOffsetHori - 1) // not out of bounds to right
+				if (e.X < _tileWidth * _tilesX + TableOffsetHori - 1) // not out of bounds to right
 				{
-					int tileX = (e.X - TableOffsetHori + 1)           / _spriteWidth;
-					int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _spriteHeight;
+					int tileX = (e.X - TableOffsetHori + 1)           / _tileWidth;
+					int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _tileHeight;
 
 					int id = tileX + tileY * _tilesX;
 					if (id < Spriteset.Count) // not out of bounds below
@@ -364,10 +372,10 @@ namespace PckView
 
 			if (Spriteset != null && Spriteset.Count != 0)
 			{
-				if (e.X < _spriteWidth * _tilesX + TableOffsetHori - 1) // not out of bounds to right
+				if (e.X < _tileWidth * _tilesX + TableOffsetHori - 1) // not out of bounds to right
 				{
-					int tileX = (e.X - TableOffsetHori + 1)           / _spriteWidth;
-					int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _spriteHeight;
+					int tileX = (e.X - TableOffsetHori + 1)           / _tileWidth;
+					int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _tileHeight;
 
 					if (tileX != _overX || tileY != _overY)
 					{
@@ -469,16 +477,15 @@ namespace PckView
 					if (selected.Contains(id))
 						graphics.FillRectangle(
 											_brushCrimson,
-											TableOffsetHori + tileX * _spriteWidth,
-											TableOffsetVert + tileY * _spriteHeight + _startY,
-											TableOffsetHori + _spriteWidth  - SpriteMargin * 2,
-											TableOffsetVert + _spriteHeight - SpriteMargin - 1);
+											TableOffsetHori + tileX * _tileWidth,
+											TableOffsetVert + tileY * _tileHeight + _startY,
+											TableOffsetHori + _tileWidth  - SpriteMargin * 2,
+											TableOffsetVert + _tileHeight - SpriteMargin - 1);
 
-					Spriteset[id].Pal = PckViewForm.Pal;
 					graphics.DrawImage(
 									Spriteset[id].Image,
-									TableOffsetHori + tileX * _spriteWidth  + SpriteMargin,
-									TableOffsetVert + tileY * _spriteHeight + SpriteMargin + _startY);
+									TableOffsetHori + tileX * _tileWidth  + SpriteMargin,
+									TableOffsetVert + tileY * _tileHeight + SpriteMargin + _startY);
 				}
 
 
@@ -492,10 +499,10 @@ namespace PckView
 					graphics.DrawLine(
 									_penBlack,
 									new Point(
-											TableOffsetHori + _spriteWidth * tileX,
+											TableOffsetHori + _tileWidth * tileX,
 											TableOffsetVert + _startY),
 									new Point(
-											TableOffsetHori + _spriteWidth * tileX,
+											TableOffsetHori + _tileWidth * tileX,
 											TableOffsetVert - _startY + Height));
 
 				int tilesY = Spriteset.Count / _tilesX;
@@ -507,10 +514,10 @@ namespace PckView
 									_penBlack,
 									new Point(
 											TableOffsetHori,
-											TableOffsetVert + _spriteHeight * tileY + _startY),
+											TableOffsetVert + _tileHeight * tileY + _startY),
 									new Point(
-											TableOffsetHori + _spriteWidth * _tilesX,
-											TableOffsetVert + _spriteHeight * tileY + _startY));
+											TableOffsetHori + _tileWidth * _tilesX,
+											TableOffsetVert + _tileHeight * tileY + _startY));
 			}
 		}
 		#endregion
@@ -571,14 +578,14 @@ namespace PckView
 		{
 			int tileY = id / _tilesX;
 
-			int cutoff = _spriteHeight * tileY;
+			int cutoff = _tileHeight * tileY;
 			if (cutoff < -_startY)		// <- check cutoff high
 			{
 				_scrollBar.Value = cutoff;
 			}
 			else						// <- check cutoff low
 			{
-				cutoff = _spriteHeight * (tileY + 1) - Height + _statusBar.Height + TableOffsetVert + 1;
+				cutoff = _tileHeight * (tileY + 1) - Height + _statusBar.Height + TableOffsetVert + 1;
 				if (cutoff > -_startY)
 				{
 					_scrollBar.Value = cutoff;
