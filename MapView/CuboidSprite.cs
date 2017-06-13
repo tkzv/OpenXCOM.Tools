@@ -21,8 +21,21 @@ namespace MapView
 		{
 			_spriteset = spriteset;
 
-			foreach (PckImage sprite in spriteset)
-				sprite.Image.MakeTransparent(spriteset.Pal.Transparent);
+//			foreach (PckImage sprite in spriteset)
+//			{
+//				var b     = sprite.Image;
+//				var pal   = b.Palette;	// <- this is only a copy.
+//				var trans = pal.Entries[0];
+//				int red   = trans.R;
+//				int green = trans.G;
+//				int blue  = trans.B;
+//
+//				trans = Color.FromArgb(0, red, green, blue);
+//
+//				b.Palette = pal;		// <- hence, that.
+//			}
+			// But it turns out to be unnecessary since the currently loaded
+			// ufo/tftd palettes have set their id[0] transparent regardless.
 		}
 		#endregion
 

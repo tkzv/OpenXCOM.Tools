@@ -227,7 +227,7 @@ namespace XCom.Interfaces.Base
 			var b = XCBitmap.MakeBitmap(
 									rowPlusCols * (XCImageFile.SpriteWidth / 2),
 									(MapSize.Levs - Level) * 24 + rowPlusCols * 8,
-									palette.Colors);
+									palette.ColorTable);
 
 			var start = new Point(
 								(MapSize.Rows - 1) * (XCImageFile.SpriteWidth / 2),

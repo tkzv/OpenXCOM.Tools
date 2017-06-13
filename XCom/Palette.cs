@@ -150,21 +150,21 @@ namespace XCom
 			get { return _label; }
 		}
 
-		public ColorPalette Colors
+		internal ColorPalette ColorTable
 		{ get; private set; }
 
 		/// <summary>
-		/// Gets/Sets indices for colors.
+		/// Gets/Sets the color of a given index in the 'ColorTable'.
 		/// </summary>
 		public Color this[int id]
 		{
-			get { return Colors.Entries[id]; }
-			set { Colors.Entries[id] = value; }
+			get { return ColorTable.Entries[id]; }
+			private set { ColorTable.Entries[id] = value; }
 		}
 
 		public Color Transparent
 		{
-			get { return Colors.Entries[TransparentId]; }
+			get { return ColorTable.Entries[TransparentId]; }
 		}
 
 		public Palette Grayscale
@@ -177,7 +177,7 @@ namespace XCom
 
 					_palettes[pal._label] = pal;
 
-					for (int id = 0; id != Colors.Entries.Length; ++id)
+					for (int id = 0; id != ColorTable.Entries.Length; ++id)
 					{
 						int val = (int)(this[id].R * 0.1 + this[id].G * 0.5 + this[id].B * 0.25);
 						pal[id] = Color.FromArgb(val, val, val);
@@ -193,14 +193,14 @@ namespace XCom
 		private Palette(string label)
 		{
 			using (var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed))
-				Colors = b.Palette;
+				ColorTable = b.Palette;
 
 			_label = label;
 		}
 		private Palette(Stream fs)
 		{
 			using (var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed))
-				Colors = b.Palette;
+				ColorTable = b.Palette;
 
 			using (var input = new StreamReader(fs))
 			{
@@ -208,16 +208,19 @@ namespace XCom
 
 				var line = new string[3];
 
+				var invariant = System.Globalization.CultureInfo.InvariantCulture;
+
 				for (byte id = 0; id != 0xFF; )
 				{
-					string rgb = input.ReadLine().Trim();
+//					string rgb = input.ReadLine().Trim();
+					string rgb = input.ReadLine();
 					if (rgb[0] != '#')
 					{
 						line = rgb.Split(',');
-						Colors.Entries[id++] = Color.FromArgb(
-														Int32.Parse(line[0], System.Globalization.CultureInfo.InvariantCulture),
-														Int32.Parse(line[1], System.Globalization.CultureInfo.InvariantCulture),
-														Int32.Parse(line[2], System.Globalization.CultureInfo.InvariantCulture));
+						ColorTable.Entries[id++] = Color.FromArgb(
+															Int32.Parse(line[0], invariant),
+															Int32.Parse(line[1], invariant),
+															Int32.Parse(line[2], invariant));
 					}
 				}
 			}
@@ -234,9 +237,9 @@ namespace XCom
 		/// <param name="transparent">true to enable transparency</param>
 		public void SetTransparent(bool transparent)
 		{
-			Colors.Entries[TransparentId] = Color.FromArgb(
-														transparent ? 0 : 255,
-														Colors.Entries[TransparentId]);
+			ColorTable.Entries[TransparentId] = Color.FromArgb(
+															transparent ? 0 : 255,
+															ColorTable.Entries[TransparentId]);
 		}
 
 		public override string ToString()
@@ -252,13 +255,16 @@ namespace XCom
 		public override bool Equals(Object obj)
 		{
 			var palette = obj as Palette;
-			return (palette != null && Colors.Equals(palette.Colors));
+			return (palette != null && ColorTable.Equals(palette.ColorTable));
 		}
 
 		public override int GetHashCode()
 		{
-			return Colors.GetHashCode(); // FIX: "Non-readonly field referenced in GetHashCode()."
+			return ColorTable.GetHashCode(); // FIX: "Non-readonly field referenced in GetHashCode()."
 		}
+		#endregion
+	}
+}
 
 //		internal static Palette GetPalette(string label)
 //		{
@@ -280,47 +286,44 @@ namespace XCom
 
 //		private void checkPalette()
 //		{
-//			Bitmap b = new Bitmap(1,1,PixelFormat.Format8bppIndexed);
+//			Bitmap b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed);
 //			ColorPalette colors = b.Palette;
 //			b.Dispose();
 //
 //			ArrayList cpList = new ArrayList(_colorPalette.Entries);
 //			ArrayList colorList = new ArrayList();
 //
-//			for(int i=0;i<cpList.Count;i++)
+//			for(int i = 0; i != cpList.Count; ++i)
 //			{
-//				if(!colorList.Contains(cpList[i]))
+//				if (!colorList.Contains(cpList[i]))
 //				{
 //					colorList.Add(cpList[i]);
-//					colors.Entries[i]=(Color)cpList[i];
+//					colors.Entries[i] = (Color)cpList[i];
 //				}
 //				else
 //				{
 //					Color c = (Color)cpList[i];
-//					int rc=c.R;
-//					int gc=c.G;
-//					int bc=c.B;
+//					int rc = c.R;
+//					int gc = c.G;
+//					int bc = c.B;
 //
-//					if(rc==0)
-//						rc++;
+//					if (rc == 0)
+//						++rc;
 //					else
-//						rc--;
+//						--rc;
 //
-//					if(gc==0)
-//						gc++;
+//					if (gc == 0)
+//						++gc;
 //					else
-//						gc--;
+//						--gc;
 //
-//					if(bc==0)
-//						bc++;
+//					if (bc == 0)
+//						++bc;
 //					else
-//						bc--;
+//						--bc;
 //
-//					colorList.Add(Color.FromArgb(rc,gc,bc));
-//					colors.Entries[i]=Color.FromArgb(rc,gc,bc);
+//					colorList.Add(Color.FromArgb(rc, gc, bc));
+//					colors.Entries[i] = Color.FromArgb(rc, gc, bc);
 //				}
 //			}
 //		}
-		#endregion
-	}
-}

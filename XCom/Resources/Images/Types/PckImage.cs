@@ -113,12 +113,12 @@ namespace XCom
 										XCImageFile.SpriteWidth,
 										XCImageFile.SpriteHeight,
 										_expanded,
-										pal.Colors);
+										pal.ColorTable);
 			SpriteGray = XCBitmap.MakeBitmap8(
 										XCImageFile.SpriteWidth,
 										XCImageFile.SpriteHeight,
 										_expanded,
-										pal.Grayscale.Colors);
+										pal.Grayscale.ColorTable);
 		}
 		#endregion
 

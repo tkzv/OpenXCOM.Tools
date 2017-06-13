@@ -28,7 +28,7 @@ namespace XCom.Interfaces
 				_palette = value;
 
 				if (Image != null)
-					Image.Palette = _palette.Colors;
+					Image.Palette = _palette.ColorTable;
 			}
 		}
 		#endregion
@@ -60,7 +60,7 @@ namespace XCom.Interfaces
 										width,
 										height,
 										bindata,
-										Pal.Colors);
+										Pal.ColorTable);
 		}
 //		private XCImage(Bitmap image, int id)
 //		{

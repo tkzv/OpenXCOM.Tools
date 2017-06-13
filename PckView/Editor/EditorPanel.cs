@@ -102,7 +102,6 @@ namespace PckView
 //			SuspendLayout();
 //			base.OnResizeBegin(e);
 //		}
-//
 //		protected override void OnResizeEnd(EventArgs e) 
 //		{
 //			ResumeLayout();
