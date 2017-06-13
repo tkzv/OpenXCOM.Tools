@@ -25,19 +25,8 @@ namespace PckView
 
 
 		#region Properties (static)
-		private static Palette _palette;
 		internal static Palette Pal
-		{
-			get { return _palette; }
-			set
-			{
-				_palette = value;
-
-				var handler = PaletteChangedEvent;
-				if (handler != null)
-					handler(_palette);
-			}
-		}
+		{ get; set; }
 		#endregion
 
 

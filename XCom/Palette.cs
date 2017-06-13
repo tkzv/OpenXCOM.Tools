@@ -32,6 +32,11 @@ namespace XCom
 		private const string tftdresearch = "tftd-research";
 
 		private const string PalExt       = ".pal";
+
+		/// <summary>
+		/// The suffix for the label (key) of the grayscale version of the palette.
+		/// </summary>
+		private const string Gray         = "#gray";
 		#endregion
 
 
@@ -141,15 +146,15 @@ namespace XCom
 
 
 		#region Properties
-		private readonly string _label;
 		/// <summary>
-		/// This palette's label.
+		/// Gets/Sets the label (key) of the palette.
 		/// </summary>
 		public string Label
-		{
-			get { return _label; }
-		}
+		{ get; set; }
 
+		/// <summary>
+		/// Gets/Sets the colors in the palette.
+		/// </summary>
 		internal ColorPalette ColorTable
 		{ get; private set; }
 
@@ -162,20 +167,27 @@ namespace XCom
 			private set { ColorTable.Entries[id] = value; }
 		}
 
-		public Color Transparent
-		{
-			get { return ColorTable.Entries[TransparentId]; }
-		}
+//		/// <summary>
+//		/// Gets the color that can be transparent.
+//		/// NOTE: was used by 'CuboidSprite'.
+//		/// </summary>
+//		public Color Transparent
+//		{
+//			get { return ColorTable.Entries[TransparentId]; }
+//		}
 
+		/// <summary>
+		/// Gets a grayscale version of the palette.
+		/// </summary>
 		public Palette Grayscale
 		{
 			get
 			{
-				if (_palettes[_label + "#gray"] == null)
+				if (_palettes[Label + Gray] == null)
 				{
-					var pal = new Palette(_label + "#gray");
+					var pal = new Palette(Label + Gray);
 
-					_palettes[pal._label] = pal;
+					_palettes[pal.Label] = pal;
 
 					for (int id = 0; id != ColorTable.Entries.Length; ++id)
 					{
@@ -183,20 +195,28 @@ namespace XCom
 						pal[id] = Color.FromArgb(val, val, val);
 					}
 				}
-				return _palettes[_label + "#gray"] as Palette;
+				return _palettes[Label + Gray] as Palette;
 			}
 		}
 		#endregion
 
 
 		#region cTors
+		/// <summary>
+		/// Instantiates a palette with a given label.
+		/// </summary>
+		/// <param name="label"></param>
 		private Palette(string label)
 		{
 			using (var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed))
 				ColorTable = b.Palette;
 
-			_label = label;
+			Label = label;
 		}
+		/// <summary>
+		/// Instantiates a palette given a filestream of data.
+		/// </summary>
+		/// <param name="fs"></param>
 		private Palette(Stream fs)
 		{
 			using (var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed))
@@ -204,7 +224,7 @@ namespace XCom
 
 			using (var input = new StreamReader(fs))
 			{
-				_label = input.ReadLine(); // 1st line is the label.
+				Label = input.ReadLine(); // 1st line is the label.
 
 				var line = new string[3];
 
@@ -212,7 +232,6 @@ namespace XCom
 
 				for (byte id = 0; id != 0xFF; )
 				{
-//					string rgb = input.ReadLine().Trim();
 					string rgb = input.ReadLine();
 					if (rgb[0] != '#')
 					{
@@ -241,10 +260,13 @@ namespace XCom
 															transparent ? 0 : 255,
 															ColorTable.Entries[TransparentId]);
 		}
+		#endregion
 
+
+		#region Methods (override)
 		public override string ToString()
 		{
-			return _label;
+			return Label;
 		}
 
 		/// <summary>

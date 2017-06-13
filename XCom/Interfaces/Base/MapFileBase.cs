@@ -269,6 +269,7 @@ namespace XCom.Interfaces.Base
 					}
 				}
 			}
+
 			try
 			{
 				var rect = XCBitmap.GetBoundsRect(b, Palette.TransparentId);

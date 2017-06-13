@@ -124,7 +124,7 @@ namespace XCom
 
 
 		#region Methods
-		internal static int WritePckFile(BinaryWriter bw, XCImage image)
+		internal static int SaveSpritesetSprite(BinaryWriter bw, XCImage image)
 		{
 			int pos = 0;
 			bool flag = true;
@@ -192,6 +192,52 @@ namespace XCom
 
 			return bindata.Count;
 		}
+		#endregion
+
+
+		#region Methods (override)
+		public override string ToString()
+		{
+			string ret = String.Empty;
+
+			if (_spriteset != null)
+				ret += _spriteset.ToString();
+
+			ret += FileId + Environment.NewLine;
+
+			for (int i = 0; i != _expanded.Length; ++i)
+			{
+				ret += _expanded[i];
+
+				switch (_expanded[i])
+				{
+					case 255:
+						ret += Environment.NewLine;
+						break;
+
+					default:
+						ret += " ";
+						break;
+				}
+			}
+			return ret;
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj is PckImage)
+				return ToString().Equals(obj.ToString());
+
+			return false;
+		}
+
+		public override int GetHashCode()
+		{
+			return ToString().GetHashCode();
+		}
+		#endregion
+	}
+}
 
 //		public override void Hq2x()
 //		{
@@ -264,49 +310,3 @@ namespace XCom
 //			get { return _mapId; }
 //			set { _mapId = value; }
 //		}
-		#endregion
-
-
-		#region Methods (override)
-		public override bool Equals(object obj)
-		{
-			if (obj is PckImage)
-				return ToString().Equals(obj.ToString());
-
-			return false;
-		}
-
-		public override int GetHashCode()
-		{
-			return ToString().GetHashCode();
-		}
-
-		public override string ToString()
-		{
-			string ret = String.Empty;
-
-			if (_spriteset != null)
-				ret += _spriteset.ToString();
-
-			ret += FileId + Environment.NewLine;
-
-			for (int i = 0; i != _expanded.Length; ++i)
-			{
-				ret += _expanded[i];
-
-				switch (_expanded[i])
-				{
-					case 255:
-						ret += Environment.NewLine;
-						break;
-
-					default:
-						ret += " ";
-						break;
-				}
-			}
-			return ret;
-		}
-		#endregion
-	}
-}

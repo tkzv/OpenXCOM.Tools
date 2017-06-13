@@ -120,7 +120,7 @@ namespace XCom
 						foreach (XCImage image in imageset)
 						{
 							bwTab.Write(pos);
-							pos += (ushort)PckImage.WritePckFile(bwPck, image);
+							pos += (ushort)PckImage.SaveSpritesetSprite(bwPck, image);
 						}
 						break;
 					}
@@ -131,13 +131,10 @@ namespace XCom
 						foreach (XCImage image in imageset)
 						{
 							bwTab.Write(pos);
-							pos += (uint)PckImage.WritePckFile(bwPck, image);
+							pos += (uint)PckImage.SaveSpritesetSprite(bwPck, image);
 						}
 						break;
 					}
-
-//					default:
-//						break;
 				}
 			}
 		}
