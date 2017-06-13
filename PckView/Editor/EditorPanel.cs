@@ -113,11 +113,12 @@ namespace PckView
 		#region EventCalls
 		private void OnPaletteChanged(Palette pal)
 		{
-			if (Sprite != null)
-			{
-				Sprite.Image.Palette = pal.Colors;
-				Refresh();
-			}
+			Refresh();
+//			if (Sprite != null)
+//			{
+//				Sprite.Image.Palette = pal.Colors;
+//				Refresh();
+//			}
 		}
 
 		protected override void OnPaint(PaintEventArgs e)

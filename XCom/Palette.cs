@@ -12,10 +12,10 @@ namespace XCom
 	/// A class defining a color array of 256 values.
 	/// </summary>
 	//see http://support.microsoft.com/default.aspx?scid=kb%3Ben-us%3B319061
-	public class Palette
+	public sealed class Palette
 	{
 		#region Fields (static)
-		internal const byte TransparentId = 0xFE;
+		internal const byte TransparentId = 0x0;// 0xFE;
 
 		private static readonly Hashtable _palettes = new Hashtable();
 

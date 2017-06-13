@@ -12,7 +12,7 @@ namespace XCom
 			XCImage
 	{
 		#region Fields (static)
-		private const byte TransparentId = 0xFE;	// should that be '0x0' - there's something "funny"
+//		private const byte TransparentId = 0xFE;	// should that be '0x0' - there's something "funny"
 													// going on with using id=254 as the transparent index.
 		private static int _idCanonical;
 		#endregion
@@ -77,7 +77,7 @@ namespace XCom
 			_expanded = new byte[XCImageFile.SpriteWidth * XCImageFile.SpriteHeight];
 
 			for (int i = 0; i != _expanded.Length; ++i)
-				_expanded[i] = TransparentId;
+				_expanded[i] = Palette.TransparentId;
 
 			int posStart    = 0;
 			int posExpanded = 0;
@@ -140,7 +140,7 @@ namespace XCom
 			{
 				byte b = input[id];
 
-				if (b == TransparentId)
+				if (b == Palette.TransparentId)
 					++pos;
 				else
 				{
@@ -157,14 +157,14 @@ namespace XCom
 
 						while (pos >= 255)
 						{
-							bindata.Add(TransparentId);
+							bindata.Add(Palette.TransparentId);
 							bindata.Add(255);
 							pos -= 255;
 						}
 
 						if (pos != 0)
 						{
-							bindata.Add(TransparentId);
+							bindata.Add(Palette.TransparentId);
 							bindata.Add((byte)pos);
 						}
 						pos = 0;

@@ -351,14 +351,16 @@ namespace PckView
 			{
 				_paletteItems[Pal].Checked = false;
 
-				pal.SetTransparent(miTransparent.Checked);
 				Pal = pal;
+				Pal.SetTransparent(miTransparent.Checked);
 
 				_paletteItems[Pal].Checked = true;
 
 				_pnlView.Spriteset.Pal = Pal;
 
-				_pnlView.Refresh();
+				var handler = PaletteChangedEvent;
+				if (handler != null)
+					handler(Pal);
 			}
 		}
 
@@ -370,7 +372,7 @@ namespace PckView
 
 			var handler = PaletteChangedEvent;
 			if (handler != null)
-				handler(_palette);
+				handler(Pal);
 		}
 
 		private void OnQuitClick(object sender, EventArgs e)
