@@ -40,10 +40,10 @@ namespace PckView
 			this.miHq2x = new System.Windows.Forms.MenuItem();
 			this.miQuit = new System.Windows.Forms.MenuItem();
 			this.miPaletteMenu = new System.Windows.Forms.MenuItem();
-			this.miBytesMenu = new System.Windows.Forms.MenuItem();
-			this.miBytes = new System.Windows.Forms.MenuItem();
 			this.miTransparentMenu = new System.Windows.Forms.MenuItem();
 			this.miTransparent = new System.Windows.Forms.MenuItem();
+			this.miBytesMenu = new System.Windows.Forms.MenuItem();
+			this.miBytes = new System.Windows.Forms.MenuItem();
 			this.miHelpMenu = new System.Windows.Forms.MenuItem();
 			this.miAbout = new System.Windows.Forms.MenuItem();
 			this.miConsole = new System.Windows.Forms.MenuItem();
@@ -63,8 +63,8 @@ namespace PckView
 			this.mmMainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miFileMenu,
 			this.miPaletteMenu,
-			this.miBytesMenu,
 			this.miTransparentMenu,
+			this.miBytesMenu,
 			this.miHelpMenu});
 			// 
 			// miFileMenu
@@ -130,27 +130,14 @@ namespace PckView
 			// 
 			// miPaletteMenu
 			// 
+			this.miPaletteMenu.Enabled = false;
 			this.miPaletteMenu.Index = 1;
 			this.miPaletteMenu.Text = "&Palette";
-			// 
-			// miBytesMenu
-			// 
-			this.miBytesMenu.Enabled = false;
-			this.miBytesMenu.Index = 2;
-			this.miBytesMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.miBytes});
-			this.miBytesMenu.Text = "&Bytes";
-			// 
-			// miBytes
-			// 
-			this.miBytes.Index = 0;
-			this.miBytes.Text = "S&how";
-			this.miBytes.Click += new System.EventHandler(this.OnShowBytesClick);
 			// 
 			// miTransparentMenu
 			// 
 			this.miTransparentMenu.Enabled = false;
-			this.miTransparentMenu.Index = 3;
+			this.miTransparentMenu.Index = 2;
 			this.miTransparentMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miTransparent});
 			this.miTransparentMenu.Text = "&Transparency";
@@ -161,6 +148,20 @@ namespace PckView
 			this.miTransparent.Index = 0;
 			this.miTransparent.Text = "&On";
 			this.miTransparent.Click += new System.EventHandler(this.OnTransparencyClick);
+			// 
+			// miBytesMenu
+			// 
+			this.miBytesMenu.Enabled = false;
+			this.miBytesMenu.Index = 3;
+			this.miBytesMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+			this.miBytes});
+			this.miBytesMenu.Text = "&Bytes";
+			// 
+			// miBytes
+			// 
+			this.miBytes.Index = 0;
+			this.miBytes.Text = "S&how";
+			this.miBytes.Click += new System.EventHandler(this.OnShowBytesClick);
 			// 
 			// miHelpMenu
 			// 

@@ -180,9 +180,10 @@ namespace PckView
 		private void OnSpritesetChanged(bool valid)
 		{
 			miSaveAs.Enabled          =
+
+			miPaletteMenu.Enabled     =
 			miTransparentMenu.Enabled =
-			miBytesMenu.Enabled       =
-			miPaletteMenu.Enabled     = valid;
+			miBytesMenu.Enabled       = valid;
 		}
 
 		private void OnSpriteClick(object sender, EventArgs e)
@@ -345,6 +346,7 @@ namespace PckView
 
 				_paletteItems[Pal].Checked = true;
 
+//				if (_pnlView.Spriteset != null) // NOTE: menu won't show until a spriteset is loaded.
 				_pnlView.Spriteset.Pal = Pal;
 
 				var handler = PaletteChangedEvent;
@@ -357,6 +359,7 @@ namespace PckView
 		{
 			Pal.SetTransparent(miTransparent.Checked = !miTransparent.Checked);
 
+//			if (_pnlView.Spriteset != null) // NOTE: menu won't show until a spriteset is loaded.
 			_pnlView.Spriteset.Pal = Pal;
 
 			var handler = PaletteChangedEvent;

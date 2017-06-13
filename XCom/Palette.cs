@@ -226,21 +226,19 @@ namespace XCom
 			{
 				Label = input.ReadLine(); // 1st line is the label.
 
-				var line = new string[3];
+				string line = String.Empty;
+				var rgb     = new string[3];
 
 				var invariant = System.Globalization.CultureInfo.InvariantCulture;
 
 				for (byte id = 0; id != 0xFF; )
 				{
-					string rgb = input.ReadLine();
-					if (rgb[0] != '#')
-					{
-						line = rgb.Split(',');
-						ColorTable.Entries[id++] = Color.FromArgb(
-															Int32.Parse(line[0], invariant),
-															Int32.Parse(line[1], invariant),
-															Int32.Parse(line[2], invariant));
-					}
+					line = input.ReadLine();
+					rgb  = line.Split(',');
+					ColorTable.Entries[id++] = Color.FromArgb(
+														Int32.Parse(rgb[0], invariant),
+														Int32.Parse(rgb[1], invariant),
+														Int32.Parse(rgb[2], invariant));
 				}
 			}
 //			checkPalette();
