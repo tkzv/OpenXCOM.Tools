@@ -65,7 +65,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink2UnitType = new System.Windows.Forms.ComboBox();
 			this.cbLink1UnitType = new System.Windows.Forms.ComboBox();
 			this.labelUnitInfo = new System.Windows.Forms.Label();
-			this.pRoutes = new System.Windows.Forms.Panel();
+			this.pnlRoutes = new System.Windows.Forms.Panel();
 			this.tsMain = new System.Windows.Forms.ToolStrip();
 			this.tscbConnectType = new System.Windows.Forms.ToolStripComboBox();
 			this.tsddbEdit = new System.Windows.Forms.ToolStripDropDownButton();
@@ -435,12 +435,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// pRoutes
 			// 
-			this.pRoutes.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pRoutes.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.pRoutes.Location = new System.Drawing.Point(0, 25);
-			this.pRoutes.Name = "pRoutes";
-			this.pRoutes.Size = new System.Drawing.Size(640, 245);
-			this.pRoutes.TabIndex = 0;
+			this.pnlRoutes.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pnlRoutes.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.pnlRoutes.Location = new System.Drawing.Point(0, 25);
+			this.pnlRoutes.Name = "pRoutes";
+			this.pnlRoutes.Size = new System.Drawing.Size(640, 245);
+			this.pnlRoutes.TabIndex = 0;
 			// 
 			// tsMain
 			// 
@@ -638,7 +638,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// RouteView
 			// 
-			this.Controls.Add(this.pRoutes);
+			this.Controls.Add(this.pnlRoutes);
 			this.Controls.Add(this.tsMain);
 			this.Controls.Add(this.panel1);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

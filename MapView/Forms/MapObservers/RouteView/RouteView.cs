@@ -9,40 +9,57 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.RouteViews
 {
-	/*
-		UFO			TFTD
-		Commander	Commander
-		Leader		Navigator
-		Engineer	Medic
-		Medic		Technition
-		Navigator	SquadLeader
-		Soldier		Soldier
-	*/
+/*	aLien ranks:
+	UFO			TFTD
+	Commander	Commander
+	Leader		Navigator
+	Engineer	Medic
+	Medic		Technition
+	Navigator	SquadLeader
+	Soldier		Soldier */
 
 	internal sealed partial class RouteView
 		:
 			MapObserverControl0
 	{
+		#region Enums
 		private enum ConnectNodeType
 		{
 			ConnectNone,
 			ConnectOneWay,
 			ConnectTwoWays
 		}
+		#endregion
+
+
+		#region Fields (static)
+		private const string DontConnect   = " DontConnect"; // NOTE: the space is 'cause ComboBox entries don't get a Margin property.
+		private const string OneWayConnect = " OneWayConnect";
+		private const string TwoWayConnect = " TwoWayConnect";
+		#endregion
+
 
 		#region Fields
-		private readonly RoutePanel _routePanel;
-		internal RoutePanel RoutePanel
-		{
-			get { return _routePanel; }
-		}
-
-		private Panel pRoutes;
+		private Panel pnlRoutes; // NOTE: needs to be here for MapObserver0 stuff.
 
 		private MapFileChild _mapFile;
 
+		private readonly List<object> _linksList = new List<object>();
+
+		private int _col; // these are used only to print the clicked location info.
+		private int _row;
+		private int _lev;
+
+		private bool _loadingInfo;
+		#endregion
+
+
+		#region Properties
+		internal RoutePanel RoutePanel
+		{ get; set; }
+
 		private RouteNode _nodeSelected;
-		internal RouteNode NodeSelected
+		private RouteNode NodeSelected
 		{
 			get { return _nodeSelected; }
 			set
@@ -52,21 +69,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private bool _loadingInfo;
-
-		private readonly List<object> _linksList = new List<object>();
-
-		private const string DontConnect   = " DontConnect"; // NOTE: the space is 'cause ComboBox entries don't get a Margin property.
-		private const string OneWayConnect = " OneWayConnect";
-		private const string TwoWayConnect = " TwoWayConnect";
-
-		private int _col; // these are used only to print the clicked location info.
-		private int _row;
-		private int _lev;
-		#endregion
-
-
-		#region Properties
 		/// <summary>
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
@@ -79,7 +81,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				DeselectNode();
 
-				if ((_routePanel.MapFile = _mapFile) != null)
+				if ((RoutePanel.MapFile = _mapFile) != null)
 				{
 					cbSpawnRank.Items.Clear();
 
@@ -103,13 +105,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			InitializeComponent();
 
-			_routePanel = new RoutePanel();
-			_routePanel.Dock = DockStyle.Fill;
-			_routePanel.RoutePanelClickedEvent += OnRoutePanelClicked;
-			_routePanel.MouseMove              += OnRoutePanelMouseMove;
-			_routePanel.MouseLeave             += OnRoutePanelMouseLeave;
-			_routePanel.KeyDown                += OnKeyDown;
-			pRoutes.Controls.Add(_routePanel);
+			RoutePanel = new RoutePanel();
+			RoutePanel.Dock = DockStyle.Fill;
+			RoutePanel.RoutePanelClickedEvent += OnRoutePanelClicked;
+			RoutePanel.MouseMove              += OnRoutePanelMouseMove;
+			RoutePanel.MouseLeave             += OnRoutePanelMouseLeave;
+			RoutePanel.KeyDown                += OnKeyDown;
+			pnlRoutes.Controls.Add(RoutePanel);
 
 			// setup the connect-type dropdown entries
 			tscbConnectType.Items.AddRange(new object[]
@@ -273,7 +275,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnRoutePanelMouseMove(object sender, MouseEventArgs args)
 		{
-			var tile = _routePanel.GetTile(args.X, args.Y);
+			var tile = RoutePanel.GetTile(args.X, args.Y);
 			if (tile != null && tile.Node != null)
 			{
 				lblOverId.Text = "Over " + tile.Node.Index;
@@ -281,8 +283,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			else
 				lblOverId.Text = String.Empty;
 
-			_routePanel.CursorPosition = new Point(args.X, args.Y);
-			_routePanel.Refresh();	// 3nd mouseover refresh for RouteView.
+			RoutePanel.CursorPosition = new Point(args.X, args.Y);
+			RoutePanel.Refresh();	// 3nd mouseover refresh for RouteView.
 		}							// See OnRoutePanelMouseLeave(), RoutePanelParent.OnMouseMove()
 
 		/// <summary>
@@ -292,8 +294,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="e"></param>
 		private void OnRoutePanelMouseLeave(object sender, EventArgs e)
 		{
-			_routePanel.CursorPosition = new Point(-1, -1);
-			_routePanel.Refresh();	// 3rd mouseover refresh for RouteView.
+			RoutePanel.CursorPosition = new Point(-1, -1);
+			RoutePanel.Refresh();	// 3rd mouseover refresh for RouteView.
 		}							// See OnRoutePanelMouseMove(), RoutePanelParent.OnMouseMove()
 
 		/// <summary>
@@ -303,7 +305,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="args"></param>
 		private void OnRoutePanelClicked(object sender, RoutePanelClickedEventArgs args)
 		{
-			_routePanel.Focus();
+			RoutePanel.Focus();
 
 			if (NodeSelected == null)
 			{
@@ -382,6 +384,23 @@ namespace MapView.Forms.MapObservers.RouteViews
 					NodeSelected[linkId].Destination = node.Index;
 					NodeSelected[linkId].Distance = CalculateLinkDistance(NodeSelected, node);
 				}
+				else
+				{
+					MessageBox.Show(
+								this,
+								"Source node could not be linked to destination."
+									+ " Either its link-slots are full or the"
+									+ " link already exists.",
+								"Warning",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Exclamation,
+								MessageBoxDefaultButton.Button1,
+								0);
+					// TODO: the error leaves the RoutePanel drawn in an awkard state
+					// but discovering where to call Refresh() is not trivial.
+//					RoutePanel.Refresh(); // in case of an error this needs to happen ...
+					// Fortunately a simple mouseover straightens things out for now.
+				}
 
 				if (type == ConnectNodeType.ConnectTwoWays)
 				{
@@ -391,6 +410,23 @@ namespace MapView.Forms.MapObservers.RouteViews
 						_mapFile.RoutesChanged = true;
 						node[linkId].Destination = NodeSelected.Index;
 						node[linkId].Distance = CalculateLinkDistance(node, NodeSelected);
+					}
+					else
+					{
+						MessageBox.Show(
+									this,
+									"Destination node could not be linked to source."
+									+ " Either its link-slots are full or the"
+									+ " link already exists.",
+									"Warning",
+									MessageBoxButtons.OK,
+									MessageBoxIcon.Exclamation,
+									MessageBoxDefaultButton.Button1,
+									0);
+						// TODO: the error leaves the RoutePanel drawn in an awkard state
+						// but discovering where to call Refresh() is not trivial.
+//						RoutePanel.Refresh(); // in case of an error this needs to happen ...
+						// Fortunately a simple mouseover straightens things out for now.
 					}
 				}
 			}
@@ -1039,7 +1075,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private void DeselectNode()
 		{
 			NodeSelected = null;
-			_routePanel.ClearClickPoint();
+			RoutePanel.ClearClickPoint();
 
 			tsmiClearLinkData.Enabled = false;
 		}
@@ -1166,7 +1202,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnConnectDropDownClosed(object sender, EventArgs e)
 		{
-			pRoutes.Select();	// take focus off the stupid combobox. Tks.
+			pnlRoutes.Select();	// take focus off the stupid combobox. Tks.
 		}						// NOTE: sometimes it still stays "highlighted"
 								// but at least it's no longer "selected".
 
@@ -1206,8 +1242,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			tscbConnectType.SelectedIndex = 0;
 
-			var pens    = _routePanel.RoutePens;
-			var brushes = _routePanel.RouteBrushes;
+			var pens    = RoutePanel.RoutePens;
+			var brushes = RoutePanel.RouteBrushes;
 
 			var bc = new OptionChangedEventHandler(OnBrushColorChanged);
 			var pc = new OptionChangedEventHandler(OnPenColorChanged);
@@ -1341,7 +1377,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private void OnBrushColorChanged(object sender, string key, object val)
 		{
 			var color = (Color)val;
-			_routePanel.RouteBrushes[key].Color = color;
+			RoutePanel.RouteBrushes[key].Color = color;
 
 			switch (key)
 			{
@@ -1358,31 +1394,31 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnPenColorChanged(object sender, string key, object val)
 		{
-			_routePanel.RoutePens[key].Color = (Color)val;
+			RoutePanel.RoutePens[key].Color = (Color)val;
 			Refresh();
 		}
 
 		private void OnPenWidthChanged(object sender, string key, object val)
 		{
-			_routePanel.RoutePens[key].Width = (int)val;
+			RoutePanel.RoutePens[key].Width = (int)val;
 			Refresh();
 		}
 
 		private void OnNodeOpacityChanged(object sender, string key, object val)
 		{
-			_routePanel.Opacity = (int)val;
+			RoutePanel.Opacity = (int)val;
 			Refresh();
 		}
 
 		private void OnShowPriorityChanged(object sender, string key, object val)
 		{
-			_routePanel.ShowPriorityBars = (bool)val;
+			RoutePanel.ShowPriorityBars = (bool)val;
 			Refresh();
 		}
 
 		private void OnShowOverlayChanged(object sender, string key, object val)
 		{
-			_routePanel.ShowOverlay = (bool)val;
+			RoutePanel.ShowOverlay = (bool)val;
 			Refresh();
 		}
 
@@ -1393,7 +1429,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <returns></returns>
 		internal Dictionary<string, Pen> GetWallPens()
 		{
-			return _routePanel.RoutePens;
+			return RoutePanel.RoutePens;
 		}
 
 		/// <summary>
@@ -1402,7 +1438,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <returns></returns>
 		internal Dictionary<string, SolidBrush> GetContentBrushes()
 		{
-			return _routePanel.RouteBrushes;
+			return RoutePanel.RouteBrushes;
 		}
 		#endregion
 	}

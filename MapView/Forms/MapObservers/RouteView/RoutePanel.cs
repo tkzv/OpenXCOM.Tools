@@ -14,7 +14,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 		:
 			RoutePanelParent
 	{
-		#region Fields & Properties
+		#region Fields
+		private readonly Font _fontOverlay = new Font("Verdana", 7F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
+		private readonly Font _fontRose    = new Font("Courier New", 22, FontStyle.Bold);
+
+		private ColorTools _toolWall;
+		private ColorTools _toolContent;
+
+		private Graphics     _graphics;
+		private GraphicsPath _nodeFill = new GraphicsPath();
+		#endregion
+
+
+		#region Properties
 		private Point _pos = new Point(-1, -1); // TODO: use 'null' instead of (-1,-1) here and elsewhere.
 		/// <summary>
 		/// Tracks the screen-position of the mouse cursor.
@@ -24,15 +36,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			get { return _pos; }
 			set { _pos = value; }
 		}
-
-		private readonly Font _fontOverlay = new Font("Verdana", 7F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
-		private readonly Font _fontRose    = new Font("Courier New", 22, FontStyle.Bold);
-
-		private ColorTools _toolWall;
-		private ColorTools _toolContent;
-
-		private Graphics     _graphics;
-		private GraphicsPath _nodeFill = new GraphicsPath();
 
 		internal RouteNode NodeSelected
 		{ get; set; }
