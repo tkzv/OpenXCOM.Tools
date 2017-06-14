@@ -327,6 +327,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 					if (args.MouseEventArgs.Button == MouseButtons.Right)
 						ConnectNode(node);
 
+//					RoutePanel.Refresh(); don't work.
+
 					NodeSelected = node;
 					UpdateNodeInformation();
 				}
@@ -337,6 +339,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 						node = _mapFile.AddRouteNode(args.ClickedLocation);
 						ConnectNode(node);
 					}
+//					RoutePanel.Refresh(); don't work.
 
 					NodeSelected = node;
 					UpdateNodeInformation();
@@ -378,54 +381,52 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (type != ConnectNodeType.ConnectNone)
 			{
 				int linkId = GetOpenLinkSlot(NodeSelected, node.Index);
-				if (linkId != -1)
+				if (linkId > -1)
 				{
 					_mapFile.RoutesChanged = true;
 					NodeSelected[linkId].Destination = node.Index;
 					NodeSelected[linkId].Distance = CalculateLinkDistance(NodeSelected, node);
 				}
-				else
+				else if (linkId == -3)
 				{
 					MessageBox.Show(
 								this,
 								"Source node could not be linked to destination."
-									+ " Either its link-slots are full or the"
-									+ " link already exists.",
+									+ " Its link-slots are full.",
 								"Warning",
 								MessageBoxButtons.OK,
 								MessageBoxIcon.Exclamation,
 								MessageBoxDefaultButton.Button1,
 								0);
-					// TODO: the error leaves the RoutePanel drawn in an awkard state
+					// TODO: the message leaves the RoutePanel drawn in an awkward state
 					// but discovering where to call Refresh() is not trivial.
-//					RoutePanel.Refresh(); // in case of an error this needs to happen ...
+//					RoutePanel.Refresh(); // in case of a warning this needs to happen ...
 					// Fortunately a simple mouseover straightens things out for now.
 				}
 
 				if (type == ConnectNodeType.ConnectTwoWays)
 				{
 					linkId = GetOpenLinkSlot(node, NodeSelected.Index);
-					if (linkId != -1)
+					if (linkId > -1)
 					{
 						_mapFile.RoutesChanged = true;
 						node[linkId].Destination = NodeSelected.Index;
 						node[linkId].Distance = CalculateLinkDistance(node, NodeSelected);
 					}
-					else
+					else if (linkId == -3)
 					{
 						MessageBox.Show(
 									this,
 									"Destination node could not be linked to source."
-									+ " Either its link-slots are full or the"
-									+ " link already exists.",
+										+ " Its link-slots are full.",
 									"Warning",
 									MessageBoxButtons.OK,
 									MessageBoxIcon.Exclamation,
 									MessageBoxDefaultButton.Button1,
 									0);
-						// TODO: the error leaves the RoutePanel drawn in an awkard state
+						// TODO: the message leaves the RoutePanel drawn in an awkward state
 						// but discovering where to call Refresh() is not trivial.
-//						RoutePanel.Refresh(); // in case of an error this needs to happen ...
+//						RoutePanel.Refresh(); // in case of a warning this needs to happen ...
 						// Fortunately a simple mouseover straightens things out for now.
 					}
 				}
@@ -448,12 +449,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		/// <summary>
-		/// Gets the first available link-slot, else -1. Also returns -1 if the
-		/// node already has a link to destination.
+		/// Gets the first available link-slot for a given node.
 		/// </summary>
-		/// <param name="node"></param>
-		/// <param name="idOther"></param>
-		/// <returns></returns>
+		/// <param name="node">the node to check the link-slots of</param>
+		/// <param name="idOther">the id of the destination node</param>
+		/// <returns>id of an available link-slot, or
+		/// -1 if the source-node is null (not sure if this ever happens)
+		/// -2 if the link already exists
+		/// -3 if there are no free slots</returns>
 		private static int GetOpenLinkSlot(RouteNode node, int idOther)
 		{
 			if (node != null)
@@ -461,7 +464,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				for (int i = 0; i != RouteNode.LinkSlots; ++i) // first check if destination-id already exists
 				{
 					if (idOther != -1 && node[i].Destination == idOther)
-						return -1;
+						return -2;
 				}
 
 				for (int i = 0; i != RouteNode.LinkSlots; ++i) // then check for an open slot
@@ -469,6 +472,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					if (node[i].Destination == (byte)LinkType.NotUsed)
 						return i;
 				}
+				return -3;
 			}
 			return -1;
 		}
