@@ -55,6 +55,7 @@ namespace PckView
 		#region Eventcalls
 		private void OnPaletteChanged(Palette pal)
 		{
+			// TODO: update statusbar since the alpha of id[0] swatch can change w/ a transparency click.
 			Refresh();
 		}
 
@@ -99,6 +100,7 @@ namespace PckView
 			var graphics = e.Graphics;
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
+			//LogFile.WriteLine("##");
 			for (int
 					i = 0,
 						y = 0;
@@ -113,12 +115,14 @@ namespace PckView
 						++j,
 							x += _tilesX)
 				{
+					//LogFile.WriteLine((i+j) + ": " + PckViewForm.Pal[i * Across + j]);
 					graphics.FillRectangle(
 										new SolidBrush(PckViewForm.Pal[i * Across + j]),
 										x,       y,
 										_tilesX, _tilesY);
 				}
 			}
+			//LogFile.WriteLine("##");
 
 			if (_id != -1)
 			{

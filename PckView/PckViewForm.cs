@@ -344,6 +344,13 @@ namespace PckView
 				Pal = pal;
 				Pal.SetTransparent(miTransparent.Checked);
 
+				//LogFile.WriteLine("###");
+				//for (int i = 0; i != 256; ++i)
+				//{
+				//	LogFile.WriteLine(i + ": " + Pal[i]);
+				//}
+				//LogFile.WriteLine("###");
+
 				_paletteItems[Pal].Checked = true;
 
 //				if (_pnlView.Spriteset != null) // NOTE: menu won't show until a spriteset is loaded.

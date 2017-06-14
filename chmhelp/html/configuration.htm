@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../css/mapview.css">
+	</head>
+	<body>
+		<h2>Configuration</h2>
+
+		<p>Configuration is an important aspect of MapView. MapView II sets paths and decides what files will be used very differently than the original MapView.</p>
+
+		<p>The Configuration Editor - or simply the Configurator - is shown the first time that MapView is run, and can be accessed later under MainView's Edit menu. It will write a file <b>MapResources.yml</b> to the \settings subfolder of the application. <b>MapTilesets.yml</b> will also be written there. Those are the two tileset-configuration files for MapView II.</p>
+
+		<p>The original MapView has a tangle of paths and variables that determine which specific resource files are loaded and saved by the application.</p>
+
+		<p>MapView II simplifies things by assuming that any .MAP file that you wish to create or modify shall reside in a directory called \MAPS and that it shall have a corresponding .RMP file in a sibling directory called \ROUTES. The parent of those two directories is set by the Configurator. The parent can be set as the directory that contains the resource files that you play XCOM with on your computer, and if so those files will be edited directly.</p>
+
+		<p>IMPORTANT: Make back-ups of all those files regularly. Particularly before running any program that might change them, such as MapView I/II, PckView, MCDEdit, or whatever. IMPORTANT!</p>
+
+		<p>The basepaths for UFO (if configured) and TFTD (if configured) are stored by MapView II in the file <b>MapResources.yml</b>.</p>
+
+		<p>A second assumption is that terrains shall be accessed in a folder \TERRAIN at the basepath that is set by the Configurator.</p>
+
+		<p>In MapView II the parent directory of \MAPS and \ROUTES is called your basepath, and any tileset can be set to have its own basepath that's different than the default basepath set by the Configurator. Each and every tileset that MainView's Map Tree saves to <b>MapTilesets.yml</b> gets its own basepath entry if and only if its basepath is different from the basepath that has been set by the Configurator.</p>
+
+		<p>Note that the only requirement for the Configurator's basepath is that it has a subdirectory called \UFOGRAPH that has the files CURSOR.PCK and CURSOR.TAB, since the stock XCOM cursor will be used as the selector-graphic in MainView. So it is entirely possible to set up a working directory, as a default basepath, that's different than your XCOM installed resources. Create that working or so-called scratch directory on your disk, create the subdirectories \MAPS, \ROUTES, \TERRAIN, and \UFOGRAPH, and add the files CURSOR.PCK/.TAB to the last.</p>
+
+		<p>And copy any terrains that you'll be using in your Maps to \TERRAINS. Each terrain has three files: .PCK, .TAB, .MCD. Terrains, or terrainsets, are always accessed from the basepath specified by the Configurator rather than any alternate basepath that may be specified for a tileset.</p>
+
+		<p>Once the basepath has been set with the Configurator, and you've set up its required subfolders, the Tileset Editor is accessed with a right-click in MainView's Map Tree. A context-menu is shown, and the operations that are available there depend on what tree-node has been selected with a left-click. Note that right-clicking the Map Tree does not select a tree-node - the node must be left-clicked first.</p>
+
+		<p>Lastly, please pay attention to the text and mouseover tips shown in the Configuration Editor as well as in the Tileset Editor.</p>
+		<br>
+		</body>
+</html>

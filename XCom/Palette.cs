@@ -203,17 +203,6 @@ namespace XCom
 
 		#region cTors
 		/// <summary>
-		/// Instantiates a palette with a given label.
-		/// </summary>
-		/// <param name="label"></param>
-		private Palette(string label)
-		{
-			using (var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed))
-				ColorTable = b.Palette;
-
-			Label = label;
-		}
-		/// <summary>
 		/// Instantiates a palette given a filestream of data.
 		/// </summary>
 		/// <param name="fs"></param>
@@ -231,17 +220,32 @@ namespace XCom
 
 				var invariant = System.Globalization.CultureInfo.InvariantCulture;
 
-				for (byte id = 0; id != 0xFF; )
+				//LogFile.WriteLine("#");
+				for (int id = 0; id != 256; )
 				{
 					line = input.ReadLine();
-					rgb  = line.Split(',');
+					//LogFile.WriteLine(id + ": " + line);
+
+					rgb = line.Split(',');
 					ColorTable.Entries[id++] = Color.FromArgb(
 														Int32.Parse(rgb[0], invariant),
 														Int32.Parse(rgb[1], invariant),
 														Int32.Parse(rgb[2], invariant));
 				}
+				//LogFile.WriteLine("#");
 			}
 //			checkPalette();
+		}
+		/// <summary>
+		/// Instantiates a grayscale-palette with a given label.
+		/// </summary>
+		/// <param name="label"></param>
+		private Palette(string label)
+		{
+			using (var b = new Bitmap(1, 1, PixelFormat.Format8bppIndexed))
+				ColorTable = b.Palette;
+
+			Label = label;
 		}
 		#endregion
 

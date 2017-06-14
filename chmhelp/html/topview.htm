@@ -8,9 +8,19 @@
 
 		<p>The top of the panel displays a 2-dimensional representation of the currently loaded Map at the current editing level. Using the mousewheel when the panel is focused raises and lowers the editing level.</p>
 
+		<p>Left of the viewer panel are buttons for<br><br>
+&nbsp;&nbsp;- level up [mousewheel up]<br>
+&nbsp;&nbsp;- level down [mousewheel down]<br>
+&nbsp;&nbsp;- cut a selected area [Ctrl+X]<br>
+&nbsp;&nbsp;- copy a selected area [Ctrl+C]<br>
+&nbsp;&nbsp;- paste area at a selected tile [Ctrl+V]<br>
+&nbsp;&nbsp;- fill a selected area with the currently selected tilepart from TileView</p>
+
+		<p>The [Delete] key will delete a selected area.</p>
+
 		<p>Left-click to select a tile to edit, and a left-click drag motion will select multiple tiles over a rectangular area.</p>
 
-		<p>Right-click places the currently selected tilepart from TileView into the tilepart type-slot along the bottom of the viewer, respecting the clicked tile position.</p>
+		<p>Right-click places the currently selected tilepart from TileView into the tilepart type-slot along the bottom of the viewer, respecting the clicked tile position on the 2-dimensional grid and the currently selected tilepart-type shown beneath the grid.</p>
 
 		<p>The bottom of the panel displays the four tilepart type-slots into which parts may be placed. The currently selected type-slot has a light blue background.</p>
 
@@ -29,7 +39,7 @@
 		<br>
 		<h3>Visible menu</h3>
 
-		<p>These four entries toggle the visibility of the four tilepart types for TopView and MainView. This can be used for quickly checking out the flooring behind a wall, as an example. When a type is toggled off, the background color of its slot turns dark gray - the part in the slot can still be changed however. They have no effect when saving the Map file, all parts are saved whether they've been flagged or not. Note that the visibility of tileparts can be toggled on and off with Function keys 1..4.</p>
+		<p>These four entries toggle the visibility of the four possible tilepart types for TopView and MainView. They can be used for quickly checking out the flooring behind a wall, for example. When a type is toggled off, the background color of its slot changes to dark gray - the tileparts are still modifiable however. The visibility settings have no effect when saving a Map file, all parts are saved whether they're currently visible or not. Note that the visibility of tileparts can also be toggled on and off with Function keys 1..4.</p>
 
 		<br>
 		<h3>Edit menu</h3>
