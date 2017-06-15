@@ -39,8 +39,8 @@ namespace PckView
 		private TabControl _tcTabs;
 
 		private MenuItem _miEdit;
+		private MenuItem _miExport;
 //		private MenuItem _miReplace;
-//		private MenuItem _miSave;
 //		private MenuItem _miDelete;
 //		private MenuItem _miAdd;
 
@@ -90,8 +90,8 @@ namespace PckView
 //						SharedSpace.SettingsDirectory,
 //						dirSettings);
 
-//			XConsole.AdZerg("Application directory: " + _share[SharedSpace.ApplicationDirectory]);			// TODO: I don't trust that since changing SharedSpace.
-//			XConsole.AdZerg("Settings directory: "    + _share[SharedSpace.SettingsDirectory].ToString());	// it may well need an explicit cast to (PathInfo)
+//			XConsole.AdZerg("Application directory: " + _share[SharedSpace.ApplicationDirectory]);
+//			XConsole.AdZerg("Settings directory: "    + _share[SharedSpace.SettingsDirectory].ToString());
 //			XConsole.AdZerg("Custom directory: "      + _share[SharedSpace.CustomDirectory].ToString());
 			#endregion
 
@@ -142,9 +142,9 @@ namespace PckView
 
 			menu.MenuItems.Add(new MenuItem("-"));
 
-//			_miSave = new MenuItem("Save");
-//			_miSave.Click += OnSpriteSaveClick;
-//			menu.MenuItems.Add(_miSave);
+			_miExport = new MenuItem("Export");
+			_miExport.Click += OnExportSpriteClick;
+			menu.MenuItems.Add(_miExport);
 
 //			_miReplace = new MenuItem("Replace");
 //			_miReplace.Click += OnSpriteReplaceClick;
@@ -180,6 +180,7 @@ namespace PckView
 		private void OnSpritesetChanged(bool valid)
 		{
 			miSaveAs.Enabled          =
+			miExportSprites.Enabled   =
 
 			miPaletteMenu.Enabled     =
 			miTransparentMenu.Enabled =
@@ -191,8 +192,8 @@ namespace PckView
 			bool valid = _pnlView.Selected != null
 					  && _pnlView.Selected.Count != 0;
 
-			_miEdit.Enabled   = valid;
-//			_miSave.Enabled   =
+			_miEdit.Enabled   =
+			_miExport.Enabled = valid;
 //			_miDelete.Enabled = valid;
 
 			if (valid)
@@ -204,22 +205,42 @@ namespace PckView
 				BytesFormHelper.ReloadBytes(null);
 		}
 
-		private void OnSpriteSaveClick(object sender, EventArgs e) // disabled in BuildViewerContextMenu()
+		/// <summary>
+		/// Exports the last selected sprite to a BMP file.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnExportSpriteClick(object sender, EventArgs e)
 		{
 			if (_pnlView.Selected.Count != 0)
 			{
 				var selected = _pnlView.Selected[_pnlView.Selected.Count - 1];
 				if (_pnlView.Spriteset != null)
 				{
-					sfdBmpSingle.FileName = _pnlView.Spriteset.Label + selected.Image.FileId;
+					string digits = String.Empty;
 
-					if (sfdBmpSingle.ShowDialog() == DialogResult.OK)
-						BitmapService.SaveSprite(sfdBmpSingle.FileName, selected.Image.Image);
+					int count = _pnlView.Spriteset.Count;
+					do
+					{
+						digits += "0";
+						count /= 10;
+					}
+					while (count != 0);
+
+					string suffix = String.Format(
+												System.Globalization.CultureInfo.InvariantCulture,
+												"{0:" + digits + "}",
+												selected.Image.FileId);
+
+					sfdSingleSprite.FileName = _pnlView.Spriteset.Label + suffix;
+
+					if (sfdSingleSprite.ShowDialog() == DialogResult.OK)
+						BitmapService.ExportSprite(sfdSingleSprite.FileName, selected.Image.Image);
 				}
 			}
 		}
 
-		private void OnSpriteReplaceClick(object sender, EventArgs e) // disabled in BuildViewerContextMenu()
+		private void OnSpriteReplaceClick(object sender, EventArgs e) // disabled in ViewerContextMenu()
 		{
 			if (_pnlView.Selected.Count != 1)
 			{
@@ -261,7 +282,7 @@ namespace PckView
 			}
 		}
 
-		private void OnSpriteAddClick(object sender, EventArgs e) // disabled in BuildViewerContextMenu()
+		private void OnSpriteAddClick(object sender, EventArgs e) // disabled in ViewerContextMenu()
 		{
 			if (_pnlView.Spriteset != null)
 			{
@@ -287,7 +308,7 @@ namespace PckView
 			}
 		}
 
-		private void OnSpriteDeleteClick(object sender, EventArgs e) // disabled in BuildViewerContextMenu()
+		private void OnSpriteDeleteClick(object sender, EventArgs e) // disabled in ViewerContextMenu()
 		{
 			_pnlView.SpriteDelete();
 			UpdateCaption();
@@ -561,49 +582,59 @@ namespace PckView
 //				OnSpriteDeleteClick(null, null);
 		}
 
-		private void OnSaveDirectoryClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
+		/// <summary>
+		/// Exports all sprites in the currently loaded spriteset to BMP files.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnExportSpritesClick(object sender, EventArgs e)
 		{
 			if (_pnlView.Spriteset != null && _pnlView.Spriteset.Count != 0)
 			{
-				string file = Path.GetFileNameWithoutExtension(sfdBmpSingle.FileName);
-
-				sfdBmpSingle.FileName = file;
-				sfdBmpSingle.Title = "Select a folder for the sprites";
-
-				if (sfdBmpSingle.ShowDialog() == DialogResult.OK)
+				using (var fbd = new FolderBrowserDialog())
 				{
-					string path = Path.GetDirectoryName(sfdBmpSingle.FileName);
-					string ext  = Path.GetExtension(sfdBmpSingle.FileName);
+					string file = _pnlView.Spriteset.Label.ToUpperInvariant();
 
-					string digits = String.Empty;
+//					fbd.SelectedPath = ;
+					fbd.Description = String.Format(
+												System.Globalization.CultureInfo.CurrentCulture,
+												"Select a folder for the sprites"
+													+ Environment.NewLine
+													+ "Spriteset " + file);
 
-					int count = _pnlView.Spriteset.Count;
-					do
+					if (fbd.ShowDialog() == DialogResult.OK)
 					{
-						digits += "0";
-						count /= 10;
+						string path = fbd.SelectedPath;
+
+						string digits = String.Empty;
+						int count = _pnlView.Spriteset.Count;
+						do
+						{
+							digits += "0";
+							count /= 10;
+						}
+						while (count != 0);
+
+//						var progress     = new ProgressWindow(this);
+//						progress.Width   = 300;
+//						progress.Height  = 50;
+//						progress.Minimum = 0;
+//						progress.Maximum = _pnlView.Spriteset.Count;
+//
+//						progress.Show();
+						foreach (XCImage sprite in _pnlView.Spriteset)
+						{
+							string suffix = String.Format(
+														System.Globalization.CultureInfo.InvariantCulture,
+														"{0:" + digits + "}",
+														sprite.FileId);
+							string fullpath = Path.Combine(path, file + suffix + BitmapService.BmpExt);
+							BitmapService.ExportSprite(fullpath, sprite.Image);
+
+//							progress.Value = sprite.FileId;
+						}
+//						progress.Hide(); // TODO: I suspect this is essentially the same as a memory leak.
 					}
-					while (count != 0);
-
-					var progress     = new ProgressWindow(this);
-					progress.Width   = 300;
-					progress.Height  = 50;
-					progress.Minimum = 0;
-					progress.Maximum = _pnlView.Spriteset.Count;
-
-					progress.Show();
-					foreach (XCImage sprite in _pnlView.Spriteset)
-					{
-						string suffix = String.Format(
-													System.Globalization.CultureInfo.InvariantCulture,
-													"{0:" + digits + "}",
-													sprite.FileId);
-						string fullpath = Path.Combine(path, file + suffix + ext);
-						BitmapService.SaveSprite(fullpath, sprite.Image);
-
-						progress.Value = sprite.FileId;
-					}
-					progress.Hide();
 				}
 			}
 		}

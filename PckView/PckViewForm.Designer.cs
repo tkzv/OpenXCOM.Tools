@@ -36,7 +36,7 @@ namespace PckView
 			this.miCompare = new System.Windows.Forms.MenuItem();
 			this.miSave = new System.Windows.Forms.MenuItem();
 			this.miSaveAs = new System.Windows.Forms.MenuItem();
-			this.miSaveDir = new System.Windows.Forms.MenuItem();
+			this.miExportSprites = new System.Windows.Forms.MenuItem();
 			this.miHq2x = new System.Windows.Forms.MenuItem();
 			this.miQuit = new System.Windows.Forms.MenuItem();
 			this.miPaletteMenu = new System.Windows.Forms.MenuItem();
@@ -49,12 +49,14 @@ namespace PckView
 			this.miConsole = new System.Windows.Forms.MenuItem();
 			this.miHelp = new System.Windows.Forms.MenuItem();
 			this.miMapViewHelp = new System.Windows.Forms.MenuItem();
-			this.sfdBmpSingle = new System.Windows.Forms.SaveFileDialog();
+			this.sfdSingleSprite = new System.Windows.Forms.SaveFileDialog();
 			this.ofdBmp = new System.Windows.Forms.OpenFileDialog();
 			this.pnlView = new System.Windows.Forms.Panel();
 			this.pnlMapViewHelp = new System.Windows.Forms.Panel();
 			this.btnMapViewHelpOk = new System.Windows.Forms.Button();
 			this.lblMapViewHelp = new System.Windows.Forms.Label();
+			this.miSeparator1 = new System.Windows.Forms.MenuItem();
+			this.miSeparator2 = new System.Windows.Forms.MenuItem();
 			this.pnlMapViewHelp.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -72,59 +74,71 @@ namespace PckView
 			this.miFileMenu.Index = 0;
 			this.miFileMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miOpen,
+			this.miSeparator1,
 			this.miCompare,
 			this.miSave,
 			this.miSaveAs,
-			this.miSaveDir,
+			this.miExportSprites,
 			this.miHq2x,
+			this.miSeparator2,
 			this.miQuit});
 			this.miFileMenu.Text = "&File";
 			// 
 			// miOpen
 			// 
 			this.miOpen.Index = 0;
-			this.miOpen.Text = "&Open";
+			this.miOpen.Text = "&Open Pck file ...";
 			this.miOpen.Click += new System.EventHandler(this.OnOpenClick);
+			// 
+			// miSeparator1
+			// 
+			this.miSeparator1.Index = 1;
+			this.miSeparator1.Text = "-";
 			// 
 			// miCompare
 			// 
-			this.miCompare.Index = 1;
+			this.miCompare.Index = 2;
 			this.miCompare.Text = "&Compare";
 			this.miCompare.Visible = false;
 			this.miCompare.Click += new System.EventHandler(this.OnCompareClick);
 			// 
 			// miSave
 			// 
-			this.miSave.Index = 2;
-			this.miSave.Text = "&Save";
+			this.miSave.Index = 3;
+			this.miSave.Text = "Save";
 			this.miSave.Visible = false;
 			this.miSave.Click += new System.EventHandler(this.OnSaveSpritesetClick);
 			// 
 			// miSaveAs
 			// 
 			this.miSaveAs.Enabled = false;
-			this.miSaveAs.Index = 3;
+			this.miSaveAs.Index = 4;
 			this.miSaveAs.Text = "Save &As ...";
 			this.miSaveAs.Visible = false;
 			this.miSaveAs.Click += new System.EventHandler(this.OnSaveAsClick);
 			// 
-			// miSaveDir
+			// miExportSprites
 			// 
-			this.miSaveDir.Index = 4;
-			this.miSaveDir.Text = "Save &Image";
-			this.miSaveDir.Visible = false;
-			this.miSaveDir.Click += new System.EventHandler(this.OnSaveDirectoryClick);
+			this.miExportSprites.Enabled = false;
+			this.miExportSprites.Index = 5;
+			this.miExportSprites.Text = "Export Sprites ...";
+			this.miExportSprites.Click += new System.EventHandler(this.OnExportSpritesClick);
 			// 
 			// miHq2x
 			// 
-			this.miHq2x.Index = 5;
+			this.miHq2x.Index = 6;
 			this.miHq2x.Text = "Hq&2x";
 			this.miHq2x.Visible = false;
 			this.miHq2x.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
+			// miSeparator2
+			// 
+			this.miSeparator2.Index = 7;
+			this.miSeparator2.Text = "-";
+			// 
 			// miQuit
 			// 
-			this.miQuit.Index = 6;
+			this.miQuit.Index = 8;
 			this.miQuit.Text = "&Quit";
 			this.miQuit.Click += new System.EventHandler(this.OnQuitClick);
 			// 
@@ -198,10 +212,10 @@ namespace PckView
 			this.miMapViewHelp.Visible = false;
 			this.miMapViewHelp.Click += new System.EventHandler(this.OnMapViewHelpClick);
 			// 
-			// sfdBmpSingle
+			// sfdSingleSprite
 			// 
-			this.sfdBmpSingle.DefaultExt = "*.bmp";
-			this.sfdBmpSingle.Filter = "BMP Files (*.bmp)|*.bmp";
+			this.sfdSingleSprite.DefaultExt = "*.bmp";
+			this.sfdSingleSprite.Filter = "Bitmap Files (*.bmp)|*.BMP";
 			// 
 			// ofdBmp
 			// 
@@ -269,30 +283,43 @@ namespace PckView
 		}
 		#endregion
 
+		private System.Windows.Forms.Panel pnlView;
+
 		private System.Windows.Forms.MainMenu mmMainMenu;
+
 		private System.Windows.Forms.MenuItem miFileMenu;
 		private System.Windows.Forms.MenuItem miOpen;
-		private System.Windows.Forms.MenuItem miQuit;
-		private System.Windows.Forms.SaveFileDialog sfdBmpSingle;
-		private System.Windows.Forms.MenuItem miBytes;
-		private System.Windows.Forms.MenuItem miBytesMenu;
-		private System.Windows.Forms.MenuItem miTransparent;
-		private System.Windows.Forms.OpenFileDialog ofdBmp;
-		private System.Windows.Forms.MenuItem miHelpMenu;
-		private System.Windows.Forms.MenuItem miAbout;
+		private System.Windows.Forms.MenuItem miSeparator1;
+		private System.Windows.Forms.MenuItem miExportSprites;
 		private System.Windows.Forms.MenuItem miSaveAs;
-		private System.Windows.Forms.MenuItem miTransparentMenu;
-		private System.Windows.Forms.MenuItem miHelp;
-		private System.Windows.Forms.MenuItem miPaletteMenu;
 		private System.Windows.Forms.MenuItem miHq2x;
-		private System.Windows.Forms.MenuItem miSaveDir;
-		private System.Windows.Forms.MenuItem miConsole;
-		private System.Windows.Forms.MenuItem miCompare;
-		private System.Windows.Forms.MenuItem miSave;
-		private System.Windows.Forms.Panel pnlView;
+		private System.Windows.Forms.MenuItem miSeparator2;
+		private System.Windows.Forms.MenuItem miQuit;
+
+		private System.Windows.Forms.MenuItem miBytesMenu;
+		private System.Windows.Forms.MenuItem miBytes;
+
+		private System.Windows.Forms.MenuItem miPaletteMenu;
+
+		private System.Windows.Forms.MenuItem miTransparentMenu;
+		private System.Windows.Forms.MenuItem miTransparent;
+
+		private System.Windows.Forms.MenuItem miHelpMenu;
+		private System.Windows.Forms.MenuItem miHelp;
+		private System.Windows.Forms.MenuItem miAbout;
+		private System.Windows.Forms.MenuItem miMapViewHelp;
+
 		private System.Windows.Forms.Panel pnlMapViewHelp;
 		private System.Windows.Forms.Label lblMapViewHelp;
-		private System.Windows.Forms.MenuItem miMapViewHelp;
 		private System.Windows.Forms.Button btnMapViewHelpOk;
+
+		private System.Windows.Forms.MenuItem miConsole;
+
+		private System.Windows.Forms.MenuItem miCompare;
+
+		private System.Windows.Forms.MenuItem miSave;
+
+		private System.Windows.Forms.OpenFileDialog ofdBmp;
+		private System.Windows.Forms.SaveFileDialog sfdSingleSprite;
 	}
 }

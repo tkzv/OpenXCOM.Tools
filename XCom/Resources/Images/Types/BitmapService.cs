@@ -27,13 +27,17 @@ namespace XCom
 		// used for an image-loading progressbar.
 //		public static event LoadingEventHandler LoadingEvent;
 
+		#region Fields (static)
+		public const string BmpExt = ".BMP";
+		#endregion
+
 
 		/// <summary>
-		/// Saves a sprite to a given path.
+		/// Saves a sprite to a given path w/ format: MS Windows 3 Bitmap, uncompressed.
 		/// </summary>
 		/// <param name="fullpath"></param>
 		/// <param name="bitmap"></param>
-		public static void SaveSprite(string fullpath, Bitmap bitmap)
+		public static void ExportSprite(string fullpath, Bitmap bitmap)
 		{
 			using (var bw = new BinaryWriter(new FileStream(fullpath, FileMode.Create)))
 			{

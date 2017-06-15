@@ -10,11 +10,44 @@ namespace DSShared.Windows
 		:
 			Form
 	{
+		#region Fields
 		private Form _parent;
-		private ProgressBar progress;
-		private Container components = null;
+		#endregion
+
+
+		#region Properties
+		/// <summary>
+		/// 
+		/// </summary>
+		public int Minimum
+		{
+			get { return progress.Minimum; }
+			set { progress.Minimum = value; }
+		}
 
 		/// <summary>
+		/// 
+		/// </summary>
+		public int Maximum
+		{
+			get { return progress.Maximum; }
+			set { progress.Maximum = value; }
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public int Value
+		{
+			get { return progress.Value; }
+			set { progress.Value = value; }
+		}
+		#endregion
+
+
+		#region cTor
+		/// <summary>
+		/// cTor.
 		/// </summary>
 		public ProgressWindow(Form parent)
 		{
@@ -28,7 +61,10 @@ namespace DSShared.Windows
 				Top  = parent.Top  + (parent.Height - Height) / 2;
 			}
 		}
+		#endregion
 
+
+		#region Methods
 		/// <summary>
 		/// </summary>
 		public new void Show()
@@ -48,30 +84,7 @@ namespace DSShared.Windows
 
 			base.Hide();
 		}
-
-		/// <summary>
-		/// </summary>
-		public int Maximum
-		{
-			get { return progress.Maximum; }
-			set { progress.Maximum = value; }
-		}
-
-		/// <summary>
-		/// </summary>
-		public int Value
-		{
-			get { return progress.Value; }
-			set { progress.Value = value; }
-		}
-
-		/// <summary>
-		/// </summary>
-		public int Minimum
-		{
-			get { return progress.Minimum; }
-			set { progress.Minimum = value; }
-		}
+		#endregion
 
 
 		#region Windows Form Designer generated code
@@ -118,5 +131,9 @@ namespace DSShared.Windows
 			this.ResumeLayout(false);
 		}
 		#endregion
+
+		private Container components = null;
+
+		private ProgressBar progress;
 	}
 }
