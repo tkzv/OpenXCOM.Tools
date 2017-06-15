@@ -23,7 +23,7 @@ namespace XCom
 
 		private readonly SpriteCollection _spriteset;
 
-		private readonly byte[] _expanded; // i suspect this should be '_scaled'
+		private readonly byte[] _expanded;
 		private int _moveId = -1;
 //		private byte _moveVal = 0;
 		#endregion
@@ -109,16 +109,16 @@ namespace XCom
 			}
 			Bindata = _expanded;
 		
-			Image = XCBitmap.MakeBitmap8(
-										XCImageFile.SpriteWidth,
-										XCImageFile.SpriteHeight,
-										_expanded,
-										pal.ColorTable);
-			SpriteGray = XCBitmap.MakeBitmap8(
-										XCImageFile.SpriteWidth,
-										XCImageFile.SpriteHeight,
-										_expanded,
-										pal.Grayscale.ColorTable);
+			Image = BitmapService.MakeBitmapTrue(
+												XCImageFile.SpriteWidth,
+												XCImageFile.SpriteHeight,
+												_expanded,
+												pal.ColorTable);
+			SpriteGray = BitmapService.MakeBitmapTrue(
+												XCImageFile.SpriteWidth,
+												XCImageFile.SpriteHeight,
+												_expanded,
+												pal.Grayscale.ColorTable);
 		}
 		#endregion
 

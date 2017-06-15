@@ -56,11 +56,11 @@ namespace XCom.Interfaces
 			Pal     = pal;
 
 			if (Pal != null)
-				Image = XCBitmap.MakeBitmap8(
-										width,
-										height,
-										bindata,
-										Pal.ColorTable);
+				Image = BitmapService.MakeBitmapTrue(
+												width,
+												height,
+												bindata,
+												Pal.ColorTable);
 		}
 //		private XCImage(Bitmap image, int id)
 //		{

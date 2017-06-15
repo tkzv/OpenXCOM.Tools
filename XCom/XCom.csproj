@@ -107,7 +107,7 @@
     <Compile Include="Resources\Images\Types\PckImage.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Resources\Images\Types\XCBitmap.cs">
+    <Compile Include="Resources\Images\Types\BitmapService.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Resources\Images\Types\XCImage.cs">

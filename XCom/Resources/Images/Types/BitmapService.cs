@@ -22,12 +22,10 @@ namespace XCom
 //	public delegate void LoadingEventHandler(int progress, int total);
 
 
-	public static class XCBitmap
+	public static class BitmapService
 	{
+		// used for an image-loading progressbar.
 //		public static event LoadingEventHandler LoadingEvent;
-
-		// amount of space between saved bmp image blocks
-//		private const int space = 1;
 
 
 		/// <summary>
@@ -65,20 +63,20 @@ namespace XCom
 				bw.Write((int)0);
 
 //				byte[] bArr = new byte[256 * 4];
-				Color[] entries = bitmap.Palette.Entries;
+				var entries = bitmap.Palette.Entries;
 
-				for (int i = 1; i != 256; ++i)
+				for (int colorId = 1; colorId != 256; ++colorId)
 				{
 //				for (int i = 0; i < bArr.Length; i += 4)
 //				{
-//					bArr[i] = entries[i / 4].B;
+//					bArr[i]     = entries[i / 4].B;
 //					bArr[i + 1] = entries[i / 4].G;
 //					bArr[i + 2] = entries[i / 4].R;
 //					bArr[i + 3] = 0;
 
-					bw.Write(entries[i].B);
-					bw.Write(entries[i].G);
-					bw.Write(entries[i].R);
+					bw.Write(entries[colorId].B);
+					bw.Write(entries[colorId].G);
+					bw.Write(entries[colorId].R);
 					bw.Write((byte)0);
 
 //					bw.Write((byte)image.Palette.Entries[i].B);
@@ -91,13 +89,12 @@ namespace XCom
 				var colorTable = new Dictionary<Color, byte>();
 
 				int id = 0;
-				foreach(Color color in bitmap.Palette.Entries)
-					colorTable[color] = (byte)id++;
+				foreach(var colorId in bitmap.Palette.Entries)
+					colorTable[colorId] = (byte)id++;
 
-				// the blank color between each individual image
 				colorTable[Color.FromArgb(0, 0, 0, 0)] = (byte)255;
 
-				for (int i = bitmap.Height - 1; i > -1; --i)
+				for (int i = bitmap.Height - 1; i != -1; --i)
 				{
 					for (int j = 0; j != bitmap.Width; ++j)
 						bw.Write(colorTable[bitmap.GetPixel(j, i)]);
@@ -116,20 +113,20 @@ namespace XCom
 		/// <param name="bindata">image data</param>
 		/// <param name="pal">palette to color the image with</param>
 		/// <returns></returns>
-		public static Bitmap MakeBitmap8(
+		public static Bitmap MakeBitmapTrue(
 				int width,
 				int height,
 				byte[] bindata,
 				ColorPalette pal)
 		{
-			var image = new Bitmap(
+			var bitmap = new Bitmap(
 								width, height,
 								PixelFormat.Format8bppIndexed);
-			var rect = new Rectangle(
+			var rect   = new Rectangle(
 								0, 0,
 								width, height);
 
-			var data = image.LockBits(
+			var locked = bitmap.LockBits(
 									rect,
 									ImageLockMode.WriteOnly,
 									PixelFormat.Format8bppIndexed);
@@ -138,16 +135,16 @@ namespace XCom
 			// Copy the pixels from the source image in this loop.
 			// Because you want an index, convert RGB to the appropriate
 			// palette index here.
-			var pixels = data.Scan0;
+			var pixels = locked.Scan0;
 
 			unsafe
 			{
 				// Get the pointer to the image bits.
 				// This is the unsafe operation.
-				byte* pBits;
-				if (data.Stride > 0)
+				byte* bits;
+				if (locked.Stride > 0)
 				{
-					pBits = (byte*)pixels.ToPointer();
+					bits = (byte*)pixels.ToPointer();
 				}
 				else
 				{
@@ -155,26 +152,27 @@ namespace XCom
 					// scanline in the buffer. To normalize the loop, obtain
 					// a pointer to the front of the buffer that is located
 					// (Height-1) scanlines previous.
-					pBits = (byte*)pixels.ToPointer() + data.Stride * ((height > 0) ? height - 1 : 0); // satiate FxCop CA2233.
+					bits = (byte*)pixels.ToPointer() + locked.Stride * ((height > 0) ? height - 1 : 0); // satiate FxCop CA2233.
 				}
-				uint stride = (uint)Math.Abs(data.Stride);
+				uint stride = (uint)Math.Abs(locked.Stride);
 
-				int ex = 0;
+				int pos = 0;
 				for (uint row = 0; row != height; ++row)
-				for (uint col = 0; col != width && ex < bindata.Length; ++col)
+				for (uint col = 0; col != width && pos != bindata.Length; ++col)
 				{
 					// The destination pixel.
 					// The pointer to the color index byte of the
 					// destination; this real pointer causes this
 					// code to be considered unsafe.
-					byte* p8bppPixel = pBits + row * stride + col;
-					*p8bppPixel = bindata[ex++];
+					byte* pixel = bits + row * stride + col;
+					*pixel = bindata[pos++];
 				}
 			}
-			image.UnlockBits(data);
-			image.Palette = pal;
+			bitmap.UnlockBits(locked);
 
-			return image;
+			bitmap.Palette = pal;
+
+			return bitmap;
 		}
 
 		/// <summary>
@@ -189,14 +187,14 @@ namespace XCom
 				int height,
 				ColorPalette pal)
 		{
-			var image = new Bitmap(
+			var bitmap = new Bitmap(
 								width, height,
 								PixelFormat.Format8bppIndexed);
-			var rect = new Rectangle(
+			var rect   = new Rectangle(
 								0, 0,
 								width, height);
 
-			var data = image.LockBits(
+			var locked = bitmap.LockBits(
 									rect,
 									ImageLockMode.WriteOnly,
 									PixelFormat.Format8bppIndexed);
@@ -205,16 +203,16 @@ namespace XCom
 			// Copy the pixels from the source image in this loop.
 			// Because you want an index, convert RGB to the appropriate
 			// palette index here.
-			var pixels = data.Scan0;
+			var pixels = locked.Scan0;
 
 			unsafe
 			{
 				// Get the pointer to the image bits.
 				// This is the unsafe operation.
-				byte* pBits;
-				if (data.Stride > 0)
+				byte* bits;
+				if (locked.Stride > 0)
 				{
-					pBits = (byte*)pixels.ToPointer();
+					bits = (byte*)pixels.ToPointer();
 				}
 				else
 				{
@@ -222,9 +220,9 @@ namespace XCom
 					// scanline in the buffer. To normalize the loop, obtain
 					// a pointer to the front of the buffer that is located
 					// (Height-1) scanlines previous.
-					pBits = (byte*)pixels.ToPointer() + data.Stride * ((height > 0) ? height - 1 : 0); // satiate FxCop CA2233.
+					bits = (byte*)pixels.ToPointer() + locked.Stride * ((height > 0) ? height - 1 : 0); // satiate FxCop CA2233.
 				}
-				uint stride = (uint)Math.Abs(data.Stride);
+				uint stride = (uint)Math.Abs(locked.Stride);
 
 				for (uint row = 0; row != height; ++row)
 				for (uint col = 0; col != width;  ++col)
@@ -233,18 +231,20 @@ namespace XCom
 					// The pointer to the color index byte of the
 					// destination; this real pointer causes this
 					// code to be considered unsafe.
-					byte* p8bppPixel = pBits + row * stride + col;
-					*p8bppPixel = Palette.TransparentId;
+					byte* pixel = bits + row * stride + col;
+					*pixel = Palette.TransparentId;
 				}
 			}
-			image.UnlockBits(data);
-			image.Palette = pal;
+			bitmap.UnlockBits(locked);
 
-			return image;
+			bitmap.Palette = pal;
+
+			return bitmap;
 		}
 
 		/// <summary>
 		/// Used by MapFileBase.SaveGif()
+		/// NOTE: not a Draw function.
 		/// </summary>
 		/// <param name="src"></param>
 		/// <param name="dst"></param>
@@ -256,121 +256,119 @@ namespace XCom
 				int x,
 				int y)
 		{
-			var dstRect = new Rectangle(
+			var dstRect   = new Rectangle(
 									0, 0,
 									dst.Width, dst.Height);
-
-			var dstData = dst.LockBits(
+			var dstLocked = dst.LockBits(
 									dstRect,
 									ImageLockMode.WriteOnly,
 									PixelFormat.Format8bppIndexed);
 
-			var srcRect = new Rectangle(
+			var srcRect   = new Rectangle(
 									0, 0,
 									src.Width, src.Height);
-
-			var srcData = src.LockBits(
+			var srcLocked = src.LockBits(
 									srcRect,
 									ImageLockMode.ReadOnly,
 									PixelFormat.Format8bppIndexed);
 
-			var srcPixels = srcData.Scan0;
-			var dstPixels = dstData.Scan0;
+			var srcPixels = srcLocked.Scan0;
+			var dstPixels = dstLocked.Scan0;
 
 			unsafe
 			{
 				byte* srcBits;
-				if (srcData.Stride > 0)
+				if (srcLocked.Stride > 0)
 					srcBits = (byte*)srcPixels.ToPointer();
 				else
-					srcBits = (byte*)srcPixels.ToPointer() + srcData.Stride * (src.Height - 1);
+					srcBits = (byte*)srcPixels.ToPointer() + srcLocked.Stride * (src.Height - 1);
 
-				uint srcStride = (uint)Math.Abs(srcData.Stride);
+				uint srcStride = (uint)Math.Abs(srcLocked.Stride);
 
 				byte* dstBits;
-				if (dstData.Stride > 0)
+				if (dstLocked.Stride > 0)
 					dstBits = (byte*)dstPixels.ToPointer();
 				else
-					dstBits = (byte*)dstPixels.ToPointer() + dstData.Stride * (dst.Height - 1);
+					dstBits = (byte*)dstPixels.ToPointer() + dstLocked.Stride * (dst.Height - 1);
 
-				uint dstStride = (uint)Math.Abs(dstData.Stride);
+				uint dstStride = (uint)Math.Abs(dstLocked.Stride);
 
 				for (uint row = 0; row != src.Height; ++row)
 				for (uint col = 0; col != src.Width; ++col)
 				{
-					byte* d8bppPixel = dstBits + (row + y) * dstStride + (col + x);
-//					byte* s8bppPixel = srcBits + ((row / PckImage.Scale) * srcStride + (col / PckImage.Scale));
-					byte* s8bppPixel = srcBits + row * srcStride + col;
+//					byte* srcPixel = srcBits + ((row / PckImage.Scale) * srcStride + (col / PckImage.Scale));
+					byte* srcPixel = srcBits +  row      * srcStride +  col;
+					byte* dstPixel = dstBits + (row + y) * dstStride + (col + x);
 
-					if (*s8bppPixel != Palette.TransparentId && row + y < dst.Height)
-						*d8bppPixel = *s8bppPixel;
+					if (*srcPixel != Palette.TransparentId && row + y < dst.Height)
+						*dstPixel = *srcPixel;
 				}
 			}
-			src.UnlockBits(srcData);
-			dst.UnlockBits(dstData);
+			src.UnlockBits(srcLocked);
+			dst.UnlockBits(dstLocked);
 		}
 
 		/// <summary>
 		/// Used by MapFileBase.SaveGif()
 		/// </summary>
-		/// <param name="src"></param>
+		/// <param name="bitmap"></param>
 		/// <param name="transparent"></param>
 		/// <returns></returns>
-		internal static Rectangle GetBoundsRect(Bitmap src, int transparent)
+		internal static Rectangle CropTransparency(Bitmap bitmap, int transparent)
 		{
-			var srcRect = new Rectangle(
+			var rect   = new Rectangle(
 									0, 0,
-									src.Width, src.Height);
+									bitmap.Width, bitmap.Height);
 
-			var srcData = src.LockBits(
-									srcRect,
+			var locked = bitmap.LockBits(
+									rect,
 									ImageLockMode.ReadOnly,
 									PixelFormat.Format8bppIndexed);
 
-			var srcPixels = srcData.Scan0;
+			var pixels = locked.Scan0;
 
-			int rMin, cMin, rMax, cMax;
+			int rowMin, colMin, rowMax, colMax;
 			unsafe
 			{
-				byte* sBits;
-				if (srcData.Stride > 0)
-					sBits = (byte*)srcPixels.ToPointer();
+				byte* bits;
+				if (locked.Stride > 0)
+					bits = (byte*)pixels.ToPointer();
 				else
-					sBits = (byte*)srcPixels.ToPointer() + srcData.Stride * (src.Height - 1);
+					bits = (byte*)pixels.ToPointer() + locked.Stride * (bitmap.Height - 1);
 				
-				uint sStride = (uint)Math.Abs(srcData.Stride);
+				uint stride = (uint)Math.Abs(locked.Stride);
 
-				for (rMin = 0; rMin != src.Height; ++rMin)
-				for (uint col = 0; col != src.Width; ++col)
+				for (rowMin = 0; rowMin != bitmap.Height; ++rowMin)
+				for (uint col = 0; col != bitmap.Width; ++col)
 				{
-					byte id = *(sBits + rMin * sStride + col);
+					byte id = *(bits + rowMin * stride + col);
 					if (id != transparent)
 						goto outLoop1;
 				}
 
 			outLoop1:
-				for (cMin = 0; cMin != src.Width; ++cMin)
-				for (int r = rMin; r < src.Height; ++r)
+				for (colMin = 0; colMin != bitmap.Width; ++colMin)
+				for (int row = rowMin; row < bitmap.Height; ++row)
 				{
-					byte id = *(sBits + r * sStride + cMin);
+					byte id = *(bits + row * stride + colMin);
 					if (id != transparent)
 						goto outLoop2;
 				}
 
 			outLoop2:
-				for (rMax = src.Height - 1; rMax > rMin; --rMax)
-				for (int col = cMin; col < src.Width; ++col)
+				for (rowMax = bitmap.Height - 1; rowMax > rowMin; --rowMax)
+				for (int col = colMin; col < bitmap.Width; ++col)
 				{
-					byte id = *(sBits + rMax * sStride + col);
+					byte id = *(bits + rowMax * stride + col);
 					if (id != transparent)
 						goto outLoop3;
 				}
 
 			outLoop3:
-				for (cMax = src.Width - 1; cMax > cMin; --cMax)
-				for (int r = rMin; r < rMax; ++r)
+				for (colMax = bitmap.Width - 1; colMax > colMin; --colMax)
+				for (int row = rowMin; row < rowMax; ++row)
 				{
-					byte id = *(sBits + r * sStride + cMax);
+					byte id = *(bits + row * stride + colMax);
 					if (id != transparent)
 						goto outLoop4;
 				}
@@ -378,91 +376,89 @@ namespace XCom
 			outLoop4:
 				Console.Write("");
 			}
-			src.UnlockBits(srcData);
+			bitmap.UnlockBits(locked);
 
 			return new Rectangle(
-							cMin - 1,        rMin - 1,
-							cMax - cMin + 3, rMax - rMin + 3);
+							colMin - 1,          rowMin - 1,
+							colMax - colMin + 3, rowMax - rowMin + 3);
 		}
 
 		/// <summary>
 		/// Used by MapFileBase.SaveGif()
 		/// </summary>
 		/// <param name="src"></param>
-		/// <param name="bounds"></param>
+		/// <param name="rect"></param>
 		/// <returns></returns>
-		internal static Bitmap Crop(Bitmap src, Rectangle bounds)
+		internal static Bitmap Crop(Bitmap src, Rectangle rect)
 		{
 			//Console.WriteLine("Old size: {0},{1} New Size: {2},{3}", src.Width, src.Height, bounds.Width, bounds.Height);
 
-			var dst = MakeBitmap(bounds.Width, bounds.Height, src.Palette);
-			var destRect = new Rectangle(
+			var dst = MakeBitmap(rect.Width, rect.Height, src.Palette);
+
+			var dstRect   = new Rectangle(
 									0, 0,
 									dst.Width, dst.Height);
-
-			var dstData = dst.LockBits(
-									destRect,
+			var dstLocked = dst.LockBits(
+									dstRect,
 									ImageLockMode.WriteOnly,
 									PixelFormat.Format8bppIndexed);
 
-			var srcRect = new Rectangle(
+			var srcRect   = new Rectangle(
 									0, 0,
 									src.Width, src.Height);
-
-			var srcData = src.LockBits(
+			var srcLocked = src.LockBits(
 									srcRect,
 									ImageLockMode.ReadOnly,
 									PixelFormat.Format8bppIndexed);
 
-			var srcPixels = srcData.Scan0;
-			var dstPixels = dstData.Scan0;
+			var srcPixels = srcLocked.Scan0;
+			var dstPixels = dstLocked.Scan0;
 
 			unsafe
 			{
-				byte* sBits;
-				if (srcData.Stride > 0)
-					sBits = (byte*)srcPixels.ToPointer();
+				byte* srcBits;
+				if (srcLocked.Stride > 0)
+					srcBits = (byte*)srcPixels.ToPointer();
 				else
-					sBits = (byte*)srcPixels.ToPointer() + srcData.Stride * (src.Height - 1);
+					srcBits = (byte*)srcPixels.ToPointer() + srcLocked.Stride * (src.Height - 1);
 
-				uint sStride = (uint)Math.Abs(srcData.Stride);
+				uint srcStride = (uint)Math.Abs(srcLocked.Stride);
 
-				byte* dBits;
-				if (dstData.Stride > 0)
-					dBits = (byte*)dstPixels.ToPointer();
+				byte* dstBits;
+				if (dstLocked.Stride > 0)
+					dstBits = (byte*)dstPixels.ToPointer();
 				else
-					dBits = (byte*)dstPixels.ToPointer() + dstData.Stride * (dst.Height - 1);
+					dstBits = (byte*)dstPixels.ToPointer() + dstLocked.Stride * (dst.Height - 1);
 
-				uint dStride = (uint)Math.Abs(dstData.Stride);
+				uint dstStride = (uint)Math.Abs(dstLocked.Stride);
 
-				for (uint row = 0; row != bounds.Height; ++row)
-				for (uint col = 0; col != bounds.Width;  ++col)
+				for (uint row = 0; row != rect.Height; ++row)
+				for (uint col = 0; col != rect.Width;  ++col)
 				{
-					byte* s8bppPixel = sBits + (row + bounds.Y) * sStride + (col + bounds.X);
-					byte* d8bppPixel = dBits + row * dStride + col;
+					byte* srcPixel = srcBits + (row + rect.Y) * srcStride + (col + rect.X);
+					byte* dstPixel = dstBits +  row           * dstStride +  col;
 
-//					if (*s8bppPixel != PckImage.TransparentIndex && row + y < dst.Height)
-					*d8bppPixel = *s8bppPixel;
+//					if (*srcPixel != PckImage.TransparentIndex && row + y < dst.Height)
+					*dstPixel = *srcPixel;
 				}
 			}
-			src.UnlockBits(srcData);
-			dst.UnlockBits(dstData);
+			src.UnlockBits(srcLocked);
+			dst.UnlockBits(dstLocked);
 
 			return dst;
 		}
 
 		/// <summary>
-		/// Loads a previously saved sprite-sheet as a generic collection to be
-		/// saved later.
+		/// Called by PckViewForm.OnSpriteReplaceClick()
 		/// </summary>
-		/// <param name="bmp">bitmap containing sprites</param>
+		/// <param name="bitmap">bitmap containing sprites</param>
 		/// <param name="pal"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="pad"></param>
 		/// <returns></returns>
 		public static SpriteCollectionBase LoadSpriteset(
-				Bitmap bmp,
+				Bitmap bitmap,
 				Palette pal,
 				int width,
 				int height,
@@ -470,8 +466,8 @@ namespace XCom
 		{
 			var spriteset = new SpriteCollectionBase();
 
-			int cols = (bmp.Width  + pad) / (width  + pad);
-			int rows = (bmp.Height + pad) / (height + pad);
+			int cols = (bitmap.Width  + pad) / (width  + pad);
+			int rows = (bitmap.Height + pad) / (height + pad);
 
 			int aniSprite = 0;
 
@@ -480,7 +476,7 @@ namespace XCom
 				int x = (i % cols) * (width  + pad);
 				int y = (i / cols) * (height + pad);
 				spriteset.Add(LoadSprite(
-									bmp,
+									bitmap,
 									aniSprite++,
 									pal,
 									x, y,
@@ -494,10 +490,11 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// 
+		/// Helper for LoadSpriteset()
+		/// also called by PckViewForm.OnSpriteAddClick()
 		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="frame"></param>
+		/// <param name="bitmap"></param>
+		/// <param name="id"></param>
 		/// <param name="pal"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
@@ -505,46 +502,46 @@ namespace XCom
 		/// <param name="height"></param>
 		/// <returns></returns>
 		public static XCImage LoadSprite(
-				Bitmap src,
-				int frame,
+				Bitmap bitmap,
+				int id,
 				Palette pal,
 				int x,
 				int y,
 				int width,
 				int height)
 		{
-			var data = new byte[width * height]; // image data in 8-bit form
+			var bindata = new byte[width * height]; // image data in 8-bit form
 
-			var srcRect = new Rectangle(
+			var rect   = new Rectangle(
 									x, y,
 									width, height);
 
-			var srcData = src.LockBits(
-									srcRect,
+			var locked = bitmap.LockBits(
+									rect,
 									ImageLockMode.ReadOnly,
 									PixelFormat.Format8bppIndexed);
 
-			var srcPixels = srcData.Scan0;
+			var pixels = locked.Scan0;
 
 			unsafe
 			{
-				byte* sBits;
-				if (srcData.Stride > 0)
-					sBits = (byte*)srcPixels.ToPointer();
+				byte* bits;
+				if (locked.Stride > 0)
+					bits = (byte*)pixels.ToPointer();
 				else
-					sBits = (byte*)srcPixels.ToPointer() + srcData.Stride * (src.Height - 1);
+					bits = (byte*)pixels.ToPointer() + locked.Stride * (bitmap.Height - 1);
 				
-				uint sStride = (uint)Math.Abs(srcData.Stride);
+				uint stride = (uint)Math.Abs(locked.Stride);
 
 				int i = 0;
 				for (uint row = 0; row != height; ++row)
 				for (uint col = 0; col != width;  ++col)
-					data[i++] = *(sBits + row * sStride + col);
+					bindata[i++] = *(bits + row * stride + col);
 			}
 
-			src.UnlockBits(srcData);
+			bitmap.UnlockBits(locked);
 
-			return new XCImage(data, width, height, pal, frame);
+			return new XCImage(bindata, width, height, pal, id);
 		}
 	}
 }

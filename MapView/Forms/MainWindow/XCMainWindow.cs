@@ -1078,7 +1078,7 @@ namespace MapView
 
 //					try
 //					{
-					_mainViewUnderlay.MapBase.SaveGif(sfdSaveDialog.FileName);
+					_mainViewUnderlay.MapBase.SaveGifFile(sfdSaveDialog.FileName);
 //					}
 //					finally
 //					{

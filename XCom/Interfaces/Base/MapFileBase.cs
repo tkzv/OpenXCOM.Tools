@@ -153,7 +153,7 @@ namespace XCom.Interfaces.Base
 		#endregion
 
 
-		#region Methods
+		#region Methods (virtual)
 		public virtual void SaveMap()
 		{}
 		public virtual void SaveMap(string pf)
@@ -170,7 +170,24 @@ namespace XCom.Interfaces.Base
 		public virtual void ClearRoutesChanged()
 		{}
 
-			/// <summary>
+		/// <summary>
+		/// Forwards the call to MapFileChild.
+		/// </summary>
+		/// <param name="rows"></param>
+		/// <param name="cols"></param>
+		/// <param name="levs"></param>
+		/// <param name="ceiling"></param>
+		public virtual void MapResize(
+				int rows,
+				int cols,
+				int levs,
+				bool ceiling)
+		{}
+		#endregion
+
+
+		#region Methods
+		/// <summary>
 		/// Changes the 'Level' property and fires a LevelChanged event.
 		/// </summary>
 		public void LevelUp()
@@ -199,32 +216,20 @@ namespace XCom.Interfaces.Base
 		}
 
 		/// <summary>
-		/// Forwards the call to MapFileChild.
-		/// </summary>
-		/// <param name="rows"></param>
-		/// <param name="cols"></param>
-		/// <param name="levs"></param>
-		/// <param name="ceiling"></param>
-		public virtual void MapResize(
-				int rows,
-				int cols,
-				int levs,
-				bool ceiling)
-		{}
-
-		/// <summary>
 		/// Not generic enough to call with custom derived classes other than
 		/// MapFileChild.
 		/// </summary>
-		/// <param name="file"></param>
-		public void SaveGif(string file)
+		/// <param name="fullpath"></param>
+		public void SaveGifFile(string fullpath)
 		{
 			var palette = GetFirstGroundPalette();
 			if (palette == null)
-				throw new ArgumentNullException("file", "MapFileBase: At least 1 ground tile is required.");
+				throw new ArgumentNullException("fullpath", "MapFileBase: At least 1 ground tile is required.");
+			// TODO: I don't want to see 'ArgumentNullException'. Just say
+			// what's wrong and save the technical details for the debugger.
 
 			var rowPlusCols = MapSize.Rows + MapSize.Cols;
-			var b = XCBitmap.MakeBitmap(
+			var b = BitmapService.MakeBitmap(
 									rowPlusCols * (XCImageFile.SpriteWidth / 2),
 									(MapSize.Levs - Level) * 24 + rowPlusCols * 8,
 									palette.ColorTable);
@@ -261,7 +266,7 @@ namespace XCom.Interfaces.Base
 							foreach (var usedPart in usedParts)
 							{
 								var part = usedPart as Tilepart;
-								XCBitmap.Draw(part[0].Image, b, x, y - part.Record.TileOffset);
+								BitmapService.Draw(part[0].Image, b, x, y - part.Record.TileOffset);
 							}
 
 //							XCBitmap.UpdateProgressBar(i, (MapSize.Levs - Level) * MapSize.Rows * MapSize.Cols);
@@ -272,13 +277,13 @@ namespace XCom.Interfaces.Base
 
 			try
 			{
-				var rect = XCBitmap.GetBoundsRect(b, Palette.TransparentId);
-				b = XCBitmap.Crop(b, rect);
-				b.Save(file, ImageFormat.Gif);
+				var rect = BitmapService.CropTransparency(b, Palette.TransparentId);
+				b = BitmapService.Crop(b, rect);
+				b.Save(fullpath, ImageFormat.Gif);
 			}
 			catch
 			{
-				b.Save(file, ImageFormat.Gif);
+				b.Save(fullpath, ImageFormat.Gif);
 				throw;
 			}
 		}

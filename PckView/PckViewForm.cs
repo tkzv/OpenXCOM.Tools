@@ -214,7 +214,7 @@ namespace PckView
 					sfdBmpSingle.FileName = _pnlView.Spriteset.Label + selected.Image.FileId;
 
 					if (sfdBmpSingle.ShowDialog() == DialogResult.OK)
-						XCBitmap.Save(sfdBmpSingle.FileName, selected.Image.Image);
+						BitmapService.Save(sfdBmpSingle.FileName, selected.Image.Image);
 				}
 			}
 		}
@@ -248,7 +248,7 @@ namespace PckView
 				if (ofdBmp.ShowDialog() == DialogResult.OK)
 				{
 					var b = new Bitmap(ofdBmp.FileName);
-					var image = XCBitmap.LoadSpriteset(
+					var image = BitmapService.LoadSpriteset(
 													b,
 													Pal,
 													XCImageFile.SpriteWidth,
@@ -273,7 +273,7 @@ namespace PckView
 					foreach (string file in ofdBmp.FileNames)
 					{
 						var b = new Bitmap(file);
-						_pnlView.Spriteset.Add(XCBitmap.LoadSprite(
+						_pnlView.Spriteset.Add(BitmapService.LoadSprite(
 																b,
 																0,
 																Pal,
@@ -615,7 +615,7 @@ namespace PckView
 					{
 						//Console.WriteLine("Save to: " + path + @"\" + fName + (xc.FileNum + countNum) + "." + ext);
 						//Console.WriteLine("Save: " + path + @"\" + fName + string.Format("{0:" + zeros + "}", xc.FileNum) + "." + ext);
-						XCBitmap.Save(
+						BitmapService.Save(
 								path + @"\" + fName + string.Format(
 																System.Globalization.CultureInfo.InvariantCulture,
 																"{0:" + zeros + "}",
