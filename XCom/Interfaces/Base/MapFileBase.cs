@@ -228,11 +228,11 @@ namespace XCom.Interfaces.Base
 			// TODO: I don't want to see 'ArgumentNullException'. Just say
 			// what's wrong and save the technical details for the debugger.
 
-			var rowPlusCols = MapSize.Rows + MapSize.Cols;
-			var b = BitmapService.MakeBitmap(
-									rowPlusCols * (XCImageFile.SpriteWidth / 2),
-									(MapSize.Levs - Level) * 24 + rowPlusCols * 8,
-									palette.ColorTable);
+			var rowcols = MapSize.Rows + MapSize.Cols;
+			var bitmap = BitmapService.MakeBitmap(
+												rowcols * (XCImageFile.SpriteWidth / 2),
+												(MapSize.Levs - Level) * 24 + rowcols * 8,
+												palette.ColorTable);
 
 			var start = new Point(
 								(MapSize.Rows - 1) * (XCImageFile.SpriteWidth / 2),
@@ -266,7 +266,11 @@ namespace XCom.Interfaces.Base
 							foreach (var usedPart in usedParts)
 							{
 								var part = usedPart as Tilepart;
-								BitmapService.Draw(part[0].Image, b, x, y - part.Record.TileOffset);
+								BitmapService.Draw( // NOTE: not actually drawing anything.
+												part[0].Image,
+												bitmap,
+												x,
+												y - part.Record.TileOffset);
 							}
 
 //							XCBitmap.UpdateProgressBar(i, (MapSize.Levs - Level) * MapSize.Rows * MapSize.Cols);
@@ -277,13 +281,13 @@ namespace XCom.Interfaces.Base
 
 			try
 			{
-				var rect = BitmapService.CropTransparency(b, Palette.TransparentId);
-				b = BitmapService.Crop(b, rect);
-				b.Save(fullpath, ImageFormat.Gif);
+				var rect = BitmapService.GetNontransparentRectangle(bitmap, Palette.TransparentId);
+				bitmap   = BitmapService.Crop(bitmap, rect);
+				bitmap.Save(fullpath, ImageFormat.Gif);
 			}
 			catch
 			{
-				b.Save(fullpath, ImageFormat.Gif);
+				bitmap.Save(fullpath, ImageFormat.Gif);
 				throw;
 			}
 		}
@@ -298,7 +302,6 @@ namespace XCom.Interfaces.Base
 				if (tile.Ground != null)
 					return tile.Ground[0].Pal;
 			}
-
 			return null;
 		}
 		#endregion

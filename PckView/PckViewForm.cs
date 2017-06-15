@@ -214,7 +214,7 @@ namespace PckView
 					sfdBmpSingle.FileName = _pnlView.Spriteset.Label + selected.Image.FileId;
 
 					if (sfdBmpSingle.ShowDialog() == DialogResult.OK)
-						BitmapService.Save(sfdBmpSingle.FileName, selected.Image.Image);
+						BitmapService.SaveSprite(sfdBmpSingle.FileName, selected.Image.Image);
 				}
 			}
 		}
@@ -247,14 +247,14 @@ namespace PckView
 				ofdBmp.Multiselect = false;
 				if (ofdBmp.ShowDialog() == DialogResult.OK)
 				{
-					var b = new Bitmap(ofdBmp.FileName);
-					var image = BitmapService.LoadSpriteset(
-													b,
-													Pal,
-													XCImageFile.SpriteWidth,
-													XCImageFile.SpriteHeight,
-													1)[0];
-					_pnlView.SpriteReplace(_pnlView.Selected[0].Id, image);
+					var bitmap = new Bitmap(ofdBmp.FileName);
+					var sprite = BitmapService.LoadSpriteset(
+															bitmap,
+															Pal,
+															XCImageFile.SpriteWidth,
+															XCImageFile.SpriteHeight,
+															1)[0];
+					_pnlView.SpriteReplace(_pnlView.Selected[0].Id, sprite);
 					Refresh();
 				}
 				UpdateCaption();
@@ -272,14 +272,14 @@ namespace PckView
 				{
 					foreach (string file in ofdBmp.FileNames)
 					{
-						var b = new Bitmap(file);
+						var bitmap = new Bitmap(file);
 						_pnlView.Spriteset.Add(BitmapService.LoadSprite(
-																b,
-																0,
-																Pal,
-																0, 0,
-																XCImageFile.SpriteWidth,
-																XCImageFile.SpriteHeight));
+																	bitmap,
+																	0,
+																	Pal,
+																	0, 0,
+																	XCImageFile.SpriteWidth,
+																	XCImageFile.SpriteHeight));
 					}
 					Refresh();
 				}
@@ -563,65 +563,44 @@ namespace PckView
 
 		private void OnSaveDirectoryClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
 		{
-			if (_pnlView.Spriteset != null)
+			if (_pnlView.Spriteset != null && _pnlView.Spriteset.Count != 0)
 			{
-				string fileStart = String.Empty;
-//				string extStart  = String.Empty;
+				string file = Path.GetFileNameWithoutExtension(sfdBmpSingle.FileName);
 
-				if (_pnlView.Spriteset.Label.IndexOf(".", StringComparison.Ordinal) > 0)
-				{
-					fileStart = _pnlView.Spriteset.Label.Substring(0, _pnlView.Spriteset.Label.IndexOf(".", StringComparison.Ordinal));
-//					extStart  = _totalViewPck.Collection.Name.Substring(_totalViewPck.Collection.Name.IndexOf(".", StringComparison.Ordinal) + 1);
-				}
-
-				sfdBmpSingle.FileName = fileStart;
-
-				sfdBmpSingle.Title = "Select directory to save images in";
+				sfdBmpSingle.FileName = file;
+				sfdBmpSingle.Title = "Select a folder for the sprites";
 
 				if (sfdBmpSingle.ShowDialog() == DialogResult.OK)
 				{
-					string path = sfdBmpSingle.FileName.Substring(0, sfdBmpSingle.FileName.LastIndexOf(@"\", StringComparison.Ordinal));
-					string file = sfdBmpSingle.FileName.Substring(sfdBmpSingle.FileName.LastIndexOf(@"\", StringComparison.Ordinal) + 1);
-					string fName = file.Substring(0, file.LastIndexOf(".", StringComparison.Ordinal));
-					string ext = file.Substring(file.LastIndexOf(".", StringComparison.Ordinal) + 1);
+					string path = Path.GetDirectoryName(sfdBmpSingle.FileName);
+					string ext  = Path.GetExtension(sfdBmpSingle.FileName);
 
-//					int countNum = 0;
-//					int charPos = fName.Length - 1;
-//					int tens = 1;
-//					while (charPos >= 0 && Char.IsDigit(fName[charPos]))
-//					{
-//						int digit = int.Parse(fName[charPos].ToString());
-//						countNum += digit*tens;
-//						tens *= 10;
-//						fName = fName.Substring(0, charPos--);
-//					}
+					string digits = String.Empty;
 
-					string zeros = String.Empty;
-					int tens = _pnlView.Spriteset.Count;
-					while (tens > 0)
+					int count = _pnlView.Spriteset.Count;
+					do
 					{
-						zeros += "0";
-						tens /= 10;
+						digits += "0";
+						count /= 10;
 					}
+					while (count != 0);
 
-					var progress = new ProgressWindow(this);
-					progress.Width  = 300;
-					progress.Height =  50;
+					var progress     = new ProgressWindow(this);
+					progress.Width   = 300;
+					progress.Height  = 50;
 					progress.Minimum = 0;
 					progress.Maximum = _pnlView.Spriteset.Count;
 
 					progress.Show();
 					foreach (XCImage sprite in _pnlView.Spriteset)
 					{
-						//Console.WriteLine("Save to: " + path + @"\" + fName + (xc.FileNum + countNum) + "." + ext);
-						//Console.WriteLine("Save: " + path + @"\" + fName + string.Format("{0:" + zeros + "}", xc.FileNum) + "." + ext);
-						BitmapService.Save(
-								path + @"\" + fName + string.Format(
-																System.Globalization.CultureInfo.InvariantCulture,
-																"{0:" + zeros + "}",
-																sprite.FileId) + "." + ext,
-								sprite.Image);
-						//Console.WriteLine("---");
+						string suffix = String.Format(
+													System.Globalization.CultureInfo.InvariantCulture,
+													"{0:" + digits + "}",
+													sprite.FileId);
+						string fullpath = Path.Combine(path, file + suffix + ext);
+						BitmapService.SaveSprite(fullpath, sprite.Image);
+
 						progress.Value = sprite.FileId;
 					}
 					progress.Hide();

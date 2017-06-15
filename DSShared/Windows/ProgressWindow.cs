@@ -1,6 +1,4 @@
 using System;
-using System.Drawing;
-using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
@@ -10,11 +8,11 @@ namespace DSShared.Windows
 	/// </summary>
 	public class ProgressWindow
 		:
-		System.Windows.Forms.Form
+			Form
 	{
-		private System.Windows.Forms.ProgressBar progress;
-		private System.ComponentModel.Container components = null;
-		private Form parent;
+		private Form _parent;
+		private ProgressBar progress;
+		private Container components = null;
 
 		/// <summary>
 		/// </summary>
@@ -24,10 +22,10 @@ namespace DSShared.Windows
 
 			if (parent != null)
 			{
-				this.parent = parent;
+				_parent = parent;
 
-				Left = parent.Left + (parent.Width - Width) / 2;
-				Top = parent.Top + (parent.Height - Height) / 2;
+				Left = parent.Left + (parent.Width  - Width)  / 2;
+				Top  = parent.Top  + (parent.Height - Height) / 2;
 			}
 		}
 
@@ -35,8 +33,8 @@ namespace DSShared.Windows
 		/// </summary>
 		public new void Show()
 		{
-			if (parent != null)
-				parent.Enabled = false;
+			if (_parent != null)
+				_parent.Enabled = false;
 
 			base.Show();
 		}
@@ -45,8 +43,8 @@ namespace DSShared.Windows
 		/// </summary>
 		public new void Hide()
 		{
-			if (parent != null)
-				parent.Enabled = true;
+			if (_parent != null)
+				_parent.Enabled = true;
 
 			base.Hide();
 		}
@@ -75,8 +73,8 @@ namespace DSShared.Windows
 			set { progress.Minimum = value; }
 		}
 
-		#region Windows Form Designer generated code
 
+		#region Windows Form Designer generated code
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
@@ -119,7 +117,6 @@ namespace DSShared.Windows
 			this.Text = "Progress";
 			this.ResumeLayout(false);
 		}
-
 		#endregion
 	}
 }

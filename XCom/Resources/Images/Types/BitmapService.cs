@@ -33,7 +33,7 @@ namespace XCom
 		/// </summary>
 		/// <param name="fullpath"></param>
 		/// <param name="bitmap"></param>
-		public static void Save(string fullpath, Bitmap bitmap)
+		public static void SaveSprite(string fullpath, Bitmap bitmap)
 		{
 			using (var bw = new BinaryWriter(new FileStream(fullpath, FileMode.Create)))
 			{
@@ -314,7 +314,7 @@ namespace XCom
 		/// <param name="bitmap"></param>
 		/// <param name="transparent"></param>
 		/// <returns></returns>
-		internal static Rectangle CropTransparency(Bitmap bitmap, int transparent)
+		internal static Rectangle GetNontransparentRectangle(Bitmap bitmap, int transparent)
 		{
 			var rect   = new Rectangle(
 									0, 0,
