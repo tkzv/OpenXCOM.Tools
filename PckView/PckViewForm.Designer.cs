@@ -214,8 +214,8 @@ namespace PckView
 			// 
 			// sfdSingleSprite
 			// 
-			this.sfdSingleSprite.DefaultExt = "*.bmp";
-			this.sfdSingleSprite.Filter = "Bitmap Files (*.bmp)|*.BMP";
+			this.sfdSingleSprite.DefaultExt = "*.BMP";
+			this.sfdSingleSprite.Filter = "Bitmap Files (*.bmp)|*.bmp";
 			// 
 			// ofdBmp
 			// 

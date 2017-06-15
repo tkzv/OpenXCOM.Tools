@@ -5,12 +5,16 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
+using DSShared;
 using DSShared.Windows;
 
 using PckView.Forms.ImageBytes;
 
 using XCom;
 using XCom.Interfaces;
+
+using YamlDotNet.RepresentationModel;	// read values (deserialization)
+//using YamlDotNet.Serialization;		// write values
 
 
 namespace PckView
@@ -68,6 +72,8 @@ namespace PckView
 
 			// WORKAROUND: See note in 'XCMainWindow' cTor.
 			MaximumSize = new Size(0, 0); // fu.net
+
+			SetMetrics();
 
 
 			#region SharedSpace information
@@ -132,6 +138,128 @@ namespace PckView
 		#endregion
 
 
+		/// <summary>
+		/// Positions the window at user-defined coordinates w/ size.
+		/// </summary>
+		private void SetMetrics()
+		{
+			string dirSettings = Path.Combine(
+											Path.GetDirectoryName(Application.ExecutablePath),
+											PathInfo.SettingsDirectory);
+			string fileViewers = Path.Combine(dirSettings, PathInfo.ConfigViewers);
+			if (File.Exists(fileViewers))
+			{
+				using (var sr = new StreamReader(File.OpenRead(fileViewers)))
+				{
+					var str = new YamlStream();
+					str.Load(sr);
+
+					var nodeRoot = str.Documents[0].RootNode as YamlMappingNode;
+					foreach (var node in nodeRoot.Children)
+					{
+						string viewer = ((YamlScalarNode)node.Key).Value;
+						if (String.Equals(viewer, RegistryInfo.PckView, StringComparison.Ordinal))
+						{
+							int x = 0;
+							int y = 0;
+							int w = 0;
+							int h = 0;
+
+							var cultureInfo = System.Globalization.CultureInfo.InvariantCulture;
+
+							string key = String.Empty;
+
+							var keyvals = nodeRoot.Children[new YamlScalarNode(viewer)] as YamlMappingNode;
+							foreach (var keyval in keyvals) // NOTE: There is a better way to do this. See TilesetManager..cTor
+							{
+								switch (keyval.Key.ToString()) // TODO: Error handling. ->
+								{
+									case "left":
+										x = Int32.Parse(keyval.Value.ToString(), cultureInfo);
+										break;
+									case "top":
+										y = Int32.Parse(keyval.Value.ToString(), cultureInfo);
+										break;
+									case "width":
+										w = Int32.Parse(keyval.Value.ToString(), cultureInfo);
+										break;
+									case "height":
+										h = Int32.Parse(keyval.Value.ToString(), cultureInfo);
+										break;
+								}
+							}
+
+							var rectScreen = Screen.GetWorkingArea(new Point(x, y));
+							if (!rectScreen.Contains(x + 200, y + 100)) // check to ensure that PckView is at least partly onscreen.
+							{
+								x = 100;
+								y =  50;
+							}
+
+							Left = x;
+							Top  = y;
+
+							ClientSize = new Size(w, h);
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Saves the window position and size to YAML.
+		/// </summary>
+		private void SaveMetrics()
+		{
+			string dirSettings = Path.Combine(
+											Path.GetDirectoryName(Application.ExecutablePath),
+											PathInfo.SettingsDirectory);
+			string fileViewers = Path.Combine(dirSettings, PathInfo.ConfigViewers);
+
+			if (File.Exists(fileViewers))
+			{
+				WindowState = FormWindowState.Normal;
+
+				string src = Path.Combine(dirSettings, PathInfo.ConfigViewers);
+				string dst = Path.Combine(dirSettings, PathInfo.ConfigViewersOld);
+
+				File.Copy(src, dst, true);
+
+				using (var sr = new StreamReader(File.OpenRead(dst))) // but now use dst as src ->
+
+				using (var fs = new FileStream(src, FileMode.Create)) // overwrite previous viewers-config.
+				using (var sw = new StreamWriter(fs))
+				{
+					while (sr.Peek() != -1)
+					{
+						string line = sr.ReadLine().TrimEnd();
+
+						if (String.Equals(line, RegistryInfo.PckView + ":", StringComparison.Ordinal))
+						{
+							sw.WriteLine(line);
+
+							line = sr.ReadLine();
+							line = sr.ReadLine();
+							line = sr.ReadLine();
+							line = sr.ReadLine(); // heh
+
+							sw.WriteLine("  left: "   + Math.Max(0, Location.X));	// =Left
+							sw.WriteLine("  top: "    + Math.Max(0, Location.Y));	// =Top
+							sw.WriteLine("  width: "  + ClientSize.Width);			// <- use ClientSize, since Width and Height
+							sw.WriteLine("  height: " + ClientSize.Height);			// screw up due to the titlebar/menubar area.
+						}
+						else
+							sw.WriteLine(line);
+					}
+				}
+				File.Delete(dst);
+			}
+		}
+
+		/// <summary>
+		/// Builds the RMB context-menu.
+		/// </summary>
+		/// <returns></returns>
 		private ContextMenu ViewerContextMenu()
 		{
 			var menu = new ContextMenu();
@@ -142,7 +270,7 @@ namespace PckView
 
 			menu.MenuItems.Add(new MenuItem("-"));
 
-			_miExport = new MenuItem("Export");
+			_miExport = new MenuItem("Export ...");
 			_miExport.Click += OnExportSpriteClick;
 			menu.MenuItems.Add(_miExport);
 
@@ -163,6 +291,10 @@ namespace PckView
 			return menu;
 		}
 
+		/// <summary>
+		/// Adds a palette as a menuitem to the palettes menu on the main menu.
+		/// </summary>
+		/// <param name="pal"></param>
 		private void AddPalette(Palette pal)
 		{
 			var itPal = new MenuItem(pal.Label);
@@ -722,6 +854,8 @@ namespace PckView
 
 		private void OnPckViewFormClosing(object sender, FormClosingEventArgs e)
 		{
+			SaveMetrics();
+
 			if (miBytes.Checked)
 				BytesFormHelper.CloseBytes();
 		}

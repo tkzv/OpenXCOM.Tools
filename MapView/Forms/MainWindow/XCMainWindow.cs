@@ -17,8 +17,7 @@ using XCom;
 using XCom.Resources.Map.RouteData;
 using XCom.Interfaces.Base;
 
-using YamlDotNet.RepresentationModel;	// read values (deserialization)
-using YamlDotNet.Serialization;			// write values
+using YamlDotNet.RepresentationModel; // read values (deserialization)
 
 
 namespace MapView
@@ -30,7 +29,7 @@ namespace MapView
 		:
 			Form
 	{
-		#region Fields & Properties
+		#region Fields
 		private readonly MainViewUnderlay      _mainViewUnderlay; // has static functs.
 
 		private readonly ViewersManager        _viewersManager;
@@ -39,8 +38,19 @@ namespace MapView
 
 //		private readonly LoadingForm           _loadingProgress;
 //		private readonly ConsoleWarningHandler _warningHandler;
+		#endregion
 
 
+		#region Properties (static)
+		private static XCMainWindow _instance;
+		internal static XCMainWindow Instance
+		{
+			get { return _instance; }
+		}
+		#endregion
+
+
+		#region Properties
 		private readonly OptionsManager _optionsManager;
 		private Options Options
 		{
@@ -48,21 +58,15 @@ namespace MapView
 			set { _optionsManager["MainWindow"] = value; }
 		}
 
-		private static XCMainWindow _instance;
-		internal static XCMainWindow Instance
-		{
-			get { return _instance; }
-		}
-
-		internal bool MaptreeChanged
-		{ private get; set; }
-
 		private List<string> _tilesetTerrains = new List<string>();
 		internal List<string> TilesetTerrains
 		{
 			get { return _tilesetTerrains; }
 			set { _tilesetTerrains = value; }
 		}
+
+		internal bool MaptreeChanged
+		{ private get; set; }
 		#endregion
 
 
