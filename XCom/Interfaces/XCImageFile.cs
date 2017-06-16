@@ -16,15 +16,6 @@ namespace XCom.Interfaces
 
 
 		#region Properties
-		private readonly Palette _palDefault = Palette.UfoBattle;
-		/// <summary>
-		/// The initial palette for sprites.
-		/// </summary>
-		public Palette DefaultPalette
-		{
-			get { return _palDefault; }
-		}
-
 		/// <summary>
 		/// Image size that will be loaded.
 		/// </summary>
@@ -44,6 +35,14 @@ namespace XCom.Interfaces
 				int height = SpriteHeight)
 		{
 			ImageSize = new Size(width, height);
+		}
+		#endregion
+
+
+		#region Methods (static)
+		public static Palette GetDefaultPalette()
+		{
+			return Palette.UfoBattle;
 		}
 		#endregion
 	}

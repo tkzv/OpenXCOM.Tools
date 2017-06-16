@@ -101,7 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DSLogFile.cs" />
-    <Compile Include="FileSystems\FileBackupManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

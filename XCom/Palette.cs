@@ -15,7 +15,7 @@ namespace XCom
 	public sealed class Palette
 	{
 		#region Fields (static)
-		internal const byte TransparentId = 0x0;// 0xFE;
+		internal const byte TransparentId = 0x0;
 
 		private static readonly Hashtable _palettes = new Hashtable();
 
@@ -159,7 +159,7 @@ namespace XCom
 		{ get; private set; }
 
 		/// <summary>
-		/// Gets/Sets the color of a given index in the 'ColorTable'.
+		/// Gets/Sets the color of a given index in the color-table.
 		/// </summary>
 		public Color this[int id]
 		{
@@ -215,18 +215,18 @@ namespace XCom
 			{
 				Label = input.ReadLine(); // 1st line is the label.
 
-				string line = String.Empty;
-				var rgb     = new string[3];
+//				string line = String.Empty;
+				var rgb = new string[3];
 
 				var invariant = System.Globalization.CultureInfo.InvariantCulture;
 
 				//LogFile.WriteLine("#");
 				for (int id = 0; id != 256; )
 				{
-					line = input.ReadLine();
+//					line = input.ReadLine();
 					//LogFile.WriteLine(id + ": " + line);
 
-					rgb = line.Split(',');
+					rgb = input.ReadLine().Split(',');
 					ColorTable.Entries[id++] = Color.FromArgb(
 														Int32.Parse(rgb[0], invariant),
 														Int32.Parse(rgb[1], invariant),

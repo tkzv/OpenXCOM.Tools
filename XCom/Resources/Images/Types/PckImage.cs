@@ -7,138 +7,128 @@ using XCom.Interfaces;
 
 namespace XCom
 {
+	// kL_note: It appears that RLE-encoded .Pck images cannot use color-indices
+	// of 0xFE or 0xFF. Because, in the Pck-packed file, 0xFF is used to denote
+	// the end of each image's bindata, and 0xFE is used to flag a quantity of
+	// pixels as transparent by using 2 bytes: 0xFE itself, and the next byte is
+	// the quantity of pixels that are transparent and hence are not written.
+
 	public sealed class PckImage
 		:
 			XCImage
 	{
 		#region Fields (static)
-//		private const byte TransparentId = 0xFE;	// should that be '0x0' - there's something "funny"
-													// going on with using id=254 as the transparent index.
+		/// <summary>
+		/// A flag that is inserted into the file-data that indicates that an
+		/// image's data has ended.
+		/// </summary>
+		private const byte FileStopByte = 0xFF;
+		/// <summary>
+		/// A flag that is inserted into the file-data that indicates that the
+		/// following pixels are transparent.
+		/// </summary>
+		private const byte FileTransparencyByte = 0xFE;	// the PCK-file uses 0xFE to flag a succeeding quantity of pixels
+														// as transparent. That is, it is *not* a color-id entry; it's
+														// just a flag in the Pck-file. Stop using it as a color-id entry.
+		/// <summary>
+		/// Tracks the id of an image across all loaded terrainsets. Used only
+		/// by 'MapInfoOutputBox'.
+		/// </summary>
 		private static int _idCanonical;
 		#endregion
 
 
 		#region Fields
-//		private int _mapId;
-
-		private readonly SpriteCollection _spriteset;
-
-		private readonly byte[] _expanded; // wtf is this <-
-		private int _moveId = -1;
-//		private byte _moveVal = 0;
+		private readonly SpriteCollection _spriteset; // currently used only for ToString() override.
 		#endregion
 
 
 		#region Properties
 		/// <summary>
-		/// Id is used only by MapInfoForm.
+		/// MapId is used only by 'MapInfoOutputBox'.
 		/// </summary>
-		public int Id
+		public int MapId
 		{ get; private set; }
 		#endregion
 
 
-		#region cTors
-//		internal PckImage(
-//				int imageId,
-//				byte[] id,
-//				Palette pal,
-//				SpriteCollection pckFile)
-//			:
-//			this(
-//				imageId,
-//				id,
-//				pal,
-//				pckFile)
-//		{}
+		#region cTor
+		/// <summary>
+		/// Instantiates a PckImage, based on an XCImage.
+		/// </summary>
+		/// <param name="bindata">the compressed source data</param>
+		/// <param name="pal"></param>
+		/// <param name="terrainId"></param>
+		/// <param name="spriteset"></param>
 		internal PckImage(
-				int fileId,
 				byte[] bindata,
 				Palette pal,
+				int terrainId,
 				SpriteCollection spriteset)
 			:
 				base(
-					new byte[]{},
-					0, 0,
-					null,
-					-1)
+					new byte[XCImageFile.SpriteWidth * XCImageFile.SpriteHeight],
+					XCImageFile.SpriteWidth,
+					XCImageFile.SpriteHeight,
+					null, // do *not* pass 'pal' in here. See XCImage..cTor
+					terrainId)
 		{
-			FileId = fileId;
-			Pal    = pal;
+			_spriteset = spriteset; // for ToString() only.
+			MapId = _idCanonical++; // for 'MapInfoOutputBox' only.
 
-			_spriteset = spriteset;
+			Pal = pal;
 
-//			this.imageNum = imageNum;
-//			this.idx = idx;
+			for (int id = 0; id != Bindata.Length; ++id)
+				Bindata[id] = Palette.TransparentId;	// good effing Lord. yeh set transparent pixels to #254 instead of #0, sure.
+														// as if that's not going to confuse anyone who tries to paint with color #0
+			int posSrc = 0;								// only to find it's not actually transparent. Oh yeah, they're supposed to
+			int posDst = 0;								// be clever and figure out that the transparency-marker in the PCK-file has
+														// the value of 0xFE .... NOBODY CARES.
+			if (bindata[0] != FileTransparencyByte)
+				posDst = bindata[posSrc++] * XCImageFile.SpriteWidth;
 
-			Id = _idCanonical++;
-
-//			image = new Bitmap(Width, Height, PixelFormat.Format8bppIndexed);
-			_expanded = new byte[XCImageFile.SpriteWidth * XCImageFile.SpriteHeight];
-
-			for (int i = 0; i != _expanded.Length; ++i)
-				_expanded[i] = Palette.TransparentId;
-
-			int posStart    = 0;
-			int posExpanded = 0;
-
-			if (bindata[0] != 254)
-				posExpanded = bindata[posStart++] * XCImageFile.SpriteWidth;
-
-			for (int i = posStart; i < bindata.Length; ++i)
+			for (int id = posSrc; id != bindata.Length; ++id)
 			{
-				switch (bindata[i])
+				switch (bindata[id])
 				{
-					case 254: // skip required pixels
-						if (_moveId == -1)
-						{
-							_moveId = i + 1;
-//							_moveVal = id[i + 1];
-						}
-						posExpanded += bindata[i + 1];
-						++i;
-						break;
-
-					case 255: // end of image
-						break;
-
 					default:
-						_expanded[posExpanded++] = bindata[i];
+						Bindata[posDst++] = bindata[id];
+						break;
+
+					case FileTransparencyByte: // skip quantity of pixels
+						posDst += bindata[++id];
+						break;
+
+					case FileStopByte: // end of image
 						break;
 				}
 			}
-			Bindata = _expanded;
-		
+
 			Image = BitmapService.MakeBitmapTrue(
 												XCImageFile.SpriteWidth,
 												XCImageFile.SpriteHeight,
-												_expanded,
-												pal.ColorTable);
+												Bindata,
+												Pal.ColorTable);
 			SpriteGray = BitmapService.MakeBitmapTrue(
 												XCImageFile.SpriteWidth,
 												XCImageFile.SpriteHeight,
-												_expanded,
-												pal.Grayscale.ColorTable);
+												Bindata,
+												Pal.Grayscale.ColorTable);
 		}
 		#endregion
 
 
 		#region Methods
-		internal static int SaveSpritesetSprite(BinaryWriter bw, XCImage image)
+		internal static int SaveSpritesetSprite(BinaryWriter bw, XCImage sprite)
 		{
+			var binlist = new List<byte>();
+
 			int pos = 0;
-			bool flag = true;
+			bool first = true;
 
-			byte[] input = image.Bindata;
-
-			var bindata = new List<byte>();
-
-//			Color trans = pal.Transparent;
-//			pal.SetTransparent(false);
-
-			for (int id = 0; id != input.Length; ++id)
+			for (int id = 0; id != sprite.Bindata.Length; ++id)
 			{
-				byte b = input[id];
+				byte b = sprite.Bindata[id];
 
 				if (b == Palette.TransparentId)
 					++pos;
@@ -146,51 +136,53 @@ namespace XCom
 				{
 					if (pos != 0)
 					{
-						if (flag)
+						if (first)
 						{
-							flag = false;
+							first = false;
 
-							bindata.Add((byte)(pos / image.Image.Width));	// # of initial rows to skip
-							pos =       (byte)(pos % image.Image.Width);	// current position in the transparent row
-							//Console.WriteLine("count, lines: {0}, cells {1}", count/PckImage.IMAGE_WIDTH, count%PckImage.IMAGE_WIDTH);
+							binlist.Add((byte)(pos / sprite.Image.Width));	// # of initial rows to skip
+							pos =       (byte)(pos % sprite.Image.Width);	// current position in the next row
 						}
 
-						while (pos >= 255)
+						while (pos >= FileStopByte)
 						{
-							bindata.Add(Palette.TransparentId);
-							bindata.Add(255);
-							pos -= 255;
+							pos -= FileStopByte;
+
+							binlist.Add(FileTransparencyByte);
+							binlist.Add(FileStopByte);
 						}
 
 						if (pos != 0)
 						{
-							bindata.Add(Palette.TransparentId);
-							bindata.Add((byte)pos);
+							binlist.Add(FileTransparencyByte);
+							binlist.Add((byte)pos);
 						}
 						pos = 0;
 					}
-					bindata.Add(b);
+					binlist.Add(b);
 				}
 			}
 
-			bool throughLoop = false;
-			while (pos >= 255)
+			bool hasloopedthroughthethingdob = false;
+			while (pos >= FileStopByte)
 			{
-				bindata.Add(254);
-				bindata.Add(255);
-				pos -= 255;
-				throughLoop = true;
+				pos -= FileStopByte;
+
+				binlist.Add(FileTransparencyByte);
+				binlist.Add(FileStopByte);
+
+				hasloopedthroughthethingdob = true;
 			}
 
-			if ((byte)bindata[bindata.Count - 1] != 255 || throughLoop)
-				bindata.Add(255);
+			if (hasloopedthroughthethingdob
+				|| (byte)binlist[binlist.Count - 1] != FileStopByte)
+			{
+				binlist.Add(FileStopByte);
+			}
 
-//			if (bytes.Count % 2 == 1 || throughLoop)
-//				bytes.Add(255);
+			bw.Write(binlist.ToArray());
 
-			bw.Write(bindata.ToArray());
-
-			return bindata.Count;
+			return binlist.Count;
 		}
 		#endregion
 
@@ -203,15 +195,15 @@ namespace XCom
 			if (_spriteset != null)
 				ret += _spriteset.ToString();
 
-			ret += FileId + Environment.NewLine;
+			ret += TerrainId + Environment.NewLine;
 
-			for (int i = 0; i != _expanded.Length; ++i)
+			for (int i = 0; i != Bindata.Length; ++i)
 			{
-				ret += _expanded[i];
+				ret += Bindata[i];
 
-				switch (_expanded[i])
+				switch (Bindata[i])
 				{
-					case 255:
+					case FileStopByte:
 						ret += Environment.NewLine;
 						break;
 
@@ -272,19 +264,19 @@ namespace XCom
 //			for (int i = 0; i != _expanded.Length; ++i)
 //				_expanded[i] = TransparentIndex;
 //
-//			if (_id[0] != 254)
+//			if (_id[0] != FileTransparencyByte)
 //				ex = _id[startIdx++] * Width;
 //
 //			for (int i = startIdx; i < _id.Length; ++i)
 //			{
 //				switch (_id[i])
 //				{
-//					case 254: // skip required pixels
+//					case FileTransparencyByte: // skip quantity of pixels
 //						ex += _id[i + 1];
 //						++i;
 //						break;
 //
-//					case 255: // end of image
+//					case FileStopByte: // end of image
 //						break;
 //
 //					default:

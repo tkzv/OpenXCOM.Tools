@@ -83,7 +83,7 @@ namespace XCom
 		{ get; set; }
 
 		/// <summary>
-		/// Used only by MapInfoForm.
+		/// Used only by 'MapInfoOutputBox'.
 		/// </summary>
 		public bool Vacant
 		{ get; set; }

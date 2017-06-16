@@ -11,7 +11,6 @@ namespace XCom
 			List<XCImage>
 	{
 		#region Properties
-
 		public string Label
 		{ get; set; }
 
@@ -41,7 +40,7 @@ namespace XCom
 					base[id] = value;
 				else
 				{
-					value.FileId = Count;
+					value.TerrainId = Count;
 					Add(value);
 				}
 			}

@@ -144,11 +144,11 @@ namespace MapView
 		{
 			if (part != null)
 			{
-				recordsTable[part.Record.Id] = true;
+				recordsTable[part.Record.MapId] = true;
 
 				var sprites = part.Images;
 				foreach (PckImage sprite in sprites)
-					spritesTable[sprite.Id] = true;
+					spritesTable[sprite.MapId] = true;
 			}
 		}
 
@@ -336,7 +336,7 @@ namespace MapView
 			this.groupInfo.TabStop = false;
 			this.groupInfo.Text = "Map";
 			// 
-			// MapInfoForm
+			// MapInfoOutputBox
 			// 
 			this.AcceptButton = this.btnCancel;
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
@@ -350,7 +350,7 @@ namespace MapView
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(400, 170);
-			this.Name = "MapInfoForm";
+			this.Name = "MapInfoOutputBox";
 			this.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
 			this.ShowIcon = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;

@@ -19,13 +19,13 @@ namespace XCom
 		#endregion
 
 
-		#region Properties
-		private int _bpp;
-		public int Bpp
-		{
-			get { return _bpp; }
-		}
-		#endregion
+//		#region Properties
+//		private int _lenTabOffset;
+//		public int TabOffset
+//		{
+//			get { return _lenTabOffset; }
+//		}
+//		#endregion
 
 
 		#region cTor
@@ -43,7 +43,8 @@ namespace XCom
 				int lenTabOffset,
 				Palette pal)
 		{
-			_bpp = lenTabOffset;
+//			_lenTabOffset = lenTabOffset;
+
 			Pal = pal;
 
 			uint[] offsets;
@@ -90,9 +91,9 @@ namespace XCom
 					bindata[j] = info[offsets[id] + j];
 
 				Add(new PckImage(
-								id,
 								bindata,
-								pal,
+								Pal,
+								id,
 								this));
 			}
 		}
@@ -100,10 +101,17 @@ namespace XCom
 
 
 		#region Methods
+		/// <summary>
+		/// Saves the current spriteset to PCK+TAB.
+		/// </summary>
+		/// <param name="dir">the directory to save to</param>
+		/// <param name="file">the filename without extension</param>
+		/// <param name="spriteset">pointer to the base spriteset</param>
+		/// <param name="lenTabOffset">2 for UFO, 4 for TFTD (roughly..)</param>
 		public static void SaveSpriteset(
 				string dir,
 				string file,
-				SpriteCollectionBase imageset,
+				SpriteCollectionBase spriteset,
 				int lenTabOffset)
 		{
 			string pfePck = Path.Combine(dir, file + PckExt);
@@ -117,10 +125,10 @@ namespace XCom
 					case 2:
 					{
 						ushort pos = 0;
-						foreach (XCImage image in imageset)
+						foreach (XCImage sprite in spriteset)
 						{
 							bwTab.Write(pos);
-							pos += (ushort)PckImage.SaveSpritesetSprite(bwPck, image);
+							pos += (ushort)PckImage.SaveSpritesetSprite(bwPck, sprite);
 						}
 						break;
 					}
@@ -128,10 +136,10 @@ namespace XCom
 					case 4:
 					{
 						uint pos = 0;
-						foreach (XCImage image in imageset)
+						foreach (XCImage sprite in spriteset)
 						{
 							bwTab.Write(pos);
-							pos += (uint)PckImage.SaveSpritesetSprite(bwPck, image);
+							pos += (uint)PckImage.SaveSpritesetSprite(bwPck, sprite);
 						}
 						break;
 					}

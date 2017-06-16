@@ -28,6 +28,12 @@ namespace PckView
 
 
 		#region Properties (static)
+		private string SpritesetDirectory
+		{ get; set; }
+
+		private string SpritesetLabel
+		{ get; set; }
+
 		internal static Palette Pal
 		{ get; set; }
 		#endregion
@@ -110,8 +116,6 @@ namespace PckView
 			pnlView.Controls.Add(_pnlView);
 
 
-			miSave.Visible = false;
-
 //			_share[SharedSpace.Palettes] = new Dictionary<string, Palette>();
 
 			AddPalette(Palette.UfoBattle);
@@ -123,7 +127,7 @@ namespace PckView
 			AddPalette(Palette.TftdGraph);
 			AddPalette(Palette.TftdResearch);
 
-			Pal = Palette.UfoBattle;
+			Pal = XCImageFile.GetDefaultPalette();
 			Pal.SetTransparent(true);
 
 			_paletteItems[Pal].Checked = true;
@@ -361,7 +365,7 @@ namespace PckView
 					string suffix = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
 												"{0:" + digits + "}",
-												selected.Image.FileId);
+												selected.Image.TerrainId);
 
 					sfdSingleSprite.FileName = _pnlView.Spriteset.Label + suffix;
 
@@ -570,6 +574,9 @@ namespace PckView
 		/// <param name="help">true to show help-splash for a call from MapView</param>
 		public void LoadSpriteset(string pfePck, bool help)
 		{
+			SpritesetDirectory = Path.GetDirectoryName(pfePck);
+			SpritesetLabel     = Path.GetFileNameWithoutExtension(pfePck);
+
 			string pfeTab = pfePck.Substring(0, pfePck.Length - 4) + SpriteCollection.TabExt;
 			if (File.Exists(pfeTab))
 			{
@@ -580,18 +587,18 @@ namespace PckView
 					try
 					{
 						spriteset = new SpriteCollection(
-														strPck,
-														strTab,
-														2,
-														Palette.UfoBattle);
+													strPck,
+													strTab,
+													2,
+													Palette.UfoBattle);
 					}
 					catch (Exception)
 					{
 						spriteset = new SpriteCollection(
-														strPck,
-														strTab,
-														4,
-														Palette.UfoBattle); // TODO: uh, should be 'TftdBattle'
+													strPck,
+													strTab,
+													4,
+													Palette.TftdBattle); // NOTE: was 'Palette.UfoBattle'
 					}
 
 					if (spriteset != null)
@@ -604,11 +611,12 @@ namespace PckView
 					}
 
 					OnPaletteClick(
-								_paletteItems[spriteset.ImageFile.DefaultPalette],
+								_paletteItems[XCImageFile.GetDefaultPalette()],
 								EventArgs.Empty);
 
 					_pnlView.Spriteset = spriteset;
 
+					miSave.Enabled = true;
 
 					UpdateCaption(pfePck);
 
@@ -729,9 +737,9 @@ namespace PckView
 //					fbd.SelectedPath = ;
 					fbd.Description = String.Format(
 												System.Globalization.CultureInfo.CurrentCulture,
-												"Select a folder for the sprites"
-													+ Environment.NewLine
-													+ "Spriteset " + file);
+												"Select a folder for the sprites in Spriteset"
+													+ Environment.NewLine + Environment.NewLine
+													+ file);
 
 					if (fbd.ShowDialog() == DialogResult.OK)
 					{
@@ -758,7 +766,7 @@ namespace PckView
 							string suffix = String.Format(
 														System.Globalization.CultureInfo.InvariantCulture,
 														"{0:" + digits + "}",
-														sprite.FileId);
+														sprite.TerrainId);
 							string fullpath = Path.Combine(path, file + suffix + BitmapService.BmpExt);
 							BitmapService.ExportSprite(fullpath, sprite.Image);
 
@@ -770,12 +778,12 @@ namespace PckView
 			}
 		}
 
-		private void OnConsoleClick(object sender, EventArgs e)
+		private void OnConsoleClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
 		{
-			if (_fconsole.Visible)
-				_fconsole.BringToFront();
-			else
-				_fconsole.Show();
+//			if (_fconsole.Visible)
+//				_fconsole.BringToFront();
+//			else
+//				_fconsole.Show();
 		}
 
 		private void OnCompareClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
@@ -813,24 +821,43 @@ namespace PckView
 			}
 		}
 
-		private void OnSaveSpritesetClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
+		private void OnSaveSpritesetClick(object sender, EventArgs e)
 		{
-/*			_dialogFilter.SetFilter(XCImageFile.Filter.Save);
-			_dictSaveFiles.Clear();
-//			_loadedTypes.CreateFilter(_dialogFilter, _dictSaveFiles);
-			var dir = Path.GetDirectoryName(_path);
-			var fileWithoutExt = Path.GetFileNameWithoutExtension(_path);
+			Directory.CreateDirectory(SpritesetDirectory); // in case user deleted the dir.
 
-			// Backup
-			FileBackupManager.Backup(_path);
+			string pfePck = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.PckExt);
+			string pfeTab = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.TabExt);
 
-			// Save
-			SpriteCollection.Save(
-								dir,
-								fileWithoutExt,
-								_totalViewPck.Collection,
-								_depth);
-			SavedFile = true; */
+			if (File.Exists(pfePck))
+			{
+				string pfePckOld = Path.Combine(SpritesetDirectory, SpritesetLabel + "_old" + SpriteCollection.PckExt);
+				File.Copy(pfePck, pfePckOld, true);
+			}
+
+			if (File.Exists(pfeTab))
+			{
+				string pfeTabOld = Path.Combine(SpritesetDirectory, SpritesetLabel + "_old" + SpriteCollection.TabExt);
+				File.Copy(pfeTab, pfeTabOld, true);
+			}
+
+
+			// http://www.ufopaedia.org/index.php/Image_Formats
+			// - that says that all TFTD terrains use 2-byte tab-offsets ...
+			const int lenTabOffset = 2;
+//			if (   Pal.Equals(Palette.TftdBattle)
+//				|| Pal.Equals(Palette.TftdGeo)
+//				|| Pal.Equals(Palette.TftdGraph)
+//				|| Pal.Equals(Palette.TftdResearch))
+//			{
+//				lenTabOffset = 4; // NOTE: I don't have TFTD and I do have no clue if this works correctly.
+//			}
+
+			SpriteCollection.SaveSpriteset(
+										SpritesetDirectory,
+										SpritesetLabel,
+										_pnlView.Spriteset,
+										lenTabOffset);
+			SavedFile = true; // NOTE: used only by MapView's TileView to flag the Map to reload.
 		}
 
 		private void OnMapViewHelpClick(object sender, EventArgs e)

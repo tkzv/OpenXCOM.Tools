@@ -76,16 +76,16 @@ namespace XCom
 		/// </summary>
 		internal McdRecord()
 		{
-			Id = _idCanonical++;
+			MapId = _idCanonical++;
 		}
 		#endregion
 
 
 		#region Properties
 		/// <summary>
-		/// Id is used only by MapInfoForm.
+		/// MapId is used only by 'MapInfoOutputBox'.
 		/// </summary>
-		public int Id
+		public int MapId
 		{ get; private set; }
 
 		public byte Image1 { get; set; }

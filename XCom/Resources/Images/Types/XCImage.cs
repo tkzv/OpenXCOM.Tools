@@ -10,7 +10,7 @@ namespace XCom.Interfaces
 		public byte[] Bindata
 		{ get; protected set; }
 
-		public int FileId
+		public int TerrainId
 		{ get; set; }
 
 		public Bitmap Image // TODO: change to 'Sprite' ... expect a designer to fu.
@@ -42,26 +42,32 @@ namespace XCom.Interfaces
 		/// <param name="bindata"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		/// <param name="pal"></param>
-		/// <param name="id"></param>
+		/// <param name="pal">pass in null to bypass creating the 'Image'; ie,
+		/// let PckImage..cTor unravel the compressed image-data instead</param>
+		/// <param name="terrainId"></param>
 		internal XCImage(
 				byte[] bindata,
 				int width,
 				int height,
 				Palette pal,
-				int id)
+				int terrainId)
 		{
-			FileId  = id;
+			TerrainId = terrainId;
+
 			Bindata = bindata;
 			Pal     = pal;
 
-			if (Pal != null)
-				Image = BitmapService.MakeBitmapTrue(
-												width,
-												height,
-												bindata,
-												Pal.ColorTable);
-		}
+			if (Pal != null)										// NOTE: this is to check for a call by BitmapService.LoadSprite()
+				Image = BitmapService.MakeBitmapTrue(				// which is called by
+												width,				// BitmapService.LoadSpriteset() and
+												height,				// PckViewForm.OnSpriteAddClick()
+												Bindata,			// BUT: the call by PckImage..cTor initializer needs to decode
+												Pal.ColorTable);	// the file-data first, then it creates its own 'Image'.
+		}															// that's why i prefer pizza.
+		#endregion
+	}
+}
+
 //		private XCImage(Bitmap image, int id)
 //		{
 //			Image = image;
@@ -75,8 +81,6 @@ namespace XCom.Interfaces
 //					null,
 //					-1)
 //		{}
-		#endregion
-
 
 //		#region Methods
 //		/// <summary>
@@ -109,5 +113,3 @@ namespace XCom.Interfaces
 //			Image = Bmp.HQ2X(/*Image*/);
 //		}
 //		#endregion
-	}
-}

@@ -28,11 +28,13 @@ namespace PckView
 			this.mmMainMenu = new System.Windows.Forms.MainMenu(this.components);
 			this.miFileMenu = new System.Windows.Forms.MenuItem();
 			this.miOpen = new System.Windows.Forms.MenuItem();
+			this.miSeparator1 = new System.Windows.Forms.MenuItem();
 			this.miCompare = new System.Windows.Forms.MenuItem();
 			this.miSave = new System.Windows.Forms.MenuItem();
 			this.miSaveAs = new System.Windows.Forms.MenuItem();
 			this.miExportSprites = new System.Windows.Forms.MenuItem();
 			this.miHq2x = new System.Windows.Forms.MenuItem();
+			this.miSeparator2 = new System.Windows.Forms.MenuItem();
 			this.miQuit = new System.Windows.Forms.MenuItem();
 			this.miPaletteMenu = new System.Windows.Forms.MenuItem();
 			this.miTransparentMenu = new System.Windows.Forms.MenuItem();
@@ -50,8 +52,6 @@ namespace PckView
 			this.pnlMapViewHelp = new System.Windows.Forms.Panel();
 			this.btnMapViewHelpOk = new System.Windows.Forms.Button();
 			this.lblMapViewHelp = new System.Windows.Forms.Label();
-			this.miSeparator1 = new System.Windows.Forms.MenuItem();
-			this.miSeparator2 = new System.Windows.Forms.MenuItem();
 			this.pnlMapViewHelp.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -99,9 +99,9 @@ namespace PckView
 			// 
 			// miSave
 			// 
+			this.miSave.Enabled = false;
 			this.miSave.Index = 3;
-			this.miSave.Text = "Save";
-			this.miSave.Visible = false;
+			this.miSave.Text = "&Save";
 			this.miSave.Click += new System.EventHandler(this.OnSaveSpritesetClick);
 			// 
 			// miSaveAs
@@ -116,7 +116,7 @@ namespace PckView
 			// 
 			this.miExportSprites.Enabled = false;
 			this.miExportSprites.Index = 5;
-			this.miExportSprites.Text = "Export Sprites ...";
+			this.miExportSprites.Text = "&Export Sprites ...";
 			this.miExportSprites.Click += new System.EventHandler(this.OnExportSpritesClick);
 			// 
 			// miHq2x
@@ -192,6 +192,7 @@ namespace PckView
 			// 
 			this.miConsole.Index = 1;
 			this.miConsole.Text = "Console";
+			this.miConsole.Visible = false;
 			this.miConsole.Click += new System.EventHandler(this.OnConsoleClick);
 			// 
 			// miHelp
@@ -214,7 +215,7 @@ namespace PckView
 			// 
 			// ofdBmp
 			// 
-			this.ofdBmp.Filter = "8-bit 32x40 bmp (*.bmp)|*.bmp";
+			this.ofdBmp.Filter = "8-bit 32x40 BMP (*.bmp)|*.bmp";
 			// 
 			// pnlView
 			// 

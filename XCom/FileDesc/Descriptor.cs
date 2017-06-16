@@ -89,9 +89,12 @@ namespace XCom
 														   : SharedSpace.ResourceDirectoryTftd;
 			dirTerrain = Path.Combine(SharedSpace.Instance.GetShare(dirTerrain), PathTerrain);
 
-			return ResourceInfo.LoadSpriteset(terrain, dirTerrain, 2, Pal); // TODO: Should the '2' be '4' for TFTD ...
-		}
+			return ResourceInfo.LoadSpriteset(terrain, dirTerrain, 2, Pal);	// TODO: Should the '2' be '4' for TFTD ...
+		}																	// no, Ufopaedia.org "Image Formats" says TFTD terrains have 2-byte Tab-offsets.
+		#endregion
 
+
+		#region Methods (override)
 		/// <summary>
 		/// Overrides Object.ToString()
 		/// </summary>
