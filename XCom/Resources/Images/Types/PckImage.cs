@@ -18,18 +18,19 @@ namespace XCom
 			XCImage
 	{
 		#region Fields (static)
+		private const byte ByteMaximumValue = 0xFF; // ... trying to keep my head straight.
 		/// <summary>
 		/// A flag that is inserted into the file-data that indicates that an
 		/// image's data has ended.
 		/// </summary>
-		private const byte FileStopByte = 0xFF;
+		private const byte SpriteStopByte = 0xFF;
 		/// <summary>
 		/// A flag that is inserted into the file-data that indicates that the
 		/// following pixels are transparent.
 		/// </summary>
-		private const byte FileTransparencyByte = 0xFE;	// the PCK-file uses 0xFE to flag a succeeding quantity of pixels
-														// as transparent. That is, it is *not* a color-id entry; it's
-														// just a flag in the Pck-file. Stop using it as a color-id entry.
+		private const byte SpriteTransparencyByte = 0xFE;	// the PCK-file uses 0xFE to flag a succeeding quantity of pixels
+															// as transparent. That is, it is *not* a color-id entry; it's
+															// just a flag in the Pck-file. Stop using it as a color-id entry.
 		/// <summary>
 		/// Tracks the id of an image across all loaded terrainsets. Used only
 		/// by 'MapInfoOutputBox'.
@@ -84,7 +85,7 @@ namespace XCom
 			int posSrc = 0;								// only to find it's not actually transparent. Oh yeah, they're supposed to
 			int posDst = 0;								// be clever and figure out that the transparency-marker in the PCK-file has
 														// the value of 0xFE .... NOBODY CARES.
-			if (bindata[0] != FileTransparencyByte)
+			if (bindata[0] != SpriteTransparencyByte)
 				posDst = bindata[posSrc++] * XCImageFile.SpriteWidth;
 
 			for (int id = posSrc; id != bindata.Length; ++id)
@@ -95,11 +96,11 @@ namespace XCom
 						Bindata[posDst++] = bindata[id];
 						break;
 
-					case FileTransparencyByte: // skip quantity of pixels
+					case SpriteTransparencyByte: // skip quantity of pixels
 						posDst += bindata[++id];
 						break;
 
-					case FileStopByte: // end of image
+					case SpriteStopByte: // end of image
 						break;
 				}
 			}
@@ -123,7 +124,7 @@ namespace XCom
 		{
 			var binlist = new List<byte>();
 
-			int pos = 0;
+			int lenTransparent = 0;
 			bool first = true;
 
 			for (int id = 0; id != sprite.Bindata.Length; ++id)
@@ -131,54 +132,78 @@ namespace XCom
 				byte b = sprite.Bindata[id];
 
 				if (b == Palette.TransparentId)
-					++pos;
+					++lenTransparent;
 				else
 				{
-					if (pos != 0)
+					if (lenTransparent != 0)
 					{
 						if (first)
 						{
 							first = false;
 
-							binlist.Add((byte)(pos / sprite.Image.Width));	// # of initial rows to skip
-							pos =       (byte)(pos % sprite.Image.Width);	// current position in the next row
+							binlist     .Add((byte)(lenTransparent / sprite.Image.Width));	// qty of initial transparent rows
+							lenTransparent = (byte)(lenTransparent % sprite.Image.Width);	// qty of transparent pixels on the next row
 						}
 
-						while (pos >= FileStopByte)
+						while (lenTransparent >= ByteMaximumValue)
 						{
-							pos -= FileStopByte;
+							lenTransparent -= ByteMaximumValue;
 
-							binlist.Add(FileTransparencyByte);
-							binlist.Add(FileStopByte);
+							binlist.Add(SpriteTransparencyByte);
+							binlist.Add(ByteMaximumValue);
 						}
 
-						if (pos != 0)
+						if (lenTransparent != 0)
 						{
-							binlist.Add(FileTransparencyByte);
-							binlist.Add((byte)pos);
+							binlist.Add(SpriteTransparencyByte);
+							binlist.Add((byte)lenTransparent);
 						}
-						pos = 0;
+						lenTransparent = 0;
 					}
 					binlist.Add(b);
 				}
 			}
 
-			bool hasloopedthroughthethingdob = false;
-			while (pos >= FileStopByte)
-			{
-				pos -= FileStopByte;
+			// So, question. Is one obligated to account for transparent pixels
+			// to the end of an image, or can one just assume that the program
+			// that reads and decompresses the data will force them to transparent ...
+			//
+			// It looks like both OpenXcom and MapView will fill the sprite with
+			// all transparent pixels when each sprite is initialized. Therefore,
+			// it's not *required* to encode any pixels that are transparent to
+			// the end of the sprite.
+			//
+			// And when looking at some of the stock PCK's things look non-standardized.
+			// It's sorta like if there's at least one full row of transparent
+			// pixels at the end of an image, it gets 0xFE,0xFF tacked on before
+			// the final 0xFF (end of image) marker.
+			//
+			// Note that this algorithm can and will tack on multiple 0xFE,0xFF
+			// if there's more than 256 transparent pixels at the end of an image.
 
-				binlist.Add(FileTransparencyByte);
-				binlist.Add(FileStopByte);
 
-				hasloopedthroughthethingdob = true;
-			}
+//			bool appendStopByte = false;
+//			while (lenTransparent >= ByteMaximumValue)
+//			{
+//				lenTransparent -= ByteMaximumValue;
+//
+//				binlist.Add(SpriteTransparencyByte);
+//				binlist.Add(ByteMaximumValue);
+//
+//				appendStopByte = true;
+//			}
+//
+//			if (appendStopByte
+//				|| (byte)binlist[binlist.Count - 1] != SpriteStopByte)
+//			{
+			binlist.Add(SpriteStopByte);
+//			}
 
-			if (hasloopedthroughthethingdob
-				|| (byte)binlist[binlist.Count - 1] != FileStopByte)
-			{
-				binlist.Add(FileStopByte);
-			}
+			// Okay. That seems to be the algorithm that was used. Ie, no need
+			// to go through that final looping mechanism.
+			//
+			// In fact I'll bet it's even better than stock, since it no longer
+			// appends superfluous 0xFE,0xFF markers at all.
 
 			bw.Write(binlist.ToArray());
 
@@ -203,7 +228,7 @@ namespace XCom
 
 				switch (Bindata[i])
 				{
-					case FileStopByte:
+					case SpriteStopByte:
 						ret += Environment.NewLine;
 						break;
 
