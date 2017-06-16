@@ -6,4 +6,4 @@ Compiled .exe(s) and .dll(s) and a CHM helpfile are in the Distribution folder. 
 
 .NET 3.5 is required.
 
-Note that PckView is unable to save PCK files ... at present it is only a viewer.
+Note that PckView is unable to save PCK files ... at present it is only a viewer. I'm slowly re-implementing its functionality, so the editing options may start to re-appear, but do *not* use it to edit your PCK's until this paragraph disappears.
