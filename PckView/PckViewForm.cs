@@ -887,8 +887,8 @@ namespace PckView
 		{
 			SaveMetrics();
 
-			_feditor.ClosePalette();	// these are needed when PckView opens
-			_feditor.Close();			// via MapView.
+			_feditor.ClosePalette();	// these are needed when PckView
+			_feditor.Close();			// was opened via MapView.
 
 			if (miBytes.Checked)
 				BytesFormHelper.CloseBytes();

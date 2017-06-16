@@ -11,9 +11,9 @@ REQUIREMENTS:
 
 A converter utility, ConfigConverter, is included that might/should be able to convert a MapEdit.dat/cfg file, which is used for MapView 1, into a MapView 2 configuration file for tilesets. MapView 2 uses YAML to save most if not all settings; MapView 1 uses a custom parser.
 
-Not all MapEdit.dat/cfg files will convert gracefully. The design of how tilesets load, store, and access their configurations has changed substantially. Instead of loading/storing tilesets under a group and subgroup, the group and category of a tileset is now stored within the tileset definition itself. A default resource folder is assigned upon installation, for either or both UFO and TFTD, which is the parent-path of the MAPS, ROUTES, and TERRAIN folders of your stock XCOM installation(s). However, if you prefer to use a scratch directory for editing tilesets, tilesets can be created (or manually copied) into an arbitrary folder of your choice, as long as they also have the subfolders MAPS, ROUTES, and TERRAINS.
+Not all MapEdit.dat/cfg files will convert gracefully. The design of how tilesets load, store, and access their configurations has changed substantially. Instead of loading/storing tilesets under a group and subgroup, the group and category of a tileset is now stored within the tileset definition itself. A default resource folder is assigned upon installation, for either or both UFO and TFTD, which is the parent-path of the MAPS, ROUTES, and TERRAIN folders of your stock XCOM installation(s). However, if you prefer to use a scratch directory for editing tilesets, tilesets can be created (or manually copied) into an arbitrary folder of your choice, as long as they also have the subfolders MAPS and ROUTES.
 
-That would then become a tileset's "basepath".
+That would then become a tileset's "basepath". See the CHM helpfile's Configuration page for further details.
 
 MAKE BACKUPS OF ALL YOUR STUFF. i mean it. Stuff being your MAPS and ROUTES, mostly. PckView is included but saving PCK/TAB files has been disabled. MCD files cannot be edited directly with MapView 1 or 2 (although there is a setting under Options to open an MCD file in a 3rd party app).
 
