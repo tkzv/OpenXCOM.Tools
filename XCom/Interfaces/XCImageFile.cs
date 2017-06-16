@@ -18,7 +18,7 @@ namespace XCom.Interfaces
 		#region Properties
 		private readonly Palette _palDefault = Palette.UfoBattle;
 		/// <summary>
-		/// The initial palette for the sprites.
+		/// The initial palette for sprites.
 		/// </summary>
 		public Palette DefaultPalette
 		{

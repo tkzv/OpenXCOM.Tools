@@ -23,7 +23,7 @@ namespace XCom
 
 		private readonly SpriteCollection _spriteset;
 
-		private readonly byte[] _expanded;
+		private readonly byte[] _expanded; // wtf is this <-
 		private int _moveId = -1;
 //		private byte _moveVal = 0;
 		#endregion

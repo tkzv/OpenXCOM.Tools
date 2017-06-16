@@ -13,8 +13,7 @@ using PckView.Forms.ImageBytes;
 using XCom;
 using XCom.Interfaces;
 
-using YamlDotNet.RepresentationModel;	// read values (deserialization)
-//using YamlDotNet.Serialization;		// write values
+using YamlDotNet.RepresentationModel; // read values (deserialization)
 
 
 namespace PckView

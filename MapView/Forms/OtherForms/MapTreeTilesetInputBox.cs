@@ -12,13 +12,17 @@ using XCom.Interfaces;
 
 namespace MapView
 {
+	/// <summary>
+	/// This is the Tileset Editor for MapView ii. It replaces the Paths Editor
+	/// of MapView i.
+	/// </summary>
 	internal sealed partial class MapTreeTilesetInputBox
 		:
 			Form
 	{
 		#region Enumerators
 		/// <summary>
-		/// The possible box-types.
+		/// The possible dialog-types.
 		/// </summary>
 		internal enum BoxType
 		{
@@ -412,10 +416,10 @@ namespace MapView
 			btnTerrainPaste.Enabled = (Descriptor != null);
 
 
-//			string dirTerrain = Path.Combine(BasePath, XCom.Descriptor.PathTerrain);
+//			string dirTerrain = Path.Combine(BasePath, Descriptor.PathTerrain);
 			string dirTerrain = (TileGroup.Pal == Palette.UfoBattle) ? SharedSpace.ResourceDirectoryUfo
 																	 : SharedSpace.ResourceDirectoryTftd;
-			dirTerrain = Path.Combine(SharedSpace.Instance.GetShare(dirTerrain), XCom.Descriptor.PathTerrain);
+			dirTerrain = Path.Combine(SharedSpace.Instance.GetShare(dirTerrain), Descriptor.PathTerrain);
 
 			if (Directory.Exists(dirTerrain))
 			{

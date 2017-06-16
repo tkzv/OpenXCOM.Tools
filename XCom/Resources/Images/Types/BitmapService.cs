@@ -22,6 +22,9 @@ namespace XCom
 //	public delegate void LoadingEventHandler(int progress, int total);
 
 
+	/// <summary>
+	/// Static methods for dealing with Windows bitmaps.
+	/// </summary>
 	public static class BitmapService
 	{
 		// used for an image-loading progressbar.

@@ -278,6 +278,7 @@ namespace MapView
 			// Setup an XCOM cursor-sprite.
 			// NOTE: This is the only stock XCOM resource that is required for
 			// MapView to start. See ConfigurationForm ...
+			// TODO: give user the option to choose which cursor-spriteset to use.
 			var cuboid = ResourceInfo.LoadSpriteset(
 												SharedSpace.CursorFilePrefix,
 												share.GetShare(SharedSpace.ResourceDirectoryUfo),
@@ -432,7 +433,7 @@ namespace MapView
 		// options
 		private const string Animation           = "Animation";
 		private const string Doors               = "Doors";
-		private const string SaveWindowPositions = "SaveWindowPositions";
+		private const string SaveWindowPositions = "SaveWindowPositions"; // TODO: is not implemented; implement it or remove it.
 //		private const string SaveOnExit          = "SaveOnExit";
 
 		private const string ShowGrid            = "ShowGrid";
@@ -449,7 +450,7 @@ namespace MapView
 
 		/// <summary>
 		/// Loads (a) MainView's screen-size and -position from YAML,
-		/// (b) settings in MainView's Options screen.
+		///       (b) settings in MainView's Options screen.
 		/// </summary>
 		private void LoadOptions()
 		{
@@ -459,7 +460,7 @@ namespace MapView
 				var str = new YamlStream();
 				str.Load(sr);
 
-				var nodeRoot = (YamlMappingNode)str.Documents[0].RootNode;
+				var nodeRoot = str.Documents[0].RootNode as YamlMappingNode;
 				foreach (var node in nodeRoot.Children)
 				{
 					string viewer = ((YamlScalarNode)node.Key).Value;
@@ -470,26 +471,26 @@ namespace MapView
 						int w = 0;
 						int h = 0;
 
-						var cultureInfo = System.Globalization.CultureInfo.InvariantCulture;
+						var invariant = System.Globalization.CultureInfo.InvariantCulture;
 
 						string key = String.Empty;
 
-						var keyvals = (YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)];
+						var keyvals = nodeRoot.Children[new YamlScalarNode(viewer)] as YamlMappingNode;
 						foreach (var keyval in keyvals) // NOTE: There is a better way to do this. See TilesetManager..cTor
 						{
 							switch (keyval.Key.ToString()) // TODO: Error handling. ->
 							{
 								case "left":
-									x = Int32.Parse(keyval.Value.ToString(), cultureInfo);
+									x = Int32.Parse(keyval.Value.ToString(), invariant);
 									break;
 								case "top":
-									y = Int32.Parse(keyval.Value.ToString(), cultureInfo);
+									y = Int32.Parse(keyval.Value.ToString(), invariant);
 									break;
 								case "width":
-									w = Int32.Parse(keyval.Value.ToString(), cultureInfo);
+									w = Int32.Parse(keyval.Value.ToString(), invariant);
 									break;
 								case "height":
-									h = Int32.Parse(keyval.Value.ToString(), cultureInfo);
+									h = Int32.Parse(keyval.Value.ToString(), invariant);
 									break;
 							}
 						}
@@ -611,7 +612,7 @@ namespace MapView
 //			Options.AddOption(
 //							SaveOnExit,
 //							true,
-//							"If true these settings will be saved on program exit",
+//							"If true these settings will be saved on program exit", // hint: yes they will be.
 //							Main);
 		}
 
@@ -630,9 +631,8 @@ namespace MapView
 			switch (key)
 			{
 				case Animation:
-					miOn.Checked = (bool)value;		// NOTE: 'miOn.Checked' and 'miOff.Checked' are used
-					miOff.Checked = !miOn.Checked;	// by the F1 and F2 keys to switch animations on/off.
-					MainViewUnderlay.Animate(miOn.Checked);
+					miOff.Checked = !(miOn.Checked = (bool)value);	// NOTE: 'miOn.Checked' and 'miOff.Checked' are used
+					MainViewUnderlay.Animate(miOn.Checked);			// by the F1 and F2 keys to switch animations on/off.
 
 					if (!miOn.Checked) // show the doorsprites closed in TileView and QuadrantPanel.
 					{
@@ -655,7 +655,7 @@ namespace MapView
 					{
 						ToggleDoorSprites(miDoors.Checked);
 					}
-					else if (miDoors.Checked) // switch to the doors' alt-tile (whether ufo-door or wood-door)
+					else if (miDoors.Checked) // switch to the doors' alt-tile (whether ufo-door or hinge-door)
 					{
 						if (_mainViewUnderlay.MapBase != null) // NOTE: MapBase is null on MapView load.
 						{
@@ -723,7 +723,7 @@ namespace MapView
 			_quit = true;
 			args.Cancel = false;
 
-			if (SaveAlertMap() == DialogResult.Cancel)
+			if (SaveAlertMap() == DialogResult.Cancel) // NOTE: do not short-circuit these ->
 			{
 				_quit = false;
 				args.Cancel = true;

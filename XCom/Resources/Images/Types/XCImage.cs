@@ -13,7 +13,7 @@ namespace XCom.Interfaces
 		public int FileId
 		{ get; set; }
 
-		public Bitmap Image
+		public Bitmap Image // TODO: change to 'Sprite' ... expect a designer to fu.
 		{ get; protected set; }
 
 		public Bitmap SpriteGray
