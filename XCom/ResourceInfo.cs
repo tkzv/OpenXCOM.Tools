@@ -10,13 +10,19 @@ namespace XCom
 {
 	public static class ResourceInfo
 	{
-		public static TileGroupManager TileGroupInfo
-		{ get; private set; }
-
+		#region Fields (static)
 		private static readonly Dictionary<Palette, Dictionary<string, SpriteCollection>> _palSpritesets
 						  = new Dictionary<Palette, Dictionary<string, SpriteCollection>>();
+		#endregion
 
 
+		#region Properties (static)
+		public static TileGroupManager TileGroupInfo
+		{ get; private set; }
+		#endregion
+
+
+		#region Methods (static)
 		/// <summary>
 		/// Initializes/ loads info about XCOM resources.
 		/// </summary>
@@ -68,12 +74,12 @@ namespace XCom
 					{
 						//LogFile.WriteLine(". . pf not found in spriteset dictionary -> add new SpriteCollection");
 
-						using (var strPck = File.OpenRead(pfePck))
-						using (var strTab = File.OpenRead(pfeTab))
+						using (var fsPck = File.OpenRead(pfePck))
+						using (var fsTab = File.OpenRead(pfeTab))
 						{
 							spritesets.Add(pfSpriteset, new SpriteCollection(
-																		strPck,
-																		strTab,
+																		fsPck,
+																		fsTab,
 																		lenTabOffset,
 																		pal));
 						}
@@ -94,5 +100,6 @@ namespace XCom
 			}
 			return null;
 		}
+		#endregion
 	}
 }

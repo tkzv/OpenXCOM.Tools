@@ -14,11 +14,23 @@ namespace PckView.Forms.ImageBytes
 	/// </summary>
 	internal static class BytesFormHelper
 	{
+		#region Fields (static)
 		private static SelectedSprite _selected;
 
 		private static Form fBytes;
 		private static RichTextBox rtbBytes;
+		#endregion
 
+
+		#region Eventcalls (static)
+		private static void OnFormClosing(object sender, CancelEventArgs e)
+		{
+			fBytes = null;
+		}
+		#endregion
+
+
+		#region Methods (static)
 		internal static void ShowBytes(
 				SelectedSprite selected,
 				MethodInvoker formClosedCallBack,
@@ -111,11 +123,6 @@ namespace PckView.Forms.ImageBytes
 			rtbBytes.Text = text;
 		}
 
-		private static void OnFormClosing(object sender, CancelEventArgs e)
-		{
-			fBytes = null;
-		}
-
 		internal static void CloseBytes()
 		{
 			if (fBytes != null)
@@ -124,5 +131,6 @@ namespace PckView.Forms.ImageBytes
 				fBytes = null;
 			}
 		}
+		#endregion
 	}
 }

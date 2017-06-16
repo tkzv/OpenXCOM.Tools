@@ -38,14 +38,14 @@ namespace MapView
 		{
 			if (_extraSprites == null)
 			{
-				using (var strPck = System.Reflection.Assembly.GetExecutingAssembly()
+				using (var fsPck = System.Reflection.Assembly.GetExecutingAssembly()
 									.GetManifestResourceStream("MapView._Embedded.Extra.PCK"))
-				using (var strTab = System.Reflection.Assembly.GetExecutingAssembly()
+				using (var fsTab = System.Reflection.Assembly.GetExecutingAssembly()
 									.GetManifestResourceStream("MapView._Embedded.Extra.TAB"))
 				{
 					_extraSprites = new XCom.SpriteCollection(
-														strPck,
-														strTab,
+														fsPck,
+														fsTab,
 														2,
 														XCom.Palette.UfoBattle);
 				}

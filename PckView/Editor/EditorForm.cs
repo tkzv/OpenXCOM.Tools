@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-using XCom;
 using XCom.Interfaces;
 
 
@@ -124,6 +123,18 @@ namespace PckView
 		private void OnShowGridClick(object sender, EventArgs e)
 		{
 			_pnlEditor.Grid = (miGrid.Checked = !miGrid.Checked);
+		}
+		#endregion
+
+
+		#region Methods
+		/// <summary>
+		/// Closes the palette-form when PckView closes. This is required when
+		/// PckView opens via MapView.
+		/// </summary>
+		internal void ClosePalette()
+		{
+			_fpalette.Close();
 		}
 		#endregion
 

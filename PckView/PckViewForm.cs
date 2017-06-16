@@ -27,18 +27,6 @@ namespace PckView
 		#endregion
 
 
-		#region Properties (static)
-		private string SpritesetDirectory
-		{ get; set; }
-
-		private string SpritesetLabel
-		{ get; set; }
-
-		internal static Palette Pal
-		{ get; set; }
-		#endregion
-
-
 		#region Fields
 		private PckViewPanel _pnlView = new PckViewPanel();
 
@@ -59,7 +47,19 @@ namespace PckView
 		#endregion
 
 
+		#region Properties (static)
+		internal static Palette Pal
+		{ get; set; }
+		#endregion
+
+
 		#region Properties
+		private string SpritesetDirectory
+		{ get; set; }
+
+		private string SpritesetLabel
+		{ get; set; }
+
 		public bool SavedFile
 		{ get; private set; }
 		#endregion
@@ -168,7 +168,7 @@ namespace PckView
 							int w = 0;
 							int h = 0;
 
-							var cultureInfo = System.Globalization.CultureInfo.InvariantCulture;
+							var invariant = System.Globalization.CultureInfo.InvariantCulture;
 
 							string key = String.Empty;
 
@@ -178,16 +178,16 @@ namespace PckView
 								switch (keyval.Key.ToString()) // TODO: Error handling. ->
 								{
 									case "left":
-										x = Int32.Parse(keyval.Value.ToString(), cultureInfo);
+										x = Int32.Parse(keyval.Value.ToString(), invariant);
 										break;
 									case "top":
-										y = Int32.Parse(keyval.Value.ToString(), cultureInfo);
+										y = Int32.Parse(keyval.Value.ToString(), invariant);
 										break;
 									case "width":
-										w = Int32.Parse(keyval.Value.ToString(), cultureInfo);
+										w = Int32.Parse(keyval.Value.ToString(), invariant);
 										break;
 									case "height":
-										h = Int32.Parse(keyval.Value.ToString(), cultureInfo);
+										h = Int32.Parse(keyval.Value.ToString(), invariant);
 										break;
 								}
 							}
@@ -331,13 +331,11 @@ namespace PckView
 			_miExport.Enabled = valid;
 //			_miDelete.Enabled = valid;
 
+			SelectedSprite selected = null;
 			if (valid)
-			{
-				var selected = _pnlView.Selected[_pnlView.Selected.Count - 1];
-				BytesFormHelper.ReloadBytes(selected);
-			}
-			else
-				BytesFormHelper.ReloadBytes(null);
+				selected = _pnlView.Selected[_pnlView.Selected.Count - 1];
+
+			BytesFormHelper.ReloadBytes(selected);
 		}
 
 		/// <summary>
@@ -532,6 +530,7 @@ namespace PckView
 
 		private void OnQuitClick(object sender, EventArgs e)
 		{
+			OnPckViewFormClosing(null, null);
 			Close();
 		}
 
@@ -580,23 +579,23 @@ namespace PckView
 			string pfeTab = pfePck.Substring(0, pfePck.Length - 4) + SpriteCollection.TabExt;
 			if (File.Exists(pfeTab))
 			{
-				using (var strPck = File.OpenRead(pfePck))
-				using (var strTab = File.OpenRead(pfeTab))
+				using (var fsPck = File.OpenRead(pfePck))
+				using (var fsTab = File.OpenRead(pfeTab))
 				{
 					SpriteCollectionBase spriteset = null;
 					try
 					{
 						spriteset = new SpriteCollection(
-													strPck,
-													strTab,
+													fsPck,
+													fsTab,
 													2,
 													Palette.UfoBattle);
 					}
 					catch (Exception)
 					{
 						spriteset = new SpriteCollection(
-													strPck,
-													strTab,
+													fsPck,
+													fsTab,
 													4,
 													Palette.TftdBattle); // NOTE: was 'Palette.UfoBattle'
 					}
@@ -604,10 +603,10 @@ namespace PckView
 					if (spriteset != null)
 					{
 						spriteset.ImageFile = new XCImageFile();
-						spriteset.Label = Path.GetFileNameWithoutExtension(pfePck);
+						spriteset.Label = SpritesetLabel;
 
 						if (spriteset.Pal == null)
-							spriteset.Pal = Palette.UfoBattle;
+							spriteset.Pal = XCImageFile.GetDefaultPalette();
 					}
 
 					OnPaletteClick(
@@ -616,7 +615,7 @@ namespace PckView
 
 					_pnlView.Spriteset = spriteset;
 
-					miSave.Enabled = true;
+					miSave.Enabled = (spriteset != null); // ... not sure if spriteset can even be null here.
 
 					UpdateCaption(pfePck);
 
@@ -828,22 +827,28 @@ namespace PckView
 			string pfePck = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.PckExt);
 			string pfeTab = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.TabExt);
 
+			string dirBackup = Path.Combine(SpritesetDirectory, "MV_Backup");
+
 			if (File.Exists(pfePck))
 			{
-				string pfePckOld = Path.Combine(SpritesetDirectory, SpritesetLabel + "_old" + SpriteCollection.PckExt);
+				Directory.CreateDirectory(dirBackup);
+
+				string pfePckOld = Path.Combine(dirBackup, SpritesetLabel + SpriteCollection.PckExt);
 				File.Copy(pfePck, pfePckOld, true);
 			}
 
 			if (File.Exists(pfeTab))
 			{
-				string pfeTabOld = Path.Combine(SpritesetDirectory, SpritesetLabel + "_old" + SpriteCollection.TabExt);
+				Directory.CreateDirectory(dirBackup);
+
+				string pfeTabOld = Path.Combine(dirBackup, SpritesetLabel + SpriteCollection.TabExt);
 				File.Copy(pfeTab, pfeTabOld, true);
 			}
 
 
 			// http://www.ufopaedia.org/index.php/Image_Formats
 			// - that says that all TFTD terrains use 2-byte tab-offsets ...
-			const int lenTabOffset = 2;
+//			const int lenTabOffset = 2;
 //			if (   Pal.Equals(Palette.TftdBattle)
 //				|| Pal.Equals(Palette.TftdGeo)
 //				|| Pal.Equals(Palette.TftdGraph)
@@ -856,7 +861,7 @@ namespace PckView
 										SpritesetDirectory,
 										SpritesetLabel,
 										_pnlView.Spriteset,
-										lenTabOffset);
+										((SpriteCollection)_pnlView.Spriteset).TabOffset); //lenTabOffset
 			SavedFile = true; // NOTE: used only by MapView's TileView to flag the Map to reload.
 		}
 
@@ -881,6 +886,9 @@ namespace PckView
 		private void OnPckViewFormClosing(object sender, FormClosingEventArgs e)
 		{
 			SaveMetrics();
+
+			_feditor.ClosePalette();	// these are needed when PckView opens
+			_feditor.Close();			// via MapView.
 
 			if (miBytes.Checked)
 				BytesFormHelper.CloseBytes();

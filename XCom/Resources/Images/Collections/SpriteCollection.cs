@@ -19,13 +19,10 @@ namespace XCom
 		#endregion
 
 
-//		#region Properties
-//		private int _lenTabOffset;
-//		public int TabOffset
-//		{
-//			get { return _lenTabOffset; }
-//		}
-//		#endregion
+		#region Properties
+		public int TabOffset
+		{ get; private set; }
+		#endregion
 
 
 		#region cTor
@@ -33,38 +30,40 @@ namespace XCom
 		/// cTor. Parses a PCK-file into the collection of its images according
 		/// to its TAB-file.
 		/// </summary>
-		/// <param name="strPck"></param>
-		/// <param name="strTab"></param>
-		/// <param name="lenTabOffset"></param>
+		/// <param name="fsPck"></param>
+		/// <param name="fsTab"></param>
+		/// <param name="tabOffset"></param>
 		/// <param name="pal"></param>
 		public SpriteCollection(
-				Stream strPck,
-				Stream strTab,
-				int lenTabOffset,
+				Stream fsPck,
+				Stream fsTab,
+				int tabOffset,
 				Palette pal)
 		{
-//			_lenTabOffset = lenTabOffset;
+			TabOffset = tabOffset;
 
 			Pal = pal;
 
 			uint[] offsets;
-			
-			if (strTab != null)
-			{
-				strTab.Position = 0;
 
-				offsets = new uint[(strTab.Length / lenTabOffset) + 1];
-				using (var br = new BinaryReader(strTab))
+			if (fsTab != null)
+			{
+				int sprites = (int)fsTab.Length / tabOffset;
+
+				fsTab.Position = 0;
+
+				offsets = new uint[sprites + 1]; // NOTE: the last entry will be set to the total length of the input-bindata.
+				using (var br = new BinaryReader(fsTab))
 				{
-					switch (lenTabOffset)
+					switch (tabOffset)
 					{
 						case 2:
-							for (int i = 0; i != strTab.Length / lenTabOffset; ++i)
+							for (int i = 0; i != sprites; ++i)
 								offsets[i] = br.ReadUInt16();
 							break;
-	
+
 						case 4:
-							for (int i = 0; i != strTab.Length / lenTabOffset; ++i)
+							for (int i = 0; i != sprites; ++i)
 								offsets[i] = br.ReadUInt32();
 							break;
 					}
@@ -77,23 +76,27 @@ namespace XCom
 			}
 
 
-			strPck.Position = 0;
+			fsPck.Position = 0;
 
-			var info = new byte[strPck.Length];
-			strPck.Read(info, 0, info.Length);
+			var bindata = new byte[(int)fsPck.Length];
+			fsPck.Read(
+					bindata,			// buffer
+					0,					// offset
+					bindata.Length);	// count
 
-			offsets[offsets.Length - 1] = (uint)info.Length;
+			offsets[offsets.Length - 1] = (uint)bindata.Length;
 
-			for (int id = 0; id != offsets.Length - 1; ++id)
+			for (int i = 0; i != offsets.Length - 1; ++i)
 			{
-				var bindata = new byte[offsets[id + 1] - offsets[id]];
-				for (int j = 0; j != bindata.Length; ++j)
-					bindata[j] = info[offsets[id] + j];
+				var bindataSprite = new byte[offsets[i + 1] - offsets[i]];
+
+				for (int j = 0; j != bindataSprite.Length; ++j)
+					bindataSprite[j] = bindata[offsets[i] + j];
 
 				Add(new PckImage(
-								bindata,
+								bindataSprite,
 								Pal,
-								id,
+								i,
 								this));
 			}
 		}
