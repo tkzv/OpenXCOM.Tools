@@ -262,7 +262,7 @@ namespace MapView
 				fbd.Description = String.Format(
 							System.Globalization.CultureInfo.CurrentCulture,
 							"Browse to a resource folder. A valid resource folder"
-								+ " has the subfolders MAPS, ROUTES, and TERRAIN.");
+								+ " has the subfolders MAPS and ROUTES.");
 
 				if (fbd.ShowDialog() == DialogResult.OK)
 				{

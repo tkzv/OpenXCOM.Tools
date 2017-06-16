@@ -118,7 +118,7 @@ namespace XCom
 		#endregion
 
 
-		#region Methods
+		#region Methods (static)
 		internal static int SaveSpritesetSprite(BinaryWriter bw, XCImage sprite)
 		{
 			var binlist = new List<byte>();
