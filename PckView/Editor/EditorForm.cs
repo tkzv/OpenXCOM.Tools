@@ -12,11 +12,22 @@ namespace PckView
 		:
 			Form
 	{
+		#region Enums
+		private enum EditMode
+		{
+			ModeLocked,
+			ModeEnabled
+		}
+		#endregion
+
+
 		#region Fields
 		private readonly EditorPanel _pnlEditor;
 
-		private TrackBar _trackBar;
 		private PaletteForm _fpalette = new PaletteForm();
+
+		private TrackBar _trackBar = new TrackBar();
+		private Label _lblEditMode = new Label();
 		#endregion
 
 
@@ -25,6 +36,9 @@ namespace PckView
 		{
 			set { _pnlEditor.Sprite = value; }
 		}
+
+		private EditMode Mode
+		{ get; set; }
 
 		private bool Inited
 		{ get; set; }
@@ -37,7 +51,6 @@ namespace PckView
 		/// </summary>
 		internal EditorForm()
 		{
-			_trackBar = new TrackBar();
 			_trackBar.AutoSize    = false;
 			_trackBar.Height      = 23;
 			_trackBar.Minimum     =  1;
@@ -45,10 +58,21 @@ namespace PckView
 			_trackBar.Value       = 10;
 			_trackBar.LargeChange =  1;
 			_trackBar.BackColor   = Color.Silver;
+
 			_trackBar.Scroll += OnTrackScroll;
 
+			_lblEditMode.Text      = "Locked";
+			_lblEditMode.TextAlign = ContentAlignment.MiddleCenter;
+			_lblEditMode.Height    = 15;
+			_lblEditMode.Top       = _trackBar.Height;
+
+			_lblEditMode.MouseClick += OnEditModeMouseClick;
+
+			Mode = EditMode.ModeLocked;
+
+
 			_pnlEditor = new EditorPanel();
-			_pnlEditor.Top = _trackBar.Bottom;
+			_pnlEditor.Top = _trackBar.Height + _lblEditMode.Height;
 
 
 			InitializeComponent();
@@ -59,6 +83,7 @@ namespace PckView
 
 			Controls.Add(_pnlEditor);
 			Controls.Add(_trackBar);
+			Controls.Add(_lblEditMode);
 
 			_fpalette.FormClosing += OnPaletteFormClosing;
 
@@ -77,7 +102,7 @@ namespace PckView
 		{
 			ClientSize = new Size(
 								XCImageFile.SpriteWidth  * 10,
-								XCImageFile.SpriteHeight * 10 + _trackBar.Height);
+								XCImageFile.SpriteHeight * 10 + _trackBar.Height + _lblEditMode.Height);
 		}
 
 		private void OnTrackScroll(object sender, EventArgs e)
@@ -85,13 +110,30 @@ namespace PckView
 			_pnlEditor.ScaleFactor = _trackBar.Value;
 		}
 
+		private void OnEditModeMouseClick(object sender, EventArgs e)
+		{
+			switch (Mode)
+			{
+				case EditMode.ModeLocked:
+					Mode = EditMode.ModeEnabled;
+					_lblEditMode.Text = "Enabled";
+					break;
+
+				case EditMode.ModeEnabled:
+					Mode = EditMode.ModeLocked;
+					_lblEditMode.Text = "Locked";
+					break;
+			}
+		}
+
 		protected override void OnResize(EventArgs e)
 		{
 //			base.OnResize(e);
 
-			_trackBar.Width   =
-			_pnlEditor.Width  = ClientSize.Width;
-			_pnlEditor.Height = ClientSize.Height - _trackBar.Height;
+			_trackBar.Width    =
+			_lblEditMode.Width =
+			_pnlEditor.Width   = ClientSize.Width;
+			_pnlEditor.Height  = ClientSize.Height - _trackBar.Height - _lblEditMode.Height;
 		}
 
 		private void OnShowPaletteClick(object sender, EventArgs e)

@@ -70,10 +70,15 @@ namespace PckView
 								color.B,
 								color.A);
 
-			switch (id)		// -> these values cannot be palette-ids. They have special meaning in the .PCK file.
+			switch (id)
 			{
-				case 254:	// transparency marker
-				case 255:	// end of file marker
+				case 0:
+					text += " [transparent]";
+					break;
+
+				// the following values cannot be palette-ids. They have special meaning in the .PCK file.
+				case 254: // transparency marker
+				case 255: // end of file marker
 					text += " [invalid]";
 					break;
 			}

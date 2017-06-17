@@ -137,9 +137,42 @@ namespace PckView
 											_scale);
 			}
 
+
+//			var p0 = new Point(0,     1); // draw a 1px border around the image ->
+//			var p1 = new Point(Width, 1);
+//			var p2 = new Point(Width, Height);
+//			var p3 = new Point(1,     Height);
+//			var p4 = new Point(1,     1);
+			var p0 = new Point( // draw a 1px border around the image ->
+							0,
+							1);
+			var p1 = new Point(
+							XCImageFile.SpriteWidth  * _scale,
+							1);
+			var p2 = new Point(
+							XCImageFile.SpriteWidth  * _scale,
+							XCImageFile.SpriteHeight * _scale);
+			var p3 = new Point(
+							1,
+							XCImageFile.SpriteHeight * _scale);
+			var p4 = new Point(
+							1,
+							1);
+
+			var path = new GraphicsPath();
+
+			path.AddLine(p0, p1);
+			path.AddLine(p1, p2);
+			path.AddLine(p2, p3);
+			path.AddLine(p3, p4);
+
+			graphics.DrawPath(Pens.Black, path);
+
+
 			if (_grid)
 			{
-				for (int x = 0; x != XCImageFile.SpriteWidth + 1; ++x)
+//				for (int x = 0; x != XCImageFile.SpriteWidth + 1; ++x)
+				for (int x = 0; x != XCImageFile.SpriteWidth; ++x)
 					graphics.DrawLine(
 									Pens.Black,
 									x * _scale,
@@ -147,7 +180,8 @@ namespace PckView
 									x * _scale,
 									XCImageFile.SpriteHeight * _scale);
 
-				for (int y = 0; y != XCImageFile.SpriteHeight + 1; ++y)
+//				for (int y = 0; y != XCImageFile.SpriteHeight + 1; ++y)
+				for (int y = 0; y != XCImageFile.SpriteHeight; ++y)
 					graphics.DrawLine(
 									Pens.Black,
 									0,
