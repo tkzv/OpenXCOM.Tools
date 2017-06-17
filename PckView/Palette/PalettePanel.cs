@@ -29,7 +29,6 @@ namespace PckView
 		private int _tilesX;
 		private int _tilesY;
 
-		private int _id     = -1;
 		private int _clickX = -1;
 		private int _clickY = -1;
 		#endregion
@@ -38,6 +37,13 @@ namespace PckView
 		#region Properties (static)
 		internal static PalettePanel Instance
 		{ get; set; }
+
+		private int _id = -1;
+		internal int PaletteId
+		{
+			get { return _id; }
+			set { _id = value; }
+		}
 		#endregion
 
 
@@ -71,10 +77,10 @@ namespace PckView
 			_tilesX = Width  / Across;
 			_tilesY = Height / Across;
 
-			if (_id != -1)
+			if (PaletteId != -1)
 			{
-				_clickX = _id % Across * _tilesX + 1;
-				_clickY = _id / Across * _tilesY + 1;
+				_clickX = PaletteId % Across * _tilesX + 1;
+				_clickY = PaletteId / Across * _tilesY + 1;
 			}
 			Refresh();
 		}
@@ -87,17 +93,17 @@ namespace PckView
 			_clickX = tileX * _tilesX + 1;
 			_clickY = tileY * _tilesY + 1;
 
-			_id = tileY * Across + tileX;
+			PaletteId = tileY * Across + tileX;
 
 			UpdateStatusPaletteId();
 		}
 
 		internal void UpdateStatusPaletteId()
 		{
-			if (_id > -1 && _id < 256
+			if (PaletteId > -1 && PaletteId < 256
 				&& PaletteIdChangedEvent != null)
 			{
-				PaletteIdChangedEvent(_id);
+				PaletteIdChangedEvent(PaletteId);
 				Refresh();
 			}
 		}
@@ -137,7 +143,7 @@ namespace PckView
 			}
 			//LogFile.WriteLine("##");
 
-			if (_id != -1)
+			if (PaletteId != -1)
 			{
 				graphics.DrawRectangle(
 									Pens.Red,

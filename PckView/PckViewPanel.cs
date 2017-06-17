@@ -66,6 +66,12 @@ namespace PckView
 		#endregion
 
 
+		#region Properties (static)
+		internal static PckViewPanel Instance
+		{ get; set; }
+		#endregion
+
+
 		#region Properties
 		private SpriteCollectionBase _spriteset;
 		internal SpriteCollectionBase Spriteset
@@ -183,6 +189,8 @@ namespace PckView
 			OnSpriteOver(-1);
 
 			PckViewForm.PaletteChangedEvent += OnPaletteChanged; // NOTE: lives the life of the app, so no leak.
+
+			Instance = this;
 		}
 		#endregion
 

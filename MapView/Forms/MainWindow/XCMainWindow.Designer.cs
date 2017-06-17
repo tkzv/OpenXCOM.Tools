@@ -175,7 +175,7 @@ namespace MapView
 			// 
 			this.miSaveImage.Enabled = false;
 			this.miSaveImage.Index = 9;
-			this.miSaveImage.Text = "Save &Image";
+			this.miSaveImage.Text = "Save &Image ...";
 			this.miSaveImage.Click += new System.EventHandler(this.OnSaveImageClick);
 			// 
 			// miExport
@@ -201,11 +201,11 @@ namespace MapView
 			// 
 			// miRegenOccult
 			// 
-			this.miRegenOccult.Visible = false;
 			this.miRegenOccult.Enabled = false;
 			this.miRegenOccult.Index = 13;
 			this.miRegenOccult.Shortcut = System.Windows.Forms.Shortcut.CtrlO;
 			this.miRegenOccult.Text = "Regen &Occult";
+			this.miRegenOccult.Visible = false;
 			this.miRegenOccult.Click += new System.EventHandler(this.OnRegenOccultClick);
 			// 
 			// miHq

@@ -155,7 +155,7 @@ namespace XCom
 		/// <summary>
 		/// Gets/Sets the colors in the palette.
 		/// </summary>
-		internal ColorPalette ColorTable
+		public ColorPalette ColorTable
 		{ get; private set; }
 
 		/// <summary>

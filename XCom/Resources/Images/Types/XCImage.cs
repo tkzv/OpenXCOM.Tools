@@ -14,7 +14,7 @@ namespace XCom.Interfaces
 		{ get; set; }
 
 		public Bitmap Image // TODO: change to 'Sprite' ... expect a designer to fu.
-		{ get; protected set; }
+		{ get; set; }
 
 		public Bitmap SpriteGray
 		{ get; protected set; }

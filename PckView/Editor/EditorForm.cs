@@ -13,7 +13,7 @@ namespace PckView
 			Form
 	{
 		#region Enums
-		private enum EditMode
+		internal enum EditMode
 		{
 			ModeLocked,
 			ModeEnabled
@@ -31,14 +31,17 @@ namespace PckView
 		#endregion
 
 
+		#region Properties (static)
+		internal static EditMode Mode
+		{ get; set; }
+		#endregion
+
+
 		#region Properties
 		internal XCImage Sprite
 		{
 			set { _pnlEditor.Sprite = value; }
 		}
-
-		private EditMode Mode
-		{ get; set; }
 
 		private bool Inited
 		{ get; set; }
@@ -92,6 +95,19 @@ namespace PckView
 		#endregion
 
 
+		#region Eventcalls (override)
+		protected override void OnResize(EventArgs e)
+		{
+//			base.OnResize(e);
+
+			_trackBar.Width    =
+			_lblEditMode.Width =
+			_pnlEditor.Width   = ClientSize.Width;
+			_pnlEditor.Height  = ClientSize.Height - _trackBar.Height - _lblEditMode.Height;
+		}
+		#endregion
+
+
 		#region Eventcalls
 		/// <summary>
 		/// Sets the *proper* ClientSize.
@@ -117,23 +133,15 @@ namespace PckView
 				case EditMode.ModeLocked:
 					Mode = EditMode.ModeEnabled;
 					_lblEditMode.Text = "Enabled";
+					_lblEditMode.BackColor = Color.AliceBlue;
 					break;
 
 				case EditMode.ModeEnabled:
 					Mode = EditMode.ModeLocked;
 					_lblEditMode.Text = "Locked";
+					_lblEditMode.BackColor = Control.DefaultBackColor;
 					break;
 			}
-		}
-
-		protected override void OnResize(EventArgs e)
-		{
-//			base.OnResize(e);
-
-			_trackBar.Width    =
-			_lblEditMode.Width =
-			_pnlEditor.Width   = ClientSize.Width;
-			_pnlEditor.Height  = ClientSize.Height - _trackBar.Height - _lblEditMode.Height;
 		}
 
 		private void OnShowPaletteClick(object sender, EventArgs e)
@@ -171,8 +179,8 @@ namespace PckView
 
 		#region Methods
 		/// <summary>
-		/// Closes the palette-form when PckView closes. This is required when
-		/// PckView opens via MapView.
+		/// Closes the palette-form when PckView closes. This is required only
+		/// when PckView opens via MapView.
 		/// </summary>
 		internal void ClosePalette()
 		{
