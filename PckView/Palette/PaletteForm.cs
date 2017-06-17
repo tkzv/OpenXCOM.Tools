@@ -31,6 +31,8 @@ namespace PckView
 							PalettePanel.Across * 20 + lblStatus.Height);
 			ClientSize = size;
 //			OnResize(EventArgs.Empty);
+
+			_pnlPalette.PaletteIdChangedEvent += OnPaletteIdChanged;
 		}
 		#endregion
 
@@ -52,7 +54,7 @@ namespace PckView
 			}
 		}
 
-		private void OnPaletteIndexChanged(int id)
+		private void OnPaletteIdChanged(int id)
 		{
 			string text = String.Format(
 									System.Globalization.CultureInfo.CurrentCulture,
@@ -67,6 +69,14 @@ namespace PckView
 								color.G,
 								color.B,
 								color.A);
+
+			switch (id)		// -> these values cannot be palette-ids. They have special meaning in the .PCK file.
+			{
+				case 254:	// transparency marker
+				case 255:	// end of file marker
+					text += " [invalid]";
+					break;
+			}
 
 			lblStatus.Text = text;
 		}
@@ -91,10 +101,6 @@ namespace PckView
 /*
 			this._pnlPalette = new PalettePanel();
 */
-// And this will probably get deleted also:
-/*
-			this._pnlPalette.PaletteIndexChangedEvent += OnPaletteIndexChanged;
-*/
 
 		#region Windows Form Designer generated code
 		/// <summary>
@@ -114,7 +120,6 @@ namespace PckView
 			this._pnlPalette.Name = "_pnlPalette";
 			this._pnlPalette.Size = new System.Drawing.Size(292, 255);
 			this._pnlPalette.TabIndex = 0;
-			this._pnlPalette.PaletteIndexChangedEvent += OnPaletteIndexChanged;
 			// 
 			// lblStatus
 			// 

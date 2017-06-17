@@ -8,7 +8,7 @@ using XCom;
 
 namespace PckView
 {
-	internal delegate void PaletteIndexChangedEventHandler(int selectedId);
+	internal delegate void PaletteIdChangedEventHandler(int selectedId);
 
 
 	internal sealed class PalettePanel
@@ -16,7 +16,7 @@ namespace PckView
 			Panel
 	{
 		#region Events
-		internal event PaletteIndexChangedEventHandler PaletteIndexChangedEvent;
+		internal event PaletteIdChangedEventHandler PaletteIdChangedEvent;
 		#endregion
 
 
@@ -35,6 +35,12 @@ namespace PckView
 		#endregion
 
 
+		#region Properties (static)
+		internal static PalettePanel Instance
+		{ get; set; }
+		#endregion
+
+
 		#region cTor
 		/// <summary>
 		/// cTor.
@@ -48,6 +54,8 @@ namespace PckView
 
 			MouseDown += OnMouseDown;
 			PckViewForm.PaletteChangedEvent += OnPaletteChanged; // NOTE: lives the life of the app, so no leak.
+
+			Instance = this;
 		}
 		#endregion
 
@@ -55,7 +63,6 @@ namespace PckView
 		#region Eventcalls
 		private void OnPaletteChanged(Palette pal)
 		{
-			// TODO: update statusbar since the alpha of id[0] swatch can change w/ a transparency click.
 			Refresh();
 		}
 
@@ -82,9 +89,15 @@ namespace PckView
 
 			_id = tileY * Across + tileX;
 
-			if (PaletteIndexChangedEvent != null && _id < 256)
+			UpdateStatusPaletteId();
+		}
+
+		internal void UpdateStatusPaletteId()
+		{
+			if (_id < 256
+				&& PaletteIdChangedEvent != null)
 			{
-				PaletteIndexChangedEvent(_id);
+				PaletteIdChangedEvent(_id);
 				Refresh();
 			}
 		}
