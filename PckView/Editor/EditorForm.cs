@@ -103,7 +103,9 @@ namespace PckView
 			_trackBar.Width    =
 			_lblEditMode.Width =
 			_pnlEditor.Width   = ClientSize.Width;
-			_pnlEditor.Height  = ClientSize.Height - _trackBar.Height - _lblEditMode.Height;
+			_pnlEditor.Height  = ClientSize.Height
+									- _trackBar.Height
+									- _lblEditMode.Height;
 		}
 		#endregion
 
@@ -118,7 +120,10 @@ namespace PckView
 		{
 			ClientSize = new Size(
 								XCImageFile.SpriteWidth  * 10,
-								XCImageFile.SpriteHeight * 10 + _trackBar.Height + _lblEditMode.Height);
+								XCImageFile.SpriteHeight * 10
+									+ _trackBar.Height
+									+ _lblEditMode.Height
+									+ _pnlEditor.GetStatusBarHeight());
 		}
 
 		private void OnTrackScroll(object sender, EventArgs e)

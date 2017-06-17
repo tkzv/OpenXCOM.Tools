@@ -58,7 +58,6 @@ namespace PckView
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
 
-			MouseDown += OnMouseDown;
 			PckViewForm.PaletteChangedEvent += OnPaletteChanged; // NOTE: lives the life of the app, so no leak.
 
 			Instance = this;
@@ -66,12 +65,7 @@ namespace PckView
 		#endregion
 
 
-		#region Eventcalls
-		private void OnPaletteChanged(Palette pal)
-		{
-			Refresh();
-		}
-
+		#region Eventcalls (override)
 		protected override void OnResize(EventArgs eventargs)
 		{
 			_tilesX = Width  / Across;
@@ -85,8 +79,10 @@ namespace PckView
 			Refresh();
 		}
 
-		private void OnMouseDown(object sender, MouseEventArgs e)
+		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			base.OnMouseDown(e);
+
 			int tileX = e.X / _tilesX;
 			int tileY = e.Y / _tilesY;
 
@@ -96,16 +92,6 @@ namespace PckView
 			PaletteId = tileY * Across + tileX;
 
 			UpdateStatusPaletteId();
-		}
-
-		internal void UpdateStatusPaletteId()
-		{
-			if (PaletteId > -1 && PaletteId < 256
-				&& PaletteIdChangedEvent != null)
-			{
-				PaletteIdChangedEvent(PaletteId);
-				Refresh();
-			}
 		}
 
 		/// <summary>
@@ -154,6 +140,24 @@ namespace PckView
 									_clickX - 1, _clickY - 1,
 									1, 1);
 			}
+		}
+		#endregion
+
+
+		#region Eventcalls
+		internal void UpdateStatusPaletteId()
+		{
+			if (PaletteId > -1 && PaletteId < 256
+				&& PaletteIdChangedEvent != null)
+			{
+				PaletteIdChangedEvent(PaletteId);
+				Refresh();
+			}
+		}
+
+		private void OnPaletteChanged(Palette pal)
+		{
+			Refresh();
 		}
 		#endregion
 	}

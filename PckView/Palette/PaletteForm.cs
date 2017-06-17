@@ -54,6 +54,7 @@ namespace PckView
 			}
 		}
 
+		// TODO: this is duplicated in EditorPanel.OnMouseMove()
 		private void OnPaletteIdChanged(int id)
 		{
 			string text = String.Format(

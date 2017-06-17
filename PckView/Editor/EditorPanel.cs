@@ -13,6 +13,12 @@ namespace PckView
 		:
 			Panel
 	{
+		#region Fields
+		private readonly StatusBar _statusBar = new StatusBar();
+		private StatusBarPanel _sbpEyeDropper = new StatusBarPanel();
+		#endregion
+
+
 		#region Properties (static)
 		internal static EditorPanel Instance
 		{ get; set; }
@@ -90,6 +96,15 @@ namespace PckView
 				   | ControlStyles.ResizeRedraw, true);
 //			UpdateStyles();
 
+
+			_sbpEyeDropper.AutoSize = StatusBarPanelAutoSize.Spring;
+
+			_statusBar.Dock = DockStyle.Bottom;
+			_statusBar.ShowPanels = true;
+			_statusBar.Panels.Add(_sbpEyeDropper);
+
+			Controls.Add(_statusBar);
+
 			PckViewForm.PaletteChangedEvent += OnPaletteChanged; // NOTE: lives the life of the app, so no leak.
 		}
 		#endregion
@@ -107,19 +122,6 @@ namespace PckView
 //			ResumeLayout();
 //			base.OnResizeEnd(e);
 //		}
-
-
-		#region EventCalls
-		private void OnPaletteChanged(Palette pal)
-		{
-			Refresh();
-//			if (Sprite != null)
-//			{
-//				Sprite.Image.Palette = pal.Colors;
-//				Refresh();
-//			}
-		}
-		#endregion
 
 
 		#region EventCalls (override)
@@ -153,6 +155,57 @@ namespace PckView
 					PckViewPanel.Instance.Refresh();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Displays the color of any mouseovered paletteId.
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+//			base.OnMouseMove(e);
+
+			int x = e.X / _scale;
+			int y = e.Y / _scale;
+
+			int bindataId = y * (Sprite.Bindata.Length / XCImageFile.SpriteHeight) + x;
+
+			if (bindataId > -1 && bindataId < XCImageFile.SpriteWidth * XCImageFile.SpriteHeight)
+			{
+				int id = Sprite.Bindata[bindataId];
+
+				// TODO: what follows is lifted from PaletteForm.OnPaletteIdChanged()
+				string text = String.Format(
+										System.Globalization.CultureInfo.CurrentCulture,
+										"id:{0} (0x{0:X2})",
+										id);
+
+				var color = PckViewForm.Pal[id];
+				text += String.Format(
+									System.Globalization.CultureInfo.CurrentCulture,
+									" r:{0} g:{1} b:{2} a:{3}",
+									color.R,
+									color.G,
+									color.B,
+									color.A);
+
+				switch (id)
+				{
+					case 0:
+						text += " [transparent]";
+						break;
+
+					// the following values cannot be palette-ids. They have special meaning in the .PCK file.
+					case 254: // transparency marker
+					case 255: // end of file marker
+						text += " [invalid]";
+						break;
+				}
+
+				_sbpEyeDropper.Text = text;
+			}
+			else
+				_sbpEyeDropper.Text = String.Empty;
 		}
 
 
@@ -229,11 +282,29 @@ namespace PckView
 		#endregion
 
 
+		#region EventCalls
+		private void OnPaletteChanged(Palette pal)
+		{
+			Refresh();
+//			if (Sprite != null)
+//			{
+//				Sprite.Image.Palette = pal.Colors;
+//				Refresh();
+//			}
+		}
+		#endregion
+
+
 		#region Methods
 		internal void ClearSprite()
 		{
 			Sprite = null;
 			Refresh();
+		}
+
+		internal int GetStatusBarHeight()
+		{
+			return _statusBar.Height;
 		}
 		#endregion
 	}
