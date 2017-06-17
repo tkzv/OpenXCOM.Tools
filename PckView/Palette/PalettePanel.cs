@@ -94,7 +94,7 @@ namespace PckView
 
 		internal void UpdateStatusPaletteId()
 		{
-			if (_id < 256
+			if (_id > -1 && _id < 256
 				&& PaletteIdChangedEvent != null)
 			{
 				PaletteIdChangedEvent(_id);

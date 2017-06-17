@@ -142,7 +142,7 @@ namespace XCom
 							first = false;
 
 							binlist     .Add((byte)(lenTransparent / sprite.Image.Width));	// qty of initial transparent rows
-							lenTransparent = (byte)(lenTransparent % sprite.Image.Width);	// qty of transparent pixels on the next row
+							lenTransparent = (byte)(lenTransparent % sprite.Image.Width);	// qty of transparent pixels starting on the next row
 						}
 
 						while (lenTransparent >= ByteMaximumValue)
