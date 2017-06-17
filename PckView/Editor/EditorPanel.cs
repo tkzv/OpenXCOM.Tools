@@ -90,8 +90,6 @@ namespace PckView
 				   | ControlStyles.ResizeRedraw, true);
 //			UpdateStyles();
 
-//			MouseClick += OnEditMouseClick;
-
 			PckViewForm.PaletteChangedEvent += OnPaletteChanged; // NOTE: lives the life of the app, so no leak.
 		}
 		#endregion
@@ -121,16 +119,6 @@ namespace PckView
 //				Refresh();
 //			}
 		}
-
-//		private void OnEditMouseClick(object sender, EventArgs e)
-//		{
-//			if (EditorForm.Mode == EditorForm.EditMode.ModeEnabled)
-//			{
-//				// change a clicked pixel's palette-id (color) to whatever the
-//				// current 'PaletteId' is in PalettePanel.
-//				
-//			}
-//		}
 		#endregion
 
 
@@ -149,12 +137,12 @@ namespace PckView
 				int palId = PalettePanel.Instance.PaletteId;
 				if (palId > -1 && palId < 256)
 				{
+//					var color = PckViewForm.Pal[palId];
+
 					int x = e.X / _scale;
 					int y = e.Y / _scale;
 
-					var color = PckViewForm.Pal[palId];
-
-					int id = y * (Sprite.Bindata.Length / 40) + x;
+					int id = y * (Sprite.Bindata.Length / XCImageFile.SpriteHeight) + x;
 					Sprite.Bindata[id] = (byte)palId;
 					Sprite.Image = BitmapService.MakeBitmapTrue(
 															XCImageFile.SpriteWidth,
