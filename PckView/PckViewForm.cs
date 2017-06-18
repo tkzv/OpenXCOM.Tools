@@ -403,11 +403,11 @@ namespace PckView
 				{
 					var bitmap = new Bitmap(ofdBmp.FileName);
 					var sprite = BitmapService.LoadSpriteset(
-															bitmap,
-															Pal,
-															XCImageFile.SpriteWidth,
-															XCImageFile.SpriteHeight,
-															1)[0];
+														bitmap,
+														Pal,
+														XCImageFile.SpriteWidth,
+														XCImageFile.SpriteHeight,
+														1)[0];
 					_pnlView.SpriteReplace(_pnlView.Selected[0].Id, sprite);
 					Refresh();
 				}
@@ -497,13 +497,6 @@ namespace PckView
 
 				Pal = pal;
 				Pal.SetTransparent(miTransparent.Checked);
-
-				//LogFile.WriteLine("###");
-				//for (int i = 0; i != 256; ++i)
-				//{
-				//	LogFile.WriteLine(i + ": " + Pal[i]);
-				//}
-				//LogFile.WriteLine("###");
 
 				_paletteItems[Pal].Checked = true;
 

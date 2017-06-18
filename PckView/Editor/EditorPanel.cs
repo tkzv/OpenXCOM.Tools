@@ -100,6 +100,7 @@ namespace PckView
 			_sbpEyeDropper.AutoSize = StatusBarPanelAutoSize.Spring;
 
 			_statusBar.Dock = DockStyle.Bottom;
+			_statusBar.SizingGrip = false;
 			_statusBar.ShowPanels = true;
 			_statusBar.Panels.Add(_sbpEyeDropper);
 
