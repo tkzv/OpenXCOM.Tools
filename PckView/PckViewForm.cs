@@ -646,24 +646,6 @@ namespace PckView
 			Text = "PckView - " + fullpath;
 		}
 
-		private void OnSaveAsClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
-		{
-/*			var saveFile = new SaveFileDialog();
-
-			_dialogFilter.SetFilter(XCImageFile.Filter.Save);
-			_dictSaveFiles.Clear();
-//			saveFile.Filter = _loadedTypes.CreateFilter(_dialogFilter, _dictSaveFiles);
-
-			if (saveFile.ShowDialog() == DialogResult.OK)
-			{
-				string dir = saveFile.FileName.Substring(0, saveFile.FileName.LastIndexOf(@"\", StringComparison.Ordinal));
-				_dictSaveFiles[saveFile.FilterIndex].SaveCollection(
-																dir,
-																Path.GetFileNameWithoutExtension(saveFile.FileName),
-																_totalViewPck.Collection);
-			} */
-		}
-
 		private void OnShowBytesClick(object sender, EventArgs e)
 		{
 			if (!miBytes.Checked)
@@ -858,6 +840,21 @@ namespace PckView
 										_pnlView.Spriteset,
 										((SpriteCollection)_pnlView.Spriteset).TabOffset); //lenTabOffset
 			SavedFile = true; // NOTE: used only by MapView's TileView to flag the Map to reload.
+		}
+
+		private void OnSaveAsClick(object sender, EventArgs e)
+		{
+			var sfd = new SaveFileDialog();
+			sfd.FileName = SpritesetLabel;
+
+			if (sfd.ShowDialog() == DialogResult.OK)
+			{
+				SpriteCollection.SaveSpriteset(
+											Path.GetDirectoryName(sfd.FileName),
+											Path.GetFileNameWithoutExtension(sfd.FileName),
+											_pnlView.Spriteset,
+											((SpriteCollection)_pnlView.Spriteset).TabOffset);
+			}
 		}
 
 		private void OnMapViewHelpClick(object sender, EventArgs e)

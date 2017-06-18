@@ -109,7 +109,6 @@ namespace PckView
 			this.miSaveAs.Enabled = false;
 			this.miSaveAs.Index = 4;
 			this.miSaveAs.Text = "Save &As ...";
-			this.miSaveAs.Visible = false;
 			this.miSaveAs.Click += new System.EventHandler(this.OnSaveAsClick);
 			// 
 			// miExportSprites
@@ -211,11 +210,11 @@ namespace PckView
 			// sfdSingleSprite
 			// 
 			this.sfdSingleSprite.DefaultExt = "*.BMP";
-			this.sfdSingleSprite.Filter = "Bitmap Files (*.bmp)|*.bmp";
+			this.sfdSingleSprite.Filter = "Bitmap Files (*.bmp)|*.BMP";
 			// 
 			// ofdBmp
 			// 
-			this.ofdBmp.Filter = "8-bit 32x40 BMP (*.bmp)|*.bmp";
+			this.ofdBmp.Filter = "8-bit 32x40 BMP (*.bmp)|*.BMP";
 			// 
 			// pnlView
 			// 
