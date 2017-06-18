@@ -46,13 +46,13 @@ namespace PckView
 		}
 
 		private int _clickX = -1;
-		internal int ClickX
+		private int ClickX
 		{
 			get { return _clickX; }
 			set { _clickX = value; }
 		}
 		private int _clickY = -1;
-		internal int ClickY
+		private int ClickY
 		{
 			get { return _clickY; }
 			set { _clickY = value; }

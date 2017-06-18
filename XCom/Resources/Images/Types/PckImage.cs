@@ -23,12 +23,12 @@ namespace XCom
 		/// A flag that is inserted into the file-data that indicates that an
 		/// image's data has ended.
 		/// </summary>
-		private const byte SpriteStopByte = 0xFF;
+		public const byte SpriteStopByte = 0xFF;
 		/// <summary>
 		/// A flag that is inserted into the file-data that indicates that the
 		/// following pixels are transparent.
 		/// </summary>
-		private const byte SpriteTransparencyByte = 0xFE;	// the PCK-file uses 0xFE to flag a succeeding quantity of pixels
+		public const byte SpriteTransparencyByte = 0xFE;	// the PCK-file uses 0xFE to flag a succeeding quantity of pixels
 															// as transparent. That is, it is *not* a color-id entry; it's
 															// just a flag in the Pck-file. Stop using it as a color-id entry.
 		/// <summary>

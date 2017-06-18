@@ -134,22 +134,22 @@ namespace PckView
 		{
 			base.OnMouseDown(e);
 
-			switch (EditorForm.Mode)
+			int pixelX = e.X / _scale;
+			int pixelY = e.Y / _scale;
+
+			int bindataId = pixelY * (Sprite.Bindata.Length / XCImageFile.SpriteHeight) + pixelX;
+
+			if (bindataId > -1 && bindataId < Sprite.Bindata.Length)
 			{
-				case EditorForm.EditMode.ModeEnabled: // paint ->
+				switch (EditorForm.Mode)
 				{
-					int palId = PalettePanel.Instance.PaletteId;
-					if (palId > -1 && palId < 256)
+					case EditorForm.EditMode.ModeEnabled: // paint ->
 					{
-//						var color = PckViewForm.Pal[palId];
+						int palId = PalettePanel.Instance.PaletteId;
+						if (palId > -1 && palId < PckImage.SpriteTransparencyByte)	// NOTE: 0xFE and 0xFF are reserved for special
+						{															// stuff when reading/writing the .PCK file.
+//							var color = PckViewForm.Pal[palId];
 
-						int pixelX = e.X / _scale;
-						int pixelY = e.Y / _scale;
-
-						int bindataId = pixelY * (Sprite.Bindata.Length / XCImageFile.SpriteHeight) + pixelX;
-
-						if (bindataId > -1 && bindataId < Sprite.Bindata.Length)
-						{
 							Sprite.Bindata[bindataId] = (byte)palId;
 							Sprite.Image = BitmapService.MakeBitmapTrue(
 																	XCImageFile.SpriteWidth,
@@ -159,21 +159,34 @@ namespace PckView
 							Refresh();
 							PckViewPanel.Instance.Refresh();
 						}
+						else
+						{
+							switch (palId)
+							{
+								case PckImage.SpriteTransparencyByte:	// #254
+								case PckImage.SpriteStopByte:			// #255
+									MessageBox.Show(
+												this,
+												"The colortable indices #254 and #255 are reserved"
+													+ " for reading and writing the .PCK file."
+													+ Environment.NewLine + Environment.NewLine
+													+ "#254 is used for RLE encoding"
+													+ Environment.NewLine
+													+ "#255 is the end-of-sprite marker",
+												"Error",
+												MessageBoxButtons.OK,
+												MessageBoxIcon.Error,
+												MessageBoxDefaultButton.Button1,
+												0);
+									break;
+							}
+						}
+						break;
 					}
-					break;
-				}
 
-				case EditorForm.EditMode.ModeLocked: // eye-dropper ->
-				{
-					int pixelX = e.X / _scale;
-					int pixelY = e.Y / _scale;
-
-					int bindataId = pixelY * (Sprite.Bindata.Length / XCImageFile.SpriteHeight) + pixelX;
-
-					if (bindataId > -1 && bindataId < Sprite.Bindata.Length)
+					case EditorForm.EditMode.ModeLocked: // eye-dropper ->
 						PalettePanel.Instance.SelectPaletteId((int)Sprite.Bindata[bindataId]);
-
-					break;
+						break;
 				}
 			}
 		}
