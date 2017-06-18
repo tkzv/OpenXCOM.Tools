@@ -523,7 +523,7 @@ namespace PckView
 //			if (_pnlView.Spriteset != null) // NOTE: menu won't show until a spriteset is loaded.
 			_pnlView.Spriteset.Pal = Pal;
 
-			PalettePanel.Instance.UpdateStatusPaletteId();	// update the palette-panel's statusbar
+			PalettePanel.Instance.PrintStatusPaletteId();	// update the palette-panel's statusbar
 															// in case palette-id #0 is currently selected.
 			var handler = PaletteChangedEvent;
 			if (handler != null)

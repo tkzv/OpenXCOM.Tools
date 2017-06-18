@@ -27,8 +27,8 @@ namespace PckView
 			InitializeComponent();
 
 			var size = new Size(
-							PalettePanel.Across * 20,
-							PalettePanel.Across * 20 + lblStatus.Height);
+							PalettePanel.SwatchesPerSide * 20,
+							PalettePanel.SwatchesPerSide * 20 + lblStatus.Height);
 			ClientSize = size;
 //			OnResize(EventArgs.Empty);
 

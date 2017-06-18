@@ -134,25 +134,46 @@ namespace PckView
 		{
 			base.OnMouseDown(e);
 
-			if (EditorForm.Mode == EditorForm.EditMode.ModeEnabled)
+			switch (EditorForm.Mode)
 			{
-				int palId = PalettePanel.Instance.PaletteId;
-				if (palId > -1 && palId < 256)
+				case EditorForm.EditMode.ModeEnabled: // paint ->
 				{
-//					var color = PckViewForm.Pal[palId];
+					int palId = PalettePanel.Instance.PaletteId;
+					if (palId > -1 && palId < 256)
+					{
+//						var color = PckViewForm.Pal[palId];
 
-					int x = e.X / _scale;
-					int y = e.Y / _scale;
+						int pixelX = e.X / _scale;
+						int pixelY = e.Y / _scale;
 
-					int id = y * (Sprite.Bindata.Length / XCImageFile.SpriteHeight) + x;
-					Sprite.Bindata[id] = (byte)palId;
-					Sprite.Image = BitmapService.MakeBitmapTrue(
-															XCImageFile.SpriteWidth,
-															XCImageFile.SpriteHeight,
-															Sprite.Bindata,
-															PckViewForm.Pal.ColorTable);
-					Refresh();
-					PckViewPanel.Instance.Refresh();
+						int bindataId = pixelY * (Sprite.Bindata.Length / XCImageFile.SpriteHeight) + pixelX;
+
+						if (bindataId > -1 && bindataId < Sprite.Bindata.Length)
+						{
+							Sprite.Bindata[bindataId] = (byte)palId;
+							Sprite.Image = BitmapService.MakeBitmapTrue(
+																	XCImageFile.SpriteWidth,
+																	XCImageFile.SpriteHeight,
+																	Sprite.Bindata,
+																	PckViewForm.Pal.ColorTable);
+							Refresh();
+							PckViewPanel.Instance.Refresh();
+						}
+					}
+					break;
+				}
+
+				case EditorForm.EditMode.ModeLocked: // eye-dropper ->
+				{
+					int pixelX = e.X / _scale;
+					int pixelY = e.Y / _scale;
+
+					int bindataId = pixelY * (Sprite.Bindata.Length / XCImageFile.SpriteHeight) + pixelX;
+
+					if (bindataId > -1 && bindataId < Sprite.Bindata.Length)
+						PalettePanel.Instance.SelectPaletteId((int)Sprite.Bindata[bindataId]);
+
+					break;
 				}
 			}
 		}
@@ -165,22 +186,22 @@ namespace PckView
 		{
 //			base.OnMouseMove(e);
 
-			int x = e.X / _scale;
-			int y = e.Y / _scale;
+			int pixelX = e.X / _scale;
+			int pixelY = e.Y / _scale;
 
-			int bindataId = y * (Sprite.Bindata.Length / XCImageFile.SpriteHeight) + x;
+			int bindataId = pixelY * (Sprite.Bindata.Length / XCImageFile.SpriteHeight) + pixelX;
 
-			if (bindataId > -1 && bindataId < XCImageFile.SpriteWidth * XCImageFile.SpriteHeight)
+			if (bindataId > -1 && bindataId < Sprite.Bindata.Length)
 			{
-				int id = Sprite.Bindata[bindataId];
+				int palId = Sprite.Bindata[bindataId];
 
 				// TODO: what follows is lifted from PaletteForm.OnPaletteIdChanged()
 				string text = String.Format(
 										System.Globalization.CultureInfo.CurrentCulture,
 										"id:{0} (0x{0:X2})",
-										id);
+										palId);
 
-				var color = PckViewForm.Pal[id];
+				var color = PckViewForm.Pal[palId];
 				text += String.Format(
 									System.Globalization.CultureInfo.CurrentCulture,
 									" r:{0} g:{1} b:{2} a:{3}",
@@ -189,7 +210,7 @@ namespace PckView
 									color.B,
 									color.A);
 
-				switch (id)
+				switch (palId)
 				{
 					case 0:
 						text += " [transparent]";
