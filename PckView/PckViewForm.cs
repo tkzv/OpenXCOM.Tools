@@ -314,6 +314,7 @@ namespace PckView
 		#region EventCalls
 		private void OnSpritesetChanged(bool valid)
 		{
+			miSave.Enabled            =
 			miSaveAs.Enabled          =
 			miExportSprites.Enabled   =
 
@@ -533,7 +534,7 @@ namespace PckView
 		{
 			using (var ofd = new OpenFileDialog())
 			{
-				ofd.Filter = "Pck Files (*.pck)|*.pck|All Files (*.*)|*.*";
+				ofd.Filter = "Pck Files (*.pck)|*.PCK|All Files (*.*)|*.*";
 				ofd.Title  = "Select a Pck File";
 //				ofd.InitialDirectory = _share.GetString(SharedSpace.ApplicationDirectory);
 
@@ -610,7 +611,7 @@ namespace PckView
 
 					_pnlView.Spriteset = spriteset;
 
-					miSave.Enabled = (spriteset != null); // ... not sure if spriteset can even be null here.
+//					miSave.Enabled = (spriteset != null); // ... not sure if spriteset can even be null here.
 
 					UpdateCaption(pfePck);
 
@@ -697,6 +698,114 @@ namespace PckView
 //				OnSpriteDeleteClick(null, null);
 		}
 
+		private void OnConsoleClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
+		{
+//			if (_fconsole.Visible)
+//				_fconsole.BringToFront();
+//			else
+//				_fconsole.Show();
+		}
+
+		private void OnCompareClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
+		{
+			var original = _pnlView.Spriteset;
+
+			OnOpenClick(null, EventArgs.Empty);
+
+			var spriteset = _pnlView.Spriteset;
+
+			_pnlView.Spriteset = original;
+
+			if (Controls.Contains(_pnlView))
+			{
+				Controls.Remove(_pnlView);
+
+				_tcTabs = new TabControl();
+				_tcTabs.Dock = DockStyle.Fill;
+				pnlView.Controls.Add(_tcTabs);
+
+				var tabpage = new TabPage();
+				tabpage.Controls.Add(_pnlView);
+				tabpage.Text = "Original";
+				_tcTabs.TabPages.Add(tabpage);
+
+				var viewpanel = new PckViewPanel();
+				viewpanel.ContextMenu = ViewerContextMenu();
+				viewpanel.Dock = DockStyle.Fill;
+				viewpanel.Spriteset = spriteset;
+
+				tabpage = new TabPage();
+				tabpage.Controls.Add(viewpanel);
+				tabpage.Text = "New";
+				_tcTabs.TabPages.Add(tabpage);
+			}
+		}
+
+		private void OnSaveClick(object sender, EventArgs e)
+		{
+			Directory.CreateDirectory(SpritesetDirectory); // in case user deleted the dir.
+
+			string pfePck = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.PckExt);
+			string pfeTab = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.TabExt);
+
+			string dirBackup = Path.Combine(SpritesetDirectory, "MV_Backup");
+
+			if (File.Exists(pfePck))
+			{
+				Directory.CreateDirectory(dirBackup);
+
+				string pfePckOld = Path.Combine(dirBackup, SpritesetLabel + SpriteCollection.PckExt);
+				File.Copy(pfePck, pfePckOld, true);
+			}
+
+			if (File.Exists(pfeTab))
+			{
+				Directory.CreateDirectory(dirBackup);
+
+				string pfeTabOld = Path.Combine(dirBackup, SpritesetLabel + SpriteCollection.TabExt);
+				File.Copy(pfeTab, pfeTabOld, true);
+			}
+
+
+			// http://www.ufopaedia.org/index.php/Image_Formats
+			// - that says that all TFTD terrains use 2-byte tab-offsets ...
+//			const int lenTabOffset = 2;
+//			if (   Pal.Equals(Palette.TftdBattle)
+//				|| Pal.Equals(Palette.TftdGeo)
+//				|| Pal.Equals(Palette.TftdGraph)
+//				|| Pal.Equals(Palette.TftdResearch))
+//			{
+//				lenTabOffset = 4; // NOTE: I don't have TFTD and I do have no clue if this works correctly.
+//			}
+
+			SpriteCollection.SaveSpriteset(
+										SpritesetDirectory,
+										SpritesetLabel,
+										_pnlView.Spriteset,
+										((SpriteCollection)_pnlView.Spriteset).TabOffset); //lenTabOffset
+			SavedFile = true; // NOTE: used only by MapView's TileView to flag the Map to reload.
+		}
+
+		private void OnSaveAsClick(object sender, EventArgs e)
+		{
+			var sfd = new SaveFileDialog();
+			sfd.FileName = SpritesetLabel;
+
+			if (sfd.ShowDialog() == DialogResult.OK)
+			{
+				string dir  = Path.GetDirectoryName(sfd.FileName);
+				string file = Path.GetFileNameWithoutExtension(sfd.FileName);
+				SpriteCollection.SaveSpriteset(
+											dir,
+											file,
+											_pnlView.Spriteset,
+											((SpriteCollection)_pnlView.Spriteset).TabOffset);
+
+				string pfePck = Path.Combine(dir, file) + SpriteCollection.PckExt;
+				LoadSpriteset(pfePck, false);
+			}
+		}
+
 		/// <summary>
 		/// Exports all sprites in the currently loaded spriteset to BMP files.
 		/// </summary>
@@ -751,109 +860,6 @@ namespace PckView
 //						progress.Hide(); // TODO: I suspect this is essentially the same as a memory leak.
 					}
 				}
-			}
-		}
-
-		private void OnConsoleClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
-		{
-//			if (_fconsole.Visible)
-//				_fconsole.BringToFront();
-//			else
-//				_fconsole.Show();
-		}
-
-		private void OnCompareClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
-		{
-			var original = _pnlView.Spriteset;
-
-			OnOpenClick(null, EventArgs.Empty);
-
-			var spriteset = _pnlView.Spriteset;
-
-			_pnlView.Spriteset = original;
-
-			if (Controls.Contains(_pnlView))
-			{
-				Controls.Remove(_pnlView);
-
-				_tcTabs = new TabControl();
-				_tcTabs.Dock = DockStyle.Fill;
-				pnlView.Controls.Add(_tcTabs);
-
-				var tabpage = new TabPage();
-				tabpage.Controls.Add(_pnlView);
-				tabpage.Text = "Original";
-				_tcTabs.TabPages.Add(tabpage);
-
-				var viewpanel = new PckViewPanel();
-				viewpanel.ContextMenu = ViewerContextMenu();
-				viewpanel.Dock = DockStyle.Fill;
-				viewpanel.Spriteset = spriteset;
-
-				tabpage = new TabPage();
-				tabpage.Controls.Add(viewpanel);
-				tabpage.Text = "New";
-				_tcTabs.TabPages.Add(tabpage);
-			}
-		}
-
-		private void OnSaveSpritesetClick(object sender, EventArgs e)
-		{
-			Directory.CreateDirectory(SpritesetDirectory); // in case user deleted the dir.
-
-			string pfePck = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.PckExt);
-			string pfeTab = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.TabExt);
-
-			string dirBackup = Path.Combine(SpritesetDirectory, "MV_Backup");
-
-			if (File.Exists(pfePck))
-			{
-				Directory.CreateDirectory(dirBackup);
-
-				string pfePckOld = Path.Combine(dirBackup, SpritesetLabel + SpriteCollection.PckExt);
-				File.Copy(pfePck, pfePckOld, true);
-			}
-
-			if (File.Exists(pfeTab))
-			{
-				Directory.CreateDirectory(dirBackup);
-
-				string pfeTabOld = Path.Combine(dirBackup, SpritesetLabel + SpriteCollection.TabExt);
-				File.Copy(pfeTab, pfeTabOld, true);
-			}
-
-
-			// http://www.ufopaedia.org/index.php/Image_Formats
-			// - that says that all TFTD terrains use 2-byte tab-offsets ...
-//			const int lenTabOffset = 2;
-//			if (   Pal.Equals(Palette.TftdBattle)
-//				|| Pal.Equals(Palette.TftdGeo)
-//				|| Pal.Equals(Palette.TftdGraph)
-//				|| Pal.Equals(Palette.TftdResearch))
-//			{
-//				lenTabOffset = 4; // NOTE: I don't have TFTD and I do have no clue if this works correctly.
-//			}
-
-			SpriteCollection.SaveSpriteset(
-										SpritesetDirectory,
-										SpritesetLabel,
-										_pnlView.Spriteset,
-										((SpriteCollection)_pnlView.Spriteset).TabOffset); //lenTabOffset
-			SavedFile = true; // NOTE: used only by MapView's TileView to flag the Map to reload.
-		}
-
-		private void OnSaveAsClick(object sender, EventArgs e)
-		{
-			var sfd = new SaveFileDialog();
-			sfd.FileName = SpritesetLabel;
-
-			if (sfd.ShowDialog() == DialogResult.OK)
-			{
-				SpriteCollection.SaveSpriteset(
-											Path.GetDirectoryName(sfd.FileName),
-											Path.GetFileNameWithoutExtension(sfd.FileName),
-											_pnlView.Spriteset,
-											((SpriteCollection)_pnlView.Spriteset).TabOffset);
 			}
 		}
 

@@ -102,7 +102,7 @@ namespace PckView
 			this.miSave.Enabled = false;
 			this.miSave.Index = 3;
 			this.miSave.Text = "&Save";
-			this.miSave.Click += new System.EventHandler(this.OnSaveSpritesetClick);
+			this.miSave.Click += new System.EventHandler(this.OnSaveClick);
 			// 
 			// miSaveAs
 			// 
