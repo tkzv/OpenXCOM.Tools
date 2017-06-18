@@ -40,6 +40,7 @@ namespace XCom
 				int tabOffset,
 				Palette pal)
 		{
+			//LogFile.WriteLine("SpriteCollection..cTor");
 			TabOffset = tabOffset;
 
 			Pal = pal;
@@ -49,6 +50,9 @@ namespace XCom
 			if (fsTab != null)
 			{
 				int sprites = (int)fsTab.Length / tabOffset;
+				//LogFile.WriteLine(". fsTab.Length= " + fsTab.Length);
+				//LogFile.WriteLine(". tabOffset= " + tabOffset);
+				//LogFile.WriteLine(". sprites= " + sprites);
 
 				fsTab.Position = 0;
 
@@ -88,6 +92,7 @@ namespace XCom
 
 			for (int i = 0; i != offsets.Length - 1; ++i)
 			{
+				//LogFile.WriteLine(". . sprite #" + i);
 				var bindataSprite = new byte[offsets[i + 1] - offsets[i]];
 
 				for (int j = 0; j != bindataSprite.Length; ++j)

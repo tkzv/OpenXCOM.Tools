@@ -37,9 +37,9 @@ namespace PckView
 
 		private MenuItem _miEdit;
 		private MenuItem _miExport;
+		private MenuItem _miAdd;
 //		private MenuItem _miReplace;
 //		private MenuItem _miDelete;
-//		private MenuItem _miAdd;
 
 //		private SharedSpace _share = SharedSpace.Instance;
 
@@ -265,33 +265,40 @@ namespace PckView
 		/// <returns></returns>
 		private ContextMenu ViewerContextMenu()
 		{
-			var menu = new ContextMenu();
+			var contextmenu = new ContextMenu();
 
 			_miEdit = new MenuItem("Edit");
+			_miEdit.Enabled = false;
 			_miEdit.Click += OnSpriteEditorClick;
-			menu.MenuItems.Add(_miEdit);
+			contextmenu.MenuItems.Add(_miEdit);
 
-			menu.MenuItems.Add(new MenuItem("-"));
+			contextmenu.MenuItems.Add(new MenuItem("-"));
 
-			_miExport = new MenuItem("Export ...");
-			_miExport.Click += OnExportSpriteClick;
-			menu.MenuItems.Add(_miExport);
+			_miAdd = new MenuItem("Add ...");
+			_miAdd.Enabled = false;
+			_miAdd.Click += OnAddSpriteClick;
+			contextmenu.MenuItems.Add(_miAdd);
 
 //			_miReplace = new MenuItem("Replace");
+//			_miReplace.Enabled = false;
 //			_miReplace.Click += OnSpriteReplaceClick;
 //			menu.MenuItems.Add(_miReplace);
 
-//			_miAdd = new MenuItem("Add");
-//			_miAdd.Click += OnSpriteAddClick;
-//			menu.MenuItems.Add(_miAdd);
-
 //			_miDelete = new MenuItem("Delete\tDel");
+//			_miDelete.Enabled = false;
 //			_miDelete.Click += OnSpriteDeleteClick;
 //			menu.MenuItems.Add(_miDelete);
 
+			contextmenu.MenuItems.Add(new MenuItem("-"));
+
+			_miExport = new MenuItem("Export ...");
+			_miExport.Enabled = false;
+			_miExport.Click += OnExportSpriteClick;
+			contextmenu.MenuItems.Add(_miExport);
+
 //			_miEdit.Enabled = false;
 
-			return menu;
+			return contextmenu;
 		}
 
 		/// <summary>
@@ -320,7 +327,9 @@ namespace PckView
 
 			miPaletteMenu.Enabled     =
 			miTransparentMenu.Enabled =
-			miBytesMenu.Enabled       = valid;
+			miBytesMenu.Enabled       =
+
+			_miAdd.Enabled            = valid;
 		}
 
 		private void OnSpriteClick(object sender, EventArgs e)
@@ -374,6 +383,36 @@ namespace PckView
 			}
 		}
 
+		private void OnAddSpriteClick(object sender, EventArgs e)
+		{
+			if (_pnlView.Spriteset != null)
+			{
+				var ofd = new OpenFileDialog();
+				ofd.Filter = "32x40 8-bpp BMP files (*.bmp)|*.BMP|All Files (*.*)|*.*";
+				ofd.Title = "Add BMP file(s)";
+				ofd.Multiselect = true;
+
+				if (ofd.ShowDialog() == DialogResult.OK)
+				{
+					int terrainId = _pnlView.Spriteset.Count;
+
+					foreach (string file in ofd.FileNames)
+					{
+						var bitmap = new Bitmap(file);
+						_pnlView.Spriteset.Add(BitmapService.CreateSprite(
+																	bitmap,
+																	terrainId++,
+																	Pal,
+																	0, 0,
+																	XCImageFile.SpriteWidth,
+																	XCImageFile.SpriteHeight));
+					}
+					Refresh();
+					// TODO: update statusbar.
+				}
+			}
+		}
+
 		private void OnSpriteReplaceClick(object sender, EventArgs e) // disabled in ViewerContextMenu()
 		{
 			if (_pnlView.Selected.Count != 1)
@@ -403,50 +442,23 @@ namespace PckView
 				if (ofdBmp.ShowDialog() == DialogResult.OK)
 				{
 					var bitmap = new Bitmap(ofdBmp.FileName);
-					var sprite = BitmapService.LoadSpriteset(
-														bitmap,
-														Pal,
-														XCImageFile.SpriteWidth,
-														XCImageFile.SpriteHeight,
-														1)[0];
-					_pnlView.SpriteReplace(_pnlView.Selected[0].Id, sprite);
+					var spriteset = BitmapService.CreateSpriteset(
+															bitmap,
+															Pal,
+															XCImageFile.SpriteWidth,
+															XCImageFile.SpriteHeight,
+															1)[0];
+					_pnlView.SpriteReplace(_pnlView.Selected[0].Id, spriteset);
 					Refresh();
 				}
-				UpdateCaption();
-			}
-		}
-
-		private void OnSpriteAddClick(object sender, EventArgs e) // disabled in ViewerContextMenu()
-		{
-			if (_pnlView.Spriteset != null)
-			{
-				ofdBmp.Title = "Hold shift to select multiple files.";
-				ofdBmp.Multiselect = true;
-
-				if (ofdBmp.ShowDialog() == DialogResult.OK)
-				{
-					foreach (string file in ofdBmp.FileNames)
-					{
-						var bitmap = new Bitmap(file);
-						_pnlView.Spriteset.Add(BitmapService.LoadSprite(
-																	bitmap,
-																	0,
-																	Pal,
-																	0, 0,
-																	XCImageFile.SpriteWidth,
-																	XCImageFile.SpriteHeight));
-					}
-					Refresh();
-				}
-				UpdateCaption();
 			}
 		}
 
 		private void OnSpriteDeleteClick(object sender, EventArgs e) // disabled in ViewerContextMenu()
 		{
 			_pnlView.SpriteDelete();
-			UpdateCaption();
 			Refresh();
+			// TODO: update statusbar.
 		}
 
 
@@ -569,6 +581,9 @@ namespace PckView
 		/// <param name="help">true to show help-splash for a call from MapView</param>
 		public void LoadSpriteset(string pfePck, bool help)
 		{
+			//LogFile.WriteLine("PckViewForm.LoadSpriteset");
+			//LogFile.WriteLine(". " + pfePck);
+
 			SpritesetDirectory = Path.GetDirectoryName(pfePck);
 			SpritesetLabel     = Path.GetFileNameWithoutExtension(pfePck);
 
@@ -581,6 +596,7 @@ namespace PckView
 					SpriteCollectionBase spriteset = null;
 					try
 					{
+						//LogFile.WriteLine(". . try UFO");
 						spriteset = new SpriteCollection(
 													fsPck,
 													fsTab,
@@ -589,6 +605,7 @@ namespace PckView
 					}
 					catch (Exception)
 					{
+						//LogFile.WriteLine(". . catch TFTD");
 						spriteset = new SpriteCollection(
 													fsPck,
 													fsTab,
@@ -638,10 +655,6 @@ namespace PckView
 			}
 		}
 
-		private void UpdateCaption() // TODO: replace calls w/ UpdateCaption(string)
-		{
-			Text = "PckView - " + _pnlView.Spriteset.Label + " [" + _pnlView.Spriteset.Count + "] total";
-		}
 		private void UpdateCaption(string fullpath)
 		{
 			Text = "PckView - " + fullpath;

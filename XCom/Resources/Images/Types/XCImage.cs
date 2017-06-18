@@ -39,11 +39,12 @@ namespace XCom.Interfaces
 		/// Creates an XCImage.
 		/// NOTE: Entries must not be compressed.
 		/// </summary>
-		/// <param name="bindata"></param>
+		/// <param name="bindata">the uncompressed source data</param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		/// <param name="pal">pass in null to bypass creating the 'Image'; ie,
-		/// let PckImage..cTor unravel the compressed image-data instead</param>
+		/// <param name="pal">pass in null to *bypass* creating the 'Image'; ie,
+		/// the PckImage..cTor has already unravelled the compressed image-data
+		/// instead</param>
 		/// <param name="terrainId"></param>
 		internal XCImage(
 				byte[] bindata,

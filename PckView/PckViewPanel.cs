@@ -535,9 +535,9 @@ namespace PckView
 
 
 		#region Methods
-		internal void SpriteReplace(int id, XCImage image) // currently disabled in PckViewForm
+		internal void SpriteReplace(int id, XCImage sprite) // currently disabled in PckViewForm
 		{
-			Spriteset[id] = image;
+			Spriteset[id] = sprite;
 		}
 
 		/// <summary>

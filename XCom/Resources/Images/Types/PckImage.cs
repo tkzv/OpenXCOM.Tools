@@ -68,23 +68,28 @@ namespace XCom
 				SpriteCollection spriteset)
 			:
 				base(
+//					new byte[]{},
 					new byte[XCImageFile.SpriteWidth * XCImageFile.SpriteHeight],
+//					0,0,
 					XCImageFile.SpriteWidth,
 					XCImageFile.SpriteHeight,
 					null, // do *not* pass 'pal' in here. See XCImage..cTor
 					terrainId)
 		{
+			//LogFile.WriteLine("PckImage..cTor");
+//			Bindata = new byte[XCImageFile.SpriteWidth * XCImageFile.SpriteHeight];
+
 			_spriteset = spriteset; // for ToString() only.
 			MapId = _idCanonical++; // for 'MapInfoOutputBox' only.
 
 			Pal = pal;
 
 			for (int id = 0; id != Bindata.Length; ++id)
-				Bindata[id] = Palette.TransparentId;	// good effing Lord. yeh set transparent pixels to #254 instead of #0, sure.
-														// as if that's not going to confuse anyone who tries to paint with color #0
-			int posSrc = 0;								// only to find it's not actually transparent. Oh yeah, they're supposed to
-			int posDst = 0;								// be clever and figure out that the transparency-marker in the PCK-file has
-														// the value of 0xFE .... NOBODY CARES.
+				Bindata[id] = Palette.TransparentId;
+
+			int posSrc = 0;
+			int posDst = 0;
+
 			if (bindata[0] != SpriteTransparencyByte)
 				posDst = bindata[posSrc++] * XCImageFile.SpriteWidth;
 
@@ -93,6 +98,8 @@ namespace XCom
 				switch (bindata[id])
 				{
 					default:
+						//LogFile.WriteLine(". Bindata.Length= " + Bindata.Length + " / posDst= " + posDst);
+						//LogFile.WriteLine(". bindata.Length= " + bindata.Length + " / id= " + id);
 						Bindata[posDst++] = bindata[id];
 						break;
 

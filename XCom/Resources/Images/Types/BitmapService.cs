@@ -464,7 +464,7 @@ namespace XCom
 		/// <param name="height"></param>
 		/// <param name="pad"></param>
 		/// <returns></returns>
-		public static SpriteCollectionBase LoadSpriteset(
+		public static SpriteCollectionBase CreateSpriteset(
 				Bitmap bitmap,
 				Palette pal,
 				int width,
@@ -482,9 +482,9 @@ namespace XCom
 			{
 				int x = (i % cols) * (width  + pad);
 				int y = (i / cols) * (height + pad);
-				spriteset.Add(LoadSprite(
+				spriteset.Add(CreateSprite(
 									bitmap,
-									aniSprite++,
+									aniSprite++, // TODO: fix the fact that should be the terrain id.
 									pal,
 									x, y,
 									width, height));
@@ -498,31 +498,31 @@ namespace XCom
 
 		/// <summary>
 		/// Helper for LoadSpriteset()
-		/// also called by PckViewForm.OnSpriteAddClick()
+		/// also called by PckViewForm.OnAddSpriteClick()
 		/// </summary>
 		/// <param name="bitmap"></param>
-		/// <param name="id"></param>
+		/// <param name="terrainId"></param>
 		/// <param name="pal"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <returns></returns>
-		public static XCImage LoadSprite(
+		public static XCImage CreateSprite(
 				Bitmap bitmap,
-				int id,
+				int terrainId,
 				Palette pal,
 				int x,
 				int y,
 				int width,
 				int height)
 		{
-			var bindata = new byte[width * height]; // image data in 8-bit form
+			//LogFile.WriteLine("BitmapService.CreateSprite");
+			var bindata = new byte[width * height]; // image data in 8-bpp form
 
 			var rect   = new Rectangle(
 									x, y,
 									width, height);
-
 			var locked = bitmap.LockBits(
 									rect,
 									ImageLockMode.ReadOnly,
@@ -543,12 +543,29 @@ namespace XCom
 				int i = 0;
 				for (uint row = 0; row != height; ++row)
 				for (uint col = 0; col != width;  ++col)
-					bindata[i++] = *(bits + row * stride + col);
+				{
+//					bindata[i++] = *(bits + row * stride + col); // bork.
+
+					byte palId = *(bits + row * stride + col);
+					switch (palId)
+					{
+						case PckImage.SpriteStopByte:			// convert #255 transparency to #0.
+							palId = 0;
+							break;
+
+						case PckImage.SpriteTransparencyByte:	// drop #254 transparency-marker down to #253.
+							palId = 253;
+							break;
+					}
+
+					bindata[i++] = palId;
+					//LogFile.WriteLine(". " + (i-1) + ":" + palId);
+				}
 			}
 
 			bitmap.UnlockBits(locked);
 
-			return new XCImage(bindata, width, height, pal, id);
+			return new XCImage(bindata, width, height, pal, terrainId);
 		}
 	}
 }
