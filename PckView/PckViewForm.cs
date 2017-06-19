@@ -377,7 +377,7 @@ namespace PckView
 
 					_pnlView.PrintStatusTotal();
 					Refresh();
-					// TODO: relay tiles.
+					// TODO: relay tiles table.
 				}
 			}
 		}
@@ -386,15 +386,32 @@ namespace PckView
 		{
 //			_pnlView.SpriteDelete();
 
-			if (EditorPanel.Instance.Sprite.TerrainId == _pnlView.Selected[0].TerrainId)
-				EditorPanel.Instance.ClearSprite();
+			var editor = EditorPanel.Instance;
 
-			_pnlView.Spriteset.RemoveAt(_pnlView.Selected[0].TerrainId);
+			bool resetEditorSprite = false;
+			if (editor.Sprite != null)
+			{
+				if (editor.Sprite.TerrainId == _pnlView.Selected[0].TerrainId)
+					editor.ClearSprite();
+				else
+					resetEditorSprite = (editor.Sprite.TerrainId > _pnlView.Selected[0].TerrainId);
+			}
+
+			int terrainId = _pnlView.Selected[0].TerrainId;
+			_pnlView.Spriteset.RemoveAt(terrainId);
+
+			int count = _pnlView.Spriteset.Count;
+			for (int id = terrainId; id != count; ++id) // shuffle any succeeding sprite's terrain-id down by 1.
+				_pnlView.Spriteset[id].TerrainId = id;
+
+			if (resetEditorSprite) // and reload any succeeding sprite in the editor just to keep things koxer.
+				editor.Sprite = _pnlView.Spriteset[editor.Sprite.TerrainId];
+
 			_pnlView.Selected.Clear();
 
 			_pnlView.PrintStatusTotal();
 			Refresh();
-			// TODO: relay tiles.
+			// TODO: relay tiles table.
 		}
 
 		private void OnKeyDown(object sender, KeyEventArgs e)

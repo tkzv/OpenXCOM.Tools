@@ -74,7 +74,7 @@ namespace PckView
 			Mode = EditMode.ModeLocked;
 
 
-			_pnlEditor = new EditorPanel();
+			_pnlEditor = new EditorPanel(this);
 			_pnlEditor.Top = _trackBar.Height + _lblEditMode.Height;
 
 

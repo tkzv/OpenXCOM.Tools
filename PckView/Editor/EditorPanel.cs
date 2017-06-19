@@ -14,6 +14,8 @@ namespace PckView
 			Panel
 	{
 		#region Fields
+		private EditorForm _parent;
+
 		private readonly StatusBar _statusBar = new StatusBar();
 		private StatusBarPanel _sbpEyeDropper = new StatusBarPanel();
 		#endregion
@@ -33,6 +35,14 @@ namespace PckView
 			set
 			{
 				_sprite = value;
+
+				string caption = "Sprite Editor";
+				if (_sprite != null)
+					caption += " - id " + _sprite.TerrainId;
+
+				_parent.Text = caption;
+				_sbpEyeDropper.Text = String.Empty;
+
 				Refresh();
 			}
 		}
@@ -63,8 +73,9 @@ namespace PckView
 		/// <summary>
 		/// cTor.
 		/// </summary>
-		internal EditorPanel()
+		internal EditorPanel(EditorForm parent)
 		{
+			_parent  = parent;
 			Instance = this;
 
 			// form level code to fix flicker
@@ -338,8 +349,6 @@ namespace PckView
 		internal void ClearSprite()
 		{
 			Sprite = null;
-			_sbpEyeDropper.Text = String.Empty;
-
 			Refresh();
 		}
 

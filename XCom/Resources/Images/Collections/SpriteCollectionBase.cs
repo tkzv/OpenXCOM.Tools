@@ -30,21 +30,21 @@ namespace XCom
 			}
 		}
 
-//		public new XCImage this[int id]
-//		{
-//			get { return (id > -1 && id < Count) ? base[id]
-//												 : null; }
-//			set
-//			{
-//				if (id > -1 && id < Count)
-//					base[id] = value;
-//				else
-//				{
-//					value.TerrainId = Count;
-//					Add(value);
-//				}
-//			}
-//		}
+		public new XCImage this[int id]
+		{
+			get { return (id > -1 && id < Count) ? base[id]
+												 : null; }
+			set
+			{
+				if (id > -1 && id < Count)
+					base[id] = value;
+				else
+				{
+					value.TerrainId = Count;
+					Add(value);
+				}
+			}
+		}
 		#endregion
 
 
