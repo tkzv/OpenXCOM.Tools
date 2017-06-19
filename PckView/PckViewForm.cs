@@ -844,7 +844,7 @@ namespace PckView
 												_pnlView.Spriteset,
 												((SpriteCollection)_pnlView.Spriteset).TabOffset))
 				{
-					if (revert)
+					if (!revert)
 					{
 						string pfePck = Path.Combine(dir, file + SpriteCollection.PckExt);
 						LoadSpriteset(pfePck, false);
