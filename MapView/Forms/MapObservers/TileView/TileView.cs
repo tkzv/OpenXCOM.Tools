@@ -508,7 +508,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 						f.ShowDialog(owner);
 
-						if (f.SavedFile)
+						if (f.SpritesChanged)
 							TriggerPckSaved(); // (re)loads the selected Map.
 					}
 					_showHideManager.RestoreViewers();

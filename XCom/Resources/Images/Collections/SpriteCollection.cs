@@ -89,10 +89,15 @@ namespace XCom
 					bindata.Length);	// count
 
 			offsets[offsets.Length - 1] = (uint)bindata.Length;
+			//LogFile.WriteLine("");
+			//LogFile.WriteLine(". offsets.Length= " + offsets.Length);
 
 			for (int i = 0; i != offsets.Length - 1; ++i)
 			{
 				//LogFile.WriteLine(". . sprite #" + i);
+				//LogFile.WriteLine(". . offsets[i+1]=\t" + (offsets[i + 1]));
+				//LogFile.WriteLine(". . offsets[i]=\t\t" + (offsets[i]));
+				//LogFile.WriteLine(". . . val=\t\t\t"    + (offsets[i + 1] - offsets[i]));
 				var bindataSprite = new byte[offsets[i + 1] - offsets[i]];
 
 				for (int j = 0; j != bindataSprite.Length; ++j)
@@ -116,12 +121,14 @@ namespace XCom
 		/// <param name="file">the filename without extension</param>
 		/// <param name="spriteset">pointer to the base spriteset</param>
 		/// <param name="tabOffset">2 for UFO, 4 for TFTD (roughly..)</param>
-		public static void SaveSpriteset(
+		/// <returns>true if mission was successful</returns>
+		public static bool SaveSpriteset(
 				string dir,
 				string file,
 				SpriteCollectionBase spriteset,
 				int tabOffset)
 		{
+			//LogFile.WriteLine("SpriteCollection.SaveSpriteset");
 			string pfePck = Path.Combine(dir, file + PckExt);
 			string pfeTab = Path.Combine(dir, file + TabExt);
 
@@ -132,11 +139,19 @@ namespace XCom
 				{
 					case 2:
 					{
-						ushort pos = 0;
+						int pos = 0;
 						foreach (XCImage sprite in spriteset)
 						{
-							bwTab.Write(pos);
-							pos += (ushort)PckImage.SaveSpritesetSprite(bwPck, sprite);
+							//LogFile.WriteLine(". pos[pre]= " + pos);
+							if (pos > UInt16.MaxValue) // bork. Psst, happens at ~150 sprites.
+							{
+								//LogFile.WriteLine(". . UInt16 MaxValue exceeded - ret FALSE");
+								return false;
+							}
+
+							bwTab.Write((ushort)pos);
+							pos += PckImage.SaveSpritesetSprite(bwPck, sprite);
+							//LogFile.WriteLine(". pos[pst]= " + pos);
 						}
 						break;
 					}
@@ -153,6 +168,7 @@ namespace XCom
 					}
 				}
 			}
+			return true;
 		}
 		#endregion
 	}

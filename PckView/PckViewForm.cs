@@ -60,7 +60,7 @@ namespace PckView
 		private string SpritesetLabel
 		{ get; set; }
 
-		public bool SavedFile
+		public bool SpritesChanged
 		{ get; private set; }
 		#endregion
 
@@ -118,14 +118,7 @@ namespace PckView
 
 //			_share[SharedSpace.Palettes] = new Dictionary<string, Palette>();
 
-			AddPalette(Palette.UfoBattle);
-			AddPalette(Palette.UfoGeo);
-			AddPalette(Palette.UfoGraph);
-			AddPalette(Palette.UfoResearch);
-			AddPalette(Palette.TftdBattle);
-			AddPalette(Palette.TftdGeo);
-			AddPalette(Palette.TftdGraph);
-			AddPalette(Palette.TftdResearch);
+			PopulatePaletteMenu();
 
 			Pal = XCImageFile.GetDefaultPalette();
 			Pal.SetTransparent(true);
@@ -303,16 +296,28 @@ namespace PckView
 		/// <summary>
 		/// Adds a palette as a menuitem to the palettes menu on the main menu.
 		/// </summary>
-		/// <param name="pal"></param>
-		private void AddPalette(Palette pal)
+		private void PopulatePaletteMenu()
 		{
-			var itPal = new MenuItem(pal.Label);
-			itPal.Tag = pal;
-			miPaletteMenu.MenuItems.Add(itPal);
+			var pals = new List<Palette>();
 
-			itPal.Click += OnPaletteClick;
-			_paletteItems[pal] = itPal;
+			pals.Add(Palette.UfoBattle);
+			pals.Add(Palette.UfoGeo);
+			pals.Add(Palette.UfoGraph);
+			pals.Add(Palette.UfoResearch);
+			pals.Add(Palette.TftdBattle);
+			pals.Add(Palette.TftdGeo);
+			pals.Add(Palette.TftdGraph);
+			pals.Add(Palette.TftdResearch);
 
+			foreach (var pal in pals)
+			{
+				var itPal = new MenuItem(pal.Label);
+				itPal.Tag = pal;
+				miPaletteMenu.MenuItems.Add(itPal);
+
+				itPal.Click += OnPaletteClick;
+				_paletteItems[pal] = itPal;
+			}
 //			((Dictionary<string, Palette>)_share[SharedSpace.Palettes])[pal.Label] = pal;
 		}
 
@@ -338,6 +343,7 @@ namespace PckView
 		{
 			bool valid = _pnlView.Selected.Count != 0;
 
+			// on Context menu
 			_miEdit.Enabled   =
 			_miExport.Enabled =
 			_miDelete.Enabled = valid;
@@ -785,30 +791,6 @@ namespace PckView
 
 		private void OnSaveClick(object sender, EventArgs e)
 		{
-			Directory.CreateDirectory(SpritesetDirectory); // in case user deleted the dir.
-
-			string pfePck = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.PckExt);
-			string pfeTab = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.TabExt);
-
-			string dirBackup = Path.Combine(SpritesetDirectory, "MV_Backup");
-
-			if (File.Exists(pfePck))
-			{
-				Directory.CreateDirectory(dirBackup);
-
-				string pfePckOld = Path.Combine(dirBackup, SpritesetLabel + SpriteCollection.PckExt);
-				File.Copy(pfePck, pfePckOld, true);
-			}
-
-			if (File.Exists(pfeTab))
-			{
-				Directory.CreateDirectory(dirBackup);
-
-				string pfeTabOld = Path.Combine(dirBackup, SpritesetLabel + SpriteCollection.TabExt);
-				File.Copy(pfeTab, pfeTabOld, true);
-			}
-
-
 			// http://www.ufopaedia.org/index.php/Image_Formats
 			// - that says that all TFTD terrains use 2-byte tab-offsets ...
 //			const int lenTabOffset = 2;
@@ -820,12 +802,21 @@ namespace PckView
 //				lenTabOffset = 4; // NOTE: I don't have TFTD and I do have no clue if this works correctly.
 //			}
 
-			SpriteCollection.SaveSpriteset(
-										SpritesetDirectory,
-										SpritesetLabel,
-										_pnlView.Spriteset,
-										((SpriteCollection)_pnlView.Spriteset).TabOffset); //lenTabOffset
-			SavedFile = true; // NOTE: used only by MapView's TileView to flag the Map to reload.
+			BackupSpritesetFiles();
+
+			if (SpriteCollection.SaveSpriteset(
+											SpritesetDirectory,
+											SpritesetLabel,
+											_pnlView.Spriteset,
+											((SpriteCollection)_pnlView.Spriteset).TabOffset)) //lenTabOffset
+			{
+				SpritesChanged = true; // NOTE: used by MapView's TileView to flag the Map to reload.
+			}
+			else
+			{
+				ShowSaveError();
+				RevertFiles();
+			}
 		}
 
 		private void OnSaveAsClick(object sender, EventArgs e)
@@ -837,15 +828,121 @@ namespace PckView
 			{
 				string dir  = Path.GetDirectoryName(sfd.FileName);
 				string file = Path.GetFileNameWithoutExtension(sfd.FileName);
-				SpriteCollection.SaveSpriteset(
-											dir,
-											file,
-											_pnlView.Spriteset,
-											((SpriteCollection)_pnlView.Spriteset).TabOffset);
 
-				string pfePck = Path.Combine(dir, file) + SpriteCollection.PckExt;
-				LoadSpriteset(pfePck, false);
+				bool revert;
+				if (file.Equals(SpritesetLabel, StringComparison.OrdinalIgnoreCase)) // user requested to save the files to the same filenames.
+				{
+					BackupSpritesetFiles();
+					revert = true;
+				}
+				else
+					revert = false;
+
+				if (SpriteCollection.SaveSpriteset(
+												dir,
+												file,
+												_pnlView.Spriteset,
+												((SpriteCollection)_pnlView.Spriteset).TabOffset))
+				{
+					if (revert)
+					{
+						string pfePck = Path.Combine(dir, file + SpriteCollection.PckExt);
+						LoadSpriteset(pfePck, false);
+					}
+					SpritesChanged = true; // NOTE: used by MapView's TileView to flag the Map to reload.
+				}
+				else
+				{
+					ShowSaveError();
+
+					if (revert)
+					{
+						RevertFiles();
+					}
+					else
+					{
+						File.Delete(Path.Combine(dir, file + SpriteCollection.PckExt));
+						File.Delete(Path.Combine(dir, file + SpriteCollection.TabExt));
+					}
+				}
 			}
+		}
+
+
+		private string _pfePck;
+		private string _pfeTab;
+		private string _pfePckOld;
+		private string _pfeTabOld;
+
+		/// <summary>
+		/// Backs up the PCK+TAB files before trying a Save or SaveAs.
+		/// NOTE: A possible internal reason that a spriteset is invalid is that
+		/// if the total length of its compressed PCK-data exceeds 2^16 bytes
+		/// (roughly). That is, the TAB file tracks the offsets and needs to
+		/// know the total length of the PCK file, but UFO's TAB file stores the
+		/// offsets in only 2-byte format (2^16 bits) so the arithmetic explodes
+		/// with an overflow as soon as an offset for one of the sprites becomes
+		/// too large. (Technically, the total PCK data can exceed 2^16 bits;
+		/// but the *start offset* for a sprite cannot -- at least that's how it
+		/// works in MapView I/II. Other apps like XCOM, OpenXcom, MCDEdit will
+		/// use their own routines.)
+		/// NOTE: It appears that TFTD's terrain files suffer this limitation
+		/// also.
+		/// </summary>
+		private void BackupSpritesetFiles()
+		{
+			Directory.CreateDirectory(SpritesetDirectory); // in case user deleted the dir.
+
+			_pfePck = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.PckExt);
+			_pfeTab = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.TabExt);
+
+			string dirBackup = Path.Combine(SpritesetDirectory, "MV_Backup");
+
+			if (File.Exists(_pfePck))
+			{
+				Directory.CreateDirectory(dirBackup);
+
+				_pfePckOld = Path.Combine(dirBackup, SpritesetLabel + SpriteCollection.PckExt);
+				File.Copy(_pfePck, _pfePckOld, true);
+			}
+
+			if (File.Exists(_pfeTab))
+			{
+				Directory.CreateDirectory(dirBackup);
+
+				_pfeTabOld = Path.Combine(dirBackup, SpritesetLabel + SpriteCollection.TabExt);
+				File.Copy(_pfeTab, _pfeTabOld, true);
+			}
+		}
+
+		/// <summary>
+		/// Reverts to the backup files if the TAB-offsets grow too large when
+		/// making a Save/SaveAs.
+		/// </summary>
+		private void RevertFiles()
+		{
+			File.Copy(_pfePckOld, _pfePck, true);
+			File.Copy(_pfeTabOld, _pfeTab, true);
+		}
+
+		/// <summary>
+		/// Shows user an error if saving goes bad due to the 2-byte TAB
+		/// limitation.
+		/// </summary>
+		private void ShowSaveError()
+		{
+			MessageBox.Show(
+						this,
+						"Too many pixels. The size of the encoded sprite-data"
+							+ " has grown too large to be stored accurately"
+							+ " by the Tab file. Try deleting sprite(s) or"
+							+ " generally using more transparency. Files have"
+							+ " *not* been saved.",
+						"Error",
+						MessageBoxButtons.OK,
+						MessageBoxIcon.Error,
+						MessageBoxDefaultButton.Button1,
+						0);
 		}
 
 		/// <summary>
