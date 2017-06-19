@@ -73,7 +73,7 @@ namespace PckView.Forms.ImageBytes
 				fBytes.FormClosing += OnFormClosing;
 				fBytes.FormClosing += (sender, e) => formClosedCallBack();
 				fBytes.Location = location;
-				fBytes.Text = "Total Bytes - " + _selected.Image.Bindata.Length;
+				fBytes.Text = "Total Bytes - " + _selected.Sprite.Bindata.Length;
 				fBytes.Show();
 			}
 		}
@@ -82,7 +82,7 @@ namespace PckView.Forms.ImageBytes
 		{
 			if (fBytes != null)
 			{
-				if (_selected != null && _selected.Image != null)
+				if (_selected != null && _selected.Sprite != null)
 				{
 					rtbBytes.Clear();
 					LoadBytes();
@@ -102,7 +102,7 @@ namespace PckView.Forms.ImageBytes
 			int wrapCount = 0;
 			int row       = 0;
 
-			foreach (byte b in _selected.Image.Bindata)
+			foreach (byte b in _selected.Sprite.Bindata)
 			{
 				if (wrapCount % XCImageFile.SpriteWidth == 0)
 				{

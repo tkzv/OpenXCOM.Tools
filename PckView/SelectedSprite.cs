@@ -12,10 +12,10 @@ namespace PckView
 //		internal int Y
 //		{ get; set; }
 
-		internal int Id
+		internal int TerrainId
 		{ get; set; }
 
-		internal XCImage Image
+		internal XCImage Sprite
 		{ get; set; }
 	}
 }

@@ -336,8 +336,7 @@ namespace PckView
 
 		private void OnSpriteClick(object sender, EventArgs e)
 		{
-			bool valid = _pnlView.Selected != null
-					  && _pnlView.Selected.Count != 0;
+			bool valid = _pnlView.Selected.Count != 0;
 
 			_miEdit.Enabled   =
 			_miExport.Enabled =
@@ -345,44 +344,9 @@ namespace PckView
 
 			SelectedSprite selected = null;
 			if (valid)
-				selected = _pnlView.Selected[_pnlView.Selected.Count - 1];
+				selected = _pnlView.Selected[0];
 
 			BytesFormHelper.ReloadBytes(selected);
-		}
-
-		/// <summary>
-		/// Exports the last selected sprite to a BMP file.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnExportSpriteClick(object sender, EventArgs e)
-		{
-			if (_pnlView.Selected.Count != 0)
-			{
-				var selected = _pnlView.Selected[_pnlView.Selected.Count - 1];
-				if (_pnlView.Spriteset != null)
-				{
-					string digits = String.Empty;
-
-					int count = _pnlView.Spriteset.Count;
-					do
-					{
-						digits += "0";
-						count /= 10;
-					}
-					while (count != 0);
-
-					string suffix = String.Format(
-												System.Globalization.CultureInfo.InvariantCulture,
-												"{0:" + digits + "}",
-												selected.Image.TerrainId);
-
-					sfdSingleSprite.FileName = _pnlView.Spriteset.Label + suffix;
-
-					if (sfdSingleSprite.ShowDialog() == DialogResult.OK)
-						BitmapService.ExportSprite(sfdSingleSprite.FileName, selected.Image.Image);
-				}
-			}
 		}
 
 		private void OnAddSpriteClick(object sender, EventArgs e)
@@ -390,7 +354,7 @@ namespace PckView
 			if (_pnlView.Spriteset != null)
 			{
 				var ofd = new OpenFileDialog();
-				ofd.Filter = "32x40 8-bpp BMP files (*.bmp)|*.BMP|All Files (*.*)|*.*";
+				ofd.Filter = "BMP files (32x40 8-bpp) (*.bmp)|*.BMP|All Files (*.*)|*.*";
 				ofd.Title = "Add BMP file(s)";
 				ofd.Multiselect = true;
 
@@ -421,7 +385,11 @@ namespace PckView
 		private void OnDeleteSpriteClick(object sender, EventArgs e)
 		{
 //			_pnlView.SpriteDelete();
-			_pnlView.Spriteset.RemoveAt(_pnlView.Selected[_pnlView.Selected.Count - 1].Id);
+
+			if (EditorPanel.Instance.Sprite.TerrainId == _pnlView.Selected[0].TerrainId)
+				EditorPanel.Instance.ClearSprite();
+
+			_pnlView.Spriteset.RemoveAt(_pnlView.Selected[0].TerrainId);
 			_pnlView.Selected.Clear();
 
 			_pnlView.PrintStatusTotal();
@@ -437,41 +405,76 @@ namespace PckView
 
 		private void OnSpriteReplaceClick(object sender, EventArgs e) // disabled in ViewerContextMenu()
 		{
-			if (_pnlView.Selected.Count != 1)
-			{
-				MessageBox.Show(
-							this,
-							"Must select 1 item only.",
-							Text,
-							MessageBoxButtons.OK,
-							MessageBoxIcon.Exclamation,
-							MessageBoxDefaultButton.Button1,
-							0);
-			}
-			else if (_pnlView.Spriteset != null )
-			{
-				var title = String.Empty;
-				foreach (var sprite in _pnlView.Selected)
-				{
-					if (!String.IsNullOrEmpty(title))
-						title += ", ";
+//			if (_pnlView.Selected.Count != 1)
+//			{
+//				MessageBox.Show(
+//							this,
+//							"Must select 1 item only.",
+//							Text,
+//							MessageBoxButtons.OK,
+//							MessageBoxIcon.Exclamation,
+//							MessageBoxDefaultButton.Button1,
+//							0);
+//			}
+//			else if (_pnlView.Spriteset != null )
+//			{
+//				var title = String.Empty;
+//				foreach (var sprite in _pnlView.Selected)
+//				{
+//					if (!String.IsNullOrEmpty(title))
+//						title += ", ";
+//
+//					title += sprite.Id;
+//				}
+//
+//				ofdBmp.Title = "Selected: " + title;
+//				ofdBmp.Multiselect = false;
+//				if (ofdBmp.ShowDialog() == DialogResult.OK)
+//				{
+//					var bitmap = new Bitmap(ofdBmp.FileName);
+//					var spriteset = BitmapService.CreateSpriteset(
+//															bitmap,
+//															Pal,
+//															XCImageFile.SpriteWidth,
+//															XCImageFile.SpriteHeight,
+//															1)[0];
+//					_pnlView.SpriteReplace(_pnlView.Selected[0].Id, spriteset);
+//					Refresh();
+//				}
+//			}
+		}
 
-					title += sprite.Id;
-				}
-
-				ofdBmp.Title = "Selected: " + title;
-				ofdBmp.Multiselect = false;
-				if (ofdBmp.ShowDialog() == DialogResult.OK)
+		/// <summary>
+		/// Exports the last selected sprite to a BMP file.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnExportSpriteClick(object sender, EventArgs e)
+		{
+			if (_pnlView.Selected.Count != 0)
+			{
+				var selected = _pnlView.Selected[0];
+				if (_pnlView.Spriteset != null)
 				{
-					var bitmap = new Bitmap(ofdBmp.FileName);
-					var spriteset = BitmapService.CreateSpriteset(
-															bitmap,
-															Pal,
-															XCImageFile.SpriteWidth,
-															XCImageFile.SpriteHeight,
-															1)[0];
-					_pnlView.SpriteReplace(_pnlView.Selected[0].Id, spriteset);
-					Refresh();
+					string digits = String.Empty;
+
+					int count = _pnlView.Spriteset.Count;
+					do
+					{
+						digits += "0";
+						count /= 10;
+					}
+					while (count != 0);
+
+					string suffix = String.Format(
+												System.Globalization.CultureInfo.InvariantCulture,
+												"{0:" + digits + "}",
+												selected.Sprite.TerrainId);
+
+					sfdSingleSprite.FileName = _pnlView.Spriteset.Label + suffix;
+
+					if (sfdSingleSprite.ShowDialog() == DialogResult.OK)
+						BitmapService.ExportSprite(sfdSingleSprite.FileName, selected.Sprite.Image);
 				}
 			}
 		}
@@ -484,11 +487,11 @@ namespace PckView
 			if (   _pnlView.Selected != null
 				&& _pnlView.Selected.Count != 0)
 			{
-				var selected = _pnlView.Selected[_pnlView.Selected.Count - 1];
+				var selected = _pnlView.Selected[0];
 				if (selected != null)
 				{
 //					_feditor.Sprite = selected.Image.Clone(); // NOTE: that's only a *clone**
-					_feditor.Sprite = selected.Image;
+					_feditor.Sprite = selected.Sprite;
 
 					if (!_feditor.Visible)
 					{
@@ -683,7 +686,7 @@ namespace PckView
 				{
 					miBytes.Checked = true;
 
-					var selected = _pnlView.Selected[_pnlView.Selected.Count - 1];
+					var selected = _pnlView.Selected[0];
 					BytesFormHelper.ShowBytes(selected, CallbackShowBytesClosing, new Point(Right, Top));
 				}
 			}

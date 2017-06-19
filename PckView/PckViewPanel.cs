@@ -91,7 +91,7 @@ namespace PckView
 //				OnMouseDown(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 //				OnMouseMove(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
 
-				_selected.Clear();
+				Selected.Clear();
 
 				_largeChange           =
 				_scrollBar.LargeChange = _tileHeight;
@@ -220,8 +220,8 @@ namespace PckView
 			{
 				UpdateScrollbar(false);
 
-				if (_selected.Count != 0)
-					ScrollToTile(_selected[0].Id);
+				if (Selected != null && Selected.Count != 0)
+					ScrollToTile(Selected[0].TerrainId);
 			}
 		}
 
@@ -318,7 +318,7 @@ namespace PckView
 
 			if (Spriteset != null && Spriteset.Count != 0)
 			{
-				if (e.X < _tileWidth * _tilesX + TableOffsetHori - 1) // not out of bounds to right
+				if (e.X < _tilesX * _tileWidth + TableOffsetHori - 1) // not out of bounds to right
 				{
 					int tileX = (e.X - TableOffsetHori + 1)           / _tileWidth;
 					int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _tileHeight;
@@ -326,11 +326,11 @@ namespace PckView
 					int id = tileY * _tilesX + tileX;
 					if (id < Spriteset.Count) // not out of bounds below
 					{
-						var selected   = new SelectedSprite();
-//						selected.X     = tileX;
-//						selected.Y     = tileY;
-						selected.Id    = id;
-						selected.Image = Spriteset[id];
+						var selected       = new SelectedSprite();
+//						selected.X         = tileX;
+//						selected.Y         = tileY;
+						selected.TerrainId = id;
+						selected.Sprite     = Spriteset[id];
 
 //						if (ModifierKeys == Keys.Control)
 //						{
@@ -351,8 +351,8 @@ namespace PckView
 //						}
 //						else
 //						{
-						_selected.Clear();
-						_selected.Add(selected);
+						Selected.Clear();
+						Selected.Add(selected);
 //						}
 
 						OnSpriteClick(id);
@@ -365,7 +365,7 @@ namespace PckView
 
 			if (clearSelected)
 			{
-				_selected.Clear();
+				Selected.Clear();
 				OnSpriteClick(-1);
 			}
 
@@ -393,7 +393,7 @@ namespace PckView
 						_overX = tileX;
 						_overY = tileY;
 
-						int id = tileX + tileY * _tilesX;
+						int id = tileY * _tilesX + tileX;
 						if (id >= Spriteset.Count) // out of bounds below
 							id = -1;
 
@@ -489,8 +489,8 @@ namespace PckView
 
 
 				var selectedIds = new List<int>(); // track currently selected spriteIds.
-				foreach (var sprite in _selected)
-					selectedIds.Add(sprite.Id);
+				foreach (var sprite in Selected)
+					selectedIds.Add(sprite.TerrainId);
 
 				for (int id = 0; id != Spriteset.Count; ++id) // fill selected tiles and draw sprites.
 				{
@@ -552,12 +552,12 @@ namespace PckView
 //		/// </summary>
 //		internal void SpriteDelete()
 //		{
-//			if (_selected.Count != 0)
+//			if (Selected.Count != 0)
 //			{
 //				var lowestId = Int32.MaxValue;
 //
 //				var selectedIds = new List<int>();
-//				foreach (var sprite in _selected)
+//				foreach (var sprite in Selected)
 //					selectedIds.Add(sprite.Id);
 //
 //				selectedIds.Sort();
@@ -574,7 +574,7 @@ namespace PckView
 //				if (lowestId > 0 && lowestId == Spriteset.Count)
 //					lowestId = Spriteset.Count - 1;
 //
-//				_selected.Clear();
+//				Selected.Clear();
 //	
 //				if (Spriteset.Count != 0)
 //				{
@@ -583,7 +583,7 @@ namespace PckView
 //					selected.X   = lowestId - selected.Y;
 //					selected.Id  = selected.X + selected.Y * _tilesX;
 //	
-//					_selected.Add(selected);
+//					Selected.Add(selected);
 //				}
 //			}
 //		}
