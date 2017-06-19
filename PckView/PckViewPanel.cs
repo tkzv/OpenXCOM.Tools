@@ -101,13 +101,8 @@ namespace PckView
 				Refresh();
 //				Select(); // done in OnShown() of PckViewForm.
 
-				_sbpTilesTotal.Text = String.Format(
-												System.Globalization.CultureInfo.InvariantCulture,
-												"Total {0}", _spriteset.Count);
 				_sbpSpritesLabel.Text = _spriteset.Label;
-
-				OnSpriteClick(-1);
-				OnSpriteOver(-1);
+				PrintStatusTotal();
 
 				if (SpritesetChangedEvent != null)
 					SpritesetChangedEvent(value != null);
@@ -191,7 +186,7 @@ namespace PckView
 			});
 
 			OnSpriteClick(-1);
-			OnSpriteOver(-1);
+			OnSpriteOver( -1);
 
 			PckViewForm.PaletteChangedEvent += OnPaletteChanged; // NOTE: lives the life of the app, so no leak.
 
@@ -419,7 +414,10 @@ namespace PckView
 		private void OnSpriteOver(int spriteId)
 		{
 			if (spriteId == -1)
-				_overX = _overY = -1;
+			{
+				_overX =
+				_overY = -1;
+			}
 
 			_idOver = spriteId;
 			PrintStatus();
@@ -454,6 +452,15 @@ namespace PckView
 			_sbpTileOver.Text     = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
 												"Over {0}", over);
+		}
+
+		internal void PrintStatusTotal()
+		{
+			_sbpTilesTotal.Text = String.Format(
+											System.Globalization.CultureInfo.InvariantCulture,
+											"Total {0}", _spriteset.Count);
+			OnSpriteClick(-1);
+			OnSpriteOver( -1);
 		}
 
 

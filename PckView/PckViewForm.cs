@@ -297,8 +297,6 @@ namespace PckView
 			_miExport.Click += OnExportSpriteClick;
 			contextmenu.MenuItems.Add(_miExport);
 
-//			_miEdit.Enabled = false;
-
 			return contextmenu;
 		}
 
@@ -322,14 +320,17 @@ namespace PckView
 		#region EventCalls
 		private void OnSpritesetChanged(bool valid)
 		{
+			// under File menu
 			miSave.Enabled            =
 			miSaveAs.Enabled          =
 			miExportSprites.Enabled   =
 
+			// on Main menu
 			miPaletteMenu.Enabled     =
 			miTransparentMenu.Enabled =
 			miBytesMenu.Enabled       =
 
+			// on Context menu
 			_miAdd.Enabled            = valid;
 		}
 
@@ -408,8 +409,11 @@ namespace PckView
 																		XCImageFile.SpriteWidth,
 																		XCImageFile.SpriteHeight));
 					}
+					_pnlView.Selected.Clear();
+
+					_pnlView.PrintStatusTotal();
 					Refresh();
-					// TODO: update statusbar. Also relay tiles.
+					// TODO: relay tiles.
 				}
 			}
 		}
@@ -420,8 +424,9 @@ namespace PckView
 			_pnlView.Spriteset.RemoveAt(_pnlView.Selected[_pnlView.Selected.Count - 1].Id);
 			_pnlView.Selected.Clear();
 
+			_pnlView.PrintStatusTotal();
 			Refresh();
-			// TODO: update statusbar. Also relay tiles.
+			// TODO: relay tiles.
 		}
 
 		private void OnKeyDown(object sender, KeyEventArgs e)
