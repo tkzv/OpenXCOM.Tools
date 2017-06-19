@@ -38,8 +38,8 @@ namespace PckView
 		private MenuItem _miEdit;
 		private MenuItem _miExport;
 		private MenuItem _miAdd;
+		private MenuItem _miDelete;
 //		private MenuItem _miReplace;
-//		private MenuItem _miDelete;
 
 //		private SharedSpace _share = SharedSpace.Instance;
 
@@ -279,15 +279,16 @@ namespace PckView
 			_miAdd.Click += OnAddSpriteClick;
 			contextmenu.MenuItems.Add(_miAdd);
 
-//			_miReplace = new MenuItem("Replace");
+//			_miDelete = new MenuItem("Delete\tDel");
+			_miDelete = new MenuItem("Delete");
+			_miDelete.Enabled = false;
+			_miDelete.Click += OnDeleteSpriteClick;
+			contextmenu.MenuItems.Add(_miDelete);
+
+//			_miReplace = new MenuItem("Replace ...");
 //			_miReplace.Enabled = false;
 //			_miReplace.Click += OnSpriteReplaceClick;
 //			menu.MenuItems.Add(_miReplace);
-
-//			_miDelete = new MenuItem("Delete\tDel");
-//			_miDelete.Enabled = false;
-//			_miDelete.Click += OnSpriteDeleteClick;
-//			menu.MenuItems.Add(_miDelete);
 
 			contextmenu.MenuItems.Add(new MenuItem("-"));
 
@@ -338,8 +339,8 @@ namespace PckView
 					  && _pnlView.Selected.Count != 0;
 
 			_miEdit.Enabled   =
-			_miExport.Enabled = valid;
-//			_miDelete.Enabled = valid;
+			_miExport.Enabled =
+			_miDelete.Enabled = valid;
 
 			SelectedSprite selected = null;
 			if (valid)
@@ -400,17 +401,33 @@ namespace PckView
 					{
 						var bitmap = new Bitmap(file);
 						_pnlView.Spriteset.Add(BitmapService.CreateSprite(
-																	bitmap,
-																	terrainId++,
-																	Pal,
-																	0, 0,
-																	XCImageFile.SpriteWidth,
-																	XCImageFile.SpriteHeight));
+																		bitmap,
+																		terrainId++,
+																		Pal,
+																		0, 0,
+																		XCImageFile.SpriteWidth,
+																		XCImageFile.SpriteHeight));
 					}
 					Refresh();
-					// TODO: update statusbar.
+					// TODO: update statusbar. Also relay tiles.
 				}
 			}
+		}
+
+		private void OnDeleteSpriteClick(object sender, EventArgs e)
+		{
+//			_pnlView.SpriteDelete();
+			_pnlView.Spriteset.RemoveAt(_pnlView.Selected[_pnlView.Selected.Count - 1].Id);
+			_pnlView.Selected.Clear();
+
+			Refresh();
+			// TODO: update statusbar. Also relay tiles.
+		}
+
+		private void OnKeyDown(object sender, KeyEventArgs e)
+		{
+//			if (_miDelete.Enabled && e.KeyCode == Keys.Delete)
+//				OnDeleteSpriteClick(null, null);
 		}
 
 		private void OnSpriteReplaceClick(object sender, EventArgs e) // disabled in ViewerContextMenu()
@@ -452,13 +469,6 @@ namespace PckView
 					Refresh();
 				}
 			}
-		}
-
-		private void OnSpriteDeleteClick(object sender, EventArgs e) // disabled in ViewerContextMenu()
-		{
-			_pnlView.SpriteDelete();
-			Refresh();
-			// TODO: update statusbar.
 		}
 
 
@@ -703,12 +713,6 @@ namespace PckView
 //
 //			OnResize(null);
 //			Refresh();
-		}
-
-		private void OnKeyDown(object sender, KeyEventArgs e) // disabled in BuildViewersContextMenu()
-		{
-//			if (_miDelete.Enabled && e.KeyCode == Keys.Delete)
-//				OnSpriteDeleteClick(null, null);
 		}
 
 		private void OnConsoleClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE

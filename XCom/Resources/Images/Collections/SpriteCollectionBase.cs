@@ -48,12 +48,12 @@ namespace XCom
 		#endregion
 
 
-		#region Methods
-		public void Remove(int id)
-		{
-			RemoveAt(id);
-		}
-		#endregion
+//		#region Methods
+//		public void Remove(int id)
+//		{
+//			RemoveAt(id);
+//		}
+//		#endregion
 	}
 }
 

@@ -118,11 +118,16 @@ namespace PckView
 
 
 		private readonly List<SelectedSprite> _selected = new List<SelectedSprite>();
-		internal ReadOnlyCollection<SelectedSprite> Selected
+		internal List<SelectedSprite> Selected
 		{
-			get { return (Spriteset != null) ? _selected.AsReadOnly()
+			get { return (Spriteset != null) ? _selected
 											 : null; }
 		}
+//		internal ReadOnlyCollection<SelectedSprite> Selected
+//		{
+//			get { return (Spriteset != null) ? _selected.AsReadOnly()
+//											 : null; }
+//		}
 
 		/// <summary>
 		/// Used by UpdateScrollBar() to determine its Maximum value.
@@ -323,12 +328,12 @@ namespace PckView
 					int tileX = (e.X - TableOffsetHori + 1)           / _tileWidth;
 					int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _tileHeight;
 
-					int id = tileX + tileY * _tilesX;
+					int id = tileY * _tilesX + tileX;
 					if (id < Spriteset.Count) // not out of bounds below
 					{
 						var selected   = new SelectedSprite();
-						selected.X     = tileX;
-						selected.Y     = tileY;
+//						selected.X     = tileX;
+//						selected.Y     = tileY;
 						selected.Id    = id;
 						selected.Image = Spriteset[id];
 
@@ -476,16 +481,16 @@ namespace PckView
 									Width - _scrollBar.Width - 1, Height);
 
 
-				var selected = new List<int>(); // track currently selected spriteIds.
+				var selectedIds = new List<int>(); // track currently selected spriteIds.
 				foreach (var sprite in _selected)
-					selected.Add(sprite.Id);
+					selectedIds.Add(sprite.Id);
 
 				for (int id = 0; id != Spriteset.Count; ++id) // fill selected tiles and draw sprites.
 				{
 					int tileX = id % _tilesX;
 					int tileY = id / _tilesX;
 
-					if (selected.Contains(id))
+					if (selectedIds.Contains(id))
 						graphics.FillRectangle(
 											_brushCrimson,
 											TableOffsetHori + tileX * _tileWidth,
@@ -535,50 +540,50 @@ namespace PckView
 
 
 		#region Methods
+//		/// <summary>
+//		/// Deletes the currently selected sprite.
+//		/// </summary>
+//		internal void SpriteDelete()
+//		{
+//			if (_selected.Count != 0)
+//			{
+//				var lowestId = Int32.MaxValue;
+//
+//				var selectedIds = new List<int>();
+//				foreach (var sprite in _selected)
+//					selectedIds.Add(sprite.Id);
+//
+//				selectedIds.Sort();
+//				selectedIds.Reverse();
+//
+//				foreach (var id in selectedIds)
+//				{
+//					if (id < lowestId)
+//						lowestId = id;
+//
+//					Spriteset.Remove(id);
+//				}
+//
+//				if (lowestId > 0 && lowestId == Spriteset.Count)
+//					lowestId = Spriteset.Count - 1;
+//
+//				_selected.Clear();
+//	
+//				if (Spriteset.Count != 0)
+//				{
+//					var selected = new SelectedSprite();
+//					selected.Y   = lowestId / _tilesX;
+//					selected.X   = lowestId - selected.Y;
+//					selected.Id  = selected.X + selected.Y * _tilesX;
+//	
+//					_selected.Add(selected);
+//				}
+//			}
+//		}
+
 		internal void SpriteReplace(int id, XCImage sprite) // currently disabled in PckViewForm
 		{
 			Spriteset[id] = sprite;
-		}
-
-		/// <summary>
-		/// Deletes the currently selected sprite.
-		/// </summary>
-		internal void SpriteDelete() // currently disabled in PckViewForm
-		{
-			if (_selected.Count != 0)
-			{
-				var lowestId = int.MaxValue;
-
-				var idList = new List<int>();
-				foreach (var sprite in _selected)
-					idList.Add(sprite.Id);
-
-				idList.Sort();
-				idList.Reverse();
-
-				foreach (var id in idList)
-				{
-					if (id < lowestId)
-						lowestId = id;
-
-					Spriteset.Remove(id);
-				}
-
-				if (lowestId > 0 && lowestId == Spriteset.Count)
-					lowestId = Spriteset.Count - 1;
-
-				_selected.Clear();
-	
-				if (Spriteset.Count != 0)
-				{
-					var selected = new SelectedSprite();
-					selected.Y   = lowestId / _tilesX;
-					selected.X   = lowestId - selected.Y;
-					selected.Id  = selected.X + selected.Y * _tilesX;
-	
-					_selected.Add(selected);
-				}
-			}
 		}
 
 		/// <summary>
