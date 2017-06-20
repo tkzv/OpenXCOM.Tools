@@ -366,7 +366,7 @@ namespace MapView
 				for (int col = start.X; col <= end.X; ++col)
 				for (int row = start.Y; row <= end.Y; ++row)
 				{
-					((XCMapTile)MapBase[row, col])[quadType] = tileView.SelectedTilePart;
+					((XCMapTile)MapBase[row, col])[quadType] = tileView.SelectedTilepart;
 				}
 
 				RefreshViewers();

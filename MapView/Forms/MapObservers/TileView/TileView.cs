@@ -68,7 +68,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		internal TilepartBase SelectedTilePart
+		internal TilepartBase SelectedTilepart
 		{
 			get { return _panels[tcTileTypes.SelectedIndex].PartSelected; }
 			set
@@ -139,12 +139,12 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			McdRecord record = null;
 
-			if (SelectedTilePart != null)
+			if (SelectedTilepart != null)
 			{
-				ViewerFormsManager.TopView.Control.SelectQuadrant(SelectedTilePart.Record.TileType);
+				ViewerFormsManager.TopView.Control.SelectQuadrant(SelectedTilepart.Record.TileType);
 
-				f.Text = BuildTitleString(SelectedTilePart.TilesetId, SelectedTilePart.Id);
-				record = SelectedTilePart.Record;
+				f.Text = BuildTitleString(SelectedTilepart.TilesetId, SelectedTilepart.Id);
+				record = SelectedTilepart.Record;
 			}
 			else
 				f.Text = "TileView";
@@ -383,7 +383,7 @@ namespace MapView.Forms.MapObservers.TileViews
 
 					McdRecord record = null;
 
-					var tile = SelectedTilePart;
+					var tile = SelectedTilepart;
 					if (tile != null)
 					{
 						f.Text = BuildTitleString(tile.TilesetId, tile.Id);
@@ -492,33 +492,57 @@ namespace MapView.Forms.MapObservers.TileViews
 				{
 					_showHideManager.HideViewers();
 
-					using (var f = new PckViewForm())
+					using (var fPckView = new PckViewForm())
 					{
-						f.LoadSpriteset(pfePck, true);
-						f.SetPalette(MapBase.Descriptor.Pal.Label);
+						fPckView.LoadSpriteset(pfePck, true);
+						fPckView.SetPalette(MapBase.Descriptor.Pal.Label);
 
-						var parent = FindForm();
+//						Form pckviewOwner = null; // what's this muck-a-muck
+//						var fTileView = FindForm();
+//						if (fTileView != null)
+//						{
+//							pckviewOwner = fTileView.Owner;
+//							LogFile.WriteLine(". fTileView VALID - pckviewOwner= " + pckviewOwner);
+//						}
+//						if (pckviewOwner == null)
+//						{
+//							pckviewOwner = fTileView;
+//							LogFile.WriteLine(". pckviewOwner NOT Valid - pckviewOwner= " + pckviewOwner);
+//						}
+//						fPckView.ShowDialog(pckviewOwner);
+						fPckView.ShowDialog(FindForm());
 
-						Form owner = null; // TODO: what's this muck-a-muck
-						if (parent != null)
-							owner = parent.Owner;
+						_showHideManager.RestoreViewers();
 
-						if (owner == null)
-							owner = parent;
+						if (fPckView.SpritesChanged
+							&& MessageBox.Show(
+											this,
+											"MapView needs to restart to show any changes"
+												+ " that were made to the sprites with PckView."
+												+ " Do you want to restart MapView?"
+												+ Environment.NewLine + Environment.NewLine
+												+ "Any unsaved changes to the Map, the Routes,"
+												+ " and the Maptree will be lost!",
+											"Restart MapView",
+											MessageBoxButtons.OKCancel,
+											MessageBoxIcon.Exclamation,
+											MessageBoxDefaultButton.Button2,
+											0) == DialogResult.OK)
+						{
+							Application.Restart();	// TODO: try to reload the terrains.
+							Environment.Exit(0);	// else redo a method such as XCMainWindow.OnConfiguratorClick()
 
-						f.ShowDialog(owner);
-
-						if (f.SpritesChanged)
-							TriggerPckSaved(); // (re)loads the selected Map.
+//							TriggerPckSaved(); // (re)loads the selected Map.
+							// TODO: that reloads the Map & Routes, but the terrains don't change. Reload the given terrain(s) from disk also.
+						}
 					}
-					_showHideManager.RestoreViewers();
 				}
 			}
 			else
 				MessageBox.Show(
 							this,
 							"Select a Tile.",
-							"Notice",
+							"",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Asterisk,
 							MessageBoxDefaultButton.Button1,
@@ -541,15 +565,15 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// Builds and returns a string that's appropriate for the currently
 		/// selected tile.
 		/// </summary>
-		/// <param name="id"></param>
-		/// <param name="mcd"></param>
+		/// <param name="mapId"></param>
+		/// <param name="terrainId"></param>
 		/// <returns></returns>
-		private string BuildTitleString(int id, int mcd)
+		private string BuildTitleString(int mapId, int terrainId)
 		{
 			return String.Format(
 							System.Globalization.CultureInfo.CurrentCulture,
-							"TileView - id {0}  mcd {1}  file {2}",
-							id, mcd, GetTerrainLabel() ?? "unknown");
+							"TileView - MapID {0}  TerrainID {1}  Terrain {2}",
+							mapId, terrainId, GetTerrainLabel() ?? "ERROR");
 		}
 
 		/// <summary>
@@ -558,7 +582,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <returns></returns>
 		private string GetTerrainLabel()
 		{
-			return (SelectedTilePart != null) ? ((MapFileChild)MapBase).GetTerrainLabel(SelectedTilePart)
+			return (SelectedTilepart != null) ? ((MapFileChild)MapBase).GetTerrainLabel(SelectedTilepart)
 											  : null;
 		}
 
