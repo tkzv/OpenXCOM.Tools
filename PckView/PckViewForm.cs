@@ -810,7 +810,7 @@ namespace PckView
 											_pnlView.Spriteset,
 											((SpriteCollection)_pnlView.Spriteset).TabOffset)) //lenTabOffset
 			{
-				SpritesChanged = true; // NOTE: used by MapView's TileView to flag the Map to reload.
+				SpritesChanged = true; // NOTE: is used by MapView's TileView to flag the Map to reload.
 			}
 			else
 			{
@@ -829,14 +829,14 @@ namespace PckView
 				string dir  = Path.GetDirectoryName(sfd.FileName);
 				string file = Path.GetFileNameWithoutExtension(sfd.FileName);
 
-				bool revert;
+				bool revertReady;
 				if (file.Equals(SpritesetLabel, StringComparison.OrdinalIgnoreCase)) // user requested to save the files to the same filenames.
 				{
 					BackupSpritesetFiles();
-					revert = true;
+					revertReady = true;
 				}
 				else
-					revert = false;
+					revertReady = false;
 
 				if (SpriteCollection.SaveSpriteset(
 												dir,
@@ -844,18 +844,20 @@ namespace PckView
 												_pnlView.Spriteset,
 												((SpriteCollection)_pnlView.Spriteset).TabOffset))
 				{
-					if (!revert)
+					if (!revertReady) // load the SavedAs files ->
 					{
 						string pfePck = Path.Combine(dir, file + SpriteCollection.PckExt);
 						LoadSpriteset(pfePck, false);
 					}
-					SpritesChanged = true; // NOTE: used by MapView's TileView to flag the Map to reload.
+//					else
+					// NOTE: reload MapView's Map in either case; the new terrain might also be in its Map's terrainset ...
+					SpritesChanged = true; // NOTE: is used by MapView's TileView to flag the Map to reload.
 				}
 				else
 				{
 					ShowSaveError();
 
-					if (revert)
+					if (revertReady)
 					{
 						RevertFiles();
 					}
@@ -896,6 +898,9 @@ namespace PckView
 			_pfePck = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.PckExt);
 			_pfeTab = Path.Combine(SpritesetDirectory, SpritesetLabel + SpriteCollection.TabExt);
 
+			_pfePckOld =
+			_pfeTabOld = String.Empty;
+
 			string dirBackup = Path.Combine(SpritesetDirectory, "MV_Backup");
 
 			if (File.Exists(_pfePck))
@@ -921,8 +926,11 @@ namespace PckView
 		/// </summary>
 		private void RevertFiles()
 		{
-			File.Copy(_pfePckOld, _pfePck, true);
-			File.Copy(_pfeTabOld, _pfeTab, true);
+			if (!String.IsNullOrEmpty(_pfePckOld))
+				File.Copy(_pfePckOld, _pfePck, true);
+
+			if (!String.IsNullOrEmpty(_pfeTabOld))
+				File.Copy(_pfeTabOld, _pfeTab, true);
 		}
 
 		/// <summary>
@@ -933,12 +941,13 @@ namespace PckView
 		{
 			MessageBox.Show(
 						this,
-						"Too many pixels. The size of the encoded sprite-data"
-							+ " has grown too large to be stored accurately"
-							+ " by the Tab file. Try deleting sprite(s) or"
-							+ " generally using more transparency. Files have"
-							+ " *not* been saved.",
-						"Error",
+						"The size of the encoded sprite-data has grown too large"
+							+ " to be stored accurately by the Tab file. Try"
+							+ " deleting sprite(s) or (less effective) using"
+							+ " more transparency over all sprites."
+							+ Environment.NewLine + Environment.NewLine
+							+ "Files have *not* been saved.",
+						"Error - excessive pixel data (overflow condition)",
 						MessageBoxButtons.OK,
 						MessageBoxIcon.Error,
 						MessageBoxDefaultButton.Button1,
