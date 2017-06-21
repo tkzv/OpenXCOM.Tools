@@ -554,12 +554,11 @@ namespace PckView
 
 				_paletteItems[Pal].Checked = true;
 
-//				if (_pnlView.Spriteset != null) // NOTE: menu won't show until a spriteset is loaded.
 				_pnlView.Spriteset.Pal = Pal;
 
 				var handler = PaletteChangedEvent;
 				if (handler != null)
-					handler(Pal);
+					handler();
 			}
 		}
 
@@ -567,14 +566,13 @@ namespace PckView
 		{
 			Pal.SetTransparent(miTransparent.Checked = !miTransparent.Checked);
 
-//			if (_pnlView.Spriteset != null) // NOTE: menu won't show until a spriteset is loaded.
 			_pnlView.Spriteset.Pal = Pal;
 
 			PalettePanel.Instance.PrintStatusPaletteId();	// update the palette-panel's statusbar
 															// in case palette-id #0 is currently selected.
 			var handler = PaletteChangedEvent;
 			if (handler != null)
-				handler(Pal);
+				handler();
 		}
 
 		private void OnQuitClick(object sender, EventArgs e)
@@ -668,8 +666,6 @@ namespace PckView
 								EventArgs.Empty);
 
 					_pnlView.Spriteset = spriteset;
-
-//					miSave.Enabled = (spriteset != null); // ... not sure if spriteset can even be null here.
 
 					UpdateCaption(pfePck);
 
@@ -793,13 +789,13 @@ namespace PckView
 		{
 			// http://www.ufopaedia.org/index.php/Image_Formats
 			// - that says that all TFTD terrains use 2-byte tab-offsets ...
-//			const int lenTabOffset = 2;
+//			const int tabOffset = 2;
 //			if (   Pal.Equals(Palette.TftdBattle)
 //				|| Pal.Equals(Palette.TftdGeo)
 //				|| Pal.Equals(Palette.TftdGraph)
 //				|| Pal.Equals(Palette.TftdResearch))
 //			{
-//				lenTabOffset = 4; // NOTE: I don't have TFTD and I do have no clue if this works correctly.
+//				tabOffset = 4; // NOTE: I don't have TFTD and I do have no clue if this works correctly.
 //			}
 
 			BackupSpritesetFiles();
@@ -808,7 +804,7 @@ namespace PckView
 											SpritesetDirectory,
 											SpritesetLabel,
 											_pnlView.Spriteset,
-											((SpriteCollection)_pnlView.Spriteset).TabOffset)) //lenTabOffset
+											((SpriteCollection)_pnlView.Spriteset).TabOffset)) //tabOffset
 			{
 				SpritesChanged = true; // NOTE: is used by MapView's TileView to flag the Map to reload.
 			}
@@ -970,9 +966,9 @@ namespace PckView
 //					fbd.SelectedPath = ;
 					fbd.Description = String.Format(
 												System.Globalization.CultureInfo.CurrentCulture,
-												"Select a folder for the sprites in Spriteset"
+												"Select a folder for the sprites"
 													+ Environment.NewLine + Environment.NewLine
-													+ file);
+													+ "\t" + file);
 
 					if (fbd.ShowDialog() == DialogResult.OK)
 					{
@@ -1043,5 +1039,5 @@ namespace PckView
 	}
 
 
-	internal delegate void PaletteChangedEventHandler(Palette pal);
+	internal delegate void PaletteChangedEventHandler();
 }

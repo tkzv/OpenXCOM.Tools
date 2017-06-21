@@ -25,7 +25,16 @@ namespace PckView
 
 		#region Fields (static)
 		private const int SpriteMargin = 2;
+
 		private const string None = "n/a";
+
+		// NOTE: if sprite-size is ever allowed to change these need to be replaced
+		// w/ 'Spriteset.ImageFile.ImageSize.Width/Height' here and elsewhere.
+		private const int _tileWidth  = XCImageFile.SpriteWidth  + SpriteMargin * 2 + 1;
+		private const int _tileHeight = XCImageFile.SpriteHeight + SpriteMargin * 2 + 1;
+
+		private const int TableOffsetHori = 3;
+		private const int TableOffsetVert = 2;
 		#endregion
 
 
@@ -33,15 +42,10 @@ namespace PckView
 		private readonly VScrollBar _scrollBar = new VScrollBar();
 		private readonly StatusBar  _statusBar = new StatusBar();
 
-		private StatusBarPanel _sbpTilesTotal   = new StatusBarPanel();
-		private StatusBarPanel _sbpTileSelected = new StatusBarPanel();
-		private StatusBarPanel _sbpTileOver     = new StatusBarPanel();
-		private StatusBarPanel _sbpSpritesLabel = new StatusBarPanel();
-
-		// NOTE: if sprite-size is ever allowed to change these need to be replaced
-		// w/ 'Spriteset.ImageFile.ImageSize.Width/Height' here and elsewhere.
-		private const int _tileWidth  = XCImageFile.SpriteWidth  + SpriteMargin * 2 + 1;
-		private const int _tileHeight = XCImageFile.SpriteHeight + SpriteMargin * 2 + 1;
+		private readonly StatusBarPanel _sbpTilesTotal   = new StatusBarPanel();
+		private readonly StatusBarPanel _sbpTileSelected = new StatusBarPanel();
+		private readonly StatusBarPanel _sbpTileOver     = new StatusBarPanel();
+		private readonly StatusBarPanel _sbpSpritesLabel = new StatusBarPanel();
 
 		private int _tilesX = 1;
 
@@ -83,14 +87,6 @@ namespace PckView
 
 				_spriteset.Pal = PckViewForm.Pal;
 
-//				_tileWidth  = value.ImageFile.ImageSize.Width  + SpriteMargin * 2 + 1;
-//				_tileHeight = value.ImageFile.ImageSize.Height + SpriteMargin * 2 + 1;
-
-//				Height = TableHeight; ... nobody cares about the Height. Let .NET deal with it.
-
-//				OnMouseDown(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
-//				OnMouseMove(new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
-
 				Selected.Clear();
 
 				_largeChange           =
@@ -99,7 +95,6 @@ namespace PckView
 				UpdateScrollbar(true);
 
 				Refresh();
-//				Select(); // done in OnShown() of PckViewForm.
 
 				_sbpSpritesLabel.Text = _spriteset.Label;
 				PrintStatusTotal();
@@ -108,6 +103,7 @@ namespace PckView
 					SpritesetChangedEvent(value != null);
 
 				EditorPanel.Instance.ClearSprite();
+				// TODO: update PaletteViewer if the spriteset palette changes.
 			}
 		}
 
@@ -118,11 +114,6 @@ namespace PckView
 			get { return (Spriteset != null) ? _selected
 											 : null; }
 		}
-//		internal ReadOnlyCollection<SelectedSprite> Selected
-//		{
-//			get { return (Spriteset != null) ? _selected.AsReadOnly()
-//											 : null; }
-//		}
 
 		/// <summary>
 		/// Used by UpdateScrollBar() to determine its Maximum value.
@@ -159,15 +150,14 @@ namespace PckView
 
 			_scrollBar.Dock = DockStyle.Right;
 			_scrollBar.SmallChange = 1;
-//			_scrollBar.LargeChange = 44; // NOTE: this won't stick unless Visible, perhaps. else "1"
 			_scrollBar.ValueChanged += OnScrollBarValueChanged;
 
-			_sbpTilesTotal.Width = 85;
 			_sbpTilesTotal.Text = String.Format(
 											System.Globalization.CultureInfo.InvariantCulture,
 											"Total " + None);
+			_sbpTilesTotal.Width   = 85;
 			_sbpTileSelected.Width = 100;
-			_sbpTileOver.Width = 75;
+			_sbpTileOver.Width     = 75;
 
 			_sbpSpritesLabel.AutoSize = StatusBarPanelAutoSize.Spring;
 			_sbpSpritesLabel.Alignment = HorizontalAlignment.Center;
@@ -195,23 +185,7 @@ namespace PckView
 		#endregion
 
 
-		#region EventCalls
-		private void OnPaletteChanged(Palette pal)
-		{
-			Refresh();
-		}
-
-		/// <summary>
-		/// Fires when anything changes the Value of the scroll-bar.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnScrollBarValueChanged(object sender, EventArgs e)
-		{
-			_startY = -_scrollBar.Value;
-			Refresh();
-		}
-
+		#region Eventcalls (override)
 		protected override void OnResize(EventArgs eventargs)
 		{
 			base.OnResize(eventargs);
@@ -223,55 +197,6 @@ namespace PckView
 				if (Selected != null && Selected.Count != 0)
 					ScrollToTile(Selected[0].TerrainId);
 			}
-		}
-
-		/// <summary>
-		/// Updates the scrollbar after a resize event or a spriteset changed
-		/// event.
-		/// </summary>
-		/// <param name="resetTrack">true to set the thing to the top of the track</param>
-		private void UpdateScrollbar(bool resetTrack)
-		{
-			int range = 0;
-			if (Spriteset != null && Spriteset.Count != 0)
-			{
-				if (resetTrack)
-					_scrollBar.Value = 0;
-
-				range = TableOffsetVert + TableHeight + _largeChange - Height - _statusBar.Height;
-				if (range < _largeChange)
-					range = 0;
-			}
-			_scrollBar.Maximum = range;
-			_scrollBar.Visible = (range != 0);
-		}
-
-		internal void SetTilesX()
-		{
-			int tilesX = 1;
-
-			if (Spriteset != null && Spriteset.Count != 0)
-			{
-//				tilesX = (Width - 1) / _spriteWidth; // calculate without widthScroll first
-
-				// On 2nd thought always reserve width for the scrollbar.
-				// So user can increase/decrease the Height of the window
-				// without the tiles re-arranging.
-				tilesX = (Width - TableOffsetHori - _scrollBar.Width - 1) / _tileWidth;
-
-				if (tilesX > Spriteset.Count)
-					tilesX = Spriteset.Count;
-
-				// This was for, if extra width was *not* reserved for the
-				// scrollbar, deciding if that width now needs to be injected
-				// since the scrollbar is going to appear, after all:
-//				if (tilesX * _spriteWidth + _scrollBar.Width > Width - 1
-//					&& (SpritePack.Count / tilesX + 2) * _spriteHeight > Height - _statusBar.Height - 1)
-//				{
-//					--tilesX;
-//				}
-			}
-			_tilesX = tilesX;
 		}
 
 		/// <summary>
@@ -311,9 +236,6 @@ namespace PckView
 		{
 //			base.OnMouseDown(e);
 
-//			Focus();	// also set in Spriteset setter. here in case user tabs away from this Panel.
-						// but there's no tabbing atm.
-
 			bool clearSelected = true;
 
 			if (Spriteset != null && Spriteset.Count != 0)
@@ -327,10 +249,8 @@ namespace PckView
 					if (id < Spriteset.Count) // not out of bounds below
 					{
 						var selected       = new SelectedSprite();
-//						selected.X         = tileX;
-//						selected.Y         = tileY;
 						selected.TerrainId = id;
-						selected.Sprite     = Spriteset[id];
+						selected.Sprite    = Spriteset[id];
 
 //						if (ModifierKeys == Keys.Control)
 //						{
@@ -406,68 +326,6 @@ namespace PckView
 		}
 
 		/// <summary>
-		/// Updates the status-information for the sprite that the cursor is
-		/// currently over.
-		/// </summary>
-		/// <param name="spriteId">the entry # (id) of the currently mouseovered
-		/// sprite in the currently loaded PckPack</param>
-		private void OnSpriteOver(int spriteId)
-		{
-			if (spriteId == -1)
-			{
-				_overX =
-				_overY = -1;
-			}
-
-			_idOver = spriteId;
-			PrintStatus();
-		}
-
-		/// <summary>
-		/// Updates the status-information for the sprite that the cursor is
-		/// currently over.
-		/// </summary>
-		/// <param name="spriteId">the entry # (id) of the currently mouseclicked
-		/// sprite in the currently loaded PckPack</param>
-		private void OnSpriteClick(int spriteId)
-		{
-			_idSelected = spriteId;
-			PrintStatus();
-		}
-
-		/// <summary>
-		/// Prints the current status for the currently selected and/or
-		/// mouseovered sprite(s) in the status-bar.
-		/// </summary>
-		private void PrintStatus()
-		{
-			string selected = (_idSelected != -1) ? _idSelected.ToString(System.Globalization.CultureInfo.InvariantCulture)
-												  : None;
-			string over     = (_idOver != -1)     ? _idOver.ToString(System.Globalization.CultureInfo.InvariantCulture)
-												  : None;
-
-			_sbpTileSelected.Text = String.Format(
-												System.Globalization.CultureInfo.InvariantCulture,
-												"Selected {0}", selected);
-			_sbpTileOver.Text     = String.Format(
-												System.Globalization.CultureInfo.InvariantCulture,
-												"Over {0}", over);
-		}
-
-		internal void PrintStatusTotal()
-		{
-			_sbpTilesTotal.Text = String.Format(
-											System.Globalization.CultureInfo.InvariantCulture,
-											"Total {0}", _spriteset.Count);
-			OnSpriteClick(-1);
-			OnSpriteOver( -1);
-		}
-
-
-		private const int TableOffsetHori = 3; // deal w/ PixelOffsetMode.
-		private const int TableOffsetVert = 2; // deal w/ PixelOffsetMode.
-
-		/// <summary>
 		/// Let's draw this puppy.
 		/// </summary>
 		/// <param name="e"></param>
@@ -500,8 +358,8 @@ namespace PckView
 					if (selectedIds.Contains(id))
 						graphics.FillRectangle(
 											_brushCrimson,
-											TableOffsetHori + tileX * _tileWidth,
-											TableOffsetVert + tileY * _tileHeight + _startY,
+											TableOffsetHori + _tileWidth  * tileX,
+											TableOffsetVert + _tileHeight * tileY + _startY,
 											TableOffsetHori + _tileWidth  - SpriteMargin * 2,
 											TableOffsetVert + _tileHeight - SpriteMargin - 1);
 
@@ -546,9 +404,152 @@ namespace PckView
 		#endregion
 
 
+		#region Eventcalls
+		private void OnPaletteChanged()
+		{
+			Refresh();
+		}
+
+		/// <summary>
+		/// Fires when anything changes the Value of the scroll-bar.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnScrollBarValueChanged(object sender, EventArgs e)
+		{
+			_startY = -_scrollBar.Value;
+			Refresh();
+		}
+
+		/// <summary>
+		/// Updates the status-information for the sprite that the cursor is
+		/// currently over.
+		/// </summary>
+		/// <param name="spriteId">the entry # (id) of the currently mouseovered
+		/// sprite in the currently loaded PckPack</param>
+		private void OnSpriteOver(int spriteId)
+		{
+			if (spriteId == -1)
+			{
+				_overX =
+				_overY = -1;
+			}
+
+			_idOver = spriteId;
+			PrintStatus();
+		}
+
+		/// <summary>
+		/// Updates the status-information for the sprite that the cursor is
+		/// currently over.
+		/// </summary>
+		/// <param name="spriteId">the entry # (id) of the currently mouseclicked
+		/// sprite in the currently loaded PckPack</param>
+		private void OnSpriteClick(int spriteId)
+		{
+			_idSelected = spriteId;
+			PrintStatus();
+		}
+		#endregion
+
+
 		#region Methods
+		internal void SpriteReplace(int id, XCImage sprite) // currently disabled in PckViewForm
+		{
+			Spriteset[id] = sprite;
+		}
+
+		/// <summary>
+		/// Checks if a selected tile is fully visible in the view-panel and
+		/// scrolls the table to show it if not.
+		/// </summary>
+		private void ScrollToTile(int id)
+		{
+			int tileY = id / _tilesX;
+
+			int cutoff = _tileHeight * tileY;
+			if (cutoff < -_startY)		// <- check cutoff high
+			{
+				_scrollBar.Value = cutoff;
+			}
+			else						// <- check cutoff low
+			{
+				cutoff = _tileHeight * (tileY + 1) - Height + _statusBar.Height + TableOffsetVert + 1;
+				if (cutoff > -_startY)
+				{
+					_scrollBar.Value = cutoff;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Updates the scrollbar after a resize event or a spriteset changed
+		/// event.
+		/// </summary>
+		/// <param name="resetTrack">true to set the thing to the top of the track</param>
+		private void UpdateScrollbar(bool resetTrack)
+		{
+			int range = 0;
+			if (Spriteset != null && Spriteset.Count != 0)
+			{
+				if (resetTrack)
+					_scrollBar.Value = 0;
+
+				range = TableOffsetVert + TableHeight + _largeChange - Height - _statusBar.Height;
+				if (range < _largeChange)
+					range = 0;
+			}
+			_scrollBar.Maximum = range;
+			_scrollBar.Visible = (range != 0);
+		}
+
+		internal void SetTilesX()
+		{
+			int tilesX = 1;
+
+			if (Spriteset != null && Spriteset.Count != 0)
+			{
+				tilesX = (Width - TableOffsetHori - _scrollBar.Width - 1) / _tileWidth;
+
+				if (tilesX > Spriteset.Count)
+					tilesX = Spriteset.Count;
+			}
+			_tilesX = tilesX;
+		}
+
+		internal void PrintStatusTotal()
+		{
+			_sbpTilesTotal.Text = String.Format(
+											System.Globalization.CultureInfo.InvariantCulture,
+											"Total {0}", _spriteset.Count);
+			OnSpriteClick(-1);
+			OnSpriteOver( -1);
+		}
+
+		/// <summary>
+		/// Prints the current status for the currently selected and/or
+		/// mouseovered sprite(s) in the status-bar.
+		/// </summary>
+		private void PrintStatus()
+		{
+			string selected = (_idSelected != -1) ? _idSelected.ToString(System.Globalization.CultureInfo.InvariantCulture)
+												  : None;
+			string over     = (_idOver != -1)     ? _idOver.ToString(System.Globalization.CultureInfo.InvariantCulture)
+												  : None;
+
+			_sbpTileSelected.Text = String.Format(
+												System.Globalization.CultureInfo.InvariantCulture,
+												"Selected {0}", selected);
+			_sbpTileOver.Text     = String.Format(
+												System.Globalization.CultureInfo.InvariantCulture,
+												"Over {0}", over);
+		}
+		#endregion
+	}
+}
+
 //		/// <summary>
-//		/// Deletes the currently selected sprite.
+//		/// Deletes the currently selected sprite and selects another one.
 //		/// </summary>
 //		internal void SpriteDelete()
 //		{
@@ -588,44 +589,6 @@ namespace PckView
 //			}
 //		}
 
-		internal void SpriteReplace(int id, XCImage sprite) // currently disabled in PckViewForm
-		{
-			Spriteset[id] = sprite;
-		}
-
-		/// <summary>
-		/// Checks if a selected tile is fully visible in the view-panel and
-		/// scrolls the table to show it if not.
-		/// </summary>
-		private void ScrollToTile(int id)
-		{
-			int tileY = id / _tilesX;
-
-			int cutoff = _tileHeight * tileY;
-			if (cutoff < -_startY)		// <- check cutoff high
-			{
-				_scrollBar.Value = cutoff;
-			}
-			else						// <- check cutoff low
-			{
-				cutoff = _tileHeight * (tileY + 1) - Height + _statusBar.Height + TableOffsetVert + 1;
-				if (cutoff > -_startY)
-				{
-					_scrollBar.Value = cutoff;
-				}
-			}
-		}
-		#endregion
-
-/*		private void tileChooser_SelectedIndexChanged(object sender, EventArgs e)
-		{
-//			view.Pck = ImageCollection.GetPckFile(tileChooser.SelectedItem.ToString());
-			view.Refresh();
-//			_scrollBar.Maximum = Math.Max((view.Height - Height + tileChooser.Height + 50), _scrollBar.Minimum);
-			_scrollBar.Value = _scrollBar.Minimum;
-			scroll_Scroll(null, null);
-		} */
-
 //		internal void Hq2x()
 //		{
 //			_collection.HQ2X();
@@ -634,15 +597,3 @@ namespace PckView
 //		{
 //			_viewPanel.Hq2x();
 //		}
-
-//		/// <summary>
-//		/// Saves a bitmap as an 8-bit image.
-//		/// </summary>
-//		/// <param name="file"></param>
-//		/// <param name="pal"></param>
-//		public void SaveBMP(string file, Palette pal)
-//		{
-//			Bmp.SendToSaver(file, _collection, pal, numAcross(), 1);
-//		}
-	}
-}

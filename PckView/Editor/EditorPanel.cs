@@ -26,9 +26,11 @@ namespace PckView
 		private EditorForm _parent;
 
 		private readonly StatusBar _statusBar = new StatusBar();
-		private StatusBarPanel _sbpEyeDropper = new StatusBarPanel();
+		private readonly StatusBarPanel _sbpEyeDropper = new StatusBarPanel();
 
 		private Pen _penGrid = Pens.Black;
+
+		private int _palId = -1;
 		#endregion
 
 
@@ -147,7 +149,7 @@ namespace PckView
 //		}
 
 
-		#region EventCalls (override)
+		#region Eventcalls (override)
 		/// <summary>
 		/// Changes a clicked pixel's palette-id (color) to whatever the current
 		/// 'PaletteId' is in PalettePanel.
@@ -217,8 +219,6 @@ namespace PckView
 			}
 		}
 
-
-		private int _palId;
 
 		/// <summary>
 		/// Displays the color of any mouseovered paletteId.
@@ -350,15 +350,10 @@ namespace PckView
 		#endregion
 
 
-		#region EventCalls
-		private void OnPaletteChanged(Palette pal)
+		#region Eventcalls
+		private void OnPaletteChanged()
 		{
 			Refresh();
-//			if (Sprite != null)
-//			{
-//				Sprite.Image.Palette = pal.Colors;
-//				Refresh();
-//			}
 		}
 		#endregion
 

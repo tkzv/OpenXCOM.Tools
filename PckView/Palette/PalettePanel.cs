@@ -161,7 +161,7 @@ namespace PckView
 
 
 		#region Eventcalls
-		private void OnPaletteChanged(Palette pal)
+		private void OnPaletteChanged()
 		{
 			Refresh();
 		}

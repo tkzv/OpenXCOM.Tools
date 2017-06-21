@@ -24,10 +24,10 @@ namespace PckView
 		#region Fields
 		private readonly EditorPanel _pnlEditor;
 
-		private PaletteForm _fpalette = new PaletteForm();
+		private readonly PaletteForm _fpalette = new PaletteForm();
 
-		private TrackBar _trackBar = new TrackBar();
-		private Label _lblEditMode = new Label();
+		private readonly TrackBar _trackBar = new TrackBar();
+		private readonly Label _lblEditMode = new Label();
 		#endregion
 
 
