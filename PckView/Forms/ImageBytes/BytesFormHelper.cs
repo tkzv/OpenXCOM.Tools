@@ -33,11 +33,10 @@ namespace PckView.Forms.ImageBytes
 		#region Methods (static)
 		internal static void ShowBytes(
 				SelectedSprite selected,
-				MethodInvoker formClosedCallBack,
-				Point location)
+				MethodInvoker formClosedCallBack)
 		{
 			_selected = selected;
-			ShowBytesCore(formClosedCallBack, location);
+			ShowBytesCore(formClosedCallBack);
 		}
 
 		internal static void ReloadBytes(SelectedSprite selected)
@@ -46,9 +45,7 @@ namespace PckView.Forms.ImageBytes
 			ReloadBytesCore();
 		}
 
-		private static void ShowBytesCore(
-				MethodInvoker formClosedCallBack,
-				Point location)
+		private static void ShowBytesCore(MethodInvoker formClosedCallBack)
 		{
 			if (fBytes != null)
 			{
@@ -72,7 +69,6 @@ namespace PckView.Forms.ImageBytes
 
 				fBytes.FormClosing += OnFormClosing;
 				fBytes.FormClosing += (sender, e) => formClosedCallBack();
-				fBytes.Location = location;
 				fBytes.Text = "Total Bytes - " + _selected.Sprite.Bindata.Length;
 				fBytes.Show();
 			}

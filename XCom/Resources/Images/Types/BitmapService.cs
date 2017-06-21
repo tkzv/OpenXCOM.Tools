@@ -498,7 +498,7 @@ namespace XCom
 
 		/// <summary>
 		/// Helper for LoadSpriteset()
-		/// also called by PckViewForm.OnAddSpriteClick()
+		/// also called by PckViewForm.OnAddSpriteClick() and .OnReplaceSpriteClick()
 		/// </summary>
 		/// <param name="bitmap"></param>
 		/// <param name="terrainId"></param>

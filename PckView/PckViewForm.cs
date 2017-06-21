@@ -39,11 +39,13 @@ namespace PckView
 		private MenuItem _miExport;
 		private MenuItem _miAdd;
 		private MenuItem _miDelete;
-//		private MenuItem _miReplace;
+		private MenuItem _miReplace;
 
 //		private SharedSpace _share = SharedSpace.Instance;
 
 		private Dictionary<Palette, MenuItem> _paletteItems = new Dictionary<Palette, MenuItem>();
+
+		private bool _editorInited;
 		#endregion
 
 
@@ -60,6 +62,10 @@ namespace PckView
 		private string SpritesetLabel
 		{ get; set; }
 
+		/// <summary>
+		/// For reloading the Map when PckView is invoked via TileView. That is,
+		/// it's *not* a "do you want to save" alert.
+		/// </summary>
 		public bool SpritesChanged
 		{ get; private set; }
 		#endregion
@@ -278,10 +284,10 @@ namespace PckView
 			_miDelete.Click += OnDeleteSpriteClick;
 			contextmenu.MenuItems.Add(_miDelete);
 
-//			_miReplace = new MenuItem("Replace ...");
-//			_miReplace.Enabled = false;
-//			_miReplace.Click += OnSpriteReplaceClick;
-//			menu.MenuItems.Add(_miReplace);
+			_miReplace = new MenuItem("Replace ...");
+			_miReplace.Enabled = false;
+			_miReplace.Click += OnReplaceSpriteClick;
+			contextmenu.MenuItems.Add(_miReplace);
 
 			contextmenu.MenuItems.Add(new MenuItem("-"));
 
@@ -339,85 +345,82 @@ namespace PckView
 			_miAdd.Enabled            = valid;
 		}
 
+		/// <summary>
+		/// Bring back the dinosaurs.
+		/// NOTE: This fires after PckViewPanel.OnMouseDown(). Thought you'd
+		/// like to know.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnSpriteClick(object sender, EventArgs e)
 		{
-			bool valid = _pnlView.Selected.Count != 0;
+			bool valid = (_pnlView.Selected.Count != 0);
 
 			// on Context menu
-			_miEdit.Enabled   =
-			_miExport.Enabled =
-			_miDelete.Enabled = valid;
+			_miEdit.Enabled    =
+			_miExport.Enabled  =
+			_miDelete.Enabled  =
+			_miReplace.Enabled = valid;
 
 			SelectedSprite selected = null;
 			if (valid)
+			{
 				selected = _pnlView.Selected[0];
-
+				EditorPanel.Instance.Sprite = selected.Sprite;
+			}
 			BytesFormHelper.ReloadBytes(selected);
 		}
 
 		private void OnAddSpriteClick(object sender, EventArgs e)
 		{
-			if (_pnlView.Spriteset != null)
+			var ofd = new OpenFileDialog();
+
+			ofd.Filter = "BMP files (32x40 8-bpp) (*.BMP)|*.BMP|All files (*.*)|*.*";
+			ofd.Title = "Add BMP file(s)";
+			ofd.Multiselect = true;
+
+			if (ofd.ShowDialog() == DialogResult.OK)
 			{
-				var ofd = new OpenFileDialog();
-				ofd.Filter = "BMP files (32x40 8-bpp) (*.bmp)|*.BMP|All Files (*.*)|*.*";
-				ofd.Title = "Add BMP file(s)";
-				ofd.Multiselect = true;
+				int terrainId = _pnlView.Spriteset.Count;
 
-				if (ofd.ShowDialog() == DialogResult.OK)
+				foreach (string file in ofd.FileNames)
 				{
-					int terrainId = _pnlView.Spriteset.Count;
-
-					foreach (string file in ofd.FileNames)
-					{
-						var bitmap = new Bitmap(file);
-						_pnlView.Spriteset.Add(BitmapService.CreateSprite(
-																		bitmap,
-																		terrainId++,
-																		Pal,
-																		0, 0,
-																		XCImageFile.SpriteWidth,
-																		XCImageFile.SpriteHeight));
-					}
-					_pnlView.Selected.Clear();
-
-					_pnlView.PrintStatusTotal();
-					Refresh();
-					// TODO: relay tiles table.
+					var bitmap = new Bitmap(file);
+					_pnlView.Spriteset.Add(BitmapService.CreateSprite(
+																	bitmap,
+																	terrainId++,
+																	Pal,
+																	0, 0,
+																	XCImageFile.SpriteWidth,
+																	XCImageFile.SpriteHeight));
 				}
+				_pnlView.Selected.Clear();
+
+				_pnlView.PrintStatusTotal();
+				Refresh();
+				// TODO: relay the tiles table. And select the sprite and show
+				// it in the SpriteEditor perhaps.
 			}
 		}
 
 		private void OnDeleteSpriteClick(object sender, EventArgs e)
 		{
-//			_pnlView.SpriteDelete();
+			EditorPanel.Instance.ClearSprite();
 
-			var editor = EditorPanel.Instance;
+			int selectedId = _pnlView.Selected[0].TerrainId;
 
-			bool resetEditorSprite = false;
-			if (editor.Sprite != null)
-			{
-				if (editor.Sprite.TerrainId == _pnlView.Selected[0].TerrainId)
-					editor.ClearSprite();
-				else
-					resetEditorSprite = (editor.Sprite.TerrainId > _pnlView.Selected[0].TerrainId);
-			}
-
-			int terrainId = _pnlView.Selected[0].TerrainId;
-			_pnlView.Spriteset.RemoveAt(terrainId);
+			_pnlView.Spriteset.RemoveAt(selectedId);
 
 			int count = _pnlView.Spriteset.Count;
-			for (int id = terrainId; id != count; ++id) // shuffle any succeeding sprite's terrain-id down by 1.
+			for (int id = selectedId; id != count; ++id) // shuffle any succeeding sprite's terrain-id down by 1.
 				_pnlView.Spriteset[id].TerrainId = id;
 
-			if (resetEditorSprite) // and reload any succeeding sprite in the editor just to keep things koxer.
-				editor.Sprite = _pnlView.Spriteset[editor.Sprite.TerrainId];
-
-			_pnlView.Selected.Clear();
+			_pnlView.Selected.Clear(); // TODO: select another sprite, perhaps. See _pnlView.SpriteDelete()
 
 			_pnlView.PrintStatusTotal();
 			Refresh();
-			// TODO: relay tiles table.
+
+			// TODO: relay the tiles table.
 		}
 
 		private void OnKeyDown(object sender, KeyEventArgs e)
@@ -426,45 +429,31 @@ namespace PckView
 //				OnDeleteSpriteClick(null, null);
 		}
 
-		private void OnSpriteReplaceClick(object sender, EventArgs e) // disabled in ViewerContextMenu()
+		private void OnReplaceSpriteClick(object sender, EventArgs e)
 		{
-//			if (_pnlView.Selected.Count != 1)
-//			{
-//				MessageBox.Show(
-//							this,
-//							"Must select 1 item only.",
-//							Text,
-//							MessageBoxButtons.OK,
-//							MessageBoxIcon.Exclamation,
-//							MessageBoxDefaultButton.Button1,
-//							0);
-//			}
-//			else if (_pnlView.Spriteset != null )
-//			{
-//				var title = String.Empty;
-//				foreach (var sprite in _pnlView.Selected)
-//				{
-//					if (!String.IsNullOrEmpty(title))
-//						title += ", ";
-//
-//					title += sprite.Id;
-//				}
-//
-//				ofdBmp.Title = "Selected: " + title;
-//				ofdBmp.Multiselect = false;
-//				if (ofdBmp.ShowDialog() == DialogResult.OK)
-//				{
-//					var bitmap = new Bitmap(ofdBmp.FileName);
-//					var spriteset = BitmapService.CreateSpriteset(
-//															bitmap,
-//															Pal,
-//															XCImageFile.SpriteWidth,
-//															XCImageFile.SpriteHeight,
-//															1)[0];
-//					_pnlView.SpriteReplace(_pnlView.Selected[0].Id, spriteset);
-//					Refresh();
-//				}
-//			}
+			var ofd = new OpenFileDialog();
+
+			ofd.Title = "Open BMP file";
+			ofd.Filter = "BMP files (32x40 8-bpp) (*.BMP)|*.BMP|All files (*.*)|*.*";
+
+			if (ofd.ShowDialog() == DialogResult.OK)
+			{
+				int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
+
+				var bitmap = new Bitmap(ofd.FileName);
+				var sprite = BitmapService.CreateSprite(
+													bitmap,
+													terrainId,
+													Pal,
+													0, 0,
+													XCImageFile.SpriteWidth,
+													XCImageFile.SpriteHeight);
+
+				EditorPanel.Instance.Sprite   =
+				_pnlView.Spriteset[terrainId] = sprite;
+
+				Refresh();
+			}
 		}
 
 		/// <summary>
@@ -474,63 +463,58 @@ namespace PckView
 		/// <param name="e"></param>
 		private void OnExportSpriteClick(object sender, EventArgs e)
 		{
-			if (_pnlView.Selected.Count != 0)
+			string digits = String.Empty;
+
+			int count = _pnlView.Spriteset.Count;
+			do
 			{
-				var selected = _pnlView.Selected[0];
-				if (_pnlView.Spriteset != null)
-				{
-					string digits = String.Empty;
-
-					int count = _pnlView.Spriteset.Count;
-					do
-					{
-						digits += "0";
-						count /= 10;
-					}
-					while (count != 0);
-
-					string suffix = String.Format(
-												System.Globalization.CultureInfo.InvariantCulture,
-												"{0:" + digits + "}",
-												selected.Sprite.TerrainId);
-
-					sfdSingleSprite.FileName = _pnlView.Spriteset.Label + suffix;
-
-					if (sfdSingleSprite.ShowDialog() == DialogResult.OK)
-						BitmapService.ExportSprite(sfdSingleSprite.FileName, selected.Sprite.Image);
-				}
+				digits += "0";
+				count /= 10;
 			}
+			while (count != 0);
+
+			var sprite = _pnlView.Selected[0].Sprite;
+			string suffix = String.Format(
+										System.Globalization.CultureInfo.InvariantCulture,
+										"{0:" + digits + "}",
+										sprite.TerrainId);
+
+			var sfd = new SaveFileDialog();
+
+			sfd.Title = "Export sprite";
+			sfd.FileName = _pnlView.Spriteset.Label + suffix;
+			sfd.DefaultExt = "*.BMP";
+			sfd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
+
+			if (sfd.ShowDialog() == DialogResult.OK)
+				BitmapService.ExportSprite(sfd.FileName, sprite.Image);
 		}
-
-
-		bool _editorInited;
 
 		private void OnSpriteEditorClick(object sender, EventArgs e)
 		{
-			if (   _pnlView.Selected != null
-				&& _pnlView.Selected.Count != 0)
-			{
-				var selected = _pnlView.Selected[0];
-				if (selected != null)
-				{
-//					_feditor.Sprite = selected.Image.Clone(); // NOTE: that's only a *clone**
-					_feditor.Sprite = selected.Sprite;
+			if (_pnlView.Spriteset != null && _pnlView.Selected.Count != 0)	// NOTE: the check is needed because this can be called
+			{																// by a DoubleClick as well as by a contextmenu click.
 
-					if (!_feditor.Visible)
+				EditorPanel.Instance.Sprite = _pnlView.Selected[0].Sprite;	// NOTE: So ... why doesn't the Editor's sprite change,
+																			// even after refresh, when the selected sprite changes.
+				if (!_feditor.Visible)										// ... in any case it's now forced to change by OnSpriteClick().
+				{															// ah, I guess the selected sprite is just an intermediary between the Spriteset and the EditorPanel.
+																			// So you're not really setting the Editor's sprite to the Selected sprite, but to the Spriteset's sprite.
+																			// None of which are the sprites, of course; they're all pointers.
+																			// what this means is that the SelectedSprite class could be replaced by a lowly integer.
+																			// Or simply a list of integers if you want the capability to have more than one selected sprite.
+					_miEdit.Checked = true;	// TODO: show as Checked only if currently selected
+											// sprite is actually open in the Editor.
+					if (!_editorInited)
 					{
-						_miEdit.Checked = true;	// TODO: show as Checked only if currently selected
-												// sprite is actually open in the Editor.
-						if (!_editorInited)
-						{
-							_editorInited = true;
-							_feditor.Left = Left + 20;
-							_feditor.Top  = Top  + 20;
-						}
-						_feditor.Show();
+						_editorInited = true;
+						_feditor.Left = Left + 20;
+						_feditor.Top  = Top  + 20;
 					}
-					else
-						_feditor.BringToFront();
+					_feditor.Show();
 				}
+				else
+					_feditor.BringToFront();
 			}
 		}
 
@@ -704,9 +688,9 @@ namespace PckView
 				if (_pnlView.Selected.Count != 0)
 				{
 					miBytes.Checked = true;
-
-					var selected = _pnlView.Selected[0];
-					BytesFormHelper.ShowBytes(selected, CallbackShowBytesClosing, new Point(Right, Top));
+					BytesFormHelper.ShowBytes(
+										_pnlView.Selected[0],
+										CallbackShowBytesClosing);
 				}
 			}
 			else
@@ -819,6 +803,7 @@ namespace PckView
 		{
 			var sfd = new SaveFileDialog();
 			sfd.FileName = SpritesetLabel;
+			sfd.Title = "Save as";
 
 			if (sfd.ShowDialog() == DialogResult.OK)
 			{

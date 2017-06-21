@@ -107,12 +107,10 @@ namespace PckView
 			}
 		}
 
-
 		private readonly List<SelectedSprite> _selected = new List<SelectedSprite>();
 		internal List<SelectedSprite> Selected
 		{
-			get { return (Spriteset != null) ? _selected
-											 : null; }
+			get { return _selected; }
 		}
 
 		/// <summary>
@@ -194,7 +192,7 @@ namespace PckView
 			{
 				UpdateScrollbar(false);
 
-				if (Selected != null && Selected.Count != 0)
+				if (Selected.Count != 0)
 					ScrollToTile(Selected[0].TerrainId);
 			}
 		}
@@ -230,38 +228,45 @@ namespace PckView
 		/// <summary>
 		/// Selects and shows status-information for a sprite. Overrides core
 		/// implementation for the MouseDown event.
+		/// NOTE: This fires before PckViewForm.OnSpriteClick().
 		/// </summary>
 		/// <param name="e"></param>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 //			base.OnMouseDown(e);
 
-			bool clearSelected = true;
-
-			if (Spriteset != null && Spriteset.Count != 0)
+			if (e.Button == MouseButtons.Left
+				&& Spriteset != null && Spriteset.Count != 0)
 			{
+				// IMPORTANT: 'Selected' is currently allowed only 1 entry,
+				// although it is set up as a List. Things might go one way or
+				// the other in future.
+
+				Selected.Clear();
+				int id = -1;
+
 				if (e.X < _tilesX * _tileWidth + TableOffsetHori - 1) // not out of bounds to right
 				{
 					int tileX = (e.X - TableOffsetHori + 1)           / _tileWidth;
 					int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _tileHeight;
 
-					int id = tileY * _tilesX + tileX;
+					id = tileY * _tilesX + tileX;
 					if (id < Spriteset.Count) // not out of bounds below
 					{
 						var selected       = new SelectedSprite();
 						selected.TerrainId = id;
 						selected.Sprite    = Spriteset[id];
 
+						Selected.Add(selected);
+
 //						if (ModifierKeys == Keys.Control)
 //						{
 //							SpriteSelected spritePre = null;
-//
 //							foreach (var sprite in _selectedSprites)
 //							{
 //								if (sprite.X == tileX && sprite.Y == tileY)
 //									spritePre = sprite;
 //							}
-//
 //							if (spritePre != null)
 //							{
 //								_selectedSprites.Remove(spritePre);
@@ -271,25 +276,18 @@ namespace PckView
 //						}
 //						else
 //						{
-						Selected.Clear();
-						Selected.Add(selected);
+//							Selected.Add(selected);
 //						}
-
-						OnSpriteClick(id);
-						clearSelected = false;
-
-						ScrollToTile(id);
 					}
+					else
+						id = -1;
 				}
-			}
 
-			if (clearSelected)
-			{
-				Selected.Clear();
-				OnSpriteClick(-1);
-			}
+				OnSpriteClick(id);
+				ScrollToTile(id);
 
-			Refresh();
+				Refresh();
+			}
 		}
 
 		/// <summary>
@@ -454,30 +452,28 @@ namespace PckView
 
 
 		#region Methods
-		internal void SpriteReplace(int id, XCImage sprite) // currently disabled in PckViewForm
-		{
-			Spriteset[id] = sprite;
-		}
-
 		/// <summary>
 		/// Checks if a selected tile is fully visible in the view-panel and
 		/// scrolls the table to show it if not.
 		/// </summary>
 		private void ScrollToTile(int id)
 		{
-			int tileY = id / _tilesX;
+			if (id != -1)
+			{
+				int tileY = id / _tilesX;
 
-			int cutoff = _tileHeight * tileY;
-			if (cutoff < -_startY)		// <- check cutoff high
-			{
-				_scrollBar.Value = cutoff;
-			}
-			else						// <- check cutoff low
-			{
-				cutoff = _tileHeight * (tileY + 1) - Height + _statusBar.Height + TableOffsetVert + 1;
-				if (cutoff > -_startY)
+				int cutoff = _tileHeight * tileY;
+				if (cutoff < -_startY)		// <- check cutoff high
 				{
 					_scrollBar.Value = cutoff;
+				}
+				else						// <- check cutoff low
+				{
+					cutoff = _tileHeight * (tileY + 1) - Height + _statusBar.Height + TableOffsetVert + 1;
+					if (cutoff > -_startY)
+					{
+						_scrollBar.Value = cutoff;
+					}
 				}
 			}
 		}

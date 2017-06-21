@@ -38,11 +38,6 @@ namespace PckView
 
 
 		#region Properties
-		internal XCImage Sprite
-		{
-			set { _pnlEditor.Sprite = value; }
-		}
-
 		private bool Inited
 		{ get; set; }
 		#endregion

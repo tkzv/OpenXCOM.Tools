@@ -46,8 +46,6 @@ namespace PckView
 			this.miConsole = new System.Windows.Forms.MenuItem();
 			this.miHelp = new System.Windows.Forms.MenuItem();
 			this.miMapViewHelp = new System.Windows.Forms.MenuItem();
-			this.sfdSingleSprite = new System.Windows.Forms.SaveFileDialog();
-			this.ofdBmp = new System.Windows.Forms.OpenFileDialog();
 			this.pnlView = new System.Windows.Forms.Panel();
 			this.pnlMapViewHelp = new System.Windows.Forms.Panel();
 			this.btnMapViewHelpOk = new System.Windows.Forms.Button();
@@ -217,15 +215,6 @@ namespace PckView
 			this.miMapViewHelp.Text = "MapView Help";
 			this.miMapViewHelp.Click += new System.EventHandler(this.OnMapViewHelpClick);
 			// 
-			// sfdSingleSprite
-			// 
-			this.sfdSingleSprite.DefaultExt = "*.BMP";
-			this.sfdSingleSprite.Filter = "Bitmap Files (*.bmp)|*.BMP";
-			// 
-			// ofdBmp
-			// 
-			this.ofdBmp.Filter = "8-bit 32x40 BMP (*.bmp)|*.BMP";
-			// 
 			// pnlView
 			// 
 			this.pnlView.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -325,8 +314,5 @@ namespace PckView
 		private System.Windows.Forms.MenuItem miCompare;
 
 		private System.Windows.Forms.MenuItem miSave;
-
-		private System.Windows.Forms.OpenFileDialog ofdBmp;
-		private System.Windows.Forms.SaveFileDialog sfdSingleSprite;
 	}
 }
