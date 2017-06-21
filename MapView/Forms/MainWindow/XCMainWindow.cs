@@ -1867,7 +1867,15 @@ namespace MapView
 		/// </summary>
 		private void OnPckSavedEvent()
 		{
-			LoadSelectedMap();
+			bool cancel  = (SaveAlertMap()    == DialogResult.Cancel);
+				 cancel |= (SaveAlertRoutes() == DialogResult.Cancel); // NOTE: that bitwise had better execute ....
+
+			if (!cancel)
+			{
+				ResourceInfo.ReloadSprites = true;
+				LoadSelectedMap();
+			}
+			ResourceInfo.ReloadSprites = false;
 		}
 		#endregion
 
@@ -1962,7 +1970,7 @@ namespace MapView
 						break;
 
 					case DialogResult.No:		// don't save & clear MapChanged flag
-						_mainViewUnderlay.MapBase.ClearMapChanged(); // not really relevant since 'MapBase' is about to go by-bye.
+						_mainViewUnderlay.MapBase.ClearMapChanged();
 						break;
 
 					case DialogResult.Cancel:	// dismiss confirmation dialog & leave state unaffected
@@ -1997,7 +2005,7 @@ namespace MapView
 						break;
 
 					case DialogResult.No:		// don't save & clear RoutesChanged flag
-						_mainViewUnderlay.MapBase.ClearRoutesChanged(); // not really relevant since 'MapBase' is about to go by-bye.
+						_mainViewUnderlay.MapBase.ClearRoutesChanged();
 						break;
 
 					case DialogResult.Cancel:	// dismiss confirmation dialog & leave state unaffected

@@ -7,19 +7,22 @@ namespace XCom.Resources.Map
 {
 	public static class XCTileFactory
 	{
+		#region Fields (static)
 		private const string McdExt = ".MCD";
 
 		private const int Total = 62; // there are 62 bytes in each MCD record.
+		#endregion
 
 
+		#region Methods (static)
 		/// <summary>
-		/// Creates MCD-records from an MCD-file.
+		/// Creates an array of tileparts from a given terrain and spriteset.
 		/// </summary>
 		/// <param name="terrain"></param>
 		/// <param name="dirTerrain"></param>
 		/// <param name="spriteset"></param>
 		/// <returns></returns>
-		internal static Tilepart[] CreateRecords(
+		internal static Tilepart[] CreateTileparts(
 				string terrain,
 				string dirTerrain,
 				SpriteCollection spriteset)
@@ -143,5 +146,6 @@ namespace XCom.Resources.Map
 			}
 			return null;
 		}
+		#endregion
 	}
 }

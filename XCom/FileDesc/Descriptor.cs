@@ -17,7 +17,15 @@ namespace XCom
 	/// </summary>
 	public sealed class Descriptor // *snap*
 	{
+		#region Fields (static)
 		public const string PathTerrain = "TERRAIN";
+		#endregion
+
+
+		#region Fields
+		private readonly string _dirTerrain;
+		#endregion
+
 
 		#region Properties
 		public string Label
@@ -55,6 +63,11 @@ namespace XCom
 			Terrains = terrains;
 			BasePath = basepath;
 			Pal      = palette;
+
+			_dirTerrain = (Pal == Palette.UfoBattle) ? SharedSpace.ResourceDirectoryUfo
+													 : SharedSpace.ResourceDirectoryTftd;
+			_dirTerrain = Path.Combine(SharedSpace.Instance.GetShare(_dirTerrain), PathTerrain);
+
 		}
 		#endregion
 
@@ -66,15 +79,12 @@ namespace XCom
 		/// <returns></returns>
 		public McdRecordCollection GetTerrainRecords(string terrain)
 		{
-//			string dirTerrain = Path.Combine(BasePath, PathTerrain);
-			string dirTerrain = (Pal == Palette.UfoBattle) ? SharedSpace.ResourceDirectoryUfo
-														   : SharedSpace.ResourceDirectoryTftd;
-			dirTerrain = Path.Combine(SharedSpace.Instance.GetShare(dirTerrain), PathTerrain);
+			//LogFile.WriteLine("Descriptor.GetTerrainRecords");
 
-			var tiles = XCTileFactory.CreateRecords(
-												terrain,
-												dirTerrain,
-												GetTerrainSpriteset(terrain));
+			var tiles = XCTileFactory.CreateTileparts(
+													terrain,
+													_dirTerrain,
+													GetTerrainSpriteset(terrain));
 			return new McdRecordCollection(tiles);
 		}
 
@@ -84,13 +94,10 @@ namespace XCom
 		/// <returns></returns>
 		public SpriteCollection GetTerrainSpriteset(string terrain)
 		{
-//			string dirTerrain = Path.Combine(BasePath, PathTerrain);
-			string dirTerrain = (Pal == Palette.UfoBattle) ? SharedSpace.ResourceDirectoryUfo
-														   : SharedSpace.ResourceDirectoryTftd;
-			dirTerrain = Path.Combine(SharedSpace.Instance.GetShare(dirTerrain), PathTerrain);
+			//LogFile.WriteLine("Descriptor.GetTerrainSpriteset");
 
-			return ResourceInfo.LoadSpriteset(terrain, dirTerrain, 2, Pal);	// TODO: Should the '2' be '4' for TFTD ...
-		}																	// no, Ufopaedia.org "Image Formats" says TFTD terrains have 2-byte Tab-offsets.
+			return ResourceInfo.LoadSpriteset(terrain, _dirTerrain, 2, Pal);	// TODO: Should the '2' be '4' for TFTD ...
+		}																		// no, Ufopaedia.org "Image Formats" says TFTD terrains have 2-byte Tab-offsets.
 		#endregion
 
 

@@ -490,50 +490,50 @@ namespace MapView.Forms.MapObservers.TileViews
 				}
 				else
 				{
-					_showHideManager.HideViewers();
-
 					using (var fPckView = new PckViewForm())
 					{
 						fPckView.LoadSpriteset(pfePck, true);
 						fPckView.SetPalette(MapBase.Descriptor.Pal.Label);
 
-//						Form pckviewOwner = null; // what's this muck-a-muck
-//						var fTileView = FindForm();
-//						if (fTileView != null)
-//						{
-//							pckviewOwner = fTileView.Owner;
-//							LogFile.WriteLine(". fTileView VALID - pckviewOwner= " + pckviewOwner);
-//						}
-//						if (pckviewOwner == null)
-//						{
-//							pckviewOwner = fTileView;
-//							LogFile.WriteLine(". pckviewOwner NOT Valid - pckviewOwner= " + pckviewOwner);
-//						}
-//						fPckView.ShowDialog(pckviewOwner);
+						_showHideManager.HideViewers();
 						fPckView.ShowDialog(FindForm());
-
 						_showHideManager.RestoreViewers();
 
-						if (fPckView.SpritesChanged
-							&& MessageBox.Show(
-											this,
-											"MapView needs to restart to show any changes"
-												+ " that were made to the sprites with PckView."
-												+ " Do you want to restart MapView?"
-												+ Environment.NewLine + Environment.NewLine
-												+ "Any unsaved changes to the Map, the Routes,"
-												+ " and the Maptree will be lost!",
-											"Restart MapView",
-											MessageBoxButtons.OKCancel,
-											MessageBoxIcon.Exclamation,
-											MessageBoxDefaultButton.Button2,
-											0) == DialogResult.OK)
+						if (fPckView.SpritesChanged) // (re)load the selected Map.
 						{
-							Application.Restart();	// TODO: try to reload the terrains.
-							Environment.Exit(0);	// else redo a method such as XCMainWindow.OnConfiguratorClick()
+							string notice = "The Map needs to reload to show any"
+										  + " changes that were made to its terrainset.";
 
-//							TriggerPckSaved(); // (re)loads the selected Map.
-							// TODO: that reloads the Map & Routes, but the terrains don't change. Reload the given terrain(s) from disk also.
+							string changed = String.Empty;
+							if (MapBase.MapChanged)
+								changed = "Map";
+
+							if (MapBase.RoutesChanged)
+							{
+								if (!String.IsNullOrEmpty(changed))
+									changed += " and its ";
+
+								changed += "Routes";
+							}
+
+							if (!String.IsNullOrEmpty(changed))
+							{
+								notice += Environment.NewLine + Environment.NewLine
+										+ "You will be asked to save the current"
+										+ " changes to the " + changed + ".";
+							}
+
+							if (MessageBox.Show(
+											this,
+											notice,
+											"Reload Map",
+											MessageBoxButtons.OKCancel,
+											MessageBoxIcon.Information,
+											MessageBoxDefaultButton.Button1,
+											0) == DialogResult.OK)
+							{
+								TriggerPckSaved();
+							}
 						}
 					}
 				}
@@ -542,7 +542,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				MessageBox.Show(
 							this,
 							"Select a Tile.",
-							"",
+							String.Empty,
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Asterisk,
 							MessageBoxDefaultButton.Button1,

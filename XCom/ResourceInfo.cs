@@ -13,6 +13,8 @@ namespace XCom
 		#region Fields (static)
 		private static readonly Dictionary<Palette, Dictionary<string, SpriteCollection>> _palSpritesets
 						  = new Dictionary<Palette, Dictionary<string, SpriteCollection>>();
+
+		public static bool ReloadSprites;
 		#endregion
 
 
@@ -41,13 +43,13 @@ namespace XCom
 		/// </summary>
 		/// <param name="terrain"></param>
 		/// <param name="dirTerrain"></param>
-		/// <param name="lenTabOffset"></param>
+		/// <param name="tabOffset"></param>
 		/// <param name="pal"></param>
 		/// <returns></returns>
 		public static SpriteCollection LoadSpriteset(
 				string terrain,
 				string dirTerrain,
-				int lenTabOffset,
+				int tabOffset,
 				Palette pal)
 		{
 			//LogFile.WriteLine("");
@@ -70,9 +72,18 @@ namespace XCom
 						_palSpritesets.Add(pal, new Dictionary<string, SpriteCollection>());
 
 					var spritesets = _palSpritesets[pal];
+
+					if (ReloadSprites) // used by XCMainWindow.OnPckSavedEvent <- TileView's pck-editor
+					{
+						//LogFile.WriteLine(". ReloadSprites");
+
+						if (spritesets.ContainsKey(pfSpriteset))
+							spritesets.Remove(pfSpriteset);
+					}
+
 					if (!spritesets.ContainsKey(pfSpriteset))
 					{
-						//LogFile.WriteLine(". . pf not found in spriteset dictionary -> add new SpriteCollection");
+						//LogFile.WriteLine(". . key not found in spriteset dictionary -> add new SpriteCollection");
 
 						using (var fsPck = File.OpenRead(pfePck))
 						using (var fsTab = File.OpenRead(pfeTab))
@@ -80,7 +91,7 @@ namespace XCom
 							spritesets.Add(pfSpriteset, new SpriteCollection(
 																		fsPck,
 																		fsTab,
-																		lenTabOffset,
+																		tabOffset,
 																		pal));
 						}
 					}
