@@ -119,8 +119,8 @@ namespace PckView
 		private void OnLoad(object sender, EventArgs e)
 		{
 			ClientSize = new Size(
-								XCImageFile.SpriteWidth  * 10,
-								XCImageFile.SpriteHeight * 10
+								XCImageFile.SpriteWidth  * 10 + EditorPanel.Pad,
+								XCImageFile.SpriteHeight * 10 + EditorPanel.Pad
 									+ _trackBar.Height
 									+ _lblEditMode.Height
 									+ _pnlEditor.GetStatusBarHeight());
@@ -179,6 +179,11 @@ namespace PckView
 		{
 			_pnlEditor.Grid = (miGrid.Checked = !miGrid.Checked);
 		}
+
+		private void OnInvertGridColorClick(object sender, EventArgs e)
+		{
+			_pnlEditor.InvertGridColor(miGridInvert.Checked = !miGridInvert.Checked);
+		}
 		#endregion
 
 
@@ -218,6 +223,7 @@ namespace PckView
 			this.miPalette = new System.Windows.Forms.MenuItem();
 			this.miGridMenu = new System.Windows.Forms.MenuItem();
 			this.miGrid = new System.Windows.Forms.MenuItem();
+			this.miGridInvert = new System.Windows.Forms.MenuItem();
 			this.SuspendLayout();
 			// 
 			// mmMainMenu
@@ -237,20 +243,30 @@ namespace PckView
 			// 
 			this.miPalette.Index = 0;
 			this.miPalette.Text = "Show Palette";
+			this.miPalette.Shortcut = System.Windows.Forms.Shortcut.CtrlP;
 			this.miPalette.Click += new System.EventHandler(this.OnShowPaletteClick);
 			// 
 			// miGridMenu
 			// 
 			this.miGridMenu.Index = 1;
 			this.miGridMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-			this.miGrid});
+			this.miGrid,
+			this.miGridInvert});
 			this.miGridMenu.Text = "Grid";
 			// 
 			// miGrid
 			// 
 			this.miGrid.Index = 0;
 			this.miGrid.Text = "Show Grid";
+			this.miGrid.Shortcut = System.Windows.Forms.Shortcut.CtrlG;
 			this.miGrid.Click += new System.EventHandler(this.OnShowGridClick);
+			// 
+			// miGridInvert
+			// 
+			this.miGridInvert.Index = 1;
+			this.miGridInvert.Text = "Invert Color";
+			this.miGridInvert.Shortcut = System.Windows.Forms.Shortcut.CtrlI;
+			this.miGridInvert.Click += new System.EventHandler(this.OnInvertGridColorClick);
 			// 
 			// EditorForm
 			// 
@@ -279,5 +295,6 @@ namespace PckView
 		private MenuItem miPalette;
 		private MenuItem miGridMenu;
 		private MenuItem miGrid;
+		private MenuItem miGridInvert;
 	}
 }

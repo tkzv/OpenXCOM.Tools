@@ -13,11 +13,22 @@ namespace PckView
 		:
 			Panel
 	{
+		#region Fields (static)
+		/// <summary>
+		/// For adding a 1px margin to the left and top inside edges of the
+		/// client area.
+		/// </summary>
+		internal const int Pad = 1;
+		#endregion
+
+
 		#region Fields
 		private EditorForm _parent;
 
 		private readonly StatusBar _statusBar = new StatusBar();
 		private StatusBarPanel _sbpEyeDropper = new StatusBarPanel();
+
+		private Pen _penGrid = Pens.Black;
 		#endregion
 
 
@@ -206,6 +217,9 @@ namespace PckView
 			}
 		}
 
+
+		private int _palId;
+
 		/// <summary>
 		/// Displays the color of any mouseovered paletteId.
 		/// </summary>
@@ -213,8 +227,6 @@ namespace PckView
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 //			base.OnMouseMove(e);
-
-			_sbpEyeDropper.Text = String.Empty;
 
 			if (Sprite != null)
 			{
@@ -226,36 +238,42 @@ namespace PckView
 				if (bindataId > -1 && bindataId < Sprite.Bindata.Length)
 				{
 					int palId = Sprite.Bindata[bindataId];
-
-					// TODO: what follows is lifted from PaletteForm.OnPaletteIdChanged()
-					string text = String.Format(
-											System.Globalization.CultureInfo.CurrentCulture,
-											"id:{0} (0x{0:X2})",
-											palId);
-
-					var color = PckViewForm.Pal[palId];
-					text += String.Format(
-										System.Globalization.CultureInfo.CurrentCulture,
-										" r:{0} g:{1} b:{2} a:{3}",
-										color.R,
-										color.G,
-										color.B,
-										color.A);
-
-					switch (palId)
+					if (palId != _palId)
 					{
-						case 0:
-							text += " [transparent]";
-							break;
+						_palId = palId;
 
-						// the following values cannot be palette-ids. They have special meaning in the .PCK file.
-						case 254: // transparency marker
-						case 255: // end of file marker
-							text += " [invalid]";
-							break;
+						_sbpEyeDropper.Text = String.Empty;
+
+						// TODO: what follows is lifted from PaletteForm.OnPaletteIdChanged()
+						string text = String.Format(
+												System.Globalization.CultureInfo.CurrentCulture,
+												"id:{0} (0x{0:X2})",
+												_palId);
+
+						var color = PckViewForm.Pal[_palId];
+						text += String.Format(
+											System.Globalization.CultureInfo.CurrentCulture,
+											" r:{0} g:{1} b:{2} a:{3}",
+											color.R,
+											color.G,
+											color.B,
+											color.A);
+
+						switch (_palId)
+						{
+							case 0:
+								text += " [transparent]";
+								break;
+
+							// the following values cannot be palette-ids. They have special meaning in the .PCK file.
+							case 254: // transparency marker
+							case 255: // end of file marker
+								text += " [invalid]";
+								break;
+						}
+
+						_sbpEyeDropper.Text = text;
 					}
-
-					_sbpEyeDropper.Text = text;
 				}
 			}
 		}
@@ -288,14 +306,14 @@ namespace PckView
 							0,
 							1);
 			var p1 = new Point(
-							XCImageFile.SpriteWidth  * _scale,
+							XCImageFile.SpriteWidth  * _scale + Pad,
 							1);
 			var p2 = new Point(
-							XCImageFile.SpriteWidth  * _scale,
-							XCImageFile.SpriteHeight * _scale);
+							XCImageFile.SpriteWidth  * _scale + Pad,
+							XCImageFile.SpriteHeight * _scale + Pad);
 			var p3 = new Point(
 							1,
-							XCImageFile.SpriteHeight * _scale);
+							XCImageFile.SpriteHeight * _scale + Pad);
 			var p4 = new Point(
 							1,
 							1);
@@ -312,21 +330,21 @@ namespace PckView
 
 			if (_grid)
 			{
-				for (int x = 0; x != XCImageFile.SpriteWidth; ++x)
+				for (int x = 0; x != XCImageFile.SpriteWidth; ++x) // vertical lines
 					graphics.DrawLine(
-									Pens.Black,
-									x * _scale,
+									_penGrid,
+									x * _scale + Pad,
 									0,
-									x * _scale,
+									x * _scale + Pad,
 									XCImageFile.SpriteHeight * _scale);
 
-				for (int y = 0; y != XCImageFile.SpriteHeight; ++y)
+				for (int y = 0; y != XCImageFile.SpriteHeight; ++y) // horizontal lines
 					graphics.DrawLine(
-									Pens.Black,
+									_penGrid,
 									0,
-									y * _scale,
+									y * _scale + Pad,
 									XCImageFile.SpriteWidth * _scale,
-									y * _scale);
+									y * _scale + Pad);
 			}
 		}
 		#endregion
@@ -355,6 +373,13 @@ namespace PckView
 		internal int GetStatusBarHeight()
 		{
 			return _statusBar.Height;
+		}
+
+		internal void InvertGridColor(bool invert)
+		{
+			_penGrid = (invert) ? Pens.White
+								: Pens.Black;
+			Refresh();
 		}
 		#endregion
 	}
