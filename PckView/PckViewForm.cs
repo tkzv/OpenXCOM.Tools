@@ -315,14 +315,29 @@ namespace PckView
 			pals.Add(Palette.TftdGraph);
 			pals.Add(Palette.TftdResearch);
 
-			foreach (var pal in pals)
+//			foreach (var pal in pals)
+			for (int i = 0; i != pals.Count; ++i)
 			{
+				var pal = pals[i];
+
 				var itPal = new MenuItem(pal.Label);
 				itPal.Tag = pal;
 				miPaletteMenu.MenuItems.Add(itPal);
 
 				itPal.Click += OnPaletteClick;
 				_paletteItems[pal] = itPal;
+
+				switch (i)
+				{
+					case 0: itPal.Shortcut = Shortcut.Ctrl1; break;
+					case 1: itPal.Shortcut = Shortcut.Ctrl2; break;
+					case 2: itPal.Shortcut = Shortcut.Ctrl3; break;
+					case 3: itPal.Shortcut = Shortcut.Ctrl4; break;
+					case 4: itPal.Shortcut = Shortcut.Ctrl5; break;
+					case 5: itPal.Shortcut = Shortcut.Ctrl6; break;
+					case 6: itPal.Shortcut = Shortcut.Ctrl7; break;
+					case 7: itPal.Shortcut = Shortcut.Ctrl8; break;
+				}
 			}
 //			((Dictionary<string, Palette>)_share[SharedSpace.Palettes])[pal.Label] = pal;
 		}

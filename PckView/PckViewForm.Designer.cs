@@ -126,7 +126,6 @@ namespace PckView
 			this.miHq2x.Visible = false;
 			this.miHq2x.Index = 6;
 			this.miHq2x.Text = "Hq&2x";
-			this.miHq2x.Shortcut = System.Windows.Forms.Shortcut.Ctrl2;
 			this.miHq2x.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
 			// miSeparator2
