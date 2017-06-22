@@ -28,9 +28,9 @@ namespace PckView
 
 
 		#region Fields
-		private PckViewPanel _pnlView = new PckViewPanel();
+		private readonly PckViewPanel _pnlView = new PckViewPanel();
+		private readonly EditorForm _feditor   = new EditorForm();
 
-		private EditorForm _feditor = new EditorForm();
 		private ConsoleForm _fconsole;
 
 		private TabControl _tcTabs;
@@ -46,6 +46,11 @@ namespace PckView
 		private Dictionary<Palette, MenuItem> _paletteItems = new Dictionary<Palette, MenuItem>();
 
 		private bool _editorInited;
+
+		private string _pfePck;
+		private string _pfeTab;
+		private string _pfePckOld;
+		private string _pfeTabOld;
 		#endregion
 
 
@@ -84,7 +89,7 @@ namespace PckView
 			// WORKAROUND: See note in 'XCMainWindow' cTor.
 			MaximumSize = new Size(0, 0); // fu.net
 
-			SetMetrics();
+			LoadWindowMetrics();
 
 
 			#region SharedSpace information
@@ -140,10 +145,11 @@ namespace PckView
 		#endregion
 
 
+		#region Load/save 'registry' info
 		/// <summary>
 		/// Positions the window at user-defined coordinates w/ size.
 		/// </summary>
-		private void SetMetrics()
+		private void LoadWindowMetrics()
 		{
 			string dirSettings = Path.Combine(
 											Path.GetDirectoryName(Application.ExecutablePath),
@@ -211,7 +217,7 @@ namespace PckView
 		/// <summary>
 		/// Saves the window position and size to YAML.
 		/// </summary>
-		private void SaveMetrics()
+		private void SaveWindowMetrics()
 		{
 			string dirSettings = Path.Combine(
 											Path.GetDirectoryName(Application.ExecutablePath),
@@ -257,9 +263,11 @@ namespace PckView
 				File.Delete(dst);
 			}
 		}
+		#endregion
+
 
 		/// <summary>
-		/// Builds the RMB context-menu.
+		/// Builds the RMB contextmenu.
 		/// </summary>
 		/// <returns></returns>
 		private ContextMenu ViewerContextMenu()
@@ -300,7 +308,8 @@ namespace PckView
 		}
 
 		/// <summary>
-		/// Adds a palette as a menuitem to the palettes menu on the main menu.
+		/// Adds the palettes as menuitems to the palettes menu on the main
+		/// menubar.
 		/// </summary>
 		private void PopulatePaletteMenu()
 		{
@@ -343,7 +352,22 @@ namespace PckView
 		}
 
 
-		#region EventCalls
+		#region Eventcalls
+		/// <summary>
+		/// Focuses the viewer-panel after the app loads.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnShown(object sender, EventArgs e)
+		{
+			_pnlView.Select();
+		}
+
+		/// <summary>
+		/// Enables (or disables) various menuitems.
+		/// Called when the SpritesetChangedEvent is raised.
+		/// </summary>
+		/// <param name="valid"></param>
 		private void OnSpritesetChanged(bool valid)
 		{
 			// under File menu
@@ -361,7 +385,10 @@ namespace PckView
 		}
 
 		/// <summary>
-		/// Bring back the dinosaurs.
+		/// Bring back the dinosaurs. Enables (or disables) several menuitems.
+		/// Also freshens sprite data in the sprite-editor and byte-viewer if
+		/// applicable.
+		/// Called when the viewer-panel's Click event is raised.
 		/// NOTE: This fires after PckViewPanel.OnMouseDown(). Thought you'd
 		/// like to know.
 		/// </summary>
@@ -386,38 +413,53 @@ namespace PckView
 			BytesFormHelper.ReloadBytes(selected);
 		}
 
+		/// <summary>
+		/// Adds a sprite to the collection.
+		/// Called when the contextmenu's Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnAddSpriteClick(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog();
-
-			ofd.Filter = "BMP files (32x40 8-bpp) (*.BMP)|*.BMP|All files (*.*)|*.*";
-			ofd.Title = "Add BMP file(s)";
-			ofd.Multiselect = true;
-
-			if (ofd.ShowDialog() == DialogResult.OK)
+			using (var ofd = new OpenFileDialog())
 			{
-				int terrainId = _pnlView.Spriteset.Count;
+				ofd.Title  = "Add BMP file(s)";
+				ofd.Filter = "BMP files (32x40 8-bpp) (*.BMP)|*.BMP|All files (*.*)|*.*";
+				ofd.Multiselect = true;
 
-				foreach (string file in ofd.FileNames)
+				if (ofd.ShowDialog() == DialogResult.OK)
 				{
-					var bitmap = new Bitmap(file);
-					_pnlView.Spriteset.Add(BitmapService.CreateSprite(
-																	bitmap,
-																	terrainId++,
-																	Pal,
-																	0, 0,
-																	XCImageFile.SpriteWidth,
-																	XCImageFile.SpriteHeight));
-				}
-				_pnlView.Selected.Clear();
+					int terrainId = _pnlView.Spriteset.Count;
 
-				_pnlView.PrintStatusTotal();
-				Refresh();
-				// TODO: relay the tiles table. And select the sprite and show
-				// it in the SpriteEditor perhaps.
+					foreach (string file in ofd.FileNames)
+					{
+						var bitmap = new Bitmap(file);
+						_pnlView.Spriteset.Add(BitmapService.CreateSprite(
+																		bitmap,
+																		terrainId++,
+																		Pal,
+																		0, 0,
+																		XCImageFile.SpriteWidth,
+																		XCImageFile.SpriteHeight));
+					}
+					_pnlView.Selected.Clear();
+
+					_pnlView.PrintStatusTotal();
+
+					// TODO: relay the tiles table. And select the sprite and show
+					// it in the SpriteEditor perhaps.
+
+					Refresh();
+				}
 			}
 		}
 
+		/// <summary>
+		/// Deletes the selected sprite from the collection.
+		/// Called when the contextmenu's Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnDeleteSpriteClick(object sender, EventArgs e)
 		{
 			EditorPanel.Instance.ClearSprite();
@@ -426,16 +468,17 @@ namespace PckView
 
 			_pnlView.Spriteset.RemoveAt(selectedId);
 
-			int count = _pnlView.Spriteset.Count;
-			for (int id = selectedId; id != count; ++id) // shuffle any succeeding sprite's terrain-id down by 1.
+			int count = _pnlView.Spriteset.Count; // shuffle any/all succeeding sprites' terrain-ids down.
+			for (int id = selectedId; id != count; ++id)
 				_pnlView.Spriteset[id].TerrainId = id;
 
 			_pnlView.Selected.Clear(); // TODO: select another sprite, perhaps. See _pnlView.SpriteDelete()
 
 			_pnlView.PrintStatusTotal();
-			Refresh();
 
 			// TODO: relay the tiles table.
+
+			Refresh();
 		}
 
 		private void OnKeyDown(object sender, KeyEventArgs e)
@@ -444,35 +487,44 @@ namespace PckView
 //				OnDeleteSpriteClick(null, null);
 		}
 
+		/// <summary>
+		/// Replaces the selected sprite in the collection with a different
+		/// sprite.
+		/// Called when the contextmenu's Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnReplaceSpriteClick(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog();
-
-			ofd.Title = "Open BMP file";
-			ofd.Filter = "BMP files (32x40 8-bpp) (*.BMP)|*.BMP|All files (*.*)|*.*";
-
-			if (ofd.ShowDialog() == DialogResult.OK)
+			using (var ofd = new OpenFileDialog())
 			{
-				int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
+				ofd.Title  = "Open BMP file";
+				ofd.Filter = "BMP files (32x40 8-bpp) (*.BMP)|*.BMP|All files (*.*)|*.*";
 
-				var bitmap = new Bitmap(ofd.FileName);
-				var sprite = BitmapService.CreateSprite(
-													bitmap,
-													terrainId,
-													Pal,
-													0, 0,
-													XCImageFile.SpriteWidth,
-													XCImageFile.SpriteHeight);
+				if (ofd.ShowDialog() == DialogResult.OK)
+				{
+					int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
 
-				EditorPanel.Instance.Sprite   =
-				_pnlView.Spriteset[terrainId] = sprite;
+					var bitmap = new Bitmap(ofd.FileName);
+					var sprite = BitmapService.CreateSprite(
+														bitmap,
+														terrainId,
+														Pal,
+														0, 0,
+														XCImageFile.SpriteWidth,
+														XCImageFile.SpriteHeight);
 
-				Refresh();
+					EditorPanel.Instance.Sprite   =
+					_pnlView.Spriteset[terrainId] = sprite;
+
+					Refresh();
+				}
 			}
 		}
 
 		/// <summary>
-		/// Exports the last selected sprite to a BMP file.
+		/// Exports the selected sprite in the collection to a BMP file.
+		/// Called when the contextmenu's Click event is raised.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -494,32 +546,47 @@ namespace PckView
 										"{0:" + digits + "}",
 										sprite.TerrainId);
 
-			var sfd = new SaveFileDialog();
+			using (var sfd = new SaveFileDialog())
+			{
+				sfd.Title = "Export sprite";
+				sfd.FileName = _pnlView.Spriteset.Label + suffix;
+				sfd.DefaultExt = "*.BMP";
+				sfd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
 
-			sfd.Title = "Export sprite";
-			sfd.FileName = _pnlView.Spriteset.Label + suffix;
-			sfd.DefaultExt = "*.BMP";
-			sfd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
-
-			if (sfd.ShowDialog() == DialogResult.OK)
-				BitmapService.ExportSprite(sfd.FileName, sprite.Image);
+				if (sfd.ShowDialog() == DialogResult.OK)
+					BitmapService.ExportSprite(sfd.FileName, sprite.Image);
+			}
 		}
 
+		/// <summary>
+		/// Opens the currently selected sprite in the sprite-editor.
+		/// Called when the contextmenu's Click event or the viewer-panel's
+		/// DoubleClick event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnSpriteEditorClick(object sender, EventArgs e)
 		{
-			if (_pnlView.Spriteset != null && _pnlView.Selected.Count != 0)	// NOTE: the check is needed because this can be called
-			{																// by a DoubleClick as well as by a contextmenu click.
+			if (_pnlView.Spriteset != null && _pnlView.Selected.Count != 0)
+			{
+				// NOTE: So ... why doesn't the Editor's sprite change,
+				// even after refresh, when the selected sprite changes.
+				//
+				// ... in any case it's now forced to change by OnSpriteClick().
+				//
+				// ah, I guess the selected sprite is just an intermediary between the Spriteset and the EditorPanel.
+				// So you're not really setting the Editor's sprite to the Selected sprite, but to the Spriteset's sprite.
+				// None of which are the sprites, of course; they're all pointers.
+				//
+				// what this means is that the SelectedSprite class could be replaced by a lowly integer.
+				// Or simply a list of integers if you want the capability to have more than one selected sprite.
 
-				EditorPanel.Instance.Sprite = _pnlView.Selected[0].Sprite;	// NOTE: So ... why doesn't the Editor's sprite change,
-																			// even after refresh, when the selected sprite changes.
-				if (!_feditor.Visible)										// ... in any case it's now forced to change by OnSpriteClick().
-				{															// ah, I guess the selected sprite is just an intermediary between the Spriteset and the EditorPanel.
-																			// So you're not really setting the Editor's sprite to the Selected sprite, but to the Spriteset's sprite.
-																			// None of which are the sprites, of course; they're all pointers.
-																			// what this means is that the SelectedSprite class could be replaced by a lowly integer.
-																			// Or simply a list of integers if you want the capability to have more than one selected sprite.
-					_miEdit.Checked = true;	// TODO: show as Checked only if currently selected
-											// sprite is actually open in the Editor.
+				EditorPanel.Instance.Sprite = _pnlView.Selected[0].Sprite;
+
+				if (!_feditor.Visible)
+				{
+					_miEdit.Checked = true;	// TODO: show as Checked only if the currently
+											// selected sprite is actually open in the editor.
 					if (!_editorInited)
 					{
 						_editorInited = true;
@@ -533,6 +600,11 @@ namespace PckView
 			}
 		}
 
+		/// <summary>
+		/// Cancels closing the editor and hides it instead.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnEditorFormClosing(object sender, CancelEventArgs e)
 		{
 			_miEdit.Checked = false;
@@ -541,6 +613,226 @@ namespace PckView
 			_feditor.Hide();
 		}
 
+		/// <summary>
+		/// Opens a PCK sprite collection.
+		/// Called when the mainmenu's file-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnOpenClick(object sender, EventArgs e)
+		{
+			using (var ofd = new OpenFileDialog())
+			{
+				ofd.Filter = "Pck Files (*.pck)|*.PCK|All Files (*.*)|*.*";
+				ofd.Title  = "Select a Pck File";
+
+				if (ofd.ShowDialog() == DialogResult.OK)
+					LoadSpriteset(ofd.FileName, false);
+			}
+		}
+
+		/// <summary>
+		/// Saves all the sprites to the currently loaded PCK+TAB files.
+		/// Called when the mainmenu's file-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnSaveClick(object sender, EventArgs e)
+		{
+			// http://www.ufopaedia.org/index.php/Image_Formats
+			// - that says that all TFTD terrains use 2-byte tab-offsets ...
+//			const int tabOffset = 2;
+//			if (   Pal.Equals(Palette.TftdBattle)
+//				|| Pal.Equals(Palette.TftdGeo)
+//				|| Pal.Equals(Palette.TftdGraph)
+//				|| Pal.Equals(Palette.TftdResearch))
+//			{
+//				tabOffset = 4; // NOTE: I don't have TFTD and I do have no clue if this works correctly.
+//			}
+
+			BackupSpritesetFiles();
+
+			if (SpriteCollection.SaveSpriteset(
+											SpritesetDirectory,
+											SpritesetLabel,
+											_pnlView.Spriteset,
+											((SpriteCollection)_pnlView.Spriteset).TabOffset)) //tabOffset
+			{
+				SpritesChanged = true; // NOTE: is used by MapView's TileView to flag the Map to reload.
+			}
+			else
+			{
+				ShowSaveError();
+				RevertFiles();
+			}
+		}
+
+		/// <summary>
+		/// Saves all the sprites to potentially different PCK+TAB files.
+		/// Called when the mainmenu's file-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnSaveAsClick(object sender, EventArgs e)
+		{
+			var sfd = new SaveFileDialog();
+			sfd.FileName = SpritesetLabel;
+			sfd.Title = "Save as";
+
+			if (sfd.ShowDialog() == DialogResult.OK)
+			{
+				string dir  = Path.GetDirectoryName(sfd.FileName);
+				string file = Path.GetFileNameWithoutExtension(sfd.FileName);
+
+				bool revertReady; // user requested to save the files to the same filenames.
+				if (file.Equals(SpritesetLabel, StringComparison.OrdinalIgnoreCase))
+				{
+					BackupSpritesetFiles();
+					revertReady = true;
+				}
+				else
+					revertReady = false;
+
+				if (SpriteCollection.SaveSpriteset(
+												dir,
+												file,
+												_pnlView.Spriteset,
+												((SpriteCollection)_pnlView.Spriteset).TabOffset))
+				{
+					if (!revertReady) // load the SavedAs files ->
+					{
+						string pfePck = Path.Combine(dir, file + SpriteCollection.PckExt);
+						LoadSpriteset(pfePck, false);
+					}
+
+					SpritesChanged = true;	// NOTE: is used by MapView's TileView to flag the Map to reload.
+				}							// btw, reload MapView's Map in either case; the new terrain may also be in its Map's terrainset ...
+				else
+				{
+					ShowSaveError();
+
+					if (revertReady)
+					{
+						RevertFiles();
+					}
+					else
+					{
+						File.Delete(Path.Combine(dir, file + SpriteCollection.PckExt));
+						File.Delete(Path.Combine(dir, file + SpriteCollection.TabExt));
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Exports all sprites in the currently loaded spriteset to BMP files.
+		/// Called when the mainmenu's file-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnExportSpritesClick(object sender, EventArgs e)
+		{
+			if (_pnlView.Spriteset != null && _pnlView.Spriteset.Count != 0)
+			{
+				using (var fbd = new FolderBrowserDialog())
+				{
+					string file = _pnlView.Spriteset.Label.ToUpperInvariant();
+
+					fbd.Description = String.Format(
+												System.Globalization.CultureInfo.CurrentCulture,
+												"Select a folder for the sprites"
+													+ Environment.NewLine + Environment.NewLine
+													+ "\t" + file);
+
+					if (fbd.ShowDialog() == DialogResult.OK)
+					{
+						string path = fbd.SelectedPath;
+
+						string digits = String.Empty;
+						int count = _pnlView.Spriteset.Count;
+						do
+						{
+							digits += "0";
+							count /= 10;
+						}
+						while (count != 0);
+
+//						var progress     = new ProgressWindow(this);
+//						progress.Width   = 300;
+//						progress.Height  = 50;
+//						progress.Minimum = 0;
+//						progress.Maximum = _pnlView.Spriteset.Count;
+//
+//						progress.Show();
+						foreach (XCImage sprite in _pnlView.Spriteset)
+						{
+							string suffix = String.Format(
+														System.Globalization.CultureInfo.InvariantCulture,
+														"{0:" + digits + "}",
+														sprite.TerrainId);
+							string fullpath = Path.Combine(path, file + suffix + BitmapService.BmpExt);
+							BitmapService.ExportSprite(fullpath, sprite.Image);
+
+//							progress.Value = sprite.FileId;
+						}
+//						progress.Hide(); // TODO: I suspect this is essentially the same as a memory leak.
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// DISABLED. Uses an HQ2x algorithm to display the sprites.
+		/// Called when the mainmenu's file-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnHq2xClick(object sender, EventArgs e) // disabled w/ Visible=FALSE in the designer.
+		{
+//			miPaletteMenu.Enabled = false;
+//			miBytesMenu.Enabled = false;
+//
+//			_totalViewPck.Hq2x();
+//
+//			OnResize(null);
+//			Refresh();
+		}
+
+		/// <summary>
+		/// Closes the app.
+		/// Called when the mainmenu's file-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnQuitClick(object sender, EventArgs e)
+		{
+			OnPckViewFormClosing(null, null);
+			Close();
+		}
+
+		/// <summary>
+		/// Closes the app after a .NET call to close (roughly).
+		/// also, Helper for OnQuitClick().
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnPckViewFormClosing(object sender, FormClosingEventArgs e)
+		{
+			SaveWindowMetrics();
+
+			_feditor.ClosePalette();	// these are needed when PckView
+			_feditor.Close();			// was opened via MapView.
+
+			if (miBytes.Checked)
+				BytesFormHelper.CloseBytes();
+		}
+
+		/// <summary>
+		/// Changes the loaded palette.
+		/// Called when the mainmenu's palette-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnPaletteClick(object sender, EventArgs e)
 		{
 			var pal = ((MenuItem)sender).Tag as Palette;
@@ -561,6 +853,12 @@ namespace PckView
 			}
 		}
 
+		/// <summary>
+		/// Toggles transparency of the currently loaded palette.
+		/// Called when the mainmenu's transparency-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnTransparencyClick(object sender, EventArgs e)
 		{
 			Pal.SetTransparent(miTransparent.Checked = !miTransparent.Checked);
@@ -574,25 +872,126 @@ namespace PckView
 				handler();
 		}
 
-		private void OnQuitClick(object sender, EventArgs e)
+		/// <summary>
+		/// Shows a richtextbox with all the bytes of the currently selected
+		/// sprite laid out in a fairly readable fashion.
+		/// Called when the mainmenu's bytes-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnShowBytesClick(object sender, EventArgs e)
 		{
-			OnPckViewFormClosing(null, null);
-			Close();
-		}
-
-		private void OnOpenClick(object sender, EventArgs e)
-		{
-			using (var ofd = new OpenFileDialog())
+			if (!miBytes.Checked)
 			{
-				ofd.Filter = "Pck Files (*.pck)|*.PCK|All Files (*.*)|*.*";
-				ofd.Title  = "Select a Pck File";
-//				ofd.InitialDirectory = _share.GetString(SharedSpace.ApplicationDirectory);
-
-				if (ofd.ShowDialog() == DialogResult.OK)
-					LoadSpriteset(ofd.FileName, false);
+				if (_pnlView.Selected.Count != 0)
+				{
+					miBytes.Checked = true;
+					BytesFormHelper.ShowBytes(
+										_pnlView.Selected[0],
+										CallbackShowBytesClosing);
+				}
+			}
+			else
+			{
+				miBytes.Checked = false;
+				BytesFormHelper.CloseBytes();
 			}
 		}
 
+		/// <summary>
+		/// Callback for ShowBytes().
+		/// </summary>
+		private void CallbackShowBytesClosing()
+		{
+			miBytes.Checked = false;
+		}
+
+		/// <summary>
+		/// Shows the help thingie.
+		/// Called when the mainmenu's help-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnHelpClick(object sender, EventArgs e)
+		{
+			new Help().ShowDialog(this);
+		}
+
+		/// <summary>
+		/// Shows the about-box.
+		/// Called when the mainmenu's help-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnAboutClick(object sender, EventArgs e)
+		{
+			new About().ShowDialog(this);
+		}
+
+		/// <summary>
+		/// Shows the console.
+		/// Called when the mainmenu's help-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnConsoleClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
+		{
+//			if (_fconsole.Visible)
+//				_fconsole.BringToFront();
+//			else
+//				_fconsole.Show();
+		}
+
+		private void OnMapViewHelpClick(object sender, EventArgs e)
+		{
+			pnlMapViewHelp.Visible = !pnlMapViewHelp.Visible;
+			miMapViewHelp.Checked = pnlMapViewHelp.Visible;
+		}
+
+		private void OnMapViewGotItClick(object sender, EventArgs e)
+		{
+			pnlMapViewHelp.Visible  =
+			miMapViewHelp.Checked = false;
+		}
+
+		private void OnCompareClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
+		{
+			var original = _pnlView.Spriteset;
+
+			OnOpenClick(null, EventArgs.Empty);
+
+			var spriteset = _pnlView.Spriteset;
+
+			_pnlView.Spriteset = original;
+
+			if (Controls.Contains(_pnlView))
+			{
+				Controls.Remove(_pnlView);
+
+				_tcTabs = new TabControl();
+				_tcTabs.Dock = DockStyle.Fill;
+				pnlView.Controls.Add(_tcTabs);
+
+				var tabpage = new TabPage();
+				tabpage.Controls.Add(_pnlView);
+				tabpage.Text = "Original";
+				_tcTabs.TabPages.Add(tabpage);
+
+				var viewpanel = new PckViewPanel();
+				viewpanel.ContextMenu = ViewerContextMenu();
+				viewpanel.Dock = DockStyle.Fill;
+				viewpanel.Spriteset = spriteset;
+
+				tabpage = new TabPage();
+				tabpage.Controls.Add(viewpanel);
+				tabpage.Text = "New";
+				_tcTabs.TabPages.Add(tabpage);
+			}
+		}
+		#endregion
+
+
+		#region Methods
 		/// <summary>
 		/// Sets the current palette.
 		/// NOTE: Called only from TileView to set the palette externally.
@@ -666,7 +1065,7 @@ namespace PckView
 
 					_pnlView.Spriteset = spriteset;
 
-					UpdateCaption(pfePck);
+					Text = "PckView - " + pfePck;
 
 //					if (help) // disabled until editing and saving get reinstated.
 //					{
@@ -690,187 +1089,6 @@ namespace PckView
 							0);
 			}
 		}
-
-		private void UpdateCaption(string fullpath)
-		{
-			Text = "PckView - " + fullpath;
-		}
-
-		private void OnShowBytesClick(object sender, EventArgs e)
-		{
-			if (!miBytes.Checked)
-			{
-				if (_pnlView.Selected.Count != 0)
-				{
-					miBytes.Checked = true;
-					BytesFormHelper.ShowBytes(
-										_pnlView.Selected[0],
-										CallbackShowBytesClosing);
-				}
-			}
-			else
-			{
-				miBytes.Checked = false;
-				BytesFormHelper.CloseBytes();
-			}
-		}
-
-		private void CallbackShowBytesClosing()
-		{
-			miBytes.Checked = false;
-		}
-
-		private void OnAboutClick(object sender, EventArgs e)
-		{
-			new About().ShowDialog(this);
-		}
-
-		private void OnHelpClick(object sender, EventArgs e)
-		{
-			new Help().ShowDialog(this);
-		}
-
-		private void OnHq2xClick(object sender, EventArgs e) // disabled w/ Visible=FALSE in the designer.
-		{
-//			miPaletteMenu.Enabled = false;
-//			miBytesMenu.Enabled = false;
-//
-//			_totalViewPck.Hq2x();
-//
-//			OnResize(null);
-//			Refresh();
-		}
-
-		private void OnConsoleClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
-		{
-//			if (_fconsole.Visible)
-//				_fconsole.BringToFront();
-//			else
-//				_fconsole.Show();
-		}
-
-		private void OnCompareClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
-		{
-			var original = _pnlView.Spriteset;
-
-			OnOpenClick(null, EventArgs.Empty);
-
-			var spriteset = _pnlView.Spriteset;
-
-			_pnlView.Spriteset = original;
-
-			if (Controls.Contains(_pnlView))
-			{
-				Controls.Remove(_pnlView);
-
-				_tcTabs = new TabControl();
-				_tcTabs.Dock = DockStyle.Fill;
-				pnlView.Controls.Add(_tcTabs);
-
-				var tabpage = new TabPage();
-				tabpage.Controls.Add(_pnlView);
-				tabpage.Text = "Original";
-				_tcTabs.TabPages.Add(tabpage);
-
-				var viewpanel = new PckViewPanel();
-				viewpanel.ContextMenu = ViewerContextMenu();
-				viewpanel.Dock = DockStyle.Fill;
-				viewpanel.Spriteset = spriteset;
-
-				tabpage = new TabPage();
-				tabpage.Controls.Add(viewpanel);
-				tabpage.Text = "New";
-				_tcTabs.TabPages.Add(tabpage);
-			}
-		}
-
-		private void OnSaveClick(object sender, EventArgs e)
-		{
-			// http://www.ufopaedia.org/index.php/Image_Formats
-			// - that says that all TFTD terrains use 2-byte tab-offsets ...
-//			const int tabOffset = 2;
-//			if (   Pal.Equals(Palette.TftdBattle)
-//				|| Pal.Equals(Palette.TftdGeo)
-//				|| Pal.Equals(Palette.TftdGraph)
-//				|| Pal.Equals(Palette.TftdResearch))
-//			{
-//				tabOffset = 4; // NOTE: I don't have TFTD and I do have no clue if this works correctly.
-//			}
-
-			BackupSpritesetFiles();
-
-			if (SpriteCollection.SaveSpriteset(
-											SpritesetDirectory,
-											SpritesetLabel,
-											_pnlView.Spriteset,
-											((SpriteCollection)_pnlView.Spriteset).TabOffset)) //tabOffset
-			{
-				SpritesChanged = true; // NOTE: is used by MapView's TileView to flag the Map to reload.
-			}
-			else
-			{
-				ShowSaveError();
-				RevertFiles();
-			}
-		}
-
-		private void OnSaveAsClick(object sender, EventArgs e)
-		{
-			var sfd = new SaveFileDialog();
-			sfd.FileName = SpritesetLabel;
-			sfd.Title = "Save as";
-
-			if (sfd.ShowDialog() == DialogResult.OK)
-			{
-				string dir  = Path.GetDirectoryName(sfd.FileName);
-				string file = Path.GetFileNameWithoutExtension(sfd.FileName);
-
-				bool revertReady;
-				if (file.Equals(SpritesetLabel, StringComparison.OrdinalIgnoreCase)) // user requested to save the files to the same filenames.
-				{
-					BackupSpritesetFiles();
-					revertReady = true;
-				}
-				else
-					revertReady = false;
-
-				if (SpriteCollection.SaveSpriteset(
-												dir,
-												file,
-												_pnlView.Spriteset,
-												((SpriteCollection)_pnlView.Spriteset).TabOffset))
-				{
-					if (!revertReady) // load the SavedAs files ->
-					{
-						string pfePck = Path.Combine(dir, file + SpriteCollection.PckExt);
-						LoadSpriteset(pfePck, false);
-					}
-//					else
-					// NOTE: reload MapView's Map in either case; the new terrain might also be in its Map's terrainset ...
-					SpritesChanged = true; // NOTE: is used by MapView's TileView to flag the Map to reload.
-				}
-				else
-				{
-					ShowSaveError();
-
-					if (revertReady)
-					{
-						RevertFiles();
-					}
-					else
-					{
-						File.Delete(Path.Combine(dir, file + SpriteCollection.PckExt));
-						File.Delete(Path.Combine(dir, file + SpriteCollection.TabExt));
-					}
-				}
-			}
-		}
-
-
-		private string _pfePck;
-		private string _pfeTab;
-		private string _pfePckOld;
-		private string _pfeTabOld;
 
 		/// <summary>
 		/// Backs up the PCK+TAB files before trying a Save or SaveAs.
@@ -949,95 +1167,11 @@ namespace PckView
 						MessageBoxDefaultButton.Button1,
 						0);
 		}
-
-		/// <summary>
-		/// Exports all sprites in the currently loaded spriteset to BMP files.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnExportSpritesClick(object sender, EventArgs e)
-		{
-			if (_pnlView.Spriteset != null && _pnlView.Spriteset.Count != 0)
-			{
-				using (var fbd = new FolderBrowserDialog())
-				{
-					string file = _pnlView.Spriteset.Label.ToUpperInvariant();
-
-//					fbd.SelectedPath = ;
-					fbd.Description = String.Format(
-												System.Globalization.CultureInfo.CurrentCulture,
-												"Select a folder for the sprites"
-													+ Environment.NewLine + Environment.NewLine
-													+ "\t" + file);
-
-					if (fbd.ShowDialog() == DialogResult.OK)
-					{
-						string path = fbd.SelectedPath;
-
-						string digits = String.Empty;
-						int count = _pnlView.Spriteset.Count;
-						do
-						{
-							digits += "0";
-							count /= 10;
-						}
-						while (count != 0);
-
-//						var progress     = new ProgressWindow(this);
-//						progress.Width   = 300;
-//						progress.Height  = 50;
-//						progress.Minimum = 0;
-//						progress.Maximum = _pnlView.Spriteset.Count;
-//
-//						progress.Show();
-						foreach (XCImage sprite in _pnlView.Spriteset)
-						{
-							string suffix = String.Format(
-														System.Globalization.CultureInfo.InvariantCulture,
-														"{0:" + digits + "}",
-														sprite.TerrainId);
-							string fullpath = Path.Combine(path, file + suffix + BitmapService.BmpExt);
-							BitmapService.ExportSprite(fullpath, sprite.Image);
-
-//							progress.Value = sprite.FileId;
-						}
-//						progress.Hide(); // TODO: I suspect this is essentially the same as a memory leak.
-					}
-				}
-			}
-		}
-
-		private void OnMapViewHelpClick(object sender, EventArgs e)
-		{
-			pnlMapViewHelp.Visible = !pnlMapViewHelp.Visible;
-			miMapViewHelp.Checked = pnlMapViewHelp.Visible;
-		}
-
-		private void OnMapViewGotItClick(object sender, EventArgs e)
-		{
-			pnlMapViewHelp.Visible  =
-			miMapViewHelp.Checked = false;
-		}
-
-		private void OnShown(object sender, EventArgs e)
-		{
-			_pnlView.Select();
-//			_console.Show();
-		}
-
-		private void OnPckViewFormClosing(object sender, FormClosingEventArgs e)
-		{
-			SaveMetrics();
-
-			_feditor.ClosePalette();	// these are needed when PckView
-			_feditor.Close();			// was opened via MapView.
-
-			if (miBytes.Checked)
-				BytesFormHelper.CloseBytes();
-		}
 		#endregion
 	}
 
 
+	#region Delegates
 	internal delegate void PaletteChangedEventHandler();
+	#endregion
 }
