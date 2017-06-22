@@ -51,11 +51,8 @@ namespace PckView
 
 		private int _startY;
 
-		private int _idSelected;
-		private int _idOver;
-
-		private int _overX = -1;
-		private int _overY = -1;
+		private int _selectedId;
+		private int _overId;
 
 		private Pen   _penBlack        = new Pen(Brushes.Black, 1);
 		private Pen   _penControlLight = new Pen(SystemColors.ControlLight, 1);
@@ -102,7 +99,7 @@ namespace PckView
 				if (SpritesetChangedEvent != null)
 					SpritesetChangedEvent(value != null);
 
-				EditorPanel.Instance.ClearSprite();
+				EditorPanel.Instance.Sprite = null;
 				// TODO: update PaletteViewer if the spriteset palette changes.
 			}
 		}
@@ -173,8 +170,8 @@ namespace PckView
 				_statusBar
 			});
 
-			OnSpriteClick(-1);
-			OnSpriteOver( -1);
+			UpdateSpriteClick(-1);
+			UpdateSpriteOver( -1);
 
 			PckViewForm.PaletteChangedEvent += OnPaletteChanged; // NOTE: lives the life of the app, so no leak.
 
@@ -182,6 +179,11 @@ namespace PckView
 		}
 		#endregion
 
+
+		internal void ForceResize()
+		{
+			OnResize(EventArgs.Empty);
+		}
 
 		#region Eventcalls (override)
 		protected override void OnResize(EventArgs eventargs)
@@ -193,7 +195,7 @@ namespace PckView
 				UpdateScrollbar(false);
 
 				if (Selected.Count != 0)
-					ScrollToTile(Selected[0].TerrainId);
+					ScrollToTile(Selected[0].Sprite.TerrainId);
 			}
 		}
 
@@ -242,51 +244,40 @@ namespace PckView
 				// although it is set up as a List. Things might go one way or
 				// the other in future.
 
-				Selected.Clear();
-				int id = -1;
-
-				if (e.X < _tilesX * _tileWidth + TableOffsetHori - 1) // not out of bounds to right
+				int terrainId = GetTileId(e);
+				if (terrainId != _selectedId)
 				{
-					int tileX = (e.X - TableOffsetHori + 1)           / _tileWidth;
-					int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _tileHeight;
+					Selected.Clear();
 
-					id = tileY * _tilesX + tileX;
-					if (id < Spriteset.Count) // not out of bounds below
+					if (terrainId != -1)
 					{
-						var selected       = new SelectedSprite();
-						selected.TerrainId = id;
-						selected.Sprite    = Spriteset[id];
+						var selected = new SelectedSprite();
+						selected.Sprite = Spriteset[terrainId];
 
 						Selected.Add(selected);
+
+						terrainId = selected.Sprite.TerrainId; // use the proper Id.
+
 
 //						if (ModifierKeys == Keys.Control)
 //						{
 //							SpriteSelected spritePre = null;
 //							foreach (var sprite in _selectedSprites)
-//							{
 //								if (sprite.X == tileX && sprite.Y == tileY)
 //									spritePre = sprite;
-//							}
 //							if (spritePre != null)
-//							{
 //								_selectedSprites.Remove(spritePre);
-//							}
 //							else
 //								_selectedSprites.Add(selected);
 //						}
 //						else
-//						{
 //							Selected.Add(selected);
-//						}
 					}
-					else
-						id = -1;
+
+					UpdateSpriteClick(terrainId);
+					Refresh();
 				}
-
-				OnSpriteClick(id);
-				ScrollToTile(id);
-
-				Refresh();
+				ScrollToTile(terrainId);
 			}
 		}
 
@@ -301,26 +292,29 @@ namespace PckView
 
 			if (Spriteset != null && Spriteset.Count != 0)
 			{
-				if (e.X < _tileWidth * _tilesX + TableOffsetHori - 1) // not out of bounds to right
-				{
-					int tileX = (e.X - TableOffsetHori + 1)           / _tileWidth;
-					int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _tileHeight;
-
-					if (tileX != _overX || tileY != _overY)
-					{
-						_overX = tileX;
-						_overY = tileY;
-
-						int id = tileY * _tilesX + tileX;
-						if (id >= Spriteset.Count) // out of bounds below
-							id = -1;
-
-						OnSpriteOver(id);
-					}
-				}
-				else
-					OnSpriteOver(-1);
+				int terrainId = GetTileId(e);
+				if (terrainId != _overId)
+					UpdateSpriteOver(terrainId);
 			}
+		}
+
+		/// <summary>
+		/// Gets the terrain-id of a sprite at coordinates x/y.
+		/// </summary>
+		/// <param name="e"></param>
+		/// <returns>the terrain-id or -1 if out of bounds</returns>
+		private int GetTileId(MouseEventArgs e)
+		{
+			if (e.X < _tilesX * _tileWidth + TableOffsetHori - 1) // not out of bounds to right
+			{
+				int tileX = (e.X - TableOffsetHori + 1)           / _tileWidth;
+				int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _tileHeight;
+
+				int terrainId = _tilesX * tileY + tileX;
+				if (terrainId < Spriteset.Count) // not out of bounds below
+					return terrainId;
+			}
+			return -1;
 		}
 
 		/// <summary>
@@ -346,7 +340,7 @@ namespace PckView
 
 				var selectedIds = new List<int>(); // track currently selected spriteIds.
 				foreach (var sprite in Selected)
-					selectedIds.Add(sprite.TerrainId);
+					selectedIds.Add(sprite.Sprite.TerrainId);
 
 				for (int id = 0; id != Spriteset.Count; ++id) // fill selected tiles and draw sprites.
 				{
@@ -418,36 +412,6 @@ namespace PckView
 			_startY = -_scrollBar.Value;
 			Refresh();
 		}
-
-		/// <summary>
-		/// Updates the status-information for the sprite that the cursor is
-		/// currently over.
-		/// </summary>
-		/// <param name="spriteId">the entry # (id) of the currently mouseovered
-		/// sprite in the currently loaded PckPack</param>
-		private void OnSpriteOver(int spriteId)
-		{
-			if (spriteId == -1)
-			{
-				_overX =
-				_overY = -1;
-			}
-
-			_idOver = spriteId;
-			PrintStatus();
-		}
-
-		/// <summary>
-		/// Updates the status-information for the sprite that the cursor is
-		/// currently over.
-		/// </summary>
-		/// <param name="spriteId">the entry # (id) of the currently mouseclicked
-		/// sprite in the currently loaded PckPack</param>
-		private void OnSpriteClick(int spriteId)
-		{
-			_idSelected = spriteId;
-			PrintStatus();
-		}
 		#endregion
 
 
@@ -456,11 +420,12 @@ namespace PckView
 		/// Checks if a selected tile is fully visible in the view-panel and
 		/// scrolls the table to show it if not.
 		/// </summary>
-		private void ScrollToTile(int id)
+		/// <param name="terrainId"></param>
+		private void ScrollToTile(int terrainId)
 		{
-			if (id != -1)
+			if (terrainId != -1)
 			{
-				int tileY = id / _tilesX;
+				int tileY = terrainId / _tilesX;
 
 				int cutoff = _tileHeight * tileY;
 				if (cutoff < -_startY)		// <- check cutoff high
@@ -518,27 +483,53 @@ namespace PckView
 			_sbpTilesTotal.Text = String.Format(
 											System.Globalization.CultureInfo.InvariantCulture,
 											"Total {0}", _spriteset.Count);
-			OnSpriteClick(-1);
-			OnSpriteOver( -1);
+			UpdateSpriteClick(-1);
+			UpdateSpriteOver( -1);
+		}
+
+		/// <summary>
+		/// Updates the status-information for the sprite that the cursor is
+		/// currently over.
+		/// </summary>
+		/// <param name="terrainId">the id of the currently mouse-overed sprite
+		/// in the currently loaded spriteset</param>
+		private void UpdateSpriteOver(int terrainId)
+		{
+			_overId = terrainId;
+			PrintStatusSpriteIds();
+		}
+
+		/// <summary>
+		/// Updates the status-information for the sprite that is currently
+		/// selected.
+		/// </summary>
+		/// <param name="terrainId">the id of the currently mouse-clicked sprite
+		/// in the currently loaded spriteset</param>
+		private void UpdateSpriteClick(int terrainId)
+		{
+			_selectedId = terrainId;
+			PrintStatusSpriteIds();
 		}
 
 		/// <summary>
 		/// Prints the current status for the currently selected and/or
-		/// mouseovered sprite(s) in the status-bar.
+		/// mouseovered sprite(s) in the status-bar. Not 0-based.
 		/// </summary>
-		private void PrintStatus()
+		private void PrintStatusSpriteIds()
 		{
-			string selected = (_idSelected != -1) ? _idSelected.ToString(System.Globalization.CultureInfo.InvariantCulture)
-												  : None;
-			string over     = (_idOver != -1)     ? _idOver.ToString(System.Globalization.CultureInfo.InvariantCulture)
-												  : None;
-
+			int selectedId = _selectedId + 1;
+			string selected = (selectedId != 0) ? selectedId.ToString(System.Globalization.CultureInfo.InvariantCulture)
+												: None;
 			_sbpTileSelected.Text = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
 												"Selected {0}", selected);
-			_sbpTileOver.Text     = String.Format(
-												System.Globalization.CultureInfo.InvariantCulture,
-												"Over {0}", over);
+
+			int overId = _overId + 1;
+			string over = (overId != 0) ? overId.ToString(System.Globalization.CultureInfo.InvariantCulture)
+										: None;
+			_sbpTileOver.Text = String.Format(
+										System.Globalization.CultureInfo.InvariantCulture,
+										"Over {0}", over);
 		}
 		#endregion
 	}

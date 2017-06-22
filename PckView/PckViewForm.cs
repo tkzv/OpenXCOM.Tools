@@ -40,6 +40,8 @@ namespace PckView
 		private MenuItem _miAdd;
 		private MenuItem _miDelete;
 		private MenuItem _miReplace;
+		private MenuItem _miInsertBefore;
+		private MenuItem _miInsertAfter;
 
 //		private SharedSpace _share = SharedSpace.Instance;
 
@@ -297,6 +299,16 @@ namespace PckView
 			_miReplace.Click += OnReplaceSpriteClick;
 			contextmenu.MenuItems.Add(_miReplace);
 
+			_miInsertBefore = new MenuItem("Insert before ...");
+			_miInsertBefore.Enabled = false;
+			_miInsertBefore.Click += OnInsertSpriteBeforeClick;
+			contextmenu.MenuItems.Add(_miInsertBefore);
+
+			_miInsertAfter = new MenuItem("Insert after ...");
+			_miInsertAfter.Enabled = false;
+			_miInsertAfter.Click += OnInsertSpriteAfterClick;
+			contextmenu.MenuItems.Add(_miInsertAfter);
+
 			contextmenu.MenuItems.Add(new MenuItem("-"));
 
 			_miExport = new MenuItem("Export ...");
@@ -399,163 +411,23 @@ namespace PckView
 			bool valid = (_pnlView.Selected.Count != 0);
 
 			// on Context menu
-			_miEdit.Enabled    =
-			_miExport.Enabled  =
-			_miDelete.Enabled  =
-			_miReplace.Enabled = valid;
+			_miEdit.Enabled         =
+			_miExport.Enabled       =
+			_miDelete.Enabled       =
+			_miReplace.Enabled      =
+			_miInsertBefore.Enabled =
+			_miInsertAfter.Enabled  = valid;
 
 			SelectedSprite selected = null;
 			if (valid)
 			{
 				selected = _pnlView.Selected[0];
-				EditorPanel.Instance.Sprite = selected.Sprite;
+				EditorPanel.Instance.Sprite = _pnlView.Spriteset[selected.Sprite.TerrainId];
 			}
-			BytesFormHelper.ReloadBytes(selected);
-		}
+			else
+				EditorPanel.Instance.Sprite = null;
 
-		/// <summary>
-		/// Adds a sprite to the collection.
-		/// Called when the contextmenu's Click event is raised.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnAddSpriteClick(object sender, EventArgs e)
-		{
-			using (var ofd = new OpenFileDialog())
-			{
-				ofd.Title  = "Add BMP file(s)";
-				ofd.Filter = "BMP files (32x40 8-bpp) (*.BMP)|*.BMP|All files (*.*)|*.*";
-				ofd.Multiselect = true;
-
-				if (ofd.ShowDialog() == DialogResult.OK)
-				{
-					int terrainId = _pnlView.Spriteset.Count;
-
-					foreach (string file in ofd.FileNames)
-					{
-						var bitmap = new Bitmap(file);
-						_pnlView.Spriteset.Add(BitmapService.CreateSprite(
-																		bitmap,
-																		terrainId++,
-																		Pal,
-																		0, 0,
-																		XCImageFile.SpriteWidth,
-																		XCImageFile.SpriteHeight));
-					}
-					_pnlView.Selected.Clear();
-
-					_pnlView.PrintStatusTotal();
-
-					// TODO: relay the tiles table. And select the sprite and show
-					// it in the SpriteEditor perhaps.
-
-					Refresh();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Deletes the selected sprite from the collection.
-		/// Called when the contextmenu's Click event is raised.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnDeleteSpriteClick(object sender, EventArgs e)
-		{
-			EditorPanel.Instance.ClearSprite();
-
-			int selectedId = _pnlView.Selected[0].TerrainId;
-
-			_pnlView.Spriteset.RemoveAt(selectedId);
-
-			int count = _pnlView.Spriteset.Count; // shuffle any/all succeeding sprites' terrain-ids down.
-			for (int id = selectedId; id != count; ++id)
-				_pnlView.Spriteset[id].TerrainId = id;
-
-			_pnlView.Selected.Clear(); // TODO: select another sprite, perhaps. See _pnlView.SpriteDelete()
-
-			_pnlView.PrintStatusTotal();
-
-			// TODO: relay the tiles table.
-
-			Refresh();
-		}
-
-		private void OnKeyDown(object sender, KeyEventArgs e)
-		{
-//			if (_miDelete.Enabled && e.KeyCode == Keys.Delete)
-//				OnDeleteSpriteClick(null, null);
-		}
-
-		/// <summary>
-		/// Replaces the selected sprite in the collection with a different
-		/// sprite.
-		/// Called when the contextmenu's Click event is raised.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnReplaceSpriteClick(object sender, EventArgs e)
-		{
-			using (var ofd = new OpenFileDialog())
-			{
-				ofd.Title  = "Open BMP file";
-				ofd.Filter = "BMP files (32x40 8-bpp) (*.BMP)|*.BMP|All files (*.*)|*.*";
-
-				if (ofd.ShowDialog() == DialogResult.OK)
-				{
-					int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
-
-					var bitmap = new Bitmap(ofd.FileName);
-					var sprite = BitmapService.CreateSprite(
-														bitmap,
-														terrainId,
-														Pal,
-														0, 0,
-														XCImageFile.SpriteWidth,
-														XCImageFile.SpriteHeight);
-
-					EditorPanel.Instance.Sprite   =
-					_pnlView.Spriteset[terrainId] = sprite;
-
-					Refresh();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Exports the selected sprite in the collection to a BMP file.
-		/// Called when the contextmenu's Click event is raised.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnExportSpriteClick(object sender, EventArgs e)
-		{
-			string digits = String.Empty;
-
-			int count = _pnlView.Spriteset.Count;
-			do
-			{
-				digits += "0";
-				count /= 10;
-			}
-			while (count != 0);
-
-			var sprite = _pnlView.Selected[0].Sprite;
-			string suffix = String.Format(
-										System.Globalization.CultureInfo.InvariantCulture,
-										"{0:" + digits + "}",
-										sprite.TerrainId);
-
-			using (var sfd = new SaveFileDialog())
-			{
-				sfd.Title = "Export sprite";
-				sfd.FileName = _pnlView.Spriteset.Label + suffix;
-				sfd.DefaultExt = "*.BMP";
-				sfd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
-
-				if (sfd.ShowDialog() == DialogResult.OK)
-					BitmapService.ExportSprite(sfd.FileName, sprite.Image);
-			}
+			BytesFormHelper.ReloadBytes(selected); // this will clear the show-bytes box if null.
 		}
 
 		/// <summary>
@@ -581,7 +453,7 @@ namespace PckView
 				// what this means is that the SelectedSprite class could be replaced by a lowly integer.
 				// Or simply a list of integers if you want the capability to have more than one selected sprite.
 
-				EditorPanel.Instance.Sprite = _pnlView.Selected[0].Sprite;
+				EditorPanel.Instance.Sprite = _pnlView.Spriteset[_pnlView.Selected[0].Sprite.TerrainId];
 
 				if (!_feditor.Visible)
 				{
@@ -614,6 +486,225 @@ namespace PckView
 		}
 
 		/// <summary>
+		/// Adds a sprite to the collection.
+		/// Called when the contextmenu's Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnAddSpriteClick(object sender, EventArgs e)
+		{
+			using (var ofd = new OpenFileDialog())
+			{
+				ofd.Title  = "Add 32x40 8-bpp BMP file(s)";
+				ofd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
+				ofd.Multiselect = true;
+
+				if (ofd.ShowDialog() == DialogResult.OK)
+				{
+					int terrainId = _pnlView.Spriteset.Count;
+
+					foreach (string file in ofd.FileNames)
+					{
+						var bitmap = new Bitmap(file);
+						var sprite = BitmapService.CreateSprite(
+															bitmap,
+															terrainId++,
+															Pal,
+															0, 0,
+															XCImageFile.SpriteWidth,
+															XCImageFile.SpriteHeight);
+						_pnlView.Spriteset.Add(sprite);
+					}
+
+					_pnlView.Selected.Clear();
+					_pnlView.PrintStatusTotal();
+					OnSpriteClick(null, EventArgs.Empty);
+
+					_pnlView.ForceResize();
+					// TODO: select the sprite and show it in the SpriteEditor perhaps.
+
+					Refresh();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deletes the selected sprite from the collection.
+		/// Called when the contextmenu's Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnDeleteSpriteClick(object sender, EventArgs e)
+		{
+			int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
+
+			_pnlView.Spriteset.RemoveAt(terrainId);
+
+			int count = _pnlView.Spriteset.Count; // shuffle any/all succeeding sprites' terrain-ids down.
+			for (int id = terrainId; id != count; ++id)
+				_pnlView.Spriteset[id].TerrainId = id;
+
+			_pnlView.Selected.Clear(); // TODO: select another sprite, perhaps. See _pnlView.SpriteDelete()
+			_pnlView.PrintStatusTotal();
+			OnSpriteClick(null, EventArgs.Empty);
+
+			_pnlView.ForceResize();
+
+			Refresh();
+		}
+
+		private void OnKeyDown(object sender, KeyEventArgs e)
+		{
+//			if (_miDelete.Enabled && e.KeyCode == Keys.Delete)
+//				OnDeleteSpriteClick(null, null);
+		}
+
+		/// <summary>
+		/// Replaces the selected sprite in the collection with a different
+		/// sprite.
+		/// Called when the contextmenu's Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnReplaceSpriteClick(object sender, EventArgs e)
+		{
+			using (var ofd = new OpenFileDialog())
+			{
+				ofd.Title  = "Open 32x40 8-bpp BMP file";
+				ofd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
+
+				if (ofd.ShowDialog() == DialogResult.OK)
+				{
+					int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
+
+					var bitmap = new Bitmap(ofd.FileName);
+					var sprite = BitmapService.CreateSprite(
+														bitmap,
+														terrainId,
+														Pal,
+														0, 0,
+														XCImageFile.SpriteWidth,
+														XCImageFile.SpriteHeight);
+					_pnlView.Spriteset[terrainId] = sprite;
+					OnSpriteClick(null, EventArgs.Empty);
+
+					Refresh();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Inserts sprites into the currently loaded spriteset before the
+		/// currently selected sprite.
+		/// Called when the contextmenu's Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnInsertSpriteBeforeClick(object sender, EventArgs e)
+		{
+			using (var ofd = new OpenFileDialog())
+			{
+				ofd.Title  = "Insert 32x40 8-bpp BMP file(s)";
+				ofd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
+				ofd.Multiselect = true;
+
+				if (ofd.ShowDialog() == DialogResult.OK)
+					InsertSprites(_pnlView.Selected[0].Sprite.TerrainId, ofd.FileNames);
+			}
+		}
+
+		/// <summary>
+		/// Inserts sprites into the currently loaded spriteset after the
+		/// currently selected sprite.
+		/// Called when the contextmenu's Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnInsertSpriteAfterClick(object sender, EventArgs e)
+		{
+			using (var ofd = new OpenFileDialog())
+			{
+				ofd.Title  = "Insert 32x40 8-bpp BMP file(s)";
+				ofd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
+				ofd.Multiselect = true;
+
+				if (ofd.ShowDialog() == DialogResult.OK)
+					InsertSprites(_pnlView.Selected[0].Sprite.TerrainId + 1, ofd.FileNames);
+			}
+		}
+
+		/// <summary>
+		/// Inserts sprites into the currently loaded spriteset starting at a
+		/// given Id.
+		/// Helper for OnInsertSpriteBeforeClick() and OnInsertSpriteAfterClick().
+		/// </summary>
+		/// <param name="terrainId">the terrain-id to start inserting at</param>
+		/// <param name="files">an array of filenames</param>
+		private void InsertSprites(int terrainId, string[] files)
+		{
+			int length = files.Length; // shuffle any/all succeeding sprites' terrain-ids up.
+			for (int id = terrainId; id != _pnlView.Spriteset.Count; ++id)
+				_pnlView.Spriteset[id].TerrainId = id + length;
+
+			foreach (string file in files)
+			{
+				var bitmap = new Bitmap(file);
+				var sprite = BitmapService.CreateSprite(
+													bitmap,
+													terrainId,
+													Pal,
+													0, 0,
+													XCImageFile.SpriteWidth,
+													XCImageFile.SpriteHeight);
+				_pnlView.Spriteset.Insert(terrainId++, sprite);
+			}
+
+			_pnlView.Selected.Clear(); // TODO: select another sprite, perhaps. See _pnlView.SpriteDelete()
+			_pnlView.PrintStatusTotal();
+			OnSpriteClick(null, EventArgs.Empty);
+
+			_pnlView.ForceResize();
+
+			Refresh();
+		}
+
+		/// <summary>
+		/// Exports the selected sprite in the collection to a BMP file.
+		/// Called when the contextmenu's Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnExportSpriteClick(object sender, EventArgs e)
+		{
+			string digits = String.Empty;
+
+			int count = _pnlView.Spriteset.Count;
+			do
+			{
+				digits += "0";
+				count /= 10;
+			}
+			while (count != 0);
+
+			var sprite = _pnlView.Selected[0].Sprite;
+			string suffix = String.Format(
+										System.Globalization.CultureInfo.InvariantCulture,
+										"{0:" + digits + "}",
+										sprite.TerrainId);
+
+			using (var sfd = new SaveFileDialog())
+			{
+				sfd.Title = "Export sprite to 32x40 8-bpp BMP file";
+				sfd.FileName = _pnlView.Spriteset.Label + suffix;
+				sfd.DefaultExt = "*.BMP";
+				sfd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
+
+				if (sfd.ShowDialog() == DialogResult.OK)
+					BitmapService.ExportSprite(sfd.FileName, sprite.Image);
+			}
+		}
+
+		/// <summary>
 		/// Opens a PCK sprite collection.
 		/// Called when the mainmenu's file-menu Click event is raised.
 		/// </summary>
@@ -623,8 +714,8 @@ namespace PckView
 		{
 			using (var ofd = new OpenFileDialog())
 			{
-				ofd.Filter = "Pck Files (*.pck)|*.PCK|All Files (*.*)|*.*";
-				ofd.Title  = "Select a Pck File";
+				ofd.Title  = "Select a PCK file";
+				ofd.Filter = "PCK files (*.PCK)|*.PCK|All files (*.*)|*.*";
 
 				if (ofd.ShowDialog() == DialogResult.OK)
 					LoadSpriteset(ofd.FileName, false);
@@ -740,7 +831,7 @@ namespace PckView
 
 					fbd.Description = String.Format(
 												System.Globalization.CultureInfo.CurrentCulture,
-												"Select a folder for the sprites"
+												"Export spriteset to 32x40 8-bpp BMP files"
 													+ Environment.NewLine + Environment.NewLine
 													+ "\t" + file);
 

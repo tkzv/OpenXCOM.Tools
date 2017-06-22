@@ -359,12 +359,6 @@ namespace PckView
 
 
 		#region Methods
-		internal void ClearSprite()
-		{
-			Sprite = null;
-			Refresh();
-		}
-
 		internal int GetStatusBarHeight()
 		{
 			return _statusBar.Height;
