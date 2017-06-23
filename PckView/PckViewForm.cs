@@ -36,12 +36,14 @@ namespace PckView
 		private TabControl _tcTabs;
 
 		private MenuItem _miEdit;
-		private MenuItem _miExport;
 		private MenuItem _miAdd;
-		private MenuItem _miDelete;
-		private MenuItem _miReplace;
 		private MenuItem _miInsertBefore;
 		private MenuItem _miInsertAfter;
+		private MenuItem _miReplace;
+		private MenuItem _miMoveLeft;
+		private MenuItem _miMoveRight;
+		private MenuItem _miDelete;
+		private MenuItem _miExport;
 
 //		private SharedSpace _share = SharedSpace.Instance;
 
@@ -305,6 +307,16 @@ namespace PckView
 			_miReplace.Click += OnReplaceSpriteClick;
 			contextmenu.MenuItems.Add(_miReplace);
 
+			_miMoveLeft = new MenuItem("Move left ...");
+			_miMoveLeft.Enabled = false;
+			_miMoveLeft.Click += OnMoveLeftSpriteClick;
+			contextmenu.MenuItems.Add(_miMoveLeft);
+
+			_miMoveRight = new MenuItem("Move right ...");
+			_miMoveRight.Enabled = false;
+			_miMoveRight.Click += OnMoveRightSpriteClick;
+			contextmenu.MenuItems.Add(_miMoveRight);
+
 			contextmenu.MenuItems.Add(new MenuItem("-"));
 
 //			_miDelete = new MenuItem("Delete\tDel");
@@ -416,17 +428,26 @@ namespace PckView
 
 			// on Context menu
 			_miEdit.Enabled         =
-			_miExport.Enabled       =
-			_miDelete.Enabled       =
-			_miReplace.Enabled      =
 			_miInsertBefore.Enabled =
-			_miInsertAfter.Enabled  = valid;
+			_miInsertAfter.Enabled  =
+			_miReplace.Enabled      =
+			_miDelete.Enabled       =
+			_miExport.Enabled       = valid;
+
+			// NOTE: when Selected goes by-by and is replaced by an integer
+			// these will have sense:
+			_miMoveLeft.Enabled  = valid && (_pnlView.Spriteset[_pnlView.Selected[0].Sprite.TerrainId].TerrainId != 0);
+			_miMoveRight.Enabled = valid && (_pnlView.Spriteset[_pnlView.Selected[0].Sprite.TerrainId].TerrainId != _pnlView.Spriteset.Count - 1);
 
 			SelectedSprite selected = null;
 			if (valid)
 			{
 				selected = _pnlView.Selected[0];
-				EditorPanel.Instance.Sprite = _pnlView.Spriteset[selected.Sprite.TerrainId];
+
+				int terrainId = selected.Sprite.TerrainId;
+
+				_pnlView.UpdateSpriteClick(terrainId);
+				EditorPanel.Instance.Sprite = _pnlView.Spriteset[terrainId];
 			}
 			else
 				EditorPanel.Instance.Sprite = null;
@@ -533,71 +554,6 @@ namespace PckView
 		}
 
 		/// <summary>
-		/// Deletes the selected sprite from the collection.
-		/// Called when the contextmenu's Click event is raised.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnDeleteSpriteClick(object sender, EventArgs e)
-		{
-			int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
-
-			_pnlView.Spriteset.RemoveAt(terrainId);
-
-			int count = _pnlView.Spriteset.Count; // shuffle any/all succeeding sprites' terrain-ids down.
-			for (int id = terrainId; id != count; ++id)
-				_pnlView.Spriteset[id].TerrainId = id;
-
-			_pnlView.Selected.Clear(); // TODO: select another sprite, perhaps. See _pnlView.SpriteDelete()
-			_pnlView.PrintStatusTotal();
-			OnSpriteClick(null, EventArgs.Empty);
-
-			_pnlView.ForceResize();
-
-			Refresh();
-		}
-
-		private void OnKeyDown(object sender, KeyEventArgs e)
-		{
-//			if (_miDelete.Enabled && e.KeyCode == Keys.Delete)
-//				OnDeleteSpriteClick(null, null);
-		}
-
-		/// <summary>
-		/// Replaces the selected sprite in the collection with a different
-		/// sprite.
-		/// Called when the contextmenu's Click event is raised.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnReplaceSpriteClick(object sender, EventArgs e)
-		{
-			using (var ofd = new OpenFileDialog())
-			{
-				ofd.Title  = "Open 32x40 8-bpp BMP file";
-				ofd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
-
-				if (ofd.ShowDialog() == DialogResult.OK)
-				{
-					int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
-
-					var bitmap = new Bitmap(ofd.FileName);
-					var sprite = BitmapService.CreateSprite(
-														bitmap,
-														terrainId,
-														Pal,
-														0, 0,
-														XCImageFile.SpriteWidth,
-														XCImageFile.SpriteHeight);
-					_pnlView.Spriteset[terrainId] = sprite;
-					OnSpriteClick(null, EventArgs.Empty);
-
-					Refresh();
-				}
-			}
-		}
-
-		/// <summary>
 		/// Inserts sprites into the currently loaded spriteset before the
 		/// currently selected sprite.
 		/// Called when the contextmenu's Click event is raised.
@@ -670,6 +626,117 @@ namespace PckView
 			_pnlView.ForceResize();
 
 			Refresh();
+		}
+
+		/// <summary>
+		/// Replaces the selected sprite in the collection with a different
+		/// sprite.
+		/// Called when the contextmenu's Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnReplaceSpriteClick(object sender, EventArgs e)
+		{
+			using (var ofd = new OpenFileDialog())
+			{
+				ofd.Title  = "Open 32x40 8-bpp BMP file";
+				ofd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
+
+				if (ofd.ShowDialog() == DialogResult.OK)
+				{
+					int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
+
+					var bitmap = new Bitmap(ofd.FileName);
+					var sprite = BitmapService.CreateSprite(
+														bitmap,
+														terrainId,
+														Pal,
+														0, 0,
+														XCImageFile.SpriteWidth,
+														XCImageFile.SpriteHeight);
+
+					_pnlView.Spriteset[terrainId] =
+					_pnlView.Selected[0].Sprite   = sprite;
+
+					OnSpriteClick(null, EventArgs.Empty);
+
+					Refresh();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Moves a sprite one slot to the left.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnMoveLeftSpriteClick(object sender, EventArgs e)
+		{
+			MoveSprite(-1);
+		}
+
+		/// <summary>
+		/// Moves a sprite one slot to the right.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnMoveRightSpriteClick(object sender, EventArgs e)
+		{
+			MoveSprite(+1);
+		}
+
+		/// <summary>
+		/// Moves a sprite to the left or right by one slot.
+		/// </summary>
+		/// <param name="dir">-1 to move left, +1 to move right</param>
+		private void MoveSprite(int dir)
+		{
+			int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
+
+			var sprite = _pnlView.Spriteset[terrainId];
+
+			_pnlView.Spriteset[terrainId]       = _pnlView.Spriteset[terrainId + dir];
+			_pnlView.Spriteset[terrainId + dir] = sprite;
+
+			_pnlView.Spriteset[terrainId].TerrainId       = terrainId;
+			_pnlView.Spriteset[terrainId + dir].TerrainId = terrainId + dir;
+
+			_pnlView.Selected[0].Sprite = sprite;
+
+			OnSpriteClick(null, EventArgs.Empty);
+
+			Refresh();
+		}
+
+		/// <summary>
+		/// Deletes the selected sprite from the collection.
+		/// Called when the contextmenu's Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnDeleteSpriteClick(object sender, EventArgs e)
+		{
+			int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
+
+			_pnlView.Spriteset.RemoveAt(terrainId);
+
+			int count = _pnlView.Spriteset.Count; // shuffle any/all succeeding sprites' terrain-ids down.
+			for (int id = terrainId; id != count; ++id)
+				_pnlView.Spriteset[id].TerrainId = id;
+
+			_pnlView.Selected.Clear(); // TODO: select another sprite, perhaps. See _pnlView.SpriteDelete()
+			_pnlView.PrintStatusTotal();
+			OnSpriteClick(null, EventArgs.Empty);
+
+			_pnlView.ForceResize();
+
+			Refresh();
+		}
+
+		private void OnKeyDown(object sender, KeyEventArgs e)
+		{
+//			if (_miDelete.Enabled && e.KeyCode == Keys.Delete)
+//				OnDeleteSpriteClick(null, null);
 		}
 
 		/// <summary>

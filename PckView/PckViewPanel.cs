@@ -478,6 +478,11 @@ namespace PckView
 			_tilesX = tilesX;
 		}
 
+		/// <summary>
+		/// Prints the quantity of sprites in the currently loaded spriteset to
+		/// the statusbar. Note that this will also clear the sprite-clicked and
+		/// sprite-over info.
+		/// </summary>
 		internal void PrintStatusTotal()
 		{
 			_sbpTilesTotal.Text = String.Format(
@@ -505,7 +510,7 @@ namespace PckView
 		/// </summary>
 		/// <param name="terrainId">the id of the currently mouse-clicked sprite
 		/// in the currently loaded spriteset</param>
-		private void UpdateSpriteClick(int terrainId)
+		internal void UpdateSpriteClick(int terrainId)
 		{
 			_selectedId = terrainId;
 			PrintStatusSpriteIds();
