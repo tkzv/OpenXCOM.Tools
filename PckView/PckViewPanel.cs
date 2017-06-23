@@ -43,8 +43,8 @@ namespace PckView
 		private readonly StatusBar  _statusBar = new StatusBar();
 
 		private readonly StatusBarPanel _sbpTilesTotal   = new StatusBarPanel();
-		private readonly StatusBarPanel _sbpTileSelected = new StatusBarPanel();
 		private readonly StatusBarPanel _sbpTileOver     = new StatusBarPanel();
+		private readonly StatusBarPanel _sbpTileSelected = new StatusBarPanel();
 		private readonly StatusBarPanel _sbpSpritesLabel = new StatusBarPanel();
 
 		private int _tilesX = 1;
@@ -151,8 +151,8 @@ namespace PckView
 											System.Globalization.CultureInfo.InvariantCulture,
 											"Total " + None);
 			_sbpTilesTotal.Width   = 85;
-			_sbpTileSelected.Width = 100;
 			_sbpTileOver.Width     = 75;
+			_sbpTileSelected.Width = 100;
 
 			_sbpSpritesLabel.AutoSize = StatusBarPanelAutoSize.Spring;
 			_sbpSpritesLabel.Alignment = HorizontalAlignment.Center;
@@ -160,8 +160,8 @@ namespace PckView
 			_statusBar.Dock = DockStyle.Bottom;
 			_statusBar.ShowPanels = true;
 			_statusBar.Panels.Add(_sbpTilesTotal);
-			_statusBar.Panels.Add(_sbpTileSelected);
 			_statusBar.Panels.Add(_sbpTileOver);
+			_statusBar.Panels.Add(_sbpTileSelected);
 			_statusBar.Panels.Add(_sbpSpritesLabel);
 
 			Controls.AddRange(new Control[]
