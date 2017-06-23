@@ -696,7 +696,7 @@ namespace PckView
 			{
 				sfd.Title = "Export sprite to 32x40 8-bpp BMP file";
 				sfd.FileName = _pnlView.Spriteset.Label + suffix;
-				sfd.DefaultExt = "*.BMP";
+				sfd.DefaultExt = "BMP";
 				sfd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
 
 				if (sfd.ShowDialog() == DialogResult.OK)
@@ -719,6 +719,51 @@ namespace PckView
 
 				if (ofd.ShowDialog() == DialogResult.OK)
 					LoadSpriteset(ofd.FileName, false);
+			}
+		}
+
+		/// <summary>
+		/// Creates a brand sparkling new (blank) PCK sprite collection.
+		/// Called when the mainmenu's file-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnNewClick(object sender, EventArgs e)
+		{
+			using (var sfd = new SaveFileDialog())
+			{
+				sfd.Title = "Create a PCK file";
+				sfd.Filter = "PCK files (*.PCK)|*.PCK|All files (*.*)|*.*";
+				sfd.DefaultExt = "PCK";
+
+				if (sfd.ShowDialog() == DialogResult.OK)
+				{
+					string pfePck = sfd.FileName;
+					string pfeTab = pfePck.Substring(0, pfePck.Length - 4) + SpriteCollection.TabExt;
+
+					using (var bwPck = new BinaryWriter(File.Create(pfePck))) // blank files are ok.
+					using (var bwTab = new BinaryWriter(File.Create(pfeTab)))
+					{}
+
+
+					// keep this simple. Assume 2-byte Tab file.
+
+					SpritesetDirectory = Path.GetDirectoryName(pfePck);
+					SpritesetLabel     = Path.GetFileNameWithoutExtension(pfePck);
+
+
+					var pal = XCImageFile.GetDefaultPalette();
+					var spriteset = new SpriteCollection(
+													SpritesetLabel,
+													pal,
+													2);
+
+					OnPaletteClick(_paletteItems[pal], EventArgs.Empty);
+
+					_pnlView.Spriteset = spriteset;
+
+					Text = "PckView - " + pfePck;
+				}
 			}
 		}
 
@@ -766,50 +811,53 @@ namespace PckView
 		/// <param name="e"></param>
 		private void OnSaveAsClick(object sender, EventArgs e)
 		{
-			var sfd = new SaveFileDialog();
-			sfd.FileName = SpritesetLabel;
-			sfd.Title = "Save as";
-
-			if (sfd.ShowDialog() == DialogResult.OK)
+			using (var sfd = new SaveFileDialog())
 			{
-				string dir  = Path.GetDirectoryName(sfd.FileName);
-				string file = Path.GetFileNameWithoutExtension(sfd.FileName);
+				sfd.Title = "Save as";
+				sfd.Filter = "PCK files (*.PCK)|*.PCK|All files (*.*)|*.*";
+				sfd.FileName = SpritesetLabel;
 
-				bool revertReady; // user requested to save the files to the same filenames.
-				if (file.Equals(SpritesetLabel, StringComparison.OrdinalIgnoreCase))
+				if (sfd.ShowDialog() == DialogResult.OK)
 				{
-					BackupSpritesetFiles();
-					revertReady = true;
-				}
-				else
-					revertReady = false;
+					string dir  = Path.GetDirectoryName(sfd.FileName);
+					string file = Path.GetFileNameWithoutExtension(sfd.FileName);
 
-				if (SpriteCollection.SaveSpriteset(
-												dir,
-												file,
-												_pnlView.Spriteset,
-												((SpriteCollection)_pnlView.Spriteset).TabOffset))
-				{
-					if (!revertReady) // load the SavedAs files ->
+					bool revertReady; // user requested to save the files to the same filenames.
+					if (file.Equals(SpritesetLabel, StringComparison.OrdinalIgnoreCase))
 					{
-						string pfePck = Path.Combine(dir, file + SpriteCollection.PckExt);
-						LoadSpriteset(pfePck, false);
-					}
-
-					SpritesChanged = true;	// NOTE: is used by MapView's TileView to flag the Map to reload.
-				}							// btw, reload MapView's Map in either case; the new terrain may also be in its Map's terrainset ...
-				else
-				{
-					ShowSaveError();
-
-					if (revertReady)
-					{
-						RevertFiles();
+						BackupSpritesetFiles();
+						revertReady = true;
 					}
 					else
+						revertReady = false;
+
+					if (SpriteCollection.SaveSpriteset(
+													dir,
+													file,
+													_pnlView.Spriteset,
+													((SpriteCollection)_pnlView.Spriteset).TabOffset))
 					{
-						File.Delete(Path.Combine(dir, file + SpriteCollection.PckExt));
-						File.Delete(Path.Combine(dir, file + SpriteCollection.TabExt));
+						if (!revertReady) // load the SavedAs files ->
+						{
+							string pfePck = Path.Combine(dir, file + SpriteCollection.PckExt);
+							LoadSpriteset(pfePck, false);
+						}
+
+						SpritesChanged = true;	// NOTE: is used by MapView's TileView to flag the Map to reload.
+					}							// btw, reload MapView's Map in either case; the new terrain may also be in its Map's terrainset ...
+					else
+					{
+						ShowSaveError();
+
+						if (revertReady)
+						{
+							RevertFiles();
+						}
+						else
+						{
+							File.Delete(Path.Combine(dir, file + SpriteCollection.PckExt));
+							File.Delete(Path.Combine(dir, file + SpriteCollection.TabExt));
+						}
 					}
 				}
 			}
@@ -1143,7 +1191,7 @@ namespace PckView
 
 					if (spriteset != null)
 					{
-						spriteset.ImageFile = new XCImageFile();
+//						spriteset.ImageFile = new XCImageFile();
 						spriteset.Label = SpritesetLabel;
 
 						if (spriteset.Pal == null)

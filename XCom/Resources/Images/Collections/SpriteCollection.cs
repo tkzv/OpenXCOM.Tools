@@ -25,7 +25,22 @@ namespace XCom
 		#endregion
 
 
-		#region cTor
+		#region cTors
+		/// <summary>
+		/// Instantiates a quick and dirty blank spriteset.
+		/// </summary>
+		/// <param name="label"></param>
+		/// <param name="pal"></param>
+		/// <param name="tabOffset"></param>
+		public SpriteCollection(
+				string label,
+				Palette pal,
+				int tabOffset)
+		{
+			Label     = label;
+			Pal       = pal;
+			TabOffset = tabOffset;
+		}
 		/// <summary>
 		/// cTor. Parses a PCK-file into the collection of its images according
 		/// to its TAB-file.

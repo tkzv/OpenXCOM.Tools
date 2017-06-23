@@ -14,8 +14,8 @@ namespace XCom
 		public string Label
 		{ get; set; }
 
-		public XCImageFile ImageFile
-		{ get; set; }
+//		public XCImageFile ImageFile
+//		{ get; set; }
 
 		private Palette _pal;
 		public Palette Pal

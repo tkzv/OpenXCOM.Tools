@@ -28,6 +28,7 @@ namespace PckView
 			this.mmMainMenu = new System.Windows.Forms.MainMenu(this.components);
 			this.miFileMenu = new System.Windows.Forms.MenuItem();
 			this.miOpen = new System.Windows.Forms.MenuItem();
+			this.miNew = new System.Windows.Forms.MenuItem();
 			this.miSeparator1 = new System.Windows.Forms.MenuItem();
 			this.miCompare = new System.Windows.Forms.MenuItem();
 			this.miSave = new System.Windows.Forms.MenuItem();
@@ -67,6 +68,7 @@ namespace PckView
 			this.miFileMenu.Index = 0;
 			this.miFileMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miOpen,
+			this.miNew,
 			this.miSeparator1,
 			this.miCompare,
 			this.miSave,
@@ -84,14 +86,21 @@ namespace PckView
 			this.miOpen.Shortcut = System.Windows.Forms.Shortcut.CtrlO;
 			this.miOpen.Click += new System.EventHandler(this.OnOpenClick);
 			// 
+			// miNew
+			// 
+			this.miNew.Index = 1;
+			this.miNew.Text = "&New Pck file ...";
+			this.miNew.Shortcut = System.Windows.Forms.Shortcut.CtrlN;
+			this.miNew.Click += new System.EventHandler(this.OnNewClick);
+			// 
 			// miSeparator1
 			// 
-			this.miSeparator1.Index = 1;
+			this.miSeparator1.Index = 2;
 			this.miSeparator1.Text = "-";
 			// 
 			// miCompare
 			// 
-			this.miCompare.Index = 2;
+			this.miCompare.Index = 3;
 			this.miCompare.Text = "&Compare";
 			this.miCompare.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
 			this.miCompare.Visible = false;
@@ -100,7 +109,7 @@ namespace PckView
 			// miSave
 			// 
 			this.miSave.Enabled = false;
-			this.miSave.Index = 3;
+			this.miSave.Index = 4;
 			this.miSave.Text = "&Save";
 			this.miSave.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
 			this.miSave.Click += new System.EventHandler(this.OnSaveClick);
@@ -108,7 +117,7 @@ namespace PckView
 			// miSaveAs
 			// 
 			this.miSaveAs.Enabled = false;
-			this.miSaveAs.Index = 4;
+			this.miSaveAs.Index = 5;
 			this.miSaveAs.Text = "Save &As ...";
 			this.miSaveAs.Shortcut = System.Windows.Forms.Shortcut.CtrlA;
 			this.miSaveAs.Click += new System.EventHandler(this.OnSaveAsClick);
@@ -116,7 +125,7 @@ namespace PckView
 			// miExportSprites
 			// 
 			this.miExportSprites.Enabled = false;
-			this.miExportSprites.Index = 5;
+			this.miExportSprites.Index = 6;
 			this.miExportSprites.Text = "&Export Sprites ...";
 			this.miExportSprites.Shortcut = System.Windows.Forms.Shortcut.CtrlE;
 			this.miExportSprites.Click += new System.EventHandler(this.OnExportSpritesClick);
@@ -124,18 +133,18 @@ namespace PckView
 			// miHq2x
 			// 
 			this.miHq2x.Visible = false;
-			this.miHq2x.Index = 6;
+			this.miHq2x.Index = 7;
 			this.miHq2x.Text = "Hq&2x";
 			this.miHq2x.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
 			// miSeparator2
 			// 
-			this.miSeparator2.Index = 7;
+			this.miSeparator2.Index = 8;
 			this.miSeparator2.Text = "-";
 			// 
 			// miQuit
 			// 
-			this.miQuit.Index = 8;
+			this.miQuit.Index = 9;
 			this.miQuit.Text = "&Quit";
 			this.miQuit.Shortcut = System.Windows.Forms.Shortcut.CtrlQ;
 			this.miQuit.Click += new System.EventHandler(this.OnQuitClick);
@@ -284,6 +293,7 @@ namespace PckView
 
 		private System.Windows.Forms.MenuItem miFileMenu;
 		private System.Windows.Forms.MenuItem miOpen;
+		private System.Windows.Forms.MenuItem miNew;
 		private System.Windows.Forms.MenuItem miSeparator1;
 		private System.Windows.Forms.MenuItem miExportSprites;
 		private System.Windows.Forms.MenuItem miSaveAs;
