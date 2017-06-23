@@ -733,10 +733,15 @@ namespace PckView
 			Refresh();
 		}
 
+		/// <summary>
+		/// Deletes the currently selected sprite w/ a keydown event.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
-//			if (_miDelete.Enabled && e.KeyCode == Keys.Delete)
-//				OnDeleteSpriteClick(null, null);
+			if (_miDelete.Enabled && e.KeyCode == Keys.Delete)
+				OnDeleteSpriteClick(null, EventArgs.Empty);
 		}
 
 		/// <summary>

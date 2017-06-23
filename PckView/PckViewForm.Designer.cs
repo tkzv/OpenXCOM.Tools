@@ -82,15 +82,15 @@ namespace PckView
 			// miOpen
 			// 
 			this.miOpen.Index = 0;
-			this.miOpen.Text = "&Open Pck file ...";
 			this.miOpen.Shortcut = System.Windows.Forms.Shortcut.CtrlO;
+			this.miOpen.Text = "&Open Pck file ...";
 			this.miOpen.Click += new System.EventHandler(this.OnOpenClick);
 			// 
 			// miNew
 			// 
 			this.miNew.Index = 1;
-			this.miNew.Text = "&Create Pck file ...";
 			this.miNew.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
+			this.miNew.Text = "&Create Pck file ...";
 			this.miNew.Click += new System.EventHandler(this.OnCreateClick);
 			// 
 			// miSeparator1
@@ -101,8 +101,8 @@ namespace PckView
 			// miCompare
 			// 
 			this.miCompare.Index = 3;
-			this.miCompare.Text = "Com&pare";
 			this.miCompare.Shortcut = System.Windows.Forms.Shortcut.CtrlP;
+			this.miCompare.Text = "Com&pare";
 			this.miCompare.Visible = false;
 			this.miCompare.Click += new System.EventHandler(this.OnCompareClick);
 			// 
@@ -110,31 +110,31 @@ namespace PckView
 			// 
 			this.miSave.Enabled = false;
 			this.miSave.Index = 4;
-			this.miSave.Text = "&Save";
 			this.miSave.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
+			this.miSave.Text = "&Save";
 			this.miSave.Click += new System.EventHandler(this.OnSaveClick);
 			// 
 			// miSaveAs
 			// 
 			this.miSaveAs.Enabled = false;
 			this.miSaveAs.Index = 5;
-			this.miSaveAs.Text = "Save &As ...";
 			this.miSaveAs.Shortcut = System.Windows.Forms.Shortcut.CtrlA;
+			this.miSaveAs.Text = "Save &As ...";
 			this.miSaveAs.Click += new System.EventHandler(this.OnSaveAsClick);
 			// 
 			// miExportSprites
 			// 
 			this.miExportSprites.Enabled = false;
 			this.miExportSprites.Index = 6;
-			this.miExportSprites.Text = "&Export Sprites ...";
 			this.miExportSprites.Shortcut = System.Windows.Forms.Shortcut.CtrlE;
+			this.miExportSprites.Text = "&Export Sprites ...";
 			this.miExportSprites.Click += new System.EventHandler(this.OnExportSpritesClick);
 			// 
 			// miHq2x
 			// 
-			this.miHq2x.Visible = false;
 			this.miHq2x.Index = 7;
 			this.miHq2x.Text = "Hq&2x";
+			this.miHq2x.Visible = false;
 			this.miHq2x.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
 			// miSeparator2
@@ -145,8 +145,8 @@ namespace PckView
 			// miQuit
 			// 
 			this.miQuit.Index = 9;
-			this.miQuit.Text = "&Quit";
 			this.miQuit.Shortcut = System.Windows.Forms.Shortcut.CtrlQ;
+			this.miQuit.Text = "&Quit";
 			this.miQuit.Click += new System.EventHandler(this.OnQuitClick);
 			// 
 			// miPaletteMenu
@@ -167,8 +167,8 @@ namespace PckView
 			// 
 			this.miTransparent.Checked = true;
 			this.miTransparent.Index = 0;
-			this.miTransparent.Text = "&On/off";
 			this.miTransparent.Shortcut = System.Windows.Forms.Shortcut.CtrlT;
+			this.miTransparent.Text = "&On/off";
 			this.miTransparent.Click += new System.EventHandler(this.OnTransparencyClick);
 			// 
 			// miBytesMenu
@@ -182,8 +182,8 @@ namespace PckView
 			// miBytes
 			// 
 			this.miBytes.Index = 0;
-			this.miBytes.Text = "Show/hide &byte table";
 			this.miBytes.Shortcut = System.Windows.Forms.Shortcut.CtrlB;
+			this.miBytes.Text = "Show/hide &byte table";
 			this.miBytes.Click += new System.EventHandler(this.OnShowBytesClick);
 			// 
 			// miHelpMenu
@@ -204,23 +204,23 @@ namespace PckView
 			// 
 			// miConsole
 			// 
-			this.miConsole.Visible = false;
 			this.miConsole.Index = 1;
 			this.miConsole.Text = "Console";
+			this.miConsole.Visible = false;
 			this.miConsole.Click += new System.EventHandler(this.OnConsoleClick);
 			// 
 			// miHelp
 			// 
 			this.miHelp.Index = 2;
-			this.miHelp.Text = "&Help";
 			this.miHelp.Shortcut = System.Windows.Forms.Shortcut.CtrlH;
+			this.miHelp.Text = "&Help";
 			this.miHelp.Click += new System.EventHandler(this.OnHelpClick);
 			// 
 			// miMapViewHelp
 			// 
-			this.miMapViewHelp.Visible = false;
 			this.miMapViewHelp.Index = 3;
 			this.miMapViewHelp.Text = "MapView Help";
+			this.miMapViewHelp.Visible = false;
 			this.miMapViewHelp.Click += new System.EventHandler(this.OnMapViewHelpClick);
 			// 
 			// pnlView
@@ -233,7 +233,6 @@ namespace PckView
 			// 
 			// pnlMapViewHelp
 			// 
-			this.pnlMapViewHelp.Visible = false;
 			this.pnlMapViewHelp.Controls.Add(this.btnMapViewHelpOk);
 			this.pnlMapViewHelp.Controls.Add(this.lblMapViewHelp);
 			this.pnlMapViewHelp.Dock = System.Windows.Forms.DockStyle.Top;
@@ -241,6 +240,7 @@ namespace PckView
 			this.pnlMapViewHelp.Name = "pnlMapViewHelp";
 			this.pnlMapViewHelp.Size = new System.Drawing.Size(472, 100);
 			this.pnlMapViewHelp.TabIndex = 2;
+			this.pnlMapViewHelp.Visible = false;
 			// 
 			// btnMapViewHelpOk
 			// 
@@ -270,6 +270,7 @@ namespace PckView
 			this.Controls.Add(this.pnlView);
 			this.Controls.Add(this.pnlMapViewHelp);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.KeyPreview = true;
 			this.Location = new System.Drawing.Point(50, 50);
 			this.MaximumSize = new System.Drawing.Size(480, 640);
 			this.Menu = this.mmMainMenu;
