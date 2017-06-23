@@ -25,10 +25,12 @@ namespace PckView
 		#region Fields
 		private EditorForm _parent;
 
-		private readonly StatusBar _statusBar = new StatusBar();
+		private readonly StatusBar      _statusBar     = new StatusBar();
 		private readonly StatusBarPanel _sbpEyeDropper = new StatusBarPanel();
 
-		private Pen _penGrid = Pens.Black;
+		private Pen _penGrid;
+		private readonly Pen _gridBlack = new Pen(Color.FromArgb(50,    0,   0,   0)); // black w/ 50  alpha
+		private readonly Pen _gridWhite = new Pen(Color.FromArgb(200, 255, 255, 255)); // white w/ 200 alpha
 
 		private int _palId = -1;
 		#endregion
@@ -133,6 +135,8 @@ namespace PckView
 			Controls.Add(_statusBar);
 
 			PckViewForm.PaletteChangedEvent += OnPaletteChanged; // NOTE: lives the life of the app, so no leak.
+
+			_penGrid = _gridBlack;
 		}
 		#endregion
 
@@ -298,6 +302,26 @@ namespace PckView
 			}
 
 
+			if (_grid)
+			{
+				for (int x = 0; x != XCImageFile.SpriteWidth; ++x) // vertical lines
+					graphics.DrawLine(
+									_penGrid,
+									x * _scale + Pad,
+									0,
+									x * _scale + Pad,
+									XCImageFile.SpriteHeight * _scale);
+
+				for (int y = 0; y != XCImageFile.SpriteHeight; ++y) // horizontal lines
+					graphics.DrawLine(
+									_penGrid,
+									0,
+									y * _scale + Pad,
+									XCImageFile.SpriteWidth * _scale,
+									y * _scale + Pad);
+			}
+
+
 //			var p0 = new Point(0,     1); // draw a 1px border around the panel ->
 //			var p1 = new Point(Width, 1);
 //			var p2 = new Point(Width, Height);
@@ -328,26 +352,6 @@ namespace PckView
 			path.AddLine(p3, p4);
 
 			graphics.DrawPath(Pens.Black, path);
-
-
-			if (_grid)
-			{
-				for (int x = 0; x != XCImageFile.SpriteWidth; ++x) // vertical lines
-					graphics.DrawLine(
-									_penGrid,
-									x * _scale + Pad,
-									0,
-									x * _scale + Pad,
-									XCImageFile.SpriteHeight * _scale);
-
-				for (int y = 0; y != XCImageFile.SpriteHeight; ++y) // horizontal lines
-					graphics.DrawLine(
-									_penGrid,
-									0,
-									y * _scale + Pad,
-									XCImageFile.SpriteWidth * _scale,
-									y * _scale + Pad);
-			}
 		}
 		#endregion
 
@@ -368,8 +372,8 @@ namespace PckView
 
 		internal void InvertGridColor(bool invert)
 		{
-			_penGrid = (invert) ? Pens.White
-								: Pens.Black;
+			_penGrid = (invert) ? _gridWhite
+								: _gridBlack;
 			Refresh();
 		}
 		#endregion

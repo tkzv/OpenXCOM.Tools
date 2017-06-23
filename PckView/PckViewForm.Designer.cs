@@ -89,9 +89,9 @@ namespace PckView
 			// miNew
 			// 
 			this.miNew.Index = 1;
-			this.miNew.Text = "&New Pck file ...";
-			this.miNew.Shortcut = System.Windows.Forms.Shortcut.CtrlN;
-			this.miNew.Click += new System.EventHandler(this.OnNewClick);
+			this.miNew.Text = "&Create Pck file ...";
+			this.miNew.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
+			this.miNew.Click += new System.EventHandler(this.OnCreateClick);
 			// 
 			// miSeparator1
 			// 
@@ -101,8 +101,8 @@ namespace PckView
 			// miCompare
 			// 
 			this.miCompare.Index = 3;
-			this.miCompare.Text = "&Compare";
-			this.miCompare.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
+			this.miCompare.Text = "Com&pare";
+			this.miCompare.Shortcut = System.Windows.Forms.Shortcut.CtrlP;
 			this.miCompare.Visible = false;
 			this.miCompare.Click += new System.EventHandler(this.OnCompareClick);
 			// 
@@ -167,7 +167,7 @@ namespace PckView
 			// 
 			this.miTransparent.Checked = true;
 			this.miTransparent.Index = 0;
-			this.miTransparent.Text = "&On";
+			this.miTransparent.Text = "&On/off";
 			this.miTransparent.Shortcut = System.Windows.Forms.Shortcut.CtrlT;
 			this.miTransparent.Click += new System.EventHandler(this.OnTransparencyClick);
 			// 
@@ -182,7 +182,7 @@ namespace PckView
 			// miBytes
 			// 
 			this.miBytes.Index = 0;
-			this.miBytes.Text = "S&how";
+			this.miBytes.Text = "Show/hide &byte table";
 			this.miBytes.Shortcut = System.Windows.Forms.Shortcut.CtrlB;
 			this.miBytes.Click += new System.EventHandler(this.OnShowBytesClick);
 			// 
@@ -199,7 +199,7 @@ namespace PckView
 			// miAbout
 			// 
 			this.miAbout.Index = 0;
-			this.miAbout.Text = "About";
+			this.miAbout.Text = "&About";
 			this.miAbout.Click += new System.EventHandler(this.OnAboutClick);
 			// 
 			// miConsole
@@ -212,7 +212,7 @@ namespace PckView
 			// miHelp
 			// 
 			this.miHelp.Index = 2;
-			this.miHelp.Text = "Help";
+			this.miHelp.Text = "&Help";
 			this.miHelp.Shortcut = System.Windows.Forms.Shortcut.CtrlH;
 			this.miHelp.Click += new System.EventHandler(this.OnHelpClick);
 			// 

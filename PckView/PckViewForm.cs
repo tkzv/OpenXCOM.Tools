@@ -288,17 +288,6 @@ namespace PckView
 			_miAdd.Click += OnAddSpriteClick;
 			contextmenu.MenuItems.Add(_miAdd);
 
-//			_miDelete = new MenuItem("Delete\tDel");
-			_miDelete = new MenuItem("Delete");
-			_miDelete.Enabled = false;
-			_miDelete.Click += OnDeleteSpriteClick;
-			contextmenu.MenuItems.Add(_miDelete);
-
-			_miReplace = new MenuItem("Replace ...");
-			_miReplace.Enabled = false;
-			_miReplace.Click += OnReplaceSpriteClick;
-			contextmenu.MenuItems.Add(_miReplace);
-
 			_miInsertBefore = new MenuItem("Insert before ...");
 			_miInsertBefore.Enabled = false;
 			_miInsertBefore.Click += OnInsertSpriteBeforeClick;
@@ -311,7 +300,22 @@ namespace PckView
 
 			contextmenu.MenuItems.Add(new MenuItem("-"));
 
-			_miExport = new MenuItem("Export ...");
+			_miReplace = new MenuItem("Replace ...");
+			_miReplace.Enabled = false;
+			_miReplace.Click += OnReplaceSpriteClick;
+			contextmenu.MenuItems.Add(_miReplace);
+
+			contextmenu.MenuItems.Add(new MenuItem("-"));
+
+//			_miDelete = new MenuItem("Delete\tDel");
+			_miDelete = new MenuItem("Delete");
+			_miDelete.Enabled = false;
+			_miDelete.Click += OnDeleteSpriteClick;
+			contextmenu.MenuItems.Add(_miDelete);
+
+			contextmenu.MenuItems.Add(new MenuItem("-"));
+
+			_miExport = new MenuItem("Export sprite ...");
 			_miExport.Enabled = false;
 			_miExport.Click += OnExportSpriteClick;
 			contextmenu.MenuItems.Add(_miExport);
@@ -728,7 +732,7 @@ namespace PckView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnNewClick(object sender, EventArgs e)
+		private void OnCreateClick(object sender, EventArgs e)
 		{
 			using (var sfd = new SaveFileDialog())
 			{
