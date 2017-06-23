@@ -49,6 +49,8 @@ namespace PckView
 			{
 				_sprite = value;
 
+				_palId = -1;
+
 				string caption = "Sprite Editor";
 				if (_sprite != null)
 					caption += " - id " + _sprite.TerrainId;
