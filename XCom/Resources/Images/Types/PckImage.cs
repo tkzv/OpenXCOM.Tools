@@ -69,15 +69,15 @@ namespace XCom
 			:
 				base(
 //					new byte[]{},
-					new byte[XCImageFile.SpriteWidth * XCImageFile.SpriteHeight],
+					new byte[XCImage.SpriteWidth * XCImage.SpriteHeight],
 //					0,0,
-					XCImageFile.SpriteWidth,
-					XCImageFile.SpriteHeight,
+					XCImage.SpriteWidth,
+					XCImage.SpriteHeight,
 					null, // do *not* pass 'pal' in here. See XCImage..cTor
 					terrainId)
 		{
 			//LogFile.WriteLine("PckImage..cTor");
-//			Bindata = new byte[XCImageFile.SpriteWidth * XCImageFile.SpriteHeight];
+//			Bindata = new byte[XCImage.SpriteWidth * XCImage.SpriteHeight];
 
 			_spriteset = spriteset; // for ToString() only.
 			MapId = _idCanonical++; // for 'MapInfoOutputBox' only.
@@ -91,7 +91,7 @@ namespace XCom
 			int posDst = 0;
 
 			if (bindata[0] != SpriteTransparencyByte)
-				posDst = bindata[posSrc++] * XCImageFile.SpriteWidth;
+				posDst = bindata[posSrc++] * XCImage.SpriteWidth;
 
 			for (int id = posSrc; id != bindata.Length; ++id)
 			{
@@ -113,13 +113,13 @@ namespace XCom
 			}
 
 			Image = BitmapService.MakeBitmapTrue(
-												XCImageFile.SpriteWidth,
-												XCImageFile.SpriteHeight,
+												XCImage.SpriteWidth,
+												XCImage.SpriteHeight,
 												Bindata,
 												Pal.ColorTable);
 			SpriteGray = BitmapService.MakeBitmapTrue(
-												XCImageFile.SpriteWidth,
-												XCImageFile.SpriteHeight,
+												XCImage.SpriteWidth,
+												XCImage.SpriteHeight,
 												Bindata,
 												Pal.Grayscale.ColorTable);
 		}

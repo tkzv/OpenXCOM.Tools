@@ -230,12 +230,12 @@ namespace XCom.Interfaces.Base
 
 			var rowcols = MapSize.Rows + MapSize.Cols;
 			var bitmap = BitmapService.MakeBitmap(
-												rowcols * (XCImageFile.SpriteWidth / 2),
+												rowcols * (XCImage.SpriteWidth / 2),
 												(MapSize.Levs - Level) * 24 + rowcols * 8,
 												palette.ColorTable);
 
 			var start = new Point(
-								(MapSize.Rows - 1) * (XCImageFile.SpriteWidth / 2),
+								(MapSize.Rows - 1) * (XCImage.SpriteWidth / 2),
 								-(24 * Level));
 
 			int i = 0;

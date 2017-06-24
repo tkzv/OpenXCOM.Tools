@@ -100,7 +100,7 @@ namespace PckView.Forms.ImageBytes
 
 			foreach (byte b in _selected.Sprite.Bindata)
 			{
-				if (wrapCount % XCImageFile.SpriteWidth == 0)
+				if (wrapCount % XCImage.SpriteWidth == 0)
 				{
 					if (++row < 10) text += " ";
 					text += row + ": ";
@@ -112,8 +112,8 @@ namespace PckView.Forms.ImageBytes
 					text += " ";
 
 				text += " " + b;
-				text += (++wrapCount % XCImageFile.SpriteWidth == 0) ? Environment.NewLine
-																	 : " ";
+				text += (++wrapCount % XCImage.SpriteWidth == 0) ? Environment.NewLine
+																 : " ";
 			}
 
 			rtbBytes.Text = text;

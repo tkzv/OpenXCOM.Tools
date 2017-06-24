@@ -33,8 +33,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		private readonly VScrollBar _scrollBar;
 
 		private const int SpriteMargin = 2;
-		private const int SpriteWidth  = XCImageFile.SpriteWidth  + SpriteMargin * 2;
-		private const int SpriteHeight = XCImageFile.SpriteHeight + SpriteMargin * 2;
+		private const int SpriteWidth  = XCImage.SpriteWidth  + SpriteMargin * 2;
+		private const int SpriteHeight = XCImage.SpriteHeight + SpriteMargin * 2;
 
 		private const int _largeChange = SpriteHeight;	// apparently .NET won't return an accurate value
 														// for LargeChange unless the scrollbar is visible.

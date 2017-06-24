@@ -1,26 +1,29 @@
 using System;
 using System.Collections.Generic;
 
-//using XCom.Interfaces;
-
 
 namespace XCom
 {
 	public sealed class SharedSpace
 	{
-		#region Fields & Properties (static)
+		#region Fields (static)
 		public const string ApplicationDirectory  = "ApplicationDirectory";
-		public const string SettingsDirectory     = "SettingsDirectory"; // TODO: just put the Settings aka. Configuration files in the appdir.
+		public const string SettingsDirectory     = "SettingsDirectory";
 		public const string ResourceDirectoryUfo  = "ResourceDirectoryUfo";
 		public const string ResourceDirectoryTftd = "ResourceDirectoryTftd";
 
-		public const string Palettes        = "Palettes"; // for PckView ->
-//		public const string CustomDirectory = "CustomDirectory";
-//		public const string ImageTypes      = "ImageTypes";
+		public const string Palettes              = "Palettes";
 
-		public const string CursorFilePrefix = @"UFOGRAPH\CURSOR"; // the cursors are determined in XCMainWindow.cTor
+		public const string CursorFilePrefix      = @"UFOGRAPH\CURSOR"; // the cursor is determined in XCMainWindow.cTor
+		#endregion
 
 
+		#region Fields
+		private readonly Dictionary<string, object> _share = new Dictionary<string, object>();
+		#endregion
+
+
+		#region Properties (static)
 		/// <summary>
 		/// Gets the currently instantiated SharedSpace from anywhere.
 		/// </summary>
@@ -38,9 +41,7 @@ namespace XCom
 		#endregion
 
 
-		#region Fields & Properties
-		private readonly Dictionary<string, object> _share = new Dictionary<string, object>();
-
+		#region Properties
 		/// <summary>
 		/// Gets/Sets the value as an object or null.
 		/// </summary>
@@ -99,20 +100,3 @@ namespace XCom
 		#endregion
 	}
 }
-
-//		public int GetIntegralValue(string key) // not used.
-//		{
-//			return (int)_share[key];
-//		}
-//		public double GetDouble(string key) // not used.
-//		{
-//			return (double)_share[key];
-//		}
-//		public List<XCImageFile> GetImageModList()
-//		{
-//			return (List<XCImageFile>)_share[ImageTypes];
-//		}
-//		public Dictionary<string, Palette> GetPaletteTable()
-//		{
-//			return (Dictionary<string, Palette>)_share[Palettes];
-//		}

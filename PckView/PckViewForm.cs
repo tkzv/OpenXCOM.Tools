@@ -27,6 +27,11 @@ namespace PckView
 		#endregion
 
 
+		#region Fields (static)
+		private readonly Palette DefaultPalette = Palette.UfoBattle;
+		#endregion
+
+
 		#region Fields
 		private readonly PckViewPanel _pnlView = new PckViewPanel();
 		private readonly EditorForm _feditor   = new EditorForm();
@@ -135,7 +140,7 @@ namespace PckView
 
 			PopulatePaletteMenu();
 
-			Pal = XCImageFile.GetDefaultPalette();
+			Pal = DefaultPalette;
 			Pal.SetTransparent(true);
 
 			_paletteItems[Pal].Checked = true;
@@ -536,8 +541,8 @@ namespace PckView
 															terrainId++,
 															Pal,
 															0, 0,
-															XCImageFile.SpriteWidth,
-															XCImageFile.SpriteHeight);
+															XCImage.SpriteWidth,
+															XCImage.SpriteHeight);
 						_pnlView.Spriteset.Add(sprite);
 					}
 
@@ -614,8 +619,8 @@ namespace PckView
 													terrainId,
 													Pal,
 													0, 0,
-													XCImageFile.SpriteWidth,
-													XCImageFile.SpriteHeight);
+													XCImage.SpriteWidth,
+													XCImage.SpriteHeight);
 				_pnlView.Spriteset.Insert(terrainId++, sprite);
 			}
 
@@ -652,8 +657,8 @@ namespace PckView
 														terrainId,
 														Pal,
 														0, 0,
-														XCImageFile.SpriteWidth,
-														XCImageFile.SpriteHeight);
+														XCImage.SpriteWidth,
+														XCImage.SpriteHeight);
 
 					_pnlView.Spriteset[terrainId] =
 					_pnlView.Selected[0].Sprite   = sprite;
@@ -828,7 +833,7 @@ namespace PckView
 					SpritesetLabel     = Path.GetFileNameWithoutExtension(pfePck);
 
 
-					var pal = XCImageFile.GetDefaultPalette();
+					var pal = DefaultPalette;
 					var spriteset = new SpriteCollection(
 													SpritesetLabel,
 													pal,
@@ -1266,16 +1271,10 @@ namespace PckView
 					}
 
 					if (spriteset != null)
-					{
-//						spriteset.ImageFile = new XCImageFile();
 						spriteset.Label = SpritesetLabel;
 
-						if (spriteset.Pal == null)
-							spriteset.Pal = XCImageFile.GetDefaultPalette();
-					}
-
 					OnPaletteClick(
-								_paletteItems[XCImageFile.GetDefaultPalette()],
+								_paletteItems[DefaultPalette],
 								EventArgs.Empty);
 
 					_pnlView.Spriteset = spriteset;

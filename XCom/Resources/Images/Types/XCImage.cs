@@ -6,6 +6,12 @@ namespace XCom.Interfaces
 {
 	public class XCImage
 	{
+		#region Fields (static)
+		public const int SpriteWidth  = 32;
+		public const int SpriteHeight = 40;
+		#endregion
+
+
 		#region Properties
 		public byte[] Bindata
 		{ get; protected set; }

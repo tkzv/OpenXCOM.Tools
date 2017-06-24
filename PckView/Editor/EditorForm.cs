@@ -114,8 +114,8 @@ namespace PckView
 		private void OnLoad(object sender, EventArgs e)
 		{
 			ClientSize = new Size(
-								XCImageFile.SpriteWidth  * 10 + EditorPanel.Pad,
-								XCImageFile.SpriteHeight * 10 + EditorPanel.Pad
+								XCImage.SpriteWidth  * 10 + EditorPanel.Pad,
+								XCImage.SpriteHeight * 10 + EditorPanel.Pad
 									+ _trackBar.Height
 									+ _lblEditMode.Height
 									+ _pnlEditor.GetStatusBarHeight());

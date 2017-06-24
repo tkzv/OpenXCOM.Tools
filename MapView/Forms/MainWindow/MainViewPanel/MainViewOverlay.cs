@@ -862,7 +862,7 @@ namespace MapView
 				_graphics.DrawImage(
 								sprite,
 								rect,
-								0, 0, XCImageFile.SpriteWidth, XCImageFile.SpriteHeight,
+								0, 0, XCImage.SpriteWidth, XCImage.SpriteHeight,
 								GraphicsUnit.Pixel,
 								_spriteAttributes);
 			else

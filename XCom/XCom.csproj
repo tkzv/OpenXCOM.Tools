@@ -163,9 +163,6 @@
     <Compile Include="Interfaces\Base\TileGroupBase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\XCImageFile.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="FileDesc\Descriptor.cs" />
     <Compile Include="Interfaces\TileGroup.cs" />
     <Compile Include="LogFile.cs">

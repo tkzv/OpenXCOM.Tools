@@ -14,9 +14,6 @@ namespace XCom
 		public string Label
 		{ get; set; }
 
-//		public XCImageFile ImageFile
-//		{ get; set; }
-
 		private Palette _pal;
 		public Palette Pal
 		{
@@ -46,21 +43,13 @@ namespace XCom
 			}
 		}
 		#endregion
-
-
-//		#region Methods
-//		public void Remove(int id)
-//		{
-//			RemoveAt(id);
-//		}
-//		#endregion
 	}
 }
 
 //		private int _scale = 1;
-/*		public void HQ2X()
-		{
-			foreach (XCImage image in this)
-				image.HQ2X();
-			_scale *= 2;
-		} */
+//		public void HQ2X()
+//		{
+//			foreach (XCImage image in this)
+//				image.HQ2X();
+//			_scale *= 2;
+//		}

@@ -170,7 +170,7 @@ namespace PckView
 				int pixelX = e.X / _scale;
 				int pixelY = e.Y / _scale;
 
-				int bindataId = pixelY * (Sprite.Bindata.Length / XCImageFile.SpriteHeight) + pixelX;
+				int bindataId = pixelY * (Sprite.Bindata.Length / XCImage.SpriteHeight) + pixelX;
 
 				if (bindataId > -1 && bindataId < Sprite.Bindata.Length)
 				{
@@ -185,8 +185,8 @@ namespace PckView
 
 								Sprite.Bindata[bindataId] = (byte)palId;
 								Sprite.Image = BitmapService.MakeBitmapTrue(
-																		XCImageFile.SpriteWidth,
-																		XCImageFile.SpriteHeight,
+																		XCImage.SpriteWidth,
+																		XCImage.SpriteHeight,
 																		Sprite.Bindata,
 																		PckViewForm.Pal.ColorTable);
 								Refresh();
@@ -239,7 +239,7 @@ namespace PckView
 				int pixelX = e.X / _scale;
 				int pixelY = e.Y / _scale;
 
-				int bindataId = pixelY * (Sprite.Bindata.Length / XCImageFile.SpriteHeight) + pixelX;
+				int bindataId = pixelY * (Sprite.Bindata.Length / XCImage.SpriteHeight) + pixelX;
 
 				if (bindataId > -1 && bindataId < Sprite.Bindata.Length)
 				{
@@ -291,8 +291,8 @@ namespace PckView
 
 			if (Sprite != null)
 			{
-				for (int y = 0; y != XCImageFile.SpriteHeight; ++y)
-				for (int x = 0; x != XCImageFile.SpriteWidth;  ++x)
+				for (int y = 0; y != XCImage.SpriteHeight; ++y)
+				for (int x = 0; x != XCImage.SpriteWidth;  ++x)
 					graphics.FillRectangle(
 										new SolidBrush(Sprite.Image.GetPixel(x, y)),
 										x * _scale,
@@ -304,20 +304,20 @@ namespace PckView
 
 			if (_grid)
 			{
-				for (int x = 0; x != XCImageFile.SpriteWidth; ++x) // vertical lines
+				for (int x = 0; x != XCImage.SpriteWidth; ++x) // vertical lines
 					graphics.DrawLine(
 									_penGrid,
 									x * _scale + Pad,
 									0,
 									x * _scale + Pad,
-									XCImageFile.SpriteHeight * _scale);
+									XCImage.SpriteHeight * _scale);
 
-				for (int y = 0; y != XCImageFile.SpriteHeight; ++y) // horizontal lines
+				for (int y = 0; y != XCImage.SpriteHeight; ++y) // horizontal lines
 					graphics.DrawLine(
 									_penGrid,
 									0,
 									y * _scale + Pad,
-									XCImageFile.SpriteWidth * _scale,
+									XCImage.SpriteWidth * _scale,
 									y * _scale + Pad);
 			}
 
@@ -332,14 +332,14 @@ namespace PckView
 							0,
 							1);
 			var p1 = new Point(
-							XCImageFile.SpriteWidth  * _scale + Pad,
+							XCImage.SpriteWidth  * _scale + Pad,
 							1);
 			var p2 = new Point(
-							XCImageFile.SpriteWidth  * _scale + Pad,
-							XCImageFile.SpriteHeight * _scale + Pad);
+							XCImage.SpriteWidth  * _scale + Pad,
+							XCImage.SpriteHeight * _scale + Pad);
 			var p3 = new Point(
 							1,
-							XCImageFile.SpriteHeight * _scale + Pad);
+							XCImage.SpriteHeight * _scale + Pad);
 			var p4 = new Point(
 							1,
 							1);
