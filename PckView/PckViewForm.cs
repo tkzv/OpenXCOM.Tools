@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using DSShared;
 using DSShared.Windows;
 
-using PckView.Forms.ImageBytes;
+using PckView.Forms.SpriteBytes;
 
 using XCom;
 using XCom.Interfaces;
@@ -292,17 +292,17 @@ namespace PckView
 
 			_miAdd = new MenuItem("Add ...");
 			_miAdd.Enabled = false;
-			_miAdd.Click += OnAddSpriteClick;
+			_miAdd.Click += OnAddSpritesClick;
 			contextmenu.MenuItems.Add(_miAdd);
 
 			_miInsertBefore = new MenuItem("Insert before ...");
 			_miInsertBefore.Enabled = false;
-			_miInsertBefore.Click += OnInsertSpriteBeforeClick;
+			_miInsertBefore.Click += OnInsertSpritesBeforeClick;
 			contextmenu.MenuItems.Add(_miInsertBefore);
 
 			_miInsertAfter = new MenuItem("Insert after ...");
 			_miInsertAfter.Enabled = false;
-			_miInsertAfter.Click += OnInsertSpriteAfterClick;
+			_miInsertAfter.Click += OnInsertSpritesAfterClick;
 			contextmenu.MenuItems.Add(_miInsertAfter);
 
 			contextmenu.MenuItems.Add(new MenuItem("-"));
@@ -312,12 +312,12 @@ namespace PckView
 			_miReplace.Click += OnReplaceSpriteClick;
 			contextmenu.MenuItems.Add(_miReplace);
 
-			_miMoveLeft = new MenuItem("Move left ...");
+			_miMoveLeft = new MenuItem("Move left");
 			_miMoveLeft.Enabled = false;
 			_miMoveLeft.Click += OnMoveLeftSpriteClick;
 			contextmenu.MenuItems.Add(_miMoveLeft);
 
-			_miMoveRight = new MenuItem("Move right ...");
+			_miMoveRight = new MenuItem("Move right");
 			_miMoveRight.Enabled = false;
 			_miMoveRight.Click += OnMoveRightSpriteClick;
 			contextmenu.MenuItems.Add(_miMoveRight);
@@ -429,7 +429,7 @@ namespace PckView
 		/// <param name="e"></param>
 		private void OnSpriteClick(object sender, EventArgs e)
 		{
-			bool valid = (_pnlView.Selected.Count != 0);
+			bool valid = (_pnlView.SelectedId != -1);
 
 			// on Context menu
 			_miEdit.Enabled         =
@@ -438,26 +438,8 @@ namespace PckView
 			_miReplace.Enabled      =
 			_miDelete.Enabled       =
 			_miExport.Enabled       = valid;
-
-			// NOTE: when Selected goes by-by and is replaced by an integer
-			// these will have sense:
-			_miMoveLeft.Enabled  = valid && (_pnlView.Spriteset[_pnlView.Selected[0].Sprite.TerrainId].TerrainId != 0);
-			_miMoveRight.Enabled = valid && (_pnlView.Spriteset[_pnlView.Selected[0].Sprite.TerrainId].TerrainId != _pnlView.Spriteset.Count - 1);
-
-			SelectedSprite selected = null;
-			if (valid)
-			{
-				selected = _pnlView.Selected[0];
-
-				int terrainId = selected.Sprite.TerrainId;
-
-				_pnlView.UpdateSpriteClick(terrainId);
-				EditorPanel.Instance.Sprite = _pnlView.Spriteset[terrainId];
-			}
-			else
-				EditorPanel.Instance.Sprite = null;
-
-			BytesFormHelper.ReloadBytes(selected); // this will clear the show-bytes box if null.
+			_miMoveLeft.Enabled     = valid && (_pnlView.SelectedId != 0);
+			_miMoveRight.Enabled    = valid && (_pnlView.SelectedId != _pnlView.Spriteset.Count - 1);
 		}
 
 		/// <summary>
@@ -469,21 +451,9 @@ namespace PckView
 		/// <param name="e"></param>
 		private void OnSpriteEditorClick(object sender, EventArgs e)
 		{
-			if (_pnlView.Spriteset != null && _pnlView.Selected.Count != 0)
+			if (_pnlView.Spriteset != null && _pnlView.SelectedId != -1)
 			{
-				// NOTE: So ... why doesn't the Editor's sprite change,
-				// even after refresh, when the selected sprite changes.
-				//
-				// ... in any case it's now forced to change by OnSpriteClick().
-				//
-				// ah, I guess the selected sprite is just an intermediary between the Spriteset and the EditorPanel.
-				// So you're not really setting the Editor's sprite to the Selected sprite, but to the Spriteset's sprite.
-				// None of which are the sprites, of course; they're all pointers.
-				//
-				// what this means is that the SelectedSprite class could be replaced by a lowly integer.
-				// Or simply a list of integers if you want the capability to have more than one selected sprite.
-
-				EditorPanel.Instance.Sprite = _pnlView.Spriteset[_pnlView.Selected[0].Sprite.TerrainId];
+				EditorPanel.Instance.Sprite = _pnlView.Spriteset[_pnlView.SelectedId];
 
 				if (!_feditor.Visible)
 				{
@@ -516,12 +486,12 @@ namespace PckView
 		}
 
 		/// <summary>
-		/// Adds a sprite to the collection.
+		/// Adds a sprite or sprites to the collection.
 		/// Called when the contextmenu's Click event is raised.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnAddSpriteClick(object sender, EventArgs e)
+		private void OnAddSpritesClick(object sender, EventArgs e)
 		{
 			using (var ofd = new OpenFileDialog())
 			{
@@ -546,13 +516,11 @@ namespace PckView
 						_pnlView.Spriteset.Add(sprite);
 					}
 
-					_pnlView.Selected.Clear();
-					_pnlView.PrintStatusTotal();
 					OnSpriteClick(null, EventArgs.Empty);
 
-					_pnlView.ForceResize();
-					// TODO: select the sprite and show it in the SpriteEditor perhaps.
+					_pnlView.PrintStatusTotal();
 
+					_pnlView.ForceResize();
 					Refresh();
 				}
 			}
@@ -565,7 +533,7 @@ namespace PckView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnInsertSpriteBeforeClick(object sender, EventArgs e)
+		private void OnInsertSpritesBeforeClick(object sender, EventArgs e)
 		{
 			using (var ofd = new OpenFileDialog())
 			{
@@ -574,7 +542,14 @@ namespace PckView
 				ofd.Multiselect = true;
 
 				if (ofd.ShowDialog() == DialogResult.OK)
-					InsertSprites(_pnlView.Selected[0].Sprite.TerrainId, ofd.FileNames);
+				{
+					InsertSprites(_pnlView.SelectedId, ofd.FileNames);
+
+					_pnlView.SelectedId += ofd.FileNames.Length;
+					EditorPanel.Instance.Sprite = _pnlView.Spriteset[_pnlView.SelectedId];
+
+					InsertSpritesFinish();
+				}
 			}
 		}
 
@@ -585,7 +560,7 @@ namespace PckView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnInsertSpriteAfterClick(object sender, EventArgs e)
+		private void OnInsertSpritesAfterClick(object sender, EventArgs e)
 		{
 			using (var ofd = new OpenFileDialog())
 			{
@@ -594,7 +569,10 @@ namespace PckView
 				ofd.Multiselect = true;
 
 				if (ofd.ShowDialog() == DialogResult.OK)
-					InsertSprites(_pnlView.Selected[0].Sprite.TerrainId + 1, ofd.FileNames);
+				{
+					InsertSprites(_pnlView.SelectedId + 1, ofd.FileNames);
+					InsertSpritesFinish();
+				}
 			}
 		}
 
@@ -607,7 +585,7 @@ namespace PckView
 		/// <param name="files">an array of filenames</param>
 		private void InsertSprites(int terrainId, string[] files)
 		{
-			int length = files.Length; // shuffle any/all succeeding sprites' terrain-ids up.
+			int length = files.Length;
 			for (int id = terrainId; id != _pnlView.Spriteset.Count; ++id)
 				_pnlView.Spriteset[id].TerrainId = id + length;
 
@@ -623,13 +601,18 @@ namespace PckView
 													XCImage.SpriteHeight);
 				_pnlView.Spriteset.Insert(terrainId++, sprite);
 			}
+		}
 
-			_pnlView.Selected.Clear(); // TODO: select another sprite, perhaps. See _pnlView.SpriteDelete()
-			_pnlView.PrintStatusTotal();
+		/// <summary>
+		/// Finishes the insert-sprite operation.
+		/// </summary>
+		private void InsertSpritesFinish()
+		{
 			OnSpriteClick(null, EventArgs.Empty);
 
-			_pnlView.ForceResize();
+			_pnlView.PrintStatusTotal();
 
+			_pnlView.ForceResize();
 			Refresh();
 		}
 
@@ -649,21 +632,16 @@ namespace PckView
 
 				if (ofd.ShowDialog() == DialogResult.OK)
 				{
-					int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
-
 					var bitmap = new Bitmap(ofd.FileName);
 					var sprite = BitmapService.CreateSprite(
 														bitmap,
-														terrainId,
+														_pnlView.SelectedId,
 														Pal,
 														0, 0,
 														XCImage.SpriteWidth,
 														XCImage.SpriteHeight);
-
-					_pnlView.Spriteset[terrainId] =
-					_pnlView.Selected[0].Sprite   = sprite;
-
-					OnSpriteClick(null, EventArgs.Empty);
+					_pnlView.Spriteset[_pnlView.SelectedId] =
+					EditorPanel.Instance.Sprite             = sprite;
 
 					Refresh();
 				}
@@ -696,20 +674,18 @@ namespace PckView
 		/// <param name="dir">-1 to move left, +1 to move right</param>
 		private void MoveSprite(int dir)
 		{
-			int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
+			var sprite = _pnlView.Spriteset[_pnlView.SelectedId];
 
-			var sprite = _pnlView.Spriteset[terrainId];
+			_pnlView.Spriteset[_pnlView.SelectedId]       = _pnlView.Spriteset[_pnlView.SelectedId + dir];
+			_pnlView.Spriteset[_pnlView.SelectedId + dir] = sprite;
 
-			_pnlView.Spriteset[terrainId]       = _pnlView.Spriteset[terrainId + dir];
-			_pnlView.Spriteset[terrainId + dir] = sprite;
+			_pnlView.Spriteset[_pnlView.SelectedId].TerrainId = _pnlView.SelectedId;
+			_pnlView.SelectedId += dir;
+			_pnlView.Spriteset[_pnlView.SelectedId].TerrainId = _pnlView.SelectedId;
 
-			_pnlView.Spriteset[terrainId].TerrainId       = terrainId;
-			_pnlView.Spriteset[terrainId + dir].TerrainId = terrainId + dir;
-
-			_pnlView.Selected[0].Sprite = sprite;
+			EditorPanel.Instance.Sprite = _pnlView.Spriteset[_pnlView.SelectedId];
 
 			OnSpriteClick(null, EventArgs.Empty);
-
 			Refresh();
 		}
 
@@ -721,20 +697,19 @@ namespace PckView
 		/// <param name="e"></param>
 		private void OnDeleteSpriteClick(object sender, EventArgs e)
 		{
-			int terrainId = _pnlView.Selected[0].Sprite.TerrainId;
+			_pnlView.Spriteset.RemoveAt(_pnlView.SelectedId);
 
-			_pnlView.Spriteset.RemoveAt(terrainId);
-
-			int count = _pnlView.Spriteset.Count; // shuffle any/all succeeding sprites' terrain-ids down.
-			for (int id = terrainId; id != count; ++id)
+			for (int id = _pnlView.SelectedId; id != _pnlView.Spriteset.Count; ++id)
 				_pnlView.Spriteset[id].TerrainId = id;
 
-			_pnlView.Selected.Clear(); // TODO: select another sprite, perhaps. See _pnlView.SpriteDelete()
-			_pnlView.PrintStatusTotal();
+			EditorPanel.Instance.Sprite = null;
+
+			_pnlView.SelectedId = -1;
 			OnSpriteClick(null, EventArgs.Empty);
 
-			_pnlView.ForceResize();
+			_pnlView.PrintStatusTotal();
 
+			_pnlView.ForceResize();
 			Refresh();
 		}
 
@@ -767,11 +742,11 @@ namespace PckView
 			}
 			while (count != 0);
 
-			var sprite = _pnlView.Selected[0].Sprite;
+			var sprite = _pnlView.Spriteset[_pnlView.SelectedId];
 			string suffix = String.Format(
 										System.Globalization.CultureInfo.InvariantCulture,
 										"{0:" + digits + "}",
-										sprite.TerrainId);
+										_pnlView.SelectedId);
 
 			using (var sfd = new SaveFileDialog())
 			{
@@ -1103,12 +1078,12 @@ namespace PckView
 		{
 			if (!miBytes.Checked)
 			{
-				if (_pnlView.Selected.Count != 0)
+				if (_pnlView.SelectedId != -1)
 				{
 					miBytes.Checked = true;
 					BytesFormHelper.ShowBytes(
-										_pnlView.Selected[0],
-										CallbackShowBytesClosing);
+										_pnlView.Spriteset[_pnlView.SelectedId],
+										BytesClosingCallback);
 				}
 			}
 			else
@@ -1121,7 +1096,7 @@ namespace PckView
 		/// <summary>
 		/// Callback for ShowBytes().
 		/// </summary>
-		private void CallbackShowBytesClosing()
+		private void BytesClosingCallback()
 		{
 			miBytes.Checked = false;
 		}

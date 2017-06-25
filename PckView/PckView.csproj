@@ -171,7 +171,6 @@
     <Compile Include="PckViewForm.Designer.cs">
       <DependentUpon>PckViewForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SelectedSprite.cs" />
     <Content Include="App.ico" />
   </ItemGroup>
   <ItemGroup>

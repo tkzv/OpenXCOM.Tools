@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using XCom.Interfaces;
 
 
-namespace PckView.Forms.ImageBytes
+namespace PckView.Forms.SpriteBytes
 {
 	/// <summary>
 	/// Creates a form that shows all the bytes in a sprite.
@@ -15,7 +15,7 @@ namespace PckView.Forms.ImageBytes
 	internal static class BytesFormHelper
 	{
 		#region Fields (static)
-		private static SelectedSprite _selected;
+		private static XCImage _sprite;
 
 		private static Form fBytes;
 		private static RichTextBox rtbBytes;
@@ -32,16 +32,16 @@ namespace PckView.Forms.ImageBytes
 
 		#region Methods (static)
 		internal static void ShowBytes(
-				SelectedSprite selected,
+				XCImage sprite,
 				MethodInvoker formClosedCallBack)
 		{
-			_selected = selected;
+			_sprite = sprite;
 			ShowBytesCore(formClosedCallBack);
 		}
 
-		internal static void ReloadBytes(SelectedSprite selected)
+		internal static void ReloadBytes(XCImage sprite)
 		{
-			_selected = selected;
+			_sprite = sprite;
 			ReloadBytesCore();
 		}
 
@@ -51,7 +51,7 @@ namespace PckView.Forms.ImageBytes
 			{
 				fBytes.BringToFront();
 			}
-			else if (_selected != null)
+			else if (_sprite != null)
 			{
 				fBytes = new Form();
 				fBytes.Size = new Size(640, 480);
@@ -69,7 +69,7 @@ namespace PckView.Forms.ImageBytes
 
 				fBytes.FormClosing += OnFormClosing;
 				fBytes.FormClosing += (sender, e) => formClosedCallBack();
-				fBytes.Text = "Total Bytes - " + _selected.Sprite.Bindata.Length;
+				fBytes.Text = "Total Bytes - " + _sprite.Bindata.Length;
 				fBytes.Show();
 			}
 		}
@@ -78,7 +78,7 @@ namespace PckView.Forms.ImageBytes
 		{
 			if (fBytes != null)
 			{
-				if (_selected != null && _selected.Sprite != null)
+				if (_sprite != null)
 				{
 					rtbBytes.Clear();
 					LoadBytes();
@@ -98,7 +98,7 @@ namespace PckView.Forms.ImageBytes
 			int wrapCount = 0;
 			int row       = 0;
 
-			foreach (byte b in _selected.Sprite.Bindata)
+			foreach (byte b in _sprite.Bindata)
 			{
 				if (wrapCount % XCImage.SpriteWidth == 0)
 				{
@@ -124,6 +124,7 @@ namespace PckView.Forms.ImageBytes
 			if (fBytes != null)
 			{
 				fBytes.Close();
+//				fBytes.Hide(); // TODO: implement that.
 				fBytes = null;
 			}
 		}

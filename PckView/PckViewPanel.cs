@@ -5,6 +5,8 @@ using System.Drawing;					// Pens, Brushes
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;				// Panel
 
+using PckView.Forms.SpriteBytes;
+
 using XCom;								// Palette, XCImageCollection
 using XCom.Interfaces;					// XCImage
 
@@ -51,7 +53,6 @@ namespace PckView
 
 		private int _startY;
 
-		private int _selectedId;
 		private int _overId;
 
 		private Pen   _penBlack        = new Pen(Brushes.Black, 1);
@@ -84,8 +85,6 @@ namespace PckView
 
 				_spriteset.Pal = PckViewForm.Pal;
 
-				Selected.Clear();
-
 				_largeChange           =
 				_scrollBar.LargeChange = _tileHeight;
 
@@ -94,6 +93,8 @@ namespace PckView
 				Refresh();
 
 				_sbpSpritesLabel.Text = _spriteset.Label;
+
+				SelectedId = -1;
 				PrintStatusTotal();
 
 				if (SpritesetChangedEvent != null)
@@ -104,18 +105,15 @@ namespace PckView
 			}
 		}
 
-		private readonly List<SelectedSprite> _selected = new List<SelectedSprite>();
-		internal List<SelectedSprite> Selected
-		{
-			get { return _selected; }
-		}
+		internal int SelectedId
+		{ get; set; }
 
 		/// <summary>
 		/// Used by UpdateScrollBar() to determine its Maximum value.
 		/// </summary>
 		internal int TableHeight
 		{
-			get // TODO: calculate and cache this value in the OnResize and loading events.
+			get // TODO: calculate and cache this value in the OnResize event.
 			{
 				SetTilesX();
 
@@ -170,8 +168,9 @@ namespace PckView
 				_statusBar
 			});
 
-			UpdateSpriteClick(-1);
-			UpdateSpriteOver( -1);
+			SelectedId = -1;
+			UpdateStatusSpriteSelected();
+			UpdateStatusSpriteOver(-1);
 
 			PckViewForm.PaletteChangedEvent += OnPaletteChanged; // NOTE: lives the life of the app, so no leak.
 
@@ -193,9 +192,7 @@ namespace PckView
 			if (FindForm().WindowState != FormWindowState.Minimized)
 			{
 				UpdateScrollbar(false);
-
-				if (Selected.Count != 0)
-					ScrollToTile(Selected[0].Sprite.TerrainId);
+				ScrollToTile(SelectedId);
 			}
 		}
 
@@ -240,24 +237,17 @@ namespace PckView
 			if (e.Button == MouseButtons.Left
 				&& Spriteset != null && Spriteset.Count != 0)
 			{
-				// IMPORTANT: 'Selected' is currently allowed only 1 entry,
-				// although it is set up as a List. Things might go one way or
-				// the other in future.
+				// IMPORTANT: 'SelectedId' is currently allowed only 1 entry.
 
 				int terrainId = GetTileId(e);
-				if (terrainId != _selectedId)
+				if (terrainId != SelectedId)
 				{
-					Selected.Clear();
+					XCImage sprite = null;
 
-					if (terrainId != -1)
+					if ((SelectedId = terrainId) != -1)
 					{
-						var selected = new SelectedSprite();
-						selected.Sprite = Spriteset[terrainId];
-
-						Selected.Add(selected);
-
-						terrainId = selected.Sprite.TerrainId; // use the proper Id.
-
+						SelectedId = Spriteset[SelectedId].TerrainId; // use the proper Id of the sprite itself.
+						sprite = Spriteset[SelectedId];
 
 //						if (ModifierKeys == Keys.Control)
 //						{
@@ -274,10 +264,12 @@ namespace PckView
 //							Selected.Add(selected);
 					}
 
-					UpdateSpriteClick(terrainId);
+					EditorPanel.Instance.Sprite = sprite;
+
+					UpdateStatusSpriteSelected();
 					Refresh();
 				}
-				ScrollToTile(terrainId);
+				ScrollToTile(SelectedId);
 			}
 		}
 
@@ -294,7 +286,7 @@ namespace PckView
 			{
 				int terrainId = GetTileId(e);
 				if (terrainId != _overId)
-					UpdateSpriteOver(terrainId);
+					UpdateStatusSpriteOver(terrainId);
 			}
 		}
 
@@ -338,16 +330,17 @@ namespace PckView
 									Width - _scrollBar.Width - 1, Height);
 
 
-				var selectedIds = new List<int>(); // track currently selected spriteIds.
-				foreach (var sprite in Selected)
-					selectedIds.Add(sprite.Sprite.TerrainId);
+//				var selectedIds = new List<int>(); // track currently selected spriteIds.
+//				foreach (var sprite in Selected)
+//					selectedIds.Add(sprite.Sprite.TerrainId);
 
 				for (int id = 0; id != Spriteset.Count; ++id) // fill selected tiles and draw sprites.
 				{
 					int tileX = id % _tilesX;
 					int tileY = id / _tilesX;
 
-					if (selectedIds.Contains(id))
+//					if (selectedIds.Contains(id))
+					if (id == SelectedId)
 						graphics.FillRectangle(
 											_brushCrimson,
 											TableOffsetHori + _tileWidth  * tileX,
@@ -480,16 +473,24 @@ namespace PckView
 
 		/// <summary>
 		/// Prints the quantity of sprites in the currently loaded spriteset to
-		/// the statusbar. Note that this will also clear the sprite-clicked and
-		/// sprite-over info.
+		/// the statusbar. Note that this will clear the sprite-over info.
 		/// </summary>
 		internal void PrintStatusTotal()
 		{
+			UpdateStatusSpriteOver(-1);
+
 			_sbpTilesTotal.Text = String.Format(
 											System.Globalization.CultureInfo.InvariantCulture,
 											"Total {0}", _spriteset.Count);
-			UpdateSpriteClick(-1);
-			UpdateSpriteOver( -1);
+		}
+
+		/// <summary>
+		/// Updates the status-information for the sprite that is currently
+		/// selected.
+		/// </summary>
+		internal void UpdateStatusSpriteSelected()
+		{
+			PrintStatusSpriteInfo();
 		}
 
 		/// <summary>
@@ -498,31 +499,19 @@ namespace PckView
 		/// </summary>
 		/// <param name="terrainId">the id of the currently mouse-overed sprite
 		/// in the currently loaded spriteset</param>
-		private void UpdateSpriteOver(int terrainId)
+		private void UpdateStatusSpriteOver(int terrainId)
 		{
 			_overId = terrainId;
-			PrintStatusSpriteIds();
-		}
-
-		/// <summary>
-		/// Updates the status-information for the sprite that is currently
-		/// selected.
-		/// </summary>
-		/// <param name="terrainId">the id of the currently mouse-clicked sprite
-		/// in the currently loaded spriteset</param>
-		internal void UpdateSpriteClick(int terrainId)
-		{
-			_selectedId = terrainId;
-			PrintStatusSpriteIds();
+			PrintStatusSpriteInfo();
 		}
 
 		/// <summary>
 		/// Prints the current status for the currently selected and/or
 		/// mouseovered sprite(s) in the status-bar. Not 0-based.
 		/// </summary>
-		private void PrintStatusSpriteIds()
+		private void PrintStatusSpriteInfo()
 		{
-			int selectedId = _selectedId + 1;
+			int selectedId = SelectedId + 1;
 			string selected = (selectedId != 0) ? selectedId.ToString(System.Globalization.CultureInfo.InvariantCulture)
 												: None;
 			_sbpTileSelected.Text = String.Format(

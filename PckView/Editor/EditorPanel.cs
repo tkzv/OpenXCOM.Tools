@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
+using PckView.Forms.SpriteBytes;
+
 using XCom;
 using XCom.Interfaces;
 
@@ -55,10 +57,12 @@ namespace PckView
 
 				string caption = "Sprite Editor";
 				if (_sprite != null)
-					caption += " - id " + _sprite.TerrainId;
-
+					caption += " - id " + (_sprite.TerrainId + 1);
 				_parent.Text = caption;
+
 				_sbpEyeDropper.Text = String.Empty;
+
+				BytesFormHelper.ReloadBytes(_sprite); // this will clear the show-bytes box if null.
 
 				Refresh();
 			}
