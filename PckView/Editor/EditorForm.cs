@@ -237,8 +237,8 @@ namespace PckView
 			// miPalette
 			// 
 			this.miPalette.Index = 0;
-			this.miPalette.Text = "Show Palette";
 			this.miPalette.Shortcut = System.Windows.Forms.Shortcut.CtrlP;
+			this.miPalette.Text = "Show/hide palette";
 			this.miPalette.Click += new System.EventHandler(this.OnShowPaletteClick);
 			// 
 			// miGridMenu
@@ -252,15 +252,15 @@ namespace PckView
 			// miGrid
 			// 
 			this.miGrid.Index = 0;
-			this.miGrid.Text = "Show Grid";
 			this.miGrid.Shortcut = System.Windows.Forms.Shortcut.CtrlG;
+			this.miGrid.Text = "Show/hide grid";
 			this.miGrid.Click += new System.EventHandler(this.OnShowGridClick);
 			// 
 			// miGridInvert
 			// 
 			this.miGridInvert.Index = 1;
-			this.miGridInvert.Text = "Invert Color";
 			this.miGridInvert.Shortcut = System.Windows.Forms.Shortcut.CtrlI;
+			this.miGridInvert.Text = "Invert color";
 			this.miGridInvert.Click += new System.EventHandler(this.OnInvertGridColorClick);
 			// 
 			// EditorForm

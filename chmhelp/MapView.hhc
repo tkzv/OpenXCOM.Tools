@@ -54,6 +54,10 @@
 			<param name="Name" value="PckView">
 			<param name="Local" value="html\pckview.htm">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Sprite Editor">
+			<param name="Local" value="html\spriteeditor.htm">
+			</OBJECT>
 	</UL>
 </UL>
 </BODY></HTML>

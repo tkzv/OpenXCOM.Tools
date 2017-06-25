@@ -1,0 +1,41 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../css/mapview.css">
+	</head>
+
+	<body>
+		<h2>Sprite Editor and Palette Viewer</h2>
+		<img src="../png/spriteeditor.png" />&nbsp;&nbsp;<img src="../png/paletteviewer.png" />
+
+		<p>The Sprite Editor, shown above on the left, is extremely basic. It is intended only for pixel touchups - one pixel at a time. The statusbar at the bottom displays the color-index and color-value of the pixel under the mouse-cursor.</p>
+
+		<p>The Palette Viewer, to the right, shows the palette that is currently selected under PckView's Palette menu. Since color information is not stored in XCOM sprites, the colors shown are taken from hard-coded values. The statusbar at the bottom displays the color-index and color-value of the selected color swatch.</p>
+
+		<p>Notice that index #0 is for transparency in XCOM, and indices #254 and #255 are invalid.</p>
+
+		<p>The editor can be toggled between two modes:<br><br>
+&nbsp;&nbsp;Locked - the image cannot be modified. Click the text to switch to Enabled mode.<br>
+&nbsp;&nbsp;Enabled - the image can be modified. Click the text to switch to Locked mode.</p>
+
+		<p>A color to paint with can be selected either by clicking its swatch in the Palette Viewer or by clicking a pixel with that color in the Sprite Editor itself. The latter method automatically selects the swatch in the viewer.</p>
+
+		<p><b>THERE IS NO PROMPT TO SAVE ANY CHANGES.</b> So keep your eye on the ball.</p>
+
+		<p>Along the top of the Sprite Editor is a trackbar for adjusting the displayed scale of the sprite. It has no effect when saving the spriteset or exporting the sprite. Moving the slider all the way to the left shows the image with a 1:1 ratio. All the way to the right shows the image at a 10:1 ratio.</p>
+
+		<br>
+		<h3>Palette menu</h3>
+
+		<p>Show/hide palette - opens and closes the Palette Viewer.</p>
+
+		<br>
+		<h3>Grid menu</h3>
+
+		<p>Show/hide grid - shows or hides a grid of 1 pixel squares over the sprite.</p>
+		<p>Invert color - toggles the color of the grid between dim-gray and off-white.</p>
+
+		<br>
+		<p>That's about it.</p>
+		<br>
+	</body>
+</html>
