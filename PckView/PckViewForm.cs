@@ -685,6 +685,8 @@ namespace PckView
 
 			EditorPanel.Instance.Sprite = _pnlView.Spriteset[_pnlView.SelectedId];
 
+			_pnlView.PrintStatusSpriteSelected();
+
 			OnSpriteClick(null, EventArgs.Empty);
 			Refresh();
 		}

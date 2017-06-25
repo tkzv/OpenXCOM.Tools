@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;		// List
-using System.Collections.ObjectModel;	// ReadOnlyCollection
-using System.Drawing;					// Pens, Brushes
+using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Windows.Forms;				// Panel
+using System.Windows.Forms;
 
-using PckView.Forms.SpriteBytes;
-
-using XCom;								// Palette, XCImageCollection
-using XCom.Interfaces;					// XCImage
+using XCom;
+using XCom.Interfaces;
 
 
 namespace PckView
@@ -28,7 +24,8 @@ namespace PckView
 		#region Fields (static)
 		private const int SpriteMargin = 2;
 
-		private const string None = "n/a";
+		private const string Total = "Total ";
+		private const string None  = "n/a";
 
 		// NOTE: if sprite-size is ever allowed to change these need to be replaced
 		// w/ 'Spriteset.ImageFile.ImageSize.Width/Height' here and elsewhere.
@@ -50,10 +47,7 @@ namespace PckView
 		private readonly StatusBarPanel _sbpSpritesLabel = new StatusBarPanel();
 
 		private int _tilesX = 1;
-
 		private int _startY;
-
-		private int _overId;
 
 		private Pen   _penBlack        = new Pen(Brushes.Black, 1);
 		private Pen   _penControlLight = new Pen(SystemColors.ControlLight, 1);
@@ -90,22 +84,26 @@ namespace PckView
 
 				UpdateScrollbar(true);
 
-				Refresh();
+				EditorPanel.Instance.Sprite = null;
 
 				_sbpSpritesLabel.Text = _spriteset.Label;
 
-				SelectedId = -1;
+				SelectedId =
+				OverId     = -1;
 				PrintStatusTotal();
 
 				if (SpritesetChangedEvent != null)
 					SpritesetChangedEvent(value != null);
 
-				EditorPanel.Instance.Sprite = null;
 				// TODO: update PaletteViewer if the spriteset palette changes.
+				Refresh();
 			}
 		}
 
 		internal int SelectedId
+		{ get; set; }
+
+		private int OverId
 		{ get; set; }
 
 		/// <summary>
@@ -147,7 +145,7 @@ namespace PckView
 
 			_sbpTilesTotal.Text = String.Format(
 											System.Globalization.CultureInfo.InvariantCulture,
-											"Total " + None);
+											Total + None);
 			_sbpTilesTotal.Width   = 85;
 			_sbpTileOver.Width     = 75;
 			_sbpTileSelected.Width = 100;
@@ -168,9 +166,12 @@ namespace PckView
 				_statusBar
 			});
 
+
 			SelectedId = -1;
-			UpdateStatusSpriteSelected();
-			UpdateStatusSpriteOver(-1);
+			PrintStatusSpriteSelected();
+
+			OverId = -1;
+			PrintStatusSpriteOver();
 
 			PckViewForm.PaletteChangedEvent += OnPaletteChanged; // NOTE: lives the life of the app, so no leak.
 
@@ -266,7 +267,7 @@ namespace PckView
 
 					EditorPanel.Instance.Sprite = sprite;
 
-					UpdateStatusSpriteSelected();
+					PrintStatusSpriteSelected();
 					Refresh();
 				}
 				ScrollToTile(SelectedId);
@@ -285,8 +286,11 @@ namespace PckView
 			if (Spriteset != null && Spriteset.Count != 0)
 			{
 				int terrainId = GetTileId(e);
-				if (terrainId != _overId)
-					UpdateStatusSpriteOver(terrainId);
+				if (terrainId != OverId)
+				{
+					OverId = terrainId;
+					PrintStatusSpriteOver();
+				}
 			}
 		}
 
@@ -477,39 +481,19 @@ namespace PckView
 		/// </summary>
 		internal void PrintStatusTotal()
 		{
-			UpdateStatusSpriteOver(-1);
+			PrintStatusSpriteOver();
+			PrintStatusSpriteSelected();
 
 			_sbpTilesTotal.Text = String.Format(
 											System.Globalization.CultureInfo.InvariantCulture,
-											"Total {0}", _spriteset.Count);
+											Total + "{0}", Spriteset.Count);
 		}
 
 		/// <summary>
 		/// Updates the status-information for the sprite that is currently
 		/// selected.
 		/// </summary>
-		internal void UpdateStatusSpriteSelected()
-		{
-			PrintStatusSpriteInfo();
-		}
-
-		/// <summary>
-		/// Updates the status-information for the sprite that the cursor is
-		/// currently over.
-		/// </summary>
-		/// <param name="terrainId">the id of the currently mouse-overed sprite
-		/// in the currently loaded spriteset</param>
-		private void UpdateStatusSpriteOver(int terrainId)
-		{
-			_overId = terrainId;
-			PrintStatusSpriteInfo();
-		}
-
-		/// <summary>
-		/// Prints the current status for the currently selected and/or
-		/// mouseovered sprite(s) in the status-bar. Not 0-based.
-		/// </summary>
-		private void PrintStatusSpriteInfo()
+		internal void PrintStatusSpriteSelected()
 		{
 			int selectedId = SelectedId + 1;
 			string selected = (selectedId != 0) ? selectedId.ToString(System.Globalization.CultureInfo.InvariantCulture)
@@ -517,8 +501,15 @@ namespace PckView
 			_sbpTileSelected.Text = String.Format(
 												System.Globalization.CultureInfo.InvariantCulture,
 												"Selected {0}", selected);
+		}
 
-			int overId = _overId + 1;
+		/// <summary>
+		/// Updates the status-information for the sprite that the cursor is
+		/// currently over.
+		/// </summary>
+		private void PrintStatusSpriteOver()
+		{
+			int overId = OverId + 1;
 			string over = (overId != 0) ? overId.ToString(System.Globalization.CultureInfo.InvariantCulture)
 										: None;
 			_sbpTileOver.Text = String.Format(
