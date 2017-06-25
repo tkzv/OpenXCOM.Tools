@@ -722,8 +722,18 @@ namespace PckView
 		/// <param name="e"></param>
 		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
-			if (_miDelete.Enabled && e.KeyCode == Keys.Delete)
-				OnDeleteSpriteClick(null, EventArgs.Empty);
+			switch (e.KeyCode)
+			{
+				case Keys.Delete:
+					if (_miDelete.Enabled)
+						OnDeleteSpriteClick(null, EventArgs.Empty);
+					break;
+
+				case Keys.Enter:
+					if (_miEdit.Enabled)
+						OnSpriteEditorClick(null, EventArgs.Empty);
+					break;
+			}
 		}
 
 		/// <summary>
