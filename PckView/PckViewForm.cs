@@ -1114,14 +1114,16 @@ namespace PckView
 		}
 
 		/// <summary>
-		/// Shows the help thingie.
+		/// Shows the CHM helpfile.
 		/// Called when the mainmenu's help-menu Click event is raised.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void OnHelpClick(object sender, EventArgs e)
 		{
-			new Help().ShowDialog(this);
+			string help = Path.GetDirectoryName(Application.ExecutablePath);
+				   help = Path.Combine(help, "MapView.chm");
+			Help.ShowHelp(this, "file://" + help, HelpNavigator.Topic, @"html\pckview.htm");
 		}
 
 		/// <summary>

@@ -11,35 +11,39 @@
 
 		<p>PckView II can open, create, or modify standard PCK+TAB files that contain terrain sprites that are 32x40 8-bpp only. It does <b>not</b> work with any other PCK files.</p>
 
+		<p>The center panel displays sprites that are currently in the loaded spriteset.</p>
+
 		<p>Left-click selects a sprite.</p>
 
 		<p>Right-click shows a contextmenu based on the currently selected sprite after opening or creating a spriteset.<br><br>
-&nbsp;&nbsp;Edit - opens the currently selected sprite in the Sprite Editor. Double-clicking a sprite also brings it up in the editor, as does pressing Enter if a sprite has been selected.<br>
-&nbsp;&nbsp;Add ... - adds a sprite or sprites to the end of the currently loaded spriteset.<br>
-&nbsp;&nbsp;Insert before ... - inserts a sprite or sprites directly before the currently selected sprite.<br>
-&nbsp;&nbsp;Insert after ... - inserts a sprite or sprites directly after the currently selected sprite.<br>
-&nbsp;&nbsp;Replace ... - replaces the currently selected sprite with a different image.<br>
-&nbsp;&nbsp;Move left - swaps a currently selected sprite with the sprite directly before it.<br>
-&nbsp;&nbsp;Move right - swaps a currently selected sprite with the sprite directly after it.<br>
-&nbsp;&nbsp;Delete - removes the currently selected sprite from the spriteset.<br>
-&nbsp;&nbsp;Export sprite ... - exports the currently selected sprite to a file in Windows BMP format.</p>
+&nbsp;&nbsp;Edit - opens the selected sprite in the Sprite Editor. Double-clicking a sprite also brings it up in the editor, as does pressing Enter if a sprite has been selected.<br>
+&nbsp;&nbsp;Add ... - adds a sprite or sprites to the end of the spriteset.<br>
+&nbsp;&nbsp;Insert before ... - inserts a sprite or sprites directly before the selected sprite.<br>
+&nbsp;&nbsp;Insert after ... - inserts a sprite or sprites directly after the selected sprite.<br>
+&nbsp;&nbsp;Replace ... - replaces the selected sprite with a different image.<br>
+&nbsp;&nbsp;Move left - swaps the selected sprite with the sprite directly before it.<br>
+&nbsp;&nbsp;Move right - swaps the selected sprite with the sprite directly after it.<br>
+&nbsp;&nbsp;Delete - removes the selected sprite from the spriteset.<br>
+&nbsp;&nbsp;Export sprite ... - exports the selected sprite to a file in Windows BMP format.</p>
 
 		<p>Adding and inserting sprites requires that their files are 32x40 8-bpp images in Windows BMP format.</p>
+
+		<p>The statusbar along the bottom shows the total quantity of sprites in the set, the id of the sprite that is under the mouse-cursor, and the id of the currently selected sprite. The label of the spriteset is also displayed.</p>
 
 		<br>
 		<h3>File menu</h3>
 
 		<p>Open Pck file ... - opens a PCK spriteset that contains XCOM terrain sprites.</p>
-		<p>Create Pck file ... - creates a new PCK spriteset that can contain XCOM terrain sprites.</p>
-		<p>Save - saves the currently loaded PCK spriteset.</p>
-		<p>Save As ... - saves the currently loaded PCK spriteset with a different filename.</p>
-		<p>Export sprites ... - exports all the sprites in the currently loaded spriteset to a directory. The images will be in Windows BMP format.</p>
-		<p>Quit - exits the application. <b>THERE IS NO PROMPT TO SAVE ANY CHANGES.</b> This is a bare-bones app that requires prior understanding of how XCOM terrain sprites work and why they work as they do, please stay on the ball.</p>
+		<p>Create Pck file ... - creates a new PCK spriteset that can contain XCOM terrain sprites only.</p>
+		<p>Save - saves the current PCK spriteset.</p>
+		<p>Save As ... - saves the current PCK spriteset to another file.</p>
+		<p>Export sprites ... - exports all the sprites in the current spriteset to a directory. The images will be in Windows BMP format.</p>
+		<p>Quit - exits the application. <b>THERE IS NO PROMPT TO SAVE ANY CHANGES.</b> This is a bare-bones app that requires prior understanding of how XCOM terrain sprites work and why they work as they do, so please stay on the ball.</p>
 
 		<br>
 		<h3>Palette menu</h3>
 
-		<p>Shows a list of available palettes. Note that sprites do <b>not</b> contain color information - only the <b>256 palette indices</b> matter. Hence the currently selected palette makes no difference when saving a spriteset. However, the sprites are displayed in PckView with hard-coded color information, which typically make them appear differently than they would while actually playing XCOM.</p>
+		<p>Shows a list of available palettes. Note that sprites do <b>not</b> contain color information - only <b>256 palette indices</b> are loaded and saved. Hence the currently selected palette makes no difference when saving a spriteset. However, the sprites are displayed in PckView with hard-coded color information, which typically make them appear differently than they would while actually playing XCOM.</p>
 
 		<br>
 		<h3>Transparency menu</h3>
@@ -49,14 +53,14 @@
 		<br>
 		<h3>Bytes menu</h3>
 
-		<p>Show/hide byte table - opens or closes a window that shows the color-indices of all 1280 pixels for the currently selected sprite. The table is arranged in 32 columns with 40 rows, representing the dimensions of the sprite itself, but is not editable.</p>
+		<p>Show/hide byte table - opens or closes a window that shows the color-indices of all 1280 pixels for the currently selected sprite. The table is arranged in 32 columns with 40 rows, representing the dimensions of the sprite itself. It is not editable.</p>
 
 		<br>
 		<h3>Help menu</h3>
 
 		<p>About - version information. Also shows the build-type and currently running OS architecture.</p>
 
-		<p>Help - </p>
+		<p>Help - shows this CHM helpfile.</p>
 		<br>
 		</body>
 </html>

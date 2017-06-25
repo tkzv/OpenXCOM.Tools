@@ -18,10 +18,13 @@ font=,"MapView.hhc","MapView.hhk","html\reason.htm",,,,,,0x2520,,0x10300e,,,,,,,
 
 
 [FILES]
-html\reason.htm
-html\overview.htm
-html\requirements.htm
+html\configuration.htm
 html\mainview.htm
+html\overview.htm
+html\pckview.htm
+html\reason.htm
+html\requirements.htm
+html\routeview.htm
 html\tileview.htm
 html\topview.htm
 

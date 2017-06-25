@@ -29,24 +29,33 @@ namespace MapView
 		:
 			Form
 	{
+		#region Fields (static)
+		private const double ScaleDelta = 0.125;
+		#endregion
+
+
 		#region Fields
-		private readonly MainViewUnderlay      _mainViewUnderlay; // has static functs.
+		private readonly MainViewUnderlay      _mainViewUnderlay;
 
 		private readonly ViewersManager        _viewersManager;
-		private readonly ViewerFormsManager    _viewerFormsManager; // has static functs.
+		private readonly ViewerFormsManager    _viewerFormsManager;
 		private readonly MainMenusManager      _mainMenusManager;
 
 //		private readonly LoadingForm           _loadingProgress;
 //		private readonly ConsoleWarningHandler _warningHandler;
+
+		private Form _foptions;
+		private bool _closing;
+
+		private bool _quit;
+
+		private bool _windowFlag;
 		#endregion
 
 
 		#region Properties (static)
-		private static XCMainWindow _instance;
 		internal static XCMainWindow Instance
-		{
-			get { return _instance; }
-		}
+		{ get; set; }
 		#endregion
 
 
@@ -181,7 +190,7 @@ namespace MapView
 			// welcome to your new home
 
 
-			_instance = this;
+			Instance = this;
 
 			FormClosing += OnSaveOptionsFormClosing;
 
@@ -705,9 +714,6 @@ namespace MapView
 			}
 		}
 
-
-		private bool _quit;
-
 		/// <summary>
 		/// This has nothing to do with the Registry anymore, but it saves
 		/// MainView's Options as well as its screen-size and -position to YAML
@@ -1039,10 +1045,6 @@ namespace MapView
 				Environment.Exit(0); // god, that works so much better than Application.Exit()
 		}
 
-
-		private Form _foptions;
-		private bool _closing;
-
 		private void OnOptionsClick(object sender, EventArgs e)
 		{
 			var it = (MenuItem)sender;
@@ -1134,9 +1136,6 @@ namespace MapView
 			}
 		}
 
-
-		private bool _windowFlag;
-
 		private void OnMainWindowActivated(object sender, EventArgs e)
 		{
 			if (!_windowFlag)
@@ -1192,9 +1191,6 @@ namespace MapView
 //			_mainViewPanel.MapView.DrawSelectionBox = !_mainViewPanel.MapView.DrawSelectionBox;
 //			tsbSelectionBox.Checked = !tsbSelectionBox.Checked;
 		}
-
-
-		private const double ScaleDelta = 0.125;
 
 		private void OnZoomInClick(object sender, EventArgs e)
 		{
@@ -1880,6 +1876,31 @@ namespace MapView
 		#endregion
 
 
+		#region Methods (static)
+		/// <summary>
+		/// Transposes all the default viewer positions and sizes from the
+		/// embedded MapViewers manifest to '/settings/MapViewers.yml'.
+		/// Based on InstallationForm.
+		/// </summary>
+		private static void CreateViewersFile()
+		{
+			var info = (PathInfo)SharedSpace.Instance[PathInfo.ShareViewers];
+			info.CreateDirectory();
+
+			string pfe = info.FullPath;
+
+			using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
+													 .GetManifestResourceStream("MapView._Embedded.MapViewers.yml")))
+			using (var fs = new FileStream(pfe, FileMode.Create))
+			using (var sw = new StreamWriter(fs))
+			{
+				while (sr.Peek() != -1)
+					sw.WriteLine(sr.ReadLine());
+			}
+		}
+		#endregion
+
+
 		#region Methods
 		/// <summary>
 		/// Loads the Map that's selected in the Maptree.
@@ -1934,6 +1955,10 @@ namespace MapView
 //			else miExport.Enabled = false;
 		}
 
+		/// <summary>
+		/// Toggles the door-sprites to animate or not.
+		/// </summary>
+		/// <param name="animate">true to animate any doors</param>
 		private void ToggleDoorSprites(bool animate)
 		{
 			if (_mainViewUnderlay.MapBase != null) // NOTE: MapBase is null on MapView load.
@@ -2075,28 +2100,6 @@ namespace MapView
 										System.Globalization.CultureInfo.CurrentCulture,
 										"scale {0:0.00}",
 										Globals.Scale);
-		}
-
-		/// <summary>
-		/// Transposes all the default viewer positions and sizes from the
-		/// embedded MapViewers manifest to '/settings/MapViewers.yml'.
-		/// Based on InstallationForm.
-		/// </summary>
-		private static void CreateViewersFile()
-		{
-			var info = (PathInfo)SharedSpace.Instance[PathInfo.ShareViewers];
-			info.CreateDirectory();
-
-			string pfe = info.FullPath;
-
-			using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
-													 .GetManifestResourceStream("MapView._Embedded.MapViewers.yml")))
-			using (var fs = new FileStream(pfe, FileMode.Create))
-			using (var sw = new StreamWriter(fs))
-			{
-				while (sr.Peek() != -1)
-					sw.WriteLine(sr.ReadLine());
-			}
 		}
 		#endregion
 	}
