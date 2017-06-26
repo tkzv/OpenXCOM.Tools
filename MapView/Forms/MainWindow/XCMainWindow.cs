@@ -177,9 +177,8 @@ namespace MapView
 			// opening the designer; it appears to run only when actually
 			// running the application:
 
-			var size = new Size(0,0);
 			MaximumSize =
-			MinimumSize = size; // fu.net
+			MinimumSize = new Size(0,0); // fu.net
 
 
 //			tvMaps.NodeMouseClick += (sender, args) => tvMaps.SelectedNode = args.Node;
@@ -215,6 +214,8 @@ namespace MapView
 			Palette.TftdBattle.Grayscale.SetTransparent(true);
 			LogFile.WriteLine("Palette transparencies set.");
 
+			Globals.LoadExtraSprites();	// sprites for TileView's eraser and QuadrantPanel's blank quads.
+										// NOTE: transparency of the 'UfoBattle' palette must be set first.
 
 //			var shareConsole = new ConsoleSharedSpace(share);
 //			_warningHandler  = new ConsoleWarningHandler(consoleShare);
@@ -227,6 +228,7 @@ namespace MapView
 			_mainMenusManager = new MainMenusManager(menuViewers, menuHelp);
 			_mainMenusManager.PopulateMenus(/*shareConsole.Console,*/ Options);
 			LogFile.WriteLine("MainView menus populated.");
+
 
 			ViewerFormsManager.HideViewersManager = _mainMenusManager.CreateShowHideManager(); // subsidiary viewers hide when PckView is invoked from TileView.
 			LogFile.WriteLine("HideViewersManager created.");

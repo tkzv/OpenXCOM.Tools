@@ -3,11 +3,6 @@ namespace MapView.Forms.MapObservers.TopViews
 	partial class TopView
 	{
 		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
-
-		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed</param>
@@ -172,6 +167,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		}
 		#endregion
+
+		private System.ComponentModel.IContainer components = null;
 
 		private QuadrantPanel quadrants;
 		private System.Windows.Forms.ToolStrip tsEdit;

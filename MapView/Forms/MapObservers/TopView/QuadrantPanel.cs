@@ -72,8 +72,6 @@ namespace MapView.Forms.MapObservers.TopViews
 				   | ControlStyles.AllPaintingInWmPaint
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
-
-			Globals.LoadExtraSprites();
 		}
 		#endregion
 

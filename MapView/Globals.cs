@@ -5,9 +5,15 @@ namespace MapView
 {
 	internal static class Globals
 	{
+		#region Fields (static)
+//		public static readonly string RegistryKey = "MapView";
+
 		internal const double ScaleMinimum = 0.3;
 		internal const double ScaleMaximum = 3.0;
+		#endregion
 
+
+		#region Properties (static)
 		private static double _scale = 1.0;
 		/// <summary>
 		/// The scale-factor for sprites and clicks in MainView only.
@@ -25,30 +31,27 @@ namespace MapView
 			set { _autoScale = value; }
 		}
 
-//		public static readonly string RegistryKey = "MapView";
-
-
-		private static XCom.SpriteCollection _extraSprites;
 		internal static XCom.SpriteCollection ExtraSprites
-		{
-			get { return _extraSprites; }
-		}
+		{ get; private set; }
+		#endregion
 
+
+		#region Methods (static)
+		/// <summary>
+		/// Loads the sprites for TopView's blank quads and TileView's eraser.
+		/// </summary>
 		internal static void LoadExtraSprites()
 		{
-			if (_extraSprites == null)
+			using (var fsPck = System.Reflection.Assembly.GetExecutingAssembly()
+								.GetManifestResourceStream("MapView._Embedded.Extra.PCK"))
+			using (var fsTab = System.Reflection.Assembly.GetExecutingAssembly()
+								.GetManifestResourceStream("MapView._Embedded.Extra.TAB"))
 			{
-				using (var fsPck = System.Reflection.Assembly.GetExecutingAssembly()
-									.GetManifestResourceStream("MapView._Embedded.Extra.PCK"))
-				using (var fsTab = System.Reflection.Assembly.GetExecutingAssembly()
-									.GetManifestResourceStream("MapView._Embedded.Extra.TAB"))
-				{
-					_extraSprites = new XCom.SpriteCollection(
-														fsPck,
-														fsTab,
-														2,
-														XCom.Palette.UfoBattle);
-				}
+				ExtraSprites = new XCom.SpriteCollection(
+													fsPck,
+													fsTab,
+													2,
+													XCom.Palette.UfoBattle);
 			}
 		}
 
@@ -76,5 +79,6 @@ namespace MapView
 
 			return val;
 		}
+		#endregion
 	}
 }

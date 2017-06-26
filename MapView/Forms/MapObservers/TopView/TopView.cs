@@ -26,6 +26,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		private const string Content = "Content";
 		#endregion
 
+
 		#region Fields
 		private EditButtonsFactory _editButtonsFactory;
 

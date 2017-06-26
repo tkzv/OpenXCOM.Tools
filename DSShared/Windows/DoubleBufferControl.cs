@@ -33,24 +33,13 @@ namespace DSShared.Windows
 		/// </summary>
 		protected override void OnPaint(PaintEventArgs e)
 		{
-//			if (DesignMode)
-//			{
-//				base.OnPaint(e);
-//
-//				e.Graphics.DrawLine(Pens.Black, 0, 0,      Width, Height);
-//				e.Graphics.DrawLine(Pens.Black, 0, Height, Width, 0);
-//
-//				ControlPaint.DrawBorder3D(
-//										e.Graphics,
-//										ClientRectangle,
-//										Border3DStyle.Flat);
-//			}
-//			else
+			if (!DesignMode) // otherwise TopView has probls drawing a QuadrantPanel in the designer.
+			{
+				var graphics = e.Graphics;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-			var graphics = e.Graphics;
-			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-			RenderGraphics(graphics);
+				RenderGraphics(graphics);
+			}
 		}
 		#endregion
 

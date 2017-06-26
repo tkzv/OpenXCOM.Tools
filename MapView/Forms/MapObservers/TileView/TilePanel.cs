@@ -151,8 +151,6 @@ namespace MapView.Forms.MapObservers.TileViews
 				   | ControlStyles.AllPaintingInWmPaint
 				   | ControlStyles.UserPaint
 				   | ControlStyles.ResizeRedraw, true);
-
-			Globals.LoadExtraSprites();
 		}
 		#endregion
 

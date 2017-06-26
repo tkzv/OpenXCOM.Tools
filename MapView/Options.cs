@@ -327,17 +327,25 @@ namespace MapView
 					return Color.FromName(st);
 
 				case 3:
+				{
+					var invariant = System.Globalization.CultureInfo.InvariantCulture;
 					return Color.FromArgb(
-									int.Parse(vals[0], System.Globalization.CultureInfo.InvariantCulture),
-									int.Parse(vals[1], System.Globalization.CultureInfo.InvariantCulture),
-									int.Parse(vals[2], System.Globalization.CultureInfo.InvariantCulture));
-			}
+									int.Parse(vals[0], invariant),
+									int.Parse(vals[1], invariant),
+									int.Parse(vals[2], invariant));
+				}
 
-			return Color.FromArgb(
-								int.Parse(vals[0], System.Globalization.CultureInfo.InvariantCulture),
-								int.Parse(vals[1], System.Globalization.CultureInfo.InvariantCulture),
-								int.Parse(vals[2], System.Globalization.CultureInfo.InvariantCulture),
-								int.Parse(vals[3], System.Globalization.CultureInfo.InvariantCulture));
+				case 4:
+				{
+					var invariant = System.Globalization.CultureInfo.InvariantCulture;
+					return Color.FromArgb(
+										int.Parse(vals[0], invariant),
+										int.Parse(vals[1], invariant),
+										int.Parse(vals[2], invariant),
+										int.Parse(vals[3], invariant));
+				}
+			}
+			return null;
 		}
 		#endregion
 
