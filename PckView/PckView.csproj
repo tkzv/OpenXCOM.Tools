@@ -131,7 +131,7 @@
     <Compile Include="Forms\About.Designer.cs">
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ImageBytes\BytesFormHelper.cs" />
+    <Compile Include="Forms\SpriteBytes\SpriteBytesManager.cs" />
     <Compile Include="PckViewPanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

@@ -178,7 +178,7 @@ namespace PckView
 			this.miBytes.Index = 0;
 			this.miBytes.Shortcut = System.Windows.Forms.Shortcut.CtrlB;
 			this.miBytes.Text = "Show/hide &byte table";
-			this.miBytes.Click += new System.EventHandler(this.OnShowBytesClick);
+			this.miBytes.Click += new System.EventHandler(this.OnBytesClick);
 			// 
 			// miHelpMenu
 			// 

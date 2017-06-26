@@ -139,8 +139,8 @@ namespace MapView.Forms.MainWindow
 
 			f.FormClosing += (sender, e) =>
 			{
-				e.Cancel = true;
 				it.Checked = false;
+				e.Cancel = true;
 				f.Hide();
 			};
 

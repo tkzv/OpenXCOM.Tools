@@ -1027,7 +1027,7 @@ namespace PckView
 			_feditor.Close();			// was opened via MapView.
 
 			if (miBytes.Checked)
-				BytesFormHelper.CloseBytes();
+				SpriteBytesManager.HideBytesTable(true);
 		}
 
 		/// <summary>
@@ -1082,23 +1082,20 @@ namespace PckView
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void OnShowBytesClick(object sender, EventArgs e)
+		private void OnBytesClick(object sender, EventArgs e)
 		{
 			if (!miBytes.Checked)
 			{
 				if (_pnlView.SelectedId != -1)
 				{
 					miBytes.Checked = true;
-					BytesFormHelper.ShowBytes(
-										_pnlView.Spriteset[_pnlView.SelectedId],
-										BytesClosingCallback);
+					SpriteBytesManager.LoadBytesTable(
+												_pnlView.Spriteset[_pnlView.SelectedId],
+												BytesClosingCallback);
 				}
 			}
 			else
-			{
-				miBytes.Checked = false;
-				BytesFormHelper.CloseBytes();
-			}
+				SpriteBytesManager.HideBytesTable(miBytes.Checked = false);
 		}
 
 		/// <summary>

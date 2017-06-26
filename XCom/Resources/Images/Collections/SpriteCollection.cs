@@ -49,8 +49,8 @@ namespace XCom
 			TabOffset = tabOffset;
 		}
 		/// <summary>
-		/// cTor[2]. Parses a PCK-file into the collection of images according
-		/// to its TAB-file.
+		/// cTor[2]. Parses a PCK-file into a collection of images according to
+		/// its TAB-file.
 		/// NOTE: a spriteset is loaded by:
 		/// 1.
 		/// XCMainWindow.LoadSelectedMap() calls

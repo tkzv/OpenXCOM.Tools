@@ -217,6 +217,7 @@ namespace MapView
 			Globals.LoadExtraSprites();	// sprites for TileView's eraser and QuadrantPanel's blank quads.
 										// NOTE: transparency of the 'UfoBattle' palette must be set first.
 
+
 //			var shareConsole = new ConsoleSharedSpace(share);
 //			_warningHandler  = new ConsoleWarningHandler(consoleShare);
 

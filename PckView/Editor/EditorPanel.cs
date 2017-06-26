@@ -62,7 +62,7 @@ namespace PckView
 
 				_sbpEyeDropper.Text = String.Empty;
 
-				BytesFormHelper.ReloadBytes(_sprite); // this will clear the show-bytes box if null.
+				SpriteBytesManager.ReloadBytesTable(_sprite); // this will clear the show-bytes box if null.
 
 				Refresh();
 			}
