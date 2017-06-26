@@ -22,12 +22,19 @@ namespace XCom
 		#region Properties
 		public int TabOffset
 		{ get; private set; }
+
+		/// <summary>
+		/// Flag used to differentiate between 2-byte and 4-byte tab-files.
+		/// TODO: is kludge = TRUE.
+		/// </summary>
+		public bool Borked
+		{ get; private set; }
 		#endregion
 
 
 		#region cTors
 		/// <summary>
-		/// Instantiates a quick and dirty blank spriteset.
+		/// cTor[1]. Creates a quick and dirty blank spriteset for PckView.
 		/// </summary>
 		/// <param name="label"></param>
 		/// <param name="pal"></param>
@@ -42,8 +49,22 @@ namespace XCom
 			TabOffset = tabOffset;
 		}
 		/// <summary>
-		/// cTor. Parses a PCK-file into the collection of its images according
+		/// cTor[2]. Parses a PCK-file into the collection of its images according
 		/// to its TAB-file.
+		/// NOTE: a spriteset is loaded by:
+		/// 1.
+		/// XCMainWindow.LoadSelectedMap() calls
+		/// MapFileService.LoadTileset() calls
+		/// Descriptor.GetTerrainRecords() calls
+		/// Descriptor.GetTerrainSpriteset() calls
+		/// ResourceInfo.LoadSpriteset() calls
+		/// SpriteCollection..cTor.
+		/// 2.
+		/// PckViewForm.LoadSpriteset()
+		/// 3.
+		/// Also instantiated by Globals.LoadExtraSprites()
+		/// 4.
+		/// XCMainWindow..cTor also needs to load the CURSOR.
 		/// </summary>
 		/// <param name="fsPck"></param>
 		/// <param name="fsTab"></param>
@@ -60,29 +81,30 @@ namespace XCom
 
 			Pal = pal;
 
+			int tabSprites = 0;
 			uint[] offsets;
 
 			if (fsTab != null)
 			{
-				int sprites = (int)fsTab.Length / tabOffset;
+				tabSprites = (int)fsTab.Length / tabOffset;
 				//LogFile.WriteLine(". fsTab.Length= " + fsTab.Length);
 				//LogFile.WriteLine(". tabOffset= " + tabOffset);
 				//LogFile.WriteLine(". sprites= " + sprites);
 
 				fsTab.Position = 0;
 
-				offsets = new uint[sprites + 1]; // NOTE: the last entry will be set to the total length of the input-bindata.
+				offsets = new uint[tabSprites + 1]; // NOTE: the last entry will be set to the total length of the input-bindata.
 				using (var br = new BinaryReader(fsTab))
 				{
 					switch (tabOffset)
 					{
 						case 2:
-							for (int i = 0; i != sprites; ++i)
+							for (int i = 0; i != tabSprites; ++i)
 								offsets[i] = br.ReadUInt16();
 							break;
 
 						case 4:
-							for (int i = 0; i != sprites; ++i)
+							for (int i = 0; i != tabSprites; ++i)
 								offsets[i] = br.ReadUInt32();
 							break;
 					}
@@ -103,27 +125,47 @@ namespace XCom
 					0,					// offset
 					bindata.Length);	// count
 
-			offsets[offsets.Length - 1] = (uint)bindata.Length;
-			//LogFile.WriteLine("");
-			//LogFile.WriteLine(". offsets.Length= " + offsets.Length);
 
-			for (int i = 0; i != offsets.Length - 1; ++i)
+			Borked = false;
+			if (fsTab != null)
 			{
-				//LogFile.WriteLine(". . sprite #" + i);
-				//LogFile.WriteLine(". . offsets[i+1]=\t" + (offsets[i + 1]));
-				//LogFile.WriteLine(". . offsets[i]=\t\t" + (offsets[i]));
-				//LogFile.WriteLine(". . . val=\t\t\t"    + (offsets[i + 1] - offsets[i]));
-				var bindataSprite = new byte[offsets[i + 1] - offsets[i]];
-
-				for (int j = 0; j != bindataSprite.Length; ++j)
-					bindataSprite[j] = bindata[offsets[i] + j];
-
-				Add(new PckImage(
-								bindataSprite,
-								Pal,
-								i,
-								this));
+				int pckSprites = 0; // qty of bytes in 'bindata' w/ value 0xFF (ie. qty of sprites)
+				for (int i = 1; i != bindata.Length; ++i)
+				{
+					if (bindata[i] == 255 && bindata[i - 1] != 254)
+						++pckSprites;
+				}
+				Borked = (pckSprites != tabSprites);
+				//LogFile.WriteLine("pckSprites= " + pckSprites + " tabSprites= " + tabSprites);
 			}
+
+			if (!Borked) // avoid throwing 1 or 15000 exceptions ...
+			{
+				offsets[offsets.Length - 1] = (uint)bindata.Length;
+				//LogFile.WriteLine("");
+				//LogFile.WriteLine(". offsets.Length= " + offsets.Length);
+
+				for (int i = 0; i != offsets.Length - 1; ++i)
+				{
+					//LogFile.WriteLine(". . sprite #" + i);
+					//LogFile.WriteLine(". . offsets[i+1]=\t" + (offsets[i + 1]));
+					//LogFile.WriteLine(". . offsets[i]=\t\t" + (offsets[i]));
+					//LogFile.WriteLine(". . . val=\t\t\t"    + (offsets[i + 1] - offsets[i]));
+					var bindataSprite = new byte[offsets[i + 1] - offsets[i]];
+
+					for (int j = 0; j != bindataSprite.Length; ++j)
+						bindataSprite[j] = bindata[offsets[i] + j];
+
+					Add(new PckImage(
+									bindataSprite,
+									Pal,
+									i,
+									this));
+				}
+			}
+			// else abort. NOTE: 'Borked' is evaluated on return to PckViewForm.LoadSpriteset()
+			// ... but the GetBorked() algorithm is pertinent (and could
+			// additionally bork things) whenever any spriteset loads.
 		}
 		#endregion
 

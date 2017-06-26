@@ -185,8 +185,6 @@ namespace PckView
 
 							var invariant = System.Globalization.CultureInfo.InvariantCulture;
 
-							string key = String.Empty;
-
 							var keyvals = nodeRoot.Children[new YamlScalarNode(viewer)] as YamlMappingNode;
 							foreach (var keyval in keyvals) // NOTE: There is a better way to do this. See TilesetManager..cTor
 							{
@@ -787,7 +785,7 @@ namespace PckView
 				ofd.Filter = "PCK files (*.PCK)|*.PCK|All files (*.*)|*.*";
 
 				if (ofd.ShowDialog() == DialogResult.OK)
-					LoadSpriteset(ofd.FileName, false);
+					LoadSpriteset(ofd.FileName);
 			}
 		}
 
@@ -907,10 +905,7 @@ namespace PckView
 													((SpriteCollection)_pnlView.Spriteset).TabOffset))
 					{
 						if (!revertReady) // load the SavedAs files ->
-						{
-							string pfePck = Path.Combine(dir, file + SpriteCollection.PckExt);
-							LoadSpriteset(pfePck, false);
-						}
+							LoadSpriteset(Path.Combine(dir, file + SpriteCollection.PckExt));
 
 						SpritesChanged = true;	// NOTE: is used by MapView's TileView to flag the Map to reload.
 					}							// btw, reload MapView's Map in either case; the new terrain may also be in its Map's terrainset ...
@@ -1152,18 +1147,6 @@ namespace PckView
 //				_fconsole.Show();
 		}
 
-		private void OnMapViewHelpClick(object sender, EventArgs e)
-		{
-			pnlMapViewHelp.Visible = !pnlMapViewHelp.Visible;
-			miMapViewHelp.Checked = pnlMapViewHelp.Visible;
-		}
-
-		private void OnMapViewGotItClick(object sender, EventArgs e)
-		{
-			pnlMapViewHelp.Visible  =
-			miMapViewHelp.Checked = false;
-		}
-
 		private void OnCompareClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
 		{
 			var original = _pnlView.Spriteset;
@@ -1225,8 +1208,7 @@ namespace PckView
 		/// </summary>
 		/// <param name="pfePck">fullpath of a PCK file; check existence of the
 		/// file before call</param>
-		/// <param name="help">true to show help-splash for a call from MapView</param>
-		public void LoadSpriteset(string pfePck, bool help)
+		public void LoadSpriteset(string pfePck)
 		{
 			//LogFile.WriteLine("PckViewForm.LoadSpriteset");
 			//LogFile.WriteLine(". " + pfePck);
@@ -1240,25 +1222,38 @@ namespace PckView
 				using (var fsPck = File.OpenRead(pfePck))
 				using (var fsTab = File.OpenRead(pfeTab))
 				{
-					SpriteCollectionBase spriteset = null;
-					try
-					{
-						//LogFile.WriteLine(". . try UFO");
-						spriteset = new SpriteCollection(
+					// TODO: figure a decent way to rewrite this UFO vs TFTD kludge ->
+					var spriteset = new SpriteCollection(
 													fsPck,
 													fsTab,
 													2,
 													Palette.UfoBattle);
-					}
-					catch (Exception)
-					{
-						//LogFile.WriteLine(". . catch TFTD");
+					if (spriteset.Borked)
 						spriteset = new SpriteCollection(
 													fsPck,
 													fsTab,
 													4,
-													Palette.TftdBattle); // NOTE: was 'Palette.UfoBattle'
-					}
+													Palette.TftdBattle);
+
+//					SpriteCollectionBase spriteset = null;
+//					try
+//					{
+//						//LogFile.WriteLine(". . try UFO");
+//						spriteset = new SpriteCollection(
+//													fsPck,
+//													fsTab,
+//													2,
+//													Palette.UfoBattle);
+//					}
+//					catch
+//					{
+//						//LogFile.WriteLine(". . catch TFTD");
+//						spriteset = new SpriteCollection(
+//													fsPck,
+//													fsTab,
+//													4,
+//													Palette.TftdBattle);
+//					}
 
 					if (spriteset != null)
 						spriteset.Label = SpritesetLabel;
@@ -1270,12 +1265,6 @@ namespace PckView
 					_pnlView.Spriteset = spriteset;
 
 					Text = "PckView - " + pfePck;
-
-//					if (help) // disabled until editing and saving get reinstated.
-//					{
-//						pMapViewHelp.Visible  =
-//						miMapViewHelp.Visible = true;
-//					}
 				}
 			}
 			else

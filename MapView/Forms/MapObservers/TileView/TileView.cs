@@ -492,7 +492,7 @@ namespace MapView.Forms.MapObservers.TileViews
 				{
 					using (var fPckView = new PckViewForm())
 					{
-						fPckView.LoadSpriteset(pfePck, true);
+						fPckView.LoadSpriteset(pfePck);
 						fPckView.SetPalette(MapBase.Descriptor.Pal.Label);
 
 						_showHideManager.HideViewers();

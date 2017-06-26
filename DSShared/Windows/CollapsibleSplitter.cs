@@ -1107,7 +1107,7 @@ namespace DSShared.Windows
 											x + 2 + (i * 3),
 											y + 2);
 
-							if (_hot) // overdraw the background color as we actually drew 2px diagonal lines, not just dots
+							if (_hot) // overdraw the background color since 2px diagonal lines were actually drawn, not just dots
 								graphics.DrawLine(
 											new Pen(_hotColor),
 											x + 1 + (i * 3),

@@ -24,7 +24,6 @@ namespace PckView
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PckViewForm));
 			this.mmMainMenu = new System.Windows.Forms.MainMenu(this.components);
 			this.miFileMenu = new System.Windows.Forms.MenuItem();
 			this.miOpen = new System.Windows.Forms.MenuItem();
@@ -46,12 +45,7 @@ namespace PckView
 			this.miAbout = new System.Windows.Forms.MenuItem();
 			this.miConsole = new System.Windows.Forms.MenuItem();
 			this.miHelp = new System.Windows.Forms.MenuItem();
-			this.miMapViewHelp = new System.Windows.Forms.MenuItem();
 			this.pnlView = new System.Windows.Forms.Panel();
-			this.pnlMapViewHelp = new System.Windows.Forms.Panel();
-			this.btnMapViewHelpOk = new System.Windows.Forms.Button();
-			this.lblMapViewHelp = new System.Windows.Forms.Label();
-			this.pnlMapViewHelp.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// mmMainMenu
@@ -192,8 +186,7 @@ namespace PckView
 			this.miHelpMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miAbout,
 			this.miConsole,
-			this.miHelp,
-			this.miMapViewHelp});
+			this.miHelp});
 			this.miHelpMenu.Text = "Help";
 			// 
 			// miAbout
@@ -216,59 +209,19 @@ namespace PckView
 			this.miHelp.Text = "&Help";
 			this.miHelp.Click += new System.EventHandler(this.OnHelpClick);
 			// 
-			// miMapViewHelp
-			// 
-			this.miMapViewHelp.Index = 3;
-			this.miMapViewHelp.Text = "MapView Help";
-			this.miMapViewHelp.Visible = false;
-			this.miMapViewHelp.Click += new System.EventHandler(this.OnMapViewHelpClick);
-			// 
 			// pnlView
 			// 
 			this.pnlView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pnlView.Location = new System.Drawing.Point(0, 100);
+			this.pnlView.Location = new System.Drawing.Point(0, 0);
 			this.pnlView.Name = "pnlView";
-			this.pnlView.Size = new System.Drawing.Size(472, 514);
+			this.pnlView.Size = new System.Drawing.Size(472, 614);
 			this.pnlView.TabIndex = 1;
-			// 
-			// pnlMapViewHelp
-			// 
-			this.pnlMapViewHelp.Controls.Add(this.btnMapViewHelpOk);
-			this.pnlMapViewHelp.Controls.Add(this.lblMapViewHelp);
-			this.pnlMapViewHelp.Dock = System.Windows.Forms.DockStyle.Top;
-			this.pnlMapViewHelp.Location = new System.Drawing.Point(0, 0);
-			this.pnlMapViewHelp.Name = "pnlMapViewHelp";
-			this.pnlMapViewHelp.Size = new System.Drawing.Size(472, 100);
-			this.pnlMapViewHelp.TabIndex = 2;
-			this.pnlMapViewHelp.Visible = false;
-			// 
-			// btnMapViewHelpOk
-			// 
-			this.btnMapViewHelpOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnMapViewHelpOk.Location = new System.Drawing.Point(370, 60);
-			this.btnMapViewHelpOk.Name = "btnMapViewHelpOk";
-			this.btnMapViewHelpOk.Size = new System.Drawing.Size(97, 34);
-			this.btnMapViewHelpOk.TabIndex = 2;
-			this.btnMapViewHelpOk.Text = "Got it";
-			this.btnMapViewHelpOk.UseVisualStyleBackColor = true;
-			this.btnMapViewHelpOk.Click += new System.EventHandler(this.OnMapViewGotItClick);
-			// 
-			// lblMapViewHelp
-			// 
-			this.lblMapViewHelp.Dock = System.Windows.Forms.DockStyle.Top;
-			this.lblMapViewHelp.Location = new System.Drawing.Point(0, 0);
-			this.lblMapViewHelp.Name = "lblMapViewHelp";
-			this.lblMapViewHelp.Padding = new System.Windows.Forms.Padding(3);
-			this.lblMapViewHelp.Size = new System.Drawing.Size(472, 55);
-			this.lblMapViewHelp.TabIndex = 1;
-			this.lblMapViewHelp.Text = resources.GetString("lblMapViewHelp.Text");
 			// 
 			// PckViewForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(472, 614);
 			this.Controls.Add(this.pnlView);
-			this.Controls.Add(this.pnlMapViewHelp);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.KeyPreview = true;
 			this.Location = new System.Drawing.Point(50, 50);
@@ -280,7 +233,6 @@ namespace PckView
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnPckViewFormClosing);
 			this.Shown += new System.EventHandler(this.OnShown);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
-			this.pnlMapViewHelp.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -313,11 +265,7 @@ namespace PckView
 		private System.Windows.Forms.MenuItem miHelpMenu;
 		private System.Windows.Forms.MenuItem miHelp;
 		private System.Windows.Forms.MenuItem miAbout;
-		private System.Windows.Forms.MenuItem miMapViewHelp;
 
-		private System.Windows.Forms.Panel pnlMapViewHelp;
-		private System.Windows.Forms.Label lblMapViewHelp;
-		private System.Windows.Forms.Button btnMapViewHelpOk;
 
 		private System.Windows.Forms.MenuItem miConsole;
 
