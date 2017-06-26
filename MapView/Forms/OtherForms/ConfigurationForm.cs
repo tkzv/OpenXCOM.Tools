@@ -200,7 +200,7 @@ namespace MapView
 					{
 						_pathResources.CreateDirectory();
 
-						using (var fs = new FileStream(_pathResources.FullPath, FileMode.Create))
+						using (var fs = new FileStream(_pathResources.Fullpath, FileMode.Create))
 						using (var sw = new StreamWriter(fs))
 						{
 							object node = new
@@ -224,7 +224,7 @@ namespace MapView
 			{
 				_pathTilesets.CreateDirectory();
 
-				string pfeTilesets = _pathTilesets.FullPath;
+				string pfeTilesets = _pathTilesets.Fullpath;
 
 				if (rbTilesets.Checked) // make a backup of the user's MapTilesets.yml if it exists.
 				{

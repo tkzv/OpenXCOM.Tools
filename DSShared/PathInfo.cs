@@ -53,7 +53,7 @@ namespace DSShared
 		/// Gets the fullpath.
 		/// kL_question: Can a file or directory end with "." (no, disallowed by Windows OS)
 		/// </summary>
-		public string FullPath
+		public string Fullpath
 		{
 			get
 			{
@@ -91,7 +91,7 @@ namespace DSShared
 		/// <returns></returns>
 		public bool FileExists()
 		{
-			return File.Exists(FullPath);
+			return File.Exists(Fullpath);
 		}
 
 		/// <summary>

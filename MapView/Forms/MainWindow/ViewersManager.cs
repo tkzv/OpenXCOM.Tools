@@ -82,6 +82,7 @@ namespace MapView.Forms.MainWindow
 				fcontrol.LoadControl0Options();
 
 				var regInfo = new RegistryInfo(viewer, f); // subscribe to Load and Closing events.
+				regInfo.RegisterProperties();
 
 				_optionsManager.Add(viewer, fcontrol.Options);
 			}

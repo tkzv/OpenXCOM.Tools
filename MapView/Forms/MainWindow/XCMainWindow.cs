@@ -255,7 +255,7 @@ namespace MapView
 
 			// Read MapResources.yml to get the resources dir (for both UFO and TFTD).
 			// NOTE: MapResources.yml is created by ConfigurationForm
-			using (var sr = new StreamReader(File.OpenRead(pathResources.FullPath)))
+			using (var sr = new StreamReader(File.OpenRead(pathResources.Fullpath)))
 			{
 				var str = new YamlStream();
 				str.Load(sr);
@@ -325,7 +325,7 @@ namespace MapView
 
 			if (pathOptions.FileExists())
 			{
-				_optionsManager.LoadOptions(pathOptions.FullPath);
+				_optionsManager.LoadOptions(pathOptions.Fullpath);
 				LogFile.WriteLine("User options loaded.");
 			}
 			else
@@ -481,8 +481,6 @@ namespace MapView
 						int h = 0;
 
 						var invariant = System.Globalization.CultureInfo.InvariantCulture;
-
-						string key = String.Empty;
 
 						var keyvals = nodeRoot.Children[new YamlScalarNode(viewer)] as YamlMappingNode;
 						foreach (var keyval in keyvals) // NOTE: There is a better way to do this. See TilesetManager..cTor
@@ -1887,7 +1885,7 @@ namespace MapView
 			var info = (PathInfo)SharedSpace.Instance[PathInfo.ShareViewers];
 			info.CreateDirectory();
 
-			string pfe = info.FullPath;
+			string pfe = info.Fullpath;
 
 			using (var sr = new StreamReader(Assembly.GetExecutingAssembly()
 													 .GetManifestResourceStream("MapView._Embedded.MapViewers.yml")))

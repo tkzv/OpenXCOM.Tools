@@ -25,6 +25,7 @@ namespace MapView
 			InitializeComponent();
 
 			var regInfo = new RegistryInfo(RegistryInfo.Options, this); // subscribe to Load and Closing events.
+			regInfo.RegisterProperties();
 
 			_propertyGrid.TypeLabel = typeLabel;
 			_propertyGrid.SetOptions(options);

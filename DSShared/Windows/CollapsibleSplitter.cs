@@ -103,81 +103,60 @@ namespace DSShared.Windows
 	/// </summary>
 	[ToolboxBitmap(typeof(CollapsibleSplitter))]
 	[DesignerAttribute(typeof(CollapsibleSplitterDesigner))]
-	public class CollapsibleSplitter
+	public sealed class CollapsibleSplitter
 		:
 			Splitter
 	{
-		#region Private Properties
+		#region Fields (static)
+		private static Color _hotColor = CalculateColor(SystemColors.Highlight, SystemColors.Window, 70);
 
-		private static System.Drawing.Color hotColor = CalculateColor(SystemColors.Highlight, SystemColors.Window, 70);
-		private System.Windows.Forms.Control controlToHide;
-		private System.Drawing.Rectangle hotArea;
-		private System.Windows.Forms.Form parentForm;
-		private bool expandParentForm = false;
-		private bool useAnimations = false;
-		private bool hot = false;
-		private DotStyle dotStyle = DotStyle.Mozilla;
-		private int hotZoneArea = 115;
-//		private int offX = 2;
-		private const int offY = 3;
-		private const int triDotSpace = 5;
+		private static Pen   _penHot             = new Pen(_hotColor);
+		private static Brush _brushHot           = new SolidBrush(_hotColor);
+
+		private static Brush _brushControlDark   = new SolidBrush(SystemColors.ControlDark);
+
+		private static Pen _penControlDark       = new Pen(SystemColors.ControlDark);
+		private static Pen _penControlDarkDark   = new Pen(SystemColors.ControlDarkDark);
+		private static Pen _penControlLight      = new Pen(SystemColors.ControlLight);
+		private static Pen _penControlLightLight = new Pen(SystemColors.ControlLightLight);
+
+//		private const int OffsetX = 2;
+		private const int OffsetY = 3;
 
 		// width/height are for triangles pointing left/right
-		private const int tWidth  = 3;
-		private const int tHeight = 6;
+		private const int TriWidth  = 3;
+		private const int TriHeight = 6;
 
-		// Border added in version 1.3
-		private System.Windows.Forms.Border3DStyle borderStyle = System.Windows.Forms.Border3DStyle.Flat;
+		private const int TriDotPad = 5;
+		#endregion
+
+
+		#region Fields
+		private Form _fparent;
 
 		// animation controls introduced in version 1.22
-		private System.Windows.Forms.Timer animationTimer;
-		private int controlWidth,controlHeight,parentFormWidth,parentFormHeight;
-		private SplitterState currentState;
-		private int animationDelay = 20;
-		private int animationStep  = 20;
-//		private Brush backBrush;
-		private Pen backPen;
+		private Timer _timerAni;
 
-		private static Pen hotPen               = new Pen(hotColor, 1);
-		private static Brush hotBrush           = new SolidBrush(hotColor);
-		private static Brush controlDarkBrush   = new SolidBrush(SystemColors.ControlDark);
-		private static Pen controlDarkPen       = new Pen(SystemColors.ControlDark, 1);
-		private static Pen controlDarkDarkPen   = new Pen(SystemColors.ControlDarkDark, 1);
-		private static Pen controlLightLightPen = new Pen(SystemColors.ControlLightLight, 1);
-		private static Pen controlLightPen      = new Pen(SystemColors.ControlLight);
+		private int _controlWidth;
+		private int _controlHeight;
+		private int _fparentWidth;
+		private int _fparentHeight;
 
+		private bool _hot;
+
+//		private Brush _brushBack;
+		private Pen _penBack;
 		#endregion
 
-		#region Constructor
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="T:DSShared.Windows.CollapsibleSplitter"/> class.
-		/// </summary>
-		public CollapsibleSplitter()
-		{
-			// Setup the animation timer control
-			this.animationTimer = new System.Windows.Forms.Timer();
-			this.animationTimer.Interval = animationDelay;
-			this.animationTimer.Tick += new System.EventHandler(this.OnAnimationTimerTick);
+		#region Properties
+		private SplitterState CurrentState
+		{ get; set; }
 
-			SetStyle(ControlStyles.OptimizedDoubleBuffer
-				   | ControlStyles.AllPaintingInWmPaint
-				   | ControlStyles.UserPaint
-				   | ControlStyles.ResizeRedraw, true);
+		private Rectangle HotArea
+		{ get; set; }
 
-//			backBrush = new SolidBrush(BackColor);
-			backPen = new Pen(BackColor, 1);
-			hotArea = new Rectangle(
-								0, (Height - hotZoneArea) / 2,
-								Width, hotZoneArea);
-
-			MinimumSize = new Size(5, 5);
-		}
-
-		#endregion
-
-		#region Public Properties
-
+		private DotStyle _dotStyle = DotStyle.Mozilla;
 		/// <summary>
 		/// Gets or sets the dot style.
 		/// </summary>
@@ -187,10 +166,10 @@ namespace DSShared.Windows
 		Description("Dot style drawn on the hotzone")]
 		public DotStyle DotStyle
 		{
-			get { return dotStyle; }
+			get { return _dotStyle; }
 			set
 			{
-				dotStyle = value;
+				_dotStyle = value;
 				Refresh();
 			}
 		}
@@ -210,24 +189,24 @@ namespace DSShared.Windows
 			set
 			{
 				base.BackColor = value;
-//				backBrush = new SolidBrush(value);
-				backPen = new Pen(value, 1);
+				_penBack = new Pen(value);
+//				_brushBack = new SolidBrush(value);
 			}
 		}
 
 		/// <summary>
-		/// The initial state of the Splitter. Set to True if the
-		/// control to hide is not visible by default.
+		/// The initial state of the Splitter. Set to True if the control to
+		/// hide is not visible by default.
 		/// </summary>
 		[Category("Collapsing Options")]
 		[DefaultValue(false)]
 		[Description("The initial state of the Splitter. Set to True if the control to hide is not visible by default")]
 		public bool IsCollapsed
 		{
-			get { return (controlToHide == null) || !controlToHide.Visible; }
+			get { return (ControlToHide == null) || !ControlToHide.Visible; }
 			set
 			{
-				if (controlToHide != null && controlToHide.Visible == value)
+				if (ControlToHide != null && ControlToHide.Visible == value)
 					ToggleSplitter();
 			}
 		}
@@ -237,11 +216,8 @@ namespace DSShared.Windows
 		/// </summary>
 		[Category("Collapsing Options"), DefaultValue("(none)"),
 		Description("The System.Windows.Forms.Control that the splitter will collapse")]
-		public System.Windows.Forms.Control ControlToHide
-		{
-			get { return controlToHide; }
-			set { controlToHide = value; }
-		}
+		public Control ControlToHide
+		{ get; set; }
 
 		/// <summary>
 		/// Determines if the collapse and expanding actions will be animated
@@ -249,11 +225,9 @@ namespace DSShared.Windows
 		[Category("Collapsing Options"), DefaultValue(false),
 		Description("Determines if the collapse and expanding actions will be animated")]
 		public bool UseAnimations
-		{
-			get { return useAnimations; }
-			set { useAnimations = value; }
-		}
+		{ get; set; }
 
+		private int _aniDelay = 20;
 		/// <summary>
 		/// The delay in millisenconds between animation steps
 		/// </summary>
@@ -261,10 +235,11 @@ namespace DSShared.Windows
 		Description("The delay in millisenconds between animation steps")]
 		public int AnimationDelay
 		{
-			get { return animationDelay; }
-			set { animationDelay = value; }
+			get { return _aniDelay; }
+			set { _aniDelay = value; }
 		}
 
+		private int _aniStep = 20;
 		/// <summary>
 		/// The amount of pixels moved in each animation step
 		/// </summary>
@@ -272,8 +247,8 @@ namespace DSShared.Windows
 		Description("The amount of pixels moved in each animation step")]
 		public int AnimationStep
 		{
-			get { return animationStep; }
-			set { animationStep = value; }
+			get { return _aniStep; }
+			set { _aniStep = value; }
 		}
 
 		/// <summary>
@@ -281,17 +256,16 @@ namespace DSShared.Windows
 		/// </summary>
 		[Category("Collapsing Options"), DefaultValue(false),
 		Description("When true the entire parent form will be expanded and collapsed, otherwise just the contol to expand will be changed")]
-		public bool ExpandParentForm
-		{
-			get { return expandParentForm; }
-			set { expandParentForm = value; }
-		}
+		public bool ExpandParent
+		{ get; set; }
 
+		// Border added in version 1.3
+		private Border3DStyle borderStyle = Border3DStyle.Flat;
 		/// <summary>
 		/// An optional border style to paint on the control. Set to Flat for no border
 		/// </summary>
 		[Category("Custom Appearance"),
-		DefaultValue(System.Windows.Forms.Border3DStyle.Adjust),
+		DefaultValue(Border3DStyle.Adjust),
 		Description("An optional border style to paint on the control")]
 		public Border3DStyle BorderStyle3D
 		{
@@ -301,10 +275,10 @@ namespace DSShared.Windows
 //				switch (value)
 //				{
 //					case Border3DStyle.Etched:
-//						offX = 2;
+//						OffsetX = 2;
 //						break;
 //					default:
-//						offX = 1;
+//						OffsetX = 1;
 //						break;
 //				}
 				borderStyle = value;
@@ -326,22 +300,18 @@ namespace DSShared.Windows
 			{
 				switch (value)
 				{
-					case DockStyle.Fill:
-						goto case DockStyle.None; // triceratops attacks ...
 
 					case DockStyle.None:
-						throw new Exception("CollapsibleSplitter cannot have a dock of " + value);
+					case DockStyle.Fill:
+//						throw new Exception("CollapsibleSplitter cannot have a dock of " + value);
+						break;
 
 					case DockStyle.Left:
-						goto case DockStyle.Right;
-
 					case DockStyle.Right:
 						Width = 10;
 						break;
 
 					case DockStyle.Top:
-						goto case DockStyle.Bottom;
-
 					case DockStyle.Bottom:
 						Height = 10;
 						break;
@@ -350,68 +320,99 @@ namespace DSShared.Windows
 			}
 		}
 
+		private int _hotMagnitude = 115;
 		/// <summary>
 		/// Gets or sets the size of the hotzone.
 		/// </summary>
-		/// <value>The size of the hotzone.</value>
+		/// <value>the size of california</value>
 		[Browsable(true)]
 		[DefaultValue(115)]
 		[Description("The width/height of the 'hotzone' in pixels")]
 		[Category("Custom Appearance")]
-		public int HotzoneSize
+		public int HotMagnitude
 		{
-			get { return hotZoneArea; }
+			get { return _hotMagnitude; }
 			set
 			{
-				hotZoneArea = value;
-				OnResize(null);
+				_hotMagnitude = value;
+				OnResize(EventArgs.Empty);
 			}
 		}
-
 		#endregion
 
-		#region Overrides
 
+		#region cTor
 		/// <summary>
-		/// Raises the <see cref="E:System.Windows.Forms.Control.HandleCreated"></see> event.
+		/// Initializes a new instance of the <see cref="T:DSShared.Windows.CollapsibleSplitter"/> class.
 		/// </summary>
-		/// <param name="e">An <see cref="T:System.EventArgs"></see> that contains the event data.</param>
+		public CollapsibleSplitter()
+		{
+			// Setup the animation timer control
+			_timerAni = new Timer();
+			_timerAni.Interval = _aniDelay;
+			_timerAni.Tick += OnAnimationTimerTick;
+
+			SetStyle(ControlStyles.OptimizedDoubleBuffer
+				   | ControlStyles.AllPaintingInWmPaint
+				   | ControlStyles.UserPaint
+				   | ControlStyles.ResizeRedraw, true);
+
+//			_brushBack = new SolidBrush(BackColor);
+			_penBack = new Pen(BackColor);
+			HotArea = new Rectangle(
+								0, (Height - _hotMagnitude) / 2,
+								Width, _hotMagnitude);
+
+			MinimumSize = new Size(5, 5);
+		}
+		#endregion
+
+
+		#region Methods (override)
+		/// <summary>
+		/// Raises the <see cref="E:System.Windows.Forms.Control.HandleCreated"></see>
+		/// event.
+		/// </summary>
+		/// <param name="e">An <see cref="T:System.EventArgs"></see> that
+		/// contains the event data.</param>
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
-			parentForm = FindForm();
 
-			if (controlToHide != null)
-			{
-				currentState = (controlToHide.Visible) ? SplitterState.Expanded
+			_fparent = FindForm();
+
+			if (ControlToHide != null)
+				CurrentState = (ControlToHide.Visible) ? SplitterState.Expanded
 													   : SplitterState.Collapsed;
-			}
 		}
 
 		/// <summary>
-		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseDown"></see> event.
+		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseDown"></see>
+		/// event.
 		/// </summary>
-		/// <param name="e">A <see cref="T:System.Windows.Forms.MouseEventArgs"></see> that contains the event data.</param>
+		/// <param name="e">A <see cref="T:System.Windows.Forms.MouseEventArgs"></see>
+		/// that contains the event data.</param>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			if (controlToHide != null && !hot && controlToHide.Visible)
+			if (!_hot && ControlToHide != null && ControlToHide.Visible)
 				base.OnMouseDown(e); // if the hider control isn't hot, let the base resize action occur
 		}
 
 		/// <summary>
 		/// Raises the <see cref="E:System.Windows.Forms.Control.Resize"></see> event.
 		/// </summary>
-		/// <param name="e">An <see cref="T:System.EventArgs"></see> that contains the event data.</param>
-		protected override void OnResize(System.EventArgs e)
+		/// <param name="e">An <see cref="T:System.EventArgs"></see> that
+		/// contains the event data.</param>
+		protected override void OnResize(EventArgs e)
 		{
 			if (Dock == DockStyle.Left || Dock == DockStyle.Right)
-				hotArea = new Rectangle(
-									0, ((Height - hotZoneArea) / 2),
-									Width, hotZoneArea);
+				HotArea = new Rectangle(
+									0, ((Height - _hotMagnitude) / 2),
+									Width, _hotMagnitude);
 			else
-				hotArea = new Rectangle(
-									(Width - hotZoneArea) / 2, 0,
-									hotZoneArea, Height);
+				HotArea = new Rectangle(
+									(Width - _hotMagnitude) / 2, 0,
+									_hotMagnitude, Height);
 
 			Refresh();
 		}
@@ -419,41 +420,50 @@ namespace DSShared.Windows
 		// This method was updated in version 1.11 to fix a flickering problem
 		// discovered by John O'Byrne.
 		/// <summary>
-		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseMove"></see> event.
+		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseMove"></see>
+		/// event.
 		/// </summary>
-		/// <param name="e">A <see cref="T:System.Windows.Forms.MouseEventArgs"></see> that contains the event data.</param>
-		protected override void OnMouseMove(System.Windows.Forms.MouseEventArgs e)
+		/// <param name="e">A <see cref="T:System.Windows.Forms.MouseEventArgs"></see>
+		/// that contains the event data.</param>
+		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			if (   e.X >= hotArea.X
-				&& e.X <= hotArea.X + hotArea.Width
-				&& e.Y >= hotArea.Y
-				&& e.Y <= hotArea.Y + hotArea.Height)
+			if (   e.X >= HotArea.X
+				&& e.X <= HotArea.X + HotArea.Width
+				&& e.Y >= HotArea.Y
+				&& e.Y <= HotArea.Y + HotArea.Height)
 			{
-				if (!hot)
+				if (!_hot)
 				{
-					hot = true;
+					_hot = true;
 					Cursor = Cursors.Hand;
 					Refresh();
 				}
 			}
 			else
 			{
-				if (hot)
+				if (_hot)
 				{
-					hot = false;
+					_hot = false;
 					Refresh();
 				}
 
 				Cursor = Cursors.Default;
 
-				if (controlToHide != null)
+				if (ControlToHide != null)
 				{
-					if (controlToHide.Visible) // Changed in v1.2 to support Horizontal Splitters
+					if (ControlToHide.Visible) // Changed in v1.2 to support Horizontal Splitters
 					{
-						if (Dock == DockStyle.Left || Dock == DockStyle.Right)
-							Cursor = Cursors.VSplit;
-						else
-							Cursor = Cursors.HSplit;
+						switch (Dock)
+						{
+							case DockStyle.Left:
+							case DockStyle.Right:
+								Cursor = Cursors.VSplit;
+								break;
+
+							default:
+								Cursor = Cursors.HSplit;
+								break;
+						}
 					}
 				}
 			}
@@ -461,173 +471,208 @@ namespace DSShared.Windows
 		}
 
 		/// <summary>
-		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseLeave"></see> event.
+		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseLeave"></see>
+		/// event.
 		/// </summary>
-		/// <param name="e">An <see cref="T:System.EventArgs"></see> that contains the event data.</param>
+		/// <param name="e">An <see cref="T:System.EventArgs"></see> that
+		/// contains the event data.</param>
 		protected override void OnMouseLeave(System.EventArgs e)
 		{
-			hot = false; // ensure that the hot state is removed
+			_hot = false; // ensure that the hot state is removed
 			Refresh();
 		}
 
 		/// <summary>
-		/// Raises the <see cref="E:System.Windows.Forms.Control.Click"></see> event.
+		/// Raises the <see cref="E:System.Windows.Forms.Control.Click"></see>
+		/// event.
 		/// </summary>
-		/// <param name="e">An <see cref="T:System.EventArgs"></see> that contains the event data.</param>
+		/// <param name="e">An <see cref="T:System.EventArgs"></see> that
+		/// contains the event data.</param>
 		protected override void OnClick(System.EventArgs e)
 		{
-			if (controlToHide != null
-				&& hot
-				&& currentState != SplitterState.Collapsing
-				&& currentState != SplitterState.Expanding)
+			switch (CurrentState)
 			{
-				ToggleSplitter();
+				case SplitterState.Collapsing:
+				case SplitterState.Expanding:
+					return;
+
+				default:
+					if (_hot && ControlToHide != null)
+						ToggleSplitter();
+					break;
 			}
 		}
 
 		private void ToggleSplitter()
 		{
-			if (currentState == SplitterState.Collapsing || currentState == SplitterState.Expanding)
-				return; // if an animation is currently in progress for this control, drop out
-
-			controlWidth  = controlToHide.Width;
-			controlHeight = controlToHide.Height;
-
-			if (controlToHide.Visible)
+			switch (CurrentState) // drop out if an animation is currently in progress for this control
 			{
-				if (useAnimations)
-				{
-					currentState = SplitterState.Collapsing;
+				case SplitterState.Collapsing:
+				case SplitterState.Expanding:
+					return;
+			}
 
-					if (parentForm != null)
+
+			_controlWidth  = ControlToHide.Width;
+			_controlHeight = ControlToHide.Height;
+
+			if (ControlToHide.Visible)
+			{
+				if (UseAnimations)
+				{
+					_timerAni.Enabled = true;
+					CurrentState = SplitterState.Collapsing;
+
+					if (_fparent != null)
 					{
-						if (Dock == DockStyle.Left || Dock == DockStyle.Right)
+						switch (Dock)
 						{
-							parentFormWidth = parentForm.Width - controlWidth;
+							case DockStyle.Left:
+							case DockStyle.Right:
+								_fparentWidth = _fparent.Width - _controlWidth;
+								break;
+
+							default:
+								_fparentHeight = _fparent.Height - _controlHeight;
+								break;
 						}
-						else
-							parentFormHeight = parentForm.Height - controlHeight;
 					}
-
-					animationTimer.Enabled = true;
 				}
-				else // no animations, so just toggle the visible state
+				else // no animations so just toggle the visible state
 				{
-					currentState = SplitterState.Collapsed;
-					controlToHide.Visible = false;
-					if (expandParentForm && parentForm != null)
+					CurrentState = SplitterState.Collapsed;
+
+					ControlToHide.Visible = false;
+
+					if (ExpandParent && _fparent != null)
 					{
-						if (Dock == DockStyle.Left || Dock == DockStyle.Right)
+						switch (Dock)
 						{
-							parentForm.Width -= controlToHide.Width;
+							case DockStyle.Left:
+							case DockStyle.Right:
+								_fparent.Width -= ControlToHide.Width;
+								break;
+
+							default:
+								_fparent.Height -= ControlToHide.Height;
+								break;
 						}
-						else
-							parentForm.Height -= controlToHide.Height;
 					}
 				}
 			}
 			else // control to hide is collapsed
 			{
-				if (useAnimations)
+				if (UseAnimations)
 				{
-					currentState = SplitterState.Expanding;
+					_timerAni.Enabled = true;
+					CurrentState = SplitterState.Expanding;
 
-					if (Dock == DockStyle.Left || Dock == DockStyle.Right)
+					ControlToHide.Visible = true;
+
+					switch (Dock)
 					{
-						if (parentForm != null)
-							parentFormWidth = parentForm.Width + controlWidth;
+						case DockStyle.Left:
+						case DockStyle.Right:
+							ControlToHide.Width = 0;
 
-						controlToHide.Width = 0;
-					}
-					else
-					{
-						if (parentForm != null)
-							parentFormHeight = parentForm.Height + controlHeight;
+							if (_fparent != null)
+								_fparentWidth = _fparent.Width + _controlWidth;
+							break;
 
-						controlToHide.Height = 0;
+						default:
+							ControlToHide.Height = 0;
+
+							if (_fparent != null)
+								_fparentHeight = _fparent.Height + _controlHeight;
+							break;
 					}
-					controlToHide.Visible = true;
-					animationTimer.Enabled = true;
 				}
-				else // no animations, so just toggle the visible state
+				else // no animations so just toggle the visible state
 				{
-					currentState = SplitterState.Expanded;
-					controlToHide.Visible = true;
-					if (expandParentForm && parentForm != null)
+					CurrentState = SplitterState.Expanded;
+
+					ControlToHide.Visible = true;
+
+					if (ExpandParent && _fparent != null)
 					{
-						if (Dock == DockStyle.Left || Dock == DockStyle.Right)
+						switch (Dock)
 						{
-							parentForm.Width += controlToHide.Width;
+							case DockStyle.Left:
+							case DockStyle.Right:
+								_fparent.Width += ControlToHide.Width;
+								break;
+
+							default:
+								_fparent.Height += ControlToHide.Height;
+								break;
 						}
-						else
-							parentForm.Height += controlToHide.Height;
 					}
 				}
 			}
 			Refresh();
 		}
-
 		#endregion
+
 
 		#region Implementation
 
 		#region Animation Timer Tick
 		private void OnAnimationTimerTick(object sender, EventArgs e)
 		{
-			switch (currentState)
+			switch (CurrentState)
 			{
 				case SplitterState.Collapsing:
 					if (Dock == DockStyle.Left || Dock == DockStyle.Right) // vertical splitter
 					{
-						if (controlToHide.Width > animationStep)
+						if (ControlToHide.Width > _aniStep)
 						{
-							if (expandParentForm
-								&& parentForm.WindowState != FormWindowState.Maximized
-								&& parentForm != null)
+							if (ExpandParent
+								&& _fparent.WindowState != FormWindowState.Maximized
+								&& _fparent != null)
 							{
-								parentForm.Width -= animationStep;
+								_fparent.Width -= _aniStep;
 							}
-							controlToHide.Width -= animationStep;
+							ControlToHide.Width -= _aniStep;
 						}
 						else
 						{
-							if (expandParentForm
-								&& parentForm.WindowState != FormWindowState.Maximized
-								&& parentForm != null)
+							if (ExpandParent
+								&& _fparent.WindowState != FormWindowState.Maximized
+								&& _fparent != null)
 							{
-								parentForm.Width = parentFormWidth;
+								_fparent.Width = _fparentWidth;
 							}
-							controlToHide.Visible = false;
-							animationTimer.Enabled = false;
-							controlToHide.Width = controlWidth;
-							currentState = SplitterState.Collapsed;
+							ControlToHide.Visible = false;
+							_timerAni.Enabled = false;
+							ControlToHide.Width = _controlWidth;
+							CurrentState = SplitterState.Collapsed;
 							Invalidate();
 						}
 					}
 					else
 					{
-						if (controlToHide.Height > animationStep) // horizontal splitter
+						if (ControlToHide.Height > _aniStep) // horizontal splitter
 						{
-							if (expandParentForm
-								&& parentForm.WindowState != FormWindowState.Maximized
-								&& parentForm != null)
+							if (ExpandParent
+								&& _fparent.WindowState != FormWindowState.Maximized
+								&& _fparent != null)
 							{
-								parentForm.Height -= animationStep;
+								_fparent.Height -= _aniStep;
 							}
-							controlToHide.Height -= animationStep;
+							ControlToHide.Height -= _aniStep;
 						}
 						else
 						{
-							if (expandParentForm
-								&& parentForm.WindowState != FormWindowState.Maximized
-								&& parentForm != null)
+							if (ExpandParent
+								&& _fparent.WindowState != FormWindowState.Maximized
+								&& _fparent != null)
 							{
-								parentForm.Height = parentFormHeight;
+								_fparent.Height = _fparentHeight;
 							}
-							controlToHide.Visible = false;
-							animationTimer.Enabled = false;
-							controlToHide.Height = controlHeight;
-							currentState = SplitterState.Collapsed;
+							ControlToHide.Visible = false;
+							_timerAni.Enabled = false;
+							ControlToHide.Height = _controlHeight;
+							CurrentState = SplitterState.Collapsed;
 							Invalidate();
 						}
 					}
@@ -636,63 +681,63 @@ namespace DSShared.Windows
 				case SplitterState.Expanding:
 					if (Dock == DockStyle.Left || Dock == DockStyle.Right) // vertical splitter
 					{
-						if (controlToHide.Width < (controlWidth - animationStep))
+						if (ControlToHide.Width < _controlWidth - _aniStep)
 						{
-							if (expandParentForm
-								&& parentForm.WindowState != FormWindowState.Maximized
-								&& parentForm != null)
+							if (ExpandParent
+								&& _fparent.WindowState != FormWindowState.Maximized
+								&& _fparent != null)
 							{
-								parentForm.Width += animationStep;
+								_fparent.Width += _aniStep;
 							}
-							controlToHide.Width += animationStep;
+							ControlToHide.Width += _aniStep;
 						}
 						else
 						{
-							if (expandParentForm
-								&& parentForm.WindowState != FormWindowState.Maximized
-								&& parentForm != null)
+							if (ExpandParent
+								&& _fparent.WindowState != FormWindowState.Maximized
+								&& _fparent != null)
 							{
-								parentForm.Width = parentFormWidth;
+								_fparent.Width = _fparentWidth;
 							}
-							controlToHide.Width = controlWidth;
-							controlToHide.Visible = true;
-							animationTimer.Enabled = false;
-							currentState = SplitterState.Expanded;
+							ControlToHide.Width = _controlWidth;
+							ControlToHide.Visible = true;
+							_timerAni.Enabled = false;
+							CurrentState = SplitterState.Expanded;
 							Invalidate();
 						}
 					}
 					else // horizontal splitter
 					{
-						if (controlToHide.Height < (controlHeight - animationStep))
+						if (ControlToHide.Height < _controlHeight - _aniStep)
 						{
-							if (expandParentForm
-								&& parentForm.WindowState != FormWindowState.Maximized
-								&& parentForm != null)
+							if (ExpandParent
+								&& _fparent.WindowState != FormWindowState.Maximized
+								&& _fparent != null)
 							{
-								parentForm.Height += animationStep;
+								_fparent.Height += _aniStep;
 							}
-							controlToHide.Height += animationStep;
+							ControlToHide.Height += _aniStep;
 						}
 						else
 						{
-							if (expandParentForm
-								&& parentForm.WindowState != FormWindowState.Maximized
-								&& parentForm != null)
+							if (ExpandParent
+								&& _fparent.WindowState != FormWindowState.Maximized
+								&& _fparent != null)
 							{
-								parentForm.Height = parentFormHeight;
+								_fparent.Height = _fparentHeight;
 							}
-							controlToHide.Height = controlHeight;
-							controlToHide.Visible = true;
-							animationTimer.Enabled = false;
-							currentState = SplitterState.Expanded;
+							ControlToHide.Height = _controlHeight;
+							ControlToHide.Visible = true;
+							_timerAni.Enabled = false;
+							CurrentState = SplitterState.Expanded;
 							Invalidate();
 						}
 					}
 					break;
 			}
 		}
-
 		#endregion
+
 
 		// OnPaint is now an override rather than an event in version 1.1
 		/// <summary>
@@ -703,122 +748,123 @@ namespace DSShared.Windows
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
+
 			var graphics = e.Graphics;
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
 			/********** Vertical splitter ********/
 			if (Dock == DockStyle.Left || Dock == DockStyle.Right)
 			{
-				if (hot)
-					graphics.FillRectangle(hotBrush,hotArea);
+				if (_hot)
+					graphics.FillRectangle(_brushHot, HotArea);
 //				else
-//					g.FillRectangle(backBrush, hotArea);
+//					g.FillRectangle(_brushBack, HotArea);
 
-				graphics.DrawLine( // draw the top & bottom lines for our control image
-								controlDarkPen,
-								hotArea.X,
-								hotArea.Y,
-								hotArea.X + hotArea.Width,
-								hotArea.Y);
+				graphics.DrawLine( // draw the top & bottom lines for the control image
+								_penControlDark,
+								HotArea.X,
+								HotArea.Y,
+								HotArea.X + HotArea.Width,
+								HotArea.Y);
 				graphics.DrawLine(
-								controlDarkPen,
-								hotArea.X,
-								hotArea.Y + hotArea.Height,
-								hotArea.X + hotArea.Width,
-								hotArea.Y + hotArea.Height);
+								_penControlDark,
+								HotArea.X,
+								HotArea.Y + HotArea.Height,
+								HotArea.X + HotArea.Width,
+								HotArea.Y + HotArea.Height);
 
-				if (Enabled && controlToHide != null)
+				if (Enabled && ControlToHide != null)
 				{
-					var leftRight = new GraphicsPath(); // draw the arrows for our control image
-					if (   (Dock == DockStyle.Right && controlToHide.Visible)
-						|| (Dock == DockStyle.Left && !controlToHide.Visible))
+					var leftRight = new GraphicsPath(); // draw the arrows for the control image
+					if (   (Dock == DockStyle.Right && ControlToHide.Visible)
+						|| (Dock == DockStyle.Left && !ControlToHide.Visible))
 					{
 						leftRight.AddLine(
-									(Width - tWidth) / 2,
-									hotArea.Y + offY,
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + offY + tHeight / 2);
+									(Width - TriWidth) / 2,
+									HotArea.Y + OffsetY,
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + OffsetY + TriHeight / 2);
 						leftRight.AddLine(
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + offY + tHeight / 2,
-									(Width - tWidth) / 2,
-									hotArea.Y + offY + tHeight);
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + OffsetY + TriHeight / 2,
+									(Width - TriWidth) / 2,
+									HotArea.Y + OffsetY + TriHeight);
 						leftRight.CloseFigure();
 
 						leftRight.AddLine(
-									(Width - tWidth) / 2,
-									hotArea.Y + hotArea.Height - offY,
-									(Width - tWidth) / 2,
-									hotArea.Y + hotArea.Height - offY - tHeight);
+									(Width - TriWidth) / 2,
+									HotArea.Y + HotArea.Height - OffsetY,
+									(Width - TriWidth) / 2,
+									HotArea.Y + HotArea.Height - OffsetY - TriHeight);
 						leftRight.AddLine(
-									(Width - tWidth) / 2,
-									hotArea.Y + hotArea.Height - offY - tHeight,
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + hotArea.Height - (offY + tHeight / 2));
+									(Width - TriWidth) / 2,
+									HotArea.Y + HotArea.Height - OffsetY - TriHeight,
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + HotArea.Height - (OffsetY + TriHeight / 2));
 						leftRight.CloseFigure();
 					}
 					else
 					{
 						leftRight.AddLine(
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + offY,
-									(Width - tWidth) / 2,
-									hotArea.Y + offY + tHeight / 2);
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + OffsetY,
+									(Width - TriWidth) / 2,
+									HotArea.Y + OffsetY + TriHeight / 2);
 						leftRight.AddLine(
-									(Width - tWidth) / 2,
-									hotArea.Y + offY + tHeight / 2,
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + offY + tHeight);
+									(Width - TriWidth) / 2,
+									HotArea.Y + OffsetY + TriHeight / 2,
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + OffsetY + TriHeight);
 						leftRight.CloseFigure();
 
 						leftRight.AddLine(
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + hotArea.Height - offY,
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + hotArea.Height - offY - tHeight);
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + HotArea.Height - OffsetY,
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + HotArea.Height - OffsetY - TriHeight);
 						leftRight.AddLine(
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + hotArea.Height - offY - tHeight,
-									(Width - tWidth) / 2,
-									hotArea.Y + hotArea.Height - (offY + tHeight / 2));
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + HotArea.Height - OffsetY - TriHeight,
+									(Width - TriWidth) / 2,
+									HotArea.Y + HotArea.Height - (OffsetY + TriHeight / 2));
 						leftRight.CloseFigure();
 					}
-					graphics.FillPath(controlDarkBrush,leftRight);
+					graphics.FillPath(_brushControlDark,leftRight);
 				}
 
 
-				int x = Width / 2 - 1; // draw the dots for our control image using a loop
-				int y = hotArea.Y + offY + tHeight + triDotSpace;
+				int x = Width / 2 - 1; // draw the dots for the control image using a loop
+				int y = HotArea.Y + OffsetY + TriHeight + TriDotPad;
 				int dotSpace = 3;
 
-				switch (dotStyle) // Visual Styles added in version 1.1
+				switch (_dotStyle) // Visual Styles added in version 1.1
 				{
 					case DotStyle.Mozilla:
-						while (y < hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace))
+						while (y < HotArea.Y + HotArea.Height - (OffsetY + TriHeight + TriDotPad))
 						{
 							graphics.DrawLine( // light dot
-											controlLightLightPen,
+											_penControlLightLight,
 											x,
 											y,
 											x + 1,
 											y + 1);
 							graphics.DrawLine( // dark dot
-											controlDarkDarkPen,
+											_penControlDarkDark,
 											x + 1,
 											y + 1,
 											x + 2,
 											y + 2);
 
-							if (hot) // overdraw the background color as we actually drew 2px diagonal lines, not just dots
+							if (_hot) // overdraw the background color since 2px diagonal lines were actually drawn, not just dots
 								graphics.DrawLine(
-											hotPen,
+											_penHot,
 											x + 2,
 											y + 1,
 											x + 2,
 											y + 2);
 							else
 								graphics.DrawLine(
-											backPen,
+											_penBack,
 											x + 2,
 											y + 1,
 											x + 2,
@@ -829,29 +875,29 @@ namespace DSShared.Windows
 						break;
 
 					case DotStyle.DoubleDots:
-						while (y < hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace))
+						while (y < HotArea.Y + HotArea.Height - (OffsetY + TriHeight + TriDotPad))
 						{
 							graphics.DrawRectangle( // light dot
-												controlLightLightPen,
+												_penControlLightLight,
 												x,
 												y + 1,
 												1,
 												1);
 							graphics.DrawRectangle( // dark dot
-												controlDarkPen,
+												_penControlDark,
 												x - 1,
 												y,
 												1,
 												1);
 							y += dotSpace;
 							graphics.DrawRectangle( // light dot
-												controlLightLightPen,
+												_penControlLightLight,
 												x + 2,
 												y + 1,
 												1,
 												1);
 							graphics.DrawRectangle( // dark dot
-												controlDarkPen,
+												_penControlDark,
 												x + 1,
 												y,
 												1,
@@ -862,61 +908,61 @@ namespace DSShared.Windows
 
 					case DotStyle.Win9X:
 						graphics.DrawLine(
-										controlLightLightPen,
+										_penControlLightLight,
 										x,
 										y,
 										x + 2,
 										y);
 						graphics.DrawLine(
-										controlLightLightPen,
+										_penControlLightLight,
 										x,
 										y,
 										x,
-										hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace));
+										HotArea.Y + HotArea.Height - (OffsetY + TriHeight + TriDotPad));
 						graphics.DrawLine(
-										controlDarkPen,
+										_penControlDark,
 										x + 2,
 										y,
 										x + 2,
-										hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace));
+										HotArea.Y + HotArea.Height - (OffsetY + TriHeight + TriDotPad));
 						graphics.DrawLine(
-									controlDarkPen,
+									_penControlDark,
 									x,
-									hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace),
+									HotArea.Y + HotArea.Height - (OffsetY + TriHeight + TriDotPad),
 									x + 2,
-									hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace));
+									HotArea.Y + HotArea.Height - (OffsetY + TriHeight + TriDotPad));
 						break;
 
 					case DotStyle.XP:
 						dotSpace = 5;
-						while (y < hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace))
+						while (y < HotArea.Y + HotArea.Height - (OffsetY + TriHeight + TriDotPad))
 						{
 							graphics.DrawRectangle( // light dot
-											controlLightPen,
+											_penControlLight,
 											x,
 											y,
 											2,
 											2);
 							graphics.DrawRectangle( // light light dot
-											controlLightLightPen,
+											_penControlLightLight,
 											x + 1,
 											y + 1,
 											1,
 											1);
 							graphics.DrawRectangle( // dark dark dot
-											controlDarkDarkPen,
+											_penControlDarkDark,
 											x,
 											y,
 											1,
 											1);
 							graphics.DrawLine( // dark fill
-											controlDarkPen,
+											_penControlDark,
 											x,
 											y,
 											x,
 											y + 1);
 							graphics.DrawLine(
-											controlDarkPen,
+											_penControlDark,
 											x,
 											y,
 											x + 1,
@@ -928,10 +974,10 @@ namespace DSShared.Windows
 
 					case DotStyle.Lines:
 						dotSpace = 2;
-						while (y < hotArea.Y + hotArea.Height - (offY + tHeight + triDotSpace))
+						while (y < HotArea.Y + HotArea.Height - (OffsetY + TriHeight + TriDotPad))
 						{
 							graphics.DrawLine(
-											controlDarkDarkPen,
+											_penControlDarkDark,
 											x,
 											y,
 											x + 2,
@@ -943,106 +989,107 @@ namespace DSShared.Windows
 			}
 			else if (Dock == DockStyle.Top || Dock == DockStyle.Bottom) // Horizontal Splitter support added in v1.2
 			{
-				if (hot) // draw the background color for our control image
-					graphics.FillRectangle(new SolidBrush(hotColor), hotArea);
+				if (_hot) // draw the background color for our control image
+					graphics.FillRectangle(new SolidBrush(_hotColor), HotArea);
 				else
-					graphics.FillRectangle(new SolidBrush(BackColor), hotArea);
+					graphics.FillRectangle(new SolidBrush(BackColor), HotArea);
 
 				graphics.DrawLine( // draw the left & right lines for our control image
 								new Pen(SystemColors.ControlDark, 1),
-								hotArea.X,
-								hotArea.Y + 1,
-								hotArea.X,
-								hotArea.Y + hotArea.Height - 2);
+								HotArea.X,
+								HotArea.Y + 1,
+								HotArea.X,
+								HotArea.Y + HotArea.Height - 2);
 				graphics.DrawLine(
 								new Pen(SystemColors.ControlDark, 1),
-								hotArea.X + hotArea.Width,
-								hotArea.Y + 1,
-								hotArea.X + hotArea.Width,
-								hotArea.Y + hotArea.Height - 2);
+								HotArea.X + HotArea.Width,
+								HotArea.Y + 1,
+								HotArea.X + HotArea.Width,
+								HotArea.Y + HotArea.Height - 2);
 
-//				if (Enabled && controlToHide != null)
+//				if (Enabled && ControlToHide != null)
 //				{
 					// draw the arrows for our control image
 					// the ArrowPointArray is a point array that defines an arrow shaped polygon
 //					g.FillPolygon(
 //							new SolidBrush(SystemColors.ControlDarkDark),
 //							ArrowPointArray(
-//										hotArea.X + 3,
-//										hotArea.Y + 2,
+//										HotArea.X + 3,
+//										HotArea.Y + 2,
 //										Dock,
-//										controlToHide.Visible));
+//										ControlToHide.Visible));
 //					g.FillPolygon(
 //							new SolidBrush(SystemColors.ControlDarkDark),
 //							ArrowPointArray(
-//										hotArea.X + hotArea.Width - 9,
-//										hotArea.Y + 2,
-//										Dock,controlToHide.Visible));
+//										HotArea.X + HotArea.Width - 9,
+//										HotArea.Y + 2,
+//										Dock,
+//										ControlToHide.Visible));
 
 					// draw the arrows for our control image
 /*					GraphicsPath upDown = new GraphicsPath();
-					if (   (Dock == DockStyle.Bottom && controlToHide.Visible) // point down
-						|| (Dock == DockStyle.Top   && !controlToHide.Visible))
+					if (   (Dock == DockStyle.Bottom && ControlToHide.Visible) // point down
+						|| (Dock == DockStyle.Top   && !ControlToHide.Visible))
 					{
 						upDown.AddLine(
-									hotArea.X + offX,
-									(Height + tHeight) / 2,
-									hotArea.X + offX + tWidth * 2,
-									(Height + tHeight) / 2);
+									HotArea.X + OffsetX,
+									(Height + TriHeight) / 2,
+									HotArea.X + OffsetX + TriWidth * 2,
+									(Height + TriHeight) / 2);
 						upDown.AddLine(
-									hotArea.X + offX + tWidth * 2,
-									(Height + tHeight) / 2,
-									hotArea.X + offX + tWidth,
-									(Height + tHeight) / 2 + tHeight);
+									HotArea.X + OffsetX + TriWidth * 2,
+									(Height + TriHeight) / 2,
+									HotArea.X + OffsetX + TriWidth,
+									(Height + TriHeight) / 2 + TriHeight);
 						upDown.CloseFigure();
 
 						upDown.AddLine(
-									(Width - tWidth) / 2,
-									hotArea.Y + hotArea.Height - offY,
-									(Width - tWidth) / 2,
-									hotArea.Y + hotArea.Height - offY - tHeight);
+									(Width - TriWidth) / 2,
+									HotArea.Y + HotArea.Height - OffsetY,
+									(Width - TriWidth) / 2,
+									HotArea.Y + HotArea.Height - OffsetY - TriHeight);
 						upDown.AddLine(
-									(Width - tWidth) / 2,
-									hotArea.Y + hotArea.Height - offY - tHeight,
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + hotArea.Height - (offY + tHeight / 2));
+									(Width - TriWidth) / 2,
+									HotArea.Y + HotArea.Height - OffsetY - TriHeight,
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + HotArea.Height - (OffsetY + TriHeight / 2));
 						upDown.CloseFigure();
 					}
 					else
 					{
 						upDown.AddLine(
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + offY,
-									(Width - tWidth) / 2,
-									hotArea.Y + offY + tHeight / 2);
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + OffsetY,
+									(Width - TriWidth) / 2,
+									HotArea.Y + OffsetY + TriHeight / 2);
 						upDown.AddLine(
-									(Width - tWidth) / 2,
-									hotArea.Y + offY + tHeight / 2,
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + offY + tHeight);
+									(Width - TriWidth) / 2,
+									HotArea.Y + OffsetY + TriHeight / 2,
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + OffsetY + TriHeight);
 						upDown.CloseFigure();
 
 						upDown.AddLine(
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + hotArea.Height - offY,
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + hotArea.Height - offY - tHeight);
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + HotArea.Height - OffsetY,
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + HotArea.Height - OffsetY - TriHeight);
 						upDown.AddLine(
-									(Width - tWidth) / 2 + tWidth,
-									hotArea.Y + hotArea.Height - offY - tHeight,
-									(Width - tWidth) / 2,
-									hotArea.Y + hotArea.Height - (offY + tHeight / 2));
+									(Width - TriWidth) / 2 + TriWidth,
+									HotArea.Y + HotArea.Height - OffsetY - TriHeight,
+									(Width - TriWidth) / 2,
+									HotArea.Y + HotArea.Height - (OffsetY + TriHeight / 2));
 						upDown.CloseFigure();
 					}
 					g.FillPath(controlDarkBrush,upDown); */
 //				}
 
 				// draw the dots for our control image using a loop
-				int x = hotArea.X + 14;
-				int y = hotArea.Y + 3;
+				int x = HotArea.X + 14;
+				int y = HotArea.Y + 3;
 
 				// Visual Styles added in version 1.1
-				switch (dotStyle)
+				switch (_dotStyle)
 				{
 					case DotStyle.Mozilla:
 						for (int i = 0; i < 30; i++)
@@ -1060,9 +1107,9 @@ namespace DSShared.Windows
 											x + 2 + (i * 3),
 											y + 2);
 
-							if (hot) // overdraw the background color as we actually drew 2px diagonal lines, not just dots
+							if (_hot) // overdraw the background color as we actually drew 2px diagonal lines, not just dots
 								graphics.DrawLine(
-											new Pen(hotColor),
+											new Pen(_hotColor),
 											x + 1 + (i * 3),
 											y + 2,
 											x + 2 + (i * 3),
@@ -1198,33 +1245,33 @@ namespace DSShared.Windows
 //			{
 //				// right arrow
 //				point[0] = new Point(x, y);
-//				point[1] = new Point(x + tWidth, y + tHeight / 2);
-//				point[2] = new Point(x, y + tHeight);
+//				point[1] = new Point(x + TriWidth, y + TriHeight / 2);
+//				point[2] = new Point(x, y + TriHeight);
 //			}
 //			else if ((dock == DockStyle.Right && !visible)
 //				||   (dock == DockStyle.Left   && visible))
 //			{
 //				// left arrow
-//				point[0] = new Point(x + tWidth, y);
-//				point[1] = new Point(x, y + tHeight / 2);
-//				point[2] = new Point(x + tWidth, y + tHeight);
+//				point[0] = new Point(x + TriWidth, y);
+//				point[1] = new Point(x, y + TriHeight / 2);
+//				point[2] = new Point(x + TriWidth, y + TriHeight);
 //			}
 //			// Up/Down arrows added in v1.2
 //			else if ((dock == DockStyle.Top     && visible)
 //				||   (dock == DockStyle.Bottom && !visible))
 //			{
 //				// up arrow
-//				point[0] = new Point(x + tHeight / 2, y);
-//				point[1] = new Point(x + tHeight, y + tWidth);
-//				point[2] = new Point(x, y + tWidth);
+//				point[0] = new Point(x + TriHeight / 2, y);
+//				point[1] = new Point(x + TriHeight, y + TriWidth);
+//				point[2] = new Point(x, y + TriWidth);
 //			}
 //			else if ((dock == DockStyle.Top   && !visible)
 //				||   (dock == DockStyle.Bottom && visible))
 //			{
 //				// down arrow
 //				point[0] = new Point(x,y);
-//				point[1] = new Point(x + tHeight, y);
-//				point[2] = new Point(x + tHeight/2, y + tWidth);
+//				point[1] = new Point(x + TriHeight, y);
+//				point[2] = new Point(x + TriHeight / 2, y + TriWidth);
 //			}
 //
 //			return point;

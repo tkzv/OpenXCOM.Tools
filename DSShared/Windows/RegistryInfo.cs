@@ -14,7 +14,7 @@ namespace DSShared.Windows
 	/// A class to help facilitate the saving and loading of values into the
 	/// registry in a central location.
 	/// </summary>
-	public class RegistryInfo
+	public sealed class RegistryInfo
 	{
 		#region Fields (static)
 		// viewer labels (keys)
@@ -51,7 +51,7 @@ namespace DSShared.Windows
 
 		#region cTor
 		/// <summary>
-		/// Main cTor. Uses the specified string as a registry key.
+		/// Main cTor. Uses the specified string as a key to its Form.
 		/// </summary>
 		/// <param name="viewer">the label of the viewer to save/load</param>
 		/// <param name="f">the form-object corresponding to the label</param>
@@ -59,12 +59,6 @@ namespace DSShared.Windows
 		{
 			_viewer = viewer;
 			_f      = f;
-
-			RegisterProperties(
-							PropLeft,
-							PropTop,
-							PropWidth,
-							PropHeight);
 
 			_f.StartPosition = FormStartPosition.Manual;
 			_f.Load         += OnLoad;
@@ -77,18 +71,23 @@ namespace DSShared.Windows
 		/// <summary>
 		/// Adds properties to be saved/loaded.
 		/// </summary>
-		/// <param name="keys">the keys of the properties to be saved/loaded</param>
-		private void RegisterProperties(params string[] keys)
+		public void RegisterProperties()
 		{
 			//DSLogFile.WriteLine("RegisterProperties");
-			var type = _f.GetType();
-			//DSLogFile.WriteLine(". type= " + type);
-
 			PropertyInfo info;
+
+			string[] keys =
+			{
+				PropLeft,
+				PropTop,
+				PropWidth,
+				PropHeight
+			};
+
 			foreach (string key in keys)
 			{
 				//DSLogFile.WriteLine(". . key= " + key);
-				if ((info = type.GetProperty(key)) != null)
+				if ((info = _f.GetType().GetProperty(key)) != null)
 				{
 					//DSLogFile.WriteLine(". . . info= " + info.Name);
 					_infoDictionary[info.Name] = info;
@@ -129,7 +128,10 @@ namespace DSShared.Windows
 					{
 						string viewer = ((YamlScalarNode)node.Key).Value;
 						if (String.Equals(viewer, _viewer, StringComparison.Ordinal))
-							ImportMetrics((YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)]);
+						{
+							LoadWindowMetrics((YamlMappingNode)nodeRoot.Children[new YamlScalarNode(viewer)]);
+							break;
+						}
 					}
 				}
 			}
@@ -139,7 +141,7 @@ namespace DSShared.Windows
 		/// Helper for OnLoad().
 		/// </summary>
 		/// <param name="keyvals">yaml-mapped keyval pairs</param>
-		private void ImportMetrics(YamlMappingNode keyvals)
+		private void LoadWindowMetrics(YamlMappingNode keyvals)
 		{
 			//DSLogFile.WriteLine("ImportValues");
 			string key;
@@ -209,8 +211,8 @@ namespace DSShared.Windows
 			{
 				File.Copy(pfeViewers, pfeViewersOld, true);
 
-				using (var sr = new StreamReader(File.OpenRead(pfeViewersOld))) // but now use dst as src ->
-				using (var fs = new FileStream(pfeViewers, FileMode.Create)) // overwrite previous config.
+				using (var sr = new StreamReader(File.OpenRead(pfeViewersOld)))	// but now use dst as src ->
+				using (var fs = new FileStream(pfeViewers, FileMode.Create))	// overwrite previous config.
 				using (var sw = new StreamWriter(fs))
 				{
 					while (sr.Peek() != -1)

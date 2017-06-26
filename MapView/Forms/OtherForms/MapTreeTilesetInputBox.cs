@@ -151,6 +151,7 @@ namespace MapView
 			InitializeComponent();
 
 			var regInfo = new RegistryInfo(RegistryInfo.TilesetEditor, this); // subscribe to Load and Closing events.
+			regInfo.RegisterProperties();
 
 			Group    = labelGroup;
 			Category = labelCategory;
