@@ -15,7 +15,7 @@ Not all MapEdit.dat/cfg files will convert gracefully. The design of how tileset
 
 That would then become a tileset's "basepath". See the CHM helpfile's Configuration page for further details.
 
-MAKE BACKUPS OF ALL YOUR STUFF. i mean it. Stuff being your MAPS and ROUTES, mostly. PckView is included but saving PCK/TAB files has been disabled. MCD files cannot be edited directly with MapView 1 or 2 (although there is a setting under Options to open an MCD file in a 3rd party app).
+MAKE BACKUPS OF ALL YOUR STUFF. i mean it. Stuff being your MAPS and ROUTES, mostly. PckView is included as a spriteset editor and a very simple sprite editor. MCD files cannot be edited directly with MapView 1 or 2 (although there is a setting under Options to open an MCD file in a 3rd party app).
 
 /enjoy
 
