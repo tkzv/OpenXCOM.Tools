@@ -25,11 +25,11 @@
 			this.tpNorthwalls = new System.Windows.Forms.TabPage();
 			this.tpObjects = new System.Windows.Forms.TabPage();
 			this.tsMain = new System.Windows.Forms.ToolStrip();
+			this.tsddbPck = new System.Windows.Forms.ToolStripDropDownButton();
+			this.tsmiEditPck = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsddbMcd = new System.Windows.Forms.ToolStripDropDownButton();
 			this.tsmiMcdInfo = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiVolutarMcdEditor = new System.Windows.Forms.ToolStripMenuItem();
-			this.tsddbPck = new System.Windows.Forms.ToolStripDropDownButton();
-			this.tsmiEditPck = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsddbEdit = new System.Windows.Forms.ToolStripDropDownButton();
 			this.tsmiOptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.tcTileTypes.SuspendLayout();
@@ -115,13 +115,13 @@
 			this.tsddbPck.Image = ((System.Drawing.Image)(resources.GetObject("tsddbPck.Image")));
 			this.tsddbPck.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsddbPck.Name = "tsddbPck";
-			this.tsddbPck.Size = new System.Drawing.Size(110, 22);
+			this.tsddbPck.Size = new System.Drawing.Size(40, 22);
 			this.tsddbPck.Text = "PCK";
 			// 
 			// tsmiEditPck
 			// 
 			this.tsmiEditPck.Name = "tsmiEditPck";
-			this.tsmiEditPck.Size = new System.Drawing.Size(116, 22);
+			this.tsmiEditPck.Size = new System.Drawing.Size(213, 22);
 			this.tsmiEditPck.Text = "Open spriteset in PckView";
 			this.tsmiEditPck.Click += new System.EventHandler(this.OnPckEditorClick);
 			// 
@@ -136,20 +136,20 @@
 			this.tsddbMcd.Image = ((System.Drawing.Image)(resources.GetObject("tsddbMcd.Image")));
 			this.tsddbMcd.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsddbMcd.Name = "tsddbMcd";
-			this.tsddbMcd.Size = new System.Drawing.Size(103, 22);
+			this.tsddbMcd.Size = new System.Drawing.Size(43, 22);
 			this.tsddbMcd.Text = "MCD";
 			// 
 			// tsmiMcdInfo
 			// 
 			this.tsmiMcdInfo.Name = "tsmiMcdInfo";
-			this.tsmiMcdInfo.Size = new System.Drawing.Size(173, 22);
+			this.tsmiMcdInfo.Size = new System.Drawing.Size(182, 22);
 			this.tsmiMcdInfo.Text = "Tilepart Information";
 			this.tsmiMcdInfo.Click += new System.EventHandler(this.OnMcdInfoClick);
 			// 
 			// tsmiVolutarMcdEditor
 			// 
 			this.tsmiVolutarMcdEditor.Name = "tsmiVolutarMcdEditor";
-			this.tsmiVolutarMcdEditor.Size = new System.Drawing.Size(173, 22);
+			this.tsmiVolutarMcdEditor.Size = new System.Drawing.Size(182, 22);
 			this.tsmiVolutarMcdEditor.Text = "Volutar MCD Editor";
 			this.tsmiVolutarMcdEditor.Click += new System.EventHandler(this.OnVolutarMcdEditorClick);
 			// 
@@ -169,7 +169,8 @@
 			// tsmiOptions
 			// 
 			this.tsmiOptions.Name = "tsmiOptions";
-			this.tsmiOptions.Size = new System.Drawing.Size(152, 22);
+			this.tsmiOptions.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+			this.tsmiOptions.Size = new System.Drawing.Size(154, 22);
 			this.tsmiOptions.Text = "Options";
 			this.tsmiOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
@@ -185,6 +186,7 @@
 			this.tsMain.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
+
 		}
 		#endregion
 

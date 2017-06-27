@@ -230,7 +230,7 @@ namespace DSShared.Windows
 						string line = sr.ReadLine().TrimEnd();
 						//DSLogFile.WriteLine(". line= " + line);
 
-						// At present, MainView and PckView are the only viewers that rolls their own metrics.
+						// At present, MainView and PckView are the only viewers that roll their own metrics.
 						// - see the XCMainWindow cTor & FormClosing eventcalls.
 						// - see the PckViewForm  cTor & FormClosing eventcalls.
 

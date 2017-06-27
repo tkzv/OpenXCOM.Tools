@@ -142,7 +142,8 @@ namespace MapView.Forms.MapObservers.TopViews
 			// tsmiOptions
 			// 
 			this.tsmiOptions.Name = "tsmiOptions";
-			this.tsmiOptions.Size = new System.Drawing.Size(113, 22);
+			this.tsmiOptions.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+			this.tsmiOptions.Size = new System.Drawing.Size(154, 22);
 			this.tsmiOptions.Text = "Options";
 			this.tsmiOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 

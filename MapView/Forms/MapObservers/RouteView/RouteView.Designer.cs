@@ -433,12 +433,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelUnitInfo.TabIndex = 21;
 			this.labelUnitInfo.Text = "Unit Info";
 			// 
-			// pRoutes
+			// pnlRoutes
 			// 
 			this.pnlRoutes.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pnlRoutes.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.pnlRoutes.Location = new System.Drawing.Point(0, 25);
-			this.pnlRoutes.Name = "pRoutes";
+			this.pnlRoutes.Name = "pnlRoutes";
 			this.pnlRoutes.Size = new System.Drawing.Size(640, 245);
 			this.pnlRoutes.TabIndex = 0;
 			// 
@@ -480,6 +480,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// tsmiOptions
 			// 
 			this.tsmiOptions.Name = "tsmiOptions";
+			this.tsmiOptions.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.tsmiOptions.Size = new System.Drawing.Size(165, 22);
 			this.tsmiOptions.Text = "Options";
 			this.tsmiOptions.Click += new System.EventHandler(this.OnOptionsClick);

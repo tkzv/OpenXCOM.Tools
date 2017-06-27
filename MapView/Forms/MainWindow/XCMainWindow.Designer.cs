@@ -175,6 +175,7 @@ namespace MapView
 			// 
 			this.miSaveImage.Enabled = false;
 			this.miSaveImage.Index = 9;
+			this.miSaveImage.Shortcut = System.Windows.Forms.Shortcut.CtrlI;
 			this.miSaveImage.Text = "Save &Image ...";
 			this.miSaveImage.Click += new System.EventHandler(this.OnSaveImageClick);
 			// 
@@ -189,6 +190,7 @@ namespace MapView
 			// 
 			this.miResize.Enabled = false;
 			this.miResize.Index = 11;
+			this.miResize.Shortcut = System.Windows.Forms.Shortcut.CtrlZ;
 			this.miResize.Text = "Resi&ze Map";
 			this.miResize.Click += new System.EventHandler(this.OnMapResizeClick);
 			// 
@@ -196,6 +198,7 @@ namespace MapView
 			// 
 			this.miInfo.Enabled = false;
 			this.miInfo.Index = 12;
+			this.miInfo.Shortcut = System.Windows.Forms.Shortcut.CtrlF;
 			this.miInfo.Text = "&Map Info";
 			this.miInfo.Click += new System.EventHandler(this.OnInfoClick);
 			// 
@@ -203,7 +206,6 @@ namespace MapView
 			// 
 			this.miRegenOccult.Enabled = false;
 			this.miRegenOccult.Index = 13;
-			this.miRegenOccult.Shortcut = System.Windows.Forms.Shortcut.CtrlO;
 			this.miRegenOccult.Text = "Regen &Occult";
 			this.miRegenOccult.Visible = false;
 			this.miRegenOccult.Click += new System.EventHandler(this.OnRegenOccultClick);
@@ -212,6 +214,7 @@ namespace MapView
 			// 
 			this.miHq.Index = 14;
 			this.miHq.Text = "Hq&2x";
+			this.miHq.Visible = false;
 			this.miHq.Click += new System.EventHandler(this.OnHq2xClick);
 			// 
 			// miSeparator4
@@ -237,6 +240,7 @@ namespace MapView
 			// miOptions
 			// 
 			this.miOptions.Index = 0;
+			this.miOptions.Shortcut = System.Windows.Forms.Shortcut.CtrlO;
 			this.miOptions.Text = "&Options";
 			this.miOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 

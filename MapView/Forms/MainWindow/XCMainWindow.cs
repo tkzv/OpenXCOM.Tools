@@ -341,8 +341,7 @@ namespace MapView
 
 
 			// I should rewrite the hq2x wrapper for .NET sometime -- not the code it's pretty insane
-//			if (!File.Exists("hq2xa.dll"))
-			miHq.Visible = false;
+//			if (!File.Exists("hq2xa.dll")) miHq.Visible = false;
 
 //			LogFile.WriteLine("Loading user-made plugins");
 
