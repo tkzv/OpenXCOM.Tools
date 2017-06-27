@@ -48,7 +48,7 @@ namespace MapView
 				string typeFocused = FindFocusedControl(this).GetType().ToString();
 				if (!typeFocused.Contains("GridViewEdit"))
 				{
-					this.Close();
+					Close();
 					return true;
 				}
 			}
@@ -58,7 +58,7 @@ namespace MapView
 
 
 		#region Methods (static)
-		public static Control FindFocusedControl(Control control)
+		private static Control FindFocusedControl(Control control)
 		{
 			var container = control as ContainerControl;
 			while (container != null)
@@ -66,13 +66,12 @@ namespace MapView
 				control = container.ActiveControl;
 				container = control as ContainerControl;
 			}
-
 			return control;
 		}
 		#endregion
 
 
-		// The #develop designer is goign to delete this, so add it back at the
+		// The #develop designer is going to delete this, so add it back to the
 		// top of InitializeComponent().
 		/*
 			this.propertyGrid = new MapView.OptionsPropertyGrid();
