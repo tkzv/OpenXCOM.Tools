@@ -199,7 +199,7 @@ namespace MapView
 			this.miInfo.Enabled = false;
 			this.miInfo.Index = 12;
 			this.miInfo.Shortcut = System.Windows.Forms.Shortcut.CtrlF;
-			this.miInfo.Text = "&Map Info";
+			this.miInfo.Text = "Map In&fo";
 			this.miInfo.Click += new System.EventHandler(this.OnInfoClick);
 			// 
 			// miRegenOccult
@@ -307,8 +307,8 @@ namespace MapView
 			// 
 			// sfdSaveDialog
 			// 
-			this.sfdSaveDialog.DefaultExt = "gif";
-			this.sfdSaveDialog.Filter = "gif files|*.gif";
+			this.sfdSaveDialog.DefaultExt = "GIF";
+			this.sfdSaveDialog.Filter = "GIF files|*.GIF|All files (*.*)|*.*";
 			this.sfdSaveDialog.RestoreDirectory = true;
 			// 
 			// ssMain

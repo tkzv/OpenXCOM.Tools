@@ -21,7 +21,7 @@ namespace MapView
 			Form
 	{
 		#region Fields
-		private OptionsPropertyGrid _propertyGrid;
+		private OptionsPropertyGrid propertyGrid;
 		#endregion
 
 
@@ -30,42 +30,80 @@ namespace MapView
 		{
 			InitializeComponent();
 
+			propertyGrid.TypeLabel = typeLabel;
+			propertyGrid.SetOptions(options);
+
+
 			var regInfo = new RegistryInfo(RegistryInfo.Options, this); // subscribe to Load and Closing events.
 			regInfo.RegisterProperties();
-
-			_propertyGrid.TypeLabel = typeLabel;
-			_propertyGrid.SetOptions(options);
 		}
 		#endregion
 
 
-		#region Windows Form Designer generated code
+		#region Eventcalls (override)
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			if (keyData == Keys.Escape)
+			{
+				string typeFocused = FindFocusedControl(this).GetType().ToString();
+				if (!typeFocused.Contains("GridViewEdit"))
+				{
+					this.Close();
+					return true;
+				}
+			}
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
+		#endregion
 
+
+		#region Methods (static)
+		public static Control FindFocusedControl(Control control)
+		{
+			var container = control as ContainerControl;
+			while (container != null)
+			{
+				control = container.ActiveControl;
+				container = control as ContainerControl;
+			}
+
+			return control;
+		}
+		#endregion
+
+
+		// The #develop designer is goign to delete this, so add it back at the
+		// top of InitializeComponent().
+		/*
+			this.propertyGrid = new MapView.OptionsPropertyGrid();
+		*/
+		#region Windows Form Designer generated code
 		private void InitializeComponent()
 		{
-			this._propertyGrid = new MapView.OptionsPropertyGrid();
+			this.propertyGrid = new MapView.OptionsPropertyGrid();
 			this.SuspendLayout();
 			// 
 			// propertyGrid
 			// 
-			this._propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-			this._propertyGrid.LineColor = System.Drawing.SystemColors.ScrollBar;
-			this._propertyGrid.Location = new System.Drawing.Point(0, 0);
-			this._propertyGrid.Name = "propertyGrid";
-			this._propertyGrid.Size = new System.Drawing.Size(592, 374);
-			this._propertyGrid.TabIndex = 0;
+			this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.propertyGrid.LineColor = System.Drawing.SystemColors.ScrollBar;
+			this.propertyGrid.Location = new System.Drawing.Point(0, 0);
+			this.propertyGrid.Name = "propertyGrid";
+			this.propertyGrid.Size = new System.Drawing.Size(592, 374);
+			this.propertyGrid.TabIndex = 0;
 			// 
 			// OptionsForm
 			// 
 			this.AutoScaleBaseSize = new System.Drawing.Size(5, 12);
 			this.ClientSize = new System.Drawing.Size(592, 374);
-			this.Controls.Add(this._propertyGrid);
+			this.Controls.Add(this.propertyGrid);
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MinimumSize = new System.Drawing.Size(500, 300);
 			this.Name = "OptionsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Custom PropertyGrid";
 			this.ResumeLayout(false);
+
 		}
 		#endregion
 	}
@@ -78,14 +116,14 @@ namespace MapView
 		:
 			PropertyGrid
 	{
-		#region Fields
-		private Options _options;
-		private Hashtable _typeHash;
+		#region Fields (static)
+		private static Hashtable _hashTypes = new Hashtable();
 		#endregion
 
 
-		#region Fields (static)
-		private static Hashtable _hashTypes = new Hashtable();
+		#region Fields
+		private Options _options;
+		private Hashtable _typeHash;
 		#endregion
 
 
