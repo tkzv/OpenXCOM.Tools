@@ -145,20 +145,6 @@ namespace PckView
 		#endregion
 
 
-//		For the form resize Events (onResizeBegin & on ResizeEnd) use the following code:
-//
-//		protected override void OnResizeBegin(EventArgs e) 
-//		{
-//			SuspendLayout();
-//			base.OnResizeBegin(e);
-//		}
-//		protected override void OnResizeEnd(EventArgs e) 
-//		{
-//			ResumeLayout();
-//			base.OnResizeEnd(e);
-//		}
-
-
 		#region Eventcalls (override)
 		protected override void OnMouseLeave(EventArgs e)
 		{
@@ -263,39 +249,7 @@ namespace PckView
 					{
 						int palId = Sprite.Bindata[bindataId];
 						if (palId != _palId)
-						{
-							_palId = palId;
-
-							// TODO: what follows is lifted from PaletteForm.OnPaletteIdChanged()
-							string text = String.Format(
-													System.Globalization.CultureInfo.CurrentCulture,
-													"id:{0} (0x{0:X2})",
-													_palId);
-
-							var color = PckViewForm.Pal[_palId];
-							text += String.Format(
-												System.Globalization.CultureInfo.CurrentCulture,
-												" r:{0} g:{1} b:{2} a:{3}",
-												color.R,
-												color.G,
-												color.B,
-												color.A);
-
-							switch (_palId)
-							{
-								case 0:
-									text += " [transparent]";
-									break;
-
-								// the following values cannot be palette-ids. They have special meaning in the .PCK file.
-								case 254: // transparency marker
-								case 255: // end of file marker
-									text += " [invalid]";
-									break;
-							}
-
-							_sbpEyeDropper.Text = text;
-						}
+							_sbpEyeDropper.Text = GetColorInfo(_palId = palId);
 					}
 					else
 					{
@@ -313,6 +267,8 @@ namespace PckView
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
+//			base.OnPaint(e);
+
 			var graphics = e.Graphics;
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
@@ -387,6 +343,41 @@ namespace PckView
 		private void OnPaletteChanged()
 		{
 			Refresh();
+		}
+		#endregion
+
+
+		#region Methods (static)
+		internal string GetColorInfo(int palId)
+		{
+			string text = String.Format(
+									System.Globalization.CultureInfo.CurrentCulture,
+									"id:{0} (0x{0:X2})",
+									palId);
+
+			var color = PckViewForm.Pal[palId];
+			text += String.Format(
+								System.Globalization.CultureInfo.CurrentCulture,
+								" r:{0} g:{1} b:{2} a:{3}",
+								color.R,
+								color.G,
+								color.B,
+								color.A);
+
+			switch (palId)
+			{
+				case 0:
+					text += " [transparent]";
+					break;
+
+				// the following values cannot be palette-ids. They have special meaning in the .PCK file.
+				case 254: // transparency marker
+				case 255: // end of file marker
+					text += " [invalid]";
+					break;
+			}
+
+			return text;
 		}
 		#endregion
 

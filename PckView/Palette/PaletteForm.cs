@@ -30,14 +30,13 @@ namespace PckView
 							PalettePanel.SwatchesPerSide * 20,
 							PalettePanel.SwatchesPerSide * 20 + lblStatus.Height);
 			ClientSize = size;
-//			OnResize(EventArgs.Empty);
 
 			_pnlPalette.PaletteIdChangedEvent += OnPaletteIdChanged;
 		}
 		#endregion
 
 
-		#region Eventcalls
+		#region Eventcalls (override)
 		protected override void OnResize(EventArgs e)
 		{
 //			base.OnResize(e);
@@ -53,38 +52,13 @@ namespace PckView
 				lblStatus.Width = ClientSize.Width;
 			}
 		}
+		#endregion
 
-		// TODO: this is duplicated in EditorPanel.OnMouseMove()
-		private void OnPaletteIdChanged(int id)
+
+		#region Eventcalls
+		private void OnPaletteIdChanged(int palId)
 		{
-			string text = String.Format(
-									System.Globalization.CultureInfo.CurrentCulture,
-									"id:{0} (0x{0:X2})",
-									id);
-
-			var color = PckViewForm.Pal[id];
-			text += String.Format(
-								System.Globalization.CultureInfo.CurrentCulture,
-								" r:{0} g:{1} b:{2} a:{3}",
-								color.R,
-								color.G,
-								color.B,
-								color.A);
-
-			switch (id)
-			{
-				case 0:
-					text += " [transparent]";
-					break;
-
-				// the following values cannot be palette-ids. They have special meaning in the .PCK file.
-				case 254: // transparency marker
-				case 255: // end of file marker
-					text += " [invalid]";
-					break;
-			}
-
-			lblStatus.Text = text;
+			lblStatus.Text = EditorPanel.Instance.GetColorInfo(palId);
 		}
 		#endregion
 

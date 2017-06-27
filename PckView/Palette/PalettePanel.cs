@@ -33,7 +33,7 @@ namespace PckView
 
 		#region Properties (static)
 		internal static PalettePanel Instance
-		{ get; set; }
+		{ get; private set; }
 		#endregion
 
 
@@ -115,46 +115,49 @@ namespace PckView
 		{
 //			base.OnPaint(e);
 
-			var graphics = e.Graphics;
-			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-			for (int
-					i = 0,
-						y = 0;
-					i != SwatchesPerSide;
-					++i,
-						y += _swatchHeight)
+			if (!DesignMode) // otherwise PaletteForm has probls drawing a PalettePanel in the designer.
 			{
+				var graphics = e.Graphics;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
 				for (int
-						j = 0,
-							x = 0;
-						j != SwatchesPerSide;
-						++j,
-							x += _swatchWidth)
+						i = 0,
+							y = 0;
+						i != SwatchesPerSide;
+						++i,
+							y += _swatchHeight)
 				{
-					graphics.FillRectangle(
-										new SolidBrush(PckViewForm.Pal[i * SwatchesPerSide + j]),
-										x,
-										y,
-										_swatchWidth,
-										_swatchHeight);
+					for (int
+							j = 0,
+								x = 0;
+							j != SwatchesPerSide;
+							++j,
+								x += _swatchWidth)
+					{
+						graphics.FillRectangle(
+											new SolidBrush(PckViewForm.Pal[i * SwatchesPerSide + j]),
+											x,
+											y,
+											_swatchWidth,
+											_swatchHeight);
+					}
 				}
-			}
 
-			if (PaletteId != -1)
-			{
-				graphics.DrawRectangle(
-									Pens.Red,
-									ClickX,
-									ClickY,
-									_swatchWidth  - 1,
-									_swatchHeight - 1);
-				graphics.FillRectangle( // -> fill the darn hole that .NET leaves in the top-left corner.
-									Brushes.Red,
-									ClickX - 1,
-									ClickY - 1,
-									1,
-									1);
+				if (PaletteId != -1)
+				{
+					graphics.DrawRectangle(
+										Pens.Red,
+										ClickX,
+										ClickY,
+										_swatchWidth  - 1,
+										_swatchHeight - 1);
+					graphics.FillRectangle( // -> fill the darn hole that .NET leaves in the top-left corner.
+										Brushes.Red,
+										ClickX - 1,
+										ClickY - 1,
+										1,
+										1);
+				}
 			}
 		}
 		#endregion
