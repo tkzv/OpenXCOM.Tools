@@ -160,6 +160,14 @@ namespace PckView
 
 
 		#region Eventcalls (override)
+		protected override void OnMouseLeave(EventArgs e)
+		{
+//			base.OnMouseLeave(e);
+
+			_palId = -1;
+			_sbpEyeDropper.Text = String.Empty;
+		}
+
 		/// <summary>
 		/// Changes a clicked pixel's palette-id (color) to whatever the current
 		/// 'PaletteId' is in PalettePanel.
@@ -171,64 +179,67 @@ namespace PckView
 
 			if (Sprite != null)
 			{
-				int pixelX = e.X / _scale;
-				int pixelY = e.Y / _scale;
-
-				int bindataId = pixelY * (Sprite.Bindata.Length / XCImage.SpriteHeight) + pixelX;
-
-				if (bindataId > -1 && bindataId < Sprite.Bindata.Length)
+				if (   e.X > 0 && e.X < XCImage.SpriteWidth  * _scale
+					&& e.Y > 0 && e.Y < XCImage.SpriteHeight * _scale)
 				{
-					switch (EditorForm.Mode)
+					int pixelX = e.X / _scale;
+					int pixelY = e.Y / _scale;
+
+					int bindataId = pixelY * (Sprite.Bindata.Length / XCImage.SpriteHeight) + pixelX;
+
+					if (bindataId > -1 && bindataId < Sprite.Bindata.Length) // safety.
 					{
-						case EditorForm.EditMode.ModeEnabled: // paint ->
+						switch (EditorForm.Mode)
 						{
-							int palId = PalettePanel.Instance.PaletteId;
-							if (palId > -1 && palId < PckImage.SpriteTransparencyByte)	// NOTE: 0xFE and 0xFF are reserved for special
-							{															// stuff when reading/writing the .PCK file.
-//								var color = PckViewForm.Pal[palId];
-
-								Sprite.Bindata[bindataId] = (byte)palId;
-								Sprite.Image = BitmapService.MakeBitmapTrue(
-																		XCImage.SpriteWidth,
-																		XCImage.SpriteHeight,
-																		Sprite.Bindata,
-																		PckViewForm.Pal.ColorTable);
-								Refresh();
-								PckViewPanel.Instance.Refresh();
-							}
-							else
+							case EditorForm.EditMode.ModeEnabled: // paint ->
 							{
-								switch (palId)
-								{
-									case PckImage.SpriteTransparencyByte:	// #254
-									case PckImage.SpriteStopByte:			// #255
-										MessageBox.Show(
-													this,
-													"The colortable indices #254 and #255 are reserved"
-														+ " for reading and writing the .PCK file."
-														+ Environment.NewLine + Environment.NewLine
-														+ "#254 is used for RLE encoding"
-														+ Environment.NewLine
-														+ "#255 is the end-of-sprite marker",
-													"Error",
-													MessageBoxButtons.OK,
-													MessageBoxIcon.Error,
-													MessageBoxDefaultButton.Button1,
-													0);
-										break;
-								}
-							}
-							break;
-						}
+								int palId = PalettePanel.Instance.PaletteId;
+								if (palId > -1 && palId < PckImage.SpriteTransparencyByte)	// NOTE: 0xFE and 0xFF are reserved for special
+								{															// stuff when reading/writing the .PCK file.
+//									var color = PckViewForm.Pal[palId];
 
-						case EditorForm.EditMode.ModeLocked: // eye-dropper ->
-							PalettePanel.Instance.SelectPaletteId((int)Sprite.Bindata[bindataId]);
-							break;
+									Sprite.Bindata[bindataId] = (byte)palId;
+									Sprite.Image = BitmapService.MakeBitmapTrue(
+																			XCImage.SpriteWidth,
+																			XCImage.SpriteHeight,
+																			Sprite.Bindata,
+																			PckViewForm.Pal.ColorTable);
+									Refresh();
+									PckViewPanel.Instance.Refresh();
+								}
+								else
+								{
+									switch (palId)
+									{
+										case PckImage.SpriteTransparencyByte:	// #254
+										case PckImage.SpriteStopByte:			// #255
+											MessageBox.Show(
+														this,
+														"The colortable indices #254 and #255 are reserved"
+															+ " for reading and writing the .PCK file."
+															+ Environment.NewLine + Environment.NewLine
+															+ "#254 is used for RLE encoding"
+															+ Environment.NewLine
+															+ "#255 is the end-of-sprite marker",
+														"Error",
+														MessageBoxButtons.OK,
+														MessageBoxIcon.Error,
+														MessageBoxDefaultButton.Button1,
+														0);
+											break;
+									}
+								}
+								break;
+							}
+
+							case EditorForm.EditMode.ModeLocked: // eye-dropper ->
+								PalettePanel.Instance.SelectPaletteId((int)Sprite.Bindata[bindataId]);
+								break;
+						}
 					}
 				}
 			}
 		}
-
 
 		/// <summary>
 		/// Displays the color of any mouseovered paletteId.
@@ -240,50 +251,62 @@ namespace PckView
 
 			if (Sprite != null)
 			{
-				int pixelX = e.X / _scale;
-				int pixelY = e.Y / _scale;
-
-				int bindataId = pixelY * (Sprite.Bindata.Length / XCImage.SpriteHeight) + pixelX;
-
-				if (bindataId > -1 && bindataId < Sprite.Bindata.Length)
+				if (   e.X > 0 && e.X < XCImage.SpriteWidth  * _scale
+					&& e.Y > 0 && e.Y < XCImage.SpriteHeight * _scale)
 				{
-					int palId = Sprite.Bindata[bindataId];
-					if (palId != _palId)
+					int pixelX = e.X / _scale;
+					int pixelY = e.Y / _scale;
+
+					int bindataId = pixelY * (Sprite.Bindata.Length / XCImage.SpriteHeight) + pixelX;
+
+					if (bindataId > -1 && bindataId < Sprite.Bindata.Length) // safety.
 					{
-						_palId = palId;
-
-						_sbpEyeDropper.Text = String.Empty;
-
-						// TODO: what follows is lifted from PaletteForm.OnPaletteIdChanged()
-						string text = String.Format(
-												System.Globalization.CultureInfo.CurrentCulture,
-												"id:{0} (0x{0:X2})",
-												_palId);
-
-						var color = PckViewForm.Pal[_palId];
-						text += String.Format(
-											System.Globalization.CultureInfo.CurrentCulture,
-											" r:{0} g:{1} b:{2} a:{3}",
-											color.R,
-											color.G,
-											color.B,
-											color.A);
-
-						switch (_palId)
+						int palId = Sprite.Bindata[bindataId];
+						if (palId != _palId)
 						{
-							case 0:
-								text += " [transparent]";
-								break;
+							_palId = palId;
 
-							// the following values cannot be palette-ids. They have special meaning in the .PCK file.
-							case 254: // transparency marker
-							case 255: // end of file marker
-								text += " [invalid]";
-								break;
+							// TODO: what follows is lifted from PaletteForm.OnPaletteIdChanged()
+							string text = String.Format(
+													System.Globalization.CultureInfo.CurrentCulture,
+													"id:{0} (0x{0:X2})",
+													_palId);
+
+							var color = PckViewForm.Pal[_palId];
+							text += String.Format(
+												System.Globalization.CultureInfo.CurrentCulture,
+												" r:{0} g:{1} b:{2} a:{3}",
+												color.R,
+												color.G,
+												color.B,
+												color.A);
+
+							switch (_palId)
+							{
+								case 0:
+									text += " [transparent]";
+									break;
+
+								// the following values cannot be palette-ids. They have special meaning in the .PCK file.
+								case 254: // transparency marker
+								case 255: // end of file marker
+									text += " [invalid]";
+									break;
+							}
+
+							_sbpEyeDropper.Text = text;
 						}
-
-						_sbpEyeDropper.Text = text;
 					}
+					else
+					{
+						_palId = -1;
+						_sbpEyeDropper.Text = String.Empty;
+					}
+				}
+				else
+				{
+					_palId = -1;
+					_sbpEyeDropper.Text = String.Empty;
 				}
 			}
 		}
@@ -306,7 +329,7 @@ namespace PckView
 			}
 
 
-			if (_grid)
+			if (_grid && _scale != 1)
 			{
 				for (int x = 0; x != XCImage.SpriteWidth; ++x) // vertical lines
 					graphics.DrawLine(
