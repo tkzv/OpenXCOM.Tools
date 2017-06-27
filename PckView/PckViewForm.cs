@@ -148,8 +148,8 @@ namespace PckView
 			_feditor.FormClosing += OnEditorFormClosing;
 
 
-			var regInfo = new RegistryInfo(RegistryInfo.PckView, this); // subscribe to Load and Closing events.
-			regInfo.RegisterProperties();
+//			var regInfo = new RegistryInfo(RegistryInfo.PckView, this); // subscribe to Load and Closing events.
+//			regInfo.RegisterProperties();
 //			regInfo.AddProperty("SelectedPalette");
 		}
 		#endregion

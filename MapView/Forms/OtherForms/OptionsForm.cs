@@ -13,13 +13,19 @@ using DSShared.Windows;
 
 namespace MapView
 {
+	/// <summary>
+	/// The Options form. The same form is used for each viewer's Options.
+	/// </summary>
 	internal sealed class OptionsForm
 		:
 			Form
 	{
+		#region Fields
 		private OptionsPropertyGrid _propertyGrid;
+		#endregion
 
 
+		#region cTor
 		internal OptionsForm(string typeLabel, Options options)
 		{
 			InitializeComponent();
@@ -30,6 +36,7 @@ namespace MapView
 			_propertyGrid.TypeLabel = typeLabel;
 			_propertyGrid.SetOptions(options);
 		}
+		#endregion
 
 
 		#region Windows Form Designer generated code
@@ -64,31 +71,70 @@ namespace MapView
 	}
 
 
+	/// <summary>
+	/// The grid in the Options form. This gets complicated.
+	/// </summary>
 	internal sealed class OptionsPropertyGrid
 		:
 			PropertyGrid
 	{
+		#region Fields
+		private Options _options;
+		private Hashtable _typeHash;
+		#endregion
+
+
+		#region Fields (static)
+		private static Hashtable _hashTypes = new Hashtable();
+		#endregion
+
+
+		#region Properties
 		private string _typeLabel = "DefaultType";
 		[Description("Name of the type that will be internally created.")]
 		internal string TypeLabel
 		{
+			get { return _typeLabel; }
 			set { _typeLabel = value; }
 		}
 
-		private Options _options;
-
 //		private bool _instantUpdate = true;
+//		[DefaultValue(true)]
+//		[Description("If true the Option.Update() event will be called when a property changes.")]
+//		public bool InstantUpdate
+//		{
+//			get { return _instantUpdate; }
+//			set { _instantUpdate = value; }
+//		}
+		#endregion
 
-		private Hashtable _typeHash;
-		private static Hashtable _hashTypes = new Hashtable();
 
-
+		#region cTor
 		internal OptionsPropertyGrid()
 		{
 			InitTypes();
 		}
+		#endregion
 
 
+		#region Methods (override)
+		// FxCop CA2123:OverrideLinkDemandsShouldBeIdenticalToBase
+		[System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.LinkDemand, Name = "FullTrust")]
+		protected override void OnPropertyValueChanged(PropertyValueChangedEventArgs e)
+		{
+			base.OnPropertyValueChanged(e);
+
+			((ViewerOption)_options[e.ChangedItem.Label]).Value = e.ChangedItem.Value;
+
+//			if (InstantUpdate)
+			((ViewerOption)_options[e.ChangedItem.Label]).doUpdate(
+																e.ChangedItem.Label,
+																e.ChangedItem.Value);
+		}
+		#endregion
+
+
+		#region Methods
 		/// <summary>
 		/// Initialize a private hashtable with type-opCode pairs so i dont have
 		/// to write a long if/else statement when outputting MSIL.
@@ -111,28 +157,6 @@ namespace MapView
 			_typeHash[typeof(float)]  = OpCodes.Ldind_R4;
 		}
 
-/*		[DefaultValue(true)]
-		[Description("If true the Option.Update() event will be called when a property changes.")]
-		public bool InstantUpdate
-		{
-			get { return _instantUpdate; }
-			set { _instantUpdate = value; }
-		} */
-
-		// FxCop CA2123:OverrideLinkDemandsShouldBeIdenticalToBase
-		[System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.LinkDemand, Name = "FullTrust")]
-		protected override void OnPropertyValueChanged(PropertyValueChangedEventArgs e)
-		{
-			base.OnPropertyValueChanged(e);
-
-			((ViewerOption)_options[e.ChangedItem.Label]).Value = e.ChangedItem.Value;
-
-//			if (_instantUpdate)
-			((ViewerOption)_options[e.ChangedItem.Label]).doUpdate(
-															e.ChangedItem.Label,
-															e.ChangedItem.Value);
-		}
-
 		/// <summary>
 		/// Does some complicated stuff.
 		/// </summary>
@@ -144,7 +168,7 @@ namespace MapView
 			// Reflection.Emit code below copied and modified
 			// http://longhorn.msdn.microsoft.com/lhsdk/ref/ns/system.reflection.emit/c/propertybuilder/propertybuilder.aspx
 
-			if (_hashTypes[_typeLabel] == null)
+			if (_hashTypes[TypeLabel] == null)
 			{
 				var ad = Thread.GetDomain();
 				var an = new AssemblyName();
@@ -166,7 +190,7 @@ namespace MapView
 #endif
 
 				// create type
-				TypeBuilder typeBuilder = moduleBuilder.DefineType(_typeLabel, TypeAttributes.Public);
+				TypeBuilder typeBuilder = moduleBuilder.DefineType(TypeLabel, TypeAttributes.Public);
 
 				// create the hashtable used to store property values
 				FieldBuilder fieldBuilder = typeBuilder.DefineField(
@@ -189,7 +213,7 @@ namespace MapView
 							_options[key],
 							key);
 
-				_hashTypes[_typeLabel] = typeBuilder.CreateType();
+				_hashTypes[TypeLabel] = typeBuilder.CreateType();
 			}
 
 			var table = new Hashtable();
@@ -199,7 +223,7 @@ namespace MapView
 #if SaveDLL && DEBUG
 			assemblyBuilder.Save("Test.dll");
 #endif
-			var type = (Type)_hashTypes[_typeLabel];
+			var type = (Type)_hashTypes[TypeLabel];
 			var ctorInfo = type.GetConstructor(new Type[]{});
 			object obj = ctorInfo.Invoke(new Object[]{});
 
@@ -209,6 +233,12 @@ namespace MapView
 			SelectedObject = obj;
 		}
 
+		/// <summary>
+		/// Does some more complicated stuff.
+		/// </summary>
+		/// <param name="propBuilder"></param>
+		/// <param name="typeBuilder"></param>
+		/// <param name="fieldInfo"></param>
 		private static void CreateHashMethod(
 				PropertyBuilder propBuilder,
 				TypeBuilder typeBuilder,
@@ -247,8 +277,9 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Emits a generic get/set property in which the result returned resides
-		/// in a hashtable whose key is the name of the property.
+		/// Emits a generic get/set property in which the result returned [there
+		/// is no return..] resides in a hashtable whose key is the name of the
+		/// property. Ie, does complicated stuff.
 		/// </summary>
 		/// <param name="typeBuilder"></param>
 		/// <param name="fieldInfo"></param>
@@ -338,5 +369,6 @@ namespace MapView
 				propertyBuilder.SetCustomAttribute(attributeBuilder);
 			}
 		}
+		#endregion
 	}
 }

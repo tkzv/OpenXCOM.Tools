@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
+using DSShared.Windows;
+
 using XCom.Interfaces;
 
 
@@ -78,7 +80,6 @@ namespace PckView
 			// WORKAROUND: See note in 'XCMainWindow' cTor.
 			MaximumSize = new Size(0, 0); // fu.net
 
-
 			Controls.Add(_pnlEditor);
 			Controls.Add(_trackBar);
 			Controls.Add(_lblEditMode);
@@ -86,6 +87,10 @@ namespace PckView
 			_fpalette.FormClosing += OnPaletteFormClosing;
 
 			OnTrackScroll(null, EventArgs.Empty);
+
+
+			var regInfo = new RegistryInfo(RegistryInfo.SpriteEditor, this); // subscribe to Load and Closing events.
+			regInfo.RegisterProperties();
 		}
 		#endregion
 

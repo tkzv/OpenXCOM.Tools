@@ -348,7 +348,7 @@ namespace PckView
 
 
 		#region Methods (static)
-		internal string GetColorInfo(int palId)
+		internal static string GetColorInfo(int palId)
 		{
 			string text = String.Format(
 									System.Globalization.CultureInfo.CurrentCulture,

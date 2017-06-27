@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
+using DSShared.Windows;
+
 
 namespace PckView
 {
@@ -32,6 +34,10 @@ namespace PckView
 			ClientSize = size;
 
 			_pnlPalette.PaletteIdChangedEvent += OnPaletteIdChanged;
+
+
+			var regInfo = new RegistryInfo(RegistryInfo.PaletteViewer, this); // subscribe to Load and Closing events.
+			regInfo.RegisterProperties();
 		}
 		#endregion
 
@@ -58,7 +64,7 @@ namespace PckView
 		#region Eventcalls
 		private void OnPaletteIdChanged(int palId)
 		{
-			lblStatus.Text = EditorPanel.Instance.GetColorInfo(palId);
+			lblStatus.Text = EditorPanel.GetColorInfo(palId);
 		}
 		#endregion
 
