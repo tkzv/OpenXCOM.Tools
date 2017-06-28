@@ -1314,7 +1314,7 @@ namespace MapView
 						switch (MessageBox.Show(
 											this,
 											"The current Map and/or its Routes must be saved, or the"
-												+ " prompt-to-save flag must be ignored before using"
+												+ " prompt-to-save flag(s) must be ignored before using"
 												+ " the Tileset Editor. How do you wish to proceed?"
 												+ Environment.NewLine + Environment.NewLine
 												+ "Abort\treturn to state"
