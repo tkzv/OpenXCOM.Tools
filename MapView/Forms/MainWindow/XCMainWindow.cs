@@ -981,12 +981,15 @@ namespace MapView
 			{
 				switch (MessageBox.Show(
 									this,
-									"The current " + changed + " must be saved before"
-										+ " using the Configurator." + Environment.NewLine + Environment.NewLine
-										+ "Abort\treturn to state" + Environment.NewLine
-										+ "Retry\tsave changes and open the Configurator" + Environment.NewLine
-										+ "Ignore\tclear flags and open the Configurator (this will"
-										+ " result in all changes to the current " + changed + " to be lost)",
+									"The current " + changed + " must be saved, or the"
+										+ " prompt-to-save flag(s) must be ignored before using"
+										+ " the Configuration Editor. How do you wish to proceed?"
+										+ Environment.NewLine + Environment.NewLine
+										+ "Abort\treturn to state"
+										+ Environment.NewLine
+										+ "Retry\tsave changes and open the Configurator"
+										+ Environment.NewLine
+										+ "Ignore\tclear the changed-flag(s) and open the Configurator",
 									"Changes detected",
 									MessageBoxButtons.AbortRetryIgnore,
 									MessageBoxIcon.Asterisk,
@@ -1310,13 +1313,15 @@ namespace MapView
 					{
 						switch (MessageBox.Show(
 											this,
-											"The current Map and its Routes must be saved, or any changes"
-												+ " ignored before opening the Tileset Editor. How do you"
-												+ " wish to proceed?" + Environment.NewLine + Environment.NewLine
-												+ "Abort\treturn to state" + Environment.NewLine
-												+ "Retry\tsave all changes and open the Editor" + Environment.NewLine
-												+ "Ignore\tclear flags and open the Editor (but you will *not* be asked if"
-												+ " you want to save, unless further changes are made to the Map or Routes)",
+											"The current Map and/or its Routes must be saved, or the"
+												+ " prompt-to-save flag must be ignored before using"
+												+ " the Tileset Editor. How do you wish to proceed?"
+												+ Environment.NewLine + Environment.NewLine
+												+ "Abort\treturn to state"
+												+ Environment.NewLine
+												+ "Retry\tsave changes and open the Editor"
+												+ Environment.NewLine
+												+ "Ignore\tclear the changed-flag(s) and open the Editor",
 											"Changes detected",
 											MessageBoxButtons.AbortRetryIgnore,
 											MessageBoxIcon.Asterisk,
