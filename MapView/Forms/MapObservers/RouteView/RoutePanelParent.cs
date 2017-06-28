@@ -26,7 +26,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#region Fields (static)
 		internal protected const int OffsetX = 2; // these track the offset between the panel border
 		internal protected const int OffsetY = 2; // and the lozenge-tip.
+		#endregion
 
+
+		#region Fields
 		internal protected int _overCol = -1; // these track the location of the mouse-cursor
 		internal protected int _overRow = -1; // NOTE: could be subsumed into 'RoutePanel.CursorPosition' except ...
 		#endregion
@@ -179,6 +182,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
+		/// <summary>
+		/// Selects a tile on the mouse-down event.
+		/// IMPORTANT: Any changes that are done here should be reflected in
+		/// RouteView.Go() since that is an alternate way to select a tile.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			if (MapFile != null)

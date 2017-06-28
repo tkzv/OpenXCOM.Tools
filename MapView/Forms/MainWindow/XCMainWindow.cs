@@ -981,15 +981,15 @@ namespace MapView
 			{
 				switch (MessageBox.Show(
 									this,
-									"The current " + changed + " must be saved, or the"
-										+ " prompt-to-save flag(s) must be ignored before using"
-										+ " the Configuration Editor. How do you wish to proceed?"
+									"Accepting the Configuration Editor can restart MapView."
+										+ " The current " + changed + " should be saved or else"
+										+ " any changes will be lost. How do you wish to proceed?"
 										+ Environment.NewLine + Environment.NewLine
 										+ "Abort\treturn to state"
 										+ Environment.NewLine
 										+ "Retry\tsave changes and open the Configurator"
 										+ Environment.NewLine
-										+ "Ignore\tclear the changed-flag(s) and open the Configurator",
+										+ "Ignore\trisk losing changes and open the Configurator",
 									"Changes detected",
 									MessageBoxButtons.AbortRetryIgnore,
 									MessageBoxIcon.Asterisk,
@@ -1313,15 +1313,15 @@ namespace MapView
 					{
 						switch (MessageBox.Show(
 											this,
-											"The current Map and/or its Routes must be saved, or the"
-												+ " prompt-to-save flag(s) must be ignored before using"
-												+ " the Tileset Editor. How do you wish to proceed?"
+											"Modifying the Maptree can cause the Tilesets to reload."
+												+ " The current Map and/or its Routes should be saved or else"
+												+ " any changes would be lost. How do you wish to proceed?"
 												+ Environment.NewLine + Environment.NewLine
 												+ "Abort\treturn to state"
 												+ Environment.NewLine
-												+ "Retry\tsave changes and open the Editor"
+												+ "Retry\tsave changes and show the Maptree-menu"
 												+ Environment.NewLine
-												+ "Ignore\tclear the changed-flag(s) and open the Editor",
+												+ "Ignore\trisk losing changes and show the Maptree-menu",
 											"Changes detected",
 											MessageBoxButtons.AbortRetryIgnore,
 											MessageBoxIcon.Asterisk,

@@ -36,6 +36,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private const string DontConnect   = " DontConnect"; // NOTE: the space is 'cause ComboBox entries don't get a Margin property.
 		private const string OneWayConnect = " OneWayConnect";
 		private const string TwoWayConnect = " TwoWayConnect";
+
+		private const string NodeCopyPrefix  = "MVNode"; // TODO: use a struct to copy/paste the info.
+		private const char NodeCopySeparator = '|';
 		#endregion
 
 
@@ -1046,7 +1049,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Changes the selected-node to the destination of the selected
 		/// node-link.
-		/// NOTE: Mimics RoutePanelParent.OnMouseDown().
+		/// NOTE: Mimics RoutePanelParent.OnMouseDown() but adds a
+		/// LevelChangedEvent.
 		/// </summary>
 		/// <param name="slotId"></param>
 		private void Go(int slotId)
@@ -1077,9 +1081,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			Refresh();
 		}
 
-
-		private const string NodeCopyPrefix  = "MVNode"; // TODO: use a struct to copy/paste the info.
-		private const char NodeCopySeparator = '|';
 
 		/// <summary>
 		/// Prevents two error-dialogs from showing if a key-cut is underway.

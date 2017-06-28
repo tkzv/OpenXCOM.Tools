@@ -186,31 +186,21 @@ namespace XCom.Interfaces.Base
 
 		#region Methods
 		/// <summary>
-		/// Changes the 'Level' property and fires a LevelChanged event.
+		/// Changes the 'Level' property.
 		/// </summary>
 		public void LevelUp()
 		{
 			if (Level > 0)
-			{
 				--Level;
-
-//				if (LevelChangedEvent != null)
-//					LevelChangedEvent(new LevelChangedEventArgs(Level));
-			}
 		}
 
 		/// <summary>
-		/// Changes the 'Level' property and fires a LevelChanged event.
+		/// Changes the 'Level' property.
 		/// </summary>
 		public void LevelDown()
 		{
 			if (Level < MapSize.Levs - 1)
-			{
 				++Level;
-
-//				if (LevelChangedEvent != null)
-//					LevelChangedEvent(new LevelChangedEventArgs(Level));
-			}
 		}
 
 		/// <summary>
