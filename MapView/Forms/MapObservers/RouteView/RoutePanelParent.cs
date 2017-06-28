@@ -18,10 +18,21 @@ namespace MapView.Forms.MapObservers.RouteViews
 		:
 			UserControl
 	{
+		#region Events
 		public event EventHandler<RoutePanelClickedEventArgs> RoutePanelClickedEvent;
+		#endregion
 
 
-		#region Fields & Properties
+		#region Fields (static)
+		internal protected const int OffsetX = 2; // these track the offset between the panel border
+		internal protected const int OffsetY = 2; // and the lozenge-tip.
+
+		internal protected int _overCol = -1; // these track the location of the mouse-cursor
+		internal protected int _overRow = -1; // NOTE: could be subsumed into 'RoutePanel.CursorPosition' except ...
+		#endregion
+
+
+		#region Properties
 		private MapFileChild _mapFile;
 		internal protected MapFileChild MapFile
 		{
@@ -60,12 +71,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			get { return _drawAreaHeight; }
 			set { _drawAreaHeight = value; }
 		}
-
-		internal protected const int OffsetX = 2; // these track the offset between the panel border
-		internal protected const int OffsetY = 2; // and the lozenge-tip.
-
-		internal protected int _overCol = -1; // these track the location of the mouse-cursor
-		internal protected int _overRow = -1; // NOTE: could be subsumed into 'RoutePanel.CursorPosition' except ...
 
 
 		private readonly GraphicsPath _lozSelector = new GraphicsPath(); // mouse-over lozenge
@@ -136,7 +141,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
-		#region EventCalls
+		#region Eventcalls (override)
 		protected override void OnResize(EventArgs e)
 		{
 //			base.OnResize(e);
@@ -181,7 +186,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				var start = GetTileLocation(e.X, e.Y);
 				if (start.X != -1)
 				{
-					MapFile.Location = new MapLocation(
+					MapFile.Location = new MapLocation( // fire LocationSelectedEvent
 													start.Y, start.X,
 													MapFile.Level);
 
@@ -204,7 +209,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					}
 
 					ClickPoint = start;	// NOTE: if a new 'ClickPoint' is set before firing the RoutePanelClickedEvent
-				}						// OnPaint() will draw a frame with incorrect selected-link lines. So only set
+				}						// OnPaint() will draw a frame with incorrectly selected-link lines. So only set
 			}							// the 'ClickPoint' after the event happens.
 		}
 

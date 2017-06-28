@@ -26,10 +26,12 @@ namespace XCom
 		#endregion
 
 
-		#region Fields & Properties
+		#region Fields (static)
 		public const int LinkSlots = 5;
+		#endregion
 
 
+		#region Properties
 		private readonly byte _col;
 		public byte Col
 		{
@@ -80,7 +82,7 @@ namespace XCom
 
 		#region cTors
 		/// <summary>
-		/// cTor1. Creates a node from binary data.
+		/// cTor[1]. Creates a node from binary data.
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="bindata"></param>
@@ -88,8 +90,8 @@ namespace XCom
 		{
 			Index = id;
 
-			_row = bindata[0]; // note that x & y are switched in the RMP-file.
-			_col = bindata[1];
+			_col = bindata[1]; // note that x & y are switched in the RMP-file.
+			_row = bindata[0];
 			Lev  = bindata[2]; // NOTE: auto-converts to int-type.
 
 			// NOTE: 'bindata[3]' is not used.
@@ -114,7 +116,7 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// cTor2. Creates a node based on rcl.
+		/// cTor[2]. Creates a node based on row/col/level.
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="row"></param>
@@ -167,6 +169,14 @@ namespace XCom
 			fs.WriteByte((byte)SpawnWeight);
 		}
 
+//		public Link GetLinkedNode(int id)
+//		{
+//			return _links[id];
+//		}
+		#endregion
+
+
+		#region Methods (override)
 		public override bool Equals(object obj)
 		{
 			var other = obj as RouteNode;
@@ -182,11 +192,6 @@ namespace XCom
 		{
 			return ("c " + _col + "  r " + _row + "  l " + Lev);
 		}
-
-//		public Link GetLinkedNode(int id)
-//		{
-//			return _links[id];
-//		}
 		#endregion
 	}
 }

@@ -441,7 +441,7 @@ namespace XCom
 				MapTiles = tileList;
 				MapSize = new MapSize(rows, cols, levs);
 
-				Level = 0; //MapSize.Levs - 1; NOTE: this might need to fire a LevelChanged event ...
+				Level = 0; // fires a LevelChangedEvent.
 			}
 		}
 		#endregion

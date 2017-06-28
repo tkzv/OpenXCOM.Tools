@@ -306,7 +306,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				if (   start.Y > -1 && start.Y < MapBase.MapSize.Rows
 					&& start.X > -1 && start.X < MapBase.MapSize.Cols)
 				{
-					// as long as MainViewOverlay.OnLocationSelected_Main()
+					// as long as MainViewOverlay.OnLocationSelectedMain()
 					// fires before the subsidiary viewers' OnLocationSelectedObserver()
 					// functions fire, FirstClick is set okay by the former.
 					//

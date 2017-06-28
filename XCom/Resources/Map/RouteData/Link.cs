@@ -1,22 +1,17 @@
 namespace XCom
 {
-	public class Link
+	public sealed class Link
 	{
+		#region Fields (static)
 		public const byte NotUsed   = 0xFF;
 		public const byte ExitNorth = 0xFE;
 		public const byte ExitEast  = 0xFD;
 		public const byte ExitSouth = 0xFC;
 		public const byte ExitWest  = 0xFB;
+		#endregion
 
 
-		internal Link(byte id, byte distance, byte type)
-		{
-			Destination = id;
-			Distance = distance;
-			UsableType = (UnitType)type;
-		}
-
-
+		#region Properties
 		/// <summary>
 		/// Gets/Sets the index of the destination node.
 		/// </summary>
@@ -34,5 +29,22 @@ namespace XCom
 		/// </summary>
 		public UnitType UsableType
 		{ get; set; }
+		#endregion
+
+
+		#region cTor
+		/// <summary>
+		/// Creates a Link object.
+		/// </summary>
+		/// <param name="nodeId">the id of the destination-node</param>
+		/// <param name="distance">the distance to the destination-node</param>
+		/// <param name="type">the type of units than can use this link</param>
+		internal Link(byte nodeId, byte distance, byte type)
+		{
+			Destination = nodeId;
+			Distance    = distance;
+			UsableType  = (UnitType)type;
+		}
+		#endregion
 	}
 }

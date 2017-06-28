@@ -46,13 +46,10 @@ namespace XCom.Interfaces.Base
 			get { return _level; }
 			set
 			{
-				if (value < MapSize.Levs)
-				{
-					_level = value;
+				_level = Math.Max(0, Math.Min(value, MapSize.Levs - 1));
 
-					if (LevelChangedEvent != null)
-						LevelChangedEvent(new LevelChangedEventArgs(value));
-				}
+				if (LevelChangedEvent != null)
+					LevelChangedEvent(new LevelChangedEventArgs(_level));
 			}
 		}
 
@@ -88,11 +85,12 @@ namespace XCom.Interfaces.Base
 					&& value.Col > -1 && value.Col < MapSize.Cols)
 				{
 					_location = value;
-					var tile = this[_location.Row, _location.Col];
-					var args = new LocationSelectedEventArgs(value, tile);
 
 					if (LocationSelectedEvent != null)
-						LocationSelectedEvent(args);
+						LocationSelectedEvent(new LocationSelectedEventArgs(
+																		_location,
+																		this[_location.Row,
+																			 _location.Col]));
 				}
 			}
 		}
@@ -104,7 +102,7 @@ namespace XCom.Interfaces.Base
 		{ get; protected set; }
 
 		/// <summary>
-		/// Gets/Sets a MapTile using row,col,height values. No error checking
+		/// Gets/Sets a MapTile using row,col,level values. No error checking
 		/// is done to ensure that the location is valid.
 		/// </summary>
 		/// <param name="row"></param>
@@ -118,7 +116,7 @@ namespace XCom.Interfaces.Base
 			set { MapTiles[row, col, lev] = value; }
 		}
 		/// <summary>
-		/// Gets/Sets a MapTile at the current height using row,col values.
+		/// Gets/Sets a MapTile at the current level using row,col values.
 		/// </summary>
 		/// <param name="row"></param>
 		/// <param name="col"></param>
@@ -196,8 +194,8 @@ namespace XCom.Interfaces.Base
 			{
 				--Level;
 
-				if (LevelChangedEvent != null)
-					LevelChangedEvent(new LevelChangedEventArgs(Level));
+//				if (LevelChangedEvent != null)
+//					LevelChangedEvent(new LevelChangedEventArgs(Level));
 			}
 		}
 
@@ -210,8 +208,8 @@ namespace XCom.Interfaces.Base
 			{
 				++Level;
 
-				if (LevelChangedEvent != null)
-					LevelChangedEvent(new LevelChangedEventArgs(Level));
+//				if (LevelChangedEvent != null)
+//					LevelChangedEvent(new LevelChangedEventArgs(Level));
 			}
 		}
 

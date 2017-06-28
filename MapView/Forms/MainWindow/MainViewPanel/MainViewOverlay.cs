@@ -565,10 +565,10 @@ namespace MapView
 		/// Fires when a location is selected in MainView.
 		/// </summary>
 		/// <param name="args"></param>
-		internal void OnLocationSelected_Main(LocationSelectedEventArgs args)
+		internal void OnLocationSelectedMain(LocationSelectedEventArgs args)
 		{
 			//LogFile.WriteLine("");
-			//LogFile.WriteLine("MainViewOverlay.OnLocationSelected_Main");
+			//LogFile.WriteLine("MainViewOverlay.OnLocationSelectedMain");
 
 			FirstClick = true;
 			_suppressTargeter = false;
@@ -587,10 +587,10 @@ namespace MapView
 		/// Fires when the map level changes in MainView.
 		/// </summary>
 		/// <param name="args"></param>
-		internal void OnLevelChanged_Main(LevelChangedEventArgs args)
+		internal void OnLevelChangedMain(LevelChangedEventArgs args)
 		{
 			//LogFile.WriteLine("");
-			//LogFile.WriteLine("MainViewOverlay.OnLevelChanged_Main");
+			//LogFile.WriteLine("MainViewOverlay.OnLevelChangedMain");
 
 			_suppressTargeter = true;
 

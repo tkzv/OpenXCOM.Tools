@@ -92,6 +92,7 @@ observed
 
 namespace XCom
 {
+	#region Enums
 	// NOTE: Only 'UnitRankUfo' and 'UnitRankTftd' need to be enumerated as
 	// byte-type. Otherwise the EnumString class goes snakey when
 	// RouteView.OnSpawnRankSelectedIndexChanged() fires. For reasons, it cannot
@@ -200,6 +201,7 @@ namespace XCom
 		ExitSouth = 0xFC,
 		ExitWest  = 0xFB
 	};
+	#endregion
 
 
 	/// <summary>

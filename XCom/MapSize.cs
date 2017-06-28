@@ -5,6 +5,7 @@ namespace XCom
 {
 	public struct MapSize
 	{
+		#region Properties
 		private readonly int _rows;
 		public int Rows
 		{
@@ -22,16 +23,30 @@ namespace XCom
 		{
 			get { return _levs; }
 		}
+		#endregion
 
 
+		#region cTor
 		public MapSize(int rows, int cols, int levs)
 		{
 			_rows = rows;
 			_cols = cols;
 			_levs = levs;
 		}
+		#endregion
 
 
+		#region Methods
+		public bool Equals(MapSize other)
+		{
+			return (other._rows == _rows
+				 && other._cols == _cols
+				 && other._levs == _levs);
+		}
+		#endregion
+
+
+		#region Methods (override)
 		public override string ToString()
 		{
 			return String.Format(
@@ -39,6 +54,8 @@ namespace XCom
 							"{0}, {1}, {2}",
 							_cols, _rows, _levs);
 		}
+		#endregion
+
 
 		#region Satisfy FxCop CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes
 		// http://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode
@@ -62,13 +79,6 @@ namespace XCom
 
 		// Guidelines for Overriding Equals() and Operator ==
 		// https://msdn.microsoft.com/en-us/library/ms173147(VS.90).aspx
-		public bool Equals(MapSize other)
-		{
-			return (other._rows == _rows
-				 && other._cols == _cols
-				 && other._levs == _levs);
-		}
-
 		public override bool Equals(object obj)
 		{
 			return (obj is MapSize && Equals((MapSize)obj));

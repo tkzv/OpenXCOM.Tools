@@ -42,8 +42,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#region Fields
 		private Panel pnlRoutes; // NOTE: needs to be here for MapObserver0 stuff.
 
-		private MapFileChild _mapFile;
-
 		private readonly List<object> _linksList = new List<object>();
 
 		private int _col; // these are used only to print the clicked location info.
@@ -51,11 +49,29 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private int _lev;
 
 		private bool _loadingInfo;
+
+		private Form _foptions;
+		private bool _closing;
+
+		/// <summary>
+		/// Used by UpdateNodeInformation().
+		/// </summary>
+		private readonly object[] _linkTypes =
+		{
+			LinkType.NotUsed,
+			LinkType.ExitNorth,
+			LinkType.ExitEast,
+			LinkType.ExitSouth,
+			LinkType.ExitWest
+		};
 		#endregion
 
 
 		#region Properties
 		internal RoutePanel RoutePanel
+		{ get; set; }
+
+		private MapFileChild MapFile
 		{ get; set; }
 
 		private RouteNode _nodeSelected;
@@ -77,15 +93,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 			set
 			{
 				base.MapBase = value;
-				_mapFile     = value as MapFileChild;
+				MapFile      = value as MapFileChild;
 
 				DeselectNode();
 
-				if ((RoutePanel.MapFile = _mapFile) != null)
+				if ((RoutePanel.MapFile = MapFile) != null)
 				{
 					cbSpawnRank.Items.Clear();
 
-					if (_mapFile.Parts[0][0].Pal == Palette.UfoBattle)					// ie. Get the palette of the 1st image of the
+					if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)					// ie. Get the palette of the 1st image of the
 						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);	// 1st tilepart ... of the MapFileChild object.
 					else
 						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankTftd);
@@ -179,7 +195,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
-		#region EventCalls inherited from IMapObserver/MapObserverControl0
+		#region Eventcalls inherited from IMapObserver/MapObserverControl0
 		/// <summary>
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
@@ -189,7 +205,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("RouteView.OnLocationSelectedObserver");
 
-			// as long as MainViewOverlay.OnLocationSelected_Main()
+			// as long as MainViewOverlay.OnLocationSelectedMain()
 			// fires before the subsidiary viewers' OnLocationSelectedObserver()
 			// functions fire, FirstClick is set okay by the former.
 			//
@@ -229,7 +245,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				lblSelectedPosition.Text = String.Format(
 													System.Globalization.CultureInfo.InvariantCulture,
 													"c {0}  r {1}  L {2}",
-													_col, _row, _mapFile.MapSize.Levs - _lev);
+													_col, _row, MapFile.MapSize.Levs - _lev);
 		}
 
 		/// <summary>
@@ -240,9 +256,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			lblSelectedPosition.Text = String.Empty;
 		}
 
-
-		private Form _foptions;
-		private bool _closing;
 
 		private void OnOptionsClick(object sender, EventArgs e)
 		{
@@ -272,6 +285,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				_foptions.Close();
 			}
 		}
+
 
 		private void OnRoutePanelMouseMove(object sender, MouseEventArgs args)
 		{
@@ -312,7 +326,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				if ((NodeSelected = ((XCMapTile)args.ClickedTile).Node) == null
 					&& args.MouseEventArgs.Button == MouseButtons.Right)
 				{
-					NodeSelected = _mapFile.AddRouteNode(args.ClickedLocation);
+					NodeSelected = MapFile.AddRouteNode(args.ClickedLocation);
 				}
 
 				if (NodeSelected != null)
@@ -336,7 +350,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					if (args.MouseEventArgs.Button == MouseButtons.Right)
 					{
-						node = _mapFile.AddRouteNode(args.ClickedLocation);
+						node = MapFile.AddRouteNode(args.ClickedLocation);
 						ConnectNode(node);
 					}
 //					RoutePanel.Refresh(); don't work.
@@ -383,7 +397,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				int linkId = GetOpenLinkSlot(NodeSelected, node.Index);
 				if (linkId > -1)
 				{
-					_mapFile.RoutesChanged = true;
+					MapFile.RoutesChanged = true;
 					NodeSelected[linkId].Destination = node.Index;
 					NodeSelected[linkId].Distance = CalculateLinkDistance(NodeSelected, node);
 				}
@@ -409,7 +423,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					linkId = GetOpenLinkSlot(node, NodeSelected.Index);
 					if (linkId > -1)
 					{
-						_mapFile.RoutesChanged = true;
+						MapFile.RoutesChanged = true;
 						node[linkId].Destination = NodeSelected.Index;
 						node[linkId].Distance = CalculateLinkDistance(node, NodeSelected);
 					}
@@ -502,12 +516,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 				gbLinkData.Enabled   =
 				gbNodeEditor.Enabled = false;
 
+				btnGoLink1.Enabled =
+				btnGoLink2.Enabled =
+				btnGoLink3.Enabled =
+				btnGoLink4.Enabled =
+				btnGoLink5.Enabled = false;
+
 
 				cbUnitType.SelectedItem = UnitType.Any;
 				cbPriority.SelectedItem = NodeImportance.Zero;
 				cbAttack.SelectedItem   = BaseModuleAttack.Zero;
 
-				if (_mapFile.Parts[0][0].Pal == Palette.UfoBattle)
+				if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)
 					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[(int)UnitRankUfo.Civilian];
 				else
 					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[(int)UnitRankTftd.Civilian];
@@ -515,7 +535,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbSpawnWeight.SelectedItem = RouteNodeCollection.SpawnUsage[(int)SpawnUsage.NoSpawn];
 
 				cbLink1Dest.SelectedItem = // TODO: figure out why these show blank and not "NotUsed"
-				cbLink2Dest.SelectedItem = // when the app loads its very first map.
+				cbLink2Dest.SelectedItem = // when the app loads its very first Map.
 				cbLink3Dest.SelectedItem =
 				cbLink4Dest.SelectedItem =
 				cbLink5Dest.SelectedItem = LinkType.NotUsed;
@@ -542,12 +562,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 				gbLinkData.Enabled   =
 				gbNodeEditor.Enabled = true;
 
-
 				cbUnitType.SelectedItem = NodeSelected.UsableType;
 				cbPriority.SelectedItem = NodeSelected.Priority;
 				cbAttack.SelectedItem   = NodeSelected.Attack;
 
-				if (_mapFile.Parts[0][0].Pal == Palette.UfoBattle)
+				if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)
 					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[NodeSelected.SpawnRank];
 				else
 					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankTftd[NodeSelected.SpawnRank];
@@ -562,21 +581,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				_linksList.Clear();
 
-				for (byte i = 0; i != _mapFile.Routes.Length; ++i)
+				for (byte i = 0; i != MapFile.Routes.Length; ++i)
 				{
 					if (i != NodeSelected.Index)
 						_linksList.Add(i); // add all linkable (ie. other) nodes
 				}
-
-				var linkTypes = new object[]
-				{
-					LinkType.NotUsed,
-					LinkType.ExitNorth,
-					LinkType.ExitEast,
-					LinkType.ExitSouth,
-					LinkType.ExitWest
-				};
-				_linksList.AddRange(linkTypes); // add the four compass-points + link-not-used.
+				_linksList.AddRange(_linkTypes); // add the four compass-points + link-not-used.
 
 				object[] linkListArray = _linksList.ToArray();
 
@@ -587,29 +597,59 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbLink5Dest.Items.AddRange(linkListArray);
 
 				if (NodeSelected[0].Destination < Link.ExitWest)
+				{
 					cbLink1Dest.SelectedItem = NodeSelected[0].Destination;
+					btnGoLink1.Enabled = true;
+				}
 				else
+				{
 					cbLink1Dest.SelectedItem = (LinkType)NodeSelected[0].Destination;
+					btnGoLink1.Enabled = false;
+				}
 
 				if (NodeSelected[1].Destination < Link.ExitWest)
+				{
 					cbLink2Dest.SelectedItem = NodeSelected[1].Destination;
+					btnGoLink2.Enabled = true;
+				}
 				else
+				{
 					cbLink2Dest.SelectedItem = (LinkType)NodeSelected[1].Destination;
+					btnGoLink2.Enabled = false;
+				}
 
 				if (NodeSelected[2].Destination < Link.ExitWest)
+				{
 					cbLink3Dest.SelectedItem = NodeSelected[2].Destination;
+					btnGoLink3.Enabled = true;
+				}
 				else
+				{
 					cbLink3Dest.SelectedItem = (LinkType)NodeSelected[2].Destination;
+					btnGoLink3.Enabled = false;
+				}
 
 				if (NodeSelected[3].Destination < Link.ExitWest)
+				{
 					cbLink4Dest.SelectedItem = NodeSelected[3].Destination;
+					btnGoLink4.Enabled = true;
+				}
 				else
+				{
 					cbLink4Dest.SelectedItem = (LinkType)NodeSelected[3].Destination;
+					btnGoLink4.Enabled = false;
+				}
 
 				if (NodeSelected[4].Destination < Link.ExitWest)
+				{
 					cbLink5Dest.SelectedItem = NodeSelected[4].Destination;
+					btnGoLink5.Enabled = true;
+				}
 				else
+				{
 					cbLink5Dest.SelectedItem = (LinkType)NodeSelected[4].Destination;
+					btnGoLink5.Enabled = false;
+				}
 
 				cbLink1UnitType.SelectedItem = NodeSelected[0].UsableType;
 				cbLink2UnitType.SelectedItem = NodeSelected[1].UsableType;
@@ -682,7 +722,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (NodeSelected[slotId].Destination < Link.ExitWest)
 			{
-				var nodeDst = _mapFile.Routes[NodeSelected[slotId].Destination];
+				var nodeDst = MapFile.Routes[NodeSelected[slotId].Destination];
 				if (nodeDst != null)
 				{
 					if (NodeSelected.Lev > nodeDst.Lev)
@@ -700,7 +740,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.RoutesChanged = true;
+				MapFile.RoutesChanged = true;
 
 				NodeSelected.UsableType = (UnitType)cbUnitType.SelectedItem;
 			}
@@ -710,7 +750,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.RoutesChanged = true;
+				MapFile.RoutesChanged = true;
 
 				NodeSelected.Priority = (NodeImportance)cbPriority.SelectedItem;
 				Refresh(); // update the importance bar
@@ -721,7 +761,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.RoutesChanged = true;
+				MapFile.RoutesChanged = true;
 
 				NodeSelected.Attack = (BaseModuleAttack)cbAttack.SelectedItem;
 			}
@@ -731,7 +771,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.RoutesChanged = true;
+				MapFile.RoutesChanged = true;
 
 				NodeSelected.SpawnRank = (byte)((EnumString)cbSpawnRank.SelectedItem).Enum;
 			}
@@ -741,7 +781,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.RoutesChanged = true;
+				MapFile.RoutesChanged = true;
 
 				NodeSelected.SpawnWeight = (SpawnUsage)((EnumString)cbSpawnWeight.SelectedItem).Enum;
 				Refresh(); // update the importance bar
@@ -749,73 +789,73 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
+		/// <summary>
+		/// Updates the fields of a specified link-slot for the currently
+		/// selected route-node.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="slotId"></param>
+		/// <param name="tbDistance"></param>
 		private void LinkDestinationSelectedIndexChanged(
 				ComboBox sender,
 				int slotId,
-				Control textBox)
+				Control tbDistance)
 		{
 			if (!_loadingInfo)
 			{
-				var dst = sender.SelectedItem as byte?;
+				var dst = sender.SelectedItem as byte?; // check for id or compass pt/not used.
 
 				if (!dst.HasValue)
 					dst = (byte?)(sender.SelectedItem as LinkType?);
 
-				if (!dst.HasValue)
-				{
-					MessageBox.Show(
-								this,
-								"SelectedIndex value failed.",
-								"Error",
-								MessageBoxButtons.OK,
-								MessageBoxIcon.Exclamation,
-								MessageBoxDefaultButton.Button1,
-								0);
-				}
-				else
-				{
-//					try
-//					{
-					_mapFile.RoutesChanged = true;
+				MapFile.RoutesChanged = true;
 
-					switch (NodeSelected[slotId].Destination = dst.Value)
-					{
-						case Link.NotUsed:
-							NodeSelected[slotId].Distance = 0;
-							textBox.Text = String.Empty;
-							break;
-						case Link.ExitWest:
-						case Link.ExitNorth:
-						case Link.ExitEast:
-						case Link.ExitSouth:
-							NodeSelected[slotId].Distance = 0;
-							textBox.Text = "0";
-							break;
+				var link = NodeSelected[slotId];
+				switch (link.Destination = dst.Value)
+				{
+					case Link.NotUsed:
+						tbDistance.Text = String.Empty;
+						link.Distance = 0;
+						UpdateGo(slotId, false);
+						break;
 
-						default:
-							var node = _mapFile.Routes[NodeSelected[slotId].Destination];
-							NodeSelected[slotId].Distance = CalculateLinkDistance(
-																				NodeSelected,
-																				node,
-																				textBox,
-																				slotId);
-							break;
-					}
-//					}
-//					catch (Exception ex)
-//					{
-//						MessageBox.Show(
-//									this,
-//									ex.Message,
-//									"Exception",
-//									MessageBoxButtons.OK,
-//									MessageBoxIcon.Error,
-//									MessageBoxDefaultButton.Button1,
-//									0);
-//						throw;
-//					}
-					Refresh();
+					case Link.ExitWest:
+					case Link.ExitNorth:
+					case Link.ExitEast:
+					case Link.ExitSouth:
+						tbDistance.Text = "0";
+						link.Distance = 0;
+						UpdateGo(slotId, false);
+						break;
+
+					default:
+						link.Distance = CalculateLinkDistance(
+															NodeSelected,
+															MapFile.Routes[link.Destination],
+															tbDistance,
+															slotId);
+						UpdateGo(slotId, true);
+						break;
 				}
+				Refresh();
+			}
+		}
+
+		/// <summary>
+		/// Enables/disables the go-button for a specified link-slot.
+		/// Helper for LinkDestinationSelectedIndexChanged().
+		/// </summary>
+		/// <param name="slotId"></param>
+		/// <param name="enabled"></param>
+		private void UpdateGo(int slotId, bool enabled)
+		{
+			switch (slotId)
+			{
+				case 0: btnGoLink1.Enabled = enabled; break;
+				case 1: btnGoLink2.Enabled = enabled; break;
+				case 2: btnGoLink3.Enabled = enabled; break;
+				case 3: btnGoLink4.Enabled = enabled; break;
+				case 4: btnGoLink5.Enabled = enabled; break;
 			}
 		}
 
@@ -827,7 +867,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="textBox">the textbox that shows the distance (default null)</param>
 		/// <param name="slotId">the slot of the textbox - not used unless 'textBox'
 		/// is specified (default -1)</param>
-		/// <returns></returns>
+		/// <returns>the distance as a byte-value</returns>
 		private byte CalculateLinkDistance(
 				RouteNode nodeA,
 				RouteNode nodeB,
@@ -846,30 +886,30 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
-/*		private void cbLink_Leave(ComboBox sender, int id) // TODO: don't do any node-linking OnLeave unless i vet it first.
-		{
-			if (!_loadingInfo
-				&& NodeSelected != null
-				&& sender.SelectedItem != null)
-			{
-				var type = GetConnectionSetting();
-				if (type == ConnectNodeType.ConnectTwoWays) // is this wise, to connect OnLeave
-				{
-					var node = _mapFile.RouteFile[NodeSelected[id].Destination];
-
-					int linkId = GetOpenLinkSlot(node, (byte)sender.SelectedItem);
-					if (linkId != -1)
-					{
-						node[linkId].Destination = NodeSelected.Index;
-						node[linkId].Distance = calcLinkDistance(
-																node,
-																NodeSelected,
-																null);
-					}
-					Refresh();
-				}
-			}
-		} */
+//		private void cbLink_Leave(ComboBox sender, int id) // TODO: don't do any node-linking OnLeave unless i vet it first.
+//		{
+//			if (!_loadingInfo
+//				&& NodeSelected != null
+//				&& sender.SelectedItem != null)
+//			{
+//				var type = GetConnectionSetting();
+//				if (type == ConnectNodeType.ConnectTwoWays) // is this wise, to connect OnLeave
+//				{
+//					var node = MapFile.RouteFile[NodeSelected[id].Destination];
+//
+//					int linkId = GetOpenLinkSlot(node, (byte)sender.SelectedItem);
+//					if (linkId != -1)
+//					{
+//						node[linkId].Destination = NodeSelected.Index;
+//						node[linkId].Distance = calcLinkDistance(
+//																node,
+//																NodeSelected,
+//																null);
+//					}
+//					Refresh();
+//				}
+//			}
+//		}
 
 		private void OnLink1DestSelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -926,7 +966,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.RoutesChanged = true;
+				MapFile.RoutesChanged = true;
 
 				NodeSelected[0].UsableType = (UnitType)cbLink1UnitType.SelectedItem;
 				Refresh();
@@ -937,7 +977,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.RoutesChanged = true;
+				MapFile.RoutesChanged = true;
 
 				NodeSelected[1].UsableType = (UnitType)cbLink2UnitType.SelectedItem;
 				Refresh();
@@ -948,7 +988,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.RoutesChanged = true;
+				MapFile.RoutesChanged = true;
 
 				NodeSelected[2].UsableType = (UnitType)cbLink3UnitType.SelectedItem;
 				Refresh();
@@ -959,7 +999,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.RoutesChanged = true;
+				MapFile.RoutesChanged = true;
 
 				NodeSelected[3].UsableType = (UnitType)cbLink4UnitType.SelectedItem;
 				Refresh();
@@ -970,11 +1010,71 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				_mapFile.RoutesChanged = true;
+				MapFile.RoutesChanged = true;
 
 				NodeSelected[4].UsableType = (UnitType)cbLink5UnitType.SelectedItem;
 				Refresh();
 			}
+		}
+
+
+		private void OnLink1Go(object sender, EventArgs e)
+		{
+			Go(0);
+		}
+
+		private void OnLink2Go(object sender, EventArgs e)
+		{
+			Go(1);
+		}
+
+		private void OnLink3Go(object sender, EventArgs e)
+		{
+			Go(2);
+		}
+
+		private void OnLink4Go(object sender, EventArgs e)
+		{
+			Go(3);
+		}
+
+		private void OnLink5Go(object sender, EventArgs e)
+		{
+			Go(4);
+		}
+
+		/// <summary>
+		/// Changes the selected-node to the destination of the selected
+		/// node-link.
+		/// NOTE: Mimics RoutePanelParent.OnMouseDown().
+		/// </summary>
+		/// <param name="slotId"></param>
+		private void Go(int slotId)
+		{
+			var node = MapFile.Routes[NodeSelected[slotId].Destination];
+
+			MapFile.Level = node.Lev;				// fire LevelChangedEvent.
+
+			MapFile.Location = new MapLocation(		// fire LocationSelectedEvent.
+											node.Row,
+											node.Col,
+											MapFile.Level);
+
+			var start = new Point(node.Col, node.Row);
+
+			MainViewUnderlay.Instance.MainViewOverlay.TripMouseDragEvent(start, start);
+
+			var args = new RoutePanelClickedEventArgs();
+			args.MouseEventArgs  = new MouseEventArgs(MouseButtons.Left, 0,0,0,0);
+			args.ClickedTile     = MapFile[node.Row, node.Col];
+			args.ClickedLocation = MapFile.Location;
+
+			OnRoutePanelClicked(null, args);
+
+
+			RoutePanel.ClickPoint = start;
+
+			Refresh();
 		}
 
 
@@ -1021,7 +1121,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				var nodeData = Clipboard.GetText().Split(NodeCopySeparator);
 				if (nodeData[0] == NodeCopyPrefix)// TODO: include Link info ... perhaps.
 				{
-					_mapFile.RoutesChanged = true;
+					MapFile.RoutesChanged = true;
 
 					cbUnitType.SelectedIndex    = Int32.Parse(nodeData[1], System.Globalization.CultureInfo.InvariantCulture);
 					cbPriority.SelectedIndex    = Int32.Parse(nodeData[2], System.Globalization.CultureInfo.InvariantCulture);
@@ -1040,13 +1140,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (NodeSelected != null)
 			{
-				_mapFile.RoutesChanged = true;
+				MapFile.RoutesChanged = true;
 
-				_mapFile.Routes.DeleteNode(NodeSelected);
+				MapFile.Routes.DeleteNode(NodeSelected);
 
-				((XCMapTile)_mapFile[NodeSelected.Row,
-									 NodeSelected.Col,
-									 NodeSelected.Lev]).Node = null;
+				((XCMapTile)MapFile[NodeSelected.Row,
+									NodeSelected.Col,
+									NodeSelected.Lev]).Node = null;
 
 				DeselectNode();
 
@@ -1096,9 +1196,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				switch (e.KeyCode)
 				{
 //					case Keys.S: // TODO: vet that.
-//						if (_mapFile != null)
+//						if (MapFile != null)
 //						{
-//							_mapFile.Save();
+//							MapFile.Save();
 //							e.Handled = true; // why.
 //						}
 //						break;
@@ -1143,7 +1243,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							0) == DialogResult.Yes)
 			{
 				int changed = 0;
-				foreach (RouteNode node in _mapFile.Routes)
+				foreach (RouteNode node in MapFile.Routes)
 					if (node.SpawnRank != 0)
 					{
 						++changed;
@@ -1152,7 +1252,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				if (changed != 0)
 				{
-					_mapFile.RoutesChanged = true;
+					MapFile.RoutesChanged = true;
 
 					UpdateNodeInformation();
 
@@ -1188,7 +1288,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 								MessageBoxDefaultButton.Button2,
 								0) == DialogResult.Yes)
 				{
-					_mapFile.RoutesChanged = true;
+					MapFile.RoutesChanged = true;
 
 					for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
 					{

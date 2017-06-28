@@ -43,14 +43,14 @@ namespace MapView
 
 				if (_mapBase != null)
 				{
-					_mapBase.LocationSelectedEvent -= MainViewOverlay.OnLocationSelected_Main;	// WARNING: if the overlay ever gets removed from the Control
-					_mapBase.LevelChangedEvent     -= MainViewOverlay.OnLevelChanged_Main;		// by the code in the cTor, this will likely go defunct. Or not.
+					_mapBase.LocationSelectedEvent -= MainViewOverlay.OnLocationSelectedMain;	// WARNING: if the overlay ever gets removed from the Control
+					_mapBase.LevelChangedEvent     -= MainViewOverlay.OnLevelChangedMain;		// by the code in the cTor, this will likely go defunct. Or not.
 				}
 
 				if ((_mapBase = value) != null)
 				{
-					_mapBase.LocationSelectedEvent += MainViewOverlay.OnLocationSelected_Main;
-					_mapBase.LevelChangedEvent     += MainViewOverlay.OnLevelChanged_Main;
+					_mapBase.LocationSelectedEvent += MainViewOverlay.OnLocationSelectedMain;
+					_mapBase.LevelChangedEvent     += MainViewOverlay.OnLevelChangedMain;
 
 					SetOverlaySize();
 

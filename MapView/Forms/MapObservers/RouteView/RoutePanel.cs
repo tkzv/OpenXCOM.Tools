@@ -38,7 +38,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		internal RouteNode NodeSelected
-		{ get; set; }
+		{ private get; set; }
 		#endregion
 
 

@@ -73,6 +73,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsmiAllNodesRank0 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiClearLinkData = new System.Windows.Forms.ToolStripMenuItem();
 			this.gbLinkData = new System.Windows.Forms.GroupBox();
+			this.btnGoLink5 = new System.Windows.Forms.Button();
+			this.btnGoLink4 = new System.Windows.Forms.Button();
+			this.btnGoLink3 = new System.Windows.Forms.Button();
+			this.btnGoLink2 = new System.Windows.Forms.Button();
+			this.btnGoLink1 = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.gbNodeEditor = new System.Windows.Forms.GroupBox();
 			this.btnCut = new System.Windows.Forms.Button();
@@ -381,9 +386,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelDist.Location = new System.Drawing.Point(240, 10);
 			this.labelDist.Name = "labelDist";
-			this.labelDist.Size = new System.Drawing.Size(30, 15);
+			this.labelDist.Size = new System.Drawing.Size(55, 15);
 			this.labelDist.TabIndex = 27;
-			this.labelDist.Text = "Dist";
+			this.labelDist.Text = "Distance";
 			// 
 			// cbLink5UnitType
 			// 
@@ -501,6 +506,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// gbLinkData
 			// 
+			this.gbLinkData.Controls.Add(this.btnGoLink5);
+			this.gbLinkData.Controls.Add(this.btnGoLink4);
+			this.gbLinkData.Controls.Add(this.btnGoLink3);
+			this.gbLinkData.Controls.Add(this.btnGoLink2);
+			this.gbLinkData.Controls.Add(this.btnGoLink1);
 			this.gbLinkData.Controls.Add(this.labelLink1);
 			this.gbLinkData.Controls.Add(this.tbLink5Dist);
 			this.gbLinkData.Controls.Add(this.cbLink5Dest);
@@ -531,6 +541,61 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.gbLinkData.TabIndex = 0;
 			this.gbLinkData.TabStop = false;
 			this.gbLinkData.Text = "Link data";
+			// 
+			// btnGoLink5
+			// 
+			this.btnGoLink5.Enabled = false;
+			this.btnGoLink5.Location = new System.Drawing.Point(285, 125);
+			this.btnGoLink5.Name = "btnGoLink5";
+			this.btnGoLink5.Size = new System.Drawing.Size(30, 20);
+			this.btnGoLink5.TabIndex = 38;
+			this.btnGoLink5.Text = "go";
+			this.btnGoLink5.UseVisualStyleBackColor = true;
+			this.btnGoLink5.Click += new System.EventHandler(this.OnLink5Go);
+			// 
+			// btnGoLink4
+			// 
+			this.btnGoLink4.Enabled = false;
+			this.btnGoLink4.Location = new System.Drawing.Point(285, 100);
+			this.btnGoLink4.Name = "btnGoLink4";
+			this.btnGoLink4.Size = new System.Drawing.Size(30, 20);
+			this.btnGoLink4.TabIndex = 37;
+			this.btnGoLink4.Text = "go";
+			this.btnGoLink4.UseVisualStyleBackColor = true;
+			this.btnGoLink4.Click += new System.EventHandler(this.OnLink4Go);
+			// 
+			// btnGoLink3
+			// 
+			this.btnGoLink3.Enabled = false;
+			this.btnGoLink3.Location = new System.Drawing.Point(285, 75);
+			this.btnGoLink3.Name = "btnGoLink3";
+			this.btnGoLink3.Size = new System.Drawing.Size(30, 20);
+			this.btnGoLink3.TabIndex = 36;
+			this.btnGoLink3.Text = "go";
+			this.btnGoLink3.UseVisualStyleBackColor = true;
+			this.btnGoLink3.Click += new System.EventHandler(this.OnLink3Go);
+			// 
+			// btnGoLink2
+			// 
+			this.btnGoLink2.Enabled = false;
+			this.btnGoLink2.Location = new System.Drawing.Point(285, 50);
+			this.btnGoLink2.Name = "btnGoLink2";
+			this.btnGoLink2.Size = new System.Drawing.Size(30, 20);
+			this.btnGoLink2.TabIndex = 35;
+			this.btnGoLink2.Text = "go";
+			this.btnGoLink2.UseVisualStyleBackColor = true;
+			this.btnGoLink2.Click += new System.EventHandler(this.OnLink2Go);
+			// 
+			// btnGoLink1
+			// 
+			this.btnGoLink1.Enabled = false;
+			this.btnGoLink1.Location = new System.Drawing.Point(285, 25);
+			this.btnGoLink1.Name = "btnGoLink1";
+			this.btnGoLink1.Size = new System.Drawing.Size(30, 20);
+			this.btnGoLink1.TabIndex = 34;
+			this.btnGoLink1.Text = "go";
+			this.btnGoLink1.UseVisualStyleBackColor = true;
+			this.btnGoLink1.Click += new System.EventHandler(this.OnLink1Go);
 			// 
 			// panel1
 			// 
@@ -714,5 +779,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.ToolStripMenuItem tsmiAllNodesRank0;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ToolStripMenuItem tsmiClearLinkData;
+		private System.Windows.Forms.Button btnGoLink5;
+		private System.Windows.Forms.Button btnGoLink4;
+		private System.Windows.Forms.Button btnGoLink3;
+		private System.Windows.Forms.Button btnGoLink2;
+		private System.Windows.Forms.Button btnGoLink1;
 	}
 }

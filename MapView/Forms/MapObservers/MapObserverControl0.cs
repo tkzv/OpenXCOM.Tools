@@ -36,10 +36,6 @@ namespace MapView
 			}
 		}
 
-//		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-//		public RegistryInfo RegistryInfo
-//		{ get; set; }
-
 /*		private RegistryInfo _regInfo;
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public RegistryInfo RegistryInfo
@@ -76,8 +72,10 @@ namespace MapView
 		#endregion
 
 
+		#region Properties
 		internal Options Options
 		{ get; set; }
+		#endregion
 
 
 		#region cTor
@@ -91,22 +89,26 @@ namespace MapView
 		#endregion
 
 
+		#region Methods (virtual)
 		internal protected virtual void LoadControl0Options()
 		{}
 
-/*		/// <summary>
-		/// Currently implemented only to load TopView's visible quadrants menu.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnExtraRegistrySettingsLoad(RegistryEventArgs e)
-		{}
-		/// <summary>
-		/// Currently implemented only to save TopView's visible quadrants menu.
-		/// </summary>
-		/// <param name="e"></param>
-		protected virtual void OnExtraRegistrySettingsSave(RegistryEventArgs e)
-		{} */
+//		/// <summary>
+//		/// Currently implemented only to load TopView's visible-quadrants menu.
+//		/// </summary>
+//		/// <param name="e"></param>
+//		protected virtual void OnExtraRegistrySettingsLoad(RegistryEventArgs e)
+//		{}
+//		/// <summary>
+//		/// Currently implemented only to save TopView's visible-quadrants menu.
+//		/// </summary>
+//		/// <param name="e"></param>
+//		protected virtual void OnExtraRegistrySettingsSave(RegistryEventArgs e)
+//		{}
+		#endregion
 
+
+		#region Eventcalls (override)
 		/// <summary>
 		/// Scrolls the z-axis for TopView and RouteView.
 		/// </summary>
@@ -117,5 +119,6 @@ namespace MapView
 			if      (e.Delta < 0) _mapBase.LevelUp();
 			else if (e.Delta > 0) _mapBase.LevelDown();
 		}
+		#endregion
 	}
 }
