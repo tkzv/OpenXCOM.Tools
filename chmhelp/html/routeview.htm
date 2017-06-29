@@ -6,7 +6,7 @@
 		<h2>RouteView</h2>
 		<img src="../png/routeview.png" />
 
-		<p>This viewer creates and edits nodes on the Map that aLiens and civilians use for spawning and patrolling, and that XCOM agents might use for spawning. The actual mechanics that the XCOM engine employs is beyond the perview of this document.</p>
+		<p>This viewer creates and edits nodes on the Map that aLiens and civilians use for spawning and patrolling, and that XCOM agents might use for spawning. The actual mechanics that the XCOM engine employs is beyond the purview of this document.</p>
 
 		<p>Left-click on a tile selects that tile. Left-click on a route-node selects that route-node for editing.</p>
 
@@ -45,7 +45,10 @@
 		<br>
 		<h3>Link data</h3>
 		<p>
-&nbsp;&nbsp;Link1..5 - each node has up to five destination nodes. The first field specifies the destination's id or a compass point. The second field specifies the characteristic that an aLien unit must have to use the link. The third field is the distance between the origin and destination nodes, and is calculated automatically by MapView. It is not used by XCOM mechanics and is purely informational. An up arrow appears after the entry if the link goes to a higher level on the Map, or a down arrow appears if the entry goes to a lower level on the Map.</p>
+&nbsp;&nbsp;Link1..5 - each node has up to five destination nodes. The first field specifies the destination's ID or a compass point. The second field specifies the characteristic that an aLien unit must have to use the link. The third field is the distance between the origin and destination nodes, and is calculated automatically by MapView. It is not used by XCOM mechanics and is purely informational. An up arrow appears after the entry if the link goes to a higher level on the Map, or a down arrow appears if the entry goes to a lower level on the Map.</p>
+
+		<p>
+&nbsp;&nbsp;Along the right side of the Link data is a column of Go buttons. A button is enabled if it has a regular node as the link's destination. When the mouse is hovered over an enabled button, the link's destination is highlighted along with its link-line. Clicking an enabled Go button selects that link's destination node. To the right of that column is the Og button, which is a Go button in reverse. It can be used as a back-button but with an interesting difference, in that if a Go button has been clicked then the source node can be returned to even if other nodes have been selected inbetween clicking a Go button and the Og button.</p>
 
 		<br>
 		<h3>Node editor</h3>

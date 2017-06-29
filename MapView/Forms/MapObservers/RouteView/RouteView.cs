@@ -1107,11 +1107,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void HighlightGoNode(int slotId)
 		{
-			var pos = new Point(
-							MapFile.Routes[NodeSelected[slotId].Destination].Col,
-							MapFile.Routes[NodeSelected[slotId].Destination].Row);
-			RoutePanel.HighlightedPosition = pos;
-
+			var node = MapFile.Routes[NodeSelected[slotId].Destination];
+			RoutePanel.HighlightedPosition = new Point(
+													node.Col,
+													node.Row);
 			Refresh();
 		}
 
