@@ -12,7 +12,23 @@ namespace MapView
 		:
 			Panel // god I hate these double-panels!!!! cf. MainViewOverlay
 	{
-		#region Fields & Properties
+		#region Fields (static)
+		// these track the offset between the panel border and the lozenge-tips.
+		// NOTE: they are used for both the underlay and the overlay, which
+		// currently have the same border sizes; if one or the other changes
+		// then their offsets would have to be separated.
+		private const int OffsetX = 2;
+		private const int OffsetY = 2;
+		#endregion
+
+
+		#region Fields
+		private readonly VScrollBar _scrollBarV = new VScrollBar();
+		private readonly HScrollBar _scrollBarH = new HScrollBar();
+		#endregion
+
+
+		#region Properties (static)
 		private static MainViewUnderlay _instance;
 		internal static MainViewUnderlay Instance
 		{
@@ -24,8 +40,11 @@ namespace MapView
 				return _instance;
 			}
 		}
+		#endregion
 
-		private MainViewOverlay _mainViewOverlay;
+
+		#region Properties
+		private MainViewOverlay _mainViewOverlay = new MainViewOverlay();
 		internal MainViewOverlay MainViewOverlay
 		{
 			get { return _mainViewOverlay; }
@@ -61,36 +80,6 @@ namespace MapView
 				OnResize(EventArgs.Empty);
 			}
 		}
-
-
-		private int _halfWidth;
-		internal int HalfWidth
-		{
-			set
-			{
-				_halfWidth                =
-				MainViewOverlay.HalfWidth = value; // pass it on to Overlay.
-			}
-		}
-
-		private int _halfHeight;
-		internal int HalfHeight
-		{
-			set
-			{
-				_halfHeight                =
-				MainViewOverlay.HalfHeight = value; // pass it on to Overlay.
-			}
-		}
-
-		private const int OffsetX = 2;	// these track the offset between the panel border
-		private const int OffsetY = 2;	// and the lozenge-tips. NOTE: they are used for
-										// both the underlay and the overlay, which currently
-										// have the same border sizes; if one or the other
-										// changes then their offsets would have to be separated.
-
-		private readonly HScrollBar _scrollBarH;
-		private readonly VScrollBar _scrollBarV;
 		#endregion
 
 
@@ -100,25 +89,21 @@ namespace MapView
 		/// </summary>
 		private MainViewUnderlay()
 		{
-			AnimationUpdateEvent += OnAnimationUpdate; // FIX: "Subscription to static events without unsubscription may cause memory leaks."
+			AnimationUpdateEvent += OnAnimationUpdate;
 
-			_scrollBarV = new VScrollBar();
 			_scrollBarV.Dock = DockStyle.Right;
 			_scrollBarV.Scroll += OnScrollVert;
 
-			_scrollBarH = new HScrollBar();
 			_scrollBarH.Dock = DockStyle.Bottom;
 			_scrollBarH.Scroll += OnScrollHori;
 
-//			var mainViewOverlay = new MainViewOverlay(); // what's this for.
+//			var mainViewOverlay = new MainViewOverlay(); // what's this for. nothing.
 //			if (_mainViewOverlay != null)
 //			{
 //				mainViewOverlay.MapBase = _mainViewOverlay.MapBase;
 //				Controls.Remove(_mainViewOverlay);
 //			}
 //			_mainViewOverlay = mainViewOverlay;
-
-			_mainViewOverlay = new MainViewOverlay();
 
 			Controls.AddRange(new Control[]
 			{
@@ -145,7 +130,7 @@ namespace MapView
 		#endregion
 
 
-		#region EventCalls
+		#region Eventcalls (override)
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
@@ -169,7 +154,7 @@ namespace MapView
 		/// Forces an OnResize event for this Panel. Grants access for
 		/// XCMainWindow to place a call or two.
 		/// </summary>
-		internal void ResizeUnderlay()
+		internal void ForceResize()
 		{
 			OnResize(EventArgs.Empty);
 		}
@@ -205,28 +190,79 @@ namespace MapView
 
 //			XCom.LogFile.WriteLine("MainViewUnderlay.OnResize EXIT");
 		}
+		#endregion
 
-/*		/// <summary>
-		/// A workaround for maximizing the parent-form. See notes at
-		/// XCMainWindow.OnResize(). Note that this workaround pertains only to
-		/// cases when AutoScale=FALSE.
-		/// </summary>
-		internal void ResetScrollers()
+
+		#region Eventcalls
+		private void OnScrollVert(object sender, ScrollEventArgs e)
 		{
-			// NOTE: if the form is enlarged with scrollbars visible and the
-			// new size doesn't need scrollbars but the map was offset, the
-			// scrollbars disappear but the map is still offset. So fix it.
-			//
-			// TODO: this is a workaround.
-			// It simply relocates the overlay to the origin, but it should try
-			// to maintain focus on a selected tile for cases when the form is
-			// enlarged *and the overlay still needs* one of the scrollbars.
+			//XCom.LogFile.WriteLine("OnVerticalScroll overlay.Left= " + MainViewOverlay.Left);
+			MainViewOverlay.Location = new Point(
+												MainViewOverlay.Left,
+												-_scrollBarV.Value);
+			MainViewOverlay.Refresh();
+		}
 
-			_scrollBarV.Value =
-			_scrollBarH.Value = 0;
+		private void OnScrollHori(object sender, ScrollEventArgs e)
+		{
+			//XCom.LogFile.WriteLine("OnVerticalScroll overlay.Top= " + MainViewOverlay.Top);
+			MainViewOverlay.Location = new Point(
+												-_scrollBarH.Value,
+												MainViewOverlay.Top);
+			MainViewOverlay.Refresh();
+		}
 
-			MainViewOverlay.Location = new Point(0, 0);
-		} */
+
+		internal void OnCut(object sender, EventArgs e)
+		{
+			MainViewOverlay.Copy();
+			MainViewOverlay.ClearSelection();
+		}
+
+		internal void OnCopy(object sender, EventArgs e)
+		{
+			MainViewOverlay.Copy();
+		}
+
+		internal void OnPaste(object sender, EventArgs e)
+		{
+			MainViewOverlay.Paste();
+		}
+
+		internal void OnFillSelectedTiles(object sender, EventArgs e)
+		{
+			MainViewOverlay.FillSelectedTiles();
+		}
+
+		private void OnAnimationUpdate(object sender, EventArgs e)
+		{
+			MainViewOverlay.Refresh();
+		}
+		#endregion
+
+
+		#region Methods
+//		/// <summary>
+//		/// A workaround for maximizing the parent-form. See notes at
+//		/// XCMainWindow.OnResize(). Note that this workaround pertains only to
+//		/// cases when AutoScale=FALSE.
+//		/// </summary>
+//		internal void ResetScrollers()
+//		{
+//			// NOTE: if the form is enlarged with scrollbars visible and the
+//			// new size doesn't need scrollbars but the map was offset, the
+//			// scrollbars disappear but the map is still offset. So fix it.
+//			//
+//			// TODO: this is a workaround.
+//			// It simply relocates the overlay to the origin, but it should try
+//			// to maintain focus on a selected tile for cases when the form is
+//			// enlarged *and the overlay still needs* one of the scrollbars.
+//
+//			_scrollBarV.Value =
+//			_scrollBarH.Value = 0;
+//
+//			MainViewOverlay.Location = new Point(0, 0);
+//		}
 
 		/// <summary>
 		/// Handles the scroll-bars.
@@ -345,41 +381,41 @@ namespace MapView
 			{
 				//XCom.LogFile.WriteLine(". scale= " + Globals.Scale);
 
-				_halfWidth  = (int)(MainViewOverlay.HalfWidthConst  * scale);
-				_halfHeight = (int)(MainViewOverlay.HalfHeightConst * scale);
+				int halfWidth  = (int)(MainViewOverlay.HalfWidthConst  * scale);
+				int halfHeight = (int)(MainViewOverlay.HalfHeightConst * scale);
 
-				if (_halfHeight > _halfWidth / 2) // use width
+				if (halfHeight > halfWidth / 2) // use width
 				{
 					//XCom.LogFile.WriteLine(". use width");
 
-					if (_halfWidth % 2 != 0)
-						--_halfWidth;
+					if (halfWidth % 2 != 0)
+						--halfWidth;
 
-					_halfHeight = _halfWidth / 2;
+					halfHeight = halfWidth / 2;
 				}
 				else // use height
 				{
 					//XCom.LogFile.WriteLine(". use height");
 
-					_halfWidth = _halfHeight * 2;
+					halfWidth = halfHeight * 2;
 				}
 
-				HalfWidth  = _halfWidth; // set half-width/height for the Overlay.
-				HalfHeight = _halfHeight;
+				MainViewOverlay.HalfWidth  = halfWidth; // set half-width/height for the Overlay.
+				MainViewOverlay.HalfHeight = halfHeight;
 
 
 				MainViewOverlay.Origin = new Point(
-												OffsetX + (MapBase.MapSize.Rows - 1) * _halfWidth,
+												OffsetX + (MapBase.MapSize.Rows - 1) * halfWidth,
 												OffsetY);
 
-				int width  = (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * _halfWidth;
-				int height = (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * _halfHeight
-						   +  MapBase.MapSize.Levs * _halfHeight * 3;
+				int width  = (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * halfWidth;
+				int height = (MapBase.MapSize.Rows + MapBase.MapSize.Cols) * halfHeight
+						   +  MapBase.MapSize.Levs * halfHeight * 3;
 
 				//XCom.LogFile.WriteLine(". width= " + width);
 				//XCom.LogFile.WriteLine(". height= " + height);
 
-				Globals.Scale = (double)_halfWidth / MainViewOverlay.HalfWidthConst;
+				Globals.Scale = (double)halfWidth / MainViewOverlay.HalfWidthConst;
 				XCMainWindow.Instance.StatusBarPrintScale();
 				//XCom.LogFile.WriteLine(". set scale= " + Globals.Scale);
 
@@ -391,56 +427,10 @@ namespace MapView
 			//XCom.LogFile.WriteLine(". RET size empty.");
 			return Size.Empty;
 		}
-
-
-		private void OnScrollVert(object sender, ScrollEventArgs e)
-		{
-			//XCom.LogFile.WriteLine("OnVerticalScroll overlay.Left= " + MainViewOverlay.Left);
-			MainViewOverlay.Location = new Point(
-												MainViewOverlay.Left,
-												-_scrollBarV.Value);
-			MainViewOverlay.Refresh();
-		}
-
-		private void OnScrollHori(object sender, ScrollEventArgs e)
-		{
-			//XCom.LogFile.WriteLine("OnVerticalScroll overlay.Top= " + MainViewOverlay.Top);
-			MainViewOverlay.Location = new Point(
-												-_scrollBarH.Value,
-												MainViewOverlay.Top);
-			MainViewOverlay.Refresh();
-		}
-
-
-		internal void OnCut(object sender, EventArgs e)
-		{
-			MainViewOverlay.Copy();
-			MainViewOverlay.ClearSelection();
-		}
-
-		internal void OnCopy(object sender, EventArgs e)
-		{
-			MainViewOverlay.Copy();
-		}
-
-		internal void OnPaste(object sender, EventArgs e)
-		{
-			MainViewOverlay.Paste();
-		}
-
-		internal void OnFillSelectedTiles(object sender, EventArgs e)
-		{
-			MainViewOverlay.FillSelectedTiles();
-		}
-
-		private void OnAnimationUpdate(object sender, EventArgs e)
-		{
-			MainViewOverlay.Refresh();
-		}
 		#endregion
 
 
-		#region Timer stuff for Animations
+		#region Timer stuff for animations (static)
 		internal static event EventHandler AnimationUpdateEvent;
 
 		private static Timer _timer;
@@ -471,19 +461,30 @@ namespace MapView
 			}
 		}
 
+		/// <summary>
+		/// Advances to the next sprite-frame and raises AnimationUpdateEvent.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private static void AnimateStep(object sender, EventArgs e)
 		{
 			_anistep = ++_anistep % 8;
 
 			if (AnimationUpdateEvent != null)
-				AnimationUpdateEvent(null, null);
+				AnimationUpdateEvent(null, EventArgs.Empty);
 		}
 
+		/// <summary>
+		/// Checks of the sprites are currently animating.
+		/// </summary>
 		internal static bool IsAnimated
 		{
 			get { return (_timer != null && _timer.Enabled); }
 		}
 
+		/// <summary>
+		/// Gets which sequential frame [0..7] of the sprite to display.
+		/// </summary>
 		internal static int AniStep
 		{
 			get { return _anistep; }

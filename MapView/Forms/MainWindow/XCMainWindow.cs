@@ -1123,7 +1123,7 @@ namespace MapView
 										f.Levs,
 										f.CeilingChecked);
 
-						_mainViewUnderlay.ResizeUnderlay();
+						_mainViewUnderlay.ForceResize();
 
 						_mainViewUnderlay.MainViewOverlay.FirstClick = false;
 
