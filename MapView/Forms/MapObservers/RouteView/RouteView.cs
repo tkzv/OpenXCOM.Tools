@@ -39,6 +39,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private const string NodeCopyPrefix  = "MVNode"; // TODO: use a struct to copy/paste the info.
 		private const char NodeCopySeparator = '|';
+
+		private const string Go = "go";
 		#endregion
 
 
@@ -533,6 +535,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 				btnGoLink4.Enabled =
 				btnGoLink5.Enabled = false;
 
+				btnGoLink1.Text =
+				btnGoLink2.Text =
+				btnGoLink3.Text =
+				btnGoLink4.Text =
+				btnGoLink5.Text = String.Empty;
+
 
 				cbUnitType.SelectedItem = UnitType.Any;
 				cbPriority.SelectedItem = NodeImportance.Zero;
@@ -607,59 +615,82 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbLink4Dest.Items.AddRange(linkListArray);
 				cbLink5Dest.Items.AddRange(linkListArray);
 
-				if (NodeSelected[0].Destination < Link.ExitWest)
+
+				byte destId;
+
+				destId = NodeSelected[0].Destination;
+				if (destId < Link.ExitWest)
 				{
-					cbLink1Dest.SelectedItem = NodeSelected[0].Destination;
+					cbLink1Dest.SelectedItem = destId;
 					btnGoLink1.Enabled = true;
+					btnGoLink1.Text = Go;
 				}
 				else
 				{
-					cbLink1Dest.SelectedItem = (LinkType)NodeSelected[0].Destination;
+					cbLink1Dest.SelectedItem = (LinkType)destId;
 					btnGoLink1.Enabled = false;
+					btnGoLink1.Text = (destId != Link.NotUsed) ? Go
+															   : String.Empty;
 				}
 
-				if (NodeSelected[1].Destination < Link.ExitWest)
+				destId = NodeSelected[1].Destination;
+				if (destId < Link.ExitWest)
 				{
-					cbLink2Dest.SelectedItem = NodeSelected[1].Destination;
+					cbLink2Dest.SelectedItem = destId;
 					btnGoLink2.Enabled = true;
+					btnGoLink2.Text = Go;
 				}
 				else
 				{
-					cbLink2Dest.SelectedItem = (LinkType)NodeSelected[1].Destination;
+					cbLink2Dest.SelectedItem = (LinkType)destId;
 					btnGoLink2.Enabled = false;
+					btnGoLink2.Text = (destId != Link.NotUsed) ? Go
+															   : String.Empty;
 				}
 
-				if (NodeSelected[2].Destination < Link.ExitWest)
+				destId = NodeSelected[2].Destination;
+				if (destId < Link.ExitWest)
 				{
-					cbLink3Dest.SelectedItem = NodeSelected[2].Destination;
+					cbLink3Dest.SelectedItem = destId;
 					btnGoLink3.Enabled = true;
+					btnGoLink3.Text = Go;
 				}
 				else
 				{
-					cbLink3Dest.SelectedItem = (LinkType)NodeSelected[2].Destination;
+					cbLink3Dest.SelectedItem = (LinkType)destId;
 					btnGoLink3.Enabled = false;
+					btnGoLink3.Text = (destId != Link.NotUsed) ? Go
+															   : String.Empty;
 				}
 
-				if (NodeSelected[3].Destination < Link.ExitWest)
+				destId = NodeSelected[3].Destination;
+				if (destId < Link.ExitWest)
 				{
-					cbLink4Dest.SelectedItem = NodeSelected[3].Destination;
+					cbLink4Dest.SelectedItem = destId;
 					btnGoLink4.Enabled = true;
+					btnGoLink4.Text = Go;
 				}
 				else
 				{
-					cbLink4Dest.SelectedItem = (LinkType)NodeSelected[3].Destination;
+					cbLink4Dest.SelectedItem = (LinkType)destId;
 					btnGoLink4.Enabled = false;
+					btnGoLink4.Text = (destId != Link.NotUsed) ? Go
+															   : String.Empty;
 				}
 
-				if (NodeSelected[4].Destination < Link.ExitWest)
+				destId = NodeSelected[4].Destination;
+				if (destId < Link.ExitWest)
 				{
-					cbLink5Dest.SelectedItem = NodeSelected[4].Destination;
+					cbLink5Dest.SelectedItem = destId;
 					btnGoLink5.Enabled = true;
+					btnGoLink5.Text = Go;
 				}
 				else
 				{
-					cbLink5Dest.SelectedItem = (LinkType)NodeSelected[4].Destination;
+					cbLink5Dest.SelectedItem = (LinkType)destId;
 					btnGoLink5.Enabled = false;
+					btnGoLink5.Text = (destId != Link.NotUsed) ? Go
+															   : String.Empty;
 				}
 
 				cbLink1UnitType.SelectedItem = NodeSelected[0].UsableType;
