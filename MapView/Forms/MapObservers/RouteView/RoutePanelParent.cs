@@ -206,6 +206,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="e"></param>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			Select(); // take focus away from the comboboxes. Tks.
+
 			if (MapFile != null)
 			{
 				var start = GetTileLocation(e.X, e.Y);

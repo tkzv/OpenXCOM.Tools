@@ -66,11 +66,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private readonly object[] _linkTypes =
 		{
-			LinkType.NotUsed,
 			LinkType.ExitNorth,
 			LinkType.ExitEast,
 			LinkType.ExitSouth,
-			LinkType.ExitWest
+			LinkType.ExitWest,
+			LinkType.NotUsed
 		};
 		#endregion
 
