@@ -294,6 +294,14 @@ namespace PckView
 			}
 		}
 
+		protected override void OnMouseLeave(EventArgs e)
+		{
+//			base.OnMouseLeave(e);
+
+			OverId = -1;
+			PrintStatusSpriteOver();
+		}
+
 		/// <summary>
 		/// Gets the terrain-id of a sprite at coordinates x/y.
 		/// </summary>

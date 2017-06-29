@@ -476,7 +476,7 @@ namespace DSShared.Windows
 		/// </summary>
 		/// <param name="e">An <see cref="T:System.EventArgs"></see> that
 		/// contains the event data.</param>
-		protected override void OnMouseLeave(System.EventArgs e)
+		protected override void OnMouseLeave(EventArgs e)
 		{
 			_hot = false; // ensure that the hot state is removed
 			Refresh();
@@ -488,7 +488,7 @@ namespace DSShared.Windows
 		/// </summary>
 		/// <param name="e">An <see cref="T:System.EventArgs"></see> that
 		/// contains the event data.</param>
-		protected override void OnClick(System.EventArgs e)
+		protected override void OnClick(EventArgs e)
 		{
 			switch (CurrentState)
 			{
