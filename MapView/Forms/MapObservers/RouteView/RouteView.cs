@@ -57,6 +57,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private bool _closing;
 
 		/// <summary>
+		/// Prevents two error-dialogs from showing if a key-cut is underway.
+		/// </summary>
+		private bool _asterisk;
+
+		/// <summary>
 		/// Used by UpdateNodeInformation().
 		/// </summary>
 		private readonly object[] _linkTypes =
@@ -792,6 +797,27 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
+		private void OnLink1DestSelectedIndexChanged(object sender, EventArgs e)
+		{
+			LinkDestinationSelectedIndexChanged(cbLink1Dest, 0, tbLink1Dist);
+		}
+		private void OnLink2DestSelectedIndexChanged(object sender, EventArgs e)
+		{
+			LinkDestinationSelectedIndexChanged(cbLink2Dest, 1, tbLink2Dist);
+		}
+		private void OnLink3DestSelectedIndexChanged(object sender, EventArgs e)
+		{
+			LinkDestinationSelectedIndexChanged(cbLink3Dest, 2, tbLink3Dist);
+		}
+		private void OnLink4DestSelectedIndexChanged(object sender, EventArgs e)
+		{
+			LinkDestinationSelectedIndexChanged(cbLink4Dest, 3, tbLink4Dist);
+		}
+		private void OnLink5DestSelectedIndexChanged(object sender, EventArgs e)
+		{
+			LinkDestinationSelectedIndexChanged(cbLink5Dest, 4, tbLink5Dist);
+		}
+
 		/// <summary>
 		/// Updates the fields of a specified link-slot for the currently
 		/// selected route-node.
@@ -819,7 +845,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					case Link.NotUsed:
 						tbDistance.Text = String.Empty;
 						link.Distance = 0;
-						UpdateGo(slotId, false);
+						UpdateGoEnabled(slotId, false);
 						break;
 
 					case Link.ExitWest:
@@ -828,7 +854,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					case Link.ExitSouth:
 						tbDistance.Text = "0";
 						link.Distance = 0;
-						UpdateGo(slotId, false);
+						UpdateGoEnabled(slotId, false);
 						break;
 
 					default:
@@ -837,7 +863,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 															MapFile.Routes[link.Destination],
 															tbDistance,
 															slotId);
-						UpdateGo(slotId, true);
+						UpdateGoEnabled(slotId, true);
 						break;
 				}
 				Refresh();
@@ -850,7 +876,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		/// <param name="slotId"></param>
 		/// <param name="enabled"></param>
-		private void UpdateGo(int slotId, bool enabled)
+		private void UpdateGoEnabled(int slotId, bool enabled)
 		{
 			switch (slotId)
 			{
@@ -889,6 +915,26 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
+		private void OnLink1DestLeave(object sender, EventArgs e)
+		{
+//			cbLink_Leave(cbLink1, 0); // don't do any node-linking OnLeave unless i vet it first.
+		}
+		private void OnLink2DestLeave(object sender, EventArgs e)
+		{
+//			cbLink_Leave(cbLink2, 1); // don't do any node-linking OnLeave unless i vet it first.
+		}
+		private void OnLink3DestLeave(object sender, EventArgs e)
+		{
+//			cbLink_Leave(cbLink3, 2); // don't do any node-linking OnLeave unless i vet it first.
+		}
+		private void OnLink4DestLeave(object sender, EventArgs e)
+		{
+//			cbLink_Leave(cbLink4, 3); // don't do any node-linking OnLeave unless i vet it first.
+		}
+		private void OnLink5DestLeave(object sender, EventArgs e)
+		{
+//			cbLink_Leave(cbLink5, 4); // don't do any node-linking OnLeave unless i vet it first.
+		}
 //		private void cbLink_Leave(ComboBox sender, int id) // TODO: don't do any node-linking OnLeave unless i vet it first.
 //		{
 //			if (!_loadingInfo
@@ -914,56 +960,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 //			}
 //		}
 
-		private void OnLink1DestSelectedIndexChanged(object sender, EventArgs e)
-		{
-			LinkDestinationSelectedIndexChanged(cbLink1Dest, 0, tbLink1Dist);
-		}
-
-		private void OnLink1DestLeave(object sender, EventArgs e)
-		{
-//			cbLink_Leave(cbLink1, 0); // don't do any node-linking OnLeave unless i vet it first.
-		}
-
-		private void OnLink2DestSelectedIndexChanged(object sender, EventArgs e)
-		{
-			LinkDestinationSelectedIndexChanged(cbLink2Dest, 1, tbLink2Dist);
-		}
-
-		private void OnLink2DestLeave(object sender, EventArgs e)
-		{
-//			cbLink_Leave(cbLink2, 1); // don't do any node-linking OnLeave unless i vet it first.
-		}
-
-		private void OnLink3DestSelectedIndexChanged(object sender, EventArgs e)
-		{
-			LinkDestinationSelectedIndexChanged(cbLink3Dest, 2, tbLink3Dist);
-		}
-
-		private void OnLink3DestLeave(object sender, EventArgs e)
-		{
-//			cbLink_Leave(cbLink3, 2); // don't do any node-linking OnLeave unless i vet it first.
-		}
-
-		private void OnLink4DestSelectedIndexChanged(object sender, EventArgs e)
-		{
-			LinkDestinationSelectedIndexChanged(cbLink4Dest, 3, tbLink4Dist);
-		}
-
-		private void OnLink4DestLeave(object sender, EventArgs e)
-		{
-//			cbLink_Leave(cbLink4, 3); // don't do any node-linking OnLeave unless i vet it first.
-		}
-
-		private void OnLink5DestSelectedIndexChanged(object sender, EventArgs e)
-		{
-			LinkDestinationSelectedIndexChanged(cbLink5Dest, 4, tbLink5Dist);
-		}
-
-		private void OnLink5DestLeave(object sender, EventArgs e)
-		{
-//			cbLink_Leave(cbLink5, 4); // don't do any node-linking OnLeave unless i vet it first.
-		}
-
 
 		private void OnLink1UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -975,7 +971,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 				Refresh();
 			}
 		}
-
 		private void OnLink2UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingInfo)
@@ -986,7 +981,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 				Refresh();
 			}
 		}
-
 		private void OnLink3UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingInfo)
@@ -997,7 +991,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 				Refresh();
 			}
 		}
-
 		private void OnLink4UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingInfo)
@@ -1008,7 +1001,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 				Refresh();
 			}
 		}
-
 		private void OnLink5UnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingInfo)
@@ -1021,29 +1013,25 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
-		private void OnLink1Go(object sender, EventArgs e)
+		private void OnLink1GoClick(object sender, EventArgs e)
 		{
-			Go(0);
+			GoClick(0);
 		}
-
-		private void OnLink2Go(object sender, EventArgs e)
+		private void OnLink2GoClick(object sender, EventArgs e)
 		{
-			Go(1);
+			GoClick(1);
 		}
-
-		private void OnLink3Go(object sender, EventArgs e)
+		private void OnLink3GoClick(object sender, EventArgs e)
 		{
-			Go(2);
+			GoClick(2);
 		}
-
-		private void OnLink4Go(object sender, EventArgs e)
+		private void OnLink4GoClick(object sender, EventArgs e)
 		{
-			Go(3);
+			GoClick(3);
 		}
-
-		private void OnLink5Go(object sender, EventArgs e)
+		private void OnLink5GoClick(object sender, EventArgs e)
 		{
-			Go(4);
+			GoClick(4);
 		}
 
 		/// <summary>
@@ -1053,11 +1041,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// LevelChangedEvent.
 		/// </summary>
 		/// <param name="slotId"></param>
-		private void Go(int slotId)
+		private void GoClick(int slotId)
 		{
 			var node = MapFile.Routes[NodeSelected[slotId].Destination];
 
-			MapFile.Level = node.Lev;				// fire LevelChangedEvent.
+			if (node.Lev != MapFile.Level)
+				MapFile.Level = node.Lev;			// fire LevelChangedEvent.
 
 			MapFile.Location = new MapLocation(		// fire LocationSelectedEvent.
 											node.Row,
@@ -1076,16 +1065,48 @@ namespace MapView.Forms.MapObservers.RouteViews
 			OnRoutePanelClicked(null, args);
 
 
-			RoutePanel.ClickPoint = start;
+			RoutePanel.SelectedPosition = start;
 
 			Refresh();
 		}
 
+		private void OnLink1GoMouseEnter(object sender, EventArgs e)
+		{
+			HighlightGoNode(0);
+		}
+		private void OnLink2GoMouseEnter(object sender, EventArgs e)
+		{
+			HighlightGoNode(1);
+		}
+		private void OnLink3GoMouseEnter(object sender, EventArgs e)
+		{
+			HighlightGoNode(2);
+		}
+		private void OnLink4GoMouseEnter(object sender, EventArgs e)
+		{
+			HighlightGoNode(3);
+		}
+		private void OnLink5GoMouseEnter(object sender, EventArgs e)
+		{
+			HighlightGoNode(4);
+		}
 
-		/// <summary>
-		/// Prevents two error-dialogs from showing if a key-cut is underway.
-		/// </summary>
-		private bool _asterisk;
+		private void HighlightGoNode(int linkId)
+		{
+			var pos = new Point(
+							MapFile.Routes[NodeSelected[linkId].Destination].Col,
+							MapFile.Routes[NodeSelected[linkId].Destination].Row);
+			RoutePanel.HighlightedPosition = pos;
+
+			Refresh();
+		}
+
+		private void OnLinkGoMouseLeave(object sender, EventArgs e)
+		{
+			RoutePanel.HighlightedPosition = new Point(-1, -1);
+			Refresh();
+		}
+
 
 		private void OnCutClick(object sender, EventArgs e)
 		{

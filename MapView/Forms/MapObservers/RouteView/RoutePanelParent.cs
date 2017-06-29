@@ -47,8 +47,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		internal protected Point ClickPoint
+		internal protected Point SelectedPosition
 		{ get; set; }
+
+		private Point _highlight = new Point(-1, -1);
+		/// <summary>
+		/// Marks the tile that is highlighted by a mouse-overed Go button.
+		/// </summary>
+		internal Point HighlightedPosition
+		{
+			get { return _highlight; }
+			set { _highlight = value; }
+		}
 
 		/// <summary>
 		/// The top-left point of the panel.
@@ -86,6 +96,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 		internal protected GraphicsPath LozSelected
 		{
 			get { return _lozSelected; }
+		}
+
+		private readonly GraphicsPath _lozHighlighted = new GraphicsPath(); // go-button lozenge
+		internal protected GraphicsPath LozHighlighted
+		{
+			get { return _lozHighlighted; }
 		}
 
 		private readonly DrawBlobService _blobService = new DrawBlobService();
@@ -217,9 +233,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 						RoutePanelClickedEvent(this, args);
 					}
 
-					ClickPoint = start;	// NOTE: if a new 'ClickPoint' is set before firing the RoutePanelClickedEvent
-				}						// OnPaint() will draw a frame with incorrectly selected-link lines. So only set
-			}							// the 'ClickPoint' after the event happens.
+					SelectedPosition = start;	// NOTE: if a new 'ClickPoint' is set before firing the RoutePanelClickedEvent
+				}								// OnPaint() will draw a frame with incorrectly selected-link lines. So only set
+			}									// the 'ClickPoint' after the event happens.
 		}
 
 		/// <summary>
@@ -245,7 +261,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#region Methods
 		internal protected void ClearClickPoint()
 		{
-			ClickPoint = new Point(-1, -1);
+			SelectedPosition = new Point(-1, -1);
 		}
 
 		/// <summary>
@@ -304,6 +320,23 @@ namespace MapView.Forms.MapObservers.RouteViews
 			LozSelected.CloseFigure();
 
 			Refresh();
+		}
+
+		internal protected void PathHighlightedLozenge(int x, int y)
+		{
+			int halfWidth  = BlobService.HalfWidth;
+			int halfHeight = BlobService.HalfHeight;
+
+			var p0 = new Point(x,             y);
+			var p1 = new Point(x + halfWidth, y + halfHeight);
+			var p2 = new Point(x,             y + halfHeight * 2);
+			var p3 = new Point(x - halfWidth, y + halfHeight);
+
+			LozHighlighted.Reset();
+			LozHighlighted.AddLine(p0, p1);
+			LozHighlighted.AddLine(p1, p2);
+			LozHighlighted.AddLine(p2, p3);
+			LozHighlighted.CloseFigure();
 		}
 
 		/// <summary>

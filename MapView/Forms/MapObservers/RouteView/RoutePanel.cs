@@ -14,6 +14,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 		:
 			RoutePanelParent
 	{
+		#region Fields (static)
+		private const int RoseMarginX = 25;
+		private const int RoseMarginY = 5;
+
+		private const int NodeValMax = 12;
+		#endregion
+
+
 		#region Fields
 		private readonly Font _fontOverlay = new Font("Verdana", 7F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
 		private readonly Font _fontRose    = new Font("Courier New", 22, FontStyle.Bold);
@@ -23,11 +31,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private Graphics     _graphics;
 		private GraphicsPath _nodeFill = new GraphicsPath();
+
+		private bool _brushes;
+		private SolidBrush _brushSelected;
+		private SolidBrush _brushUnselected;
+		private SolidBrush _brushSpawn;
 		#endregion
 
 
 		#region Properties
-		private Point _pos = new Point(-1, -1); // TODO: use 'null' instead of (-1,-1) here and elsewhere.
+		private Point _pos = new Point(-1, -1);
 		/// <summary>
 		/// Tracks the screen-position of the mouse cursor.
 		/// </summary>
@@ -68,8 +81,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				if (NodeSelected != null)
 					DrawLinkLines(
-							Origin.X + (ClickPoint.X - ClickPoint.Y)     * DrawAreaWidth,
-							Origin.Y + (ClickPoint.X + ClickPoint.Y + 1) * DrawAreaHeight,
+							Origin.X + (SelectedPosition.X - SelectedPosition.Y)     * DrawAreaWidth,
+							Origin.Y + (SelectedPosition.X + SelectedPosition.Y + 1) * DrawAreaHeight,
 							NodeSelected,
 							RoutePens[RouteView.SelectedLinkColor]);
 
@@ -90,11 +103,25 @@ namespace MapView.Forms.MapObservers.RouteViews
 				}
 
 				if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick)
+				{
 					_graphics.DrawPath(
 									new Pen( // TODO: make this a separate Option.
 											RouteBrushes[RouteView.SelectedNodeColor].Color,
 											RoutePens[RouteView.GridLineColor].Width + 1),
 									LozSelected);
+
+					if (HighlightedPosition.X != -1)
+					{
+						PathHighlightedLozenge(
+										Origin.X + (HighlightedPosition.X - HighlightedPosition.Y) * DrawAreaWidth,
+										Origin.Y + (HighlightedPosition.X + HighlightedPosition.Y) * DrawAreaHeight);
+						_graphics.DrawPath(
+										new Pen( // TODO: make this a separate Option.
+												RouteBrushes[RouteView.SelectedNodeColor].Color,
+												RoutePens[RouteView.GridLineColor].Width + 1),
+										LozHighlighted);
+					}
+				}
 
 				if (ShowPriorityBars)
 					DrawNodeImportanceMeters();
@@ -195,7 +222,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					if (MapFile[rSrc, cSrc] != null
 						&& (node = ((XCMapTile)MapFile[rSrc, cSrc]).Node) != null
-						&& (NodeSelected == null || !NodeSelected.Equals(node)))
+						&& (NodeSelected == null
+							|| !NodeSelected.Equals(node)))
 					{
 						DrawLinkLines(xSrc, ySrc, node, pen, false);
 					}
@@ -268,18 +296,22 @@ namespace MapView.Forms.MapObservers.RouteViews
 				}
 
 				if (xDst != -1)
+				{
+					var pen0 = pen;
+					if (selected // deal with go-button link-line colors
+						&& HighlightedPosition.X != -1
+						&& HighlightedPosition.X != nodeDst.Col)
+					{
+						pen0 = RoutePens[RouteView.UnselectedLinkColor];
+					}
+
 					_graphics.DrawLine(
-									pen,
+									pen0,
 									xSrc, ySrc + yOffset, // unselected nodes need an offset
 									xDst, yDst);
+				}
 			}
 		}
-
-
-		private bool _brushes;
-		private SolidBrush _brushSelected;
-		private SolidBrush _brushUnselected;
-		private SolidBrush _brushSpawn;
 
 		/// <summary>
 		/// Draws the nodes.
@@ -333,7 +365,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							_nodeFill.CloseFigure();
 
 
-							if (row == ClickPoint.Y && col == ClickPoint.X)
+							if (row == SelectedPosition.Y && col == SelectedPosition.X)
 							{
 								_graphics.FillPath(_brushSelected, _nodeFill);
 							}
@@ -369,7 +401,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 																	RoutePens[RouteView.UnselectedLinkColor],
 																	x, y,
 																	x, y + DrawAreaHeight * 2);
-													_graphics.DrawLine(
+													_graphics.DrawLine( // then lines on the two top edges of the tile
 																	RoutePens[RouteView.UnselectedLinkColor],
 																	x + 2,                 y,
 																	x + 2 - DrawAreaWidth, y + DrawAreaHeight);
@@ -384,7 +416,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 																	RoutePens[RouteView.UnselectedLinkColor],
 																	x - DrawAreaWidth, y + DrawAreaHeight,
 																	x + DrawAreaWidth, y + DrawAreaHeight);
-													_graphics.DrawLine(
+													_graphics.DrawLine( // then lines on the two bottom edges of the tile
 																	RoutePens[RouteView.UnselectedLinkColor],
 																	x + 2,                 y + DrawAreaHeight * 2,
 																	x + 2 - DrawAreaWidth, y + DrawAreaHeight);
@@ -429,9 +461,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 							   (Origin.X + i * DrawAreaWidth)  - map.MapSize.Rows * DrawAreaWidth,
 							   (Origin.Y + i * DrawAreaHeight) + map.MapSize.Rows * DrawAreaHeight);
 		}
-
-
-		private const int NodeValMax = 12;
 
 		/// <summary>
 		/// Draws the node importance bars.
@@ -531,10 +560,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			_graphics.DrawPath(Pens.Black, path); // draw borders.
 		}
-
-
-		private const int RoseMarginX = 25;
-		private const int RoseMarginY = 5;
 
 		/// <summary>
 		/// Draws the compass-rose.

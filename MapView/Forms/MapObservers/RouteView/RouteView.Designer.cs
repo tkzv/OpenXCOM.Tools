@@ -551,7 +551,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnGoLink5.TabIndex = 38;
 			this.btnGoLink5.Text = "go";
 			this.btnGoLink5.UseVisualStyleBackColor = true;
-			this.btnGoLink5.Click += new System.EventHandler(this.OnLink5Go);
+			this.btnGoLink5.Click += new System.EventHandler(this.OnLink5GoClick);
+			this.btnGoLink5.MouseEnter += new System.EventHandler(this.OnLink5GoMouseEnter);
+			this.btnGoLink5.MouseLeave += new System.EventHandler(this.OnLinkGoMouseLeave);
 			// 
 			// btnGoLink4
 			// 
@@ -562,7 +564,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnGoLink4.TabIndex = 37;
 			this.btnGoLink4.Text = "go";
 			this.btnGoLink4.UseVisualStyleBackColor = true;
-			this.btnGoLink4.Click += new System.EventHandler(this.OnLink4Go);
+			this.btnGoLink4.Click += new System.EventHandler(this.OnLink4GoClick);
+			this.btnGoLink4.MouseEnter += new System.EventHandler(this.OnLink4GoMouseEnter);
+			this.btnGoLink4.MouseLeave += new System.EventHandler(this.OnLinkGoMouseLeave);
 			// 
 			// btnGoLink3
 			// 
@@ -573,7 +577,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnGoLink3.TabIndex = 36;
 			this.btnGoLink3.Text = "go";
 			this.btnGoLink3.UseVisualStyleBackColor = true;
-			this.btnGoLink3.Click += new System.EventHandler(this.OnLink3Go);
+			this.btnGoLink3.Click += new System.EventHandler(this.OnLink3GoClick);
+			this.btnGoLink3.MouseEnter += new System.EventHandler(this.OnLink3GoMouseEnter);
+			this.btnGoLink3.MouseLeave += new System.EventHandler(this.OnLinkGoMouseLeave);
 			// 
 			// btnGoLink2
 			// 
@@ -584,7 +590,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnGoLink2.TabIndex = 35;
 			this.btnGoLink2.Text = "go";
 			this.btnGoLink2.UseVisualStyleBackColor = true;
-			this.btnGoLink2.Click += new System.EventHandler(this.OnLink2Go);
+			this.btnGoLink2.Click += new System.EventHandler(this.OnLink2GoClick);
+			this.btnGoLink2.MouseEnter += new System.EventHandler(this.OnLink2GoMouseEnter);
+			this.btnGoLink2.MouseLeave += new System.EventHandler(this.OnLinkGoMouseLeave);
 			// 
 			// btnGoLink1
 			// 
@@ -595,7 +603,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnGoLink1.TabIndex = 34;
 			this.btnGoLink1.Text = "go";
 			this.btnGoLink1.UseVisualStyleBackColor = true;
-			this.btnGoLink1.Click += new System.EventHandler(this.OnLink1Go);
+			this.btnGoLink1.Click += new System.EventHandler(this.OnLink1GoClick);
+			this.btnGoLink1.MouseEnter += new System.EventHandler(this.OnLink1GoMouseEnter);
+			this.btnGoLink1.MouseLeave += new System.EventHandler(this.OnLinkGoMouseLeave);
 			// 
 			// panel1
 			// 
@@ -710,6 +720,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "RouteView";
 			this.Size = new System.Drawing.Size(640, 480);
+			this.MouseEnter += new System.EventHandler(this.OnLink1GoMouseEnter);
+			this.MouseLeave += new System.EventHandler(this.OnLinkGoMouseLeave);
 			this.gbSpawnData.ResumeLayout(false);
 			this.tsMain.ResumeLayout(false);
 			this.tsMain.PerformLayout();
