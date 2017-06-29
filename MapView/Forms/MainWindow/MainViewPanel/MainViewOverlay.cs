@@ -13,17 +13,39 @@ using XCom.Interfaces.Base;
 
 namespace MapView
 {
+	#region Delegates
 	internal delegate void MouseDragEventHandler();
+	#endregion
 
 
 	internal sealed class MainViewOverlay
 		:
 			Panel // god I hate these double-panels!!!! cf. MainViewUnderlay
 	{
+		#region Events
 		internal event MouseDragEventHandler MouseDragEvent;
+		#endregion
 
 
-		#region Fields & Properties
+		#region Fields (static)
+		internal const int HalfWidthConst  = 16;
+		internal const int HalfHeightConst =  8;
+		#endregion
+
+
+		#region Fields
+		private bool _suppressTargeter;// = true;
+
+		private int _col; // these are used to print the clicked location
+		private int _row;
+		private int _lev;
+
+		private int _colOver; // these are used to track the mouseover location
+		private int _rowOver;
+		#endregion
+
+
+		#region Properties
 		internal MapFileBase MapBase
 		{ get; set; }
 
@@ -33,9 +55,6 @@ namespace MapView
 			get { return _origin; }
 			set { _origin = value; }
 		}
-
-		internal const int HalfWidthConst  = 16;
-		internal const int HalfHeightConst =  8;
 
 		internal int HalfWidth
 		{ private get; set; }
@@ -66,18 +85,22 @@ namespace MapView
 			}
 		}
 
-
 		internal CuboidSprite Cuboid
 		{ private get; set; }
+		#endregion
 
 
+		#region Fields (graphics)
 		private GraphicsPath _layerFill = new GraphicsPath();
 
 		private Graphics _graphics;
 		private ImageAttributes _spriteAttributes = new ImageAttributes();
 
 		private Brush _brushLayer;
+		#endregion
 
+
+		#region Properties (options)
 		private Color _colorLayer = Color.MediumVioletRed;							// initial color for the grid-layer Option
 		public Color GridLayerColor													// <- public for Reflection.
 		{
@@ -232,7 +255,7 @@ namespace MapView
 		#endregion
 
 
-		#region Editor
+		#region Eventcalls and Methods for the edit-functions
 		private void OnEditKeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control)
@@ -452,20 +475,20 @@ namespace MapView
 				{
 					TripMouseDragEvent(DragStart, end);
 				}
-
-				Refresh(); // mouseover refresh for MainView.
+				else
+					Refresh(); // mouseover refresh for MainView.
 			}
 		}
 
-		/// <summary>
-		/// Hides the cuboid-targeter when the mouse leaves this control.
-		/// </summary>
-		/// <param name="e"></param>
-		protected override void OnMouseLeave(EventArgs e)
-		{
-			_suppressTargeter = true;
-			Refresh();
-		}
+//		/// <summary>
+//		/// Hides the cuboid-targeter when the mouse leaves this control.
+//		/// </summary>
+//		/// <param name="e"></param>
+//		protected override void OnMouseLeave(EventArgs e)
+//		{
+//			_suppressTargeter = true;
+//			Refresh();
+//		}
 
 		/// <summary>
 		/// Fires the drag-select event handler.
@@ -479,7 +502,7 @@ namespace MapView
 				DragStart = start;	// these ensure that the start and end points stay
 				DragEnd   = end;	// within the bounds of the currently loaded map.
 	
-				if (MouseDragEvent != null)
+				if (MouseDragEvent != null) // path the selected-lozenge
 					MouseDragEvent();
 
 				RefreshViewers();
@@ -552,15 +575,7 @@ namespace MapView
 		#endregion
 
 
-		private int _colOver; // these are used to track the cursor location
-		private int _rowOver;
-
-		private int _col; // these are used to print the clicked location info
-		private int _row;
-		private int _lev;
-
-		private bool _suppressTargeter = true;
-
+		#region Eventcalls
 		/// <summary>
 		/// Fires when a location is selected in MainView.
 		/// </summary>
@@ -602,6 +617,7 @@ namespace MapView
 													MapBase.MapSize.Levs - _lev);
 			Refresh();
 		}
+		#endregion
 
 
 		#region Draw
@@ -702,9 +718,10 @@ namespace MapView
 												lev == MapBase.Level);
 							}
 							else if (!_suppressTargeter
-									&& col == _colOver
-									&& row == _rowOver
-									&& lev == MapBase.Level)
+								&& ClientRectangle.Contains(PointToClient(Cursor.Position))
+								&& col == _colOver
+								&& row == _rowOver
+								&& lev == MapBase.Level)
 							{
 								Cuboid.DrawTargeter(
 												_graphics,

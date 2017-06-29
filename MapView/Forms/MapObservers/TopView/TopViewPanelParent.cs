@@ -343,8 +343,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 				if (_isMouseDrag)
 				{
-					var mainOverlay = MainViewUnderlay.Instance.MainViewOverlay;
-					mainOverlay.TripMouseDragEvent(mainOverlay.DragStart, end);
+					var overlay = MainViewUnderlay.Instance.MainViewOverlay;
+					overlay.TripMouseDragEvent(overlay.DragStart, end);
 				}
 				else
 					Refresh(); // mouseover refresh for TopView.

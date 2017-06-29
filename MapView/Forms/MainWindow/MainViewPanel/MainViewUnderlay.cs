@@ -475,7 +475,7 @@ namespace MapView
 		}
 
 		/// <summary>
-		/// Checks of the sprites are currently animating.
+		/// Checks if the sprites are currently animating.
 		/// </summary>
 		internal static bool IsAnimated
 		{
