@@ -1050,6 +1050,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			NodeOgId = NodeSelected.Index; // store the current nodeId for the og-button.
 
 			SelectNode(NodeSelected[slotId].Destination);
+
+			if (NodeSelected[slotId].Destination < Link.ExitWest)
+				HighlightGoNode(slotId);
 		}
 
 		private void SelectNode(int nodeId)
@@ -1102,11 +1105,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			HighlightGoNode(4);
 		}
 
-		private void HighlightGoNode(int linkId)
+		private void HighlightGoNode(int slotId)
 		{
 			var pos = new Point(
-							MapFile.Routes[NodeSelected[linkId].Destination].Col,
-							MapFile.Routes[NodeSelected[linkId].Destination].Row);
+							MapFile.Routes[NodeSelected[slotId].Destination].Col,
+							MapFile.Routes[NodeSelected[slotId].Destination].Row);
 			RoutePanel.HighlightedPosition = pos;
 
 			Refresh();
@@ -1122,9 +1125,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 //			btnOg.Enabled = false; // don't want to do that. Use it like a cached node.
 
-			if (   NodeOgId != -1
-				&& NodeOgId != NodeSelected.Index
-				&& NodeOgId < MapFile.Routes.Length)
+			if (NodeOgId >= MapFile.Routes.Length) // in case nodes were deleted.
+			{
+				btnOg.Enabled = false;
+			}
+			else if (NodeOgId != NodeSelected.Index)
 			{
 				SelectNode(NodeOgId);
 			}
@@ -1136,7 +1141,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		internal void DisableOg()
 		{
 			btnOg.Enabled = false;
-			NodeOgId = -1;
 		}
 
 
