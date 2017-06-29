@@ -553,6 +553,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnOg.Text = "o\r\ng";
 			this.btnOg.UseVisualStyleBackColor = true;
 			this.btnOg.Click += new System.EventHandler(this.OnOgClick);
+			this.btnOg.MouseEnter += new System.EventHandler(this.OnOgMouseEnter);
+			this.btnOg.MouseLeave += new System.EventHandler(this.OnLinkGoMouseLeave);
 			// 
 			// btnGoLink5
 			// 

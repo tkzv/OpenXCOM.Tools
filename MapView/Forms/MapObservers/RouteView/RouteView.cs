@@ -1165,6 +1165,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
+		private void OnOgMouseEnter(object sender, EventArgs e)
+		{
+			var node = MapFile.Routes[NodeOgId];
+			RoutePanel.HighlightedPosition = new Point(
+													node.Col,
+													node.Row);
+			Refresh();
+		}
+
 		/// <summary>
 		/// Disables the og-button when a Map gets loaded.
 		/// </summary>
