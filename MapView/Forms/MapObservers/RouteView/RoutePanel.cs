@@ -222,8 +222,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					if (MapFile[rSrc, cSrc] != null
 						&& (node = ((XCMapTile)MapFile[rSrc, cSrc]).Node) != null
-						&& (NodeSelected == null
-							|| !NodeSelected.Equals(node)))
+						&& (NodeSelected == null || !NodeSelected.Equals(node)))
 					{
 						DrawLinkLines(xSrc, ySrc, node, pen, false);
 					}
@@ -251,10 +250,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			int yOffset = (!selected) ? DrawAreaHeight
 									  : 0;
 
-			RouteNode nodeDst = null;
+			RouteNode nodeDst;
 
 			for (int i = 0; i != RouteNode.LinkSlots; ++i)
 			{
+				nodeDst = null;
 				xDst = -1;
 				yDst =  0;
 
@@ -300,7 +300,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					var pen0 = pen;
 					if (selected // deal with go-button link-line colors
 						&& HighlightedPosition.X != -1
-						&& HighlightedPosition.X != nodeDst.Col)
+						&& (nodeDst == null || HighlightedPosition.X != nodeDst.Col))
 					{
 						pen0 = RoutePens[RouteView.UnselectedLinkColor];
 					}

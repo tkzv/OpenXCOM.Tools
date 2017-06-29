@@ -720,8 +720,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "RouteView";
 			this.Size = new System.Drawing.Size(640, 480);
-			this.MouseEnter += new System.EventHandler(this.OnLink1GoMouseEnter);
-			this.MouseLeave += new System.EventHandler(this.OnLinkGoMouseLeave);
 			this.gbSpawnData.ResumeLayout(false);
 			this.tsMain.ResumeLayout(false);
 			this.tsMain.PerformLayout();
