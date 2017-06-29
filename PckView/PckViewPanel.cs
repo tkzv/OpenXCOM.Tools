@@ -109,7 +109,7 @@ namespace PckView
 		/// <summary>
 		/// Used by UpdateScrollBar() to determine its Maximum value.
 		/// </summary>
-		internal int TableHeight
+		private int TableHeight
 		{
 			get // TODO: calculate and cache this value in the OnResize event.
 			{
@@ -294,31 +294,17 @@ namespace PckView
 			}
 		}
 
+		/// <summary>
+		/// Clears the overId in the statusbar when the mouse-cursor leaves the
+		/// panel.
+		/// </summary>
+		/// <param name="e"></param>
 		protected override void OnMouseLeave(EventArgs e)
 		{
 //			base.OnMouseLeave(e);
 
 			OverId = -1;
 			PrintStatusSpriteOver();
-		}
-
-		/// <summary>
-		/// Gets the terrain-id of a sprite at coordinates x/y.
-		/// </summary>
-		/// <param name="e"></param>
-		/// <returns>the terrain-id or -1 if out of bounds</returns>
-		private int GetTileId(MouseEventArgs e)
-		{
-			if (e.X < _tilesX * _tileWidth + TableOffsetHori - 1) // not out of bounds to right
-			{
-				int tileX = (e.X - TableOffsetHori + 1)           / _tileWidth;
-				int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _tileHeight;
-
-				int terrainId = _tilesX * tileY + tileX;
-				if (terrainId < Spriteset.Count) // not out of bounds below
-					return terrainId;
-			}
-			return -1;
 		}
 
 		/// <summary>
@@ -422,6 +408,25 @@ namespace PckView
 
 		#region Methods
 		/// <summary>
+		/// Gets the terrain-id of a sprite at coordinates x/y.
+		/// </summary>
+		/// <param name="e"></param>
+		/// <returns>the terrain-id or -1 if out of bounds</returns>
+		private int GetTileId(MouseEventArgs e)
+		{
+			if (e.X < _tilesX * _tileWidth + TableOffsetHori - 1) // not out of bounds to right
+			{
+				int tileX = (e.X - TableOffsetHori + 1)           / _tileWidth;
+				int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _tileHeight;
+
+				int terrainId = _tilesX * tileY + tileX;
+				if (terrainId < Spriteset.Count) // not out of bounds below
+					return terrainId;
+			}
+			return -1;
+		}
+
+		/// <summary>
 		/// Checks if a selected tile is fully visible in the view-panel and
 		/// scrolls the table to show it if not.
 		/// </summary>
@@ -469,7 +474,7 @@ namespace PckView
 			_scrollBar.Visible = (range != 0);
 		}
 
-		internal void SetTilesX()
+		private void SetTilesX()
 		{
 			int tilesX = 1;
 

@@ -6,8 +6,6 @@ namespace MapView
 	internal static class Globals
 	{
 		#region Fields (static)
-//		public static readonly string RegistryKey = "MapView";
-
 		internal const double ScaleMinimum = 0.3;
 		internal const double ScaleMaximum = 3.0;
 		#endregion
@@ -16,7 +14,7 @@ namespace MapView
 		#region Properties (static)
 		private static double _scale = 1.0;
 		/// <summary>
-		/// The scale-factor for sprites and clicks in MainView only.
+		/// The scale-factor for sprites and clicks (etc) in MainView only.
 		/// </summary>
 		internal static double Scale
 		{
