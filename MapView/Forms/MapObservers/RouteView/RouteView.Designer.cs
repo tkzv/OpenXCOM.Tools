@@ -73,6 +73,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsmiAllNodesRank0 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiClearLinkData = new System.Windows.Forms.ToolStripMenuItem();
 			this.gbLinkData = new System.Windows.Forms.GroupBox();
+			this.btnOg = new System.Windows.Forms.Button();
 			this.btnGoLink5 = new System.Windows.Forms.Button();
 			this.btnGoLink4 = new System.Windows.Forms.Button();
 			this.btnGoLink3 = new System.Windows.Forms.Button();
@@ -506,6 +507,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// gbLinkData
 			// 
+			this.gbLinkData.Controls.Add(this.btnOg);
 			this.gbLinkData.Controls.Add(this.btnGoLink5);
 			this.gbLinkData.Controls.Add(this.btnGoLink4);
 			this.gbLinkData.Controls.Add(this.btnGoLink3);
@@ -541,6 +543,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.gbLinkData.TabIndex = 0;
 			this.gbLinkData.TabStop = false;
 			this.gbLinkData.Text = "Link data";
+			// 
+			// btnOg
+			// 
+			this.btnOg.Location = new System.Drawing.Point(320, 25);
+			this.btnOg.Name = "btnOg";
+			this.btnOg.Size = new System.Drawing.Size(20, 120);
+			this.btnOg.TabIndex = 39;
+			this.btnOg.Text = "o\r\ng";
+			this.btnOg.UseVisualStyleBackColor = true;
+			this.btnOg.Click += new System.EventHandler(this.OnOgClick);
 			// 
 			// btnGoLink5
 			// 
@@ -720,6 +732,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "RouteView";
 			this.Size = new System.Drawing.Size(640, 480);
+			this.Click += new System.EventHandler(this.OnOgClick);
 			this.gbSpawnData.ResumeLayout(false);
 			this.tsMain.ResumeLayout(false);
 			this.tsMain.PerformLayout();
@@ -794,5 +807,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.Button btnGoLink3;
 		private System.Windows.Forms.Button btnGoLink2;
 		private System.Windows.Forms.Button btnGoLink1;
+		private System.Windows.Forms.Button btnOg;
 	}
 }

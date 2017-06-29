@@ -300,7 +300,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 					var pen0 = pen;
 					if (selected // deal with go-button link-line colors
 						&& HighlightedPosition.X != -1
-						&& (nodeDst == null || HighlightedPosition.X != nodeDst.Col))
+						&& (nodeDst == null
+							|| HighlightedPosition.X != nodeDst.Col
+							|| HighlightedPosition.Y != nodeDst.Row))
 					{
 						pen0 = RoutePens[RouteView.UnselectedLinkColor];
 					}

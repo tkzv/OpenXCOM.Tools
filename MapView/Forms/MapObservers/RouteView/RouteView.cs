@@ -93,6 +93,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
+		private int NodeOgId
+		{ get; set; }
+
 		/// <summary>
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
@@ -1043,7 +1046,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="slotId"></param>
 		private void GoClick(int slotId)
 		{
-			var node = MapFile.Routes[NodeSelected[slotId].Destination];
+			btnOg.Enabled = true;
+			NodeOgId = NodeSelected.Index; // store the current nodeId for the og-button.
+
+			SelectNode(NodeSelected[slotId].Destination);
+		}
+
+		private void SelectNode(int nodeId)
+		{
+			var node = MapFile.Routes[nodeId];
 
 			if (node.Lev != MapFile.Level)
 				MapFile.Level = node.Lev;			// fire LevelChangedEvent.
@@ -1105,6 +1116,27 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			RoutePanel.HighlightedPosition = new Point(-1, -1);
 			Refresh();
+		}
+
+		private void OnOgClick(object sender, EventArgs e)
+		{
+//			btnOg.Enabled = false; // don't want to do that. Use it like a cached node.
+
+			if (   NodeOgId != -1
+				&& NodeOgId != NodeSelected.Index
+				&& NodeOgId < MapFile.Routes.Length)
+			{
+				SelectNode(NodeOgId);
+			}
+		}
+
+		/// <summary>
+		/// Disables the og-button when a Map gets loaded.
+		/// </summary>
+		internal void DisableOg()
+		{
+			btnOg.Enabled = false;
+			NodeOgId = -1;
 		}
 
 
