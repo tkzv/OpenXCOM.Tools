@@ -380,7 +380,7 @@ namespace PckView
 											TableOffsetHori,
 											TableOffsetVert + _tileHeight * tileY + _startY),
 									new Point(
-											TableOffsetHori + _tileWidth * _tilesX,
+											TableOffsetHori + _tileWidth  * _tilesX,
 											TableOffsetVert + _tileHeight * tileY + _startY));
 			}
 		}
@@ -419,7 +419,7 @@ namespace PckView
 				int tileX = (e.X - TableOffsetHori + 1)           / _tileWidth;
 				int tileY = (e.Y - TableOffsetHori + 1 - _startY) / _tileHeight;
 
-				int terrainId = _tilesX * tileY + tileX;
+				int terrainId = tileY * _tilesX + tileX;
 				if (terrainId < Spriteset.Count) // not out of bounds below
 					return terrainId;
 			}
@@ -437,14 +437,14 @@ namespace PckView
 			{
 				int tileY = terrainId / _tilesX;
 
-				int cutoff = _tileHeight * tileY;
+				int cutoff = tileY * _tileHeight;
 				if (cutoff < -_startY)		// <- check cutoff high
 				{
 					_scrollBar.Value = cutoff;
 				}
 				else						// <- check cutoff low
 				{
-					cutoff = _tileHeight * (tileY + 1) - Height + _statusBar.Height + TableOffsetVert + 1;
+					cutoff = (tileY + 1) * _tileHeight - Height + _statusBar.Height + TableOffsetVert + 1;
 					if (cutoff > -_startY)
 					{
 						_scrollBar.Value = cutoff;

@@ -1146,36 +1146,40 @@ namespace PckView
 
 		private void OnCompareClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
 		{
-			var original = _pnlView.Spriteset;
+			var original = _pnlView.Spriteset; // store original spriteset
 
-			OnOpenClick(null, EventArgs.Empty);
-
+			OnOpenClick(null, EventArgs.Empty); // load a second spriteset
 			var spriteset = _pnlView.Spriteset;
 
-			_pnlView.Spriteset = original;
+			_pnlView.Spriteset = original; // revert to original spriteset
 
 			if (Controls.Contains(_pnlView))
 			{
-				Controls.Remove(_pnlView);
+				Controls.Remove(_pnlView); // ...
 
-				_tcTabs = new TabControl();
+				_tcTabs = new TabControl(); // create tabs
 				_tcTabs.Dock = DockStyle.Fill;
-				pnlView.Controls.Add(_tcTabs);
+				pnlView.Controls.Add(_tcTabs); // add the tabs to the stock panel
 
-				var tabpage = new TabPage();
-				tabpage.Controls.Add(_pnlView);
+				var tabpage = new TabPage(); // create a page
+				tabpage.Controls.Add(_pnlView); // add the viewer to the page
 				tabpage.Text = "Original";
-				_tcTabs.TabPages.Add(tabpage);
+				_tcTabs.TabPages.Add(tabpage); // add the page to the tab-control
 
-				var viewpanel = new PckViewPanel();
-				viewpanel.ContextMenu = ViewerContextMenu();
+				var viewpanel = new PckViewPanel(); // create a second viewer
+				viewpanel.ContextMenu = ViewerContextMenu(); // ...
 				viewpanel.Dock = DockStyle.Fill;
-				viewpanel.Spriteset = spriteset;
+				viewpanel.Spriteset = spriteset; // assign the second spriteset to the second viewer
 
-				tabpage = new TabPage();
-				tabpage.Controls.Add(viewpanel);
-				tabpage.Text = "New";
-				_tcTabs.TabPages.Add(tabpage);
+				tabpage = new TabPage(); // create a second page
+				tabpage.Controls.Add(viewpanel); // add the second viewer to the second page
+				tabpage.Text = "Other";
+				_tcTabs.TabPages.Add(tabpage); // add the second page to the tab-control.
+
+				// that sounds like a bad idea. Sounds like plenty of stuff
+				// would have to be tested and tracked, or disabled to ensure
+				// that things still work correctly when some monkey goes, "Oh
+				// cool... watch this!" **sproing***
 			}
 		}
 		#endregion

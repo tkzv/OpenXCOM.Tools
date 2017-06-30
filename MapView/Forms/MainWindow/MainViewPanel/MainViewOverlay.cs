@@ -717,7 +717,8 @@ namespace MapView
 												true,
 												lev == MapBase.Level);
 							}
-							else if (!_suppressTargeter
+							else if (Focused
+								&& !_suppressTargeter
 								&& ClientRectangle.Contains(PointToClient(Cursor.Position))
 								&& col == _colOver
 								&& row == _rowOver

@@ -418,7 +418,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					MessageBox.Show(
 								this,
-								"Source node could not be linked to destination."
+								"Source node could not be linked to the destination node."
 									+ " Its link-slots are full.",
 								"Warning",
 								MessageBoxButtons.OK,
@@ -444,7 +444,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					{
 						MessageBox.Show(
 									this,
-									"Destination node could not be linked to source."
+									"Destination node could not be linked to the source node."
 										+ " Its link-slots are full.",
 									"Warning",
 									MessageBoxButtons.OK,
