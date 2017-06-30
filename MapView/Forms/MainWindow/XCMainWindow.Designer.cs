@@ -135,8 +135,8 @@ namespace MapView
 			// 
 			this.miSaveMap.Enabled = false;
 			this.miSaveMap.Index = 3;
-			this.miSaveMap.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
-			this.miSaveMap.Text = "&Save Map";
+			this.miSaveMap.Shortcut = System.Windows.Forms.Shortcut.CtrlM;
+			this.miSaveMap.Text = "Save &Map";
 			this.miSaveMap.Click += new System.EventHandler(this.OnSaveMapClick);
 			// 
 			// miSaveRoutes

@@ -864,13 +864,13 @@ namespace MapView
 			MaptreeChanged = !ResourceInfo.TileGroupInfo.SaveTileGroups();
 		}
 
-		private void OnSaveMapClick(object sender, EventArgs e)
+		internal void OnSaveMapClick(object sender, EventArgs e)
 		{
 			if (_mainViewUnderlay.MapBase != null)
 				_mainViewUnderlay.MapBase.SaveMap();
 		}
 
-		private void OnSaveRoutesClick(object sender, EventArgs e)
+		internal void OnSaveRoutesClick(object sender, EventArgs e)
 		{
 			if (_mainViewUnderlay.MapBase != null)
 				_mainViewUnderlay.MapBase.SaveRoutes();

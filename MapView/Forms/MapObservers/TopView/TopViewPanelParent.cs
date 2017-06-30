@@ -165,8 +165,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		internal void PathSelectedLozenge()
 		{
-			var start = MainViewUnderlay.Instance.MainViewOverlay.GetCanonicalDragStart();
-			var end   = MainViewUnderlay.Instance.MainViewOverlay.GetCanonicalDragEnd();
+			var start = MainViewUnderlay.Instance.MainViewOverlay.GetAbsoluteDragStart();
+			var end   = MainViewUnderlay.Instance.MainViewOverlay.GetAbsoluteDragEnd();
 
 			int halfWidth  = _blobService.HalfWidth;
 			int halfHeight = _blobService.HalfHeight;
@@ -280,7 +280,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 				// draw the selector lozenge ->
-				if (   _col > -1 && _col < MapBase.MapSize.Cols
+				if (Focused
+					&& _col > -1 && _col < MapBase.MapSize.Cols
 					&& _row > -1 && _row < MapBase.MapSize.Rows)
 				{
 					PathSelectorLozenge(
@@ -323,7 +324,7 @@ namespace MapView.Forms.MapObservers.TopViews
 													start.Y, start.X,
 													MapBase.Level);
 					_isMouseDrag = true;
-					MainViewUnderlay.Instance.MainViewOverlay.TripMouseDragEvent(start, start);
+					MainViewUnderlay.Instance.MainViewOverlay.ProcessTileSelection(start, start);
 				}
 			}
 		}
@@ -344,7 +345,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				if (_isMouseDrag)
 				{
 					var overlay = MainViewUnderlay.Instance.MainViewOverlay;
-					overlay.TripMouseDragEvent(overlay.DragStart, end);
+					overlay.ProcessTileSelection(overlay.DragStart, end);
 				}
 				else
 					Refresh(); // mouseover refresh for TopView.

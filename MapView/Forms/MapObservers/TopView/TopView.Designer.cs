@@ -27,8 +27,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TopView));
 			this.quadrants = new QuadrantPanel();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TopView));
 			this.tscPanel = new System.Windows.Forms.ToolStripContainer();
 			this.pMain = new System.Windows.Forms.Panel();
 			this.tsEdit = new System.Windows.Forms.ToolStrip();
@@ -155,7 +155,6 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "TopView";
 			this.Size = new System.Drawing.Size(640, 480);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
 			this.tscPanel.ContentPanel.ResumeLayout(false);
 			this.tscPanel.LeftToolStripPanel.ResumeLayout(false);
 			this.tscPanel.LeftToolStripPanel.PerformLayout();

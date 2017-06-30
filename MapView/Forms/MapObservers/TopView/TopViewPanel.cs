@@ -45,18 +45,22 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			MainViewUnderlay.Instance.MainViewOverlay.MouseDragEvent += PathSelectedLozenge;
 
-			(this as Control).KeyDown += OnEditKeyDown;
+			(this as Control).KeyDown += OnKeyDown;
 		}
 		#endregion
 
 
-		#region EventCalls
-		private void OnEditKeyDown(object sender, KeyEventArgs e)
+		#region Eventcalls
+		private void OnKeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control)
 			{
 				switch (e.KeyCode)
 				{
+					case Keys.S:
+						XCMainWindow.Instance.OnSaveMapClick(null, EventArgs.Empty);
+						break;
+
 					case Keys.X:
 						MainViewUnderlay.Instance.MainViewOverlay.Copy();
 						MainViewUnderlay.Instance.MainViewOverlay.ClearSelection();
@@ -86,24 +90,24 @@ namespace MapView.Forms.MapObservers.TopViews
 			}
 		}
 
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			base.OnMouseDown(e); // fire the parent's OnMouseDown() handler also ...
+
+			Select();
+
+			if (e.Button == MouseButtons.Right)
+				QuadrantsPanel.SetSelected(e.Button, 1);
+		}
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			base.OnPaint(e);
+			base.OnPaint(e); // fire the DoubleBufferControl's OnPaint() handler also.
 
 			var graphics = e.Graphics;
 			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
 			ControlPaint.DrawBorder3D(graphics, ClientRectangle, Border3DStyle.Etched);
-		}
-
-		protected override void OnMouseDown(MouseEventArgs e)
-		{
-			base.OnMouseDown(e);
-
-			Focus(); // needed for KeyDown events.
-
-			if (e.Button == MouseButtons.Right)
-				QuadrantsPanel.SetSelected(e.Button, 1);
 		}
 		#endregion
 

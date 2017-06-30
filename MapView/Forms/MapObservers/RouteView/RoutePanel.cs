@@ -90,7 +90,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				DrawGridLines();
 
-				if (_overCol != -1) // draw the selector lozenge
+				if (Focused && _overCol != -1) // draw the selector lozenge
 				{
 					PathSelectorLozenge(
 									Origin.X + (_overCol - _overRow) * DrawAreaWidth,

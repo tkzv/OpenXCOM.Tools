@@ -332,8 +332,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="args"></param>
 		private void OnRoutePanelClicked(object sender, RoutePanelClickedEventArgs args)
 		{
-			RoutePanel.Focus();
-
 			if (NodeSelected == null)
 			{
 				if ((NodeSelected = ((XCMapTile)args.ClickedTile).Node) == null
@@ -1100,7 +1098,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			var start = new Point(node.Col, node.Row);
 
-			MainViewUnderlay.Instance.MainViewOverlay.TripMouseDragEvent(start, start);
+			MainViewUnderlay.Instance.MainViewOverlay.ProcessTileSelection(start, start);
 
 			var args = new RoutePanelClickedEventArgs();
 			args.MouseEventArgs  = new MouseEventArgs(MouseButtons.Left, 0,0,0,0);
@@ -1292,13 +1290,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				switch (e.KeyCode)
 				{
-//					case Keys.S: // TODO: vet that.
-//						if (MapFile != null)
-//						{
-//							MapFile.Save();
-//							e.Handled = true; // why.
-//						}
-//						break;
+					case Keys.S:
+						XCMainWindow.Instance.OnSaveRoutesClick(null, EventArgs.Empty);
+						break;
 
 					case Keys.X:
 						_asterisk = true;

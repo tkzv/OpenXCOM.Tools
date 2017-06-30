@@ -191,21 +191,6 @@ namespace MapView.Forms.MapObservers.TopViews
 				_foptions.Close();
 			}
 		}
-
-		/// <summary>
-		/// Saves the Map on a Ctrl-S keydown event.
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnKeyDown(object sender, KeyEventArgs e) // TODO: vet that.
-		{
-//			if (MapBase != null
-//				&& e.Control && e.KeyCode == Keys.S)
-//			{
-//				MapBase.Save();
-//				e.Handled = true; // why.
-//			}
-		}
 		#endregion
 
 

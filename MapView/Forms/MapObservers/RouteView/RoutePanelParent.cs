@@ -206,7 +206,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="e"></param>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
-			Select(); // take focus away from the comboboxes. Tks.
+			Select();
 
 			if (MapFile != null)
 			{
@@ -217,7 +217,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 													start.Y, start.X,
 													MapFile.Level);
 
-					MainViewUnderlay.Instance.MainViewOverlay.TripMouseDragEvent(start, start);
+					MainViewUnderlay.Instance.MainViewOverlay.ProcessTileSelection(start, start);
 
 					if (RoutePanelClickedEvent != null) // fire RouteView.OnRoutePanelClicked()
 					{
@@ -296,8 +296,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void PathSelectedLozenge()
 		{
-			var start = MainViewUnderlay.Instance.MainViewOverlay.GetCanonicalDragStart();
-			var end   = MainViewUnderlay.Instance.MainViewOverlay.GetCanonicalDragEnd();
+			var start = MainViewUnderlay.Instance.MainViewOverlay.GetAbsoluteDragStart();
+			var end   = MainViewUnderlay.Instance.MainViewOverlay.GetAbsoluteDragEnd();
 
 			int halfWidth  = BlobService.HalfWidth;
 			int halfHeight = BlobService.HalfHeight;

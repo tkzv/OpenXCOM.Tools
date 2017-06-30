@@ -249,19 +249,21 @@ namespace MapView
 				   | ControlStyles.ResizeRedraw, true);
 
 			_brushLayer = new SolidBrush(Color.FromArgb(GridLayerOpacity, GridLayerColor));
-
-			KeyDown += OnEditKeyDown;
 		}
 		#endregion
 
 
 		#region Eventcalls and Methods for the edit-functions
-		private void OnEditKeyDown(object sender, KeyEventArgs e)
+		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			if (e.Control)
 			{
 				switch (e.KeyCode)
 				{
+					case Keys.S:
+						XCMainWindow.Instance.OnSaveMapClick(null, EventArgs.Empty);
+						break;
+
 					case Keys.X:
 						Copy();
 						ClearSelection();
@@ -289,6 +291,8 @@ namespace MapView
 						break;
 				}
 			}
+
+//			base.OnKeyDown(e);
 		}
 
 		internal void ClearSelection()
@@ -297,8 +301,8 @@ namespace MapView
 			{
 				MapBase.MapChanged = true;
 
-				var start = GetCanonicalDragStart();
-				var end   = GetCanonicalDragEnd();
+				var start = GetAbsoluteDragStart();
+				var end   = GetAbsoluteDragEnd();
 	
 				for (int col = start.X; col <= end.X; ++col)
 				for (int row = start.Y; row <= end.Y; ++row)
@@ -321,8 +325,8 @@ namespace MapView
 		{
 			if (MapBase != null)
 			{
-				var start = GetCanonicalDragStart();
-				var end   = GetCanonicalDragEnd();
+				var start = GetAbsoluteDragStart();
+				var end   = GetAbsoluteDragEnd();
 
 				_copied = new MapTileBase[end.Y - start.Y + 1,
 										  end.X - start.X + 1];
@@ -380,8 +384,8 @@ namespace MapView
 			{
 				MapBase.MapChanged = true;
 
-				var start = GetCanonicalDragStart();
-				var end   = GetCanonicalDragEnd();
+				var start = GetAbsoluteDragStart();
+				var end   = GetAbsoluteDragEnd();
 
 				var quadType = ViewerFormsManager.TopView.Control.QuadrantsPanel.SelectedQuadrant;
 				var tileView = ViewerFormsManager.TileView.Control;
@@ -442,7 +446,7 @@ namespace MapView
 													start.X,
 													MapBase.Level);
 					_isMouseDrag = true;
-					TripMouseDragEvent(start, start);
+					ProcessTileSelection(start, start);
 				}
 			}
 		}
@@ -473,7 +477,7 @@ namespace MapView
 				if (_isMouseDrag
 					&& (end.X != DragEnd.X || end.Y != DragEnd.Y))
 				{
-					TripMouseDragEvent(DragStart, end);
+					ProcessTileSelection(DragStart, end);
 				}
 				else
 					Refresh(); // mouseover refresh for MainView.
@@ -491,11 +495,12 @@ namespace MapView
 //		}
 
 		/// <summary>
-		/// Fires the drag-select event handler.
+		/// Sets drag-start and drag-end and fires a MouseDragEvent (path
+		/// selected lozenge).
 		/// </summary>
 		/// <param name="start"></param>
 		/// <param name="end"></param>
-		internal void TripMouseDragEvent(Point start, Point end)
+		internal void ProcessTileSelection(Point start, Point end)
 		{
 			if (DragStart != start || DragEnd != end)
 			{
@@ -514,7 +519,7 @@ namespace MapView
 		/// See 'DragStart' for bounds.
 		/// </summary>
 		/// <returns></returns>
-		internal Point GetCanonicalDragStart()
+		internal Point GetAbsoluteDragStart()
 		{
 			return new Point(
 						Math.Min(DragStart.X, DragEnd.X),
@@ -526,7 +531,7 @@ namespace MapView
 		/// See 'DragEnd' for bounds.
 		/// </summary>
 		/// <returns></returns>
-		internal Point GetCanonicalDragEnd()
+		internal Point GetAbsoluteDragEnd()
 		{
 			return new Point(
 						Math.Max(DragStart.X, DragEnd.X),
@@ -647,8 +652,8 @@ namespace MapView
 				var dragRect = new Rectangle();
 				if (FirstClick)
 				{
-					var start = GetCanonicalDragStart();
-					var end   = GetCanonicalDragEnd();
+					var start = GetAbsoluteDragStart();
+					var end   = GetAbsoluteDragEnd();
 
 					dragRect = new Rectangle(
 										start.X, start.Y,
