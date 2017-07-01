@@ -240,9 +240,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_lev = args.Level;
 			PrintSelectedLocation();
 
-			DeselectNode();
-			UpdateNodeInformation();
+//			DeselectNode();
+//			UpdateNodeInformation();
 
+//			if (RoutePanel.HighlightedPosition.X != -1)
+//				OnLinkMouseLeave(null, EventArgs.Empty);
+//			else
 			Refresh();
 		}
 		#endregion
@@ -947,27 +950,28 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
+		// TODO: don't do any node-linking OnLeave unless i vet it first.
 		private void OnLink1DestLeave(object sender, EventArgs e)
 		{
-//			cbLink_Leave(cbLink1, 0); // don't do any node-linking OnLeave unless i vet it first.
+//			cbLink_Leave(cbLink1, 0);
 		}
 		private void OnLink2DestLeave(object sender, EventArgs e)
 		{
-//			cbLink_Leave(cbLink2, 1); // don't do any node-linking OnLeave unless i vet it first.
+//			cbLink_Leave(cbLink2, 1);
 		}
 		private void OnLink3DestLeave(object sender, EventArgs e)
 		{
-//			cbLink_Leave(cbLink3, 2); // don't do any node-linking OnLeave unless i vet it first.
+//			cbLink_Leave(cbLink3, 2);
 		}
 		private void OnLink4DestLeave(object sender, EventArgs e)
 		{
-//			cbLink_Leave(cbLink4, 3); // don't do any node-linking OnLeave unless i vet it first.
+//			cbLink_Leave(cbLink4, 3);
 		}
 		private void OnLink5DestLeave(object sender, EventArgs e)
 		{
-//			cbLink_Leave(cbLink5, 4); // don't do any node-linking OnLeave unless i vet it first.
+//			cbLink_Leave(cbLink5, 4);
 		}
-//		private void cbLink_Leave(ComboBox sender, int id) // TODO: don't do any node-linking OnLeave unless i vet it first.
+//		private void cbLink_Leave(ComboBox sender, int id)
 //		{
 //			if (!_loadingInfo
 //				&& NodeSelected != null
@@ -1080,8 +1084,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			SelectNode(NodeSelected[slotId].Destination);
 
-			if (NodeSelected[slotId].Destination < Link.ExitWest)
-				HighlightGoNode(slotId);
+			HighlightDestinationNode(slotId);
 		}
 
 		private void SelectNode(int nodeId)
@@ -1113,37 +1116,38 @@ namespace MapView.Forms.MapObservers.RouteViews
 			Refresh();
 		}
 
-		private void OnLink1GoMouseEnter(object sender, EventArgs e)
+		private void OnLink1MouseEnter(object sender, EventArgs e)
 		{
-			HighlightGoNode(0);
+			HighlightDestinationNode(0);
 		}
-		private void OnLink2GoMouseEnter(object sender, EventArgs e)
+		private void OnLink2MouseEnter(object sender, EventArgs e)
 		{
-			HighlightGoNode(1);
+			HighlightDestinationNode(1);
 		}
-		private void OnLink3GoMouseEnter(object sender, EventArgs e)
+		private void OnLink3MouseEnter(object sender, EventArgs e)
 		{
-			HighlightGoNode(2);
+			HighlightDestinationNode(2);
 		}
-		private void OnLink4GoMouseEnter(object sender, EventArgs e)
+		private void OnLink4MouseEnter(object sender, EventArgs e)
 		{
-			HighlightGoNode(3);
+			HighlightDestinationNode(3);
 		}
-		private void OnLink5GoMouseEnter(object sender, EventArgs e)
+		private void OnLink5MouseEnter(object sender, EventArgs e)
 		{
-			HighlightGoNode(4);
-		}
-
-		private void HighlightGoNode(int slotId)
-		{
-			var node = MapFile.Routes[NodeSelected[slotId].Destination];
-			RoutePanel.HighlightedPosition = new Point(
-													node.Col,
-													node.Row);
-			Refresh();
+			HighlightDestinationNode(4);
 		}
 
-		private void OnLinkGoMouseLeave(object sender, EventArgs e)
+		private void HighlightDestinationNode(int slotId)
+		{
+			if (NodeSelected[slotId].Destination < Link.ExitWest)
+			{
+				var node = MapFile.Routes[NodeSelected[slotId].Destination];
+				RoutePanel.HighlightedPosition = new Point(node.Col, node.Row);
+				Refresh();
+			}
+		}
+
+		private void OnLinkMouseLeave(object sender, EventArgs e)
 		{
 			RoutePanel.HighlightedPosition = new Point(-1, -1);
 			Refresh();
@@ -1166,9 +1170,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private void OnOgMouseEnter(object sender, EventArgs e)
 		{
 			var node = MapFile.Routes[NodeOgId];
-			RoutePanel.HighlightedPosition = new Point(
-													node.Col,
-													node.Row);
+			RoutePanel.HighlightedPosition = new Point(node.Col, node.Row);
 			Refresh();
 		}
 
@@ -1181,6 +1183,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
+		#region Edit handlers
 		private void OnCutClick(object sender, EventArgs e)
 		{
 			OnCopyClick(null, null);
@@ -1202,7 +1205,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 										cbAttack.SelectedIndex,
 										cbSpawnRank.SelectedIndex,
 										cbSpawnWeight.SelectedIndex,
-										NodeCopySeparator); // TODO: include Link info ... perhaps.
+										NodeCopySeparator);
+				// TODO: include Link info ... perhaps.
+				// But re-assigning the link node-ids would be difficult, since
+				// those nodes could have be deleted, etc.
 				Clipboard.SetText(nodeText);
 			}
 			else
@@ -1214,7 +1220,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (NodeSelected != null)
 			{
 				var nodeData = Clipboard.GetText().Split(NodeCopySeparator);
-				if (nodeData[0] == NodeCopyPrefix)// TODO: include Link info ... perhaps.
+				if (nodeData[0] == NodeCopyPrefix)
 				{
 					MapFile.RoutesChanged = true;
 
@@ -1223,6 +1229,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 					cbAttack.SelectedIndex      = Int32.Parse(nodeData[3], System.Globalization.CultureInfo.InvariantCulture);
 					cbSpawnRank.SelectedIndex   = Int32.Parse(nodeData[4], System.Globalization.CultureInfo.InvariantCulture);
 					cbSpawnWeight.SelectedIndex = Int32.Parse(nodeData[5], System.Globalization.CultureInfo.InvariantCulture);
+					// TODO: include Link info ... perhaps.
+					// But re-assigning the link node-ids would be difficult, since
+					// those nodes could have be deleted, etc.
 				}
 				else
 					ShowDialogAsterisk("The data on the clipboard is not a node.");
@@ -1267,6 +1276,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 						MessageBoxDefaultButton.Button1,
 						0);
 		}
+		#endregion
+
 
 		/// <summary>
 		/// Deselects any currently selected node.

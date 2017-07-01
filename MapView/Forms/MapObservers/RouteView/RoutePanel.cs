@@ -367,7 +367,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 							_nodeFill.CloseFigure();
 
 
-							if (row == SelectedPosition.Y && col == SelectedPosition.X)
+							if (NodeSelected != null && MapFile.Level == NodeSelected.Lev
+								&& col == SelectedPosition.X
+								&& row == SelectedPosition.Y)
 							{
 								_graphics.FillPath(_brushSelected, _nodeFill);
 							}
