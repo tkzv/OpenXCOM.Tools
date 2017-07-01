@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace MapView
 {
-	internal delegate void OptionChangedEventHandler(object sender, string key, object value);
+	internal delegate void OptionChangedEventHandler(string key, object value);
 
 	internal delegate string ConvertObjectHandler(object value);
 
@@ -199,10 +199,9 @@ namespace MapView
 		#endregion
 
 
-		#region Event Calls
-		private void OnOptionChanged(object sender, string key, object val)
+		#region Eventcalls
+		private void OnOptionChanged(string key, object val)
 		{
-//			System.Windows.Forms.PropertyValueChangedEventArgs pe = (System.Windows.Forms.PropertyValueChangedEventArgs)e;
 			_properties[key].SetValue(val);
 		}
 		#endregion
@@ -224,7 +223,7 @@ namespace MapView
 		#endregion
 
 
-		#region Fields
+		#region Fields (static)
 		private static Dictionary<Type, ParseString> _converters;
 		#endregion
 
@@ -355,14 +354,14 @@ namespace MapView
 		internal void doUpdate(string key, object value)
 		{
 			if (OptionChangedEvent != null)
-				OptionChangedEvent(this, key, value);
+				OptionChangedEvent(key, value);
 		}
 
 		// TODO: FxCop CA1030:UseEventsWhereAppropriate
 		internal void doUpdate(string key)
 		{
 			if (OptionChangedEvent != null)
-				OptionChangedEvent(this, key, _value);
+				OptionChangedEvent(key, _value);
 		}
 		#endregion
 	}

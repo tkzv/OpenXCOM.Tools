@@ -834,6 +834,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink1DestSelectedIndexChanged(object sender, EventArgs e)
 		{
+			//LogFile.WriteLine("OnLink1DestSelectedIndexChanged"); fu.net
 			LinkDestinationSelectedIndexChanged(cbLink1Dest, 0, tbLink1Dist);
 		}
 		private void OnLink2DestSelectedIndexChanged(object sender, EventArgs e)
@@ -878,9 +879,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 				switch (link.Destination = dst.Value)
 				{
 					case Link.NotUsed:
+						link.UsableType = UnitType.Any;
+
 						tbDistance.Text = String.Empty;
 						link.Distance = 0;
-						UpdateGoEnabled(slotId, false);
+
+						UpdateGoEnabled(slotId, false, false);
 						break;
 
 					case Link.ExitWest:
@@ -889,7 +893,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 					case Link.ExitSouth:
 						tbDistance.Text = "0";
 						link.Distance = 0;
-						UpdateGoEnabled(slotId, false);
+
+						UpdateGoEnabled(slotId, false, true);
 						break;
 
 					default:
@@ -898,9 +903,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 															MapFile.Routes[link.Destination],
 															tbDistance,
 															slotId);
-						UpdateGoEnabled(slotId, true);
+
+						UpdateGoEnabled(slotId, true, true);
 						break;
 				}
+
+//				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
 		}
@@ -911,15 +919,34 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		/// <param name="slotId"></param>
 		/// <param name="enabled"></param>
-		private void UpdateGoEnabled(int slotId, bool enabled)
+		/// <param name="used"></param>
+		private void UpdateGoEnabled(
+				int slotId,
+				bool enabled,
+				bool used)
 		{
 			switch (slotId)
 			{
-				case 0: btnGoLink1.Enabled = enabled; break;
-				case 1: btnGoLink2.Enabled = enabled; break;
-				case 2: btnGoLink3.Enabled = enabled; break;
-				case 3: btnGoLink4.Enabled = enabled; break;
-				case 4: btnGoLink5.Enabled = enabled; break;
+				case 0:
+					btnGoLink1.Enabled = enabled;
+					btnGoLink1.Text = used ? Go : String.Empty;
+					break;
+				case 1:
+					btnGoLink2.Enabled = enabled;
+					btnGoLink2.Text = used ? Go : String.Empty;
+					break;
+				case 2:
+					btnGoLink3.Enabled = enabled;
+					btnGoLink3.Text = used ? Go : String.Empty;
+					break;
+				case 3:
+					btnGoLink4.Enabled = enabled;
+					btnGoLink4.Text = used ? Go : String.Empty;
+					break;
+				case 4:
+					btnGoLink5.Enabled = enabled;
+					btnGoLink5.Text = used ? Go : String.Empty;
+					break;
 			}
 		}
 
@@ -953,6 +980,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		// TODO: don't do any node-linking OnLeave unless i vet it first.
 		private void OnLink1DestLeave(object sender, EventArgs e)
 		{
+			//LogFile.WriteLine("OnLink1DestLeave"); fu.net
+//			RoutePanel.HighlightedPosition = new Point(-1, -1);
+//			Refresh();
+
 //			cbLink_Leave(cbLink1, 0);
 		}
 		private void OnLink2DestLeave(object sender, EventArgs e)
@@ -1004,6 +1035,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				MapFile.RoutesChanged = true;
 
 				NodeSelected[0].UsableType = (UnitType)cbLink1UnitType.SelectedItem;
+
+//				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
 		}
@@ -1014,6 +1047,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				MapFile.RoutesChanged = true;
 
 				NodeSelected[1].UsableType = (UnitType)cbLink2UnitType.SelectedItem;
+
+//				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
 		}
@@ -1024,6 +1059,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				MapFile.RoutesChanged = true;
 
 				NodeSelected[2].UsableType = (UnitType)cbLink3UnitType.SelectedItem;
+
+//				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
 		}
@@ -1034,6 +1071,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				MapFile.RoutesChanged = true;
 
 				NodeSelected[3].UsableType = (UnitType)cbLink4UnitType.SelectedItem;
+
+//				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
 		}
@@ -1044,6 +1083,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				MapFile.RoutesChanged = true;
 
 				NodeSelected[4].UsableType = (UnitType)cbLink5UnitType.SelectedItem;
+
+//				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
 		}
@@ -1149,29 +1190,30 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLinkMouseLeave(object sender, EventArgs e)
 		{
+			//LogFile.WriteLine("OnLinkMouseLeave"); fu.net
 			RoutePanel.HighlightedPosition = new Point(-1, -1);
 			Refresh();
 		}
 
 		private void OnOgClick(object sender, EventArgs e)
 		{
-//			btnOg.Enabled = false; // don't want to do that. Use it like a cached node.
-
-			if (NodeOgId >= MapFile.Routes.Length) // in case nodes were deleted.
-			{
-				btnOg.Enabled = false;
-			}
-			else if (NodeOgId != NodeSelected.Index)
+			if (NodeOgId < MapFile.Routes.Length // in case nodes were deleted.
+				&& (NodeSelected == null || NodeOgId != NodeSelected.Index))
 			{
 				SelectNode(NodeOgId);
 			}
+			else
+				btnOg.Enabled = false;
 		}
 
 		private void OnOgMouseEnter(object sender, EventArgs e)
 		{
-			var node = MapFile.Routes[NodeOgId];
-			RoutePanel.HighlightedPosition = new Point(node.Col, node.Row);
-			Refresh();
+			if (NodeOgId < MapFile.Routes.Length) // in case nodes were deleted.
+			{
+				var node = MapFile.Routes[NodeOgId];
+				RoutePanel.HighlightedPosition = new Point(node.Col, node.Row);
+				Refresh();
+			}
 		}
 
 		/// <summary>
@@ -1224,11 +1266,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					MapFile.RoutesChanged = true;
 
-					cbUnitType.SelectedIndex    = Int32.Parse(nodeData[1], System.Globalization.CultureInfo.InvariantCulture);
-					cbPriority.SelectedIndex    = Int32.Parse(nodeData[2], System.Globalization.CultureInfo.InvariantCulture);
-					cbAttack.SelectedIndex      = Int32.Parse(nodeData[3], System.Globalization.CultureInfo.InvariantCulture);
-					cbSpawnRank.SelectedIndex   = Int32.Parse(nodeData[4], System.Globalization.CultureInfo.InvariantCulture);
-					cbSpawnWeight.SelectedIndex = Int32.Parse(nodeData[5], System.Globalization.CultureInfo.InvariantCulture);
+					var invariant = System.Globalization.CultureInfo.InvariantCulture;
+
+					cbUnitType.SelectedIndex    = Int32.Parse(nodeData[1], invariant);
+					cbPriority.SelectedIndex    = Int32.Parse(nodeData[2], invariant);
+					cbAttack.SelectedIndex      = Int32.Parse(nodeData[3], invariant);
+					cbSpawnRank.SelectedIndex   = Int32.Parse(nodeData[4], invariant);
+					cbSpawnWeight.SelectedIndex = Int32.Parse(nodeData[5], invariant);
 					// TODO: include Link info ... perhaps.
 					// But re-assigning the link node-ids would be difficult, since
 					// those nodes could have be deleted, etc.
@@ -1580,7 +1624,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							so);
 		}
 
-		private void OnBrushColorChanged(object sender, string key, object val)
+		private void OnBrushColorChanged(string key, object val)
 		{
 			var color = (Color)val;
 			RoutePanel.RouteBrushes[key].Color = color;
@@ -1598,31 +1642,31 @@ namespace MapView.Forms.MapObservers.RouteViews
 			Refresh();
 		}
 
-		private void OnPenColorChanged(object sender, string key, object val)
+		private void OnPenColorChanged(string key, object val)
 		{
 			RoutePanel.RoutePens[key].Color = (Color)val;
 			Refresh();
 		}
 
-		private void OnPenWidthChanged(object sender, string key, object val)
+		private void OnPenWidthChanged(string key, object val)
 		{
 			RoutePanel.RoutePens[key].Width = (int)val;
 			Refresh();
 		}
 
-		private void OnNodeOpacityChanged(object sender, string key, object val)
+		private void OnNodeOpacityChanged(string key, object val)
 		{
 			RoutePanel.Opacity = (int)val;
 			Refresh();
 		}
 
-		private void OnShowPriorityChanged(object sender, string key, object val)
+		private void OnShowPriorityChanged(string key, object val)
 		{
 			RoutePanel.ShowPriorityBars = (bool)val;
 			Refresh();
 		}
 
-		private void OnShowOverlayChanged(object sender, string key, object val)
+		private void OnShowOverlayChanged(string key, object val)
 		{
 			RoutePanel.ShowOverlay = (bool)val;
 			Refresh();

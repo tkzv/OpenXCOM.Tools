@@ -56,6 +56,7 @@ namespace MapView
 			this.miOn = new System.Windows.Forms.MenuItem();
 			this.miOff = new System.Windows.Forms.MenuItem();
 			this.miDoors = new System.Windows.Forms.MenuItem();
+			this.miGrid = new System.Windows.Forms.MenuItem();
 			this.menuViewers = new System.Windows.Forms.MenuItem();
 			this.menuHelp = new System.Windows.Forms.MenuItem();
 			this.tvMaps = new System.Windows.Forms.TreeView();
@@ -256,7 +257,8 @@ namespace MapView
 			this.menuAnimation.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
 			this.miOn,
 			this.miOff,
-			this.miDoors});
+			this.miDoors,
+			this.miGrid});
 			this.menuAnimation.Text = "menuAnimation";
 			this.menuAnimation.Visible = false;
 			// 
@@ -281,6 +283,13 @@ namespace MapView
 			this.miDoors.Shortcut = System.Windows.Forms.Shortcut.F3;
 			this.miDoors.Text = "miDoors";
 			this.miDoors.Click += new System.EventHandler(this.OnToggleDoorsClick);
+			// 
+			// miGrid
+			// 
+			this.miGrid.Index = 3;
+			this.miGrid.Shortcut = System.Windows.Forms.Shortcut.F4;
+			this.miGrid.Text = "miGrid";
+			this.miGrid.Click += new System.EventHandler(this.OnToggleGridClick);
 			// 
 			// menuViewers
 			// 
@@ -541,6 +550,7 @@ namespace MapView
 		private System.Windows.Forms.MenuItem miOn;
 		private System.Windows.Forms.MenuItem miOff;
 		private System.Windows.Forms.MenuItem miDoors;
+		private System.Windows.Forms.MenuItem miGrid; // for lack of a better place to put it.
 
 
 		private System.Windows.Forms.SaveFileDialog sfdSaveDialog;

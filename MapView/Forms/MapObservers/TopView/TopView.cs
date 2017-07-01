@@ -328,10 +328,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <summary>
 		/// Fires when a brush-color changes in Options.
 		/// </summary>
-		/// <param name="sender"></param>
 		/// <param name="key"></param>
 		/// <param name="val"></param>
-		private void OnBrushChanged(object sender, string key, object val)
+		private void OnBrushChanged(string key, object val)
 		{
 			_topBrushes[key].Color = (Color)val;
 
@@ -344,10 +343,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <summary>
 		/// Fires when a pen-color changes in Options.
 		/// </summary>
-		/// <param name="sender"></param>
 		/// <param name="key"></param>
 		/// <param name="val"></param>
-		private void OnPenColorChanged(object sender, string key, object val)
+		private void OnPenColorChanged(string key, object val)
 		{
 			_topPens[key].Color = (Color)val;
 			Refresh();
@@ -356,10 +354,9 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <summary>
 		/// Fires when a pen-width changes in Options.
 		/// </summary>
-		/// <param name="sender"></param>
 		/// <param name="key"></param>
 		/// <param name="val"></param>
-		private void OnPenWidthChanged(object sender, string key, object val)
+		private void OnPenWidthChanged(string key, object val)
 		{
 			_topPens[key].Width = (int)val;
 			Refresh();

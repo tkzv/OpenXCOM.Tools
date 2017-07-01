@@ -311,10 +311,9 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// Loads a different brush/color for a tiletype's Special Property into
 		/// an already existing key.
 		/// </summary>
-		/// <param name="sender"></param>
 		/// <param name="key">a string representing the SpecialType</param>
 		/// <param name="val">the brush to insert</param>
-		private void OnSpecialPropertyColorChanged(object sender, string key, object val)
+		private void OnSpecialPropertyColorChanged(string key, object val)
 		{
 			((SolidBrush)_brushesSpecial[key]).Color = (Color)val;
 			Refresh();

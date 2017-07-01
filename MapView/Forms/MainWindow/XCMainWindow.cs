@@ -385,28 +385,40 @@ namespace MapView
 			var groups = ResourceInfo.TileGroupInfo.TileGroups;
 			//LogFile.WriteLine(". groups= " + groups);
 
+			SortableTreeNode nodeGroup;
+			TileGroupBase tileGroup;
+
+			SortableTreeNode nodeCategory;
+
+			SortableTreeNode nodeTileset;
+			Dictionary<string, Descriptor> descriptors;
+
+
 			foreach (string keyGroup in groups.Keys)
 			{
 				//LogFile.WriteLine(". . keyGroup= " + keyGroup);
 
-				var nodeGroup = new SortableTreeNode(groups[keyGroup].Label);
-				nodeGroup.Tag = groups[keyGroup];
+				tileGroup = groups[keyGroup];
+
+				nodeGroup = new SortableTreeNode(tileGroup.Label);
+				nodeGroup.Tag = tileGroup;
 				tvMaps.Nodes.Add(nodeGroup);
 
-				foreach (string keyCategory in groups[keyGroup].Categories.Keys)
+				foreach (string keyCategory in tileGroup.Categories.Keys)
 				{
 					//LogFile.WriteLine(". . . keyCategory= " + keyCategory);
 
-					var nodeCategory = new SortableTreeNode(keyCategory);
-					nodeCategory.Tag = groups[keyGroup].Categories[keyCategory];
+					nodeCategory = new SortableTreeNode(keyCategory);
+					descriptors = tileGroup.Categories[keyCategory];
+					nodeCategory.Tag = descriptors;
 					nodeGroup.Nodes.Add(nodeCategory);
 
-					foreach (string keyTileset in groups[keyGroup].Categories[keyCategory].Keys)
+					foreach (string keyTileset in descriptors.Keys)
 					{
 						//LogFile.WriteLine(". . . . keyTileset= " + keyTileset);
 
-						var nodeTileset = new SortableTreeNode(keyTileset);
-						nodeTileset.Tag = groups[keyGroup].Categories[keyCategory][keyTileset];
+						nodeTileset = new SortableTreeNode(keyTileset);
+						nodeTileset.Tag = descriptors[keyTileset];
 						nodeCategory.Nodes.Add(nodeTileset);
 					}
 				}
@@ -539,15 +551,16 @@ namespace MapView
 			Options.AddOption(
 							Animation,
 							MainViewUnderlay.IsAnimated,
-							"If true the sprites will animate",
+							"If true the sprites will animate (F1 - On, F2 - Off)",
 							Global,
 							handler);
 			Options.AddOption(
 							Doors,
 							false,
 							"If true the doors will animate if Animation is also on - if"
-							+ " Animation is false the doors will show their alternate tile."
-							+ " This setting may need to be re-toggled if Animation changes",
+								+ " Animation is false the doors will show their alternate tile."
+								+ " This setting may need to be re-toggled if Animation changes"
+								+ " (F3 - On/Off)",
 							Global,
 							handler);
 			Options.AddOption(
@@ -560,9 +573,10 @@ namespace MapView
 			Options.AddOption(
 							ShowGrid,
 							MainViewUnderlay.Instance.MainViewOverlay.ShowGrid,
-							"If true a grid will display at the current level of editing",
+							"If true a grid will display at the current level of editing (F4 - On/Off)",
 							MapView,
-							null, MainViewUnderlay.Instance.MainViewOverlay);
+							handler);
+//							null, MainViewUnderlay.Instance.MainViewOverlay);
 			Options.AddOption(
 							GridLayerColor,
 							MainViewUnderlay.Instance.MainViewOverlay.GridLayerColor,
@@ -598,7 +612,7 @@ namespace MapView
 							SpriteShade,
 							MainViewUnderlay.Instance.MainViewOverlay.SpriteShade,
 							"The darkness of the tile sprites (10..100 default 0 off, unity is 33)"
-							+ " Values outside the range turn sprite shading off",
+								+ " Values outside the range turn sprite shading off",
 							Sprites,
 							null, MainViewUnderlay.Instance.MainViewOverlay);
 
@@ -628,11 +642,9 @@ namespace MapView
 		/// <summary>
 		/// Handles a MainView Options change by the user.
 		/// </summary>
-		/// <param name="sender"></param>
 		/// <param name="key"></param>
 		/// <param name="value"></param>
 		private void OnOptionChange(
-				object sender,
 				string key,
 				object value)
 		{
@@ -683,7 +695,9 @@ namespace MapView
 					break;
 
 				case ShowGrid:
-					MainViewUnderlay.Instance.MainViewOverlay.ShowGrid = (bool)value;
+					_mainViewUnderlay.MainViewOverlay.ShowGrid = (miGrid.Checked = (bool)value);
+
+//					MainViewUnderlay.Instance.MainViewOverlay.ShowGrid = (bool)value;
 					break;
 
 				case GridLayerColor:
@@ -831,7 +845,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnOnClick(object sender, EventArgs e)
 		{
-			OnOptionChange(this, Animation, true);
+			OnOptionChange(Animation, true);
 		}
 
 		/// <summary>
@@ -841,7 +855,7 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnOffClick(object sender, EventArgs e)
 		{
-			OnOptionChange(this, Animation, false);
+			OnOptionChange(Animation, false);
 		}
 
 		/// <summary>
@@ -851,8 +865,19 @@ namespace MapView
 		/// <param name="e"></param>
 		private void OnToggleDoorsClick(object sender, EventArgs e)
 		{
-			OnOptionChange(this, Doors, !miDoors.Checked);
+			OnOptionChange(Doors, !miDoors.Checked);
 		}
+
+		/// <summary>
+		/// Fired by the F4 key to toggle the grid on/off.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnToggleGridClick(object sender, EventArgs e)
+		{
+			OnOptionChange(ShowGrid, !miGrid.Checked);
+		}
+
 
 		private void OnSaveAllClick(object sender, EventArgs e)
 		{
@@ -937,6 +962,7 @@ namespace MapView
 			MaptreeChanged = !ResourceInfo.TileGroupInfo.SaveTileGroups();
 		}
 
+
 		private void OnRegenOccultClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE
 		{
 			var mapFile = MainViewUnderlay.Instance.MapBase as MapFileChild;
@@ -946,6 +972,7 @@ namespace MapView
 				Refresh();
 			}
 		}
+
 
 		/// <summary>
 		/// Opens the Configuration Editor.
@@ -1037,6 +1064,7 @@ namespace MapView
 			}
 		}
 
+
 		private void OnQuitClick(object sender, EventArgs e)
 		{
 			//LogFile.WriteLine("");
@@ -1047,6 +1075,7 @@ namespace MapView
 			if (_quit)
 				Environment.Exit(0); // god, that works so much better than Application.Exit()
 		}
+
 
 		private void OnOptionsClick(object sender, EventArgs e)
 		{
@@ -1075,6 +1104,7 @@ namespace MapView
 				_foptions.Close();
 			}
 		}
+
 
 		private void OnSaveImageClick(object sender, EventArgs e)
 		{
@@ -1106,6 +1136,7 @@ namespace MapView
 //				_mainViewPanel.OnResize();
 //			}
 		}
+
 
 		private void OnMapResizeClick(object sender, EventArgs e)
 		{
@@ -1139,6 +1170,7 @@ namespace MapView
 			}
 		}
 
+
 		private void OnMainWindowActivated(object sender, EventArgs e)
 		{
 			if (!_windowFlag)
@@ -1156,6 +1188,7 @@ namespace MapView
 			}
 		}
 
+
 		private void OnInfoClick(object sender, EventArgs e)
 		{
 			if (_mainViewUnderlay.MapBase != null)
@@ -1165,6 +1198,7 @@ namespace MapView
 				f.Analyze(_mainViewUnderlay.MapBase as MapFileChild);
 			}
 		}
+
 
 		private void OnExportClick(object sender, EventArgs e) // disabled in designer w/ Visible=FALSE.
 		{
@@ -1194,6 +1228,7 @@ namespace MapView
 //			_mainViewPanel.MapView.DrawSelectionBox = !_mainViewPanel.MapView.DrawSelectionBox;
 //			tsbSelectionBox.Checked = !tsbSelectionBox.Checked;
 		}
+
 
 		private void OnZoomInClick(object sender, EventArgs e)
 		{
@@ -1240,6 +1275,7 @@ namespace MapView
 			}
 			_mainViewUnderlay.UpdateScrollers();
 		}
+
 
 		/// <summary>
 		/// Opens a context-menu on RMB-click.
