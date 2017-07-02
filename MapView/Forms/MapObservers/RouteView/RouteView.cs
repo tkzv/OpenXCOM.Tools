@@ -1179,13 +1179,45 @@ namespace MapView.Forms.MapObservers.RouteViews
 			HighlightDestinationNode(4);
 		}
 
+		/// <summary>
+		/// Sets the highlighted destination link-line and node if applicable.
+		/// </summary>
+		/// <param name="slotId">the link-slot whose destination should get
+		/// highlighted</param>
 		private void HighlightDestinationNode(int slotId)
 		{
-			if (NodeSelected[slotId].Destination < Link.ExitWest)
+			byte destId = NodeSelected[slotId].Destination;
+
+			if (destId < Link.ExitWest)
 			{
-				var node = MapFile.Routes[NodeSelected[slotId].Destination];
+				var node = MapFile.Routes[destId];
 				RoutePanel.HighlightedPosition = new Point(node.Col, node.Row);
 				Refresh();
+			}
+			else
+			{
+				switch (destId)
+				{
+					case Link.ExitNorth:
+						RoutePanel.HighlightedPosition = new Point(-2, -2);
+						Refresh();
+						break;
+					case Link.ExitEast:
+						RoutePanel.HighlightedPosition = new Point(-3, -3);
+						Refresh();
+						break;
+					case Link.ExitSouth:
+						RoutePanel.HighlightedPosition = new Point(-4, -4);
+						Refresh();
+						break;
+					case Link.ExitWest:
+						RoutePanel.HighlightedPosition = new Point(-5, -5);
+						Refresh();
+						break;
+
+					case Link.NotUsed:
+						break;
+				}
 			}
 		}
 

@@ -190,7 +190,7 @@ namespace XCom
 
 		public override string ToString()
 		{
-			return ("c " + _col + "  r " + _row + "  l " + Lev);
+			return ("c " + _col + "  r " + _row + "  L " + Lev);
 		}
 		#endregion
 	}

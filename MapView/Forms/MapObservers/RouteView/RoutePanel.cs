@@ -110,7 +110,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 											RoutePens[RouteView.GridLineColor].Width + 1),
 									LozSelected);
 
-					if (HighlightedPosition.X != -1)
+					if (HighlightedPosition.X > -1)
 					{
 						PathHighlightedLozenge(
 										Origin.X + (HighlightedPosition.X - HighlightedPosition.Y) * DrawAreaWidth,
@@ -247,9 +247,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			int xDst;
 			int yDst;
-			int yOffset = (!selected) ? DrawAreaHeight
-									  : 0;
-
 			RouteNode nodeDst;
 
 			for (int i = 0; i != RouteNode.LinkSlots; ++i)
@@ -297,20 +294,53 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				if (xDst != -1)
 				{
-					var pen0 = pen;
-					if (selected // deal with go-button link-line colors
-						&& HighlightedPosition.X != -1
-						&& (nodeDst == null
-							|| HighlightedPosition.X != nodeDst.Col
-							|| HighlightedPosition.Y != nodeDst.Row))
+					if (selected) // draw link-lines for a selected node ->
 					{
-						pen0 = RoutePens[RouteView.UnselectedLinkColor];
-					}
+						var pen0 = pen;
 
-					_graphics.DrawLine(
-									pen0,
-									xSrc, ySrc + yOffset, // unselected nodes need an offset
-									xDst, yDst);
+						if (HighlightedPosition.X != -1)
+						{
+							if (nodeDst != null)
+							{
+								if (   HighlightedPosition.X != nodeDst.Col
+									|| HighlightedPosition.Y != nodeDst.Row)
+								{
+									pen0 = RoutePens[RouteView.UnselectedLinkColor];
+								}
+							}
+							else
+							{
+								switch (link.Destination)	// see RouteView.HighlightDestinationNode() for
+								{							// def'n of the following highlighted-positions
+									case Link.ExitNorth:
+										if (HighlightedPosition.X != -2)
+											pen0 = RoutePens[RouteView.UnselectedLinkColor];
+										break;
+									case Link.ExitEast:
+										if (HighlightedPosition.X != -3)
+											pen0 = RoutePens[RouteView.UnselectedLinkColor];
+										break;
+									case Link.ExitSouth:
+										if (HighlightedPosition.X != -4)
+											pen0 = RoutePens[RouteView.UnselectedLinkColor];
+										break;
+									case Link.ExitWest:
+										if (HighlightedPosition.X != -5)
+											pen0 = RoutePens[RouteView.UnselectedLinkColor];
+										break;
+								}
+							}
+						}
+						_graphics.DrawLine(
+										pen0,
+										xSrc, ySrc,
+										xDst, yDst);
+					}
+					else // draw link-lines for a non-selected node ->
+						_graphics.DrawLine(
+										pen,
+										xSrc, ySrc + DrawAreaHeight, // unselected nodes need an offset
+										xDst, yDst);
 				}
 			}
 		}
