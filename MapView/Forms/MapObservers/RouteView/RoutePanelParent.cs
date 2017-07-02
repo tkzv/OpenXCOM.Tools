@@ -54,9 +54,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Marks the tile that is highlighted by a mouse-overed Go button.
 		/// </summary>
-		internal Point HighlightedPosition
+		internal protected Point HighlightedPosition
 		{
-			get { return _highlight; }
+			protected get { return _highlight; } // ... whatever.
 			set { _highlight = value; }
 		}
 
