@@ -908,7 +908,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 						break;
 				}
 
-//				RoutePanel.HighlightedPosition = new Point(-1, -1);
+				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
 		}
