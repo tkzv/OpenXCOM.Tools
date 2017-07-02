@@ -651,9 +651,9 @@ namespace MapView
 			Options[key].Value = value;
 			switch (key)
 			{
-				case Animation:
-					miOff.Checked = !(miOn.Checked = (bool)value);	// NOTE: 'miOn.Checked' and 'miOff.Checked' are used
-					MainViewUnderlay.Animate(miOn.Checked);			// by the F1 and F2 keys to switch animations on/off.
+				case Animation: // NOTE: 'miOn.Checked' and 'miOff.Checked' are used by the F1 and F2 keys to switch animations on/off.
+					miOff.Checked = !(miOn.Checked = (bool)value);
+					MainViewUnderlay.Animate(miOn.Checked);
 
 					if (!miOn.Checked) // show the doorsprites closed in TileView and QuadrantPanel.
 					{
@@ -669,8 +669,8 @@ namespace MapView
 						ToggleDoorSprites(true);
 					break;
 
-				case Doors:
-					miDoors.Checked = (bool)value; // NOTE: 'miDoors.Checked' is used by the F3 key to toggle door animations.
+				case Doors: // NOTE: 'miDoors.Checked' is used by the F3 key to toggle door animations.
+					miDoors.Checked = (bool)value;
 
 					if (miOn.Checked)
 					{
@@ -694,7 +694,7 @@ namespace MapView
 //					PathsEditor.SaveRegistry = (bool)val; // TODO: find a place to cache this value.
 					break;
 
-				case ShowGrid:
+				case ShowGrid: // NOTE: 'miGrid.Checked' is used by the F4 key to toggle the grid on/off.
 					_mainViewUnderlay.MainViewOverlay.ShowGrid = (miGrid.Checked = (bool)value);
 
 //					MainViewUnderlay.Instance.MainViewOverlay.ShowGrid = (bool)value;

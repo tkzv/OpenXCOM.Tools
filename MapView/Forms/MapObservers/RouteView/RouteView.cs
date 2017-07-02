@@ -1159,6 +1159,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink1MouseEnter(object sender, EventArgs e)
 		{
+			LogFile.WriteLine("OnLink1MouseEnter");
 			HighlightDestinationNode(0);
 		}
 		private void OnLink2MouseEnter(object sender, EventArgs e)
@@ -1197,10 +1198,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnOgClick(object sender, EventArgs e)
 		{
-			if (NodeOgId < MapFile.Routes.Length // in case nodes were deleted.
-				&& (NodeSelected == null || NodeOgId != NodeSelected.Index))
+			if (NodeOgId < MapFile.Routes.Length) // in case nodes were deleted.
 			{
-				SelectNode(NodeOgId);
+				if (NodeSelected == null || NodeOgId != NodeSelected.Index)
+					SelectNode(NodeOgId);
 			}
 			else
 				btnOg.Enabled = false;
