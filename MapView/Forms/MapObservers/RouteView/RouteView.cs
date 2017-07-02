@@ -1159,7 +1159,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink1MouseEnter(object sender, EventArgs e)
 		{
-			LogFile.WriteLine("OnLink1MouseEnter");
+			//LogFile.WriteLine("OnLink1MouseEnter");
 			HighlightDestinationNode(0);
 		}
 		private void OnLink2MouseEnter(object sender, EventArgs e)
