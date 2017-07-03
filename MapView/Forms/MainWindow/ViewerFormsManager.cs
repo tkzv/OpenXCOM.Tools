@@ -9,10 +9,13 @@ namespace MapView.Forms.MainWindow
 {
 	internal sealed class ViewerFormsManager
 	{
+		#region Fields (static)
 		internal static ShowHideManager HideViewersManager;
 		internal static EditButtonsFactory EditFactory;
+		#endregion
 
 
+		#region Properties (static)
 		private static TopViewForm _topView;
 		internal static TopViewForm TopView
 		{
@@ -48,8 +51,10 @@ namespace MapView.Forms.MainWindow
 		{
 			get { return _aboutWindow ?? (_aboutWindow = new About()); }
 		}
+		#endregion
 
 
+		#region Methods (static)
 		internal static void Initialize()
 		{
 			TopRouteView.ControlTop.InitializeEditStrip(EditFactory);
@@ -59,7 +64,10 @@ namespace MapView.Forms.MainWindow
 			TileView.Control.SetShowHideManager(HideViewersManager);
 			TileView.Control.TileSelectedEvent_Observer0 += OnTileSelected_Observer0;
 		}
+		#endregion
 
+
+		#region Eventcalls (static)
 		/// <summary>
 		/// Changes the selected quadrant in the QuadrantPanel when a tilepart
 		/// is selected in TileView.
@@ -70,7 +78,10 @@ namespace MapView.Forms.MainWindow
 			if (part != null && part.Record != null)
 				TopView.Control.SelectQuadrant(part.Record.TileType);
 		}
+		#endregion
 
+
+		#region Methods
 		internal void SetObservers(MapFileBase mapBase)
 		{
 			var observers = new IMapObserver[]
@@ -106,5 +117,6 @@ namespace MapView.Forms.MainWindow
 			foreach (string key in observer.MoreObservers.Keys) // ie. TopViewPanel and QuadrantsPanel
 				SetObserver(observer.MapBase, observer.MoreObservers[key]);
 		}
+		#endregion
 	}
 }

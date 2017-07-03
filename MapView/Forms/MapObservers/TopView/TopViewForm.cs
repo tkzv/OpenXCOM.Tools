@@ -8,12 +8,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			Form,
 			IMapObserverProvider
 	{
-		internal TopViewForm()
-		{
-			InitializeComponent();
-		}
-
-
+		#region Properties
 		internal TopView Control
 		{
 			get { return TopViewControl; }
@@ -26,5 +21,14 @@ namespace MapView.Forms.MapObservers.TopViews
 		{
 			get { return TopViewControl; }
 		}
+		#endregion
+
+
+		#region cTor
+		internal TopViewForm()
+		{
+			InitializeComponent();
+		}
+		#endregion
 	}
 }

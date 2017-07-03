@@ -8,12 +8,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			Form,
 			IMapObserverProvider
 	{
-		internal RouteViewForm()
-		{
-			InitializeComponent();
-		}
-
-
+		#region Properties
 		internal RouteView Control
 		{
 			get { return RouteViewControl; }
@@ -26,5 +21,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			get { return RouteViewControl; }
 		}
+		#endregion
+
+
+		#region cTor
+		internal RouteViewForm()
+		{
+			InitializeComponent();
+		}
+		#endregion
 	}
 }

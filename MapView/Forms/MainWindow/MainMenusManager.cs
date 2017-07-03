@@ -14,6 +14,11 @@ namespace MapView.Forms.MainWindow
 {
 	internal sealed class MainMenusManager
 	{
+		#region Fields (static)
+		private const string Divider = "-";
+		#endregion
+
+
 		#region Fields
 		private readonly MenuItem _menuViewers;
 		private readonly MenuItem _menuHelp;
@@ -24,8 +29,6 @@ namespace MapView.Forms.MainWindow
 		private Options _options;
 
 		private bool _quitting;
-
-		private const string Divider = "-";
 		#endregion
 
 
@@ -43,7 +46,7 @@ namespace MapView.Forms.MainWindow
 		#endregion
 
 
-		#region Eventcalls
+		#region Eventcalls (static)
 		/// <summary>
 		/// Handles clicking on a MenuItem to open/close a window.
 		/// </summary>
@@ -68,7 +71,10 @@ namespace MapView.Forms.MainWindow
 				((Form)it.Tag).Close();
 			}
 		}
+		#endregion
 
+
+		#region Eventcalls
 		/// <summary>
 		/// Shows the CHM helpfile.
 		/// </summary>
@@ -128,7 +134,7 @@ namespace MapView.Forms.MainWindow
 				string caption,
 				Menu parent)
 		{
-			f.Text = caption;
+			f.Text = caption; // set the titlebar text.
 
 			var it = new MenuItem(caption);
 			it.Tag = f;

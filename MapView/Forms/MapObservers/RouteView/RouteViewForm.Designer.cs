@@ -49,7 +49,7 @@
 			this.KeyPreview = true;
 			this.Name = "RouteViewForm";
 			this.ShowInTaskbar = false;
-			this.Text = "Waypoint View";
+			this.Text = "RouteView";
 			this.ResumeLayout(false);
 
 		}

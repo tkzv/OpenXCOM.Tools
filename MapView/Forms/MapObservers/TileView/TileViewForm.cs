@@ -10,21 +10,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			Form,
 			IMapObserverProvider
 	{
-		internal TileViewForm()
-		{
-			InitializeComponent();
-
-			Activated += OnActivated;
-		}
-
-		/// <summary>
-		/// Fires when the form is activated.
-		/// </summary>
-		private void OnActivated(object sender, EventArgs e)
-		{
-			TileViewControl.GetSelectedPanel().Focus();
-		}
-
+		#region Properties
 		/// <summary>
 		/// Gets TileView as a child of MapObserverControl0.
 		/// </summary>
@@ -40,11 +26,29 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			get { return TileViewControl; }
 		}
+		#endregion
 
+
+		#region cTor
+		internal TileViewForm()
+		{
+			InitializeComponent();
+
+			Activated += OnActivated;
+		}
+		#endregion
+
+
+		#region Eventcalls
 		/// <summary>
-		/// Required designer variable.
+		/// Fires when the form is activated.
 		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+		private void OnActivated(object sender, EventArgs e)
+		{
+			TileViewControl.GetSelectedPanel().Focus();
+		}
+		#endregion
+
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -97,6 +101,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		}
 		#endregion
+
+		private System.ComponentModel.IContainer components = null;
 
 		private TileView TileViewControl;
 	}

@@ -14,7 +14,7 @@ namespace MapView.Forms.MainWindow
 	internal sealed class ViewersManager
 	{
 		#region Fields
-		private readonly Dictionary<string, Form> _viewersDictionary = new Dictionary<string, Form>();
+		private readonly Dictionary<string, Form> _viewers = new Dictionary<string, Form>();
 
 		private readonly OptionsManager     _optionsManager;
 //		private readonly ConsoleSharedSpace _consoleShare;
@@ -53,12 +53,12 @@ namespace MapView.Forms.MainWindow
 			SetAsObserver(RegistryInfo.RouteView, ViewerFormsManager.RouteView);
 			SetAsObserver(RegistryInfo.TileView,  ViewerFormsManager.TileView);
 
-			_viewersDictionary.Add(RegistryInfo.TopRouteView, ViewerFormsManager.TopRouteView);
+			_viewers.Add(RegistryInfo.TopRouteView, ViewerFormsManager.TopRouteView);
 
 //			_viewersDictionary.Add(RegistryInfo.Console, _consoleShare.Console);
 
-			_viewersDictionary.Add("Help",  ViewerFormsManager.HelpScreen);
-			_viewersDictionary.Add("About", ViewerFormsManager.AboutScreen);
+			_viewers.Add("Help",  ViewerFormsManager.HelpScreen);
+			_viewers.Add("About", ViewerFormsManager.AboutScreen);
 
 //			MainWindowsManager.TopRouteView.ControlTop.RegistryInfo   = MainWindowsManager.TopView.Control.RegistryInfo;
 //			MainWindowsManager.TopRouteView.ControlRoute.RegistryInfo = MainWindowsManager.RouteView.Control.RegistryInfo;
@@ -72,7 +72,7 @@ namespace MapView.Forms.MainWindow
 		private void SetAsObserver(string viewer, Form f)
 		{
 			//LogFile.WriteLine("SetAsObserver viewer= " + viewer);
-			_viewersDictionary.Add(viewer, f);
+			_viewers.Add(viewer, f);
 
 			var fobserver = f as IMapObserverProvider; // TopViewForm, RouteViewForm, TileViewForm only.
 			if (fobserver != null)
@@ -94,9 +94,9 @@ namespace MapView.Forms.MainWindow
 		/// </summary>
 		internal void CloseSubsidiaryViewers()
 		{
-			foreach (string key in _viewersDictionary.Keys)
+			foreach (string key in _viewers.Keys)
 			{
-				var f = _viewersDictionary[key];
+				var f = _viewers[key];
 				f.WindowState = FormWindowState.Normal;
 
 				f.Close();
