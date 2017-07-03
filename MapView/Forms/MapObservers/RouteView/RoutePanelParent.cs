@@ -342,11 +342,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		/// <summary>
-		/// Gets the tile contained at (x,y) in local screen coordinates.
+		/// Gets the tile contained at (x,y) wrt client-area in local screen
+		/// coordinates.
 		/// </summary>
-		/// <param name="x">the x-position of the mouse-cursor</param>
-		/// <param name="y">the y-position of the mouse-cursor</param>
-		/// <returns>null if (x,y) is an invalid location for a tile</returns>
+		/// <param name="x">the x-position of the mouse-cursor wrt Client-area</param>
+		/// <param name="y">the y-position of the mouse-cursor wrt Client-area</param>
+		/// <returns>the corresponding XCMapTile or null if (x,y) is an invalid
+		/// location for a tile</returns>
 		internal protected XCMapTile GetTile(int x, int y)
 		{
 			var loc = GetTileLocation(x, y);
@@ -355,11 +357,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		/// <summary>
-		/// Converts a position from screen-coordinates to tile-location.
+		/// Converts a position from client-coordinates to a tile-location.
 		/// </summary>
-		/// <param name="x">the x-position of the mouse-cursor</param>
-		/// <param name="y">the y-position of the mouse-cursor</param>
-		/// <returns></returns>
+		/// <param name="x">the x-position of the mouse-cursor wrt Client-area</param>
+		/// <param name="y">the y-position of the mouse-cursor wrt Client-area</param>
+		/// <returns>the corresponding tile-location or (-1,-1) if the location
+		/// is invalid</returns>
 		internal protected Point GetTileLocation(int x, int y)
 		{
 			if (MapFile != null)

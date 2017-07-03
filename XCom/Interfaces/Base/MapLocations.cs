@@ -3,8 +3,9 @@
 
 namespace XCom.Interfaces.Base
 {
-	internal sealed class MapPosition // TODO: merge with MapLocation.
+	internal sealed class MapLocations // TODO: merge with MapLocation.
 	{
+		#region Properties
 		/// <summary>
 		/// Gets the total rows.
 		/// </summary>
@@ -31,32 +32,37 @@ namespace XCom.Interfaces.Base
 		{
 			get { return _levs; }
 		}
+		#endregion
 
 
+		#region cTor
 		/// <summary>
-		/// cTor. Constructs a MapPosition object.
+		/// cTor. Constructs a MapLocations object.
 		/// </summary>
 		/// <param name="rows">the maximum rows of a Map</param>
 		/// <param name="cols">the maximum columns of a Map</param>
 		/// <param name="levs">the maximum levels of a Map</param>
-		internal MapPosition(int rows, int cols, int levs)
+		internal MapLocations(int rows, int cols, int levs)
 		{
 			_rows = rows;
 			_cols = cols;
 			_levs = levs;
 		}
+		#endregion
 
 
+		#region Methods
 		/// <summary>
-		/// Gets the Id of a specified position.
+		/// Gets the Id of a specified location.
 		/// </summary>
 		/// <param name="row">the current row</param>
 		/// <param name="col">the current column</param>
 		/// <param name="lev">the current level</param>
 		/// <returns></returns>
-		internal int GetPositionId(int row, int col, int lev)
+		internal int GetLocationId(int row, int col, int lev)
 		{
-			return (_rows * _cols * lev) + (_cols * row) + col;
+			return col + (row * _cols) + (lev * _cols * _rows);
 		}
+		#endregion
 	}
 }

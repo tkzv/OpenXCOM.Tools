@@ -228,7 +228,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_col = args.Location.Col;
 			_row = args.Location.Row;
 			_lev = args.Location.Lev;
-			PrintSelectedLocation();
+			PrintSelectedInfo();
 		}
 
 		/// <summary>
@@ -238,7 +238,21 @@ namespace MapView.Forms.MapObservers.RouteViews
 		public override void OnLevelChangedObserver(LevelChangedEventArgs args)
 		{
 			_lev = args.Level;
-			PrintSelectedLocation();
+
+			PrintSelectedInfo();
+
+			var loc = RoutePanel.GetTileLocation(
+											RoutePanel.CursorPosition.X,
+											RoutePanel.CursorPosition.Y);
+			int overId = -1;
+			if (loc.X != -1)
+			{
+				var node = ((XCMapTile)MapBase[loc.Y, loc.X, _lev]).Node;
+				if (node != null)
+					overId = node.Index;
+			}
+
+			PrintOverInfo(overId, loc);
 
 //			DeselectNode();
 //			UpdateNodeInformation();
@@ -252,66 +266,83 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		/// <summary>
-		/// Prints the currently selected location to the panel.
+		/// Prints the currently selected tile-info to the TileData groupbox.
 		/// NOTE: The displayed level is inverted here.
 		/// </summary>
-		private void PrintSelectedLocation()
+		private void PrintSelectedInfo()
 		{
 			if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick)
-				lblSelectedPosition.Text = String.Format(
-													System.Globalization.CultureInfo.InvariantCulture,
-													"c {0}  r {1}  L {2}",
-													_col, _row, MapFile.MapSize.Levs - _lev);
+			{
+				string selected = String.Empty;
+
+				int level;
+
+				if (NodeSelected != null)
+				{
+					selected = "Selected " + NodeSelected.Index;
+					level = NodeSelected.Lev;
+				}
+				else
+					level = _lev;
+
+				selected += Environment.NewLine;
+
+				selected += String.Format(
+										System.Globalization.CultureInfo.InvariantCulture,
+										"c {0}  r {1}  L {2}",
+										_col, _row, MapFile.MapSize.Levs - level);
+
+				lblSelected.Text = selected;
+			}
 		}
 
 		/// <summary>
-		/// Clears the selected location text when another Map loads.
+		/// Clears the selected tile-info text when another Map loads.
 		/// </summary>
-		internal void ClearSelectedLocation()
+		internal void ClearSelectedInfo()
 		{
-			lblSelectedPosition.Text = String.Empty;
+			lblSelected.Text = String.Empty;
 		}
 
-
-		private void OnOptionsClick(object sender, EventArgs e)
+		/// <summary>
+		/// Prints the currently mouse-overed tile-info to the TileData groupbox.
+		/// </summary>
+		/// <param name="overId"></param>
+		/// <param name="loc"></param>
+		private void PrintOverInfo(int overId, Point loc)
 		{
-			var it = sender as ToolStripMenuItem;
-			if (!it.Checked)
+			string over = String.Empty;
+
+			if (overId != -1)
+				over = "Over " + overId;
+
+			over += Environment.NewLine;
+
+			if (loc.X != -1)
 			{
-				it.Checked = true;
-
-				_foptions = new OptionsForm("RouteViewOptions", Options);
-				_foptions.Text = "RouteView Options";
-
-				_foptions.Show();
-
-				_foptions.FormClosing += (sender1, e1) =>
-				{
-					if (!_closing)
-						OnOptionsClick(sender, e);
-
-					_closing = false;
-				};
+				over += String.Format(
+									System.Globalization.CultureInfo.InvariantCulture,
+									"c {0}  r {1}  L {2}",
+									loc.X, loc.Y, MapFile.MapSize.Levs - _lev);
 			}
-			else
-			{
-				_closing = true;
 
-				it.Checked = false;
-				_foptions.Close();
-			}
+			lblOver.Text = over;
 		}
 
 
 		private void OnRoutePanelMouseMove(object sender, MouseEventArgs args)
 		{
+			int overId;
+
 			var tile = RoutePanel.GetTile(args.X, args.Y);
 			if (tile != null && tile.Node != null)
-			{
-				lblOverId.Text = "Over " + tile.Node.Index;
-			}
+				overId = tile.Node.Index;
 			else
-				lblOverId.Text = String.Empty;
+				overId = -1;
+
+			var loc = RoutePanel.GetTileLocation(args.X, args.Y);
+
+			PrintOverInfo(overId, loc);
 
 			RoutePanel.CursorPosition = new Point(args.X, args.Y);
 			RoutePanel.Refresh();	// 3nd mouseover refresh for RouteView.
@@ -507,6 +538,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void UpdateNodeInformation()
 		{
+			PrintSelectedInfo();
+
 			_loadingInfo = true;
 
 			gbNodeData.SuspendLayout();
@@ -517,8 +550,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			if (NodeSelected == null)
 			{
-				lblSelectedId.Text = String.Empty;
-
 				btnCut.Enabled    =
 				btnCopy.Enabled   =
 				btnPaste.Enabled  =
@@ -574,8 +605,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 			else
 			{
-				lblSelectedId.Text = "Selected " + NodeSelected.Index;
-
 				gbNodeData.Enabled   =
 				gbPatrolData.Enabled =
 				gbSpawnData.Enabled  =
@@ -834,7 +863,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink1DestSelectedIndexChanged(object sender, EventArgs e)
 		{
-			//LogFile.WriteLine("OnLink1DestSelectedIndexChanged"); fu.net
 			LinkDestinationSelectedIndexChanged(cbLink1Dest, 0, tbLink1Dist);
 		}
 		private void OnLink2DestSelectedIndexChanged(object sender, EventArgs e)
@@ -915,7 +943,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// the next mouse-enter event won't even fire; but doing a mouse-leave
 			// then another mouse-enter catches.
 			// WORKAROUND: use the mouse-hover event for the comboboxes instead
-			// of the mouse-enter event.
+			// of the mouse-enter event. For this, the cursor has to be kept
+			// stationary, and there is a further slight lag.
 		}
 
 		/// <summary>
@@ -985,10 +1014,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		// TODO: don't do any node-linking OnLeave unless i vet it first.
 		private void OnLink1DestLeave(object sender, EventArgs e)
 		{
-			//LogFile.WriteLine("OnLink1DestLeave"); fu.net
-//			RoutePanel.HighlightedPosition = new Point(-1, -1);
-//			Refresh();
-
 //			cbLink_Leave(cbLink1, 0);
 		}
 		private void OnLink2DestLeave(object sender, EventArgs e)
@@ -1041,7 +1066,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				NodeSelected[0].UsableType = (UnitType)cbLink1UnitType.SelectedItem;
 
-//				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
 		}
@@ -1053,7 +1077,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				NodeSelected[1].UsableType = (UnitType)cbLink2UnitType.SelectedItem;
 
-//				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
 		}
@@ -1065,7 +1088,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				NodeSelected[2].UsableType = (UnitType)cbLink3UnitType.SelectedItem;
 
-//				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
 		}
@@ -1077,7 +1099,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				NodeSelected[3].UsableType = (UnitType)cbLink4UnitType.SelectedItem;
 
-//				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
 		}
@@ -1089,7 +1110,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				NodeSelected[4].UsableType = (UnitType)cbLink5UnitType.SelectedItem;
 
-//				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
 		}
@@ -1164,7 +1184,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLink1MouseEnter(object sender, EventArgs e)
 		{
-			//LogFile.WriteLine("OnLink1MouseEnter");
 			HighlightDestinationNode(0);
 		}
 		private void OnLink2MouseEnter(object sender, EventArgs e)
@@ -1228,7 +1247,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLinkMouseLeave(object sender, EventArgs e)
 		{
-			//LogFile.WriteLine("OnLinkMouseLeave"); fu.net
 			RoutePanel.HighlightedPosition = new Point(-1, -1);
 			Refresh();
 		}
@@ -1315,8 +1333,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 					// But re-assigning the link node-ids would be difficult, since
 					// those nodes could have be deleted, etc.
 				}
-				else
+				else // non-node data has been copied to the clipboard.
+				{
+					btnPaste.Enabled = false;
 					ShowDialogAsterisk("The data on the clipboard is not a node.");
+				}
 			}
 			else
 				ShowDialogAsterisk("A node must be selected.");
@@ -1496,6 +1517,35 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Options
+		private void OnOptionsClick(object sender, EventArgs e)
+		{
+			var it = sender as ToolStripMenuItem;
+			if (!it.Checked)
+			{
+				it.Checked = true;
+
+				_foptions = new OptionsForm("RouteViewOptions", Options);
+				_foptions.Text = "RouteView Options";
+
+				_foptions.Show();
+
+				_foptions.FormClosing += (sender1, e1) =>
+				{
+					if (!_closing)
+						OnOptionsClick(sender, e);
+
+					_closing = false;
+				};
+			}
+			else
+			{
+				_closing = true;
+
+				it.Checked = false;
+				_foptions.Close();
+			}
+		}
+
 		// headers
 		private const string Links = "Links";
 		private const string View  = "View";
@@ -1670,11 +1720,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			switch (key)
 			{
 				case SelectedNodeColor:
-					lblSelectedPosition.ForeColor =
-					lblSelectedId.ForeColor       = color;
+					lblSelected.ForeColor = color;
 					break;
 				case UnselectedNodeColor:
-					lblOverId.ForeColor = color;
+					lblOver.ForeColor = color;
 					break;
 			}
 			Refresh();

@@ -74,7 +74,7 @@ namespace XCom.Interfaces.Base
 		private MapLocation _location;
 		/// <summary>
 		/// Gets/Sets the currently selected location. Setting the location will
-		/// fire a LocationSelected event.
+		/// fire LocationSelectedEvent.
 		/// </summary>
 		public MapLocation Location
 		{
@@ -103,24 +103,24 @@ namespace XCom.Interfaces.Base
 
 		/// <summary>
 		/// Gets/Sets a MapTile using row,col,level values. No error checking
-		/// is done to ensure that the location is valid.
+		/// is done to ensure that the given location is valid.
 		/// </summary>
 		/// <param name="row"></param>
 		/// <param name="col"></param>
 		/// <param name="lev"></param>
-		/// <returns></returns>
+		/// <returns>the corresponding MapTileBase object</returns>
 		public MapTileBase this[int row, int col, int lev]
 		{
-			get { return (MapTiles != null) ? MapTiles[row, col, lev]
-											: null; }
+			get { return (MapTiles != null) ? MapTiles[row, col, lev] : null; }
 			set { MapTiles[row, col, lev] = value; }
 		}
 		/// <summary>
-		/// Gets/Sets a MapTile at the current level using row,col values.
+		/// Gets/Sets a MapTile at the current level using row,col values. No
+		/// error checking is done to ensure that the given location is valid.
 		/// </summary>
 		/// <param name="row"></param>
 		/// <param name="col"></param>
-		/// <returns></returns>
+		/// <returns>the corresponding MapTileBase object</returns>
 		public MapTileBase this[int row, int col]
 		{
 			get { return this[row, col, Level]; }
