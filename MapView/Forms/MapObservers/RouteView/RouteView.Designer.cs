@@ -106,8 +106,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink5Dest.TabIndex = 20;
 			this.cbLink5Dest.SelectedIndexChanged += new System.EventHandler(this.OnLink5DestSelectedIndexChanged);
 			this.cbLink5Dest.Leave += new System.EventHandler(this.OnLink5DestLeave);
-			this.cbLink5Dest.MouseEnter += new System.EventHandler(this.OnLink5MouseEnter);
 			this.cbLink5Dest.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
+			this.cbLink5Dest.MouseHover += new System.EventHandler(this.OnLink5MouseEnter);
 			// 
 			// cbLink4Dest
 			// 
@@ -117,8 +117,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink4Dest.TabIndex = 19;
 			this.cbLink4Dest.SelectedIndexChanged += new System.EventHandler(this.OnLink4DestSelectedIndexChanged);
 			this.cbLink4Dest.Leave += new System.EventHandler(this.OnLink4DestLeave);
-			this.cbLink4Dest.MouseEnter += new System.EventHandler(this.OnLink4MouseEnter);
 			this.cbLink4Dest.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
+			this.cbLink4Dest.MouseHover += new System.EventHandler(this.OnLink4MouseEnter);
 			// 
 			// cbLink3Dest
 			// 
@@ -128,8 +128,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink3Dest.TabIndex = 18;
 			this.cbLink3Dest.SelectedIndexChanged += new System.EventHandler(this.OnLink3DestSelectedIndexChanged);
 			this.cbLink3Dest.Leave += new System.EventHandler(this.OnLink3DestLeave);
-			this.cbLink3Dest.MouseEnter += new System.EventHandler(this.OnLink3MouseEnter);
 			this.cbLink3Dest.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
+			this.cbLink3Dest.MouseHover += new System.EventHandler(this.OnLink3MouseEnter);
 			// 
 			// cbLink2Dest
 			// 
@@ -139,8 +139,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink2Dest.TabIndex = 17;
 			this.cbLink2Dest.SelectedIndexChanged += new System.EventHandler(this.OnLink2DestSelectedIndexChanged);
 			this.cbLink2Dest.Leave += new System.EventHandler(this.OnLink2DestLeave);
-			this.cbLink2Dest.MouseEnter += new System.EventHandler(this.OnLink2MouseEnter);
 			this.cbLink2Dest.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
+			this.cbLink2Dest.MouseHover += new System.EventHandler(this.OnLink2MouseEnter);
 			// 
 			// cbLink1Dest
 			// 
@@ -150,8 +150,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink1Dest.TabIndex = 16;
 			this.cbLink1Dest.SelectedIndexChanged += new System.EventHandler(this.OnLink1DestSelectedIndexChanged);
 			this.cbLink1Dest.Leave += new System.EventHandler(this.OnLink1DestLeave);
-			this.cbLink1Dest.MouseEnter += new System.EventHandler(this.OnLink1MouseEnter);
 			this.cbLink1Dest.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
+			this.cbLink1Dest.MouseHover += new System.EventHandler(this.OnLink1MouseEnter);
 			// 
 			// labelLink5
 			// 
@@ -428,8 +428,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink5UnitType.Size = new System.Drawing.Size(110, 20);
 			this.cbLink5UnitType.TabIndex = 26;
 			this.cbLink5UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLink5UnitTypeSelectedIndexChanged);
-			this.cbLink5UnitType.MouseEnter += new System.EventHandler(this.OnLink5MouseEnter);
 			this.cbLink5UnitType.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
+			this.cbLink5UnitType.MouseHover += new System.EventHandler(this.OnLink5MouseEnter);
 			// 
 			// cbLink4UnitType
 			// 
@@ -438,8 +438,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink4UnitType.Size = new System.Drawing.Size(110, 20);
 			this.cbLink4UnitType.TabIndex = 25;
 			this.cbLink4UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLink4UnitTypeSelectedIndexChanged);
-			this.cbLink4UnitType.MouseEnter += new System.EventHandler(this.OnLink4MouseEnter);
 			this.cbLink4UnitType.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
+			this.cbLink4UnitType.MouseHover += new System.EventHandler(this.OnLink4MouseEnter);
 			// 
 			// cbLink3UnitType
 			// 
@@ -448,8 +448,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink3UnitType.Size = new System.Drawing.Size(110, 20);
 			this.cbLink3UnitType.TabIndex = 24;
 			this.cbLink3UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLink3UnitTypeSelectedIndexChanged);
-			this.cbLink3UnitType.MouseEnter += new System.EventHandler(this.OnLink3MouseEnter);
 			this.cbLink3UnitType.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
+			this.cbLink3UnitType.MouseHover += new System.EventHandler(this.OnLink3MouseEnter);
 			// 
 			// cbLink2UnitType
 			// 
@@ -458,8 +458,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink2UnitType.Size = new System.Drawing.Size(110, 20);
 			this.cbLink2UnitType.TabIndex = 23;
 			this.cbLink2UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLink2UnitTypeSelectedIndexChanged);
-			this.cbLink2UnitType.MouseEnter += new System.EventHandler(this.OnLink2MouseEnter);
 			this.cbLink2UnitType.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
+			this.cbLink2UnitType.MouseHover += new System.EventHandler(this.OnLink2MouseEnter);
 			// 
 			// cbLink1UnitType
 			// 
@@ -468,8 +468,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink1UnitType.Size = new System.Drawing.Size(110, 20);
 			this.cbLink1UnitType.TabIndex = 22;
 			this.cbLink1UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLink1UnitTypeSelectedIndexChanged);
-			this.cbLink1UnitType.MouseEnter += new System.EventHandler(this.OnLink1MouseEnter);
 			this.cbLink1UnitType.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
+			this.cbLink1UnitType.MouseHover += new System.EventHandler(this.OnLink1MouseEnter);
 			// 
 			// labelUnitInfo
 			// 

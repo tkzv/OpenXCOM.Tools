@@ -911,6 +911,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
 			}
+			// NOTE: .NET anomaly, after the selected index changes of a combobox
+			// the next mouse-enter event won't even fire; but doing a mouse-leave
+			// then another mouse-enter catches.
+			// WORKAROUND: use the mouse-hover event for the comboboxes instead
+			// of the mouse-enter event.
 		}
 
 		/// <summary>
