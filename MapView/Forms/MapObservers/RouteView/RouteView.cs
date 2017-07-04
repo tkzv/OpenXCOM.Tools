@@ -136,10 +136,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			RoutePanel = new RoutePanel();
 			RoutePanel.Dock = DockStyle.Fill;
-			RoutePanel.RoutePanelClickedEvent += OnRoutePanelClicked;
-			RoutePanel.MouseMove              += OnRoutePanelMouseMove;
-			RoutePanel.MouseLeave             += OnRoutePanelMouseLeave;
-			RoutePanel.KeyDown                += OnKeyDown;
+			RoutePanel.RoutePanelMouseDownEvent += OnRoutePanelMouseDown;
+			RoutePanel.MouseMove                += OnRoutePanelMouseMove;
+			RoutePanel.MouseLeave               += OnRoutePanelMouseLeave;
+			RoutePanel.KeyDown                  += OnKeyDown;
 			pnlRoutes.Controls.Add(RoutePanel);
 
 			// setup the connect-type dropdown entries
@@ -359,19 +359,20 @@ namespace MapView.Forms.MapObservers.RouteViews
 			RoutePanel.Refresh();	// 3rd mouseover refresh for RouteView.
 		}							// See OnRoutePanelMouseMove(), RoutePanelParent.OnMouseMove()
 
+
 		/// <summary>
 		/// Selects a node on LMB, creates and/or connects nodes on RMB.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		private void OnRoutePanelClicked(object sender, RoutePanelClickedEventArgs args)
+		private void OnRoutePanelMouseDown(object sender, RoutePanelMouseDownEventArgs args)
 		{
 			if (NodeSelected == null)
 			{
-				if ((NodeSelected = ((XCMapTile)args.ClickedTile).Node) == null
-					&& args.MouseEventArgs.Button == MouseButtons.Right)
+				if ((NodeSelected = ((XCMapTile)args.Tile).Node) == null
+					&& args.MouseButton == MouseButtons.Right)
 				{
-					NodeSelected = MapFile.AddRouteNode(args.ClickedLocation);
+					NodeSelected = MapFile.AddRouteNode(args.Location);
 				}
 
 				if (NodeSelected != null)
@@ -379,11 +380,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 			else // if a node is already selected ...
 			{
-				var node = ((XCMapTile)args.ClickedTile).Node;
+				var node = ((XCMapTile)args.Tile).Node;
 
 				if (node != null && !node.Equals(NodeSelected)) // NOTE: a null node "Equals" any valid node ....
 				{
-					if (args.MouseEventArgs.Button == MouseButtons.Right)
+					if (args.MouseButton == MouseButtons.Right)
 						ConnectNode(node);
 
 //					RoutePanel.Refresh(); don't work.
@@ -393,9 +394,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				}
 				else if (node == null)
 				{
-					if (args.MouseEventArgs.Button == MouseButtons.Right)
+					if (args.MouseButton == MouseButtons.Right)
 					{
-						node = MapFile.AddRouteNode(args.ClickedLocation);
+						node = MapFile.AddRouteNode(args.Location);
 						ConnectNode(node);
 					}
 //					RoutePanel.Refresh(); don't work.
@@ -1169,12 +1170,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			MainViewUnderlay.Instance.MainViewOverlay.ProcessTileSelection(start, start);
 
-			var args = new RoutePanelClickedEventArgs();
-			args.MouseEventArgs  = new MouseEventArgs(MouseButtons.Left, 0,0,0,0);
-			args.ClickedTile     = MapFile[node.Row, node.Col];
-			args.ClickedLocation = MapFile.Location;
+			var args = new RoutePanelMouseDownEventArgs();
+			args.MouseButton = MouseButtons.Left;
+			args.Tile        = MapFile[node.Row, node.Col];
+			args.Location    = MapFile.Location;
 
-			OnRoutePanelClicked(null, args);
+			OnRoutePanelMouseDown(null, args);
 
 
 			RoutePanel.SelectedPosition = start;

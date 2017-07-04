@@ -7,17 +7,17 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.RouteViews
 {
-	internal sealed class RoutePanelClickedEventArgs
+	internal sealed class RoutePanelMouseDownEventArgs
 		:
 			EventArgs
 	{
-		internal MapLocation ClickedLocation
+		internal MapLocation Location
 		{ get; set; }
 
-		internal MapTileBase ClickedTile
+		internal MapTileBase Tile
 		{ get; set; }
 
-		internal MouseEventArgs MouseEventArgs
+		internal MouseButtons MouseButton
 		{ get; set; }
 	}
 }

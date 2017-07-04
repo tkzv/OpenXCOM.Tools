@@ -139,7 +139,7 @@
     <Compile Include="Forms\MainWindow\OptionsManager.cs" />
     <Compile Include="Forms\MainWindow\MainMenusManager.cs" />
     <Compile Include="Forms\MapObservers\IMapObserverProvider.cs" />
-    <Compile Include="Forms\MapObservers\RouteView\RoutePanelClickedEventArgs.cs" />
+    <Compile Include="Forms\MapObservers\RouteView\RoutePanelMouseDownEventArgs.cs" />
     <Compile Include="Forms\MapObservers\RouteView\RoutePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

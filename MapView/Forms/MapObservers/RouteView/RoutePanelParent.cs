@@ -19,7 +19,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			UserControl
 	{
 		#region Events
-		public event EventHandler<RoutePanelClickedEventArgs> RoutePanelClickedEvent;
+		public event EventHandler<RoutePanelMouseDownEventArgs> RoutePanelMouseDownEvent;
 		#endregion
 
 
@@ -200,45 +200,43 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		/// <summary>
 		/// Selects a tile on the mouse-down event.
-		/// IMPORTANT: Any changes that are done here should be reflected in
-		/// RouteView.Go() since that is an alternate way to select a tile.
+		/// IMPORTANT: Any changes that are done here regarding node-selection
+		/// should be reflected in RouteView.Go() since that is an alternate way
+		/// to select a tile.
 		/// </summary>
 		/// <param name="e"></param>
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
+//			base.OnMouseDown(e);
+
 			Select();
 
 			if (MapFile != null)
 			{
-				var start = GetTileLocation(e.X, e.Y);
-				if (start.X != -1)
+				var loc = GetTileLocation(e.X, e.Y);
+				if (loc.X != -1)
 				{
 					MapFile.Location = new MapLocation( // fire LocationSelectedEvent
-													start.Y, start.X,
+													loc.Y,
+													loc.X,
 													MapFile.Level);
 
-					MainViewUnderlay.Instance.MainViewOverlay.ProcessTileSelection(start, start);
+					MainViewUnderlay.Instance.MainViewOverlay.ProcessTileSelection(loc, loc);
 
-					if (RoutePanelClickedEvent != null) // fire RouteView.OnRoutePanelClicked()
+					if (RoutePanelMouseDownEvent != null)
 					{
-						var args = new RoutePanelClickedEventArgs();
-						args.MouseEventArgs  = e; // used only to get the mouse-button
+						var args = new RoutePanelMouseDownEventArgs();
+						args.MouseButton = e.Button;
+						args.Tile        = MapFile[loc.Y, loc.X];
+						args.Location    = MapFile.Location;
 
-						args.ClickedTile     = MapFile[start.Y, start.X];
-//						args.ClickedTile     = tile;
-
-						args.ClickedLocation = MapFile.Location; // WARNING: keep an eye on that. Ie, don't let 'args' change 'MapFile.Location' wantonly.
-//						args.ClickedLocation = new MapLocation(
-//															start.Y, start.X,
-//															MapFile.Level);
-
-						RoutePanelClickedEvent(this, args);
+						RoutePanelMouseDownEvent(this, args); // fire RouteView.OnRoutePanelMouseDown()
 					}
 
-					SelectedPosition = start;	// NOTE: if a new 'ClickPoint' is set before firing the RoutePanelClickedEvent
-				}								// OnPaint() will draw a frame with incorrectly selected-link lines. So only set
-			}									// the 'ClickPoint' after the event happens.
-		}
+					SelectedPosition = loc;	// NOTE: if a new 'SelectedPosition' is set before firing the
+				}							// RoutePanelMouseDownEvent, OnPaint() will draw a frame with
+			}								// incorrectly selected-link lines. So set the 'SelectedPosition'
+		}									// *after* the event happens.
 
 		/// <summary>
 		/// Tracks x/y location for the mouseover lozenge.
