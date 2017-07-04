@@ -20,6 +20,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 	{
 		#region Events
 		public event EventHandler<RoutePanelMouseDownEventArgs> RoutePanelMouseDownEvent;
+		public event EventHandler<RoutePanelMouseDownEventArgs> RoutePanelMouseUpEvent;
 		#endregion
 
 
@@ -211,7 +212,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			Select();
 
-			if (MapFile != null)
+			if (MapFile != null) // safety.
 			{
 				var loc = GetTileLocation(e.X, e.Y);
 				if (loc.X != -1)
@@ -221,8 +222,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 													loc.X,
 													MapFile.Level);
 
-					MainViewUnderlay.Instance.MainViewOverlay.ProcessTileSelection(loc, loc);
-
+					MainViewUnderlay.Instance.MainViewOverlay.ProcessTileSelection(loc, loc);	// set selected location for other viewers.
+																								// NOTE: drag-selection is not allowed here.
 					if (RoutePanelMouseDownEvent != null)
 					{
 						var args = new RoutePanelMouseDownEventArgs();
@@ -254,6 +255,32 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				Refresh();	// 3nd mouseover refresh for RouteView.
 			}				// See RouteView.OnRoutePanelMouseMove(), RouteView.OnRoutePanelMouseLeave()
+		}
+
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+//			base.OnMouseUp(e);
+
+			if (MapFile != null) // safety.
+			{
+				if (RoutePanelMouseUpEvent != null)
+				{
+					var loc = GetTileLocation(e.X, e.Y);
+
+					if (loc.X != -1)
+					{
+						var args = new RoutePanelMouseDownEventArgs();
+						args.MouseButton = e.Button;
+						args.Tile        = MapFile[loc.Y, loc.X];
+						args.Location    = new MapLocation(
+														loc.Y,
+														loc.X,
+														MapFile.Level);
+
+						RoutePanelMouseUpEvent(this, args);
+					}
+				}
+			}
 		}
 		#endregion
 

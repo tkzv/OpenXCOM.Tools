@@ -74,6 +74,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			LinkType.ExitWest,
 			LinkType.NotUsed
 		};
+
+		private RouteNode _nodeMoved;
 		#endregion
 
 
@@ -137,6 +139,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			RoutePanel = new RoutePanel();
 			RoutePanel.Dock = DockStyle.Fill;
 			RoutePanel.RoutePanelMouseDownEvent += OnRoutePanelMouseDown;
+			RoutePanel.RoutePanelMouseUpEvent   += OnRoutePanelMouseUp;
 			RoutePanel.MouseMove                += OnRoutePanelMouseMove;
 			RoutePanel.MouseLeave               += OnRoutePanelMouseLeave;
 			RoutePanel.KeyDown                  += OnKeyDown;
@@ -359,6 +362,30 @@ namespace MapView.Forms.MapObservers.RouteViews
 			RoutePanel.Refresh();	// 3rd mouseover refresh for RouteView.
 		}							// See OnRoutePanelMouseMove(), RoutePanelParent.OnMouseMove()
 
+		private void OnRoutePanelMouseUp(object sender, RoutePanelMouseDownEventArgs args)
+		{
+			if (_nodeMoved != null
+				&& ((XCMapTile)args.Tile).Node == null)
+			{
+				MapFile.RoutesChanged = true;
+
+				((XCMapTile)((MapFileBase)MapFile)[_nodeMoved.Row, // clear the node from the previous tile
+												   _nodeMoved.Col,
+												   _nodeMoved.Lev]).Node = null;
+
+				_nodeMoved.Col = (byte)args.Location.Col; // reassign the node's x/y/z values
+				_nodeMoved.Row = (byte)args.Location.Row; // these get saved w/ Routes.
+				_nodeMoved.Lev = args.Location.Lev;
+
+				((XCMapTile)args.Tile).Node = _nodeMoved; // place the node to the tile at the mouse-up location.
+
+				// Select the new location so the links draw and the selected node highlights
+				// properly but don't re-path the selected-lozenge. Let user see where the
+				// node-drag started until a click calls RoutePanelParent.PathSelectedLozenge().
+				RoutePanel.SelectedPosition = new Point(_nodeMoved.Col, _nodeMoved.Row);
+			}
+			_nodeMoved = null;
+		}
 
 		/// <summary>
 		/// Selects a node on LMB, creates and/or connects nodes on RMB.
@@ -409,6 +436,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			if (NodeSelected != null)
 			{
+				_nodeMoved = NodeSelected;
+
 				btnCut.Enabled    =
 				btnCopy.Enabled   =
 				btnDelete.Enabled = true;
@@ -421,6 +450,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 			else
 			{
+				_nodeMoved = null;
+
 				btnCut.Enabled    =
 				btnCopy.Enabled   =
 				btnPaste.Enabled  =

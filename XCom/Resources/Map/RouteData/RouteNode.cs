@@ -32,17 +32,11 @@ namespace XCom
 
 
 		#region Properties
-		private readonly byte _col;
 		public byte Col
-		{
-			get { return _col; }
-		}
+		{ get; set; }
 
-		private readonly byte _row;
 		public byte Row
-		{
-			get { return _row; }
-		}
+		{ get; set; }
 
 		public int Lev
 		{ get; set; }
@@ -90,9 +84,9 @@ namespace XCom
 		{
 			Index = id;
 
-			_col = bindata[1]; // note that x & y are switched in the RMP-file.
-			_row = bindata[0];
-			Lev  = bindata[2]; // NOTE: auto-converts to int-type.
+			Col = bindata[1]; // note that x & y are switched in the RMP-file.
+			Row = bindata[0];
+			Lev = bindata[2]; // NOTE: auto-converts to int-type.
 
 			// NOTE: 'bindata[3]' is not used.
 
@@ -126,9 +120,9 @@ namespace XCom
 		{
 			Index = id;
 
-			_col = col;
-			_row = row;
-			Lev  = lev; // NOTE: auto-converts to int-type.
+			Col = col;
+			Row = row;
+			Lev = lev; // NOTE: auto-converts to int-type.
 
 			_links = new Link[LinkSlots];
 			for (int slotId = 0; slotId != LinkSlots; ++slotId)
@@ -150,8 +144,8 @@ namespace XCom
 		/// <param name="fs">the Stream provided by RouteNodeCollection.Save()</param>
 		internal void SaveNode(Stream fs)
 		{
-			fs.WriteByte(_row);
-			fs.WriteByte(_col);
+			fs.WriteByte(Row);
+			fs.WriteByte(Col);
 			fs.WriteByte((byte)Lev);
 			fs.WriteByte((byte)0);
 
@@ -190,7 +184,7 @@ namespace XCom
 
 		public override string ToString()
 		{
-			return ("c " + _col + "  r " + _row + "  L " + Lev);
+			return ("c " + Col + "  r " + Row + "  L " + Lev);
 		}
 		#endregion
 	}

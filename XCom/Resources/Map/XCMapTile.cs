@@ -19,7 +19,7 @@ namespace XCom
 		:
 			MapTileBase
 	{
-		#region Fields & Properties
+		#region Properties
 		private TilepartBase _ground;
 		public TilepartBase Ground
 		{
