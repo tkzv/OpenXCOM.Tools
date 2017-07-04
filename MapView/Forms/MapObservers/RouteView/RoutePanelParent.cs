@@ -19,8 +19,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			UserControl
 	{
 		#region Events
-		public event EventHandler<RoutePanelMouseDownEventArgs> RoutePanelMouseDownEvent;
-		public event EventHandler<RoutePanelMouseDownEventArgs> RoutePanelMouseUpEvent;
+		public event EventHandler<RoutePanelEventArgs> RoutePanelMouseDownEvent;
+		public event EventHandler<RoutePanelEventArgs> RoutePanelMouseUpEvent;
 		#endregion
 
 
@@ -226,7 +226,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 																								// NOTE: drag-selection is not allowed here.
 					if (RoutePanelMouseDownEvent != null)
 					{
-						var args = new RoutePanelMouseDownEventArgs();
+						var args = new RoutePanelEventArgs();
 						args.MouseButton = e.Button;
 						args.Tile        = MapFile[loc.Y, loc.X];
 						args.Location    = MapFile.Location;
@@ -261,24 +261,21 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 //			base.OnMouseUp(e);
 
-			if (MapFile != null) // safety.
+			if (MapFile != null // safety.
+				&& RoutePanelMouseUpEvent != null)
 			{
-				if (RoutePanelMouseUpEvent != null)
+				var loc = GetTileLocation(e.X, e.Y);
+				if (loc.X != -1)
 				{
-					var loc = GetTileLocation(e.X, e.Y);
+					var args = new RoutePanelEventArgs();
+					args.MouseButton = e.Button;
+					args.Tile        = MapFile[loc.Y, loc.X];
+					args.Location    = new MapLocation(
+													loc.Y,
+													loc.X,
+													MapFile.Level);
 
-					if (loc.X != -1)
-					{
-						var args = new RoutePanelMouseDownEventArgs();
-						args.MouseButton = e.Button;
-						args.Tile        = MapFile[loc.Y, loc.X];
-						args.Location    = new MapLocation(
-														loc.Y,
-														loc.X,
-														MapFile.Level);
-
-						RoutePanelMouseUpEvent(this, args);
-					}
+					RoutePanelMouseUpEvent(this, args);
 				}
 			}
 		}

@@ -7,7 +7,7 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.RouteViews
 {
-	internal sealed class RoutePanelMouseDownEventArgs
+	internal sealed class RoutePanelEventArgs
 		:
 			EventArgs
 	{

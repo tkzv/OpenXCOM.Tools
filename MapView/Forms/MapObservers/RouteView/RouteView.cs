@@ -362,7 +362,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			RoutePanel.Refresh();	// 3rd mouseover refresh for RouteView.
 		}							// See OnRoutePanelMouseMove(), RoutePanelParent.OnMouseMove()
 
-		private void OnRoutePanelMouseUp(object sender, RoutePanelMouseDownEventArgs args)
+		private void OnRoutePanelMouseUp(object sender, RoutePanelEventArgs args)
 		{
 			if (_nodeMoved != null
 				&& ((XCMapTile)args.Tile).Node == null)
@@ -392,7 +392,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		private void OnRoutePanelMouseDown(object sender, RoutePanelMouseDownEventArgs args)
+		private void OnRoutePanelMouseDown(object sender, RoutePanelEventArgs args)
 		{
 			if (NodeSelected == null)
 			{
@@ -1201,7 +1201,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			MainViewUnderlay.Instance.MainViewOverlay.ProcessTileSelection(start, start);
 
-			var args = new RoutePanelMouseDownEventArgs();
+			var args = new RoutePanelEventArgs();
 			args.MouseButton = MouseButtons.Left;
 			args.Tile        = MapFile[node.Row, node.Col];
 			args.Location    = MapFile.Location;
