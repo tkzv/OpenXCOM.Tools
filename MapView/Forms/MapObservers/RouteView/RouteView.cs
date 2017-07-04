@@ -383,8 +383,40 @@ namespace MapView.Forms.MapObservers.RouteViews
 				// properly but don't re-path the selected-lozenge. Let user see where the
 				// node-drag started until a click calls RoutePanelParent.PathSelectedLozenge().
 				RoutePanel.SelectedPosition = new Point(_nodeMoved.Col, _nodeMoved.Row);
+
+				UpdateLinkDistances();
 			}
 			_nodeMoved = null;
+		}
+
+		private void UpdateLinkDistances()
+		{
+			for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
+			{
+				var link = NodeSelected[slotId];
+				if (link.Destination < Link.ExitWest)
+				{
+					link.Distance = CalculateLinkDistance(
+														NodeSelected,
+														MapFile.Routes[link.Destination]);
+					UpdateLinkText(
+								slotId,
+								link.Distance.ToString(System.Globalization.CultureInfo.InvariantCulture)
+									+ GetDistanceSuffix(slotId));
+				}
+			}
+		}
+
+		private void UpdateLinkText(int slotId, string distance)
+		{
+			switch (slotId)
+			{
+				case 0: tbLink1Dist.Text = distance; break;
+				case 1: tbLink2Dist.Text = distance; break;
+				case 2: tbLink3Dist.Text = distance; break;
+				case 3: tbLink4Dist.Text = distance; break;
+				case 4: tbLink5Dist.Text = distance; break;
+			}
 		}
 
 		/// <summary>
@@ -928,15 +960,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (!_loadingInfo)
 			{
-				var dst = sender.SelectedItem as byte?; // check for id or compass pt/not used.
-
-				if (!dst.HasValue)
-					dst = (byte?)(sender.SelectedItem as LinkType?);
-
 				MapFile.RoutesChanged = true;
 
+				var dest = sender.SelectedItem as byte?; // check for id or compass pt/not used.
+
+				if (!dest.HasValue)
+					dest = (byte?)(sender.SelectedItem as LinkType?);
+
 				var link = NodeSelected[slotId];
-				switch (link.Destination = dst.Value)
+				switch (link.Destination = dest.Value)
 				{
 					case Link.NotUsed:
 						link.UsableType = UnitType.Any;
