@@ -79,27 +79,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
-		#region Properties
-		internal RoutePanel RoutePanel
-		{ get; set; }
-
-		private MapFileChild MapFile
-		{ get; set; }
-
-		private RouteNode _nodeSelected;
-		private RouteNode NodeSelected
-		{
-			get { return _nodeSelected; }
-			set
-			{
-				_nodeSelected           =
-				RoutePanel.NodeSelected = value;
-			}
-		}
-
-		private int NodeOgId
-		{ get; set; }
-
+		#region Properties (override)
 		/// <summary>
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
@@ -125,6 +105,34 @@ namespace MapView.Forms.MapObservers.RouteViews
 				}
 			}
 		}
+		#endregion
+
+
+		#region Properties
+		internal RoutePanel RoutePanel
+		{ get; set; }
+
+		private MapFileChild MapFile
+		{ get; set; }
+
+		private RouteNode _nodeSelected;
+		private RouteNode NodeSelected
+		{
+			get { return _nodeSelected; }
+			set
+			{
+				_nodeSelected           =
+				RoutePanel.NodeSelected = value;
+			}
+		}
+
+		/// <summary>
+		/// Stores the node-id from which a "Go" button is clicked. Used to
+		/// re-select the original node - which might not be equivalent to
+		/// "Back" (if there were a Back button).
+		/// </summary>
+		private int NodeOgId
+		{ get; set; }
 		#endregion
 
 
@@ -211,7 +219,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
-		#region Eventcalls inherited from IMapObserver/MapObserverControl0
+		#region Eventcalls (override) inherited from IMapObserver/MapObserverControl0
 		/// <summary>
 		/// Inherited from IMapObserver through MapObserverControl0.
 		/// </summary>
@@ -268,6 +276,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
+		#region Methods (print TileData)
 		/// <summary>
 		/// Prints the currently selected tile-info to the TileData groupbox.
 		/// NOTE: The displayed level is inverted here.
@@ -331,8 +340,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			lblOver.Text = over;
 		}
+		#endregion
 
 
+		#region Eventcalls (mouse-events for RoutePanel)
 		private void OnRoutePanelMouseMove(object sender, MouseEventArgs args)
 		{
 			int overId;
@@ -599,6 +610,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 			return -1;
 		}
+		#endregion
+
 
 		private void UpdateNodeInformation()
 		{
@@ -694,10 +707,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				_linksList.Clear();
 
-				for (byte i = 0; i != MapFile.Routes.Length; ++i)
+				for (byte id = 0; id != MapFile.Routes.Length; ++id)
 				{
-					if (i != NodeSelected.Index)
-						_linksList.Add(i); // add all linkable (ie. other) nodes
+					if (id != NodeSelected.Index)
+						_linksList.Add(id); // add all linkable (ie. other) nodes
 				}
 				_linksList.AddRange(_linkTypes); // add the four compass-points + link-not-used.
 
@@ -872,6 +885,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
+		#region Eventcalls (PatrolData)
 		private void OnUnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingInfo)
@@ -902,7 +916,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 				NodeSelected.Attack = (BaseModuleAttack)cbAttack.SelectedItem;
 			}
 		}
+		#endregion
 
+
+		#region Eventcalls (SpawnData)
 		private void OnSpawnRankSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingInfo)
@@ -923,8 +940,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 				Refresh(); // update the importance bar
 			}
 		}
+		#endregion
 
 
+		#region Eventcalls (LinkData)
 		private void OnLink1DestSelectedIndexChanged(object sender, EventArgs e)
 		{
 			LinkDestinationSelectedIndexChanged(cbLink1Dest, 0, tbLink1Dist);
@@ -1343,9 +1362,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			btnOg.Enabled = false;
 		}
+		#endregion
 
 
-		#region Edit handlers
+		#region Eventcalls (Edit handlers)
 		private void OnCutClick(object sender, EventArgs e)
 		{
 			OnCopyClick(null, null);
@@ -1499,6 +1519,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
+
+		#region Eventcalls (menubar)
 		private void OnAllNodeSpawnRank0Click(object sender, EventArgs e)
 		{
 			if (MessageBox.Show(
@@ -1575,9 +1597,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnConnectDropDownClosed(object sender, EventArgs e)
 		{
-			pnlRoutes.Select();	// take focus off the stupid combobox. Tks.
-		}						// NOTE: sometimes it still stays "highlighted"
-								// but at least it's no longer "selected".
+			pnlRoutes.Select();	// take focus off the stupid combobox. Tks. NOTE: sometimes it
+		}						// stays "highlighted" but at least it's no longer "selected".
+		#endregion
 
 
 		#region Options
@@ -1822,8 +1844,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			RoutePanel.ShowOverlay = (bool)val;
 			Refresh();
 		}
+		#endregion
 
 
+		#region Methods (for Help colors)
 		/// <summary>
 		/// Gets the wall-color for use by the Help screen.
 		/// </summary>
