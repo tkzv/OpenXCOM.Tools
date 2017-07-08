@@ -401,9 +401,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			_nodeMoved = null;
 		}
 
+		/// <summary>
+		/// Updates distances to and from the currently selected node.
+		/// NOTE: 'SelectedNode' must be valid before call.
+		/// </summary>
 		private void UpdateLinkDistances()
 		{
-			for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
+			for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId) // update distances to selected node's linked nodes ->
 			{
 				var link = NodeSelected[slotId];
 				if (link.Destination < Link.ExitWest)
@@ -415,6 +419,23 @@ namespace MapView.Forms.MapObservers.RouteViews
 								slotId,
 								link.Distance.ToString(System.Globalization.CultureInfo.InvariantCulture)
 									+ GetDistanceSuffix(slotId));
+				}
+			}
+
+			for (var nodeId = 0; nodeId != MapFile.Routes.Length; ++nodeId) // update distances of any links to the selected node ->
+			{
+				if (nodeId != NodeSelected.Index) // done above^
+				{
+					var node = MapFile.Routes[nodeId];
+
+					for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
+					{
+						var link = node[slotId];
+						if (link.Destination == NodeSelected.Index)
+							link.Distance = CalculateLinkDistance(
+																node,
+																NodeSelected);
+					}
 				}
 			}
 		}
