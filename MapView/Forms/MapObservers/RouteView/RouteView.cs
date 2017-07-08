@@ -40,7 +40,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private const string NodeCopyPrefix  = "MVNode"; // TODO: use a struct to copy/paste the info.
 		private const char NodeCopySeparator = '|';
 
-		private const string Go = "go";
+		private const string Go       = "go";
+		private const string ButtonOg = "btnOg";
 		#endregion
 
 
@@ -635,8 +636,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 				gbNodeData.Enabled   =
 				gbPatrolData.Enabled =
 				gbSpawnData.Enabled  =
-				gbLinkData.Enabled   =
+//				gbLinkData.Enabled   =
 				gbNodeEditor.Enabled = false;
+
+				foreach (Control control in gbLinkData.Controls)
+				{
+					if (control.Name != ButtonOg)
+						control.Enabled = false;
+				}
 
 				btnGoLink1.Enabled =
 				btnGoLink2.Enabled =
@@ -685,8 +692,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 				gbNodeData.Enabled   =
 				gbPatrolData.Enabled =
 				gbSpawnData.Enabled  =
-				gbLinkData.Enabled   =
 				gbNodeEditor.Enabled = true;
+//				gbLinkData.Enabled   =
+
+				foreach (Control control in gbLinkData.Controls)
+				{
+					if (control.Name != ButtonOg)
+						control.Enabled = true;
+				}
+
 
 				cbUnitType.SelectedItem = NodeSelected.UsableType;
 				cbPriority.SelectedItem = NodeSelected.Priority;
