@@ -275,23 +275,35 @@ namespace MapView.Forms.MapObservers.RouteViews
 						break;
 
 					case Link.ExitWest:
-						xDst = OffsetX + 1;
-						yDst = OffsetY + 1;
+						if (node.Lev == MapFile.Level)
+						{
+							xDst = OffsetX + 1;
+							yDst = OffsetY + 1;
+						}
 						break;
 
 					case Link.ExitNorth:
-						xDst = Width - OffsetX * 2;
-						yDst = OffsetY + 1;
+						if (node.Lev == MapFile.Level)
+						{
+							xDst = Width - OffsetX * 2;
+							yDst = OffsetY + 1;
+						}
 						break;
 
 					case Link.ExitEast:
-						xDst = Width  - OffsetX * 2;
-						yDst = Height - OffsetY * 2;
+						if (node.Lev == MapFile.Level)
+						{
+							xDst = Width  - OffsetX * 2;
+							yDst = Height - OffsetY * 2;
+						}
 						break;
 
 					case Link.ExitSouth:
-						xDst = OffsetX + 1;
-						yDst = Height - OffsetY * 2;
+						if (node.Lev == MapFile.Level)
+						{
+							xDst = OffsetX + 1;
+							yDst = Height - OffsetY * 2;
+						}
 						break;
 
 					default:
