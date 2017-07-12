@@ -1,6 +1,6 @@
-MapView ii beta+
+MapView ii
 
-2017 jun 1
+2017 jul 12
 
 major rewrite of the original MapView by Ben Ratzlaff aka DaiShiva (and others)
 
@@ -22,5 +22,4 @@ MAKE BACKUPS OF ALL YOUR STUFF. i mean it. Stuff being your MAPS and ROUTES, mos
 - kevL
 
 
-ps. This is a work in progress.
-pps. I don't have TFTD so that's untested.
+ps. I don't have TFTD so that's untested.

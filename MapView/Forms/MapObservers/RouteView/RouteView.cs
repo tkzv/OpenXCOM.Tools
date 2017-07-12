@@ -424,7 +424,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			for (var nodeId = 0; nodeId != MapFile.Routes.Length; ++nodeId) // update distances of any links to the selected node ->
 			{
-				if (nodeId != NodeSelected.Index) // done above^
+				if (nodeId != NodeSelected.Index) // NOTE: a node shall not link to itself.
 				{
 					var node = MapFile.Routes[nodeId];
 
