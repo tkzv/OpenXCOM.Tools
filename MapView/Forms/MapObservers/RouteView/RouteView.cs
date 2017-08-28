@@ -1479,11 +1479,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 				gbNodeData.Enabled   = false;
 
 				foreach (Control control in gbLinkData.Controls)	// disable 'gbLinkData' ->
-					control.Enabled = false;						// NOTE: This has to be done for each control because
-																	// the Og-button will toggle independently of its groupbox.
-				Refresh();											// TODO: check if the Og-button itself should really be disabled here.
-			}
-			else if (!_asterisk)
+					control.Enabled = false;						// NOTE: This is done separately for each control because the
+																	// Og-button needs to toggle on/off independently of its groupbox.
+				Refresh();											// TODO: Move the Og-button outside of 'gbLinkData' and simplify enabling/disabling the groupbox!
+			}														// TODO: check if the Og-button itself should really be disabled when a node gets deleted;
+			else if (!_asterisk)									// right now the button goes disabled as a catch-all, in case the deleted node was the Og-node.
 				ShowDialogAsterisk("A node must be selected.");
 		}
 
