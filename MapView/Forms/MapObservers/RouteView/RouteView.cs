@@ -657,10 +657,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				gbNodeData.Enabled   =
 				gbPatrolData.Enabled =
 				gbSpawnData.Enabled  =
-//				gbLinkData.Enabled   =
 				gbNodeEditor.Enabled = false;
 
-				foreach (Control control in gbLinkData.Controls)
+				foreach (Control control in gbLinkData.Controls) // disable 'gbLinkData' ->
 				{
 					if (control.Name != ButtonOg)
 						control.Enabled = false;
@@ -714,9 +713,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				gbPatrolData.Enabled =
 				gbSpawnData.Enabled  =
 				gbNodeEditor.Enabled = true;
-//				gbLinkData.Enabled   =
 
-				foreach (Control control in gbLinkData.Controls)
+				foreach (Control control in gbLinkData.Controls) // enable 'gbLinkData' ->
 				{
 					if (control.Name != ButtonOg)
 						control.Enabled = true;
@@ -745,9 +743,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				for (byte id = 0; id != MapFile.Routes.Length; ++id)
 				{
 					if (id != NodeSelected.Index)
-						_linksList.Add(id); // add all linkable (ie. other) nodes
+						_linksList.Add(id);			// <- add all linkable (ie. other) nodes
 				}
-				_linksList.AddRange(_linkTypes); // add the four compass-points + link-not-used.
+				_linksList.AddRange(_linkTypes);	// <- add the four compass-points + link-not-used.
 
 				object[] linkListArray = _linksList.ToArray();
 
@@ -1478,10 +1476,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				gbPatrolData.Enabled =
 				gbSpawnData.Enabled  =
-				gbNodeData.Enabled   =
-				gbLinkData.Enabled   = false;
+				gbNodeData.Enabled   = false;
 
-				Refresh();
+				foreach (Control control in gbLinkData.Controls)	// disable 'gbLinkData' ->
+					control.Enabled = false;						// NOTE: This has to be done for each control because
+																	// the Og-button will toggle independently of its groupbox.
+				Refresh();											// TODO: check if the Og-button itself should really be disabled here.
 			}
 			else if (!_asterisk)
 				ShowDialogAsterisk("A node must be selected.");
