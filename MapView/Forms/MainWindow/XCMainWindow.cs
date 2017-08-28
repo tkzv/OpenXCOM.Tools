@@ -1171,8 +1171,9 @@ namespace MapView
 		}
 
 
-		private void OnMainWindowActivated(object sender, EventArgs e)
-		{
+		// note: Was fired by form Focus:Activated event.
+//		private void OnMainWindowActivated(object sender, EventArgs e)
+//		{
 //			if (!_windowFlag)
 //			{
 //				_windowFlag = true;
@@ -1186,7 +1187,7 @@ namespace MapView
 //
 //				_windowFlag = false;
 //			}
-		}
+//		}
 
 
 		private void OnInfoClick(object sender, EventArgs e)
