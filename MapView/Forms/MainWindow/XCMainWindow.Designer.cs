@@ -493,7 +493,6 @@ namespace MapView
 			this.Name = "XCMainWindow";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Map Editor";
-			this.Activated += new System.EventHandler(this.OnMainWindowActivated);
 			this.ssMain.ResumeLayout(false);
 			this.ssMain.PerformLayout();
 			this.tscPanel.TopToolStripPanel.ResumeLayout(false);

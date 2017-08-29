@@ -49,7 +49,7 @@ namespace MapView
 
 		private bool _quit;
 
-		private bool _bypass;
+		private bool _bypassActivatedEvent;
 		#endregion
 
 
@@ -832,6 +832,48 @@ namespace MapView
 		#endregion
 
 
+		#region Eventcalls (override)
+		/// <summary>
+		/// Overrides the OnActivated event. Brings any other open viewers to
+		/// the top of the desktop, along with this.
+		/// </summary>
+		/// <param name="e"></param>
+		protected override void OnActivated(EventArgs e)
+		{
+			if (!_bypassActivatedEvent)
+			{
+				_bypassActivatedEvent = true; // don't let the loop over the viewers re-trigger this activated event.
+
+				bool doit = false;
+
+				foreach (MenuItem it in menuViewers.MenuItems)
+				{
+					if (it.Checked)
+					{
+						doit = true;
+
+						var f = it.Tag as Form;
+						f.TopMost = true;
+						f.TopMost = false;
+					}
+				}
+
+				if (doit)
+				{
+					TopMost = true;		// NOTE: These are needed despite calling base.OnActivated() below_
+					TopMost = false;	// IMPORTANT: trying to bring this form to the top
+				}						// after the other forms apparently fails in Windows 10
+										// - which makes it impossible for MainView to gain focus
+										// when clicked (if there are other viewers open).
+
+				_bypassActivatedEvent = false;
+			}
+
+			base.OnActivated(e);
+		}
+		#endregion
+
+
 		#region Eventcalls
 		private void OnAnimationUpdate(object sender, EventArgs e)
 		{
@@ -1167,31 +1209,6 @@ namespace MapView
 						ViewerFormsManager.TopView.Control.TopViewPanel.ClearSelectorLozenge();
 					}
 				}
-			}
-		}
-
-
-		private void OnMainWindowActivated(object sender, EventArgs e)
-		{
-			if (!_bypass)
-			{
-				_bypass = true;	// don't let the loop over the viewers trigger
-								// MainView's activated event over and over.
-
-				foreach (MenuItem it in menuViewers.MenuItems)
-				{
-					if (it.Checked)
-					{
-						var f = it.Tag as Form;
-						f.TopMost = true;
-						f.TopMost = false;
-					}
-				}
-
-				TopMost = true;
-				TopMost = false;
-
-				_bypass = false;
 			}
 		}
 
