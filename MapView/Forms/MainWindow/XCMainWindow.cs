@@ -49,7 +49,7 @@ namespace MapView
 
 		private bool _quit;
 
-//		private bool _windowFlag;
+		private bool _bypass;
 		#endregion
 
 
@@ -1171,23 +1171,29 @@ namespace MapView
 		}
 
 
-		// note: Was fired by form Focus:Activated event.
-//		private void OnMainWindowActivated(object sender, EventArgs e)
-//		{
-//			if (!_windowFlag)
-//			{
-//				_windowFlag = true;
-//
-//				foreach (MenuItem it in menuViewers.MenuItems)
-//					if (it.Checked)
-//						((Form)it.Tag).BringToFront();
-//
-//				Select();
-//				BringToFront();
-//
-//				_windowFlag = false;
-//			}
-//		}
+		private void OnMainWindowActivated(object sender, EventArgs e)
+		{
+			if (!_bypass)
+			{
+				_bypass = true;	// don't let the loop over the viewers trigger
+								// MainView's activated event over and over.
+
+				foreach (MenuItem it in menuViewers.MenuItems)
+				{
+					if (it.Checked)
+					{
+						var f = it.Tag as Form;
+						f.TopMost = true;
+						f.TopMost = false;
+					}
+				}
+
+				TopMost = true;
+				TopMost = false;
+
+				_bypass = false;
+			}
+		}
 
 
 		private void OnInfoClick(object sender, EventArgs e)
