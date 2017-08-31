@@ -403,23 +403,39 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		/// <summary>
 		/// Updates distances to and from the currently selected node.
-		/// NOTE: 'SelectedNode' must be valid before call.
+		/// NOTE: 'NodeSelected' must be valid before call.
 		/// </summary>
 		private void UpdateLinkDistances()
 		{
 			for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId) // update distances to selected node's linked nodes ->
 			{
+				string distance;
+
 				var link = NodeSelected[slotId];
-				if (link.Destination < Link.ExitWest)
+				switch (link.Destination)
 				{
-					link.Distance = CalculateLinkDistance(
-														NodeSelected,
-														MapFile.Routes[link.Destination]);
-					UpdateLinkText(
-								slotId,
-								link.Distance.ToString(System.Globalization.CultureInfo.InvariantCulture)
-									+ GetDistanceSuffix(slotId));
+					case Link.NotUsed: // NOTE: Should not change; is here to help keep distances consistent.
+						link.Distance = 0;
+						distance = String.Empty;
+						break;
+
+					case Link.ExitWest: // NOTE: Should not change; is here to help keep distances consistent.
+					case Link.ExitNorth:
+					case Link.ExitEast:
+					case Link.ExitSouth:
+						link.Distance = 0;
+						distance = "0";
+						break;
+
+					default:
+						link.Distance = CalculateLinkDistance(
+															NodeSelected,
+															MapFile.Routes[link.Destination]);
+						distance = link.Distance.ToString(System.Globalization.CultureInfo.InvariantCulture)
+								 + GetDistanceSuffix(slotId);
+						break;
 				}
+				UpdateLinkText(slotId, distance);
 			}
 
 			for (var nodeId = 0; nodeId != MapFile.Routes.Length; ++nodeId) // update distances of any links to the selected node ->
