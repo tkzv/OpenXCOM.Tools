@@ -840,10 +840,10 @@ namespace MapView
 		/// <param name="e"></param>
 		protected override void OnActivated(EventArgs e)
 		{
-			if (!_bypassActivatedEvent)
+			if (!_bypassActivatedEvent) // don't let 'TopMost_set' fire the OnActivated event.
 			{
-				_bypassActivatedEvent = true; // don't let the loop over the viewers re-trigger this activated event.
-
+				_bypassActivatedEvent = true;	// don't let the loop over the viewers re-trigger this activated event.
+												// NOTE: 'TopMost_set' won't, but other calls like BringToFront() or Select() can/will.
 				bool doit = false;
 
 				foreach (MenuItem it in menuViewers.MenuItems)
@@ -866,10 +866,10 @@ namespace MapView
 										// - which makes it impossible for MainView to gain focus
 										// when clicked (if there are other viewers open).
 
+				base.OnActivated(e); // <--||
+
 				_bypassActivatedEvent = false;
 			}
-
-			base.OnActivated(e);
 		}
 		#endregion
 

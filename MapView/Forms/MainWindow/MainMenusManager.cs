@@ -54,22 +54,24 @@ namespace MapView.Forms.MainWindow
 		/// <param name="e"></param>
 		private static void OnMenuItemClick(object sender, EventArgs e)
 		{
-			var it = (MenuItem)sender;
+			var it = sender as MenuItem;
+			var f = it.Tag as Form;
 
-			if (!it.Checked)
+			if (it.Checked = !it.Checked)
 			{
-				it.Checked = true;
-				((Form)it.Tag).Show();
-				((Form)it.Tag).WindowState = FormWindowState.Normal;
+//				f.Owner = XCMainWindow.Instance;	// NOTE: If MainView is set as the owner of the
+													// viewers MainView can no longer be minimized
+													// while keeping the other viewers up. Etc.
+													// Policy #1008: let the viewers operate as independently as possible.
+													// See also: XCMainWindow.OnActivated()
+				f.Show();
+				f.WindowState = FormWindowState.Normal;
 
 				if (it.Tag is ColorHelp) // update colors that user might have set in TileView's Option-settings.
 					ViewerFormsManager.HelpScreen.UpdateColors();
 			}
 			else
-			{
-				it.Checked = false;
-				((Form)it.Tag).Close();
-			}
+				f.Close();
 		}
 		#endregion
 
