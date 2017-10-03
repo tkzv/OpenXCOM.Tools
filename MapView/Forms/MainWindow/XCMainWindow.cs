@@ -50,6 +50,7 @@ namespace MapView
 		private bool _quit;
 
 		private bool _bypassActivatedEvent;
+		private bool _allowBringToFront;
 		#endregion
 
 
@@ -457,6 +458,7 @@ namespace MapView
 		private const string Animation           = "Animation";
 		private const string Doors               = "Doors";
 		private const string SaveWindowPositions = "SaveWindowPositions"; // TODO: is not implemented; implement it or remove it.
+		private const string AllowBringToFront   = "AllowBringToFront";
 //		private const string SaveOnExit          = "SaveOnExit";
 
 		private const string ShowGrid            = "ShowGrid";
@@ -567,6 +569,16 @@ namespace MapView
 							SaveWindowPositions,
 							true, //PathsEditor.SaveRegistry,
 							"If true the window positions and sizes will be saved (disabled, always true)",
+							Global,
+							handler);
+			Options.AddOption(
+							AllowBringToFront,
+							false,
+							"If true any open subsidiary viewers will be brought to the top of"
+								+ " the desktop whenever MainView takes focus - this implements"
+								+ " a workaround that might help circumvent an issue in post"
+								+ " Windows 7 OS, in which focus refuses to switch to any of"
+								+ " the subsidiary viewers (tentative)",
 							Global,
 							handler);
 
@@ -690,8 +702,12 @@ namespace MapView
 						ToggleDoorSprites(false);
 					break;
 
+				case AllowBringToFront:
+					_allowBringToFront = (bool)value;
+					break;
+
 				case SaveWindowPositions:
-//					PathsEditor.SaveRegistry = (bool)val; // TODO: find a place to cache this value.
+//					PathsEditor.SaveRegistry = (bool)value; // TODO: find a place to cache this value.
 					break;
 
 				case ShowGrid: // NOTE: 'miGrid.Checked' is used by the F4 key to toggle the grid on/off.
@@ -840,36 +856,41 @@ namespace MapView
 		/// <param name="e"></param>
 		protected override void OnActivated(EventArgs e)
 		{
-			if (!_bypassActivatedEvent) // don't let 'TopMost_set' fire the OnActivated event.
+			if (_allowBringToFront)
 			{
-				_bypassActivatedEvent = true;	// don't let the loop over the viewers re-trigger this activated event.
-												// NOTE: 'TopMost_set' won't, but other calls like BringToFront() or Select() can/will.
-				bool doit = false;
-
-				foreach (MenuItem it in menuViewers.MenuItems)
+				if (!_bypassActivatedEvent)			// don't let 'TopMost_set' fire the OnActivated event.
 				{
-					if (it.Checked)
+					_bypassActivatedEvent = true;	// don't let the loop over the viewers re-trigger this activated event.
+													// NOTE: 'TopMost_set' won't, but other calls like BringToFront() or Select() can/will.
+					bool doit = false;
+
+					foreach (MenuItem it in menuViewers.MenuItems)
 					{
-						doit = true;
+						if (it.Checked)
+						{
+							doit = true;
 
-						var f = it.Tag as Form;
-						f.TopMost = true;
-						f.TopMost = false;
+							var f = it.Tag as Form;
+							f.TopMost = true;
+							f.TopMost = false;
+						}
 					}
+
+					if (doit)
+					{
+						TopMost = true;		// NOTE: These are needed despite calling base.OnActivated() below_
+						TopMost = false;	// IMPORTANT: trying to bring this form to the top
+					}						// after the other forms apparently fails in Windows 10
+											// - which makes it impossible for MainView to gain focus
+											// when clicked (if there are other viewers open).
+
+					base.OnActivated(e);	// <--||
+
+					_bypassActivatedEvent = false;
 				}
-
-				if (doit)
-				{
-					TopMost = true;		// NOTE: These are needed despite calling base.OnActivated() below_
-					TopMost = false;	// IMPORTANT: trying to bring this form to the top
-				}						// after the other forms apparently fails in Windows 10
-										// - which makes it impossible for MainView to gain focus
-										// when clicked (if there are other viewers open).
-
-				base.OnActivated(e); // <--||
-
-				_bypassActivatedEvent = false;
 			}
+			else
+				base.OnActivated(e);
 		}
 		#endregion
 
