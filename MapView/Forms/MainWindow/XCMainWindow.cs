@@ -577,8 +577,8 @@ namespace MapView
 							"If true any open subsidiary viewers will be brought to the top of"
 								+ " the desktop whenever MainView takes focus - this implements"
 								+ " a workaround that might help circumvent an issue in post"
-								+ " Windows 7 OS, in which focus refuses to switch to any of"
-								+ " the subsidiary viewers (tentative)",
+								+ " Windows 7 OS, in which focus refuses to switch to MainView"
+								+ " unless the subsidiary viewers are closed (tentative)",
 							Global,
 							handler);
 
