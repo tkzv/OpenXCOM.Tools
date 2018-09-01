@@ -217,7 +217,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbRank.TabIndex = 7;
 			this.toolTip1.SetToolTip(this.cbRank, "faction or rank (if aLiens) that may spawn here. Nodes for aLiens outside their U" +
 		"FO or base should be set to 0");
-			this.cbRank.SelectedIndexChanged += new System.EventHandler(this.OnSpawnRankSelectedIndexChanged);
+			this.cbRank.SelectedIndexChanged += new System.EventHandler(this.OnNodeRankSelectedIndexChanged);
 			// 
 			// cbType
 			// 

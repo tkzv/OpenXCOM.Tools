@@ -8,7 +8,7 @@ namespace XCom
 {
 	#region Enums
 	// NOTE: Only 'UnitRankUfo' and 'UnitRankTftd' need to be enumerated as
-	// byte-type. Otherwise the EnumString class goes snakey when
+	// byte-type. Otherwise the Pterodactyl class goes snakey when
 	// RouteView.OnSpawnRankSelectedIndexChanged() fires. For reasons, it cannot
 	// handle the cast automatically like the other enumerated types here appear
 	// to. But I left the others as bytes also for safety.
@@ -140,45 +140,45 @@ namespace XCom
 
 		public static readonly object[] NodeRankUfo =
 		{
-			new EnumString("0:Civ-Scout",        XCom.NodeRankUfo.Civilian),
-			new EnumString("1:XCom",             XCom.NodeRankUfo.XCom),
-			new EnumString("2:Soldier",          XCom.NodeRankUfo.Soldier),
-			new EnumString("3:Navigator",        XCom.NodeRankUfo.Navigator),
-			new EnumString("4:Leader/Commander", XCom.NodeRankUfo.LeaderCommander),
-			new EnumString("5:Engineer",         XCom.NodeRankUfo.Engineer),
-			new EnumString("6:Misc1",            XCom.NodeRankUfo.Misc1),
-			new EnumString("7:Medic",            XCom.NodeRankUfo.Medic),
-			new EnumString("8:Misc2",            XCom.NodeRankUfo.Misc2),
-			new EnumString("9:INVALID",          XCom.NodeRankUfo.invalid) // WORKAROUND.
+			new Pterodactyl("0:Civ-Scout",        XCom.NodeRankUfo.Civilian),
+			new Pterodactyl("1:XCom",             XCom.NodeRankUfo.XCom),
+			new Pterodactyl("2:Soldier",          XCom.NodeRankUfo.Soldier),
+			new Pterodactyl("3:Navigator",        XCom.NodeRankUfo.Navigator),
+			new Pterodactyl("4:Leader/Commander", XCom.NodeRankUfo.LeaderCommander),
+			new Pterodactyl("5:Engineer",         XCom.NodeRankUfo.Engineer),
+			new Pterodactyl("6:Misc1",            XCom.NodeRankUfo.Misc1),
+			new Pterodactyl("7:Medic",            XCom.NodeRankUfo.Medic),
+			new Pterodactyl("8:Misc2",            XCom.NodeRankUfo.Misc2),
+			new Pterodactyl("9:INVALID",          XCom.NodeRankUfo.invalid) // WORKAROUND.
 		};
 
 		public static readonly object[] NodeRankTftd =
 		{
-			new EnumString("0:Civ/Scout",        XCom.NodeRankTftd.Civilian),
-			new EnumString("1:XCom",             XCom.NodeRankTftd.XCom),
-			new EnumString("2:Soldier",          XCom.NodeRankTftd.Soldier),
-			new EnumString("3:Squad Leader",     XCom.NodeRankTftd.SquadLeader),
-			new EnumString("4:Leader/Commander", XCom.NodeRankTftd.LeaderCommander),
-			new EnumString("5:Medic",            XCom.NodeRankTftd.Medic),
-			new EnumString("6:Misc1",            XCom.NodeRankTftd.Misc1),
-			new EnumString("7:Technician",       XCom.NodeRankTftd.Technician),
-			new EnumString("8:Misc2",            XCom.NodeRankTftd.Misc2),
-			new EnumString("9:INVALID",          XCom.NodeRankTftd.invalid) // WORKAROUND.
+			new Pterodactyl("0:Civ/Scout",        XCom.NodeRankTftd.Civilian),
+			new Pterodactyl("1:XCom",             XCom.NodeRankTftd.XCom),
+			new Pterodactyl("2:Soldier",          XCom.NodeRankTftd.Soldier),
+			new Pterodactyl("3:Squad Leader",     XCom.NodeRankTftd.SquadLeader),
+			new Pterodactyl("4:Leader/Commander", XCom.NodeRankTftd.LeaderCommander),
+			new Pterodactyl("5:Medic",            XCom.NodeRankTftd.Medic),
+			new Pterodactyl("6:Misc1",            XCom.NodeRankTftd.Misc1),
+			new Pterodactyl("7:Technician",       XCom.NodeRankTftd.Technician),
+			new Pterodactyl("8:Misc2",            XCom.NodeRankTftd.Misc2),
+			new Pterodactyl("9:INVALID",          XCom.NodeRankTftd.invalid) // WORKAROUND.
 		};
 
 		public static readonly object[] SpawnWeight =
 		{
-			new EnumString("0:No Spawn", XCom.SpawnWeight.NoSpawn),
-			new EnumString("1:Spawn",    XCom.SpawnWeight.Spawn1),
-			new EnumString("2:Spawn",    XCom.SpawnWeight.Spawn2),
-			new EnumString("3:Spawn",    XCom.SpawnWeight.Spawn3),
-			new EnumString("4:Spawn",    XCom.SpawnWeight.Spawn4),
-			new EnumString("5:Spawn",    XCom.SpawnWeight.Spawn5),
-			new EnumString("6:Spawn",    XCom.SpawnWeight.Spawn6),
-			new EnumString("7:Spawn",    XCom.SpawnWeight.Spawn7),
-			new EnumString("8:Spawn",    XCom.SpawnWeight.Spawn8),
-			new EnumString("9:Spawn",    XCom.SpawnWeight.Spawn9),
-			new EnumString("10:Spawn",   XCom.SpawnWeight.Spawn10)
+			new Pterodactyl("0:No Spawn", XCom.SpawnWeight.NoSpawn),
+			new Pterodactyl("1:Spawn",    XCom.SpawnWeight.Spawn1),
+			new Pterodactyl("2:Spawn",    XCom.SpawnWeight.Spawn2),
+			new Pterodactyl("3:Spawn",    XCom.SpawnWeight.Spawn3),
+			new Pterodactyl("4:Spawn",    XCom.SpawnWeight.Spawn4),
+			new Pterodactyl("5:Spawn",    XCom.SpawnWeight.Spawn5),
+			new Pterodactyl("6:Spawn",    XCom.SpawnWeight.Spawn6),
+			new Pterodactyl("7:Spawn",    XCom.SpawnWeight.Spawn7),
+			new Pterodactyl("8:Spawn",    XCom.SpawnWeight.Spawn8),
+			new Pterodactyl("9:Spawn",    XCom.SpawnWeight.Spawn9),
+			new Pterodactyl("10:Spawn",   XCom.SpawnWeight.Spawn10)
 		};
 		#endregion
 

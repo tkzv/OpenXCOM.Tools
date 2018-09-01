@@ -953,13 +953,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Eventcalls (SpawnData)
-		private void OnSpawnRankSelectedIndexChanged(object sender, EventArgs e)
+		private void OnNodeRankSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingInfo)
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected.Rank = (byte)((EnumString)cbRank.SelectedItem).Enum;
+				NodeSelected.Rank = (byte)((Pterodactyl)cbRank.SelectedItem).Case;
 			}
 		}
 
@@ -969,7 +969,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected.Spawn = (SpawnWeight)((EnumString)cbSpawn.SelectedItem).Enum;
+				NodeSelected.Spawn = (SpawnWeight)((Pterodactyl)cbSpawn.SelectedItem).Case;
 				Refresh(); // update the importance bar
 			}
 		}

@@ -139,7 +139,7 @@
     <Compile Include="Resources\Map\RouteData\RouteNodeCollection.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Resources\Map\EnumString.cs">
+    <Compile Include="Resources\Map\Pterodactyl.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Resources\Map\Tilepart.cs">
