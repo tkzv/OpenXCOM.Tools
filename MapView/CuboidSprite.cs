@@ -61,9 +61,9 @@ namespace MapView
 		{
 			int id = 0;
 			if (front)
-				id = red ? 3 : 5;
+				id = (red ? 3 : 5);
 			else
-				id = red ? 0 : 2;
+				id = (red ? 0 : 2);
 
 			graphics.DrawImage(
 							_spriteset[id].Image,

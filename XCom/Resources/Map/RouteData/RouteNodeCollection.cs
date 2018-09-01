@@ -121,7 +121,8 @@ namespace XCom
 		Engineer        = 5,
 		Misc1           = 6,
 		Medic           = 7,
-		Misc2           = 8
+		Misc2           = 8,
+		invalid         = 9 // WORKAROUND.
 	};
 
 	public enum UnitRankTftd
@@ -136,7 +137,8 @@ namespace XCom
 		Medic           = 5,
 		Misc1           = 6,
 		Technician      = 7,
-		Misc2           = 8
+		Misc2           = 8,
+		invalid         = 9 // WORKAROUND.
 	};
 
 	public enum SpawnUsage
@@ -232,7 +234,8 @@ namespace XCom
 			new EnumString("5:Engineer",         XCom.UnitRankUfo.Engineer),
 			new EnumString("6:Misc1",            XCom.UnitRankUfo.Misc1),
 			new EnumString("7:Medic",            XCom.UnitRankUfo.Medic),
-			new EnumString("8:Misc2",            XCom.UnitRankUfo.Misc2)
+			new EnumString("8:Misc2",            XCom.UnitRankUfo.Misc2),
+			new EnumString("9:INVALID",          XCom.UnitRankUfo.invalid) // WORKAROUND.
 		};
 
 		public static readonly object[] UnitRankTftd =
@@ -245,7 +248,8 @@ namespace XCom
 			new EnumString("5:Medic",            XCom.UnitRankTftd.Medic),
 			new EnumString("6:Misc1",            XCom.UnitRankTftd.Misc1),
 			new EnumString("7:Technician",       XCom.UnitRankTftd.Technician),
-			new EnumString("8:Misc2",            XCom.UnitRankTftd.Misc2)
+			new EnumString("8:Misc2",            XCom.UnitRankTftd.Misc2),
+			new EnumString("9:INVALID",          XCom.UnitRankTftd.invalid) // WORKAROUND.
 		};
 
 		public static readonly object[] SpawnUsage =

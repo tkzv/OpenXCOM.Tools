@@ -701,7 +701,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)
 					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[(int)UnitRankUfo.Civilian];
 				else
-					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[(int)UnitRankTftd.Civilian];
+					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankTftd[(int)UnitRankTftd.Civilian];
 
 				cbSpawnWeight.SelectedItem = RouteNodeCollection.SpawnUsage[(int)SpawnUsage.NoSpawn];
 

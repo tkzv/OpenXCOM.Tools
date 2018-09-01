@@ -305,6 +305,7 @@ namespace MapView
 			else
 				LogFile.WriteLine("UFO Cursor not found.");
 
+			// NOTE: The TFTD cursorsprite takes precedence over the UFO cursorsprite.
 			cuboid = ResourceInfo.LoadSpriteset(
 											SharedSpace.CursorFilePrefix,
 											share.GetShare(SharedSpace.ResourceDirectoryTftd),

@@ -408,6 +408,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelDist.Size = new System.Drawing.Size(55, 15);
 			this.labelDist.TabIndex = 27;
 			this.labelDist.Text = "Distance";
+			this.toolTip1.SetToolTip(this.labelDist, "not used in 0penXc");
 			// 
 			// cbLink5UnitType
 			// 
@@ -466,6 +467,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelUnitInfo.Size = new System.Drawing.Size(55, 15);
 			this.labelUnitInfo.TabIndex = 21;
 			this.labelUnitInfo.Text = "Unit Info";
+			this.toolTip1.SetToolTip(this.labelUnitInfo, "not used in 0penXc");
 			// 
 			// pnlRoutes
 			// 
