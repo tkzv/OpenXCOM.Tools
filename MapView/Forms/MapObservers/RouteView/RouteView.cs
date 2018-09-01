@@ -40,8 +40,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private const string NodeCopyPrefix  = "MVNode"; // TODO: use a struct to copy/paste the info.
 		private const char NodeCopySeparator = '|';
 
-		private const string Go       = "go";
-		private const string ButtonOg = "btnOg";
+		private const string Go = "go";
 		#endregion
 
 
@@ -657,9 +656,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			_loadingInfo = true;
 
+			gbTileData.SuspendLayout();
 			gbNodeData.SuspendLayout();
-			gbPatrolData.SuspendLayout();
-			gbSpawnData.SuspendLayout();
 			gbLinkData.SuspendLayout();
 			gbNodeEditor.SuspendLayout();
 
@@ -670,16 +668,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 				btnPaste.Enabled  =
 				btnDelete.Enabled = false;
 
+				gbTileData.Enabled   =
 				gbNodeData.Enabled   =
-				gbPatrolData.Enabled =
-				gbSpawnData.Enabled  =
+				gbLinkData.Enabled   =
 				gbNodeEditor.Enabled = false;
-
-				foreach (Control control in gbLinkData.Controls) // disable 'gbLinkData' ->
-				{
-					if (control.Name != ButtonOg)
-						control.Enabled = false;
-				}
 
 				btnGoLink1.Enabled =
 				btnGoLink2.Enabled =
@@ -723,19 +715,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 				tbLink4Dist.Text =
 				tbLink5Dist.Text = String.Empty;
 			}
-			else
+			else // selected node is valid ->
 			{
+				gbTileData.Enabled   =
 				gbNodeData.Enabled   =
-				gbPatrolData.Enabled =
-				gbSpawnData.Enabled  =
+				gbLinkData.Enabled   =
 				gbNodeEditor.Enabled = true;
-
-				foreach (Control control in gbLinkData.Controls) // enable 'gbLinkData' ->
-				{
-					if (control.Name != ButtonOg)
-						control.Enabled = true;
-				}
-
 
 				cbUnitType.SelectedItem = NodeSelected.UsableType;
 				cbPriority.SelectedItem = NodeSelected.Priority;
@@ -899,9 +884,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 									 + GetDistanceSuffix(4);
 			}
 
+			gbTileData.ResumeLayout();
 			gbNodeData.ResumeLayout();
-			gbPatrolData.ResumeLayout();
-			gbSpawnData.ResumeLayout();
 			gbLinkData.ResumeLayout();
 			gbNodeEditor.ResumeLayout();
 
@@ -1437,6 +1421,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 										cbSpawnRank.SelectedIndex,
 										cbSpawnWeight.SelectedIndex,
 										NodeCopySeparator);
+
 				// TODO: include Link info ... perhaps.
 				// But re-assigning the link node-ids would be difficult, since
 				// those nodes could have be deleted, etc.
@@ -1462,11 +1447,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 					cbAttack.SelectedIndex      = Int32.Parse(nodeData[3], invariant);
 					cbSpawnRank.SelectedIndex   = Int32.Parse(nodeData[4], invariant);
 					cbSpawnWeight.SelectedIndex = Int32.Parse(nodeData[5], invariant);
+
 					// TODO: include Link info ... perhaps.
 					// But re-assigning the link node-ids would be difficult, since
 					// those nodes could have be deleted, etc.
 				}
-				else // non-node data has been copied to the clipboard.
+				else // non-node data is on the clipboard.
 				{
 					btnPaste.Enabled = false;
 					ShowDialogAsterisk("The data on the clipboard is not a node.");
@@ -1490,16 +1476,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				DeselectNode();
 
-				gbPatrolData.Enabled =
-				gbSpawnData.Enabled  =
-				gbNodeData.Enabled   = false;
+				gbTileData.Enabled =
+				gbNodeData.Enabled =
+				gbLinkData.Enabled = false;
 
-				foreach (Control control in gbLinkData.Controls)	// disable 'gbLinkData' ->
-					control.Enabled = false;						// NOTE: This is done separately for each control because the
-																	// Og-button needs to toggle on/off independently of its groupbox.
-				Refresh();											// TODO: Move the Og-button outside of 'gbLinkData' and simplify enabling/disabling the groupbox!
-			}														// TODO: check if the Og-button itself should really be disabled when a node gets deleted;
-			else if (!_asterisk)									// right now the button goes disabled as a catch-all, in case the deleted node was the Og-node.
+				// TODO: check if the Og-button should be disabled when a node gets deleted or cut.
+
+				Refresh();
+			}			
+			else if (!_asterisk)
 				ShowDialogAsterisk("A node must be selected.");
 		}
 

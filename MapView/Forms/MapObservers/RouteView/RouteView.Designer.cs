@@ -45,7 +45,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelPriority = new System.Windows.Forms.Label();
 			this.labelSpawnRank = new System.Windows.Forms.Label();
 			this.labelUnitType = new System.Windows.Forms.Label();
-			this.gbSpawnData = new System.Windows.Forms.GroupBox();
 			this.cbSpawnWeight = new System.Windows.Forms.ComboBox();
 			this.btnPaste = new System.Windows.Forms.Button();
 			this.lblOver = new System.Windows.Forms.Label();
@@ -72,29 +71,28 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsmiAllNodesRank0 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiClearLinkData = new System.Windows.Forms.ToolStripMenuItem();
 			this.gbLinkData = new System.Windows.Forms.GroupBox();
-			this.btnOg = new System.Windows.Forms.Button();
 			this.btnGoLink5 = new System.Windows.Forms.Button();
 			this.btnGoLink4 = new System.Windows.Forms.Button();
 			this.btnGoLink3 = new System.Windows.Forms.Button();
 			this.btnGoLink2 = new System.Windows.Forms.Button();
 			this.btnGoLink1 = new System.Windows.Forms.Button();
+			this.btnOg = new System.Windows.Forms.Button();
 			this.pnlDataFields = new System.Windows.Forms.Panel();
 			this.gbNodeEditor = new System.Windows.Forms.GroupBox();
 			this.btnCut = new System.Windows.Forms.Button();
 			this.pnlDataFieldsLeft = new System.Windows.Forms.Panel();
-			this.gbPatrolData = new System.Windows.Forms.GroupBox();
+			this.gbNodeData = new System.Windows.Forms.GroupBox();
 			this.cbAttack = new System.Windows.Forms.ComboBox();
 			this.labelAttack = new System.Windows.Forms.Label();
-			this.gbNodeData = new System.Windows.Forms.GroupBox();
+			this.gbTileData = new System.Windows.Forms.GroupBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.gbSpawnData.SuspendLayout();
 			this.tsMain.SuspendLayout();
 			this.gbLinkData.SuspendLayout();
 			this.pnlDataFields.SuspendLayout();
 			this.gbNodeEditor.SuspendLayout();
 			this.pnlDataFieldsLeft.SuspendLayout();
-			this.gbPatrolData.SuspendLayout();
 			this.gbNodeData.SuspendLayout();
+			this.gbTileData.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cbLink5Dest
@@ -204,18 +202,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbPriority
 			// 
-			this.cbPriority.Location = new System.Drawing.Point(85, 40);
+			this.cbPriority.Location = new System.Drawing.Point(105, 95);
 			this.cbPriority.Name = "cbPriority";
-			this.cbPriority.Size = new System.Drawing.Size(130, 20);
+			this.cbPriority.Size = new System.Drawing.Size(150, 20);
 			this.cbPriority.TabIndex = 8;
 			this.toolTip1.SetToolTip(this.cbPriority, "patrol priority");
 			this.cbPriority.SelectedIndexChanged += new System.EventHandler(this.OnPatrolPrioritySelectedIndexChanged);
 			// 
 			// cbSpawnRank
 			// 
-			this.cbSpawnRank.Location = new System.Drawing.Point(85, 15);
+			this.cbSpawnRank.Location = new System.Drawing.Point(105, 45);
 			this.cbSpawnRank.Name = "cbSpawnRank";
-			this.cbSpawnRank.Size = new System.Drawing.Size(130, 20);
+			this.cbSpawnRank.Size = new System.Drawing.Size(150, 20);
 			this.cbSpawnRank.TabIndex = 7;
 			this.toolTip1.SetToolTip(this.cbSpawnRank, "faction or rank (if aLiens) that may spawn here. Nodes for aLiens outside their U" +
 		"FO or base should be set to 0");
@@ -223,74 +221,59 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbUnitType
 			// 
-			this.cbUnitType.Location = new System.Drawing.Point(85, 15);
+			this.cbUnitType.Location = new System.Drawing.Point(105, 20);
 			this.cbUnitType.Name = "cbUnitType";
-			this.cbUnitType.Size = new System.Drawing.Size(130, 20);
+			this.cbUnitType.Size = new System.Drawing.Size(150, 20);
 			this.cbUnitType.TabIndex = 6;
 			this.toolTip1.SetToolTip(this.cbUnitType, "characteristics of units that may patrol the node");
 			this.cbUnitType.SelectedIndexChanged += new System.EventHandler(this.OnUnitTypeSelectedIndexChanged);
 			// 
 			// labelSpawnWeight
 			// 
-			this.labelSpawnWeight.Location = new System.Drawing.Point(10, 45);
+			this.labelSpawnWeight.Location = new System.Drawing.Point(10, 75);
 			this.labelSpawnWeight.Name = "labelSpawnWeight";
-			this.labelSpawnWeight.Size = new System.Drawing.Size(75, 15);
+			this.labelSpawnWeight.Size = new System.Drawing.Size(90, 15);
 			this.labelSpawnWeight.TabIndex = 5;
-			this.labelSpawnWeight.Text = "Weight";
+			this.labelSpawnWeight.Text = "Spawn Weight";
 			this.labelSpawnWeight.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.toolTip1.SetToolTip(this.labelSpawnWeight, "chance that an aLien will spawn here");
+			this.toolTip1.SetToolTip(this.labelSpawnWeight, "preferability for an aLien to spawn here");
 			// 
 			// labelPriority
 			// 
-			this.labelPriority.Location = new System.Drawing.Point(10, 45);
+			this.labelPriority.Location = new System.Drawing.Point(10, 100);
 			this.labelPriority.Name = "labelPriority";
-			this.labelPriority.Size = new System.Drawing.Size(75, 15);
+			this.labelPriority.Size = new System.Drawing.Size(90, 15);
 			this.labelPriority.TabIndex = 3;
-			this.labelPriority.Text = "Priority";
+			this.labelPriority.Text = "Patrol Priority";
 			this.labelPriority.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.toolTip1.SetToolTip(this.labelPriority, "patrol priority");
+			this.toolTip1.SetToolTip(this.labelPriority, "preferability for an aLien to patrol here");
 			// 
 			// labelSpawnRank
 			// 
-			this.labelSpawnRank.Location = new System.Drawing.Point(10, 20);
+			this.labelSpawnRank.Location = new System.Drawing.Point(10, 50);
 			this.labelSpawnRank.Name = "labelSpawnRank";
-			this.labelSpawnRank.Size = new System.Drawing.Size(75, 15);
+			this.labelSpawnRank.Size = new System.Drawing.Size(90, 15);
 			this.labelSpawnRank.TabIndex = 2;
-			this.labelSpawnRank.Text = "Rank";
+			this.labelSpawnRank.Text = "Node Rank";
 			this.labelSpawnRank.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.toolTip1.SetToolTip(this.labelSpawnRank, "faction or rank (if aLiens) that may spawn here. Nodes for aLiens outside their U" +
-		"FO or base should be set to 0");
+			this.toolTip1.SetToolTip(this.labelSpawnRank, "faction or rank (if aLiens) that may spawn/patrol here. Nodes for aLiens outside " +
+		"their UFO or base are usually set to 0");
 			// 
 			// labelUnitType
 			// 
-			this.labelUnitType.Location = new System.Drawing.Point(10, 20);
+			this.labelUnitType.Location = new System.Drawing.Point(10, 25);
 			this.labelUnitType.Name = "labelUnitType";
-			this.labelUnitType.Size = new System.Drawing.Size(75, 15);
+			this.labelUnitType.Size = new System.Drawing.Size(90, 15);
 			this.labelUnitType.TabIndex = 1;
-			this.labelUnitType.Text = "Unit Type";
+			this.labelUnitType.Text = "Unit Info";
 			this.labelUnitType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.toolTip1.SetToolTip(this.labelUnitType, "characteristics of units that may patrol the node");
-			// 
-			// gbSpawnData
-			// 
-			this.gbSpawnData.Controls.Add(this.cbSpawnRank);
-			this.gbSpawnData.Controls.Add(this.labelSpawnRank);
-			this.gbSpawnData.Controls.Add(this.labelSpawnWeight);
-			this.gbSpawnData.Controls.Add(this.cbSpawnWeight);
-			this.gbSpawnData.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.gbSpawnData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.gbSpawnData.Location = new System.Drawing.Point(0, 135);
-			this.gbSpawnData.Name = "gbSpawnData";
-			this.gbSpawnData.Size = new System.Drawing.Size(265, 67);
-			this.gbSpawnData.TabIndex = 1;
-			this.gbSpawnData.TabStop = false;
-			this.gbSpawnData.Text = "Spawn data";
+			this.toolTip1.SetToolTip(this.labelUnitType, "characteristics of units that may patrol (or spawn at) the node");
 			// 
 			// cbSpawnWeight
 			// 
-			this.cbSpawnWeight.Location = new System.Drawing.Point(85, 40);
+			this.cbSpawnWeight.Location = new System.Drawing.Point(105, 70);
 			this.cbSpawnWeight.Name = "cbSpawnWeight";
-			this.cbSpawnWeight.Size = new System.Drawing.Size(130, 20);
+			this.cbSpawnWeight.Size = new System.Drawing.Size(150, 20);
 			this.cbSpawnWeight.TabIndex = 10;
 			this.toolTip1.SetToolTip(this.cbSpawnWeight, "chance that an aLien will spawn here");
 			this.cbSpawnWeight.SelectedIndexChanged += new System.EventHandler(this.OnSpawnWeightSelectedIndexChanged);
@@ -310,9 +293,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.lblOver.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblOver.ForeColor = System.Drawing.Color.Sienna;
-			this.lblOver.Location = new System.Drawing.Point(140, 15);
+			this.lblOver.Location = new System.Drawing.Point(135, 15);
 			this.lblOver.Name = "lblOver";
-			this.lblOver.Size = new System.Drawing.Size(120, 25);
+			this.lblOver.Size = new System.Drawing.Size(125, 30);
 			this.lblOver.TabIndex = 2;
 			// 
 			// btnCopy
@@ -341,9 +324,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.lblSelected.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblSelected.ForeColor = System.Drawing.Color.Orchid;
-			this.lblSelected.Location = new System.Drawing.Point(15, 15);
+			this.lblSelected.Location = new System.Drawing.Point(10, 15);
 			this.lblSelected.Name = "lblSelected";
-			this.lblSelected.Size = new System.Drawing.Size(120, 25);
+			this.lblSelected.Size = new System.Drawing.Size(125, 30);
 			this.lblSelected.TabIndex = 2;
 			// 
 			// tbLink5Dist
@@ -408,7 +391,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelDist.Size = new System.Drawing.Size(55, 15);
 			this.labelDist.TabIndex = 27;
 			this.labelDist.Text = "Distance";
-			this.toolTip1.SetToolTip(this.labelDist, "not used in 0penXc");
+			this.toolTip1.SetToolTip(this.labelDist, "not used in 0penXcom");
 			// 
 			// cbLink5UnitType
 			// 
@@ -467,7 +450,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelUnitInfo.Size = new System.Drawing.Size(55, 15);
 			this.labelUnitInfo.TabIndex = 21;
 			this.labelUnitInfo.Text = "Unit Info";
-			this.toolTip1.SetToolTip(this.labelUnitInfo, "not used in 0penXc");
+			this.toolTip1.SetToolTip(this.labelUnitInfo, "not used in 0penXcom");
 			// 
 			// pnlRoutes
 			// 
@@ -537,7 +520,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// gbLinkData
 			// 
-			this.gbLinkData.Controls.Add(this.btnOg);
 			this.gbLinkData.Controls.Add(this.btnGoLink5);
 			this.gbLinkData.Controls.Add(this.btnGoLink4);
 			this.gbLinkData.Controls.Add(this.btnGoLink3);
@@ -565,26 +547,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.gbLinkData.Controls.Add(this.cbLink2UnitType);
 			this.gbLinkData.Controls.Add(this.labelUnitInfo);
 			this.gbLinkData.Controls.Add(this.cbLink1UnitType);
-			this.gbLinkData.Dock = System.Windows.Forms.DockStyle.Top;
 			this.gbLinkData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.gbLinkData.Location = new System.Drawing.Point(265, 3);
 			this.gbLinkData.Name = "gbLinkData";
-			this.gbLinkData.Size = new System.Drawing.Size(375, 150);
+			this.gbLinkData.Size = new System.Drawing.Size(320, 150);
 			this.gbLinkData.TabIndex = 0;
 			this.gbLinkData.TabStop = false;
 			this.gbLinkData.Text = "Link data";
-			// 
-			// btnOg
-			// 
-			this.btnOg.Location = new System.Drawing.Point(320, 25);
-			this.btnOg.Name = "btnOg";
-			this.btnOg.Size = new System.Drawing.Size(20, 120);
-			this.btnOg.TabIndex = 39;
-			this.btnOg.Text = "o\r\ng";
-			this.btnOg.UseVisualStyleBackColor = true;
-			this.btnOg.Click += new System.EventHandler(this.OnOgClick);
-			this.btnOg.MouseEnter += new System.EventHandler(this.OnOgMouseEnter);
-			this.btnOg.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
 			// 
 			// btnGoLink5
 			// 
@@ -651,8 +620,21 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.btnGoLink1.MouseEnter += new System.EventHandler(this.OnLink1MouseEnter);
 			this.btnGoLink1.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
 			// 
+			// btnOg
+			// 
+			this.btnOg.Location = new System.Drawing.Point(590, 10);
+			this.btnOg.Name = "btnOg";
+			this.btnOg.Size = new System.Drawing.Size(20, 140);
+			this.btnOg.TabIndex = 39;
+			this.btnOg.Text = "o\r\ng";
+			this.btnOg.UseVisualStyleBackColor = true;
+			this.btnOg.Click += new System.EventHandler(this.OnOgClick);
+			this.btnOg.MouseEnter += new System.EventHandler(this.OnOgMouseEnter);
+			this.btnOg.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
+			// 
 			// pnlDataFields
 			// 
+			this.pnlDataFields.Controls.Add(this.btnOg);
 			this.pnlDataFields.Controls.Add(this.gbNodeEditor);
 			this.pnlDataFields.Controls.Add(this.gbLinkData);
 			this.pnlDataFields.Controls.Add(this.pnlDataFieldsLeft);
@@ -669,10 +651,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.gbNodeEditor.Controls.Add(this.btnCopy);
 			this.gbNodeEditor.Controls.Add(this.btnPaste);
 			this.gbNodeEditor.Controls.Add(this.btnDelete);
-			this.gbNodeEditor.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.gbNodeEditor.Location = new System.Drawing.Point(265, 153);
 			this.gbNodeEditor.Name = "gbNodeEditor";
-			this.gbNodeEditor.Size = new System.Drawing.Size(375, 52);
+			this.gbNodeEditor.Size = new System.Drawing.Size(285, 52);
 			this.gbNodeEditor.TabIndex = 12;
 			this.gbNodeEditor.TabStop = false;
 			this.gbNodeEditor.Text = "Node editor";
@@ -690,63 +671,66 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// pnlDataFieldsLeft
 			// 
-			this.pnlDataFieldsLeft.Controls.Add(this.gbSpawnData);
-			this.pnlDataFieldsLeft.Controls.Add(this.gbPatrolData);
 			this.pnlDataFieldsLeft.Controls.Add(this.gbNodeData);
+			this.pnlDataFieldsLeft.Controls.Add(this.gbTileData);
 			this.pnlDataFieldsLeft.Dock = System.Windows.Forms.DockStyle.Left;
 			this.pnlDataFieldsLeft.Location = new System.Drawing.Point(0, 3);
 			this.pnlDataFieldsLeft.Name = "pnlDataFieldsLeft";
 			this.pnlDataFieldsLeft.Size = new System.Drawing.Size(265, 202);
 			this.pnlDataFieldsLeft.TabIndex = 11;
 			// 
-			// gbPatrolData
+			// gbNodeData
 			// 
-			this.gbPatrolData.Controls.Add(this.cbUnitType);
-			this.gbPatrolData.Controls.Add(this.cbAttack);
-			this.gbPatrolData.Controls.Add(this.cbPriority);
-			this.gbPatrolData.Controls.Add(this.labelAttack);
-			this.gbPatrolData.Controls.Add(this.labelUnitType);
-			this.gbPatrolData.Controls.Add(this.labelPriority);
-			this.gbPatrolData.Dock = System.Windows.Forms.DockStyle.Top;
-			this.gbPatrolData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.gbPatrolData.Location = new System.Drawing.Point(0, 45);
-			this.gbPatrolData.Name = "gbPatrolData";
-			this.gbPatrolData.Size = new System.Drawing.Size(265, 90);
-			this.gbPatrolData.TabIndex = 11;
-			this.gbPatrolData.TabStop = false;
-			this.gbPatrolData.Text = "Patrol data";
+			this.gbNodeData.Controls.Add(this.labelSpawnWeight);
+			this.gbNodeData.Controls.Add(this.cbSpawnWeight);
+			this.gbNodeData.Controls.Add(this.cbSpawnRank);
+			this.gbNodeData.Controls.Add(this.cbUnitType);
+			this.gbNodeData.Controls.Add(this.labelSpawnRank);
+			this.gbNodeData.Controls.Add(this.cbAttack);
+			this.gbNodeData.Controls.Add(this.cbPriority);
+			this.gbNodeData.Controls.Add(this.labelAttack);
+			this.gbNodeData.Controls.Add(this.labelUnitType);
+			this.gbNodeData.Controls.Add(this.labelPriority);
+			this.gbNodeData.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.gbNodeData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.gbNodeData.Location = new System.Drawing.Point(0, 50);
+			this.gbNodeData.Name = "gbNodeData";
+			this.gbNodeData.Size = new System.Drawing.Size(265, 152);
+			this.gbNodeData.TabIndex = 11;
+			this.gbNodeData.TabStop = false;
+			this.gbNodeData.Text = "Node data";
 			// 
 			// cbAttack
 			// 
-			this.cbAttack.Location = new System.Drawing.Point(85, 65);
+			this.cbAttack.Location = new System.Drawing.Point(105, 120);
 			this.cbAttack.Name = "cbAttack";
-			this.cbAttack.Size = new System.Drawing.Size(130, 20);
+			this.cbAttack.Size = new System.Drawing.Size(150, 20);
 			this.cbAttack.TabIndex = 8;
 			this.toolTip1.SetToolTip(this.cbAttack, "attacts an aLien to shoot at XCom base tiles");
 			this.cbAttack.SelectedIndexChanged += new System.EventHandler(this.OnBaseAttackSelectedIndexChanged);
 			// 
 			// labelAttack
 			// 
-			this.labelAttack.Location = new System.Drawing.Point(10, 70);
+			this.labelAttack.Location = new System.Drawing.Point(10, 125);
 			this.labelAttack.Name = "labelAttack";
-			this.labelAttack.Size = new System.Drawing.Size(75, 15);
+			this.labelAttack.Size = new System.Drawing.Size(90, 15);
 			this.labelAttack.TabIndex = 3;
 			this.labelAttack.Text = "Attack Base";
 			this.labelAttack.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.toolTip1.SetToolTip(this.labelAttack, "attacts an aLien to shoot at XCom base tiles");
 			// 
-			// gbNodeData
+			// gbTileData
 			// 
-			this.gbNodeData.Controls.Add(this.lblSelected);
-			this.gbNodeData.Controls.Add(this.lblOver);
-			this.gbNodeData.Dock = System.Windows.Forms.DockStyle.Top;
-			this.gbNodeData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.gbNodeData.Location = new System.Drawing.Point(0, 0);
-			this.gbNodeData.Name = "gbNodeData";
-			this.gbNodeData.Size = new System.Drawing.Size(265, 45);
-			this.gbNodeData.TabIndex = 1;
-			this.gbNodeData.TabStop = false;
-			this.gbNodeData.Text = "Tile data";
+			this.gbTileData.Controls.Add(this.lblSelected);
+			this.gbTileData.Controls.Add(this.lblOver);
+			this.gbTileData.Dock = System.Windows.Forms.DockStyle.Top;
+			this.gbTileData.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.gbTileData.Location = new System.Drawing.Point(0, 0);
+			this.gbTileData.Name = "gbTileData";
+			this.gbTileData.Size = new System.Drawing.Size(265, 50);
+			this.gbTileData.TabIndex = 1;
+			this.gbTileData.TabStop = false;
+			this.gbTileData.Text = "Tile data";
 			// 
 			// toolTip1
 			// 
@@ -764,7 +748,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.Name = "RouteView";
 			this.Size = new System.Drawing.Size(640, 480);
 			this.Click += new System.EventHandler(this.OnOgClick);
-			this.gbSpawnData.ResumeLayout(false);
 			this.tsMain.ResumeLayout(false);
 			this.tsMain.PerformLayout();
 			this.gbLinkData.ResumeLayout(false);
@@ -772,8 +755,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.pnlDataFields.ResumeLayout(false);
 			this.gbNodeEditor.ResumeLayout(false);
 			this.pnlDataFieldsLeft.ResumeLayout(false);
-			this.gbPatrolData.ResumeLayout(false);
 			this.gbNodeData.ResumeLayout(false);
+			this.gbTileData.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -797,7 +780,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.ComboBox cbLink3Dest;
 		private System.Windows.Forms.ComboBox cbLink4Dest;
 		private System.Windows.Forms.ComboBox cbLink5Dest;
-		private System.Windows.Forms.GroupBox gbSpawnData;
 		private System.Windows.Forms.Button btnDelete;
 		private System.Windows.Forms.Label labelUnitInfo;
 		private System.Windows.Forms.Label labelDist;
@@ -819,10 +801,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.GroupBox gbLinkData;
 		private System.Windows.Forms.Panel pnlDataFields;
 		private System.Windows.Forms.Panel pnlDataFieldsLeft;
-		private System.Windows.Forms.GroupBox gbPatrolData;
+		private System.Windows.Forms.GroupBox gbNodeData;
 		private System.Windows.Forms.ComboBox cbAttack;
 		private System.Windows.Forms.Label labelAttack;
-		private System.Windows.Forms.GroupBox gbNodeData;
+		private System.Windows.Forms.GroupBox gbTileData;
 		private System.Windows.Forms.GroupBox gbNodeEditor;
 		private System.Windows.Forms.Button btnCut;
 		private System.Windows.Forms.ToolStrip tsMain;
