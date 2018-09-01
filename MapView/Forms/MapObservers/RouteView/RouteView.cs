@@ -194,26 +194,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			// TODO: change the distance textboxes to labels.
 
-			// set all dropdowns' ComboBoxStyle ->
-			cbType.DropDownStyle          =
-			cbPatrol.DropDownStyle        =
-			cbAttack.DropDownStyle        =
-
-			cbRank.DropDownStyle          =
-			cbSpawn.DropDownStyle         =
-
-			cbLink1Dest.DropDownStyle     =
-			cbLink2Dest.DropDownStyle     =
-			cbLink3Dest.DropDownStyle     =
-			cbLink4Dest.DropDownStyle     =
-			cbLink5Dest.DropDownStyle     =
-
-			cbLink1UnitType.DropDownStyle =
-			cbLink2UnitType.DropDownStyle =
-			cbLink3UnitType.DropDownStyle =
-			cbLink4UnitType.DropDownStyle =
-			cbLink5UnitType.DropDownStyle = ComboBoxStyle.DropDownList;
-
 			DeselectNode();
 		}
 		#endregion
@@ -691,11 +671,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbAttack.SelectedItem = BaseAttack.Zero;
 
 				if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)
-					cbRank.SelectedItem = RouteNodeCollection.NodeRankUfo[(int)NodeRankUfo.Civilian];
+					cbRank.SelectedItem = RouteNodeCollection.NodeRankUfo[(int)NodeRankUfo.CivScout];
 				else
-					cbRank.SelectedItem = RouteNodeCollection.NodeRankTftd[(int)NodeRankTftd.Civilian];
+					cbRank.SelectedItem = RouteNodeCollection.NodeRankTftd[(int)NodeRankTftd.CivScout];
 
-				cbSpawn.SelectedItem = RouteNodeCollection.SpawnWeight[(int)SpawnWeight.NoSpawn];
+				cbSpawn.SelectedItem = RouteNodeCollection.SpawnWeight[(int)SpawnWeight.None];
 
 				cbLink1Dest.SelectedItem = // TODO: figure out why these show blank and not "NotUsed"
 				cbLink2Dest.SelectedItem = // when the app loads its very first Map.

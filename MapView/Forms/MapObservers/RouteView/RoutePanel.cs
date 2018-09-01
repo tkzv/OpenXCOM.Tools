@@ -429,7 +429,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							{
 								_graphics.FillPath(_brushSelected, _nodeFill);
 							}
-							else if (node.Spawn != SpawnWeight.NoSpawn)
+							else if (node.Spawn != SpawnWeight.None)
 							{
 								_graphics.FillPath(_brushSpawn, _nodeFill);
 							}
@@ -728,10 +728,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 				}
 
 //				int textHeight = TextRenderer.MeasureText("X", font).Height;
-				int textHeight = (int)_graphics.MeasureString("X", _fontOverlay).Height;
+				int textHeight = (int)_graphics.MeasureString("X", _fontOverlay).Height + 1; // pad +1
 				var overlay = new Rectangle(
 										CursorPosition.X + 18, CursorPosition.Y,
-										textWidth1 + Separator + textWidth2 + 3, textHeight + 7); // trim right & bottom (else +8 for both w/h)
+										textWidth1 + Separator + textWidth2 + 5, textHeight + 7); // trim right & bottom (else +8 for both w/h)
 
 				if (tile.Node != null)
 					overlay.Height += textHeight * 4;

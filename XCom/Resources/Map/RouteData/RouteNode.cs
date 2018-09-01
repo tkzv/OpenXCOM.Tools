@@ -111,7 +111,7 @@ namespace XCom
 			Rank   = (byte)0;
 			Patrol = PatrolPriority.Zero;
 			Attack = BaseAttack.Zero;
-			Spawn  = SpawnWeight.NoSpawn;
+			Spawn  = SpawnWeight.None;
 		}
 		#endregion
 

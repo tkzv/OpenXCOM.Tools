@@ -97,6 +97,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbLink5Dest
 			// 
+			this.cbLink5Dest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink5Dest.Location = new System.Drawing.Point(45, 125);
 			this.cbLink5Dest.Name = "cbLink5Dest";
 			this.cbLink5Dest.Size = new System.Drawing.Size(75, 20);
@@ -108,6 +109,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbLink4Dest
 			// 
+			this.cbLink4Dest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink4Dest.Location = new System.Drawing.Point(45, 100);
 			this.cbLink4Dest.Name = "cbLink4Dest";
 			this.cbLink4Dest.Size = new System.Drawing.Size(75, 20);
@@ -119,6 +121,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbLink3Dest
 			// 
+			this.cbLink3Dest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink3Dest.Location = new System.Drawing.Point(45, 75);
 			this.cbLink3Dest.Name = "cbLink3Dest";
 			this.cbLink3Dest.Size = new System.Drawing.Size(75, 20);
@@ -130,6 +133,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbLink2Dest
 			// 
+			this.cbLink2Dest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink2Dest.Location = new System.Drawing.Point(45, 50);
 			this.cbLink2Dest.Name = "cbLink2Dest";
 			this.cbLink2Dest.Size = new System.Drawing.Size(75, 20);
@@ -141,6 +145,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbLink1Dest
 			// 
+			this.cbLink1Dest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink1Dest.Location = new System.Drawing.Point(45, 25);
 			this.cbLink1Dest.Name = "cbLink1Dest";
 			this.cbLink1Dest.Size = new System.Drawing.Size(75, 20);
@@ -202,30 +207,33 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbPatrol
 			// 
+			this.cbPatrol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbPatrol.Location = new System.Drawing.Point(105, 95);
 			this.cbPatrol.Name = "cbPatrol";
 			this.cbPatrol.Size = new System.Drawing.Size(150, 20);
 			this.cbPatrol.TabIndex = 8;
-			this.toolTip1.SetToolTip(this.cbPatrol, "patrol priority");
+			this.toolTip1.SetToolTip(this.cbPatrol, "desire for an aLien to patrol here");
 			this.cbPatrol.SelectedIndexChanged += new System.EventHandler(this.OnPatrolPrioritySelectedIndexChanged);
 			// 
 			// cbRank
 			// 
+			this.cbRank.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbRank.Location = new System.Drawing.Point(105, 45);
 			this.cbRank.Name = "cbRank";
 			this.cbRank.Size = new System.Drawing.Size(150, 20);
 			this.cbRank.TabIndex = 7;
-			this.toolTip1.SetToolTip(this.cbRank, "faction or rank (if aLiens) that may spawn here. Nodes for aLiens outside their U" +
-		"FO or base should be set to 0");
+			this.toolTip1.SetToolTip(this.cbRank, "faction or rank (if aLiens) that may spawn/patrol here. Nodes for aLiens outside " +
+		"their UFO or base are usually set to 0");
 			this.cbRank.SelectedIndexChanged += new System.EventHandler(this.OnNodeRankSelectedIndexChanged);
 			// 
 			// cbType
 			// 
+			this.cbType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbType.Location = new System.Drawing.Point(105, 20);
 			this.cbType.Name = "cbType";
 			this.cbType.Size = new System.Drawing.Size(150, 20);
 			this.cbType.TabIndex = 6;
-			this.toolTip1.SetToolTip(this.cbType, "characteristics of units that may patrol the node");
+			this.toolTip1.SetToolTip(this.cbType, "characteristics of units that may patrol (or spawn at) the node");
 			this.cbType.SelectedIndexChanged += new System.EventHandler(this.OnUnitTypeSelectedIndexChanged);
 			// 
 			// labelSpawnWeight
@@ -236,7 +244,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelSpawnWeight.TabIndex = 5;
 			this.labelSpawnWeight.Text = "Spawn Weight";
 			this.labelSpawnWeight.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.toolTip1.SetToolTip(this.labelSpawnWeight, "preferability for an aLien to spawn here");
+			this.toolTip1.SetToolTip(this.labelSpawnWeight, "desire for an aLien to spawn here");
 			// 
 			// labelPriority
 			// 
@@ -246,7 +254,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelPriority.TabIndex = 3;
 			this.labelPriority.Text = "Patrol Priority";
 			this.labelPriority.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.toolTip1.SetToolTip(this.labelPriority, "preferability for an aLien to patrol here");
+			this.toolTip1.SetToolTip(this.labelPriority, "desire for an aLien to patrol here");
 			// 
 			// labelSpawnRank
 			// 
@@ -271,11 +279,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbSpawn
 			// 
+			this.cbSpawn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbSpawn.Location = new System.Drawing.Point(105, 70);
 			this.cbSpawn.Name = "cbSpawn";
 			this.cbSpawn.Size = new System.Drawing.Size(150, 20);
 			this.cbSpawn.TabIndex = 10;
-			this.toolTip1.SetToolTip(this.cbSpawn, "chance that an aLien will spawn here");
+			this.toolTip1.SetToolTip(this.cbSpawn, "desire for an aLien to spawn here");
 			this.cbSpawn.SelectedIndexChanged += new System.EventHandler(this.OnSpawnWeightSelectedIndexChanged);
 			// 
 			// btnPaste
@@ -297,6 +306,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.lblOver.Name = "lblOver";
 			this.lblOver.Size = new System.Drawing.Size(110, 30);
 			this.lblOver.TabIndex = 2;
+			this.lblOver.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// btnCopy
 			// 
@@ -324,10 +334,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.lblSelected.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblSelected.ForeColor = System.Drawing.Color.Orchid;
-			this.lblSelected.Location = new System.Drawing.Point(25, 15);
+			this.lblSelected.Location = new System.Drawing.Point(30, 15);
 			this.lblSelected.Name = "lblSelected";
 			this.lblSelected.Size = new System.Drawing.Size(110, 30);
 			this.lblSelected.TabIndex = 2;
+			this.lblSelected.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// tbLink5Dist
 			// 
@@ -395,6 +406,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbLink5UnitType
 			// 
+			this.cbLink5UnitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink5UnitType.Location = new System.Drawing.Point(125, 125);
 			this.cbLink5UnitType.Name = "cbLink5UnitType";
 			this.cbLink5UnitType.Size = new System.Drawing.Size(110, 20);
@@ -405,6 +417,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbLink4UnitType
 			// 
+			this.cbLink4UnitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink4UnitType.Location = new System.Drawing.Point(125, 100);
 			this.cbLink4UnitType.Name = "cbLink4UnitType";
 			this.cbLink4UnitType.Size = new System.Drawing.Size(110, 20);
@@ -415,6 +428,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbLink3UnitType
 			// 
+			this.cbLink3UnitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink3UnitType.Location = new System.Drawing.Point(125, 75);
 			this.cbLink3UnitType.Name = "cbLink3UnitType";
 			this.cbLink3UnitType.Size = new System.Drawing.Size(110, 20);
@@ -425,6 +439,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbLink2UnitType
 			// 
+			this.cbLink2UnitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink2UnitType.Location = new System.Drawing.Point(125, 50);
 			this.cbLink2UnitType.Name = "cbLink2UnitType";
 			this.cbLink2UnitType.Size = new System.Drawing.Size(110, 20);
@@ -435,6 +450,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbLink1UnitType
 			// 
+			this.cbLink1UnitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink1UnitType.Location = new System.Drawing.Point(125, 25);
 			this.cbLink1UnitType.Name = "cbLink1UnitType";
 			this.cbLink1UnitType.Size = new System.Drawing.Size(110, 20);
@@ -702,6 +718,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// cbAttack
 			// 
+			this.cbAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbAttack.Location = new System.Drawing.Point(105, 120);
 			this.cbAttack.Name = "cbAttack";
 			this.cbAttack.Size = new System.Drawing.Size(150, 20);
