@@ -293,9 +293,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.lblOver.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblOver.ForeColor = System.Drawing.Color.Sienna;
-			this.lblOver.Location = new System.Drawing.Point(135, 15);
+			this.lblOver.Location = new System.Drawing.Point(155, 15);
 			this.lblOver.Name = "lblOver";
-			this.lblOver.Size = new System.Drawing.Size(125, 30);
+			this.lblOver.Size = new System.Drawing.Size(100, 30);
 			this.lblOver.TabIndex = 2;
 			// 
 			// btnCopy
@@ -324,9 +324,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.lblSelected.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblSelected.ForeColor = System.Drawing.Color.Orchid;
-			this.lblSelected.Location = new System.Drawing.Point(10, 15);
+			this.lblSelected.Location = new System.Drawing.Point(35, 15);
 			this.lblSelected.Name = "lblSelected";
-			this.lblSelected.Size = new System.Drawing.Size(125, 30);
+			this.lblSelected.Size = new System.Drawing.Size(100, 30);
 			this.lblSelected.TabIndex = 2;
 			// 
 			// tbLink5Dist
