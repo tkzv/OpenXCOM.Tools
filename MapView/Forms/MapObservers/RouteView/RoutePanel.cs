@@ -553,19 +553,17 @@ namespace MapView.Forms.MapObservers.RouteViews
 								int infoboxX = x - DrawAreaWidth / 2 - 2;			// -2 to prevent drawing over the link-going-up
 								int infoboxY = y + DrawAreaHeight - NodeValMax / 2;	//    vertical line indicator when panel is small sized.
 
-								int nodePatrolPriority = (int)node.Priority;
 								DrawImportanceMeter(
 												infoboxX,
 												infoboxY,
-												nodePatrolPriority,
-												Brushes.DeepSkyBlue); //CornflowerBlue
+												(int)node.SpawnWeight,
+												Brushes.LightCoral); //IndianRed
 
-								int nodeSpawnWeight = (int)node.SpawnWeight;
 								DrawImportanceMeter(
 												infoboxX + 3,
 												infoboxY,
-												nodeSpawnWeight,
-												Brushes.LightCoral); //IndianRed
+												(int)node.Priority,
+												Brushes.DeepSkyBlue); //CornflowerBlue
 //								}
 						}
 					}
