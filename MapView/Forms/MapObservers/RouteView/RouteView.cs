@@ -94,12 +94,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				if ((RoutePanel.MapFile = MapFile) != null)
 				{
-					cbSpawnRank.Items.Clear();
+					cbRank.Items.Clear();
 
-					if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)					// ie. Get the palette of the 1st image of the
-						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);	// 1st tilepart ... of the MapFileChild object.
+					if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)			// ie. Get the palette of the 1st image of the
+						cbRank.Items.AddRange(RouteNodeCollection.NodeRankUfo);	// 1st tilepart ... of the MapFileChild object.
 					else
-						cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankTftd);
+						cbRank.Items.AddRange(RouteNodeCollection.NodeRankTftd);
 
 					UpdateNodeInformation();
 				}
@@ -167,23 +167,23 @@ namespace MapView.Forms.MapObservers.RouteViews
 				UnitType.Any,
 				UnitType.Small,
 				UnitType.Large,
-				UnitType.Flying,
+				UnitType.FlyingSmall,
 				UnitType.FlyingLarge
 			};
 
 			// patrol data ->
-			cbUnitType.Items.AddRange(unitTypes);
+			cbType.Items.AddRange(unitTypes);
 
-			foreach (var value in Enum.GetValues(typeof(NodeImportance)))
-				cbPriority.Items.Add(value);
+			foreach (var value in Enum.GetValues(typeof(PatrolPriority)))
+				cbPatrol.Items.Add(value);
 
-			foreach (var value in Enum.GetValues(typeof(BaseModuleAttack)))
+			foreach (var value in Enum.GetValues(typeof(BaseAttack)))
 				cbAttack.Items.Add(value);
 
 			// spawn data ->
-			cbSpawnRank.Items.AddRange(RouteNodeCollection.UnitRankUfo);
+			cbRank.Items.AddRange(RouteNodeCollection.NodeRankUfo);
 
-			cbSpawnWeight.Items.AddRange(RouteNodeCollection.SpawnUsage);
+			cbSpawn.Items.AddRange(RouteNodeCollection.SpawnWeight);
 
 			// link data ->
 			cbLink1UnitType.Items.AddRange(unitTypes);
@@ -195,12 +195,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// TODO: change the distance textboxes to labels.
 
 			// set all dropdowns' ComboBoxStyle ->
-			cbUnitType.DropDownStyle      =
-			cbPriority.DropDownStyle      =
+			cbType.DropDownStyle          =
+			cbPatrol.DropDownStyle        =
 			cbAttack.DropDownStyle        =
 
-			cbSpawnRank.DropDownStyle     =
-			cbSpawnWeight.DropDownStyle   =
+			cbRank.DropDownStyle          =
+			cbSpawn.DropDownStyle         =
 
 			cbLink1Dest.DropDownStyle     =
 			cbLink2Dest.DropDownStyle     =
@@ -686,16 +686,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 				btnGoLink5.Text = String.Empty;
 
 
-				cbUnitType.SelectedItem = UnitType.Any;
-				cbPriority.SelectedItem = NodeImportance.Zero;
-				cbAttack.SelectedItem   = BaseModuleAttack.Zero;
+				cbType.SelectedItem   = UnitType.Any;
+				cbPatrol.SelectedItem = PatrolPriority.Zero;
+				cbAttack.SelectedItem = BaseAttack.Zero;
 
 				if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)
-					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[(int)UnitRankUfo.Civilian];
+					cbRank.SelectedItem = RouteNodeCollection.NodeRankUfo[(int)NodeRankUfo.Civilian];
 				else
-					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankTftd[(int)UnitRankTftd.Civilian];
+					cbRank.SelectedItem = RouteNodeCollection.NodeRankTftd[(int)NodeRankTftd.Civilian];
 
-				cbSpawnWeight.SelectedItem = RouteNodeCollection.SpawnUsage[(int)SpawnUsage.NoSpawn];
+				cbSpawn.SelectedItem = RouteNodeCollection.SpawnWeight[(int)SpawnWeight.NoSpawn];
 
 				cbLink1Dest.SelectedItem = // TODO: figure out why these show blank and not "NotUsed"
 				cbLink2Dest.SelectedItem = // when the app loads its very first Map.
@@ -722,16 +722,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 				gbLinkData.Enabled   =
 				gbNodeEditor.Enabled = true;
 
-				cbUnitType.SelectedItem = NodeSelected.UsableType;
-				cbPriority.SelectedItem = NodeSelected.Priority;
-				cbAttack.SelectedItem   = NodeSelected.Attack;
+				cbType.SelectedItem   = NodeSelected.Type;
+				cbPatrol.SelectedItem = NodeSelected.Patrol;
+				cbAttack.SelectedItem = NodeSelected.Attack;
 
 				if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)
-					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankUfo[NodeSelected.SpawnRank];
+					cbRank.SelectedItem = RouteNodeCollection.NodeRankUfo[NodeSelected.Rank];
 				else
-					cbSpawnRank.SelectedItem = RouteNodeCollection.UnitRankTftd[NodeSelected.SpawnRank];
+					cbRank.SelectedItem = RouteNodeCollection.NodeRankTftd[NodeSelected.Rank];
 
-				cbSpawnWeight.SelectedItem = RouteNodeCollection.SpawnUsage[(byte)NodeSelected.SpawnWeight];
+				cbSpawn.SelectedItem = RouteNodeCollection.SpawnWeight[(byte)NodeSelected.Spawn];
 
 				cbLink1Dest.Items.Clear();
 				cbLink2Dest.Items.Clear();
@@ -834,11 +834,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 															   : String.Empty;
 				}
 
-				cbLink1UnitType.SelectedItem = NodeSelected[0].UsableType;
-				cbLink2UnitType.SelectedItem = NodeSelected[1].UsableType;
-				cbLink3UnitType.SelectedItem = NodeSelected[2].UsableType;
-				cbLink4UnitType.SelectedItem = NodeSelected[3].UsableType;
-				cbLink5UnitType.SelectedItem = NodeSelected[4].UsableType;
+				cbLink1UnitType.SelectedItem = NodeSelected[0].Type;
+				cbLink2UnitType.SelectedItem = NodeSelected[1].Type;
+				cbLink3UnitType.SelectedItem = NodeSelected[2].Type;
+				cbLink4UnitType.SelectedItem = NodeSelected[3].Type;
+				cbLink5UnitType.SelectedItem = NodeSelected[4].Type;
 
 
 				if (NodeSelected[0].Destination == Link.NotUsed)
@@ -925,7 +925,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected.UsableType = (UnitType)cbUnitType.SelectedItem;
+				NodeSelected.Type = (UnitType)cbType.SelectedItem;
 			}
 		}
 
@@ -935,7 +935,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected.Priority = (NodeImportance)cbPriority.SelectedItem;
+				NodeSelected.Patrol = (PatrolPriority)cbPatrol.SelectedItem;
 				Refresh(); // update the importance bar
 			}
 		}
@@ -946,7 +946,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected.Attack = (BaseModuleAttack)cbAttack.SelectedItem;
+				NodeSelected.Attack = (BaseAttack)cbAttack.SelectedItem;
 			}
 		}
 		#endregion
@@ -959,7 +959,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected.SpawnRank = (byte)((EnumString)cbSpawnRank.SelectedItem).Enum;
+				NodeSelected.Rank = (byte)((EnumString)cbRank.SelectedItem).Enum;
 			}
 		}
 
@@ -969,7 +969,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected.SpawnWeight = (SpawnUsage)((EnumString)cbSpawnWeight.SelectedItem).Enum;
+				NodeSelected.Spawn = (SpawnWeight)((EnumString)cbSpawn.SelectedItem).Enum;
 				Refresh(); // update the importance bar
 			}
 		}
@@ -1023,7 +1023,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				switch (link.Destination = dest.Value)
 				{
 					case Link.NotUsed:
-						link.UsableType = UnitType.Any;
+						link.Type = UnitType.Any;
 
 						tbDistance.Text = String.Empty;
 						link.Distance = 0;
@@ -1180,7 +1180,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected[0].UsableType = (UnitType)cbLink1UnitType.SelectedItem;
+				NodeSelected[0].Type = (UnitType)cbLink1UnitType.SelectedItem;
 
 				Refresh();
 			}
@@ -1191,7 +1191,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected[1].UsableType = (UnitType)cbLink2UnitType.SelectedItem;
+				NodeSelected[1].Type = (UnitType)cbLink2UnitType.SelectedItem;
 
 				Refresh();
 			}
@@ -1202,7 +1202,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected[2].UsableType = (UnitType)cbLink3UnitType.SelectedItem;
+				NodeSelected[2].Type = (UnitType)cbLink3UnitType.SelectedItem;
 
 				Refresh();
 			}
@@ -1213,7 +1213,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected[3].UsableType = (UnitType)cbLink4UnitType.SelectedItem;
+				NodeSelected[3].Type = (UnitType)cbLink4UnitType.SelectedItem;
 
 				Refresh();
 			}
@@ -1224,7 +1224,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected[4].UsableType = (UnitType)cbLink5UnitType.SelectedItem;
+				NodeSelected[4].Type = (UnitType)cbLink5UnitType.SelectedItem;
 
 				Refresh();
 			}
@@ -1415,11 +1415,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 										System.Globalization.CultureInfo.InvariantCulture,
 										"{0}{6}{1}{6}{2}{6}{3}{6}{4}{6}{5}",
 										NodeCopyPrefix,
-										cbUnitType.SelectedIndex,
-										cbPriority.SelectedIndex,
+										cbType.SelectedIndex,
+										cbPatrol.SelectedIndex,
 										cbAttack.SelectedIndex,
-										cbSpawnRank.SelectedIndex,
-										cbSpawnWeight.SelectedIndex,
+										cbRank.SelectedIndex,
+										cbSpawn.SelectedIndex,
 										NodeCopySeparator);
 
 				// TODO: include Link info ... perhaps.
@@ -1442,11 +1442,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 					var invariant = System.Globalization.CultureInfo.InvariantCulture;
 
-					cbUnitType.SelectedIndex    = Int32.Parse(nodeData[1], invariant);
-					cbPriority.SelectedIndex    = Int32.Parse(nodeData[2], invariant);
-					cbAttack.SelectedIndex      = Int32.Parse(nodeData[3], invariant);
-					cbSpawnRank.SelectedIndex   = Int32.Parse(nodeData[4], invariant);
-					cbSpawnWeight.SelectedIndex = Int32.Parse(nodeData[5], invariant);
+					cbType.SelectedIndex   = Int32.Parse(nodeData[1], invariant);
+					cbPatrol.SelectedIndex = Int32.Parse(nodeData[2], invariant);
+					cbAttack.SelectedIndex = Int32.Parse(nodeData[3], invariant);
+					cbRank.SelectedIndex   = Int32.Parse(nodeData[4], invariant);
+					cbSpawn.SelectedIndex  = Int32.Parse(nodeData[5], invariant);
 
 					// TODO: include Link info ... perhaps.
 					// But re-assigning the link node-ids would be difficult, since
@@ -1562,7 +1562,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (MessageBox.Show(
 							this,
 							"Are you sure you want to make all nodes spawn Rank"
-								+ " 0 Civ-Scout?",
+								+ " 0 Civ/Scout?",
 							"Warning",
 							MessageBoxButtons.YesNo,
 							MessageBoxIcon.Exclamation,
@@ -1571,10 +1571,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				int changed = 0;
 				foreach (RouteNode node in MapFile.Routes)
-					if (node.SpawnRank != 0)
+					if (node.Rank != 0)
 					{
 						++changed;
-						node.SpawnRank = 0;
+						node.Rank = 0;
 					}
 
 				if (changed != 0)
@@ -1622,7 +1622,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 						NodeSelected[slotId].Destination = Link.NotUsed;
 						NodeSelected[slotId].Distance = 0;
 
-						NodeSelected[slotId].UsableType = UnitType.Any;
+						NodeSelected[slotId].Type = UnitType.Any;
 					}
 					UpdateNodeInformation();
 

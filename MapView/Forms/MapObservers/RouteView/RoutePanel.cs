@@ -429,7 +429,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 							{
 								_graphics.FillPath(_brushSelected, _nodeFill);
 							}
-							else if (node.SpawnWeight != SpawnUsage.NoSpawn)
+							else if (node.Spawn != SpawnWeight.NoSpawn)
 							{
 								_graphics.FillPath(_brushSpawn, _nodeFill);
 							}
@@ -557,13 +557,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 								DrawImportanceMeter(
 												infoboxX,
 												infoboxY,
-												(int)node.SpawnWeight,
+												(int)node.Spawn,
 												Brushes.LightCoral); //IndianRed
 
 								DrawImportanceMeter(
 												infoboxX + 3,
 												infoboxY,
-												(int)node.Priority,
+												(int)node.Patrol,
 												Brushes.DeepSkyBlue); //CornflowerBlue
 //								}
 						}
@@ -689,9 +689,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 					textPatrol1 = Patrol;
 
 					textOver2   = (tile.Node.Index).ToString(System.Globalization.CultureInfo.CurrentCulture);
-					textRank2   = (RouteNodeCollection.UnitRankUfo[tile.Node.SpawnRank]).ToString(); // TODO: TftD ranks
-					textSpawn2  = (tile.Node.SpawnWeight).ToString();
-					textPatrol2 = (tile.Node.Priority).ToString();
+					if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)
+						textRank2 = (RouteNodeCollection.NodeRankUfo[tile.Node.Rank]).ToString();
+					else
+						textRank2 = (RouteNodeCollection.NodeRankTftd[tile.Node.Rank]).ToString();
+					textSpawn2  = (tile.Node.Spawn).ToString();
+					textPatrol2 = (tile.Node.Patrol).ToString();
 
 					int width;
 					width = (int)_graphics.MeasureString(textOver1, _fontOverlay).Width;
@@ -712,8 +715,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 					width = (int)_graphics.MeasureString(textPatrol2, _fontOverlay).Width;
 					if (width > textWidth2) textWidth2 = width;
 
-					textWidth2 -= 5; // trim right
-
 					// time to move to a higher .NET framework.
 
 //					width = TextRenderer.MeasureText(textOver1, font).Width;
@@ -730,7 +731,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				int textHeight = (int)_graphics.MeasureString("X", _fontOverlay).Height;
 				var overlay = new Rectangle(
 										CursorPosition.X + 18, CursorPosition.Y,
-										textWidth1 + Separator + textWidth2 + 8, textHeight + 7); // trim bottom
+										textWidth1 + Separator + textWidth2 + 3, textHeight + 7); // trim right & bottom (else +8 for both w/h)
 
 				if (tile.Node != null)
 					overlay.Height += textHeight * 4;

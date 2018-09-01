@@ -5,27 +5,6 @@ namespace XCom
 {
 	public sealed class RouteNode
 	{
-		#region rmprec
-/*		typedef struct rmprec
-		{
-			unsigned char row;
-			unsigned char col;
-			unsigned char lvl;
-			unsigned char zero03;				// Always 0
-			LatticeLink   latlink[MaxLinks];	// 5 3-byte entries (shown above)
-			unsigned char type1;				// Uses RRT_xxxx: 0,1,2,4
-		observed
-			unsigned char type2;				// Uses RRR_xxxx: 0,1,2,3,4,5, ,7,
-		observed
-			unsigned char type3;				// Uses RRR_xxxx: 0,1,2,3,4,5,6,7,8
-		observed
-			unsigned char type4;				// Almost always 0
-			unsigned char type5;				// 0=Don't use 1=Use most of the time...2+
-		= Use less and less often, 0 thru A observed
-		} RmpRec; */
-		#endregion
-
-
 		#region Fields (static)
 		public const int LinkSlots = 5;
 		#endregion
@@ -51,19 +30,19 @@ namespace XCom
 			get { return _links[id]; }
 		}
 
-		public UnitType UsableType
+		public UnitType Type
 		{ get; set; }
 
-		public byte SpawnRank
+		public byte Rank
 		{ get; set; }
 
-		public NodeImportance Priority
+		public PatrolPriority Patrol
 		{ get; set; }
 
-		public BaseModuleAttack Attack
+		public BaseAttack Attack
 		{ get; set; }
 
-		public SpawnUsage SpawnWeight
+		public SpawnWeight Spawn
 		{ get; set; }
 
 		/// <summary>
@@ -96,17 +75,17 @@ namespace XCom
 			for (int slotId = 0; slotId != LinkSlots; ++slotId)
 			{
 				_links[slotId] = new Link(
-									bindata[offset], // note that x & y are reversed in the RMP-file.
+									bindata[offset],
 									bindata[offset + 1],
 									bindata[offset + 2]);
 				offset += 3;
 			}
 
-			UsableType  = (UnitType)bindata[19];
-			SpawnRank   = bindata[20];
-			Priority    = (NodeImportance)bindata[21];
-			Attack      = (BaseModuleAttack)bindata[22];
-			SpawnWeight = (SpawnUsage)bindata[23];
+			Type   = (UnitType)bindata[19];
+			Rank   = bindata[20];
+			Patrol = (PatrolPriority)bindata[21];
+			Attack = (BaseAttack)bindata[22];
+			Spawn  = (SpawnWeight)bindata[23];
 		}
 
 		/// <summary>
@@ -128,11 +107,11 @@ namespace XCom
 			for (int slotId = 0; slotId != LinkSlots; ++slotId)
 				_links[slotId] = new Link(Link.NotUsed, 0, 0);
 
-			UsableType  = UnitType.Any;
-			SpawnRank   = 0;
-			Priority    = NodeImportance.Zero;
-			Attack      = BaseModuleAttack.Zero;
-			SpawnWeight = SpawnUsage.NoSpawn;
+			Type   = UnitType.Any;
+			Rank   = (byte)0;
+			Patrol = PatrolPriority.Zero;
+			Attack = BaseAttack.Zero;
+			Spawn  = SpawnWeight.NoSpawn;
 		}
 		#endregion
 
@@ -153,14 +132,14 @@ namespace XCom
 			{
 				fs.WriteByte(_links[id].Destination);
 				fs.WriteByte(_links[id].Distance);
-				fs.WriteByte((byte)_links[id].UsableType);
+				fs.WriteByte((byte)_links[id].Type);
 			}
 
-			fs.WriteByte((byte)UsableType);
-			fs.WriteByte((byte)SpawnRank); // NOTE: is already a byte-type.
-			fs.WriteByte((byte)Priority);
+			fs.WriteByte((byte)Type);
+			fs.WriteByte(Rank);
+			fs.WriteByte((byte)Patrol);
 			fs.WriteByte((byte)Attack);
-			fs.WriteByte((byte)SpawnWeight);
+			fs.WriteByte((byte)Spawn);
 		}
 
 //		public Link GetLinkedNode(int id)

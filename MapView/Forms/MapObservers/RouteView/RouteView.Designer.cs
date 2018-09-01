@@ -38,14 +38,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelLink3 = new System.Windows.Forms.Label();
 			this.labelLink2 = new System.Windows.Forms.Label();
 			this.labelLink1 = new System.Windows.Forms.Label();
-			this.cbPriority = new System.Windows.Forms.ComboBox();
-			this.cbSpawnRank = new System.Windows.Forms.ComboBox();
-			this.cbUnitType = new System.Windows.Forms.ComboBox();
+			this.cbPatrol = new System.Windows.Forms.ComboBox();
+			this.cbRank = new System.Windows.Forms.ComboBox();
+			this.cbType = new System.Windows.Forms.ComboBox();
 			this.labelSpawnWeight = new System.Windows.Forms.Label();
 			this.labelPriority = new System.Windows.Forms.Label();
 			this.labelSpawnRank = new System.Windows.Forms.Label();
 			this.labelUnitType = new System.Windows.Forms.Label();
-			this.cbSpawnWeight = new System.Windows.Forms.ComboBox();
+			this.cbSpawn = new System.Windows.Forms.ComboBox();
 			this.btnPaste = new System.Windows.Forms.Button();
 			this.lblOver = new System.Windows.Forms.Label();
 			this.btnCopy = new System.Windows.Forms.Button();
@@ -200,33 +200,33 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelLink1.MouseLeave += new System.EventHandler(this.OnLinkMouseLeave);
 			this.labelLink1.MouseHover += new System.EventHandler(this.OnLink1MouseEnter);
 			// 
-			// cbPriority
+			// cbPatrol
 			// 
-			this.cbPriority.Location = new System.Drawing.Point(105, 95);
-			this.cbPriority.Name = "cbPriority";
-			this.cbPriority.Size = new System.Drawing.Size(150, 20);
-			this.cbPriority.TabIndex = 8;
-			this.toolTip1.SetToolTip(this.cbPriority, "patrol priority");
-			this.cbPriority.SelectedIndexChanged += new System.EventHandler(this.OnPatrolPrioritySelectedIndexChanged);
+			this.cbPatrol.Location = new System.Drawing.Point(105, 95);
+			this.cbPatrol.Name = "cbPatrol";
+			this.cbPatrol.Size = new System.Drawing.Size(150, 20);
+			this.cbPatrol.TabIndex = 8;
+			this.toolTip1.SetToolTip(this.cbPatrol, "patrol priority");
+			this.cbPatrol.SelectedIndexChanged += new System.EventHandler(this.OnPatrolPrioritySelectedIndexChanged);
 			// 
-			// cbSpawnRank
+			// cbRank
 			// 
-			this.cbSpawnRank.Location = new System.Drawing.Point(105, 45);
-			this.cbSpawnRank.Name = "cbSpawnRank";
-			this.cbSpawnRank.Size = new System.Drawing.Size(150, 20);
-			this.cbSpawnRank.TabIndex = 7;
-			this.toolTip1.SetToolTip(this.cbSpawnRank, "faction or rank (if aLiens) that may spawn here. Nodes for aLiens outside their U" +
+			this.cbRank.Location = new System.Drawing.Point(105, 45);
+			this.cbRank.Name = "cbRank";
+			this.cbRank.Size = new System.Drawing.Size(150, 20);
+			this.cbRank.TabIndex = 7;
+			this.toolTip1.SetToolTip(this.cbRank, "faction or rank (if aLiens) that may spawn here. Nodes for aLiens outside their U" +
 		"FO or base should be set to 0");
-			this.cbSpawnRank.SelectedIndexChanged += new System.EventHandler(this.OnSpawnRankSelectedIndexChanged);
+			this.cbRank.SelectedIndexChanged += new System.EventHandler(this.OnSpawnRankSelectedIndexChanged);
 			// 
-			// cbUnitType
+			// cbType
 			// 
-			this.cbUnitType.Location = new System.Drawing.Point(105, 20);
-			this.cbUnitType.Name = "cbUnitType";
-			this.cbUnitType.Size = new System.Drawing.Size(150, 20);
-			this.cbUnitType.TabIndex = 6;
-			this.toolTip1.SetToolTip(this.cbUnitType, "characteristics of units that may patrol the node");
-			this.cbUnitType.SelectedIndexChanged += new System.EventHandler(this.OnUnitTypeSelectedIndexChanged);
+			this.cbType.Location = new System.Drawing.Point(105, 20);
+			this.cbType.Name = "cbType";
+			this.cbType.Size = new System.Drawing.Size(150, 20);
+			this.cbType.TabIndex = 6;
+			this.toolTip1.SetToolTip(this.cbType, "characteristics of units that may patrol the node");
+			this.cbType.SelectedIndexChanged += new System.EventHandler(this.OnUnitTypeSelectedIndexChanged);
 			// 
 			// labelSpawnWeight
 			// 
@@ -269,14 +269,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelUnitType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.toolTip1.SetToolTip(this.labelUnitType, "characteristics of units that may patrol (or spawn at) the node");
 			// 
-			// cbSpawnWeight
+			// cbSpawn
 			// 
-			this.cbSpawnWeight.Location = new System.Drawing.Point(105, 70);
-			this.cbSpawnWeight.Name = "cbSpawnWeight";
-			this.cbSpawnWeight.Size = new System.Drawing.Size(150, 20);
-			this.cbSpawnWeight.TabIndex = 10;
-			this.toolTip1.SetToolTip(this.cbSpawnWeight, "chance that an aLien will spawn here");
-			this.cbSpawnWeight.SelectedIndexChanged += new System.EventHandler(this.OnSpawnWeightSelectedIndexChanged);
+			this.cbSpawn.Location = new System.Drawing.Point(105, 70);
+			this.cbSpawn.Name = "cbSpawn";
+			this.cbSpawn.Size = new System.Drawing.Size(150, 20);
+			this.cbSpawn.TabIndex = 10;
+			this.toolTip1.SetToolTip(this.cbSpawn, "chance that an aLien will spawn here");
+			this.cbSpawn.SelectedIndexChanged += new System.EventHandler(this.OnSpawnWeightSelectedIndexChanged);
 			// 
 			// btnPaste
 			// 
@@ -293,9 +293,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.lblOver.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblOver.ForeColor = System.Drawing.Color.Sienna;
-			this.lblOver.Location = new System.Drawing.Point(155, 15);
+			this.lblOver.Location = new System.Drawing.Point(145, 15);
 			this.lblOver.Name = "lblOver";
-			this.lblOver.Size = new System.Drawing.Size(100, 30);
+			this.lblOver.Size = new System.Drawing.Size(110, 30);
 			this.lblOver.TabIndex = 2;
 			// 
 			// btnCopy
@@ -324,9 +324,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.lblSelected.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblSelected.ForeColor = System.Drawing.Color.Orchid;
-			this.lblSelected.Location = new System.Drawing.Point(35, 15);
+			this.lblSelected.Location = new System.Drawing.Point(25, 15);
 			this.lblSelected.Name = "lblSelected";
-			this.lblSelected.Size = new System.Drawing.Size(100, 30);
+			this.lblSelected.Size = new System.Drawing.Size(110, 30);
 			this.lblSelected.TabIndex = 2;
 			// 
 			// tbLink5Dist
@@ -682,12 +682,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// gbNodeData
 			// 
 			this.gbNodeData.Controls.Add(this.labelSpawnWeight);
-			this.gbNodeData.Controls.Add(this.cbSpawnWeight);
-			this.gbNodeData.Controls.Add(this.cbSpawnRank);
-			this.gbNodeData.Controls.Add(this.cbUnitType);
+			this.gbNodeData.Controls.Add(this.cbSpawn);
+			this.gbNodeData.Controls.Add(this.cbRank);
+			this.gbNodeData.Controls.Add(this.cbType);
 			this.gbNodeData.Controls.Add(this.labelSpawnRank);
 			this.gbNodeData.Controls.Add(this.cbAttack);
-			this.gbNodeData.Controls.Add(this.cbPriority);
+			this.gbNodeData.Controls.Add(this.cbPatrol);
 			this.gbNodeData.Controls.Add(this.labelAttack);
 			this.gbNodeData.Controls.Add(this.labelUnitType);
 			this.gbNodeData.Controls.Add(this.labelPriority);
@@ -715,7 +715,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelAttack.Name = "labelAttack";
 			this.labelAttack.Size = new System.Drawing.Size(90, 15);
 			this.labelAttack.TabIndex = 3;
-			this.labelAttack.Text = "Attack Base";
+			this.labelAttack.Text = "Base Attack";
 			this.labelAttack.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.toolTip1.SetToolTip(this.labelAttack, "attacts an aLien to shoot at XCom base tiles");
 			// 
@@ -764,9 +764,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 		private System.Windows.Forms.Label labelUnitType;
-		private System.Windows.Forms.ComboBox cbUnitType;
-		private System.Windows.Forms.ComboBox cbSpawnRank;
-		private System.Windows.Forms.ComboBox cbPriority;
+		private System.Windows.Forms.ComboBox cbType;
+		private System.Windows.Forms.ComboBox cbRank;
+		private System.Windows.Forms.ComboBox cbPatrol;
 		private System.Windows.Forms.Label labelSpawnRank;
 		private System.Windows.Forms.Label labelPriority;
 		private System.Windows.Forms.Label labelSpawnWeight;
@@ -794,7 +794,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.TextBox tbLink4Dist;
 		private System.Windows.Forms.TextBox tbLink5Dist;
 		private System.Windows.Forms.Label lblSelected;
-		private System.Windows.Forms.ComboBox cbSpawnWeight;
+		private System.Windows.Forms.ComboBox cbSpawn;
 		private System.Windows.Forms.Label lblOver;
 		private System.Windows.Forms.Button btnPaste;
 		private System.Windows.Forms.Button btnCopy;

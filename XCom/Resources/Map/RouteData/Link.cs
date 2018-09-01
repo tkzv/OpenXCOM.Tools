@@ -25,9 +25,9 @@ namespace XCom
 		{ get; set; }
 
 		/// <summary>
-		/// Gets/Sets the unit type that can use this link.
+		/// Gets/Sets the unit-type that can use this link.
 		/// </summary>
-		public UnitType UsableType
+		public UnitType Type
 		{ get; set; }
 		#endregion
 
@@ -43,7 +43,7 @@ namespace XCom
 		{
 			Destination = nodeId;
 			Distance    = distance;
-			UsableType  = (UnitType)type;
+			Type        = (UnitType)type;
 		}
 		#endregion
 	}

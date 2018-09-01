@@ -4,92 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 
 
-// when determining spawn positions the following nodes are tried
-// Leader > Nav > Eng> Unknown8 > Med > Soldier > Any
-// Nav > Eng > Soldier > Any
-// Human is only used for xcom units
-// civilians can only start on any nodes
-// unknown6 is only used as an alternate choice to a medic
-// unknown8 is only used by squad leaders and commanders
-
-// unknown8 = any alien
-// unknown6 = Medic,Navigator,Soldier,Terrorist
-
-	/*
-		UFO			TFTD
-		Commander	Commander
-		Leader		Navigator
-		Engineer	Medic
-		Medic		Technition
-		Navigator	SquadLeader
-		Soldier		Soldier
-	*/
-
-
-#region about the RMP file
-
-/*
-// Route Record for RMP files
-//
-// RMP records describe the points in a lattice and the links connecting
-// them.  However, special values of rmpindex are:
-//   FF = Not used
-//   FE = Exit terrain to north
-//   FD = Exit terrain to east
-//   FC = Exit terrain to south
-//   FB = Exit terrain to west
-
-typedef struct latticelink
-{
-	unsigned char rmpindex; // Index of a linked point in the
-lattice
-	unsigned char distance; // Approximate distance from current
-point
-	unsigned char linktype; // Uses RRT_xxxx
-} LatticeLink;
-
-#define MaxLinks 5
-
-typedef struct rmprec
-{
-	unsigned char row;
-	unsigned char col;
-	unsigned char lvl;
-	unsigned char zero03;			// Always 0
-	LatticeLink latlink[MaxLinks];	// 5 3-byte entries (shown above)
-	unsigned char type1;			// Uses RRT_xxxx: 0,1,2,4
-observed
-	unsigned char type2;			// Uses RRR_xxxx: 0,1,2,3,4,5, ,7,
-observed
-	unsigned char type3;			// Uses RRR_xxxx: 0,1,2,3,4,5,6,7,8
-observed
-	unsigned char type4;			// Almost always 0
-	unsigned char type5;			// 0=Don't use 1=Use most of the time...2+
-= Use less and less often, 0 thru A observed
-} RmpRec;
-
-// Types of Units
-
-#define RRT_Any		0
-#define RRT_Flying	1
-#define RRT_Small	2
-#define RRT_4		4 // Unknown
-
-// Ranks of Units
-
-#define RRR_0			0 // Unknown
-#define RRR_Human		1
-#define RRR_Soldier		2
-#define RRR_Navigator	3
-#define RRR_Leader		4
-#define RRR_Engineer	5
-#define RRR_6			6 // Commander?
-#define RRR_Medic		7
-#define RRR_8			8 // Unknown
-*/
-#endregion
-
-
 namespace XCom
 {
 	#region Enums
@@ -103,13 +17,13 @@ namespace XCom
 			byte
 	{
 		Any         = 0,
-		Flying      = 1,
+		FlyingSmall = 1,
 		Small       = 2,
 		FlyingLarge = 3,
 		Large       = 4
 	};
 
-	public enum UnitRankUfo
+	public enum NodeRankUfo
 		:
 			byte
 	{
@@ -125,7 +39,7 @@ namespace XCom
 		invalid         = 9 // WORKAROUND.
 	};
 
-	public enum UnitRankTftd
+	public enum NodeRankTftd
 		:
 			byte
 	{
@@ -141,7 +55,7 @@ namespace XCom
 		invalid         = 9 // WORKAROUND.
 	};
 
-	public enum SpawnUsage
+	public enum SpawnWeight
 		:
 			byte
 	{
@@ -158,7 +72,7 @@ namespace XCom
 		Spawn10 = 10
 	};
 
-	public enum NodeImportance
+	public enum PatrolPriority
 		:
 			byte
 	{
@@ -175,7 +89,7 @@ namespace XCom
 		Ten   = 10
 	};
 
-	public enum BaseModuleAttack
+	public enum BaseAttack
 		:
 			byte
 	{
@@ -224,47 +138,47 @@ namespace XCom
 		{ get; set; }
 
 
-		public static readonly object[] UnitRankUfo =
+		public static readonly object[] NodeRankUfo =
 		{
-			new EnumString("0:Civ-Scout",        XCom.UnitRankUfo.Civilian),
-			new EnumString("1:XCom",             XCom.UnitRankUfo.XCom),
-			new EnumString("2:Soldier",          XCom.UnitRankUfo.Soldier),
-			new EnumString("3:Navigator",        XCom.UnitRankUfo.Navigator),
-			new EnumString("4:Leader/Commander", XCom.UnitRankUfo.LeaderCommander),
-			new EnumString("5:Engineer",         XCom.UnitRankUfo.Engineer),
-			new EnumString("6:Misc1",            XCom.UnitRankUfo.Misc1),
-			new EnumString("7:Medic",            XCom.UnitRankUfo.Medic),
-			new EnumString("8:Misc2",            XCom.UnitRankUfo.Misc2),
-			new EnumString("9:INVALID",          XCom.UnitRankUfo.invalid) // WORKAROUND.
+			new EnumString("0:Civ-Scout",        XCom.NodeRankUfo.Civilian),
+			new EnumString("1:XCom",             XCom.NodeRankUfo.XCom),
+			new EnumString("2:Soldier",          XCom.NodeRankUfo.Soldier),
+			new EnumString("3:Navigator",        XCom.NodeRankUfo.Navigator),
+			new EnumString("4:Leader/Commander", XCom.NodeRankUfo.LeaderCommander),
+			new EnumString("5:Engineer",         XCom.NodeRankUfo.Engineer),
+			new EnumString("6:Misc1",            XCom.NodeRankUfo.Misc1),
+			new EnumString("7:Medic",            XCom.NodeRankUfo.Medic),
+			new EnumString("8:Misc2",            XCom.NodeRankUfo.Misc2),
+			new EnumString("9:INVALID",          XCom.NodeRankUfo.invalid) // WORKAROUND.
 		};
 
-		public static readonly object[] UnitRankTftd =
+		public static readonly object[] NodeRankTftd =
 		{
-			new EnumString("0:Civ-Scout",        XCom.UnitRankTftd.Civilian),
-			new EnumString("1:XCom",             XCom.UnitRankTftd.XCom),
-			new EnumString("2:Soldier",          XCom.UnitRankTftd.Soldier),
-			new EnumString("3:Squad Leader",     XCom.UnitRankTftd.SquadLeader),
-			new EnumString("4:Leader/Commander", XCom.UnitRankTftd.LeaderCommander),
-			new EnumString("5:Medic",            XCom.UnitRankTftd.Medic),
-			new EnumString("6:Misc1",            XCom.UnitRankTftd.Misc1),
-			new EnumString("7:Technician",       XCom.UnitRankTftd.Technician),
-			new EnumString("8:Misc2",            XCom.UnitRankTftd.Misc2),
-			new EnumString("9:INVALID",          XCom.UnitRankTftd.invalid) // WORKAROUND.
+			new EnumString("0:Civ/Scout",        XCom.NodeRankTftd.Civilian),
+			new EnumString("1:XCom",             XCom.NodeRankTftd.XCom),
+			new EnumString("2:Soldier",          XCom.NodeRankTftd.Soldier),
+			new EnumString("3:Squad Leader",     XCom.NodeRankTftd.SquadLeader),
+			new EnumString("4:Leader/Commander", XCom.NodeRankTftd.LeaderCommander),
+			new EnumString("5:Medic",            XCom.NodeRankTftd.Medic),
+			new EnumString("6:Misc1",            XCom.NodeRankTftd.Misc1),
+			new EnumString("7:Technician",       XCom.NodeRankTftd.Technician),
+			new EnumString("8:Misc2",            XCom.NodeRankTftd.Misc2),
+			new EnumString("9:INVALID",          XCom.NodeRankTftd.invalid) // WORKAROUND.
 		};
 
-		public static readonly object[] SpawnUsage =
+		public static readonly object[] SpawnWeight =
 		{
-			new EnumString("0:No Spawn", XCom.SpawnUsage.NoSpawn),
-			new EnumString("1:Spawn",    XCom.SpawnUsage.Spawn1),
-			new EnumString("2:Spawn",    XCom.SpawnUsage.Spawn2),
-			new EnumString("3:Spawn",    XCom.SpawnUsage.Spawn3),
-			new EnumString("4:Spawn",    XCom.SpawnUsage.Spawn4),
-			new EnumString("5:Spawn",    XCom.SpawnUsage.Spawn5),
-			new EnumString("6:Spawn",    XCom.SpawnUsage.Spawn6),
-			new EnumString("7:Spawn",    XCom.SpawnUsage.Spawn7),
-			new EnumString("8:Spawn",    XCom.SpawnUsage.Spawn8),
-			new EnumString("9:Spawn",    XCom.SpawnUsage.Spawn9),
-			new EnumString("10:Spawn",   XCom.SpawnUsage.Spawn10)
+			new EnumString("0:No Spawn", XCom.SpawnWeight.NoSpawn),
+			new EnumString("1:Spawn",    XCom.SpawnWeight.Spawn1),
+			new EnumString("2:Spawn",    XCom.SpawnWeight.Spawn2),
+			new EnumString("3:Spawn",    XCom.SpawnWeight.Spawn3),
+			new EnumString("4:Spawn",    XCom.SpawnWeight.Spawn4),
+			new EnumString("5:Spawn",    XCom.SpawnWeight.Spawn5),
+			new EnumString("6:Spawn",    XCom.SpawnWeight.Spawn6),
+			new EnumString("7:Spawn",    XCom.SpawnWeight.Spawn7),
+			new EnumString("8:Spawn",    XCom.SpawnWeight.Spawn8),
+			new EnumString("9:Spawn",    XCom.SpawnWeight.Spawn9),
+			new EnumString("10:Spawn",   XCom.SpawnWeight.Spawn10)
 		};
 		#endregion
 
