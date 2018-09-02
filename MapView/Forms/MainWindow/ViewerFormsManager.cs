@@ -82,7 +82,7 @@ namespace MapView.Forms.MainWindow
 
 
 		#region Methods
-		internal void SetObservers(MapFileBase mapBase)
+		internal void SetObservers(MapFileBase @base)
 		{
 			var observers = new IMapObserver[]
 			{
@@ -95,12 +95,12 @@ namespace MapView.Forms.MainWindow
 
 			foreach (var f in observers)
 				if (f != null)
-					SetObserver(mapBase, f);
+					SetObserver(@base, f);
 
 			MainViewUnderlay.Instance.MainViewOverlay.Refresh();
 		}
 
-		private void SetObserver(MapFileBase mapBase, IMapObserver observer)
+		private void SetObserver(MapFileBase @base, IMapObserver observer)
 		{
 			if (observer.MapBase != null)
 			{
@@ -108,7 +108,7 @@ namespace MapView.Forms.MainWindow
 				observer.MapBase.LevelChangedEvent     -= observer.OnLevelChangedObserver;
 			}
 
-			if ((observer.MapBase = mapBase) != null)
+			if ((observer.MapBase = @base) != null)
 			{
 				observer.MapBase.LocationSelectedEvent += observer.OnLocationSelectedObserver;
 				observer.MapBase.LevelChangedEvent     += observer.OnLevelChangedObserver;

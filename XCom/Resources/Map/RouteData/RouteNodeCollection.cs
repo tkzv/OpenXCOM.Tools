@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 
 namespace XCom
@@ -131,13 +132,14 @@ namespace XCom
 	{
 		#region Fields
 		private readonly List<RouteNode> _nodes;
+		#endregion
 
+
+		#region Fields (static)
 		public const string RouteExt  = ".RMP";
 		public const string RoutesDir = "ROUTES";
 
-		private string FullPath
-		{ get; set; }
-
+		private const string RankInvalid = "9+ : INVALID";
 
 		public static readonly object[] NodeRankUfo =
 		{
@@ -150,7 +152,7 @@ namespace XCom
 			new Pterodactyl("6 : Terrorist1",       XCom.NodeRankUfo.Misc1),
 			new Pterodactyl("7 : Medic",            XCom.NodeRankUfo.Medic),
 			new Pterodactyl("8 : Terrorist2",       XCom.NodeRankUfo.Misc2),
-			new Pterodactyl("9+ : INVALID",         XCom.NodeRankUfo.invalid) // WORKAROUND.
+			new Pterodactyl(RankInvalid,            XCom.NodeRankUfo.invalid) // WORKAROUND.
 		};
 
 		public static readonly object[] NodeRankTftd =
@@ -164,7 +166,7 @@ namespace XCom
 			new Pterodactyl("6 : Terrorist1",       XCom.NodeRankTftd.Misc1),
 			new Pterodactyl("7 : Technician",       XCom.NodeRankTftd.Technician),
 			new Pterodactyl("8 : Terrorist2",       XCom.NodeRankTftd.Misc2),
-			new Pterodactyl("9+ : INVALID",         XCom.NodeRankTftd.invalid) // WORKAROUND.
+			new Pterodactyl(RankInvalid,            XCom.NodeRankTftd.invalid) // WORKAROUND.
 		};
 
 		public static readonly object[] SpawnWeight =
@@ -185,6 +187,9 @@ namespace XCom
 
 
 		#region Properties
+		private string FullPath
+		{ get; set; }
+
 		public RouteNode this[int id]
 		{
 			get
@@ -227,6 +232,34 @@ namespace XCom
 
 						_nodes.Add(new RouteNode(id, bindata));
 					}
+				}
+
+				var invalids = new List<byte>();	// check for invalid Ranks ->
+				foreach (RouteNode node in _nodes)	// See also RouteView.OnCheckNodeRanksClick()
+				{
+					if (node.OobRank != (byte)0)
+						invalids.Add(node.Index);
+				}
+
+				if (invalids.Count != 0)
+				{
+					string info = String.Format(
+											System.Globalization.CultureInfo.CurrentCulture,
+											"The following route-{0} an invalid NodeRank ->{1}",
+											(invalids.Count == 1) ? "node has"
+																  : "nodes have",
+											Environment.NewLine);
+
+					foreach (byte id in invalids)
+						info += Environment.NewLine + id;
+
+					MessageBox.Show(
+								info,
+								"Warning",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Warning,
+								MessageBoxDefaultButton.Button1,
+								0);
 				}
 			}
 		}

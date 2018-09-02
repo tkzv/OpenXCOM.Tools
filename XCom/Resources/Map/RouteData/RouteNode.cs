@@ -53,6 +53,14 @@ namespace XCom
 		#endregion
 
 
+		/// <summary>
+		/// Catches an out-of-bounds Rank value if it tries to load from the .RMP.
+		/// TFTD appears to have ~10 Maps that have OobRanks.
+		/// </summary>
+		public byte OobRank
+		{ get; set; }
+
+
 		#region cTors
 		/// <summary>
 		/// cTor[1]. Creates a node from binary data.
@@ -75,9 +83,9 @@ namespace XCom
 			for (int slotId = 0; slotId != LinkSlots; ++slotId)
 			{
 				_links[slotId] = new Link(
-									bindata[offset],
-									bindata[offset + 1],
-									bindata[offset + 2]);
+										bindata[offset],
+										bindata[offset + 1],
+										bindata[offset + 2]);
 				offset += 3;
 			}
 
@@ -86,6 +94,14 @@ namespace XCom
 			Patrol = (PatrolPriority)bindata[21];
 			Attack = (BaseAttack)bindata[22];
 			Spawn  = (SpawnWeight)bindata[23];
+
+			if (Rank > (byte)8) // NodeRanks are 0..8 (if valid.)
+			{
+				OobRank = Rank;
+				Rank = (byte)9; // invalid case appears in the combobox.
+			}
+			else
+				OobRank = (byte)0;
 		}
 
 		/// <summary>
@@ -112,15 +128,17 @@ namespace XCom
 			Patrol = PatrolPriority.Zero;
 			Attack = BaseAttack.Zero;
 			Spawn  = SpawnWeight.None;
+
+			OobRank = (byte)0;
 		}
 		#endregion
 
 
 		#region Methods
 		/// <summary>
-		/// Writes data to the stream provided by RouteNodeCollection.Save().
+		/// Writes data to the FileStream provided by RouteNodeCollection.SaveNodes().
 		/// </summary>
-		/// <param name="fs">the Stream provided by RouteNodeCollection.Save()</param>
+		/// <param name="fs"></param>
 		internal void SaveNode(Stream fs)
 		{
 			fs.WriteByte(Row);
@@ -128,24 +146,27 @@ namespace XCom
 			fs.WriteByte((byte)Lev);
 			fs.WriteByte((byte)0);
 
-			for (int id = 0; id != LinkSlots; ++id)
+			for (int slot = 0; slot != LinkSlots; ++slot)
 			{
-				fs.WriteByte(_links[id].Destination);
-				fs.WriteByte(_links[id].Distance);
-				fs.WriteByte((byte)_links[id].Type);
+				fs.WriteByte(_links[slot].Destination);
+				fs.WriteByte(_links[slot].Distance);
+				fs.WriteByte((byte)_links[slot].Type);
 			}
 
 			fs.WriteByte((byte)Type);
-			fs.WriteByte(Rank);
+
+			if (Rank != (byte)9)
+			{
+				fs.WriteByte(Rank);
+				OobRank = (byte)0; // just clear it.
+			}
+			else
+				fs.WriteByte(OobRank); // else retain the user's buggy .RMP file.
+
 			fs.WriteByte((byte)Patrol);
 			fs.WriteByte((byte)Attack);
 			fs.WriteByte((byte)Spawn);
 		}
-
-//		public Link GetLinkedNode(int id)
-//		{
-//			return _links[id];
-//		}
 		#endregion
 
 

@@ -70,6 +70,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsmiOptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiAllNodesRank0 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiClearLinkData = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmiCheckNodeRanks = new System.Windows.Forms.ToolStripMenuItem();
 			this.gbLinkData = new System.Windows.Forms.GroupBox();
 			this.btnGoLink5 = new System.Windows.Forms.Button();
 			this.btnGoLink4 = new System.Windows.Forms.Button();
@@ -273,7 +274,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelUnitType.Name = "labelUnitType";
 			this.labelUnitType.Size = new System.Drawing.Size(90, 15);
 			this.labelUnitType.TabIndex = 1;
-			this.labelUnitType.Text = "Unit Info";
+			this.labelUnitType.Text = "Unit Type";
 			this.labelUnitType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.toolTip1.SetToolTip(this.labelUnitType, "characteristics of units that may patrol (or spawn at) the node");
 			// 
@@ -465,7 +466,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelUnitInfo.Name = "labelUnitInfo";
 			this.labelUnitInfo.Size = new System.Drawing.Size(55, 15);
 			this.labelUnitInfo.TabIndex = 21;
-			this.labelUnitInfo.Text = "Unit Info";
+			this.labelUnitInfo.Text = "Unit Type";
 			this.toolTip1.SetToolTip(this.labelUnitInfo, "not used in 0penXcom");
 			// 
 			// pnlRoutes
@@ -504,7 +505,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsddbEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.tsmiOptions,
 			this.tsmiAllNodesRank0,
-			this.tsmiClearLinkData});
+			this.tsmiClearLinkData,
+			this.tsmiCheckNodeRanks});
 			this.tsddbEdit.Font = new System.Drawing.Font("Verdana", 7F);
 			this.tsddbEdit.Image = ((System.Drawing.Image)(resources.GetObject("tsddbEdit.Image")));
 			this.tsddbEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -516,23 +518,30 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.tsmiOptions.Name = "tsmiOptions";
 			this.tsmiOptions.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.tsmiOptions.Size = new System.Drawing.Size(165, 22);
+			this.tsmiOptions.Size = new System.Drawing.Size(171, 22);
 			this.tsmiOptions.Text = "Options";
 			this.tsmiOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
 			// tsmiAllNodesRank0
 			// 
 			this.tsmiAllNodesRank0.Name = "tsmiAllNodesRank0";
-			this.tsmiAllNodesRank0.Size = new System.Drawing.Size(165, 22);
+			this.tsmiAllNodesRank0.Size = new System.Drawing.Size(171, 22);
 			this.tsmiAllNodesRank0.Text = "All Nodes Rank 0";
 			this.tsmiAllNodesRank0.Click += new System.EventHandler(this.OnAllNodeSpawnRank0Click);
 			// 
 			// tsmiClearLinkData
 			// 
 			this.tsmiClearLinkData.Name = "tsmiClearLinkData";
-			this.tsmiClearLinkData.Size = new System.Drawing.Size(165, 22);
+			this.tsmiClearLinkData.Size = new System.Drawing.Size(171, 22);
 			this.tsmiClearLinkData.Text = "Clear Link data";
 			this.tsmiClearLinkData.Click += new System.EventHandler(this.OnClearLinkDataClick);
+			// 
+			// tsmiCheckNodeRanks
+			// 
+			this.tsmiCheckNodeRanks.Name = "tsmiCheckNodeRanks";
+			this.tsmiCheckNodeRanks.Size = new System.Drawing.Size(171, 22);
+			this.tsmiCheckNodeRanks.Text = "Check Node ranks";
+			this.tsmiCheckNodeRanks.Click += new System.EventHandler(this.OnCheckNodeRanksClick);
 			// 
 			// gbLinkData
 			// 
@@ -764,7 +773,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "RouteView";
 			this.Size = new System.Drawing.Size(640, 480);
-			this.Click += new System.EventHandler(this.OnOgClick);
 			this.tsMain.ResumeLayout(false);
 			this.tsMain.PerformLayout();
 			this.gbLinkData.ResumeLayout(false);
@@ -837,5 +845,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.Button btnGoLink2;
 		private System.Windows.Forms.Button btnGoLink1;
 		private System.Windows.Forms.Button btnOg;
+		private System.Windows.Forms.ToolStripMenuItem tsmiCheckNodeRanks;
 	}
 }

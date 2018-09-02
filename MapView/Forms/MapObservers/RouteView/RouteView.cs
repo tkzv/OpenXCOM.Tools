@@ -161,7 +161,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				TwoWayConnect,
 			});
 
-
+			// node data ->
 			var unitTypes = new object[]
 			{
 				UnitType.Any,
@@ -170,20 +170,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 				UnitType.FlyingSmall,
 				UnitType.FlyingLarge
 			};
-
-			// patrol data ->
 			cbType.Items.AddRange(unitTypes);
+
+			cbSpawn.Items.AddRange(RouteNodeCollection.SpawnWeight);
 
 			foreach (var value in Enum.GetValues(typeof(PatrolPriority)))
 				cbPatrol.Items.Add(value);
 
 			foreach (var value in Enum.GetValues(typeof(BaseAttack)))
 				cbAttack.Items.Add(value);
-
-			// spawn data ->
-			cbRank.Items.AddRange(RouteNodeCollection.NodeRankUfo);
-
-			cbSpawn.Items.AddRange(RouteNodeCollection.SpawnWeight);
 
 			// link data ->
 			cbLink1UnitType.Items.AddRange(unitTypes);
@@ -469,23 +464,23 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				var node = ((XCMapTile)args.Tile).Node;
 
-				if (node != null && !node.Equals(NodeSelected)) // NOTE: a null node "Equals" any valid node ....
-				{
-					if (args.MouseButton == MouseButtons.Right)
-						ConnectNode(node);
-
-//					RoutePanel.Refresh(); don't work.
-
-					NodeSelected = node;
-					UpdateNodeInformation();
-				}
-				else if (node == null)
+				if (node == null)
 				{
 					if (args.MouseButton == MouseButtons.Right)
 					{
 						node = MapFile.AddRouteNode(args.Location);
 						ConnectNode(node);
 					}
+//					RoutePanel.Refresh(); don't work.
+
+					NodeSelected = node;
+					UpdateNodeInformation();
+				}
+				else if (!node.Equals(NodeSelected)) // NOTE: a null node "Equals" any valid node ....
+				{
+					if (args.MouseButton == MouseButtons.Right)
+						ConnectNode(node);
+
 //					RoutePanel.Refresh(); don't work.
 
 					NodeSelected = node;
@@ -671,11 +666,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbAttack.SelectedItem = BaseAttack.Zero;
 
 				if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)
-					cbRank.SelectedItem = RouteNodeCollection.NodeRankUfo[(int)NodeRankUfo.CivScout];
+					cbRank.SelectedItem = RouteNodeCollection.NodeRankUfo[(byte)NodeRankUfo.CivScout];
 				else
-					cbRank.SelectedItem = RouteNodeCollection.NodeRankTftd[(int)NodeRankTftd.CivScout];
+					cbRank.SelectedItem = RouteNodeCollection.NodeRankTftd[(byte)NodeRankTftd.CivScout];
 
-				cbSpawn.SelectedItem = RouteNodeCollection.SpawnWeight[(int)SpawnWeight.None];
+				cbSpawn.SelectedItem = RouteNodeCollection.SpawnWeight[(byte)SpawnWeight.None];
 
 				cbLink1Dest.SelectedItem = // TODO: figure out why these show blank and not "NotUsed"
 				cbLink2Dest.SelectedItem = // when the app loads its very first Map.
@@ -898,14 +893,55 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 
-		#region Eventcalls (PatrolData)
+		#region Eventcalls (NodeData)
 		private void OnUnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingInfo)
 			{
 				MapFile.RoutesChanged = true;
-
 				NodeSelected.Type = (UnitType)cbType.SelectedItem;
+			}
+		}
+
+		private bool _bypassRankChanged;
+		private void OnNodeRankSelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (!_loadingInfo)
+			{
+				byte rank = NodeSelected.Rank;
+
+				NodeSelected.Rank = (byte)((Pterodactyl)cbRank.SelectedItem).Case;
+
+				// WORKAROUND for TftD NodeRank bug. Don't allow selecting '9+ : INVALID' ->
+				if (!_bypassRankChanged)
+				{
+					if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)
+					{
+						if (NodeSelected.Rank == (byte)NodeRankUfo.invalid)
+						{
+							_bypassRankChanged = true;	// because this funct is going to fire again immediately
+
+							NodeSelected.Rank = rank;
+							cbRank.SelectedItem = RouteNodeCollection.NodeRankUfo[rank];
+
+							return;						// and I don't want the RoutesChanged flagged.
+						}
+					}
+					else if (NodeSelected.Rank == (byte)NodeRankTftd.invalid)
+					{
+						_bypassRankChanged = true;	// because this funct is going to fire again immediately
+
+						NodeSelected.Rank = rank;
+						cbRank.SelectedItem = RouteNodeCollection.NodeRankTftd[rank];
+
+						return;						// and I don't want the RoutesChanged flagged.
+					}
+
+					NodeSelected.OobRank = (byte)0;
+					MapFile.RoutesChanged = true;
+				}
+				else
+					_bypassRankChanged = false;
 			}
 		}
 
@@ -914,8 +950,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (!_loadingInfo)
 			{
 				MapFile.RoutesChanged = true;
-
 				NodeSelected.Patrol = (PatrolPriority)cbPatrol.SelectedItem;
+
+				Refresh(); // update the importance bar
+			}
+		}
+
+		private void OnSpawnWeightSelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (!_loadingInfo)
+			{
+				MapFile.RoutesChanged = true;
+				NodeSelected.Spawn = (SpawnWeight)((Pterodactyl)cbSpawn.SelectedItem).Case;
+
 				Refresh(); // update the importance bar
 			}
 		}
@@ -925,32 +972,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (!_loadingInfo)
 			{
 				MapFile.RoutesChanged = true;
-
 				NodeSelected.Attack = (BaseAttack)cbAttack.SelectedItem;
-			}
-		}
-		#endregion
-
-
-		#region Eventcalls (SpawnData)
-		private void OnNodeRankSelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (!_loadingInfo)
-			{
-				MapFile.RoutesChanged = true;
-
-				NodeSelected.Rank = (byte)((Pterodactyl)cbRank.SelectedItem).Case;
-			}
-		}
-
-		private void OnSpawnWeightSelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (!_loadingInfo)
-			{
-				MapFile.RoutesChanged = true;
-
-				NodeSelected.Spawn = (SpawnWeight)((Pterodactyl)cbSpawn.SelectedItem).Case;
-				Refresh(); // update the importance bar
 			}
 		}
 		#endregion
@@ -1537,6 +1559,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Eventcalls (menubar)
+		private void OnConnectDropDownClosed(object sender, EventArgs e)
+		{
+			pnlRoutes.Select();	// take focus off the stupid combobox. Tks. NOTE: sometimes it
+		}						// stays "highlighted" but at least it's no longer "selected".
+
 		private void OnAllNodeSpawnRank0Click(object sender, EventArgs e)
 		{
 			if (MessageBox.Show(
@@ -1611,10 +1638,52 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void OnConnectDropDownClosed(object sender, EventArgs e)
+		/// <summary>
+		/// See also RouteNodeCollection.cTor
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnCheckNodeRanksClick(object sender, EventArgs e)
 		{
-			pnlRoutes.Select();	// take focus off the stupid combobox. Tks. NOTE: sometimes it
-		}						// stays "highlighted" but at least it's no longer "selected".
+			var invalids = new List<byte>();
+			foreach (RouteNode node in MapFile.Routes)
+			{
+				if (node.OobRank != (byte)0)
+					invalids.Add(node.Index);
+			}
+
+			string info, title;
+			MessageBoxIcon icon;
+
+			if (invalids.Count != 0)
+			{
+				icon = MessageBoxIcon.Warning;
+				title = "Warning";
+				info  = String.Format(
+									System.Globalization.CultureInfo.CurrentCulture,
+									"The following route-{0} an invalid NodeRank ->{1}",
+									(invalids.Count == 1) ? "node has"
+														  : "nodes have",
+									Environment.NewLine);
+
+				foreach (byte id in invalids)
+					info += Environment.NewLine + id;
+			}
+			else
+			{
+				icon = MessageBoxIcon.Information;
+				title = "Good stuff, Magister Ludi";
+				info  = "There are no invalid NodeRanks detected.";
+			}
+
+			MessageBox.Show(
+						info,
+						title,
+						MessageBoxButtons.OK,
+						icon,
+						MessageBoxDefaultButton.Button1,
+						0);
+		}
 		#endregion
 
 
