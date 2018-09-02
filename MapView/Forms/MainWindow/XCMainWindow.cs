@@ -327,6 +327,8 @@ namespace MapView
 			CreateTree();
 			LogFile.WriteLine("Tilesets created and loaded to tree panel.");
 
+			ShiftSplitter();
+
 
 			if (pathOptions.FileExists())
 			{
@@ -446,6 +448,37 @@ namespace MapView
 				return (node != null) ? String.CompareOrdinal(Text, node.Text)
 									  : -1;
 			}
+		}
+
+		/// <summary>
+		/// Shifts the splitter between the MapTree and the MapPanel to ensure
+		/// that the longest tree-node's Text gets fully displayed.
+		/// </summary>
+		private void ShiftSplitter()
+		{
+			int width = 125, widthTest;
+
+			foreach (TreeNode node0 in tvMaps.Nodes)
+			{
+				widthTest = TextRenderer.MeasureText(node0.Text, tvMaps.Font).Width + 18;
+				if (widthTest > width)
+					width = widthTest;
+
+				foreach (TreeNode node1 in node0.Nodes)
+				{
+					widthTest = TextRenderer.MeasureText(node1.Text, tvMaps.Font).Width + 36;
+					if (widthTest > width)
+						width = widthTest;
+
+					foreach (TreeNode node2 in node1.Nodes)
+					{
+						widthTest = TextRenderer.MeasureText(node2.Text, tvMaps.Font).Width + 54;
+						if (widthTest > width)
+							width = widthTest;
+					}
+				}
+			}
+			tvMaps.Width = width;
 		}
 
 

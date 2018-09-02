@@ -139,7 +139,7 @@ namespace XCom
 		public const string RouteExt  = ".RMP";
 		public const string RoutesDir = "ROUTES";
 
-		private const string RankInvalid = "9+ : INVALID";
+		private const string RankInvalid = "INVALID";
 
 		public static readonly object[] NodeRankUfo =
 		{

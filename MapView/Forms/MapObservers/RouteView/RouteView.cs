@@ -903,12 +903,26 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private bool _bypassRankChanged;
+//		private bool _bypassRankChanged;
 		private void OnNodeRankSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingInfo)
 			{
-				byte rank = NodeSelected.Rank;
+				if (cbRank.SelectedIndex == 9)
+				{
+					cbRank.SelectedIndex = (int)NodeSelected.Rank;
+				}
+				else
+				{
+					MapFile.RoutesChanged = true;
+					NodeSelected.Rank = (byte)cbRank.SelectedIndex;
+//					NodeSelected.Rank = (byte)((Pterodactyl)cbRank.SelectedItem).Case; // <- MapView1-type code.
+
+					NodeSelected.OobRank = (byte)0;
+				}
+
+
+/*				byte rank = NodeSelected.Rank;
 
 				NodeSelected.Rank = (byte)((Pterodactyl)cbRank.SelectedItem).Case;
 
@@ -941,7 +955,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					MapFile.RoutesChanged = true;
 				}
 				else
-					_bypassRankChanged = false;
+					_bypassRankChanged = false; */
 			}
 		}
 
@@ -1657,7 +1671,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			if (invalids.Count != 0)
 			{
-				icon = MessageBoxIcon.Warning;
+				icon  = MessageBoxIcon.Warning;
 				title = "Warning";
 				info  = String.Format(
 									System.Globalization.CultureInfo.CurrentCulture,
@@ -1671,7 +1685,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 			else
 			{
-				icon = MessageBoxIcon.Information;
+				icon  = MessageBoxIcon.Information;
 				title = "Good stuff, Magister Ludi";
 				info  = "There are no invalid NodeRanks detected.";
 			}
