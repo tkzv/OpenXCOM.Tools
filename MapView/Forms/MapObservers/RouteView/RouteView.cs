@@ -903,14 +903,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-//		private bool _bypassRankChanged;
+		private bool _bypassRankChanged;
 		private void OnNodeRankSelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (!_loadingInfo)
+			if (!_loadingInfo && !_bypassRankChanged)
 			{
 				if (cbRank.SelectedIndex == 9)
 				{
+					_bypassRankChanged = true;	// because this funct is going to fire again immediately
 					cbRank.SelectedIndex = (int)NodeSelected.Rank;
+					_bypassRankChanged = false;	// and I don't want the RoutesChanged flagged.
 				}
 				else
 				{
@@ -920,42 +922,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 					NodeSelected.OobRank = (byte)0;
 				}
-
-
-/*				byte rank = NodeSelected.Rank;
-
-				NodeSelected.Rank = (byte)((Pterodactyl)cbRank.SelectedItem).Case;
-
-				// WORKAROUND for TftD NodeRank bug. Don't allow selecting '9+ : INVALID' ->
-				if (!_bypassRankChanged)
-				{
-					if (MapFile.Parts[0][0].Pal == Palette.UfoBattle)
-					{
-						if (NodeSelected.Rank == (byte)NodeRankUfo.invalid)
-						{
-							_bypassRankChanged = true;	// because this funct is going to fire again immediately
-
-							NodeSelected.Rank = rank;
-							cbRank.SelectedItem = RouteNodeCollection.NodeRankUfo[rank];
-
-							return;						// and I don't want the RoutesChanged flagged.
-						}
-					}
-					else if (NodeSelected.Rank == (byte)NodeRankTftd.invalid)
-					{
-						_bypassRankChanged = true;	// because this funct is going to fire again immediately
-
-						NodeSelected.Rank = rank;
-						cbRank.SelectedItem = RouteNodeCollection.NodeRankTftd[rank];
-
-						return;						// and I don't want the RoutesChanged flagged.
-					}
-
-					NodeSelected.OobRank = (byte)0;
-					MapFile.RoutesChanged = true;
-				}
-				else
-					_bypassRankChanged = false; */
 			}
 		}
 
