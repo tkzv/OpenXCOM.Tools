@@ -161,7 +161,7 @@ namespace XCom
 				OobRank = (byte)0; // just clear it.
 			}
 			else
-				fs.WriteByte(OobRank); // else retain the user's buggy .RMP file.
+				fs.WriteByte(OobRank); // else retain the bug in user's .RMP file.
 
 			fs.WriteByte((byte)Patrol);
 			fs.WriteByte((byte)Attack);

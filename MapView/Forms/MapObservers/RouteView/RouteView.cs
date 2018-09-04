@@ -464,23 +464,23 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				var node = ((XCMapTile)args.Tile).Node;
 
-				if (node == null)
+				if (node != null && !node.Equals(NodeSelected))	// NOTE: a null node "Equals" any valid node ....
+				{												// ergo this block needs to be checked before the check for (node==null) below
+					if (args.MouseButton == MouseButtons.Right)
+						ConnectNode(node);
+
+//					RoutePanel.Refresh(); don't work.
+
+					NodeSelected = node;
+					UpdateNodeInformation();
+				}
+				else if (node == null)
 				{
 					if (args.MouseButton == MouseButtons.Right)
 					{
 						node = MapFile.AddRouteNode(args.Location);
 						ConnectNode(node);
 					}
-//					RoutePanel.Refresh(); don't work.
-
-					NodeSelected = node;
-					UpdateNodeInformation();
-				}
-				else if (!node.Equals(NodeSelected)) // NOTE: a null node "Equals" any valid node ....
-				{
-					if (args.MouseButton == MouseButtons.Right)
-						ConnectNode(node);
-
 //					RoutePanel.Refresh(); don't work.
 
 					NodeSelected = node;

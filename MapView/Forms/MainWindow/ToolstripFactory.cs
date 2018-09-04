@@ -42,8 +42,7 @@ namespace MapView.Forms.MainWindow
 
 		#region Methods
 		/// <summary>
-		/// Adds a textfield for search and up/down search-direction buttons to
-		/// the specified toolstrip.
+		/// Adds a textfield for search to the specified toolstrip.
 		/// </summary>
 		/// <param name="toolStrip"></param>
 		internal void CreateToolstripSearchObjects(ToolStrip toolStrip)
@@ -64,14 +63,13 @@ namespace MapView.Forms.MainWindow
 			tsbClearSearch.Name         = "tsbClearSearch";
 			tsbClearSearch.DisplayStyle = ToolStripItemDisplayStyle.Text;
 			tsbClearSearch.Text         = "C"; // TODO: use a 'delete' image
-			tsbClearSearch.ToolTipText  = "clear search start highlight";
+			tsbClearSearch.ToolTipText  = "clear search-start highlight";
 			tsbClearSearch.Click       += OnClearSearchedClick;
 		}
 
 
 		/// <summary>
-		/// Adds a textfield for search and up/down search-direction buttons to
-		/// the specified toolstrip.
+		/// Adds buttons for zooming the map-scale to the specified toolstrip.
 		/// </summary>
 		/// <param name="toolStrip"></param>
 		internal void CreateToolstripZoomObjects(ToolStrip toolStrip)
@@ -115,7 +113,7 @@ namespace MapView.Forms.MainWindow
 
 		/// <summary>
 		/// Adds buttons for Up,Down,Cut,Copy,Paste and Fill to the specified
-		/// toolstrip as well as sets some properties for the toolstrip.
+		/// toolstrip.
 		/// </summary>
 		/// <param name="toolStrip"></param>
 		internal void CreateToolstripEditorObjects(ToolStrip toolStrip)
