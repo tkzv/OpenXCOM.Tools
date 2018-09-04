@@ -83,6 +83,8 @@ namespace MapView
 		/// </summary>
 		internal TreeNode Searched
 		{ private get; set; }
+
+		private Color _colorSearch;
 		#endregion
 
 
@@ -262,7 +264,8 @@ namespace MapView
 			ViewerFormsManager.ToolFactory.CreateToolstripSearchObjects(tsTools);
 			ViewerFormsManager.ToolFactory.CreateToolstripZoomObjects(tsTools);
 			ViewerFormsManager.ToolFactory.CreateToolstripEditorObjects(tsTools);
-			tsTools.Enabled = false;
+//			tsTools.Enabled = false;
+			ViewerFormsManager.ToolFactory.EnableToolStrip(false);
 
 
 			// Read MapResources.yml to get the resources dir (for both UFO and TFTD).
@@ -1418,10 +1421,12 @@ namespace MapView
 						if (node != null)
 						{
 							if (Searched != null)
-								Searched.BackColor = DefaultBackColor;
-	
+								Searched.ForeColor = _colorSearch;
+
 							Searched = node;
-							Searched.BackColor = Color.BlueViolet;
+
+							_colorSearch = Searched.ForeColor;
+							Searched.ForeColor = Color.BlueViolet;
 							Searched.EnsureVisible();
 						}
 
@@ -1451,7 +1456,7 @@ namespace MapView
 			if (!_hardstop)
 			{
 				TreeNode child;
-	
+
 				foreach (TreeNode node in nodes)
 				{
 					if (!_active)
@@ -1463,12 +1468,12 @@ namespace MapView
 						_hardstop = true;	// <- whatever you were doing in the way of recursions stop it.
 						return null;		// -> not found after wrapping. NOTE: Does not highlight the
 					}						// current node even if that node has the searched for text.
-	
+
 					if (_active && node.Text.ToLower().Contains(text))
 					{
 						return node;
 					}
-	
+
 					if (node.Nodes.Count != 0)
 					{
 						if ((child = SearchTreeview(text, node.Nodes, start, start0)) != null)
@@ -1494,7 +1499,7 @@ namespace MapView
 		{
 			if (Searched != null)
 			{
-				Searched.BackColor = DefaultBackColor;
+				Searched.ForeColor = _colorSearch;
 				Searched = null;
 			}
 		}
@@ -1567,7 +1572,7 @@ namespace MapView
 						{
 							if (Searched != null)
 								Searched.BackColor = DefaultBackColor;
-	
+
 							Searched = node;
 							Searched.BackColor = Color.BlueViolet;
 							Searched.EnsureVisible();
@@ -1587,9 +1592,9 @@ namespace MapView
 			if (!_hardstop)
 			{
 				int recurse = ++_recurse; // debug.
-	
+
 				TreeNode child;
-	
+
 				foreach (TreeNode node in nodes)
 				{
 					if (!_active)
@@ -1603,13 +1608,13 @@ namespace MapView
 						_hardstop = true;	// <- whatever you were doing in the way of recursions stop it.
 						return null;		// not found after wrapping. NOTE: Does not highlight the current node even if that node has the searched for text.
 					}
-	
+
 					if (_active && node.Text.ToLower().Contains(text))
 					{
 						LogFile.WriteLine(recurse + " get " + node.Text);
 						return node;
 					}
-	
+
 					if (node.Nodes.Count != 0)
 					{
 						if ((child = SearchTreeview(text, node.Nodes, start, start0)) != null)
@@ -2252,6 +2257,7 @@ namespace MapView
 			//LogFile.WriteLine("XCMainWindow.OnMapTreeAfterSelected");
 			//if (tvMaps.SelectedNode != null) LogFile.WriteLine(". selected= " + tvMaps.SelectedNode.Text);
 
+			ClearSearched();
 			LoadSelectedMap();
 		}
 
@@ -2328,7 +2334,8 @@ namespace MapView
 				var mapBase = MapFileService.LoadTileset(descriptor);
 				_mainViewUnderlay.MapBase = mapBase;
 
-				tsTools.Enabled = true;
+//				tsTools.Enabled = true;
+				ViewerFormsManager.ToolFactory.EnableToolStrip(true);
 
 				RouteCheckService.CheckNodeBounds(mapBase as MapFileChild);
 

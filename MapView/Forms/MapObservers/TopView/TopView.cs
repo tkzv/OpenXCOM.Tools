@@ -202,7 +202,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		internal void InitializeToolstrip(ToolstripFactory tools)
 		{
 			_toolFactory = tools;
-			_toolFactory.CreateToolstripEditorObjects(tsEdit);
+			_toolFactory.CreateToolstripEditorObjects(tsTools);
 		}
 
 		/// <summary>

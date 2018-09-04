@@ -57,9 +57,8 @@ namespace MapView.Forms.MainWindow
 		#region Methods (static)
 		internal static void Initialize()
 		{
+			TopView     .Control   .InitializeToolstrip(ToolFactory);
 			TopRouteView.ControlTop.InitializeToolstrip(ToolFactory);
-
-			TopView.Control.InitializeToolstrip(ToolFactory);
 
 			TileView.Control.SetShowHideManager(HideViewersManager);
 			TileView.Control.TileSelectedEvent_Observer0 += OnTileSelected_Observer0;

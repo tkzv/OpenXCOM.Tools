@@ -31,7 +31,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TopView));
 			this.tscPanel = new System.Windows.Forms.ToolStripContainer();
 			this.pMain = new System.Windows.Forms.Panel();
-			this.tsEdit = new System.Windows.Forms.ToolStrip();
+			this.tsTools = new System.Windows.Forms.ToolStrip();
 			this.tsMain = new System.Windows.Forms.ToolStrip();
 			this.tsddbVisibleQuads = new System.Windows.Forms.ToolStripDropDownButton();
 			this.tsddbEdit = new System.Windows.Forms.ToolStripDropDownButton();
@@ -62,13 +62,13 @@ namespace MapView.Forms.MapObservers.TopViews
 			// tscPanel.ContentPanel
 			// 
 			this.tscPanel.ContentPanel.Controls.Add(this.pMain);
-			this.tscPanel.ContentPanel.Size = new System.Drawing.Size(615, 360);
+			this.tscPanel.ContentPanel.Size = new System.Drawing.Size(609, 360);
 			this.tscPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tscPanel.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			// 
 			// tscPanel.LeftToolStripPanel
 			// 
-			this.tscPanel.LeftToolStripPanel.Controls.Add(this.tsEdit);
+			this.tscPanel.LeftToolStripPanel.Controls.Add(this.tsTools);
 			this.tscPanel.LeftToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			this.tscPanel.Location = new System.Drawing.Point(0, 25);
 			this.tscPanel.Name = "tscPanel";
@@ -89,20 +89,20 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.pMain.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.pMain.Location = new System.Drawing.Point(0, 0);
 			this.pMain.Name = "pMain";
-			this.pMain.Size = new System.Drawing.Size(615, 360);
+			this.pMain.Size = new System.Drawing.Size(609, 360);
 			this.pMain.TabIndex = 2;
 			// 
-			// tsEdit
+			// tsTools
 			// 
-			this.tsEdit.Dock = System.Windows.Forms.DockStyle.None;
-			this.tsEdit.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tsEdit.Location = new System.Drawing.Point(0, 3);
-			this.tsEdit.Name = "tsEdit";
-			this.tsEdit.Padding = new System.Windows.Forms.Padding(0);
-			this.tsEdit.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.tsEdit.Size = new System.Drawing.Size(25, 111);
-			this.tsEdit.TabIndex = 1;
-			this.tsEdit.Text = "toolStrip1";
+			this.tsTools.Dock = System.Windows.Forms.DockStyle.None;
+			this.tsTools.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsTools.Location = new System.Drawing.Point(0, 3);
+			this.tsTools.Name = "tsTools";
+			this.tsTools.Padding = new System.Windows.Forms.Padding(0);
+			this.tsTools.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tsTools.Size = new System.Drawing.Size(31, 30);
+			this.tsTools.TabIndex = 1;
+			this.tsTools.Text = "toolStrip1";
 			// 
 			// tsMain
 			// 
@@ -171,7 +171,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		private System.ComponentModel.IContainer components = null;
 
 		private QuadrantPanel quadrants;
-		private System.Windows.Forms.ToolStrip tsEdit;
+		private System.Windows.Forms.ToolStrip tsTools;
 		private System.Windows.Forms.Panel pMain;
 		private System.Windows.Forms.ToolStripContainer tscPanel;
 		private System.Windows.Forms.ToolStrip tsMain;

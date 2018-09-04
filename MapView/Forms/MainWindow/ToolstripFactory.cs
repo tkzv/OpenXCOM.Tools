@@ -17,13 +17,23 @@ namespace MapView.Forms.MainWindow
 
 
 		#region Fields
-		private readonly List<ToolStripButton> _pasteButtons = new List<ToolStripButton>();
 		private readonly MainViewUnderlay _mainViewUnderlay;
+		private readonly List<ToolStripButton> _pasteButtons = new List<ToolStripButton>();
+
 
 		private readonly ToolStripTextBox tstbSearch = new ToolStripTextBox();
 		private ToolStripButton tsbClearSearch       = new ToolStripButton();
 
 		private ToolStripButton tsbAutoZoom = new ToolStripButton();
+		private ToolStripButton tsbZoomIn   = new ToolStripButton();
+		private ToolStripButton tsbZoomOut  = new ToolStripButton();
+
+		private ToolStripButton tsbUp       = new ToolStripButton();
+		private ToolStripButton tsbDown     = new ToolStripButton();
+		private ToolStripButton tsbCut      = new ToolStripButton();
+		private ToolStripButton tsbCopy     = new ToolStripButton();
+		private ToolStripButton tsbPaste    = new ToolStripButton();
+		private ToolStripButton tsbFill     = new ToolStripButton();
 		#endregion
 
 
@@ -74,13 +84,11 @@ namespace MapView.Forms.MainWindow
 		/// <param name="toolStrip"></param>
 		internal void CreateToolstripZoomObjects(ToolStrip toolStrip)
 		{
-			var tssDivider1 = new ToolStripSeparator();
-			var tsbZoomIn   = new ToolStripButton();
-			var tsbZoomOut  = new ToolStripButton();
+			var tssDivider = new ToolStripSeparator(); // NOTE: c# cant figure out how to use 1 separator 4 times.
 
 			var tsItems = new ToolStripItem[]
 			{
-				tssDivider1,
+				tssDivider,
 				tsbAutoZoom,
 				tsbZoomIn,
 				tsbZoomOut
@@ -118,15 +126,9 @@ namespace MapView.Forms.MainWindow
 		/// <param name="toolStrip"></param>
 		internal void CreateToolstripEditorObjects(ToolStrip toolStrip)
 		{
-			var tssDivider1 = new ToolStripSeparator(); // NOTE: c# cant figure out how to use 1 separator 3 times.
-			var tsbUp       = new ToolStripButton();
-			var tsbDown     = new ToolStripButton();
+			var tssDivider1 = new ToolStripSeparator(); // NOTE: c# cant figure out how to use 1 separator 4 times.
 			var tssDivider2 = new ToolStripSeparator();
-			var tsbCut      = new ToolStripButton();
-			var tsbCopy     = new ToolStripButton();
-			var tsbPaste    = new ToolStripButton();
 			var tssDivider3 = new ToolStripSeparator();
-			var tsbFill     = new ToolStripButton();
 			var tssDivider4 = new ToolStripSeparator();
 
 			var tsItems = new ToolStripItem[]
@@ -231,6 +233,23 @@ namespace MapView.Forms.MainWindow
 		{
 			foreach (var tsb in _pasteButtons)
 				tsb.Enabled = true;
+		}
+
+		/// <summary>
+		/// Enables or disables toolstrip objects.
+		/// </summary>
+		/// <param name="enable"></param>
+		internal void EnableToolStrip(bool enable)
+		{
+			tsbAutoZoom.Enabled =
+			tsbZoomIn  .Enabled =
+			tsbZoomOut .Enabled =
+			tsbUp      .Enabled =
+			tsbDown    .Enabled =
+			tsbCut     .Enabled =
+			tsbCopy    .Enabled =
+			tsbPaste   .Enabled =
+			tsbFill    .Enabled = enable;
 		}
 		#endregion
 
