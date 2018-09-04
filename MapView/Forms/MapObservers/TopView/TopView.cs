@@ -28,7 +28,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		#region Fields
-		private EditButtonsFactory _editButtonsFactory;
+		private ToolstripFactory _toolFactory;
 
 		private Dictionary<string, Pen> _topPens;
 		private Dictionary<string, SolidBrush> _topBrushes;
@@ -196,13 +196,13 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		#region Methods
 		/// <summary>
-		/// Initializes the edit-buttons toolstrip.
+		/// Creates the tool-objects in the toolstrip.
 		/// </summary>
-		/// <param name="editButtons"></param>
-		internal void InitializeEditStrip(EditButtonsFactory editButtons)
+		/// <param name="tools"></param>
+		internal void InitializeToolstrip(ToolstripFactory tools)
 		{
-			_editButtonsFactory = editButtons;
-			_editButtonsFactory.CreateEditorStrip(tsEdit);
+			_toolFactory = tools;
+			_toolFactory.CreateToolstripEditorObjects(tsEdit);
 		}
 
 		/// <summary>

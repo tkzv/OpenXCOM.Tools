@@ -77,6 +77,12 @@ namespace MapView
 
 		internal bool MaptreeChanged
 		{ private get; set; }
+
+		/// <summary>
+		/// The currently searched and found and highlighted Treenode on the MapTree.
+		/// </summary>
+		internal TreeNode Searched
+		{ private get; set; }
 		#endregion
 
 
@@ -203,7 +209,7 @@ namespace MapView
 			LogFile.WriteLine("MainView Options loaded.");	// since managers might be re-instantiating needlessly
 															// when OnOptionsClick() runs ....
 
-			_mainViewUnderlay = MainViewUnderlay.Instance;
+			_mainViewUnderlay = MainViewUnderlay.Instance; // create MainViewUnderlay and MainViewOverlay. or so ...
 			_mainViewUnderlay.Dock = DockStyle.Fill;
 			_mainViewUnderlay.BorderStyle = BorderStyle.Fixed3D;
 			LogFile.WriteLine("MainView panel instantiated.");
@@ -236,7 +242,7 @@ namespace MapView
 			LogFile.WriteLine("HideViewersManager created.");
 
 
-			ViewerFormsManager.EditFactory = new EditButtonsFactory(_mainViewUnderlay);
+			ViewerFormsManager.ToolFactory = new ToolstripFactory(_mainViewUnderlay);
 			ViewerFormsManager.Initialize();
 			LogFile.WriteLine("ViewerFormsManager initialized.");
 
@@ -253,8 +259,10 @@ namespace MapView
 
 			tscPanel.ContentPanel.Controls.Add(_mainViewUnderlay);
 
-			ViewerFormsManager.EditFactory.CreateEditorStrip(tsEdit);
-			tsEdit.Enabled = false;
+			ViewerFormsManager.ToolFactory.CreateToolstripSearchObjects(tsTools);
+			ViewerFormsManager.ToolFactory.CreateToolstripZoomObjects(tsTools);
+			ViewerFormsManager.ToolFactory.CreateToolstripEditorObjects(tsTools);
+			tsTools.Enabled = false;
 
 
 			// Read MapResources.yml to get the resources dir (for both UFO and TFTD).
@@ -456,7 +464,7 @@ namespace MapView
 		/// </summary>
 		private void ShiftSplitter()
 		{
-			int width = 125, widthTest;
+			int width = tvMaps.Width, widthTest;
 
 			foreach (TreeNode node0 in tvMaps.Nodes)
 			{
@@ -1309,7 +1317,7 @@ namespace MapView
 		}
 
 
-		private void OnZoomInClick(object sender, EventArgs e)
+		internal void OnZoomInClick(object sender, EventArgs e)
 		{
 			if (Globals.Scale < Globals.ScaleMaximum)
 			{
@@ -1320,7 +1328,7 @@ namespace MapView
 			}
 		}
 
-		private void OnZoomOutClick(object sender, EventArgs e)
+		internal void OnZoomOutClick(object sender, EventArgs e)
 		{
 			if (Globals.Scale > Globals.ScaleMinimum)
 			{
@@ -1333,8 +1341,8 @@ namespace MapView
 
 		private void Zoom()
 		{
-			Globals.AutoScale   =
-			tsbAutoZoom.Checked = false;
+			ViewerFormsManager.ToolFactory.SetAutozoomChecked(false);
+			Globals.AutoScale = false;
 
 			_mainViewUnderlay.SetOverlaySize();
 			_mainViewUnderlay.UpdateScrollers();
@@ -1342,17 +1350,155 @@ namespace MapView
 			Refresh();
 		}
 
-		private void OnAutoScaleClick(object sender, EventArgs e)
+		internal void OnAutoScaleClick(object sender, EventArgs e)
 		{
-			Globals.AutoScale   = 
-			tsbAutoZoom.Checked = !tsbAutoZoom.Checked;
-
+			Globals.AutoScale = ViewerFormsManager.ToolFactory.ToggleAutozoomChecked();
 			if (Globals.AutoScale)
 			{
 				_mainViewUnderlay.SetScale();
 				_mainViewUnderlay.SetOverlaySize();
 			}
 			_mainViewUnderlay.UpdateScrollers();
+		}
+
+
+		/// <summary>
+		/// Searches the MapTree for a given string.
+		/// </summary>
+		/// <param name="text"></param>
+		internal void Search(string text)
+		{
+			if (!String.IsNullOrEmpty(text))
+			{
+				TreeNode start0, start;
+
+				if (Searched != null)
+					start0 = Searched;
+				else
+					start0 = tvMaps.SelectedNode;
+
+				if (start0 != null)
+				{
+					start = start0;
+
+					LogFile.WriteLine("");
+					LogFile.WriteLine("start= " + start.Text);
+
+					if (start.Nodes.Count != 0)
+					{
+						start = start.Nodes[0];
+						LogFile.WriteLine(". start.Nodes.Count != 0 start= " + start.Text);
+					}
+					else if (start.NextNode != null)
+					{
+						start = start.NextNode;
+						LogFile.WriteLine(". start.NextNode != null start= " + start.Text);
+					}
+					else if (start.Parent != null)
+					{
+						LogFile.WriteLine(". start.Parent != null");
+
+						if (start.Parent.NextNode != null)
+						{
+							start = start.Parent.NextNode;
+							LogFile.WriteLine(". . start.Parent.NextNode != null start= " + start.Text);
+						}
+						else if (start.Parent.Parent != null
+							&& start.Parent.Parent.NextNode != null)
+						{
+							start = start.Parent.Parent.NextNode;
+							LogFile.WriteLine(". . start.Parent.Parent != null && start.Parent.Parent.NextNode != null start= " + start.Text);
+						}
+						else
+						{
+							LogFile.WriteLine(". . . start.Parent.Parent == null RETURN");
+							return;
+						}
+					}
+					else
+					{
+						LogFile.WriteLine(". start.NextNode == null && start.Parent == null RETURN");
+						return;
+					}
+
+					var found = SearchTreeView(text.ToLower(), tvMaps.Nodes, start, start0);
+					if (found != null)
+					{
+						if (Searched != null)
+							Searched.BackColor = DefaultBackColor;
+
+						Searched = found;
+						Searched.BackColor = Color.BlueViolet;
+						Searched.EnsureVisible();
+					}
+					_active = false;
+				}
+			}
+		}
+
+		int _recurse = -1; // debug.
+		bool _active;
+		/// <summary>
+		/// Searches through a node-collection given a node to start at.
+		/// </summary>
+		/// <param name="text">the text to search for (lowercase)</param>
+		/// <param name="nodes">the collection of nodes to search through</param>
+		/// <param name="start">the node to start at</param>
+		/// <param name="start0">the node to stop at</param>
+		/// <returns>a found node or null</returns>
+		private TreeNode SearchTreeView(
+				string text,
+				TreeNodeCollection nodes,
+				TreeNode start,
+				TreeNode start0)
+		{
+			int recurse = ++_recurse; // debug.
+
+			TreeNode child;
+
+			foreach (TreeNode node in nodes)
+			{
+				if (!_active)
+				{
+					_active = (node == start);
+					if (_active) LogFile.WriteLine(recurse + " set Active");
+				}
+				else if (node == start0)
+				{
+					LogFile.WriteLine(recurse + " node == start0 ret NULL");
+					return null; // not found after wrapping.
+				}
+
+				if (_active && node.Text.ToLower().Contains(text))
+				{
+					LogFile.WriteLine(recurse + " get " + node.Text);
+					return node;
+				}
+
+				if (node.Nodes.Count != 0
+					&& (child = SearchTreeView(text, node.Nodes, start, start0)) != null)
+				{
+					LogFile.WriteLine(recurse + " get child " + child.Text);
+					return child;
+				}
+			}
+
+			LogFile.WriteLine("ret NULL");
+			return null;
+//			LogFile.WriteLine(recurse + " search from Nodes[0]");
+//			return SearchTreeView(text, nodes, tvMaps.Nodes[0], start0);
+		}
+
+		/// <summary>
+		/// Clears the searched, found, and highlighted Treenode.
+		/// </summary>
+		internal void ClearSearched()
+		{
+			if (Searched != null)
+			{
+				Searched.BackColor = DefaultBackColor;
+				Searched = null;
+			}
 		}
 
 
@@ -2051,7 +2197,7 @@ namespace MapView
 				var mapBase = MapFileService.LoadTileset(descriptor);
 				_mainViewUnderlay.MapBase = mapBase;
 
-				tsEdit.Enabled = true;
+				tsTools.Enabled = true;
 
 				RouteCheckService.CheckNodeBounds(mapBase as MapFileChild);
 

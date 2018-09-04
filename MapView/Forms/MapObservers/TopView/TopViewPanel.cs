@@ -65,13 +65,13 @@ namespace MapView.Forms.MapObservers.TopViews
 						MainViewUnderlay.Instance.MainViewOverlay.Copy();
 						MainViewUnderlay.Instance.MainViewOverlay.ClearSelection();
 
-						EditButtonsFactory.Instance.EnablePasteButtons();
+						ToolstripFactory.Instance.EnablePasteButton();
 						break;
 
 					case Keys.C:
 						MainViewUnderlay.Instance.MainViewOverlay.Copy();
 
-						EditButtonsFactory.Instance.EnablePasteButtons();
+						ToolstripFactory.Instance.EnablePasteButton();
 						break;
 
 					case Keys.V:

@@ -11,7 +11,7 @@ namespace MapView.Forms.MainWindow
 	{
 		#region Fields (static)
 		internal static ShowHideManager HideViewersManager;
-		internal static EditButtonsFactory EditFactory;
+		internal static ToolstripFactory ToolFactory;
 		#endregion
 
 
@@ -57,9 +57,9 @@ namespace MapView.Forms.MainWindow
 		#region Methods (static)
 		internal static void Initialize()
 		{
-			TopRouteView.ControlTop.InitializeEditStrip(EditFactory);
+			TopRouteView.ControlTop.InitializeToolstrip(ToolFactory);
 
-			TopView.Control.InitializeEditStrip(EditFactory);
+			TopView.Control.InitializeToolstrip(ToolFactory);
 
 			TileView.Control.SetShowHideManager(HideViewersManager);
 			TileView.Control.TileSelectedEvent_Observer0 += OnTileSelected_Observer0;

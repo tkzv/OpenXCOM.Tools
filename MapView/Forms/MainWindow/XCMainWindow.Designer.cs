@@ -67,17 +67,14 @@ namespace MapView
 			this.tsslDimensions = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tsslPosition = new System.Windows.Forms.ToolStripStatusLabel();
 			this.tscPanel = new System.Windows.Forms.ToolStripContainer();
-			this.tsEdit = new System.Windows.Forms.ToolStrip();
+			this.tsTools = new System.Windows.Forms.ToolStrip();
 			this.tsbSelectionBox = new System.Windows.Forms.ToolStripButton();
-			this.tsbZoomIn = new System.Windows.Forms.ToolStripButton();
-			this.tsbZoomOut = new System.Windows.Forms.ToolStripButton();
-			this.tsbAutoZoom = new System.Windows.Forms.ToolStripButton();
 			this.cmMapTreeMenu = new System.Windows.Forms.ContextMenu();
 			this.csSplitter = new DSShared.Windows.CollapsibleSplitter();
 			this.ssMain.SuspendLayout();
 			this.tscPanel.TopToolStripPanel.SuspendLayout();
 			this.tscPanel.SuspendLayout();
-			this.tsEdit.SuspendLayout();
+			this.tsTools.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// mmMain
@@ -399,25 +396,22 @@ namespace MapView
 			// 
 			// tscPanel.TopToolStripPanel
 			// 
-			this.tscPanel.TopToolStripPanel.Controls.Add(this.tsEdit);
+			this.tscPanel.TopToolStripPanel.Controls.Add(this.tsTools);
 			this.tscPanel.TopToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			// 
-			// tsEdit
+			// tsTools
 			// 
-			this.tsEdit.Dock = System.Windows.Forms.DockStyle.None;
-			this.tsEdit.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tsEdit.GripMargin = new System.Windows.Forms.Padding(0);
-			this.tsEdit.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.tsbSelectionBox,
-			this.tsbZoomIn,
-			this.tsbZoomOut,
-			this.tsbAutoZoom});
-			this.tsEdit.Location = new System.Drawing.Point(3, 0);
-			this.tsEdit.Name = "tsEdit";
-			this.tsEdit.Padding = new System.Windows.Forms.Padding(0);
-			this.tsEdit.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-			this.tsEdit.Size = new System.Drawing.Size(76, 25);
-			this.tsEdit.TabIndex = 3;
+			this.tsTools.Dock = System.Windows.Forms.DockStyle.None;
+			this.tsTools.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tsTools.GripMargin = new System.Windows.Forms.Padding(0);
+			this.tsTools.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.tsbSelectionBox});
+			this.tsTools.Location = new System.Drawing.Point(3, 0);
+			this.tsTools.Name = "tsTools";
+			this.tsTools.Padding = new System.Windows.Forms.Padding(0);
+			this.tsTools.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+			this.tsTools.Size = new System.Drawing.Size(122, 25);
+			this.tsTools.TabIndex = 3;
 			// 
 			// tsbSelectionBox
 			// 
@@ -431,39 +425,6 @@ namespace MapView
 			this.tsbSelectionBox.ToolTipText = "Draws a selection box in the floor";
 			this.tsbSelectionBox.Visible = false;
 			this.tsbSelectionBox.Click += new System.EventHandler(this.OnSelectionBoxClick);
-			// 
-			// tsbZoomIn
-			// 
-			this.tsbZoomIn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbZoomIn.Image = global::MapView.Properties.Resources._12_Zoom_in_16;
-			this.tsbZoomIn.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbZoomIn.Name = "tsbZoomIn";
-			this.tsbZoomIn.Size = new System.Drawing.Size(23, 22);
-			this.tsbZoomIn.Text = "Zoom In";
-			this.tsbZoomIn.Click += new System.EventHandler(this.OnZoomInClick);
-			// 
-			// tsbZoomOut
-			// 
-			this.tsbZoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbZoomOut.Image = global::MapView.Properties.Resources._13_Zoom_out_16;
-			this.tsbZoomOut.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbZoomOut.Name = "tsbZoomOut";
-			this.tsbZoomOut.Size = new System.Drawing.Size(23, 22);
-			this.tsbZoomOut.Text = "Zoom Out";
-			this.tsbZoomOut.Click += new System.EventHandler(this.OnZoomOutClick);
-			// 
-			// tsbAutoZoom
-			// 
-			this.tsbAutoZoom.Checked = true;
-			this.tsbAutoZoom.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.tsbAutoZoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.tsbAutoZoom.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tsbAutoZoom.Image = global::MapView.Properties.Resources._11_Search_16;
-			this.tsbAutoZoom.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbAutoZoom.Name = "tsbAutoZoom";
-			this.tsbAutoZoom.Size = new System.Drawing.Size(23, 22);
-			this.tsbAutoZoom.Text = "Auto Zoom";
-			this.tsbAutoZoom.Click += new System.EventHandler(this.OnAutoScaleClick);
 			// 
 			// csSplitter
 			// 
@@ -499,8 +460,8 @@ namespace MapView
 			this.tscPanel.TopToolStripPanel.PerformLayout();
 			this.tscPanel.ResumeLayout(false);
 			this.tscPanel.PerformLayout();
-			this.tsEdit.ResumeLayout(false);
-			this.tsEdit.PerformLayout();
+			this.tsTools.ResumeLayout(false);
+			this.tsTools.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -512,9 +473,6 @@ namespace MapView
 		private System.Windows.Forms.ToolStripContainer tscPanel;
 
 		private System.Windows.Forms.ToolStripButton tsbSelectionBox;
-		private System.Windows.Forms.ToolStripButton tsbZoomIn;
-		private System.Windows.Forms.ToolStripButton tsbZoomOut;
-		private System.Windows.Forms.ToolStripButton tsbAutoZoom;
 
 		private System.Windows.Forms.MainMenu mmMain;
 
@@ -555,7 +513,7 @@ namespace MapView
 		private System.Windows.Forms.SaveFileDialog sfdSaveDialog;
 		private DSShared.Windows.CollapsibleSplitter csSplitter;
 
-		private System.Windows.Forms.ToolStrip tsEdit;
+		private System.Windows.Forms.ToolStrip tsTools;
 
 		private System.Windows.Forms.StatusStrip ssMain;
 

@@ -212,31 +212,29 @@ namespace MapView
 			MainViewOverlay.Refresh();
 		}
 
+		private void OnAnimationUpdate(object sender, EventArgs e)
+		{
+			MainViewOverlay.Refresh();
+		}
 
+
+		// The following functs are for subscription to toolstrip Editor buttons.
 		internal void OnCut(object sender, EventArgs e)
 		{
 			MainViewOverlay.Copy();
 			MainViewOverlay.ClearSelection();
 		}
-
 		internal void OnCopy(object sender, EventArgs e)
 		{
 			MainViewOverlay.Copy();
 		}
-
 		internal void OnPaste(object sender, EventArgs e)
 		{
 			MainViewOverlay.Paste();
 		}
-
 		internal void OnFillSelectedTiles(object sender, EventArgs e)
 		{
 			MainViewOverlay.FillSelectedTiles();
-		}
-
-		private void OnAnimationUpdate(object sender, EventArgs e)
-		{
-			MainViewOverlay.Refresh();
 		}
 		#endregion
 

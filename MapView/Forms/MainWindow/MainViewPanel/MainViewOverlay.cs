@@ -268,13 +268,13 @@ namespace MapView
 						Copy();
 						ClearSelection();
 
-						EditButtonsFactory.Instance.EnablePasteButtons();
+						ToolstripFactory.Instance.EnablePasteButton();
 						break;
 
 					case Keys.C:
 						Copy();
 
-						EditButtonsFactory.Instance.EnablePasteButtons();
+						ToolstripFactory.Instance.EnablePasteButton();
 						break;
 
 					case Keys.V:
@@ -395,6 +395,8 @@ namespace MapView
 				{
 					((XCMapTile)MapBase[row, col])[quadType] = tileView.SelectedTilepart;
 				}
+
+				// TODO: should this call CalculateOccultations() like Clear and Paste (probably.)
 
 				RefreshViewers();
 			}
