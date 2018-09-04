@@ -1370,6 +1370,141 @@ namespace MapView
 		{
 			if (!String.IsNullOrEmpty(text))
 			{
+				TreeNode
+					start0,
+					start = null;
+
+				if (Searched != null)
+					start0 = Searched;
+				else
+					start0 = tvMaps.SelectedNode;
+
+				if (start0 != null)
+				{
+					start = start0;
+
+					if (start.Nodes.Count != 0)
+					{
+						start = start.Nodes[0];
+					}
+					else if (start.NextNode != null)
+					{
+						start = start.NextNode;
+					}
+					else if (start.Parent != null)
+					{
+						if (start.Parent.NextNode != null)
+						{
+							start = start.Parent.NextNode;
+						}
+						else if (start.Parent.Parent != null
+							&& start.Parent.Parent.NextNode != null)
+						{
+							start = start.Parent.Parent.NextNode;
+						}
+						else
+							start = tvMaps.Nodes[0];
+					}
+					else
+						start = tvMaps.Nodes[0];
+
+					if (start != null) // jic.
+					{
+						var node = SearchTreeview(
+												text.ToLower(),
+												tvMaps.Nodes,
+												start,
+												start0);
+						if (node != null)
+						{
+							if (Searched != null)
+								Searched.BackColor = DefaultBackColor;
+	
+							Searched = node;
+							Searched.BackColor = Color.BlueViolet;
+							Searched.EnsureVisible();
+						}
+
+						_active   =
+						_hardstop = false;
+					}
+				}
+			}
+		}
+
+		bool _active, _hardstop;
+
+		/// <summary>
+		/// Searches through the MapTree given a node to start at.
+		/// </summary>
+		/// <param name="text">the text to search for (lowercase)</param>
+		/// <param name="nodes">the collection of nodes to search through</param>
+		/// <param name="start">the node to start at</param>
+		/// <param name="start0">the node to stop at</param>
+		/// <returns>a found node or null</returns>
+		private TreeNode SearchTreeview(
+				string text,
+				TreeNodeCollection nodes,
+				TreeNode start,
+				TreeNode start0)
+		{
+			if (!_hardstop)
+			{
+				TreeNode child;
+	
+				foreach (TreeNode node in nodes)
+				{
+					if (!_active)
+					{
+						_active = (node == start);
+					}
+					else if (node == start0)
+					{
+						_hardstop = true;	// <- whatever you were doing in the way of recursions stop it.
+						return null;		// -> not found after wrapping. NOTE: Does not highlight the
+					}						// current node even if that node has the searched for text.
+	
+					if (_active && node.Text.ToLower().Contains(text))
+					{
+						return node;
+					}
+	
+					if (node.Nodes.Count != 0)
+					{
+						if ((child = SearchTreeview(text, node.Nodes, start, start0)) != null)
+						{
+							return child;
+						}
+					}
+					else if (node.NextNode == null												// if no more nodes at the current level
+						&& (node.Parent == null        || node.Parent.NextNode == null)			// and no parent OR parent is last node at its level
+						&& (node.Parent.Parent == null || node.Parent.Parent.NextNode == null))	// and no parent-of-parent OR parent-of-parent is last node at its level
+					{
+						return SearchTreeview(text, tvMaps.Nodes, tvMaps.Nodes[0], start0);
+					}
+				}
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Clears the searched, found, and highlighted Treenode.
+		/// </summary>
+		internal void ClearSearched()
+		{
+			if (Searched != null)
+			{
+				Searched.BackColor = DefaultBackColor;
+				Searched = null;
+			}
+		}
+
+		// debug versions of functions above^
+//		int _recurse = -1;
+/*		internal void Search(string text)
+		{
+			if (!String.IsNullOrEmpty(text))
+			{
 				TreeNode start0, start;
 
 				if (Searched != null)
@@ -1409,97 +1544,93 @@ namespace MapView
 							start = start.Parent.Parent.NextNode;
 							LogFile.WriteLine(". . start.Parent.Parent != null && start.Parent.Parent.NextNode != null start= " + start.Text);
 						}
-						else
+						else // wrap
 						{
-							LogFile.WriteLine(". . . start.Parent.Parent == null RETURN");
-							return;
+//							LogFile.WriteLine(". . . start.Parent.Parent == null RETURN");
+//							return;
+							start = tvMaps.Nodes[0];
+							LogFile.WriteLine(". . . start.Parent.Parent == null start= " + start.Text);
 						}
 					}
-					else
+					else // wrap
 					{
-						LogFile.WriteLine(". start.NextNode == null && start.Parent == null RETURN");
-						return;
+//						LogFile.WriteLine(". start.NextNode == null && start.Parent == null RETURN");
+//						return;
+						start = tvMaps.Nodes[0];
+						LogFile.WriteLine(". start.NextNode == null && start.Parent == null start= " + start.Text);
 					}
 
-					var found = SearchTreeView(text.ToLower(), tvMaps.Nodes, start, start0);
-					if (found != null)
+					if (start != null) // jic.
 					{
-						if (Searched != null)
-							Searched.BackColor = DefaultBackColor;
-
-						Searched = found;
-						Searched.BackColor = Color.BlueViolet;
-						Searched.EnsureVisible();
+						var node = SearchTreeview(text.ToLower(), tvMaps.Nodes, start, start0);
+						if (node != null)
+						{
+							if (Searched != null)
+								Searched.BackColor = DefaultBackColor;
+	
+							Searched = node;
+							Searched.BackColor = Color.BlueViolet;
+							Searched.EnsureVisible();
+						}
+						_active   =
+						_hardstop = false;
 					}
-					_active = false;
 				}
 			}
-		}
-
-		int _recurse = -1; // debug.
-		bool _active;
-		/// <summary>
-		/// Searches through a node-collection given a node to start at.
-		/// </summary>
-		/// <param name="text">the text to search for (lowercase)</param>
-		/// <param name="nodes">the collection of nodes to search through</param>
-		/// <param name="start">the node to start at</param>
-		/// <param name="start0">the node to stop at</param>
-		/// <returns>a found node or null</returns>
-		private TreeNode SearchTreeView(
+		} */
+/*		private TreeNode SearchTreeview(
 				string text,
 				TreeNodeCollection nodes,
 				TreeNode start,
 				TreeNode start0)
 		{
-			int recurse = ++_recurse; // debug.
-
-			TreeNode child;
-
-			foreach (TreeNode node in nodes)
+			if (!_hardstop)
 			{
-				if (!_active)
+				int recurse = ++_recurse; // debug.
+	
+				TreeNode child;
+	
+				foreach (TreeNode node in nodes)
 				{
-					_active = (node == start);
-					if (_active) LogFile.WriteLine(recurse + " set Active");
-				}
-				else if (node == start0)
-				{
-					LogFile.WriteLine(recurse + " node == start0 ret NULL");
-					return null; // not found after wrapping.
-				}
-
-				if (_active && node.Text.ToLower().Contains(text))
-				{
-					LogFile.WriteLine(recurse + " get " + node.Text);
-					return node;
-				}
-
-				if (node.Nodes.Count != 0
-					&& (child = SearchTreeView(text, node.Nodes, start, start0)) != null)
-				{
-					LogFile.WriteLine(recurse + " get child " + child.Text);
-					return child;
+					if (!_active)
+					{
+						_active = (node == start);
+						if (_active) LogFile.WriteLine(recurse + " set Active");
+					}
+					else if (node == start0)
+					{
+						LogFile.WriteLine(recurse + " node == start0 ret NULL");
+						_hardstop = true;	// <- whatever you were doing in the way of recursions stop it.
+						return null;		// not found after wrapping. NOTE: Does not highlight the current node even if that node has the searched for text.
+					}
+	
+					if (_active && node.Text.ToLower().Contains(text))
+					{
+						LogFile.WriteLine(recurse + " get " + node.Text);
+						return node;
+					}
+	
+					if (node.Nodes.Count != 0)
+					{
+						if ((child = SearchTreeview(text, node.Nodes, start, start0)) != null)
+						{
+							LogFile.WriteLine(recurse + " get child " + child.Text);
+							return child;
+						}
+					}
+					else if (node.NextNode == null												// if no more nodes at the current level
+						&& (node.Parent == null        || node.Parent.NextNode == null)			// and no parent OR parent is last node at its level
+						&& (node.Parent.Parent == null || node.Parent.Parent.NextNode == null))	// and no parent-of-parent OR parent-of-parent is last node at its level
+					{
+						LogFile.WriteLine(recurse + " search from Nodes[0]");
+						return SearchTreeview(text, tvMaps.Nodes, tvMaps.Nodes[0], start0);
+					}
 				}
 			}
 
 			LogFile.WriteLine("ret NULL");
 			return null;
-//			LogFile.WriteLine(recurse + " search from Nodes[0]");
-//			return SearchTreeView(text, nodes, tvMaps.Nodes[0], start0);
-		}
-
-		/// <summary>
-		/// Clears the searched, found, and highlighted Treenode.
-		/// </summary>
-		internal void ClearSearched()
-		{
-			if (Searched != null)
-			{
-				Searched.BackColor = DefaultBackColor;
-				Searched = null;
-			}
-		}
+		} */
 
 
 		/// <summary>
