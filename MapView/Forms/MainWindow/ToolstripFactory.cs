@@ -18,22 +18,21 @@ namespace MapView.Forms.MainWindow
 
 		#region Fields
 		private readonly MainViewUnderlay _mainViewUnderlay;
-		private readonly List<ToolStripButton> _pasteButtons = new List<ToolStripButton>();
+		private readonly List<ToolStripButton> _pasters = new List<ToolStripButton>();
 
 
-		private readonly ToolStripTextBox tstbSearch = new ToolStripTextBox();
-		private ToolStripButton tsbClearSearch       = new ToolStripButton();
+		private readonly ToolStripTextBox _tstbSearch = new ToolStripTextBox();
 
-		private ToolStripButton tsbAutoZoom = new ToolStripButton();
-		private ToolStripButton tsbZoomIn   = new ToolStripButton();
-		private ToolStripButton tsbZoomOut  = new ToolStripButton();
+		private ToolStripButton _tsbAutoZoom = new ToolStripButton();
+		private ToolStripButton _tsbZoomIn   = new ToolStripButton();
+		private ToolStripButton _tsbZoomOut  = new ToolStripButton();
 
-		private ToolStripButton tsbUp       = new ToolStripButton();
-		private ToolStripButton tsbDown     = new ToolStripButton();
-		private ToolStripButton tsbCut      = new ToolStripButton();
-		private ToolStripButton tsbCopy     = new ToolStripButton();
-		private ToolStripButton tsbPaste    = new ToolStripButton();
-		private ToolStripButton tsbFill     = new ToolStripButton();
+		private ToolStripButton _tsbUp       = new ToolStripButton();
+		private ToolStripButton _tsbDown     = new ToolStripButton();
+		private ToolStripButton _tsbCut      = new ToolStripButton();
+		private ToolStripButton _tsbCopy     = new ToolStripButton();
+		private ToolStripButton _tsbPaste    = new ToolStripButton();
+		private ToolStripButton _tsbFill     = new ToolStripButton();
 		#endregion
 
 
@@ -57,17 +56,19 @@ namespace MapView.Forms.MainWindow
 		/// <param name="toolStrip"></param>
 		internal void CreateToolstripSearchObjects(ToolStrip toolStrip)
 		{
+			var tsbClearSearch = new ToolStripButton();
+
 			var tsItems = new ToolStripItem[]
 			{
-				tstbSearch,
+				_tstbSearch,
 				tsbClearSearch
 			};
 			toolStrip.Items.AddRange(tsItems);
 
 			// Search textfield
-			tstbSearch.Name             = "tstbSearch";
-			tstbSearch.Text             = "search";
-			tstbSearch.KeyPress        += OnSearchKeyPress;
+			_tstbSearch.Name             = "tstbSearch";
+			_tstbSearch.Text             = "search";
+			_tstbSearch.KeyPress        += OnSearchKeyPress;
 
 			// ClearSearch btn
 			tsbClearSearch.Name         = "tsbClearSearch";
@@ -84,65 +85,148 @@ namespace MapView.Forms.MainWindow
 		/// <param name="toolStrip"></param>
 		internal void CreateToolstripZoomObjects(ToolStrip toolStrip)
 		{
-			var tssDivider = new ToolStripSeparator(); // NOTE: c# cant figure out how to use 1 separator 4 times.
-
 			var tsItems = new ToolStripItem[]
 			{
-				tssDivider,
-				tsbAutoZoom,
-				tsbZoomIn,
-				tsbZoomOut
+				new ToolStripSeparator(),
+				_tsbAutoZoom,
+				_tsbZoomIn,
+				_tsbZoomOut
 			};
 			toolStrip.Items.AddRange(tsItems);
 
 			// AutoZoom btn
-			tsbAutoZoom.Name         = "tsbAutoZoom";
-			tsbAutoZoom.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			tsbAutoZoom.Image        = Resources._11_Search_16;
-			tsbAutoZoom.Checked      = true;
-			tsbAutoZoom.ToolTipText  = "auto zoom";
-			tsbAutoZoom.Click       += XCMainWindow.Instance.OnAutoScaleClick;
+			_tsbAutoZoom.Name         = "tsbAutoZoom";
+			_tsbAutoZoom.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			_tsbAutoZoom.Image        = Resources._11_Search_16;
+			_tsbAutoZoom.Checked      = true;
+			_tsbAutoZoom.ToolTipText  = "auto zoom";
+			_tsbAutoZoom.Click       += XCMainWindow.Instance.OnAutoScaleClick;
 
 			// ZoomIn btn
-			tsbZoomIn.Name           = "tsbZoomIn";
-			tsbZoomIn.DisplayStyle   = ToolStripItemDisplayStyle.Image;
-			tsbZoomIn.Image          = Resources._12_Zoom_in_16;
-			tsbZoomIn.ToolTipText    = "zoom In";
-			tsbZoomIn.Click         += XCMainWindow.Instance.OnZoomInClick;
+			_tsbZoomIn.Name           = "tsbZoomIn";
+			_tsbZoomIn.DisplayStyle   = ToolStripItemDisplayStyle.Image;
+			_tsbZoomIn.Image          = Resources._12_Zoom_in_16;
+			_tsbZoomIn.ToolTipText    = "zoom In";
+			_tsbZoomIn.Click         += XCMainWindow.Instance.OnZoomInClick;
 
 			// ZoomOut btn
-			tsbZoomOut.Name          = "tsbZoomOut";
-			tsbZoomOut.DisplayStyle  = ToolStripItemDisplayStyle.Image;
-			tsbZoomOut.Image         = Resources._13_Zoom_out_16;
-			tsbZoomOut.ToolTipText   = "zoom Out";
-			tsbZoomOut.Click        += XCMainWindow.Instance.OnZoomOutClick;
+			_tsbZoomOut.Name          = "tsbZoomOut";
+			_tsbZoomOut.DisplayStyle  = ToolStripItemDisplayStyle.Image;
+			_tsbZoomOut.Image         = Resources._13_Zoom_out_16;
+			_tsbZoomOut.ToolTipText   = "zoom Out";
+			_tsbZoomOut.Click        += XCMainWindow.Instance.OnZoomOutClick;
 		}
 
 
 		/// <summary>
 		/// Adds buttons for Up,Down,Cut,Copy,Paste and Fill to the specified
-		/// toolstrip.
+		/// toolstrip in MainView.
 		/// </summary>
 		/// <param name="toolStrip"></param>
 		internal void CreateToolstripEditorObjects(ToolStrip toolStrip)
 		{
-			var tssDivider1 = new ToolStripSeparator(); // NOTE: c# cant figure out how to use 1 separator 4 times.
-			var tssDivider2 = new ToolStripSeparator();
-			var tssDivider3 = new ToolStripSeparator();
-			var tssDivider4 = new ToolStripSeparator();
+			var tsItems = new ToolStripItem[]
+			{
+				new ToolStripSeparator(), // NOTE: c# cant figure out how to use 1 separator 4 times.
+				_tsbUp,
+				_tsbDown,
+				new ToolStripSeparator(),
+				_tsbCut,
+				_tsbCopy,
+				_tsbPaste,
+				new ToolStripSeparator(),
+				_tsbFill,
+				new ToolStripSeparator()
+			};
+			toolStrip.Items.AddRange(tsItems);
+
+			// LevelUp btn
+			_tsbUp.Name            = "tsbUp";
+			_tsbUp.ImageScaling    = ToolStripItemImageScaling.None;
+			_tsbUp.DisplayStyle    = ToolStripItemDisplayStyle.Image;
+			_tsbUp.ToolTipText     = "level up";
+			_tsbUp.Click          += OnUpClick;
+
+			// LevelDown btn
+			_tsbDown.Name          = "tsbDown";
+			_tsbDown.ImageScaling  = ToolStripItemImageScaling.None;
+			_tsbDown.DisplayStyle  = ToolStripItemDisplayStyle.Image;
+			_tsbDown.ToolTipText   = "level down";
+			_tsbDown.Click        += OnDownClick;
+
+			// Cut btn
+			_tsbCut.Name           = "tsbCut";
+			_tsbCut.ImageScaling   = ToolStripItemImageScaling.None;
+			_tsbCut.DisplayStyle   = ToolStripItemDisplayStyle.Image;
+			_tsbCut.ToolTipText    = "cut";
+			_tsbCut.Click         += (sender, e) =>
+									{
+										EnablePasteButton();
+										_mainViewUnderlay.OnCut(sender, e);
+									};
+
+			// Copy btn
+			_tsbCopy.Name          = "tsbCopy";
+			_tsbCopy.ImageScaling  = ToolStripItemImageScaling.None;
+			_tsbCopy.DisplayStyle  = ToolStripItemDisplayStyle.Image;
+			_tsbCopy.ToolTipText   = "copy";
+			_tsbCopy.Click        += (sender, e) =>
+									{
+										EnablePasteButton();
+										_mainViewUnderlay.OnCopy(sender, e);
+									};
+
+			// Paste btn
+			_tsbPaste.Name         = "tsbPaste";
+			_tsbPaste.ImageScaling = ToolStripItemImageScaling.None;
+			_tsbPaste.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			_tsbPaste.ToolTipText  = "paste";
+			_tsbPaste.Enabled      = false;
+			_tsbPaste.Click       += _mainViewUnderlay.OnPaste;
+			_pasters.Add(_tsbPaste);
+
+			// Fill btn
+			_tsbFill.Name          = "tsbFill";
+			_tsbFill.DisplayStyle  = ToolStripItemDisplayStyle.Text;
+			_tsbFill.Text          = "F";
+			_tsbFill.ToolTipText   = "fill";
+			_tsbFill.Click        += _mainViewUnderlay.OnFillSelectedTiles;
+
+
+			// Images ->
+			_tsbUp.Image    = Resources.up;
+			_tsbDown.Image  = Resources.down;
+			_tsbCut.Image   = Resources.cut;
+			_tsbCopy.Image  = Resources.copy;
+			_tsbPaste.Image = Resources.paste;
+		}
+
+		/// <summary>
+		/// Adds buttons for Up,Down,Cut,Copy,Paste and Fill to the specified
+		/// toolstrip on TopView and TopRouteView.
+		/// </summary>
+		/// <param name="toolStrip"></param>
+		internal void CreateToolstripEditorObjects2(ToolStrip toolStrip)
+		{
+			var tsbUp    = new ToolStripButton();
+			var tsbDown  = new ToolStripButton();
+			var tsbCut   = new ToolStripButton();
+			var tsbCopy  = new ToolStripButton();
+			var tsbPaste = new ToolStripButton();
+			var tsbFill  = new ToolStripButton();
 
 			var tsItems = new ToolStripItem[]
 			{
-				tssDivider1,
+				new ToolStripSeparator(), // NOTE: c# cant figure out how to use 1 separator 4 times.
 				tsbUp,
 				tsbDown,
-				tssDivider2,
+				new ToolStripSeparator(),
 				tsbCut,
 				tsbCopy,
 				tsbPaste,
-				tssDivider3,
+				new ToolStripSeparator(),
 				tsbFill,
-				tssDivider4
+				new ToolStripSeparator()
 			};
 			toolStrip.Items.AddRange(tsItems);
 
@@ -189,7 +273,7 @@ namespace MapView.Forms.MainWindow
 			tsbPaste.ToolTipText  = "paste";
 			tsbPaste.Enabled      = false;
 			tsbPaste.Click       += _mainViewUnderlay.OnPaste;
-			_pasteButtons.Add(tsbPaste);
+			_pasters.Add(tsbPaste);
 
 			// Fill btn
 			tsbFill.Name          = "tsbFill";
@@ -213,7 +297,7 @@ namespace MapView.Forms.MainWindow
 		/// </summary>
 		internal void SetAutozoomChecked(bool check)
 		{
-			tsbAutoZoom.Checked = check;
+			_tsbAutoZoom.Checked = check;
 		}
 
 		/// <summary>
@@ -222,7 +306,7 @@ namespace MapView.Forms.MainWindow
 		/// <returns>true if checked</returns>
 		internal bool ToggleAutozoomChecked()
 		{
-			return (tsbAutoZoom.Checked = !tsbAutoZoom.Checked);
+			return (_tsbAutoZoom.Checked = !_tsbAutoZoom.Checked);
 		}
 
 		/// <summary>
@@ -231,7 +315,7 @@ namespace MapView.Forms.MainWindow
 		/// </summary>
 		internal void EnablePasteButton()
 		{
-			foreach (var tsb in _pasteButtons)
+			foreach (var tsb in _pasters)
 				tsb.Enabled = true;
 		}
 
@@ -241,15 +325,15 @@ namespace MapView.Forms.MainWindow
 		/// <param name="enable"></param>
 		internal void EnableToolStrip(bool enable)
 		{
-			tsbAutoZoom.Enabled =
-			tsbZoomIn  .Enabled =
-			tsbZoomOut .Enabled =
-			tsbUp      .Enabled =
-			tsbDown    .Enabled =
-			tsbCut     .Enabled =
-			tsbCopy    .Enabled =
-			tsbPaste   .Enabled =
-			tsbFill    .Enabled = enable;
+			_tsbAutoZoom.Enabled =
+			_tsbZoomIn  .Enabled =
+			_tsbZoomOut .Enabled =
+			_tsbUp      .Enabled =
+			_tsbDown    .Enabled =
+			_tsbCut     .Enabled =
+			_tsbCopy    .Enabled =
+			_tsbPaste   .Enabled =
+			_tsbFill    .Enabled = enable;
 		}
 		#endregion
 
@@ -279,7 +363,7 @@ namespace MapView.Forms.MainWindow
 		{
 			if (e.KeyChar == (char)Keys.Enter)
 			{
-				XCMainWindow.Instance.Search(tstbSearch.Text);
+				XCMainWindow.Instance.Search(_tstbSearch.Text);
 				e.Handled = true;
 			}
 		}
@@ -292,7 +376,7 @@ namespace MapView.Forms.MainWindow
 		internal void OnClearSearchedClick(object sender, EventArgs e)
 		{
 			XCMainWindow.Instance.ClearSearched();
-			tstbSearch.Focus();
+			_tstbSearch.Focus();
 		}
 		#endregion
 	}
