@@ -406,7 +406,7 @@ namespace MapView
 		{
 			Refresh();
 
-			ViewerFormsManager.TopView.Refresh();
+			ViewerFormsManager.TopView  .Refresh();
 			ViewerFormsManager.RouteView.Refresh();
 
 			// TODO: refresh TopRouteView (both Top & Route panels) also.

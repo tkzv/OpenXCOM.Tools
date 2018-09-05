@@ -90,9 +90,9 @@ namespace MapView.Forms.MainWindow
 			{
 				TopRouteView.ControlTop,
 				TopRouteView.ControlRoute,
-				TileView.Control,
-				RouteView.Control,
-				TopView.Control
+				TileView    .Control,
+				RouteView   .Control,
+				TopView     .Control
 			};
 
 			foreach (var f in observers)

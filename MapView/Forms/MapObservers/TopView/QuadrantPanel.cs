@@ -64,7 +64,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		#region cTor
 		/// <summary>
-		/// cTor.
+		/// cTor. There are 2 quadpanels: one in TopView and another in
+		/// TopRouteView(Top).
 		/// </summary>
 		internal QuadrantPanel()
 		{
@@ -108,21 +109,41 @@ namespace MapView.Forms.MapObservers.TopViews
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			var quad = (QuadrantType)((e.X - QuadrantPanelDrawService.StartX) / QuadrantPanelDrawService.QuadWidthTotal);
+
+			switch (quad)
+			{
+				case QuadrantType.Ground:
+					ViewerFormsManager.TopView     .Control   .SelectQuadrant(TileType.Ground);
+					ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(TileType.Ground);
+					break;
+				case QuadrantType.West:
+					ViewerFormsManager.TopView     .Control   .SelectQuadrant(TileType.WestWall);
+					ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(TileType.WestWall);
+					break;
+				case QuadrantType.North:
+					ViewerFormsManager.TopView     .Control   .SelectQuadrant(TileType.NorthWall);
+					ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(TileType.NorthWall);
+					break;
+				case QuadrantType.Content:
+					ViewerFormsManager.TopView     .Control   .SelectQuadrant(TileType.Object);
+					ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(TileType.Object);
+					break;
+			}
+
 			switch (quad)
 			{
 				case QuadrantType.Ground:
 				case QuadrantType.West:
 				case QuadrantType.North:
 				case QuadrantType.Content:
-					SelectedQuadrant = quad;
 
 					SetSelected(e.Button, e.Clicks);
-
 					if (e.Button == MouseButtons.Right) // see SetSelected()
 					{
 						MainViewUnderlay.Instance.MainViewOverlay.Refresh();
-						ViewerFormsManager.TopView.Refresh();
-						ViewerFormsManager.RouteView.Refresh();
+
+						ViewerFormsManager.TopView     .Refresh();
+						ViewerFormsManager.RouteView   .Refresh();
 						ViewerFormsManager.TopRouteView.Refresh();
 					}
 					Refresh();
@@ -182,8 +203,11 @@ namespace MapView.Forms.MapObservers.TopViews
 							}
 
 							MapBase.MapChanged = true;
+
 							Refresh();
-							ViewerFormsManager.TopView.Control.TopViewPanel.Refresh();
+
+							ViewerFormsManager.TopView     .Control   .TopViewPanel.Refresh();
+							ViewerFormsManager.TopRouteView.ControlTop.TopViewPanel.Refresh();
 						}
 						break;
 					}
