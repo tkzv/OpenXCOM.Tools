@@ -263,8 +263,7 @@ namespace MapView
 
 			ViewerFormsManager.ToolFactory.CreateToolstripSearchObjects(tsTools);
 			ViewerFormsManager.ToolFactory.CreateToolstripZoomObjects(tsTools);
-			ViewerFormsManager.ToolFactory.CreateToolstripEditorObjects(tsTools);
-//			tsTools.Enabled = false;
+			ViewerFormsManager.ToolFactory.CreateToolstripEditorObjects(tsTools, false);
 			ViewerFormsManager.ToolFactory.EnableToolStrip(false);
 
 
@@ -2334,7 +2333,6 @@ namespace MapView
 				var mapBase = MapFileService.LoadTileset(descriptor);
 				_mainViewUnderlay.MapBase = mapBase;
 
-//				tsTools.Enabled = true;
 				ViewerFormsManager.ToolFactory.EnableToolStrip(true);
 
 				RouteCheckService.CheckNodeBounds(mapBase as MapFileChild);
