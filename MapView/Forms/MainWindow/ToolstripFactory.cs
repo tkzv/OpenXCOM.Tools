@@ -72,9 +72,9 @@ namespace MapView.Forms.MainWindow
 
 			// ClearSearch btn
 			tsbClearSearch.Name         = "tsbClearSearch";
-			tsbClearSearch.DisplayStyle = ToolStripItemDisplayStyle.Text;
-			tsbClearSearch.Text         = "C"; // TODO: use a 'delete' image
-			tsbClearSearch.ToolTipText  = "clear search-start highlite";
+			tsbClearSearch.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			tsbClearSearch.Image        = Resources.DeleteRed;
+			tsbClearSearch.ToolTipText  = "reset highlight";
 			tsbClearSearch.Click       += OnClearSearchedClick;
 		}
 
@@ -97,7 +97,7 @@ namespace MapView.Forms.MainWindow
 			// AutoZoom btn
 			_tsbZoomAuto.Name         = "tsbZoomAuto";
 			_tsbZoomAuto.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			_tsbZoomAuto.Image        = Resources._11_Search_16;
+			_tsbZoomAuto.Image        = Resources.Search1;
 			_tsbZoomAuto.Checked      = true;
 			_tsbZoomAuto.ToolTipText  = "autoscale";
 			_tsbZoomAuto.Click       += XCMainWindow.Instance.OnAutoScaleClick;
@@ -105,14 +105,14 @@ namespace MapView.Forms.MainWindow
 			// ZoomIn btn
 			_tsbZoomIn.Name           = "tsbZoomIn";
 			_tsbZoomIn.DisplayStyle   = ToolStripItemDisplayStyle.Image;
-			_tsbZoomIn.Image          = Resources._12_Zoom_in_16;
+			_tsbZoomIn.Image          = Resources.ZoomIn1;
 			_tsbZoomIn.ToolTipText    = "scale In";
 			_tsbZoomIn.Click         += XCMainWindow.Instance.OnZoomInClick;
 
 			// ZoomOut btn
 			_tsbZoomOut.Name          = "tsbZoomOut";
 			_tsbZoomOut.DisplayStyle  = ToolStripItemDisplayStyle.Image;
-			_tsbZoomOut.Image         = Resources._13_Zoom_out_16;
+			_tsbZoomOut.Image         = Resources.ZoomOut1;
 			_tsbZoomOut.ToolTipText   = "scale Out";
 			_tsbZoomOut.Click        += XCMainWindow.Instance.OnZoomOutClick;
 		}
@@ -169,22 +169,22 @@ namespace MapView.Forms.MainWindow
 
 			// LevelUp btn
 			tsbUp.Name            = "tsbUp";
-			tsbUp.ImageScaling    = ToolStripItemImageScaling.None;
 			tsbUp.DisplayStyle    = ToolStripItemDisplayStyle.Image;
+			tsbUp.Image           = Resources.up;
 			tsbUp.ToolTipText     = "level up";
 			tsbUp.Click          += OnUpClick;
 
 			// LevelDown btn
 			tsbDown.Name          = "tsbDown";
-			tsbDown.ImageScaling  = ToolStripItemImageScaling.None;
 			tsbDown.DisplayStyle  = ToolStripItemDisplayStyle.Image;
+			tsbDown.Image         = Resources.down;
 			tsbDown.ToolTipText   = "level down";
 			tsbDown.Click        += OnDownClick;
 
 			// Cut btn
 			tsbCut.Name           = "tsbCut";
-			tsbCut.ImageScaling   = ToolStripItemImageScaling.None;
 			tsbCut.DisplayStyle   = ToolStripItemDisplayStyle.Image;
+			tsbCut.Image          = Resources.cut;
 			tsbCut.ToolTipText    = "cut";
 			tsbCut.Click         += _mainViewUnderlay.OnCut;
 //			tsbCut.Click         += (sender, e) => // -> example of ... lambda usage
@@ -195,8 +195,8 @@ namespace MapView.Forms.MainWindow
 
 			// Copy btn
 			tsbCopy.Name          = "tsbCopy";
-			tsbCopy.ImageScaling  = ToolStripItemImageScaling.None;
 			tsbCopy.DisplayStyle  = ToolStripItemDisplayStyle.Image;
+			tsbCopy.Image         = Resources.copy;
 			tsbCopy.ToolTipText   = "copy";
 			tsbCopy.Click        += _mainViewUnderlay.OnCopy;
 //			tsbCopy.Click        += (sender, e) => // -> example of ... lambda usage
@@ -207,8 +207,8 @@ namespace MapView.Forms.MainWindow
 
 			// Paste btn
 			tsbPaste.Name         = "tsbPaste";
-			tsbPaste.ImageScaling = ToolStripItemImageScaling.None;
 			tsbPaste.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			tsbPaste.Image        = Resources.paste;
 			tsbPaste.ToolTipText  = "paste";
 			tsbPaste.Enabled      = false;
 			tsbPaste.Click       += _mainViewUnderlay.OnPaste;
@@ -217,18 +217,10 @@ namespace MapView.Forms.MainWindow
 
 			// Fill btn
 			tsbFill.Name          = "tsbFill";
-			tsbFill.DisplayStyle  = ToolStripItemDisplayStyle.Text;
-			tsbFill.Text          = "F";
+			tsbFill.DisplayStyle  = ToolStripItemDisplayStyle.Image;
+			tsbFill.Image         = Resources.philup;
 			tsbFill.ToolTipText   = "fill";
 			tsbFill.Click        += _mainViewUnderlay.OnFillSelectedTiles;
-
-
-			// Images ->
-			tsbUp.Image    = Resources.up;
-			tsbDown.Image  = Resources.down;
-			tsbCut.Image   = Resources.cut;
-			tsbCopy.Image  = Resources.copy;
-			tsbPaste.Image = Resources.paste;
 		}
 
 
