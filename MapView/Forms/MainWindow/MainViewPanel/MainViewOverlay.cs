@@ -267,14 +267,10 @@ namespace MapView
 					case Keys.X:
 						Copy();
 						ClearSelection();
-
-						ToolstripFactory.Instance.EnablePasteButton();
 						break;
 
 					case Keys.C:
 						Copy();
-
-						ToolstripFactory.Instance.EnablePasteButton();
 						break;
 
 					case Keys.V:
@@ -301,15 +297,22 @@ namespace MapView
 			{
 				MapBase.MapChanged = true;
 
+				XCMapTile tile;
+
 				var start = GetAbsoluteDragStart();
 				var end   = GetAbsoluteDragEnd();
-	
+
 				for (int col = start.X; col <= end.X; ++col)
 				for (int row = start.Y; row <= end.Y; ++row)
 				{
-					var node = ((XCMapTile)MapBase[row, col]).Node; // leave any node(s) that might be on the tile(s)
-					MapBase[row, col] = XCMapTile.VacantTile;
-					((XCMapTile)MapBase[row, col]).Node = node;
+					tile = (XCMapTile)MapBase[row, col];
+
+					tile.Ground  = null;
+					tile.West    = null;
+					tile.North   = null;
+					tile.Content = null;
+
+					tile.Vacant = true;
 				}
 
 				((MapFileChild)MapBase).CalculateOccultations();
@@ -325,17 +328,28 @@ namespace MapView
 		{
 			if (MapBase != null && FirstClick)
 			{
+				ToolstripFactory.Instance.EnablePasteButton();
+
 				var start = GetAbsoluteDragStart();
 				var end   = GetAbsoluteDragEnd();
 
 				_copied = new MapTileBase[end.Y - start.Y + 1,
 										  end.X - start.X + 1];
 
+				XCMapTile @base, copy;
+
 				for (int col = start.X; col <= end.X; ++col)
 				for (int row = start.Y; row <= end.Y; ++row)
 				{
+					@base = (XCMapTile)MapBase[row, col];
+					copy = new XCMapTile(
+									@base.Ground,
+									@base.West,
+									@base.North,
+									@base.Content);
+
 					_copied[row - start.Y,
-							col - start.X] = MapBase[row, col];
+							col - start.X] = copy;
 				}
 			}
 		}
@@ -410,13 +424,6 @@ namespace MapView
 			ViewerFormsManager.TopView     .Refresh();
 			ViewerFormsManager.RouteView   .Refresh();
 			ViewerFormsManager.TopRouteView.Refresh();
-
-			// TODO: why is Quadrant panel updating properly when pasting/filling
-			// a tile but not when cutting/deleting a tile ....
-//			ViewerFormsManager.TopView     .Control   .QuadrantsPanel.Refresh();
-//			ViewerFormsManager.TopRouteView.ControlTop.QuadrantsPanel.Refresh();
-//			ViewerFormsManager.TopView     .Control   .QuadrantsPanel.RenderQuadrantsPanel();
-//			ViewerFormsManager.TopRouteView.ControlTop.QuadrantsPanel.RenderQuadrantsPanel();
 		}
 		#endregion
 

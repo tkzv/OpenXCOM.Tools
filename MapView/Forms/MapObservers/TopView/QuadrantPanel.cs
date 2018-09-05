@@ -164,6 +164,11 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		#region Methods
+		/// <summary>
+		/// Handles the details of LMB and RMB wrt the QuadrantPanels.
+		/// </summary>
+		/// <param name="btn"></param>
+		/// <param name="clicks"></param>
 		internal void SetSelected(MouseButtons btn, int clicks)
 		{
 			if (_tile != null)

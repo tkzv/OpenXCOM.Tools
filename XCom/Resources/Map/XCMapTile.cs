@@ -101,7 +101,7 @@ namespace XCom
 
 
 		#region cTor
-		internal XCMapTile(
+		public XCMapTile(
 				TilepartBase ground,
 				TilepartBase west,
 				TilepartBase north,

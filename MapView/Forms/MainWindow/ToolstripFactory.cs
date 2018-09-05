@@ -186,22 +186,24 @@ namespace MapView.Forms.MainWindow
 			tsbCut.ImageScaling   = ToolStripItemImageScaling.None;
 			tsbCut.DisplayStyle   = ToolStripItemDisplayStyle.Image;
 			tsbCut.ToolTipText    = "cut";
-			tsbCut.Click         += (sender, e) =>
-									{
-										EnablePasteButton();
-										_mainViewUnderlay.OnCut(sender, e);
-									};
+			tsbCut.Click         += _mainViewUnderlay.OnCut;
+//			tsbCut.Click         += (sender, e) => // -> example of ... lambda usage
+//									{
+//										EnablePasteButton();
+//										_mainViewUnderlay.OnCut(sender, e);
+//									};
 
 			// Copy btn
 			tsbCopy.Name          = "tsbCopy";
 			tsbCopy.ImageScaling  = ToolStripItemImageScaling.None;
 			tsbCopy.DisplayStyle  = ToolStripItemDisplayStyle.Image;
 			tsbCopy.ToolTipText   = "copy";
-			tsbCopy.Click        += (sender, e) =>
-									{
-										EnablePasteButton();
-										_mainViewUnderlay.OnCopy(sender, e);
-									};
+			tsbCopy.Click        += _mainViewUnderlay.OnCopy;
+//			tsbCopy.Click        += (sender, e) => // -> example of ... lambda usage
+//									{
+//										EnablePasteButton();
+//										_mainViewUnderlay.OnCopy(sender, e);
+//									};
 
 			// Paste btn
 			tsbPaste.Name         = "tsbPaste";

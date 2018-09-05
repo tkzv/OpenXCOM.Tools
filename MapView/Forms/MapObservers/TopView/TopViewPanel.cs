@@ -64,14 +64,10 @@ namespace MapView.Forms.MapObservers.TopViews
 					case Keys.X:
 						MainViewUnderlay.Instance.MainViewOverlay.Copy();
 						MainViewUnderlay.Instance.MainViewOverlay.ClearSelection();
-
-						ToolstripFactory.Instance.EnablePasteButton();
 						break;
 
 					case Keys.C:
 						MainViewUnderlay.Instance.MainViewOverlay.Copy();
-
-						ToolstripFactory.Instance.EnablePasteButton();
 						break;
 
 					case Keys.V:
@@ -97,7 +93,10 @@ namespace MapView.Forms.MapObservers.TopViews
 			Select();
 
 			if (e.Button == MouseButtons.Right)
-				QuadrantsPanel.SetSelected(e.Button, 1);
+			{
+				ViewerFormsManager.TopView     .Control   .QuadrantsPanel.SetSelected(e.Button, 1);
+				ViewerFormsManager.TopRouteView.ControlTop.QuadrantsPanel.SetSelected(e.Button, 1);
+			}
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
