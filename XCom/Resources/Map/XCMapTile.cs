@@ -24,28 +24,28 @@ namespace XCom
 		public TilepartBase Ground
 		{
 			get { return _ground; }
-			set { ChangeMapQuadrant(QuadrantType.Ground, value); }
+			set { SetQuadrantPart(QuadrantType.Ground, value); }
 		}
 
 		private TilepartBase _west;
 		public TilepartBase West
 		{
 			get { return _west; }
-			set { ChangeMapQuadrant(QuadrantType.West, value); }
+			set { SetQuadrantPart(QuadrantType.West, value); }
 		}
 
 		private TilepartBase _north;
 		public TilepartBase North
 		{
 			get { return _north; }
-			set { ChangeMapQuadrant(QuadrantType.North, value); }
+			set { SetQuadrantPart(QuadrantType.North, value); }
 		}
 
 		private TilepartBase _content;
 		public TilepartBase Content
 		{
 			get { return _content; }
-			set { ChangeMapQuadrant(QuadrantType.Content, value); }
+			set { SetQuadrantPart(QuadrantType.Content, value); }
 		}
 
 		public TilepartBase this[QuadrantType quad]
@@ -61,21 +61,21 @@ namespace XCom
 				}
 				return null;
 			}
-			set { ChangeMapQuadrant(quad, value); }
+			set { SetQuadrantPart(quad, value); }
 		}
 
-		public override TilepartBase[] UsedTiles
+		public override TilepartBase[] UsedParts
 		{
 			get
 			{
-				var partList = new List<TilepartBase>();
+				var parts = new List<TilepartBase>();
 
-				if (Ground  != null) partList.Add(Ground);
-				if (West    != null) partList.Add(West);
-				if (North   != null) partList.Add(North);
-				if (Content != null) partList.Add(Content);
+				if (Ground  != null) parts.Add(Ground);
+				if (West    != null) parts.Add(West);
+				if (North   != null) parts.Add(North);
+				if (Content != null) parts.Add(Content);
 
-				return partList.ToArray();
+				return parts.ToArray();
 			}
 		}
 
@@ -107,16 +107,18 @@ namespace XCom
 				TilepartBase north,
 				TilepartBase content)
 		{
-			_ground  = ground;
+			_ground  = ground; // NOTE: Don't even try ... don't even think about it.
 			_west    = west;
 			_north   = north;
 			_content = content;
+
+			Vacancy();
 		}
 		#endregion
 
 
 		#region Methods
-		private void ChangeMapQuadrant(QuadrantType quad, TilepartBase part)
+		private void SetQuadrantPart(QuadrantType quad, TilepartBase part)
 		{
 			switch (quad)
 			{
@@ -125,6 +127,17 @@ namespace XCom
 				case QuadrantType.North:   _north   = part; break;
 				case QuadrantType.Content: _content = part; break;
 			}
+		}
+
+		/// <summary>
+		/// Sets the tile as Vacant if it has no tileparts.
+		/// </summary>
+		public void Vacancy()
+		{
+			Vacant = Ground  == null
+				  && West    == null
+				  && North   == null
+				  && Content == null;
 		}
 		#endregion
 	}

@@ -250,15 +250,15 @@ namespace XCom.Interfaces.Base
 									y += HalfHeightConst,
 									++i)
 						{
-							var usedParts = this[row, col, lev].UsedTiles;
-							foreach (var usedPart in usedParts)
+							var parts = this[row, col, lev].UsedParts;
+							foreach (var part in parts)
 							{
-								var part = usedPart as Tilepart;
+								var tilepart = part as Tilepart;
 								BitmapService.Draw( // NOTE: not actually drawing anything.
-												part[0].Image,
+												tilepart[0].Image,
 												bitmap,
 												x,
-												y - part.Record.TileOffset);
+												y - tilepart.Record.TileOffset);
 							}
 
 //							XCBitmap.UpdateProgressBar(i, (MapSize.Levs - Level) * MapSize.Rows * MapSize.Cols);

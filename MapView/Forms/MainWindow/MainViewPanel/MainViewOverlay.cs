@@ -346,8 +346,7 @@ namespace MapView
 			{
 				MapBase.MapChanged = true;
 
-				XCMapTile tile     = null;
-				XCMapTile tileCopy = null;
+				XCMapTile tile, tileCopy;
 				for (int
 						row = DragStart.Y;
 						row != MapBase.MapSize.Rows && (row - DragStart.Y) < _copied.GetLength(0);
@@ -367,6 +366,8 @@ namespace MapView
 								tile.Content = tileCopy.Content;
 								tile.West    = tileCopy.West;
 								tile.North   = tileCopy.North;
+
+								tile.Vacancy();
 							}
 						}
 					}
@@ -396,7 +397,7 @@ namespace MapView
 					((XCMapTile)MapBase[row, col])[quad] = part;
 				}
 
-				// TODO: should this call CalculateOccultations() like Clear and Paste (probably.)
+				((MapFileChild)MapBase).CalculateOccultations();
 
 				RefreshViewers();
 			}
@@ -410,6 +411,8 @@ namespace MapView
 			ViewerFormsManager.RouteView   .Refresh();
 			ViewerFormsManager.TopRouteView.Refresh();
 
+			// TODO: why is Quadrant panel updating properly when pasting/filling
+			// a tile but not when cutting/deleting a tile ....
 //			ViewerFormsManager.TopView     .Control   .QuadrantsPanel.Refresh();
 //			ViewerFormsManager.TopRouteView.ControlTop.QuadrantsPanel.Refresh();
 //			ViewerFormsManager.TopView     .Control   .QuadrantsPanel.RenderQuadrantsPanel();

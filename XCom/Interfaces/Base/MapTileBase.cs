@@ -11,7 +11,7 @@ namespace XCom.Interfaces.Base
 		/// <summary>
 		/// An array of TilepartBase[] in the correct draw order. This array
 		/// should be iterated over when drawing to the screen.</summary>
-		public abstract TilepartBase[] UsedTiles
+		public abstract TilepartBase[] UsedParts
 		{ get; }
 
 		/// <summary>
