@@ -410,6 +410,9 @@ namespace MapView
 			ViewerFormsManager.RouteView.Refresh();
 
 			// TODO: refresh TopRouteView (both Top & Route panels) also.
+
+//			ViewerFormsManager.TopView     .Control   .QuadrantsPanel.Refresh();
+//			ViewerFormsManager.TopRouteView.ControlTop.QuadrantsPanel.Refresh();
 		}
 		#endregion
 

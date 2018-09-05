@@ -75,7 +75,10 @@ namespace MapView.Forms.MainWindow
 		private static void OnTileSelected_Observer0(TilepartBase part)
 		{
 			if (part != null && part.Record != null)
-				TopView.Control.SelectQuadrant(part.Record.TileType);
+			{
+				TopView     .Control   .SelectQuadrant(part.Record.TileType);
+				TopRouteView.ControlTop.SelectQuadrant(part.Record.TileType);
+			}
 		}
 		#endregion
 

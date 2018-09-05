@@ -141,7 +141,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (SelectedTilepart != null)
 			{
-				ViewerFormsManager.TopView.Control.SelectQuadrant(SelectedTilepart.Record.TileType);
+				ViewerFormsManager.TopView     .Control   .SelectQuadrant(SelectedTilepart.Record.TileType);
+				ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(SelectedTilepart.Record.TileType);
 
 				f.Text = BuildTitleString(SelectedTilepart.TilesetId, SelectedTilepart.Id);
 				record = SelectedTilepart.Record;
@@ -181,15 +182,17 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// <summary>
 		/// Changes the currently selected quadrant in the QuadrantPanel when
 		/// a tile is selected in TileView.
-		/// That is, fires 'TopView.Control.SelectQuadrant' through
-		/// 'TileSelectedEvent_Observer0'.
+		/// That is, fires
+		///   TopView.Control.SelectQuadrant()
+		/// and
+		///   TopRouteView.ControlTop.SelectQuadrant()
+		/// through 'TileSelectedEvent_Observer0'.
 		/// </summary>
 		/// <param name="part"></param>
 		private void SelectQuadrant(TilepartBase part)
 		{
-			var handler = TileSelectedEvent_Observer0;
-			if (handler != null)
-				handler(part);
+			if (TileSelectedEvent_Observer0 != null)
+				TileSelectedEvent_Observer0(part);
 		}
 		#endregion
 

@@ -95,25 +95,25 @@ namespace MapView.Forms.MainWindow
 			toolStrip.Items.AddRange(tsItems);
 
 			// AutoZoom btn
-			_tsbZoomAuto.Name         = "tsbAutoZoom";
+			_tsbZoomAuto.Name         = "tsbZoomAuto";
 			_tsbZoomAuto.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			_tsbZoomAuto.Image        = Resources._11_Search_16;
 			_tsbZoomAuto.Checked      = true;
-			_tsbZoomAuto.ToolTipText  = "auto zoom";
+			_tsbZoomAuto.ToolTipText  = "autoscale";
 			_tsbZoomAuto.Click       += XCMainWindow.Instance.OnAutoScaleClick;
 
 			// ZoomIn btn
 			_tsbZoomIn.Name           = "tsbZoomIn";
 			_tsbZoomIn.DisplayStyle   = ToolStripItemDisplayStyle.Image;
 			_tsbZoomIn.Image          = Resources._12_Zoom_in_16;
-			_tsbZoomIn.ToolTipText    = "zoom In";
+			_tsbZoomIn.ToolTipText    = "scale In";
 			_tsbZoomIn.Click         += XCMainWindow.Instance.OnZoomInClick;
 
 			// ZoomOut btn
 			_tsbZoomOut.Name          = "tsbZoomOut";
 			_tsbZoomOut.DisplayStyle  = ToolStripItemDisplayStyle.Image;
 			_tsbZoomOut.Image         = Resources._13_Zoom_out_16;
-			_tsbZoomOut.ToolTipText   = "zoom Out";
+			_tsbZoomOut.ToolTipText   = "scale Out";
 			_tsbZoomOut.Click        += XCMainWindow.Instance.OnZoomOutClick;
 		}
 
