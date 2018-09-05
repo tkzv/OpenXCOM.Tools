@@ -232,7 +232,7 @@ namespace MapView
 		{
 			MainViewOverlay.Paste();
 		}
-		internal void OnFillSelectedTiles(object sender, EventArgs e)
+		internal void OnFill(object sender, EventArgs e)
 		{
 			MainViewOverlay.FillSelectedTiles();
 		}

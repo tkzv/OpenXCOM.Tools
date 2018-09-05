@@ -21,10 +21,10 @@ namespace MapView.Forms.MainWindow
 		private readonly List<ToolStripButton> _pasters = new List<ToolStripButton>();
 
 
-		private readonly ToolStripTextBox _tstbSearch = new ToolStripTextBox();
-
-		private ToolStripButton _tsbZoomAuto = new ToolStripButton();
-		private ToolStripButton _tsbZoomIn   = new ToolStripButton();
+		private readonly ToolStripTextBox _tstbSearch = new ToolStripTextBox();	// NOTE: The instantiations of toolstrip-objects that
+																				// are classvars are for MainView, while the toolstrip-
+		private ToolStripButton _tsbZoomAuto = new ToolStripButton();			// objects for TopView and TopRouteView(Top) are
+		private ToolStripButton _tsbZoomIn   = new ToolStripButton();			// instantiated in the functions below.
 		private ToolStripButton _tsbZoomOut  = new ToolStripButton();
 
 		private ToolStripButton _tsbUp       = new ToolStripButton();
@@ -52,6 +52,7 @@ namespace MapView.Forms.MainWindow
 		#region Methods
 		/// <summary>
 		/// Adds a textfield for search to the specified toolstrip.
+		/// NOTE: Appears only in MainView.
 		/// </summary>
 		/// <param name="toolStrip"></param>
 		internal void CreateToolstripSearchObjects(ToolStrip toolStrip)
@@ -75,12 +76,13 @@ namespace MapView.Forms.MainWindow
 			tsbClearSearch.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			tsbClearSearch.Image        = Resources.DeleteRed;
 			tsbClearSearch.ToolTipText  = "reset highlight";
-			tsbClearSearch.Click       += OnClearSearchedClick;
+			tsbClearSearch.Click       += OnClearHighlightClick;
 		}
 
 
 		/// <summary>
 		/// Adds buttons for zooming the map-scale to the specified toolstrip.
+		/// NOTE: Appears only in MainView.
 		/// </summary>
 		/// <param name="toolStrip"></param>
 		internal void CreateToolstripZoomObjects(ToolStrip toolStrip)
@@ -120,7 +122,7 @@ namespace MapView.Forms.MainWindow
 
 		/// <summary>
 		/// Adds buttons for Up,Down,Cut,Copy,Paste and Fill to the specified
-		/// toolstrip in MainView.
+		/// toolstrip in MainView as well as TopView and TopRouteView(Top).
 		/// </summary>
 		/// <param name="toolStrip"></param>
 		/// <param name="tertiary">false for MainView's toolstrip, true for TopView's and TopRouteView's</param>
@@ -220,7 +222,7 @@ namespace MapView.Forms.MainWindow
 			tsbFill.DisplayStyle  = ToolStripItemDisplayStyle.Image;
 			tsbFill.Image         = Resources.philup;
 			tsbFill.ToolTipText   = "fill";
-			tsbFill.Click        += _mainViewUnderlay.OnFillSelectedTiles;
+			tsbFill.Click        += _mainViewUnderlay.OnFill;
 		}
 
 
@@ -305,7 +307,7 @@ namespace MapView.Forms.MainWindow
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		internal void OnClearSearchedClick(object sender, EventArgs e)
+		internal void OnClearHighlightClick(object sender, EventArgs e)
 		{
 			XCMainWindow.Instance.ClearSearched();
 			_tstbSearch.Focus();

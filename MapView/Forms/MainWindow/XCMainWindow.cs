@@ -2347,8 +2347,12 @@ namespace MapView
 				tsslDimensions.Text = (mapBase != null) ? mapBase.MapSize.ToString()
 														: "size: n/a";
 				tsslPosition.Text = String.Empty;
-				ViewerFormsManager.RouteView.Control.ClearSelectedInfo();
-				ViewerFormsManager.RouteView.Control.DisableOg();
+
+				ViewerFormsManager.RouteView   .Control     .ClearSelectedInfo();
+				ViewerFormsManager.TopRouteView.ControlRoute.ClearSelectedInfo();
+
+				ViewerFormsManager.RouteView   .Control     .DisableOg();
+				ViewerFormsManager.TopRouteView.ControlRoute.DisableOg();
 
 				Options[Doors].Value = false; // toggle off door-animations; not sure that this is necessary to do.
 				miDoors.Checked = false;

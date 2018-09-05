@@ -496,7 +496,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tscbConnectType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.tscbConnectType.Font = new System.Drawing.Font("Verdana", 7F);
 			this.tscbConnectType.Name = "tscbConnectType";
-			this.tscbConnectType.Size = new System.Drawing.Size(120, 25);
+			this.tscbConnectType.Size = new System.Drawing.Size(105, 22);
 			this.tscbConnectType.DropDownClosed += new System.EventHandler(this.OnConnectDropDownClosed);
 			// 
 			// tsddbEdit

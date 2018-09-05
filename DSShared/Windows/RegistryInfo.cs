@@ -13,6 +13,8 @@ namespace DSShared.Windows
 	/// <summary>
 	/// A class to help facilitate the saving and loading of values into the
 	/// registry in a central location.
+	/// NOTE: MapViewII does not use the Windows Registry at all - this info is
+	/// rather for initialization/configuration files.
 	/// </summary>
 	public sealed class RegistryInfo
 	{

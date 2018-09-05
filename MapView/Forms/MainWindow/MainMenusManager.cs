@@ -145,11 +145,12 @@ namespace MapView.Forms.MainWindow
 
 			it.Click += OnMenuItemClick;
 
-			f.FormClosing += (sender, e) => {
-				it.Checked = false;
-				e.Cancel = true;
-				f.Hide();
-			};
+			f.FormClosing += (sender, e) =>
+								{
+									it.Checked = false;
+									e.Cancel = true;
+									f.Hide();
+								};
 
 			_allItems.Add(it);
 			_allForms.Add(f);
@@ -178,14 +179,15 @@ namespace MapView.Forms.MainWindow
 					var f = it.Tag as Form;							// but it appears under Options like the real viewers.
 					if (f != null)
 					{
-						f.VisibleChanged += (sender, e) => {
-							if (!_quitting)
-							{
-								var fsender = sender as Form;
-								if (fsender != null)
-									_options[key].Value = fsender.Visible;
-							}
-						};
+						f.VisibleChanged += (sender, e) =>
+											{
+												if (!_quitting)
+												{
+													var fsender = sender as Form;
+													if (fsender != null)
+														_options[key].Value = fsender.Visible;
+												}
+											};
 					}
 				}
 			}
