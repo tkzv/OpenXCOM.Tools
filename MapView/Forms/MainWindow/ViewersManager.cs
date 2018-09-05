@@ -43,7 +43,7 @@ namespace MapView.Forms.MainWindow
 		internal void ManageViewers()
 		{
 			//LogFile.WriteLine("ManageViewers");
-			ViewerFormsManager.TopRouteView.ControlTop.Options   = ViewerFormsManager.TopView.Control.Options;
+			ViewerFormsManager.TopRouteView.ControlTop  .Options = ViewerFormsManager.TopView  .Control.Options;
 			ViewerFormsManager.TopRouteView.ControlRoute.Options = ViewerFormsManager.RouteView.Control.Options;
 
 			ViewerFormsManager.TopRouteView.ControlTop  .LoadControl0Options();
