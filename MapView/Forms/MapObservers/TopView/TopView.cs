@@ -16,9 +16,6 @@ namespace MapView.Forms.MapObservers.TopViews
 		:
 			MapObserverControl0
 	{
-//		private event EventHandler VisibleTileChangedEvent;
-
-
 		#region Fields (static)
 		private const string Floor   = "Floor";
 		private const string West    = "West";
@@ -85,6 +82,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 			_topViewPanel = new TopViewPanel();
+
 			_topViewPanel.Dock = DockStyle.Fill;
 //			_topViewPanel.Width  = 100;//pMain.Width;
 //			_topViewPanel.Height = 100;//pMain.Height;
@@ -96,26 +94,28 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			var visQuads = tsddbVisibleQuads.DropDown.Items;
 
-			_topViewPanel.Ground = new ToolStripMenuItem(Floor);
+			_topViewPanel.Ground  = new ToolStripMenuItem(Floor);
+			_topViewPanel.West    = new ToolStripMenuItem(West);
+			_topViewPanel.North   = new ToolStripMenuItem(North);
+			_topViewPanel.Content = new ToolStripMenuItem(Content);
+
 			visQuads.Add(_topViewPanel.Ground);
+			visQuads.Add(_topViewPanel.West);
+			visQuads.Add(_topViewPanel.North);
+			visQuads.Add(_topViewPanel.Content);
+
 			_topViewPanel.Ground.ShortcutKeys = Keys.F1;
 			_topViewPanel.Ground.Checked = true;
 //			_visQuadsDictionary[_topViewPanel.Ground] = 0;
 
-			_topViewPanel.West = new ToolStripMenuItem(West);
-			visQuads.Add(_topViewPanel.West);
 			_topViewPanel.West.ShortcutKeys = Keys.F2;
 			_topViewPanel.West.Checked = true;
 //			_visQuadsDictionary[_topViewPanel.West] = 1;
 
-			_topViewPanel.North = new ToolStripMenuItem(North);
-			visQuads.Add(_topViewPanel.North);
 			_topViewPanel.North.ShortcutKeys = Keys.F3;
 			_topViewPanel.North.Checked = true;
 //			_visQuadsDictionary[_topViewPanel.North] = 2;
 
-			_topViewPanel.Content = new ToolStripMenuItem(Content);
-			visQuads.Add(_topViewPanel.Content);
 			_topViewPanel.Content.ShortcutKeys = Keys.F4;
 			_topViewPanel.Content.Checked = true;
 //			_visQuadsDictionary[_topViewPanel.Content] = 3;
@@ -142,16 +142,34 @@ namespace MapView.Forms.MapObservers.TopViews
 		private void OnToggleQuadrantVisibilityClick(object sender, EventArgs e)
 		{
 			var it = sender as ToolStripMenuItem;
-			it.Checked = !it.Checked;
+			if (it == _topViewPanel.Ground)
+			{
+				ViewerFormsManager.TopView     .Control   ._topViewPanel.Ground.Checked =
+				ViewerFormsManager.TopRouteView.ControlTop._topViewPanel.Ground.Checked = !it.Checked;
+			}
+			else if (it == _topViewPanel.West)
+			{
+				ViewerFormsManager.TopView     .Control   ._topViewPanel.West.Checked =
+				ViewerFormsManager.TopRouteView.ControlTop._topViewPanel.West.Checked = !it.Checked;
+			}
+			else if (it == _topViewPanel.North)
+			{
+				ViewerFormsManager.TopView     .Control   ._topViewPanel.North.Checked =
+				ViewerFormsManager.TopRouteView.ControlTop._topViewPanel.North.Checked = !it.Checked;
+			}
+			else //if (it == _topViewPanel.Content)
+			{
+				ViewerFormsManager.TopView     .Control   ._topViewPanel.Content.Checked =
+				ViewerFormsManager.TopRouteView.ControlTop._topViewPanel.Content.Checked = !it.Checked;
+			}
 
 			if (it.Text == Floor)
 				((MapFileChild)MapBase).CalculateOccultations(!it.Checked);
 
-//			if (VisibleTileChangedEvent != null)
-//				VisibleTileChangedEvent(this, new EventArgs());
-
 			MainViewUnderlay.Instance.Refresh();
-			Refresh();
+
+			ViewerFormsManager.TopView     .Control   .Refresh();
+			ViewerFormsManager.TopRouteView.ControlTop.Refresh();
 		}
 
 

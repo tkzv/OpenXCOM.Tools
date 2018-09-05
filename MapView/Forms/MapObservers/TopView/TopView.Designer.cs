@@ -102,7 +102,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			this.tsTools.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
 			this.tsTools.Size = new System.Drawing.Size(31, 30);
 			this.tsTools.TabIndex = 1;
-			this.tsTools.Text = "toolStrip1";
+			this.tsTools.Text = "tsTools";
 			// 
 			// tsMain
 			// 
