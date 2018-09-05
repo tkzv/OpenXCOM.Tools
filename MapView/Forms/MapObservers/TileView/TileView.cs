@@ -556,9 +556,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// </summary>
 		private void TriggerPckSaved()
 		{
-			var handler = PckSavedEvent;
-			if (handler != null)
-				handler();
+			if (PckSavedEvent != null)
+				PckSavedEvent();
 		}
 
 

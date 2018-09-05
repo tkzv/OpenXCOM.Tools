@@ -297,7 +297,7 @@ namespace MapView
 
 		internal void ClearSelection()
 		{
-			if (MapBase != null)
+			if (MapBase != null && FirstClick)
 			{
 				MapBase.MapChanged = true;
 
@@ -323,7 +323,7 @@ namespace MapView
 
 		internal void Copy()
 		{
-			if (MapBase != null)
+			if (MapBase != null && FirstClick)
 			{
 				var start = GetAbsoluteDragStart();
 				var end   = GetAbsoluteDragEnd();
@@ -342,7 +342,7 @@ namespace MapView
 
 		internal void Paste()
 		{
-			if (MapBase != null && _copied != null)
+			if (MapBase != null && _copied != null && FirstClick)
 			{
 				MapBase.MapChanged = true;
 
@@ -380,20 +380,20 @@ namespace MapView
 
 		internal void FillSelectedTiles()
 		{
-			if (MapBase != null)
+			if (MapBase != null && FirstClick)
 			{
 				MapBase.MapChanged = true;
 
 				var start = GetAbsoluteDragStart();
 				var end   = GetAbsoluteDragEnd();
 
-				var quadType = ViewerFormsManager.TopView.Control.QuadrantsPanel.SelectedQuadrant;
-				var tileView = ViewerFormsManager.TileView.Control;
+				var quad = ViewerFormsManager.TopView .Control.QuadrantsPanel.SelectedQuadrant;
+				var part = ViewerFormsManager.TileView.Control.SelectedTilepart;
 
 				for (int col = start.X; col <= end.X; ++col)
 				for (int row = start.Y; row <= end.Y; ++row)
 				{
-					((XCMapTile)MapBase[row, col])[quadType] = tileView.SelectedTilepart;
+					((XCMapTile)MapBase[row, col])[quad] = part;
 				}
 
 				// TODO: should this call CalculateOccultations() like Clear and Paste (probably.)
@@ -406,13 +406,14 @@ namespace MapView
 		{
 			Refresh();
 
-			ViewerFormsManager.TopView  .Refresh();
-			ViewerFormsManager.RouteView.Refresh();
-
-			// TODO: refresh TopRouteView (both Top & Route panels) also.
+			ViewerFormsManager.TopView     .Refresh();
+			ViewerFormsManager.RouteView   .Refresh();
+			ViewerFormsManager.TopRouteView.Refresh();
 
 //			ViewerFormsManager.TopView     .Control   .QuadrantsPanel.Refresh();
 //			ViewerFormsManager.TopRouteView.ControlTop.QuadrantsPanel.Refresh();
+//			ViewerFormsManager.TopView     .Control   .QuadrantsPanel.RenderQuadrantsPanel();
+//			ViewerFormsManager.TopRouteView.ControlTop.QuadrantsPanel.RenderQuadrantsPanel();
 		}
 		#endregion
 
