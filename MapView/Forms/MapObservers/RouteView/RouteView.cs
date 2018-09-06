@@ -33,8 +33,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Fields (static)
-		private const string DontConnect   = " DontConnect"; // NOTE: the space is 'cause ComboBox entries don't get a Padding property.
-		private const string OneWayConnect = " OneWayConnect";
+		private const string DontConnect   = " DontConnect";	// NOTE: the space is 'cause ComboBox entries
+		private const string OneWayConnect = " OneWayConnect";	// don't get a Padding property.
 		private const string TwoWayConnect = " TwoWayConnect";
 
 		private const string NodeCopyPrefix  = "MVNode"; // TODO: use a struct to copy/paste the info.
@@ -1043,7 +1043,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="nodeB">another RouteNode</param>
 		/// <param name="textBox">the textbox that shows the distance (default null)</param>
 		/// <param name="slot">the slot of the textbox - not used unless 'textBox'
-		/// is specified (default -1)</param>
+		/// is specified (default 0)</param>
 		/// <returns>the distance as a byte-value</returns>
 		private byte CalculateLinkDistance(
 				RouteNode nodeA,
