@@ -174,12 +174,12 @@ namespace XCom
 		public override bool Equals(object obj)
 		{
 			var other = obj as RouteNode;
-			return (other == null || Index == other.Index);
+			return (other != null && other.Index == Index);
 		}
 
 		public override int GetHashCode()
 		{
-			return Index;
+			return Index; // nice hashcode ...
 		}
 
 		public override string ToString()

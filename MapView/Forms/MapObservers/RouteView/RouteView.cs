@@ -33,7 +33,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Fields (static)
-		private const string DontConnect   = " DontConnect"; // NOTE: the space is 'cause ComboBox entries don't get a Margin property.
+		private const string DontConnect   = " DontConnect"; // NOTE: the space is 'cause ComboBox entries don't get a Padding property.
 		private const string OneWayConnect = " OneWayConnect";
 		private const string TwoWayConnect = " TwoWayConnect";
 
@@ -350,29 +350,31 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnRoutePanelMouseUp(object sender, RoutePanelEventArgs args)
 		{
-			if (_nodeMoved != null
-				&& ((XCMapTile)args.Tile).Node == null)
+			if (_nodeMoved != null)
 			{
-				MapFile.RoutesChanged = true;
+				if (((XCMapTile)args.Tile).Node == null)
+				{
+					MapFile.RoutesChanged = true;
 
-				((XCMapTile)((MapFileBase)MapFile)[_nodeMoved.Row, // clear the node from the previous tile
-												   _nodeMoved.Col,
-												   _nodeMoved.Lev]).Node = null;
+					((XCMapTile)((MapFileBase)MapFile)[_nodeMoved.Row, // clear the node from the previous tile
+													   _nodeMoved.Col,
+													   _nodeMoved.Lev]).Node = null;
 
-				_nodeMoved.Col = (byte)args.Location.Col; // reassign the node's x/y/z values
-				_nodeMoved.Row = (byte)args.Location.Row; // these get saved w/ Routes.
-				_nodeMoved.Lev = args.Location.Lev;
+					_nodeMoved.Col = (byte)args.Location.Col; // reassign the node's x/y/z values
+					_nodeMoved.Row = (byte)args.Location.Row; // these get saved w/ Routes.
+					_nodeMoved.Lev = args.Location.Lev;
 
-				((XCMapTile)args.Tile).Node = _nodeMoved; // place the node to the tile at the mouse-up location.
+					((XCMapTile)args.Tile).Node = _nodeMoved; // assign the node to the tile at the mouse-up location.
 
-				// Select the new location so the links draw and the selected node highlights
-				// properly but don't re-path the selected-lozenge. Let user see where the
-				// node-drag started until a click calls RoutePanelParent.PathSelectedLozenge().
-				RoutePanel.SelectedPosition = new Point(_nodeMoved.Col, _nodeMoved.Row);
+					// Select the new location so the links draw and the selected node highlights
+					// properly but don't re-path the selected-lozenge. Let user see where the
+					// node-drag started until a click calls RoutePanelParent.PathSelectedLozenge().
+					RoutePanel.SelectedPosition = new Point(_nodeMoved.Col, _nodeMoved.Row);
 
-				UpdateLinkDistances();
+					UpdateLinkDistances();
+				}
+				_nodeMoved = null;
 			}
-			_nodeMoved = null;
 		}
 
 		/// <summary>
@@ -449,6 +451,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="args"></param>
 		private void OnRoutePanelMouseDown(object sender, RoutePanelEventArgs args)
 		{
+			//LogFile.WriteLine("OnRoutePanelMouseDown()");
+
+			bool update = false;
+
 			if (NodeSelected == null)
 			{
 				if ((NodeSelected = ((XCMapTile)args.Tile).Node) == null
@@ -456,25 +462,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					NodeSelected = MapFile.AddRouteNode(args.Location);
 				}
-
-				if (NodeSelected != null)
-					UpdateNodeInformation();
+				update = (NodeSelected != null);
 			}
 			else // if a node is already selected ...
 			{
 				var node = ((XCMapTile)args.Tile).Node;
-
-				if (node != null && !node.Equals(NodeSelected))	// NOTE: a null node "Equals" any valid node ....
-				{												// ergo this block needs to be checked before the check for (node==null) below
-					if (args.MouseButton == MouseButtons.Right)
-						ConnectNode(node);
-
-//					RoutePanel.Refresh(); don't work.
-
-					NodeSelected = node;
-					UpdateNodeInformation();
-				}
-				else if (node == null)
+				if (node == null)
 				{
 					if (args.MouseButton == MouseButtons.Right)
 					{
@@ -484,36 +477,32 @@ namespace MapView.Forms.MapObservers.RouteViews
 //					RoutePanel.Refresh(); don't work.
 
 					NodeSelected = node;
-					UpdateNodeInformation();
+					update = true;
+				}
+				else if (node != NodeSelected)
+				{
+					if (args.MouseButton == MouseButtons.Right)
+						ConnectNode(node);
+
+//					RoutePanel.Refresh(); don't work.
+
+					NodeSelected = node;
+					update = true;
 				}
 				// else the selected node is the node clicked.
 			}
 
-			if (NodeSelected != null)
-			{
-				_nodeMoved = NodeSelected;
+			if (update) UpdateNodeInformation();
 
-				btnCut.Enabled    =
-				btnCopy.Enabled   =
-				btnDelete.Enabled = true;
+			_nodeMoved = NodeSelected;
 
-				var nodeData = Clipboard.GetText().Split(NodeCopySeparator);
-				if (nodeData[0] == NodeCopyPrefix)
-					btnPaste.Enabled = true;
-
-				tsmiClearLinkData.Enabled = true;
-			}
-			else
-			{
-				_nodeMoved = null;
-
-				btnCut.Enabled    =
-				btnCopy.Enabled   =
-				btnPaste.Enabled  =
-				btnDelete.Enabled = false;
-
-				tsmiClearLinkData.Enabled = false;
-			}
+			bool valid = (NodeSelected != null);
+			btnCut           .Enabled =
+			btnCopy          .Enabled =
+			btnDelete        .Enabled =
+			tsmiClearLinkData.Enabled = valid;
+			btnPaste         .Enabled = valid
+									 && Clipboard.GetText().Split(NodeCopySeparator)[0] == NodeCopyPrefix;
 		}
 
 		/// <summary>
@@ -625,34 +614,34 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
+		/// <summary>
+		/// Updates node-info fields below the panel itself.
+		/// </summary>
 		private void UpdateNodeInformation()
 		{
+			SuspendLayout();
+
 			PrintSelectedInfo();
 
 			_loadingInfo = true;
 
-			gbTileData.SuspendLayout();
-			gbNodeData.SuspendLayout();
-			gbLinkData.SuspendLayout();
-			gbNodeEditor.SuspendLayout();
-
 			if (NodeSelected == null)
 			{
-				btnCut.Enabled    =
-				btnCopy.Enabled   =
-				btnPaste.Enabled  =
-				btnDelete.Enabled = false;
+				btnCut      .Enabled =
+				btnCopy     .Enabled =
+				btnPaste    .Enabled =
+				btnDelete   .Enabled =
 
-				gbTileData.Enabled   =
-				gbNodeData.Enabled   =
-				gbLinkData.Enabled   =
-				gbNodeEditor.Enabled = false;
+				gbTileData  .Enabled =
+				gbNodeData  .Enabled =
+				gbLinkData  .Enabled =
+				gbNodeEditor.Enabled =
 
-				btnGoLink1.Enabled =
-				btnGoLink2.Enabled =
-				btnGoLink3.Enabled =
-				btnGoLink4.Enabled =
-				btnGoLink5.Enabled = false;
+				btnGoLink1  .Enabled =
+				btnGoLink2  .Enabled =
+				btnGoLink3  .Enabled =
+				btnGoLink4  .Enabled =
+				btnGoLink5  .Enabled = false;
 
 				btnGoLink1.Text =
 				btnGoLink2.Text =
@@ -859,12 +848,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 									 + GetDistanceSuffix(4);
 			}
 
-			gbTileData.ResumeLayout();
-			gbNodeData.ResumeLayout();
-			gbLinkData.ResumeLayout();
-			gbNodeEditor.ResumeLayout();
-
 			_loadingInfo = false;
+
+			ResumeLayout();
 		}
 
 		/// <summary>

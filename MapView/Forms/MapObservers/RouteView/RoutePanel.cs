@@ -238,7 +238,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					if (MapFile[rSrc, cSrc] != null
 						&& (node = ((XCMapTile)MapFile[rSrc, cSrc]).Node) != null
-						&& (NodeSelected == null || !NodeSelected.Equals(node)))
+						&& (NodeSelected == null || node != NodeSelected))
 					{
 						DrawLinkLines(xSrc, ySrc, node, false);
 					}
@@ -310,7 +310,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 					default:
 						if ((nodeDst = MapFile.Routes[link.Destination]) != null
 							&& nodeDst.Lev == MapFile.Level
-							&& (NodeSelected == null || !NodeSelected.Equals(nodeDst)))
+							&& (NodeSelected == null || nodeDst != NodeSelected))
 						{
 							xDst = Origin.X + (nodeDst.Col - nodeDst.Row)     * DrawAreaWidth;
 							yDst = Origin.Y + (nodeDst.Col + nodeDst.Row + 1) * DrawAreaHeight;
