@@ -10,7 +10,7 @@ using XCom.Interfaces.Base;
 namespace MapView
 {
 	/// <summary>
-	/// Parent for TopView, TileView, RouteView.
+	/// Inherited by TopView, TileView, RouteView.
 	/// </summary>
 	internal class MapObserverControl0
 		:

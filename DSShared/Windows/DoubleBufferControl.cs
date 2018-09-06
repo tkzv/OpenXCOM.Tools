@@ -7,7 +7,8 @@ using System.Windows.Forms;
 namespace DSShared.Windows
 {
 	/// <summary>
-	/// Parent class for MapObserverControl1 (TopView stuff).
+	/// Inherited by MapObserverControl1 (TopViewPanelParent, TopViewPanel,
+	/// QuadrantPanel).
 	/// </summary>
 	public class DoubleBufferControl
 		:
@@ -33,13 +34,10 @@ namespace DSShared.Windows
 		/// </summary>
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			if (!DesignMode) // otherwise TopView has probls drawing a QuadrantPanel in the designer.
-			{
-				var graphics = e.Graphics;
-				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+			var graphics = e.Graphics;
+			graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-				RenderGraphics(graphics);
-			}
+			RenderGraphics(graphics);
 		}
 		#endregion
 

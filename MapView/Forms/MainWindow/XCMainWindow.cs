@@ -94,6 +94,8 @@ namespace MapView
 		/// </summary>
 		internal XCMainWindow()
 		{
+			Globals.RT = true; // is RunTime (ie. not DesignMode)
+
 			string dirApplication = Path.GetDirectoryName(Application.ExecutablePath);
 			string dirSettings    = Path.Combine(dirApplication, PathInfo.SettingsDirectory);
 #if DEBUG

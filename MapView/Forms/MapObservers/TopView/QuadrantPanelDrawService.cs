@@ -118,6 +118,8 @@ namespace MapView.Forms.MapObservers.TopViews
 				XCMapTile tile,
 				QuadrantType selectedQuadrant)
 		{
+			if (!Globals.RT) return; // don't try to draw the QuadrantPanel in the designer.
+
 			if (!Inited)
 			{
 				Inited = true;
