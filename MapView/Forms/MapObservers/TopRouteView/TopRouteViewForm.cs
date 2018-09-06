@@ -23,12 +23,12 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		internal TopView ControlTop
 		{
-			get { return controlTopView; }
+			get { return TopViewControl; }
 		}
 
 		internal RouteView ControlRoute
 		{
-			get { return controlRouteView; }
+			get { return RouteViewControl; }
 		}
 	}
 }

@@ -147,7 +147,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		#region cTor
 		/// <summary>
-		/// cTor. Instantiated only as the parent of RoutePanel.
+		/// cTor. Instantiated as the parent of RoutePanel which uses a default
+		/// cTor.
 		/// </summary>
 		internal protected RoutePanelParent()
 		{

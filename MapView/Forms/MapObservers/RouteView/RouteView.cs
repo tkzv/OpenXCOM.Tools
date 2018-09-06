@@ -139,6 +139,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#region cTor
 		/// <summary>
 		/// cTor. Instantiates the RouteView viewer and its components/controls.
+		/// RouteViewForm and TopRouteViewForm will each invoke and maintain
+		/// their own instantiations.
 		/// </summary>
 		public RouteView()
 		{

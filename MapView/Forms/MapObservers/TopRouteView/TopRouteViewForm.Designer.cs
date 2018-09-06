@@ -25,8 +25,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 		/* The #develop designer is going to delete this:
 
-			this.controlTopView = new MapView.Forms.MapObservers.TopViews.TopView();
-			this.controlRouteView = new MapView.Forms.MapObservers.RouteViews.RouteView();
+			this.TopViewControl = new MapView.Forms.MapObservers.TopViews.TopView();
+			this.RouteViewControl = new MapView.Forms.MapObservers.RouteViews.RouteView();
 
 		- so copy it back into InitializeComponent() */
 
@@ -37,8 +37,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.controlTopView = new MapView.Forms.MapObservers.TopViews.TopView();
-			this.controlRouteView = new MapView.Forms.MapObservers.RouteViews.RouteView();
+			this.TopViewControl = new MapView.Forms.MapObservers.TopViews.TopView();
+			this.RouteViewControl = new MapView.Forms.MapObservers.RouteViews.RouteView();
 			this.tabControl = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -49,21 +49,21 @@ namespace MapView.Forms.MapObservers.TileViews
 			// 
 			// controlTopView
 			// 
-			this.controlTopView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.controlTopView.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.controlTopView.Location = new System.Drawing.Point(3, 3);
-			this.controlTopView.Name = "controlTopView";
-			this.controlTopView.Size = new System.Drawing.Size(618, 423);
-			this.controlTopView.TabIndex = 0;
+			this.TopViewControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.TopViewControl.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TopViewControl.Location = new System.Drawing.Point(3, 3);
+			this.TopViewControl.Name = "controlTopView";
+			this.TopViewControl.Size = new System.Drawing.Size(618, 423);
+			this.TopViewControl.TabIndex = 0;
 			// 
 			// controlRouteView
 			// 
-			this.controlRouteView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.controlRouteView.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.controlRouteView.Location = new System.Drawing.Point(3, 3);
-			this.controlRouteView.Name = "controlRouteView";
-			this.controlRouteView.Size = new System.Drawing.Size(618, 423);
-			this.controlRouteView.TabIndex = 0;
+			this.RouteViewControl.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.RouteViewControl.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.RouteViewControl.Location = new System.Drawing.Point(3, 3);
+			this.RouteViewControl.Name = "controlRouteView";
+			this.RouteViewControl.Size = new System.Drawing.Size(618, 423);
+			this.RouteViewControl.TabIndex = 0;
 			// 
 			// tabControl
 			// 
@@ -79,7 +79,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Controls.Add(this.controlTopView);
+			this.tabPage1.Controls.Add(this.TopViewControl);
 			this.tabPage1.Location = new System.Drawing.Point(4, 21);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -89,7 +89,7 @@ namespace MapView.Forms.MapObservers.TileViews
 			// 
 			// tabPage2
 			// 
-			this.tabPage2.Controls.Add(this.controlRouteView);
+			this.tabPage2.Controls.Add(this.RouteViewControl);
 			this.tabPage2.Location = new System.Drawing.Point(4, 21);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -115,8 +115,8 @@ namespace MapView.Forms.MapObservers.TileViews
 		}
 		#endregion
 
-		private TopView controlTopView;
-		private RouteView controlRouteView;
+		private TopView TopViewControl;
+		private RouteView RouteViewControl;
 
 		private System.Windows.Forms.TabControl tabControl;
 		private System.Windows.Forms.TabPage tabPage1;
