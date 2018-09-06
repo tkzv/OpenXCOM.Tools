@@ -734,8 +734,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					cbLink1Dest.SelectedItem = (LinkType)destId;
 					btnGoLink1.Enabled = false;
-					btnGoLink1.Text = (destId != Link.NotUsed) ? Go
-															   : String.Empty;
+					btnGoLink1.Text = (destId != Link.NotUsed) ? Go : String.Empty;
 				}
 
 				destId = NodeSelected[1].Destination;
@@ -749,8 +748,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					cbLink2Dest.SelectedItem = (LinkType)destId;
 					btnGoLink2.Enabled = false;
-					btnGoLink2.Text = (destId != Link.NotUsed) ? Go
-															   : String.Empty;
+					btnGoLink2.Text = (destId != Link.NotUsed) ? Go : String.Empty;
 				}
 
 				destId = NodeSelected[2].Destination;
@@ -764,8 +762,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					cbLink3Dest.SelectedItem = (LinkType)destId;
 					btnGoLink3.Enabled = false;
-					btnGoLink3.Text = (destId != Link.NotUsed) ? Go
-															   : String.Empty;
+					btnGoLink3.Text = (destId != Link.NotUsed) ? Go : String.Empty;
 				}
 
 				destId = NodeSelected[3].Destination;
@@ -779,8 +776,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					cbLink4Dest.SelectedItem = (LinkType)destId;
 					btnGoLink4.Enabled = false;
-					btnGoLink4.Text = (destId != Link.NotUsed) ? Go
-															   : String.Empty;
+					btnGoLink4.Text = (destId != Link.NotUsed) ? Go : String.Empty;
 				}
 
 				destId = NodeSelected[4].Destination;
@@ -794,8 +790,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					cbLink5Dest.SelectedItem = (LinkType)destId;
 					btnGoLink5.Enabled = false;
-					btnGoLink5.Text = (destId != Link.NotUsed) ? Go
-															   : String.Empty;
+					btnGoLink5.Text = (destId != Link.NotUsed) ? Go : String.Empty;
 				}
 
 				cbLink1UnitType.SelectedItem = NodeSelected[0].Type;
@@ -945,126 +940,99 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Eventcalls (LinkData)
-		private void OnLink1DestSelectedIndexChanged(object sender, EventArgs e)
-		{
-			LinkDestinationSelectedIndexChanged(cbLink1Dest, 0, tbLink1Dist);
-		}
-		private void OnLink2DestSelectedIndexChanged(object sender, EventArgs e)
-		{
-			LinkDestinationSelectedIndexChanged(cbLink2Dest, 1, tbLink2Dist);
-		}
-		private void OnLink3DestSelectedIndexChanged(object sender, EventArgs e)
-		{
-			LinkDestinationSelectedIndexChanged(cbLink3Dest, 2, tbLink3Dist);
-		}
-		private void OnLink4DestSelectedIndexChanged(object sender, EventArgs e)
-		{
-			LinkDestinationSelectedIndexChanged(cbLink4Dest, 3, tbLink4Dist);
-		}
-		private void OnLink5DestSelectedIndexChanged(object sender, EventArgs e)
-		{
-			LinkDestinationSelectedIndexChanged(cbLink5Dest, 4, tbLink5Dist);
-		}
-
 		/// <summary>
-		/// Updates the fields of a specified link-slot for the currently
-		/// selected route-node.
+		/// Changes a link's destination.
 		/// </summary>
 		/// <param name="sender"></param>
-		/// <param name="slotId"></param>
-		/// <param name="tbDistance"></param>
-		private void LinkDestinationSelectedIndexChanged(
-				ComboBox sender,
-				int slotId,
-				Control tbDistance)
+		/// <param name="e"></param>
+		private void OnLinkDestSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingInfo)
 			{
 				MapFile.RoutesChanged = true;
 
-				var dest = sender.SelectedItem as byte?; // check for id or compass pt/not used.
+				int slot;
+				TextBox tb;
+				Button btnGo;
 
+				var cb = sender as ComboBox;
+				if (cb == cbLink1Dest)
+				{
+					slot  = 0;
+					tb    = tbLink1Dist;
+					btnGo = btnGoLink1;
+				}
+				else if (cb == cbLink2Dest)
+				{
+					slot  = 1;
+					tb    = tbLink2Dist;
+					btnGo = btnGoLink2;
+				}
+				else if (cb == cbLink3Dest)
+				{
+					slot  = 2;
+					tb    = tbLink3Dist;
+					btnGo = btnGoLink3;
+				}
+				else if (cb == cbLink4Dest)
+				{
+					slot  = 3;
+					tb    = tbLink4Dist;
+					btnGo = btnGoLink4;
+				}
+				else //if (cb == cbLink5Dest)
+				{
+					slot  = 4;
+					tb    = tbLink5Dist;
+					btnGo = btnGoLink5;
+				}
+
+				var dest = cb.SelectedItem as byte?; // check for id or compass pt/not used.
 				if (!dest.HasValue)
-					dest = (byte?)(sender.SelectedItem as LinkType?);
+					dest = (byte?)(cb.SelectedItem as LinkType?);
 
-				var link = NodeSelected[slotId];
+				bool enable, text;
+
+				var link = NodeSelected[slot];
 				switch (link.Destination = dest.Value)
 				{
 					case Link.NotUsed:
 						link.Type = UnitType.Any;
 
-						tbDistance.Text = String.Empty;
+						tb.Text = String.Empty;
 						link.Distance = 0;
 
-						UpdateGoEnabled(slotId, false, false);
+						enable =
+						text   = false;
 						break;
 
 					case Link.ExitWest:
 					case Link.ExitNorth:
 					case Link.ExitEast:
 					case Link.ExitSouth:
-						tbDistance.Text = "0";
+						tb.Text = "0";
 						link.Distance = 0;
 
-						UpdateGoEnabled(slotId, false, true);
+						enable = false;
+						text   = true;
 						break;
 
 					default:
 						link.Distance = CalculateLinkDistance(
 															NodeSelected,
 															MapFile.Routes[link.Destination],
-															tbDistance,
-															slotId);
-
-						UpdateGoEnabled(slotId, true, true);
+															tb,
+															slot);
+						enable =
+						text   = true;
 						break;
 				}
 
+				btnGo.Enabled = enable;
+				btnGo.Text = text ? Go : String.Empty;
+
 				RoutePanel.HighlightedPosition = new Point(-1, -1);
 				Refresh();
-			}
-			// NOTE: .NET anomaly, after the selected index changes of a combobox
-			// the next mouse-enter event won't even fire; but doing a mouse-leave
-			// then another mouse-enter catches.
-			// WORKAROUND: use the mouse-hover event for the comboboxes instead
-			// of the mouse-enter event. For this, the cursor has to be kept
-			// stationary, and there is a further slight lag.
-		}
-
-		/// <summary>
-		/// Enables/disables the go-button for a specified link-slot.
-		/// Helper for LinkDestinationSelectedIndexChanged().
-		/// </summary>
-		/// <param name="slotId"></param>
-		/// <param name="enabled"></param>
-		/// <param name="used"></param>
-		private void UpdateGoEnabled(
-				int slotId,
-				bool enabled,
-				bool used)
-		{
-			switch (slotId)
-			{
-				case 0:
-					btnGoLink1.Enabled = enabled;
-					btnGoLink1.Text = used ? Go : String.Empty;
-					break;
-				case 1:
-					btnGoLink2.Enabled = enabled;
-					btnGoLink2.Text = used ? Go : String.Empty;
-					break;
-				case 2:
-					btnGoLink3.Enabled = enabled;
-					btnGoLink3.Text = used ? Go : String.Empty;
-					break;
-				case 3:
-					btnGoLink4.Enabled = enabled;
-					btnGoLink4.Text = used ? Go : String.Empty;
-					break;
-				case 4:
-					btnGoLink5.Enabled = enabled;
-					btnGoLink5.Text = used ? Go : String.Empty;
-					break;
 			}
 		}
 
@@ -1074,14 +1042,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="nodeA">a RouteNode</param>
 		/// <param name="nodeB">another RouteNode</param>
 		/// <param name="textBox">the textbox that shows the distance (default null)</param>
-		/// <param name="slotId">the slot of the textbox - not used unless 'textBox'
+		/// <param name="slot">the slot of the textbox - not used unless 'textBox'
 		/// is specified (default -1)</param>
 		/// <returns>the distance as a byte-value</returns>
 		private byte CalculateLinkDistance(
 				RouteNode nodeA,
 				RouteNode nodeB,
 				Control textBox = null,
-				int slotId = 0)
+				int slot = 0)
 		{
 			var dist = (byte)Math.Sqrt(
 									Math.Pow(nodeA.Col - nodeB.Col, 2) +
@@ -1089,152 +1057,71 @@ namespace MapView.Forms.MapObservers.RouteViews
 									Math.Pow(nodeA.Lev - nodeB.Lev, 2));
 			if (textBox != null)
 				textBox.Text = dist.ToString(System.Globalization.CultureInfo.InvariantCulture)
-							 + GetDistanceSuffix(slotId);
+							 + GetDistanceSuffix(slot);
 
 			return dist;
 		}
 
 
-		// TODO: don't do any node-linking OnLeave unless i vet it first.
-		private void OnLink1DestLeave(object sender, EventArgs e)
-		{
-//			cbLink_Leave(cbLink1, 0);
-		}
-		private void OnLink2DestLeave(object sender, EventArgs e)
-		{
-//			cbLink_Leave(cbLink2, 1);
-		}
-		private void OnLink3DestLeave(object sender, EventArgs e)
-		{
-//			cbLink_Leave(cbLink3, 2);
-		}
-		private void OnLink4DestLeave(object sender, EventArgs e)
-		{
-//			cbLink_Leave(cbLink4, 3);
-		}
-		private void OnLink5DestLeave(object sender, EventArgs e)
-		{
-//			cbLink_Leave(cbLink5, 4);
-		}
-//		private void cbLink_Leave(ComboBox sender, int id)
-//		{
-//			if (!_loadingInfo
-//				&& NodeSelected != null
-//				&& sender.SelectedItem != null)
-//			{
-//				var type = GetConnectionSetting();
-//				if (type == ConnectNodeType.ConnectTwoWays) // is this wise, to connect OnLeave
-//				{
-//					var node = MapFile.RouteFile[NodeSelected[id].Destination];
-//
-//					int linkId = GetOpenLinkSlot(node, (byte)sender.SelectedItem);
-//					if (linkId != -1)
-//					{
-//						node[linkId].Destination = NodeSelected.Index;
-//						node[linkId].Distance = calcLinkDistance(
-//																node,
-//																NodeSelected,
-//																null);
-//					}
-//					Refresh();
-//				}
-//			}
-//		}
-
-
-		private void OnLink1UnitTypeSelectedIndexChanged(object sender, EventArgs e)
+		/// <summary>
+		/// Changes a link's UnitType.
+		/// TODO: Since a link's UnitType is not used just give it the value
+		/// of the link's destination UnitType.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnLinkUnitTypeSelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (!_loadingInfo)
 			{
 				MapFile.RoutesChanged = true;
 
-				NodeSelected[0].Type = (UnitType)cbLink1UnitType.SelectedItem;
+				int slot;
 
-				Refresh();
+				var cb = sender as ComboBox;
+				if (cb == cbLink1UnitType)
+					slot = 0;
+				else if (cb == cbLink2UnitType)
+					slot = 1;
+				else if (cb == cbLink3UnitType)
+					slot = 2;
+				else if (cb == cbLink4UnitType)
+					slot = 3;
+				else //if (cb == cbLink5UnitType)
+					slot = 4;
+
+				NodeSelected[slot].Type = (UnitType)cb.SelectedItem;
 			}
-		}
-		private void OnLink2UnitTypeSelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (!_loadingInfo)
-			{
-				MapFile.RoutesChanged = true;
-
-				NodeSelected[1].Type = (UnitType)cbLink2UnitType.SelectedItem;
-
-				Refresh();
-			}
-		}
-		private void OnLink3UnitTypeSelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (!_loadingInfo)
-			{
-				MapFile.RoutesChanged = true;
-
-				NodeSelected[2].Type = (UnitType)cbLink3UnitType.SelectedItem;
-
-				Refresh();
-			}
-		}
-		private void OnLink4UnitTypeSelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (!_loadingInfo)
-			{
-				MapFile.RoutesChanged = true;
-
-				NodeSelected[3].Type = (UnitType)cbLink4UnitType.SelectedItem;
-
-				Refresh();
-			}
-		}
-		private void OnLink5UnitTypeSelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (!_loadingInfo)
-			{
-				MapFile.RoutesChanged = true;
-
-				NodeSelected[4].Type = (UnitType)cbLink5UnitType.SelectedItem;
-
-				Refresh();
-			}
-		}
-
-
-		private void OnLink1GoClick(object sender, EventArgs e)
-		{
-			GoClick(0);
-		}
-		private void OnLink2GoClick(object sender, EventArgs e)
-		{
-			GoClick(1);
-		}
-		private void OnLink3GoClick(object sender, EventArgs e)
-		{
-			GoClick(2);
-		}
-		private void OnLink4GoClick(object sender, EventArgs e)
-		{
-			GoClick(3);
-		}
-		private void OnLink5GoClick(object sender, EventArgs e)
-		{
-			GoClick(4);
 		}
 
 		/// <summary>
-		/// Changes the selected-node to the destination of the selected
-		/// node-link.
-		/// NOTE: Mimics RoutePanelParent.OnMouseDown() but adds a
-		/// LevelChangedEvent.
+		/// Selects the node at the destination of a link when a Go-button is
+		/// clicked.
 		/// </summary>
-		/// <param name="slotId"></param>
-		private void GoClick(int slotId)
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnLinkGoClick(object sender, EventArgs e)
 		{
+			int slot;
+
+			var btn = sender as Button;
+			if (btn == btnGoLink1)
+				slot = 0;
+			else if (btn == btnGoLink2)
+				slot = 1;
+			else if (btn == btnGoLink3)
+				slot = 2;
+			else if (btn == btnGoLink4)
+				slot = 3;
+			else //if (btn == btnGoLink5)
+				slot = 4;
+
 			btnOg.Enabled = true;
 			NodeOgId = NodeSelected.Index; // store the current nodeId for the og-button.
 
-			SelectNode(NodeSelected[slotId].Destination);
+			SelectNode(NodeSelected[slot].Destination);
 
-			HighlightDestinationNode(slotId);
+			HighlightGoLink(slot); // highlight back to the startnode.
 		}
 
 		private void SelectNode(int nodeId)
@@ -1266,66 +1153,64 @@ namespace MapView.Forms.MapObservers.RouteViews
 			Refresh();
 		}
 
-		private void OnLink1MouseEnter(object sender, EventArgs e)
+		/// <summary>
+		/// Highlights a link-line and destination-tile when the mousecursor
+		/// enters or hovers over a link-slot's control object.
+		/// NOTE.NET anomaly: After the selected index changes of a combobox
+		/// the next mouse-enter event won't fire; but doing a mouse-leave then
+		/// another mouse-enter catches.
+		/// WORKAROUND: Use the mouse-hover event for the comboboxes instead of
+		/// the mouse-enter event. For this the cursor has to be kept stationary
+		/// and there is also a slight lag.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnLinkMouseEnter(object sender, EventArgs e)
 		{
-			HighlightDestinationNode(0);
-		}
-		private void OnLink2MouseEnter(object sender, EventArgs e)
-		{
-			HighlightDestinationNode(1);
-		}
-		private void OnLink3MouseEnter(object sender, EventArgs e)
-		{
-			HighlightDestinationNode(2);
-		}
-		private void OnLink4MouseEnter(object sender, EventArgs e)
-		{
-			HighlightDestinationNode(3);
-		}
-		private void OnLink5MouseEnter(object sender, EventArgs e)
-		{
-			HighlightDestinationNode(4);
+			int slot;
+
+			string tag = (sender as Control).Tag as String;
+			if (tag == "L1")
+				slot = 0;
+			else if (tag == "L2")
+				slot = 1;
+			else if (tag == "L3")
+				slot = 2;
+			else if (tag == "L4")
+				slot = 3;
+			else //if (tag == "L5")
+				slot = 4;
+
+			HighlightGoLink(slot);
 		}
 
 		/// <summary>
 		/// Sets the highlighted destination link-line and node if applicable.
 		/// </summary>
-		/// <param name="slotId">the link-slot whose destination should get
+		/// <param name="slot">the link-slot whose destination should get
 		/// highlighted</param>
-		private void HighlightDestinationNode(int slotId)
+		private void HighlightGoLink(int slot)
 		{
-			byte destId = NodeSelected[slotId].Destination;
-
-			if (destId < Link.ExitWest)
+			byte dest = NodeSelected[slot].Destination;
+			if (dest != Link.NotUsed)
 			{
-				var node = MapFile.Routes[destId];
-				RoutePanel.HighlightedPosition = new Point(node.Col, node.Row);
-				Refresh();
-			}
-			else
-			{
-				switch (destId)
+				int c, r;
+				switch (dest)
 				{
-					case Link.ExitNorth:
-						RoutePanel.HighlightedPosition = new Point(-2, -2);
-						Refresh();
-						break;
-					case Link.ExitEast:
-						RoutePanel.HighlightedPosition = new Point(-3, -3);
-						Refresh();
-						break;
-					case Link.ExitSouth:
-						RoutePanel.HighlightedPosition = new Point(-4, -4);
-						Refresh();
-						break;
-					case Link.ExitWest:
-						RoutePanel.HighlightedPosition = new Point(-5, -5);
-						Refresh();
-						break;
+					case Link.ExitNorth: c = r = -2; break;
+					case Link.ExitEast:  c = r = -3; break;
+					case Link.ExitSouth: c = r = -4; break;
+					case Link.ExitWest:  c = r = -5; break;
 
-					case Link.NotUsed:
+					default:
+						var node = MapFile.Routes[dest];
+						c = (int)node.Col;
+						r = (int)node.Row;
 						break;
 				}
+
+				RoutePanel.HighlightedPosition = new Point(c, r);
+				Refresh();
 			}
 		}
 
@@ -1410,11 +1295,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 					var invariant = System.Globalization.CultureInfo.InvariantCulture;
 
-					cbType.SelectedIndex   = Int32.Parse(nodeData[1], invariant);
+					cbType  .SelectedIndex = Int32.Parse(nodeData[1], invariant);
 					cbPatrol.SelectedIndex = Int32.Parse(nodeData[2], invariant);
 					cbAttack.SelectedIndex = Int32.Parse(nodeData[3], invariant);
-					cbRank.SelectedIndex   = Int32.Parse(nodeData[4], invariant);
-					cbSpawn.SelectedIndex  = Int32.Parse(nodeData[5], invariant);
+					cbRank  .SelectedIndex = Int32.Parse(nodeData[4], invariant);
+					cbSpawn .SelectedIndex = Int32.Parse(nodeData[5], invariant);
 
 					// TODO: include Link info ... perhaps.
 					// But re-assigning the link node-ids would be difficult, since

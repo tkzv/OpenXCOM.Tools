@@ -23,11 +23,11 @@ namespace XCom
 
 		private readonly Link[] _links;
 		/// <summary>
-		/// Gets the link-field at slot.
+		/// Gets the link at slot.
 		/// </summary>
-		public Link this[int id]
+		public Link this[int slot]
 		{
-			get { return _links[id]; }
+			get { return _links[slot]; }
 		}
 
 		public UnitType Type
