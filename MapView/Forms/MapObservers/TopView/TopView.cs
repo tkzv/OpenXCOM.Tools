@@ -198,7 +198,7 @@ namespace MapView.Forms.MapObservers.TopViews
 										{
 											if (!_closing)
 												OnOptionsClick(sender, e);
-						
+
 											_closing = false;
 										};
 			}

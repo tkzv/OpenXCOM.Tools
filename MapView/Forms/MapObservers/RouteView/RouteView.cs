@@ -226,7 +226,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			_lev = args.Level;
 
-//			PrintSelectedInfo();
+//			PrintSelectedInfo(); // SelectedNode should be same as before
 
 			var loc = RoutePanel.GetTileLocation(
 											RoutePanel.CursorPosition.X,
@@ -239,7 +239,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 					overId = node.Index;
 			}
 
-//			PrintOverInfo(overId, loc);
 			ViewerFormsManager.RouteView   .Control     .PrintOverInfo(overId, loc);
 			ViewerFormsManager.TopRouteView.ControlRoute.PrintOverInfo(overId, loc);
 
@@ -250,7 +249,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 //				OnLinkMouseLeave(null, EventArgs.Empty);
 //			else
 
-//			Refresh();
 			ViewerFormsManager.RouteView   .Control     .Refresh();
 			ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
 		}
@@ -732,126 +730,79 @@ namespace MapView.Forms.MapObservers.RouteViews
 				cbLink5Dest.Items.AddRange(linkListArray);
 
 
-				byte destId;
+				ComboBox cbTypL, cbDest;
+				TextBox tbDist;
+				Button btnGo;
 
-				destId = NodeSelected[0].Destination;
-				if (destId < Link.ExitWest)
-				{
-					cbLink1Dest.SelectedItem = destId;
-					btnGoLink1.Enabled = true;
-					btnGoLink1.Text = Go;
-				}
-				else
-				{
-					cbLink1Dest.SelectedItem = (LinkType)destId;
-					btnGoLink1.Enabled = false;
-					btnGoLink1.Text = (destId != Link.NotUsed) ? Go : String.Empty;
-				}
+				Link link;
+				byte dest;
 
-				destId = NodeSelected[1].Destination;
-				if (destId < Link.ExitWest)
+				for (int slot = 0; slot != RouteNode.LinkSlots; ++slot)
 				{
-					cbLink2Dest.SelectedItem = destId;
-					btnGoLink2.Enabled = true;
-					btnGoLink2.Text = Go;
-				}
-				else
-				{
-					cbLink2Dest.SelectedItem = (LinkType)destId;
-					btnGoLink2.Enabled = false;
-					btnGoLink2.Text = (destId != Link.NotUsed) ? Go : String.Empty;
-				}
+					switch (slot)
+					{
+						case 0:
+							cbTypL = cbLink1UnitType;
+							cbDest = cbLink1Dest;
+							tbDist = tbLink1Dist;
+							btnGo  = btnGoLink1;
+							break;
 
-				destId = NodeSelected[2].Destination;
-				if (destId < Link.ExitWest)
-				{
-					cbLink3Dest.SelectedItem = destId;
-					btnGoLink3.Enabled = true;
-					btnGoLink3.Text = Go;
-				}
-				else
-				{
-					cbLink3Dest.SelectedItem = (LinkType)destId;
-					btnGoLink3.Enabled = false;
-					btnGoLink3.Text = (destId != Link.NotUsed) ? Go : String.Empty;
-				}
+						case 1:
+							cbTypL = cbLink2UnitType;
+							cbDest = cbLink2Dest;
+							tbDist = tbLink2Dist;
+							btnGo  = btnGoLink2;
+							break;
 
-				destId = NodeSelected[3].Destination;
-				if (destId < Link.ExitWest)
-				{
-					cbLink4Dest.SelectedItem = destId;
-					btnGoLink4.Enabled = true;
-					btnGoLink4.Text = Go;
-				}
-				else
-				{
-					cbLink4Dest.SelectedItem = (LinkType)destId;
-					btnGoLink4.Enabled = false;
-					btnGoLink4.Text = (destId != Link.NotUsed) ? Go : String.Empty;
-				}
+						case 2:
+							cbTypL = cbLink3UnitType;
+							cbDest = cbLink3Dest;
+							tbDist = tbLink3Dist;
+							btnGo  = btnGoLink3;
+							break;
 
-				destId = NodeSelected[4].Destination;
-				if (destId < Link.ExitWest)
-				{
-					cbLink5Dest.SelectedItem = destId;
-					btnGoLink5.Enabled = true;
-					btnGoLink5.Text = Go;
-				}
-				else
-				{
-					cbLink5Dest.SelectedItem = (LinkType)destId;
-					btnGoLink5.Enabled = false;
-					btnGoLink5.Text = (destId != Link.NotUsed) ? Go : String.Empty;
-				}
+						case 3:
+							cbTypL = cbLink4UnitType;
+							cbDest = cbLink4Dest;
+							tbDist = tbLink4Dist;
+							btnGo  = btnGoLink4;
+							break;
 
-				cbLink1UnitType.SelectedItem = NodeSelected[0].Type;
-				cbLink2UnitType.SelectedItem = NodeSelected[1].Type;
-				cbLink3UnitType.SelectedItem = NodeSelected[2].Type;
-				cbLink4UnitType.SelectedItem = NodeSelected[3].Type;
-				cbLink5UnitType.SelectedItem = NodeSelected[4].Type;
+						default: // case 4:
+							cbTypL = cbLink5UnitType;
+							cbDest = cbLink5Dest;
+							tbDist = tbLink5Dist;
+							btnGo  = btnGoLink5;
+							break;
+					}
 
+					link = NodeSelected[slot];
 
-				if (NodeSelected[0].Destination == Link.NotUsed)
-					tbLink1Dist.Text = String.Empty;
-				else
-				{
-					tbLink1Dist.Text = Convert.ToString(
-													NodeSelected[0].Distance,
+					cbTypL.SelectedItem = link.Type;
+					btnGo.Enabled = link.StandardNode();
+
+					dest = link.Destination;
+					if (link.Used())
+					{
+						btnGo.Text = Go;
+						tbDist.Text = Convert.ToString(
+													link.Distance,
 													System.Globalization.CultureInfo.InvariantCulture)
-									 + GetDistanceSuffix(0);
+									+ GetDistanceSuffix(slot);
+
+						if (link.StandardNode())
+							cbDest.SelectedItem = dest;
+						else
+							cbDest.SelectedItem = (LinkType)dest;
+					}
+					else
+					{
+						btnGo .Text =
+						tbDist.Text = String.Empty;
+						cbDest.SelectedItem = (LinkType)dest;
+					}
 				}
-
-				if (NodeSelected[1].Destination == Link.NotUsed)
-					tbLink2Dist.Text = String.Empty;
-				else
-					tbLink2Dist.Text = Convert.ToString(
-													NodeSelected[1].Distance,
-													System.Globalization.CultureInfo.InvariantCulture)
-									 + GetDistanceSuffix(1);
-
-				if (NodeSelected[2].Destination == Link.NotUsed)
-					tbLink3Dist.Text = String.Empty;
-				else
-					tbLink3Dist.Text = Convert.ToString(
-													NodeSelected[2].Distance,
-													System.Globalization.CultureInfo.InvariantCulture)
-									 + GetDistanceSuffix(2);
-
-				if (NodeSelected[3].Destination == Link.NotUsed)
-					tbLink4Dist.Text = String.Empty;
-				else
-					tbLink4Dist.Text = Convert.ToString(
-													NodeSelected[3].Distance,
-													System.Globalization.CultureInfo.InvariantCulture)
-									 + GetDistanceSuffix(3);
-
-				if (NodeSelected[4].Destination == Link.NotUsed)
-					tbLink5Dist.Text = String.Empty;
-				else
-					tbLink5Dist.Text = Convert.ToString(
-													NodeSelected[4].Distance,
-													System.Globalization.CultureInfo.InvariantCulture)
-									 + GetDistanceSuffix(4);
 			}
 
 			_loadingInfo = false;
@@ -865,19 +816,20 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// destination is on the same level as the selected node, a blank
 		/// string is returned.
 		/// </summary>
-		/// <param name="slotId"></param>
+		/// <param name="slot"></param>
 		/// <returns></returns>
-		private string GetDistanceSuffix(int slotId)
+		private string GetDistanceSuffix(int slot)
 		{
-			if (NodeSelected[slotId].Destination < Link.ExitWest)
+			var link = NodeSelected[slot];
+			if (link.StandardNode())
 			{
-				var nodeDst = MapFile.Routes[NodeSelected[slotId].Destination];
-				if (nodeDst != null)
+				var dest = MapFile.Routes[link.Destination];
+				if (dest != null) // safety.
 				{
-					if (NodeSelected.Lev > nodeDst.Lev)
+					if (NodeSelected.Lev > dest.Lev)
 						return " \u2191"; // up arrow
-
-					if (NodeSelected.Lev < nodeDst.Lev)
+	
+					if (NodeSelected.Lev < dest.Lev)
 						return " \u2193"; // down arrow
 				}
 			}
@@ -1202,6 +1154,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// highlighted</param>
 		private void HighlightGoLink(int slot)
 		{
+			if (NodeSelected[slot] != null) // TEMP safety: Go should not be enabled unless a node is selected.
+			{
 			byte dest = NodeSelected[slot].Destination;
 			if (dest != Link.NotUsed)
 			{
@@ -1222,6 +1176,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				RoutePanel.HighlightedPosition = new Point(c, r);
 				Refresh();
+			}
 			}
 		}
 
@@ -1338,7 +1293,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 									NodeSelected.Col,
 									NodeSelected.Lev]).Node = null;
 
-				DeselectNode();
+//				DeselectNode();
+				ViewerFormsManager.RouteView   .Control     .DeselectNode();
+				ViewerFormsManager.TopRouteView.ControlRoute.DeselectNode();
 
 				gbTileData.Enabled =
 				gbNodeData.Enabled =
@@ -1346,7 +1303,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				// TODO: check if the Og-button should be disabled when a node gets deleted or cut.
 
-				Refresh();
+//				Refresh();
+				ViewerFormsManager.RouteView   .Control     .Refresh();
+				ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
 			}			
 			else if (!_asterisk)
 				ShowDialogAsterisk("A node must be selected.");
@@ -1373,8 +1332,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			NodeSelected = null;
 			RoutePanel.ClearClickPoint();
-
 			tsmiClearLinkData.Enabled = false;
+
+/*			ViewerFormsManager.RouteView   .Control     .NodeSelected =
+			ViewerFormsManager.TopRouteView.ControlRoute.NodeSelected = null;
+
+			ViewerFormsManager.RouteView   .Control     .RoutePanel.ClearClickPoint();
+			ViewerFormsManager.TopRouteView.ControlRoute.RoutePanel.ClearClickPoint();
+
+			ViewerFormsManager.RouteView   .Control     .tsmiClearLinkData.Enabled =
+			ViewerFormsManager.TopRouteView.ControlRoute.tsmiClearLinkData.Enabled = false; */
 		}
 
 		/// <summary>

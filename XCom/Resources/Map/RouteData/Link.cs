@@ -36,14 +36,27 @@ namespace XCom
 		/// <summary>
 		/// Creates a Link object.
 		/// </summary>
-		/// <param name="nodeId">the id of the destination-node</param>
+		/// <param name="id">the id of the destination-node</param>
 		/// <param name="distance">the distance to the destination-node</param>
 		/// <param name="type">the type of units than can use this link</param>
-		internal Link(byte nodeId, byte distance, byte type)
+		internal Link(byte id, byte distance, byte type)
 		{
-			Destination = nodeId;
+			Destination = id;
 			Distance    = distance;
 			Type        = (UnitType)type;
+		}
+		#endregion
+
+
+		#region Methods
+		public bool StandardNode()
+		{
+			return (Destination < ExitWest);
+		}
+
+		public bool Used()
+		{
+			return (Destination != NotUsed);
 		}
 		#endregion
 	}

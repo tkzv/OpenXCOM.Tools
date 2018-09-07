@@ -55,8 +55,8 @@ using System.Collections.Generic;
 
 namespace XCom
 {
-	public enum TileType
-	{
+	public enum TileType	// TODO: Change identifier to "PartType".
+	{						// ditto for 'public TileType TileType'
 		All       = -1,
 		Ground    =  0,
 		WestWall  =  1,

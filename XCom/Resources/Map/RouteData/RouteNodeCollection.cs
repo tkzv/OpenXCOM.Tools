@@ -341,26 +341,28 @@ namespace XCom
 		/// <param name="node">the node to delete</param>
 		public void DeleteNode(RouteNode node)
 		{
-			int nodeId = node.Index;
+			int id = node.Index;
 
 			_nodes.Remove(node);
 
 			foreach (var node0 in _nodes)
 			{
-				if (node0.Index > nodeId) // shuffle all higher-indexed nodes down 1
+				if (node0.Index > id) // shuffle all higher-indexed nodes down 1
 					--node0.Index;
 
-				for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
+				for (int slot = 0; slot != RouteNode.LinkSlots; ++slot)
 				{
-					var link = node0[slotId];
-
-					if (link.Destination == nodeId)
+					var link = node0[slot];
+					if (link.StandardNode())
 					{
-						link.Destination = Link.NotUsed;
-					}
-					else if (link.Destination > nodeId && link.Destination < Link.ExitWest)
-					{
-						--link.Destination;
+						if (link.Destination == id)
+						{
+							link.Destination = Link.NotUsed;
+						}
+						else if (link.Destination > id)
+						{
+							--link.Destination;
+						}
 					}
 				}
 			}

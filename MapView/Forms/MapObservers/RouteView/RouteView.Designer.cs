@@ -410,9 +410,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelDist.Location = new System.Drawing.Point(240, 10);
 			this.labelDist.Name = "labelDist";
-			this.labelDist.Size = new System.Drawing.Size(55, 15);
+			this.labelDist.Size = new System.Drawing.Size(40, 15);
 			this.labelDist.TabIndex = 27;
-			this.labelDist.Text = "Distance";
+			this.labelDist.Text = "Dist";
 			this.toolTip1.SetToolTip(this.labelDist, "not used in 0penXcom");
 			// 
 			// cbLink5UnitType
@@ -479,7 +479,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelUnitInfo.Location = new System.Drawing.Point(125, 10);
 			this.labelUnitInfo.Name = "labelUnitInfo";
-			this.labelUnitInfo.Size = new System.Drawing.Size(55, 15);
+			this.labelUnitInfo.Size = new System.Drawing.Size(40, 15);
 			this.labelUnitInfo.TabIndex = 21;
 			this.labelUnitInfo.Text = "Unit Type";
 			this.toolTip1.SetToolTip(this.labelUnitInfo, "not used in 0penXcom");
