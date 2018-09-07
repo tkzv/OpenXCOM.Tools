@@ -222,8 +222,8 @@ namespace MapView.Forms.McdViewer
 											System.Globalization.CultureInfo.InvariantCulture,
 											"{0,-20}{1} - {2}" + Environment.NewLine,
 											"tile type:",
-											(sbyte)record.TileType,
-											Enum.GetName(typeof(TileType), record.TileType)));
+											(sbyte)record.PartType,
+											Enum.GetName(typeof(PartType), record.PartType)));
 //				info.TileType==0?"floor":info.TileType==1?"west wall":info.TileType==2?"north wall":info.TileType==3?"object":"Unknown"));
 //				unsigned char Tile_Type;	// This is the type of tile it is meant to be -- 0=floor, 1=west wall, 2=north wall, 3=object.
 											// When this type of tile is in the Die_As or Open_As flags, this value is added to the tile

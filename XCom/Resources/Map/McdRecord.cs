@@ -55,8 +55,8 @@ using System.Collections.Generic;
 
 namespace XCom
 {
-	public enum TileType	// TODO: Change identifier to "PartType".
-	{						// ditto for 'public TileType TileType'
+	public enum PartType
+	{
 		All       = -1,
 		Ground    =  0,
 		WestWall  =  1,
@@ -146,7 +146,7 @@ namespace XCom
 		public sbyte LightBlock  { get; set; }      // (sbyte)info[51];}}              // unsigned char Light_Block;    // The amount of light it blocks, from 0 to 10
 		public sbyte Footstep    { get; set; }      // (sbyte)info[52];}}              // unsigned char Footstep;       // The Sound Effect set to choose from when footsteps are on the tile
 
-		public TileType TileType      { get; set; } // (TileType)info[53];}}           // unsigned char Tile_Type;      // This is the type of tile it is meant to be -- 0=floor, 1=west wall, 2=north wall, 3=object. When this type of tile is in the Die_As or Open_As flags, this value is added to the tile coordinate to determine the byte in which the tile type should be written.
+		public PartType PartType      { get; set; } // (TileType)info[53];}}           // unsigned char Tile_Type;      // This is the type of tile it is meant to be -- 0=floor, 1=west wall, 2=north wall, 3=object. When this type of tile is in the Die_As or Open_As flags, this value is added to the tile coordinate to determine the byte in which the tile type should be written.
 		public sbyte HE_Type          { get; set; } // (sbyte)info[54];}}              // unsigned char HE_Type;        // 0=HE 1=Smoke
 		public sbyte HE_Strength      { get; set; } // (sbyte)info[55];}}              // unsigned char HE_Strength;    // The strength of the explosion caused when it's destroyed.  0 means no explosion.
 		public sbyte SmokeBlockage    { get; set; } // (sbyte)info[56];}}              // unsigned char Smoke_Blockage; // ? Not sure about this

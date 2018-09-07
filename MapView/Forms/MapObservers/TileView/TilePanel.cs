@@ -50,7 +50,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		private int _startY;
 		private int _id;
 
-		private TileType _quadType;
+		private PartType _quadType;
 
 		private int TableHeight
 		{
@@ -131,7 +131,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		/// cTor.
 		/// </summary>
 		/// <param name="quadType"></param>
-		internal TilePanel(TileType quadType)
+		internal TilePanel(PartType quadType)
 		{
 			_quadType = quadType;
 
@@ -419,7 +419,7 @@ namespace MapView.Forms.MapObservers.TileViews
 		{
 			if (parts != null)// && _tiles.Length != 0)	// NOTE: This check for Length should be enough
 			{											// to cover all other checks for Length==0.
-				if (_quadType == TileType.All)			// Except that the eraser needs to be added anyway ....
+				if (_quadType == PartType.All)			// Except that the eraser needs to be added anyway ....
 				{
 					_parts = new TilepartBase[parts.Count + 1];
 					_parts[0] = null;
@@ -432,14 +432,14 @@ namespace MapView.Forms.MapObservers.TileViews
 					int qtyTiles = 0;
 
 					for (int i = 0; i != parts.Count; ++i)
-						if (parts[i].Record.TileType == _quadType)
+						if (parts[i].Record.PartType == _quadType)
 							++qtyTiles;
 
 					_parts = new TilepartBase[qtyTiles + 1];
 					_parts[0] = null;
 
 					for (int i = 0, j = 1; i != parts.Count; ++i)
-						if (parts[i].Record.TileType == _quadType)
+						if (parts[i].Record.PartType == _quadType)
 							_parts[j++] = parts[i];
 				}
 

@@ -113,20 +113,20 @@ namespace MapView.Forms.MapObservers.TopViews
 			switch (quad)
 			{
 				case QuadrantType.Ground:
-					ViewerFormsManager.TopView     .Control   .SelectQuadrant(TileType.Ground);
-					ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(TileType.Ground);
+					ViewerFormsManager.TopView     .Control   .SelectQuadrant(PartType.Ground);
+					ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(PartType.Ground);
 					break;
 				case QuadrantType.West:
-					ViewerFormsManager.TopView     .Control   .SelectQuadrant(TileType.WestWall);
-					ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(TileType.WestWall);
+					ViewerFormsManager.TopView     .Control   .SelectQuadrant(PartType.WestWall);
+					ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(PartType.WestWall);
 					break;
 				case QuadrantType.North:
-					ViewerFormsManager.TopView     .Control   .SelectQuadrant(TileType.NorthWall);
-					ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(TileType.NorthWall);
+					ViewerFormsManager.TopView     .Control   .SelectQuadrant(PartType.NorthWall);
+					ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(PartType.NorthWall);
 					break;
 				case QuadrantType.Content:
-					ViewerFormsManager.TopView     .Control   .SelectQuadrant(TileType.Object);
-					ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(TileType.Object);
+					ViewerFormsManager.TopView     .Control   .SelectQuadrant(PartType.Object);
+					ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(PartType.Object);
 					break;
 			}
 

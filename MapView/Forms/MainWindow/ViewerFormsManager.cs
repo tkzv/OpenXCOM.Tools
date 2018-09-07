@@ -76,8 +76,8 @@ namespace MapView.Forms.MainWindow
 		{
 			if (part != null && part.Record != null)
 			{
-				TopView     .Control   .SelectQuadrant(part.Record.TileType);
-				TopRouteView.ControlTop.SelectQuadrant(part.Record.TileType);
+				TopView     .Control   .SelectQuadrant(part.Record.PartType);
+				TopRouteView.ControlTop.SelectQuadrant(part.Record.PartType);
 			}
 		}
 		#endregion

@@ -229,23 +229,23 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// Selects a quadrant in the QuadrantsPanel given a selected tiletype.
 		/// </summary>
 		/// <param name="tileType"></param>
-		internal void SelectQuadrant(TileType tileType)
+		internal void SelectQuadrant(PartType tileType)
 		{
 			switch (tileType)
 			{
-				case TileType.Ground:
+				case PartType.Ground:
 					QuadrantsPanel.SelectedQuadrant = QuadrantType.Ground;
 					break;
 
-				case TileType.WestWall:
+				case PartType.WestWall:
 					QuadrantsPanel.SelectedQuadrant = QuadrantType.West;
 					break;
 
-				case TileType.NorthWall:
+				case PartType.NorthWall:
 					QuadrantsPanel.SelectedQuadrant = QuadrantType.North;
 					break;
 
-				case TileType.Object:
+				case PartType.Object:
 					QuadrantsPanel.SelectedQuadrant = QuadrantType.Content;
 					break;
 			}

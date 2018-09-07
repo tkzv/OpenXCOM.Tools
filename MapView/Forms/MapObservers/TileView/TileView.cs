@@ -93,11 +93,11 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			tcTileTypes.SelectedIndexChanged += OnSelectedIndexChanged;
 
-			_allTiles      = new TilePanel(TileType.All);
-			var floors     = new TilePanel(TileType.Ground);
-			var westwalls  = new TilePanel(TileType.WestWall);
-			var northwalls = new TilePanel(TileType.NorthWall);
-			var content    = new TilePanel(TileType.Object);
+			_allTiles      = new TilePanel(PartType.All);
+			var floors     = new TilePanel(PartType.Ground);
+			var westwalls  = new TilePanel(PartType.WestWall);
+			var northwalls = new TilePanel(PartType.NorthWall);
+			var content    = new TilePanel(PartType.Object);
 
 			_panels = new[]
 			{
@@ -141,8 +141,8 @@ namespace MapView.Forms.MapObservers.TileViews
 
 			if (SelectedTilepart != null)
 			{
-				ViewerFormsManager.TopView     .Control   .SelectQuadrant(SelectedTilepart.Record.TileType);
-				ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(SelectedTilepart.Record.TileType);
+				ViewerFormsManager.TopView     .Control   .SelectQuadrant(SelectedTilepart.Record.PartType);
+				ViewerFormsManager.TopRouteView.ControlTop.SelectQuadrant(SelectedTilepart.Record.PartType);
 
 				f.Text = BuildTitleString(SelectedTilepart.TilesetId, SelectedTilepart.Id);
 				record = SelectedTilepart.Record;

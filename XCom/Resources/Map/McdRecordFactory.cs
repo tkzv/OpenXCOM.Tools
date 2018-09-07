@@ -72,7 +72,7 @@ namespace XCom
 			record.LightBlock  = (sbyte)bindata[51]; // unsigned char Light_Block;      // The amount of light it blocks, from 0 to 10
 			record.Footstep    = (sbyte)bindata[52];
 
-			record.TileType      = (TileType)bindata[53];
+			record.PartType      = (PartType)bindata[53];
 			record.HE_Type       = (sbyte)bindata[54]; // unsigned char HE_Type;        // 0=HE 1=Smoke
 			record.HE_Strength   = (sbyte)bindata[55];
 			record.SmokeBlockage = (sbyte)bindata[56]; // unsigned char Smoke_Blockage; // ? Not sure about this
