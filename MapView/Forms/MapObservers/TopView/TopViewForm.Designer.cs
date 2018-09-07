@@ -43,6 +43,7 @@
 			this.TopViewControl.Name = "TopViewControl";
 			this.TopViewControl.Size = new System.Drawing.Size(632, 454);
 			this.TopViewControl.TabIndex = 1;
+			this.TopViewControl.Tag = "TOP";
 			// 
 			// TopViewForm
 			// 

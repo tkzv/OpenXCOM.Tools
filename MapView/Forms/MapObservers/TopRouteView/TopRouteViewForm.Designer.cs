@@ -47,23 +47,25 @@ namespace MapView.Forms.MapObservers.TileViews
 			this.tabPage2.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// controlTopView
+			// TopViewControl
 			// 
 			this.TopViewControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.TopViewControl.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TopViewControl.Location = new System.Drawing.Point(3, 3);
-			this.TopViewControl.Name = "controlTopView";
+			this.TopViewControl.Name = "TopViewControl";
 			this.TopViewControl.Size = new System.Drawing.Size(618, 423);
 			this.TopViewControl.TabIndex = 0;
+			this.TopViewControl.Tag = "TOPROUTE";
 			// 
-			// controlRouteView
+			// RouteViewControl
 			// 
 			this.RouteViewControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.RouteViewControl.Font = new System.Drawing.Font("Verdana", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.RouteViewControl.Location = new System.Drawing.Point(3, 3);
-			this.RouteViewControl.Name = "controlRouteView";
+			this.RouteViewControl.Name = "RouteViewControl";
 			this.RouteViewControl.Size = new System.Drawing.Size(618, 423);
 			this.RouteViewControl.TabIndex = 0;
+			this.RouteViewControl.Tag = "TOPROUTE";
 			// 
 			// tabControl
 			// 

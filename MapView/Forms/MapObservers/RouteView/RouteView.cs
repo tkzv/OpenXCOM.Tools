@@ -862,6 +862,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 				NodeSelected.Type = (UnitType)cbType.SelectedItem;
+
+				if (Tag as String == "ROUTE")
+					ViewerFormsManager.TopRouteView.ControlRoute.cbType.SelectedIndex = cbType.SelectedIndex;
+				else //if (Tag == "TOPROUTE")
+					ViewerFormsManager.RouteView.Control.cbType.SelectedIndex = cbType.SelectedIndex;
 			}
 		}
 
@@ -883,6 +888,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 //					NodeSelected.Rank = (byte)((Pterodactyl)cbRank.SelectedItem).Case; // <- MapView1-type code.
 
 					NodeSelected.OobRank = (byte)0;
+
+					if (Tag as String == "ROUTE")
+						ViewerFormsManager.TopRouteView.ControlRoute.cbRank.SelectedIndex = cbRank.SelectedIndex;
+					else //if (Tag == "TOPROUTE")
+						ViewerFormsManager.RouteView.Control.cbRank.SelectedIndex = cbRank.SelectedIndex;
 				}
 			}
 		}
@@ -894,7 +904,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 				MapFile.RoutesChanged = true;
 				NodeSelected.Patrol = (PatrolPriority)cbPatrol.SelectedItem;
 
-				Refresh(); // update the importance bar
+				if (Tag as String == "ROUTE")
+					ViewerFormsManager.TopRouteView.ControlRoute.cbPatrol.SelectedIndex = cbPatrol.SelectedIndex;
+				else //if (Tag == "TOPROUTE")
+					ViewerFormsManager.RouteView.Control.cbPatrol.SelectedIndex = cbPatrol.SelectedIndex;
+
+				ViewerFormsManager.RouteView   .Control     .Refresh(); // update the importance bar
+				ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
 			}
 		}
 
@@ -905,7 +921,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 				MapFile.RoutesChanged = true;
 				NodeSelected.Spawn = (SpawnWeight)((Pterodactyl)cbSpawn.SelectedItem).Case;
 
-				Refresh(); // update the importance bar
+				if (Tag as String == "ROUTE")
+					ViewerFormsManager.TopRouteView.ControlRoute.cbSpawn.SelectedIndex = cbSpawn.SelectedIndex;
+				else //if (Tag == "TOPROUTE")
+					ViewerFormsManager.RouteView.Control.cbSpawn.SelectedIndex = cbSpawn.SelectedIndex;
+
+				ViewerFormsManager.RouteView   .Control     .Refresh(); // update the importance bar
+				ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
 			}
 		}
 
@@ -915,6 +937,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 				NodeSelected.Attack = (BaseAttack)cbAttack.SelectedItem;
+
+				if (Tag as String == "ROUTE")
+					ViewerFormsManager.TopRouteView.ControlRoute.cbAttack.SelectedIndex = cbAttack.SelectedIndex;
+				else //if (Tag == "TOPROUTE")
+					ViewerFormsManager.RouteView.Control.cbAttack.SelectedIndex = cbAttack.SelectedIndex;
 			}
 		}
 		#endregion
@@ -1013,8 +1040,84 @@ namespace MapView.Forms.MapObservers.RouteViews
 				btnGo.Text = text ? Go : String.Empty;
 
 				RoutePanel.HighlightedPosition = new Point(-1, -1);
-				Refresh();
+
+				if (Tag as String == "ROUTE")
+				{
+					ViewerFormsManager.TopRouteView.ControlRoute.TransferDestination(
+																				slot,
+																				cb.SelectedIndex,
+																				tb.Text,
+																				enable,
+																				btnGo.Text);
+				}
+				else //if (Tag == "TOPROUTE")
+				{
+					ViewerFormsManager.RouteView.Control.TransferDestination(
+																		slot,
+																		cb.SelectedIndex,
+																		tb.Text,
+																		enable,
+																		btnGo.Text);
+				}
+
+				ViewerFormsManager.RouteView   .Control     .Refresh(); // update the importance bar
+				ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
 			}
+		}
+
+		/// <summary>
+		/// Transfers link-destination values from RouteView to
+		/// TopRouteView(Route) or vice versa. The fields are actually in the
+		/// other viewer.
+		/// </summary>
+		/// <param name="slot"></param>
+		/// <param name="dest"></param>
+		/// <param name="dist"></param>
+		/// <param name="enable"></param>
+		/// <param name="text"></param>
+		private void TransferDestination(int slot, int dest, string dist, bool enable, string text)
+		{
+			ComboBox cbDest;
+			TextBox tbDist;
+			Button btnGo;
+
+			switch (slot)
+			{
+				case 0:
+					cbDest = cbLink1Dest;
+					tbDist = tbLink1Dist;
+					btnGo  = btnGoLink1;
+					break;
+
+				case 1:
+					cbDest = cbLink2Dest;
+					tbDist = tbLink2Dist;
+					btnGo  = btnGoLink2;
+					break;
+
+				case 2:
+					cbDest = cbLink3Dest;
+					tbDist = tbLink3Dist;
+					btnGo  = btnGoLink3;
+					break;
+
+				case 3:
+					cbDest = cbLink4Dest;
+					tbDist = tbLink4Dist;
+					btnGo  = btnGoLink4;
+					break;
+
+				default: //case 4:
+					cbDest = cbLink5Dest;
+					tbDist = tbLink5Dist;
+					btnGo  = btnGoLink5;
+					break;
+			}
+
+			cbDest.SelectedIndex = dest;
+			tbDist.Text          = dist;
+			btnGo.Enabled        = enable;
+			btnGo.Text           = text;
 		}
 
 		/// <summary>
@@ -1072,7 +1175,32 @@ namespace MapView.Forms.MapObservers.RouteViews
 					slot = 4;
 
 				NodeSelected[slot].Type = (UnitType)cb.SelectedItem;
+
+				if (Tag as String == "ROUTE")
+					ViewerFormsManager.TopRouteView.ControlRoute.TransferUnitType(slot, cb.SelectedIndex);
+				else //if (Tag == "TOPROUTE")
+					ViewerFormsManager.RouteView.Control.TransferUnitType(slot, cb.SelectedIndex);
 			}
+		}
+
+		/// <summary>
+		/// Transfers link-unittype values from RouteView to TopRouteView(Route)
+		/// or vice versa. The field is actually in the other viewer.
+		/// </summary>
+		/// <param name="slot"></param>
+		/// <param name="type"></param>
+		private void TransferUnitType(int slot, int type)
+		{
+			ComboBox cbUnitType;
+			switch (slot)
+			{
+				case 0:  cbUnitType = cbLink1UnitType; break;
+				case 1:  cbUnitType = cbLink2UnitType; break;
+				case 2:  cbUnitType = cbLink3UnitType; break;
+				case 3:  cbUnitType = cbLink4UnitType; break;
+				default: cbUnitType = cbLink5UnitType; break; //case 4
+			}
+			cbUnitType.SelectedIndex = type;
 		}
 
 		/// <summary>
@@ -1257,7 +1385,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (NodeSelected != null)
 			{
-				btnPaste.Enabled = true;
+				ViewerFormsManager.RouteView   .Control     .btnPaste.Enabled =
+				ViewerFormsManager.TopRouteView.ControlRoute.btnPaste.Enabled = true;
 
 				var nodeText = string.Format(
 										System.Globalization.CultureInfo.InvariantCulture,
@@ -1302,7 +1431,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				}
 				else // non-node data is on the clipboard.
 				{
-					btnPaste.Enabled = false;
+					ViewerFormsManager.RouteView   .Control     .btnPaste.Enabled =
+					ViewerFormsManager.TopRouteView.ControlRoute.btnPaste.Enabled = false;
+
 					ShowDialogAsterisk("The data on the clipboard is not a node.");
 				}
 			}

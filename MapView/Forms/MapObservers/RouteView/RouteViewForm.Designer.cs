@@ -37,6 +37,7 @@
 			this.RouteViewControl.Name = "RouteViewControl";
 			this.RouteViewControl.Size = new System.Drawing.Size(632, 454);
 			this.RouteViewControl.TabIndex = 0;
+			this.RouteViewControl.Tag = "ROUTE";
 			// 
 			// RouteViewForm
 			// 
