@@ -113,6 +113,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 				RoutePanel.NodeSelected = value;
 			}
 		}
+
+		/// <summary>
+		/// Stores the node-id from which a "Go" button is clicked. Used to
+		/// re-select the original node - which might not be equivalent to
+		/// "Back" (if there were a Back button).
+		/// </summary>
+		private static int OgnodeId
+		{ get; set; }
 		#endregion
 
 
@@ -121,14 +129,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{ get; set; }
 
 		private MapFileChild MapFile
-		{ get; set; }
-
-		/// <summary>
-		/// Stores the node-id from which a "Go" button is clicked. Used to
-		/// re-select the original node - which might not be equivalent to
-		/// "Back" (if there were a Back button).
-		/// </summary>
-		private int OgnodeId
 		{ get; set; }
 		#endregion
 
@@ -1083,6 +1083,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="e"></param>
 		private void OnLinkGoClick(object sender, EventArgs e)
 		{
+			OgnodeId = NodeSelected.Index; // store the current nodeId for the og-button.
+
+			ViewerFormsManager.RouteView   .Control     .btnOg.Enabled =
+			ViewerFormsManager.TopRouteView.ControlRoute.btnOg.Enabled = true;
+
 			int slot;
 
 			var btn = sender as Button;
@@ -1096,9 +1101,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 				slot = 3;
 			else //if (btn == btnGoLink5)
 				slot = 4;
-
-			btnOg.Enabled = true;
-			OgnodeId = NodeSelected.Index; // store the current nodeId for the og-button.
 
 			SelectNode(NodeSelected[slot].Destination);
 
@@ -1217,7 +1219,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 					SelectNode(OgnodeId);
 			}
 			else
-				btnOg.Enabled = false;
+			{
+				ViewerFormsManager.RouteView   .Control     .btnOg.Enabled =
+				ViewerFormsManager.TopRouteView.ControlRoute.btnOg.Enabled = false;
+			}
 		}
 
 		private void OnOgMouseEnter(object sender, EventArgs e)
@@ -1235,7 +1240,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		internal void DisableOg()
 		{
-			btnOg.Enabled = false;
+			ViewerFormsManager.RouteView   .Control     .btnOg.Enabled =
+			ViewerFormsManager.TopRouteView.ControlRoute.btnOg.Enabled = false;
 		}
 		#endregion
 
