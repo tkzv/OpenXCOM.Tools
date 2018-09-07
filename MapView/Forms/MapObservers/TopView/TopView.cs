@@ -173,8 +173,8 @@ namespace MapView.Forms.MapObservers.TopViews
 		}
 
 
-		private Form _foptions;
-		private bool _closing;
+		private static Form _foptions; // static to be used by both TopViewOptions
+		private static bool _closing;  // and TopRouteView(Top)Options
 
 		/// <summary>
 		/// Handles a click on the Options menuitem.
@@ -183,29 +183,31 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <param name="e"></param>
 		private void OnOptionsClick(object sender, EventArgs e)
 		{
-			var it = (ToolStripMenuItem)sender;
+			var it = sender as ToolStripMenuItem;
 			if (!it.Checked)
 			{
-				it.Checked = true;
+				ViewerFormsManager.TopView     .Control   .tsmiOptions.Checked =
+				ViewerFormsManager.TopRouteView.ControlTop.tsmiOptions.Checked = true;
 
 				_foptions = new OptionsForm("TopViewOptions", Options);
 				_foptions.Text = "TopView Options";
 
 				_foptions.Show();
 
-				_foptions.FormClosing += (sender1, e1) =>
-				{
-					if (!_closing)
-						OnOptionsClick(sender, e);
-
-					_closing = false;
-				};
+				_foptions.FormClosing += (sender1, e1) => // a note describing why this is here could be helpful ...
+										{
+											if (!_closing)
+												OnOptionsClick(sender, e);
+						
+											_closing = false;
+										};
 			}
 			else
 			{
-				_closing = true;
+				ViewerFormsManager.TopView     .Control   .tsmiOptions.Checked =
+				ViewerFormsManager.TopRouteView.ControlTop.tsmiOptions.Checked = false;
 
-				it.Checked = false;
+				_closing = true;
 				_foptions.Close();
 			}
 		}

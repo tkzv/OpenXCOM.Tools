@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+using MapView.Forms.MainWindow;
+
 using XCom;
 using XCom.Interfaces.Base;
 
@@ -54,9 +56,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private int _lev;
 
 		private bool _loadingInfo;
-
-		private Form _foptions;
-		private bool _closing;
 
 		/// <summary>
 		/// Prevents two error-dialogs from showing if a key-cut is underway.
@@ -227,7 +226,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			_lev = args.Level;
 
-			PrintSelectedInfo();
+//			PrintSelectedInfo();
 
 			var loc = RoutePanel.GetTileLocation(
 											RoutePanel.CursorPosition.X,
@@ -240,7 +239,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 					overId = node.Index;
 			}
 
-			PrintOverInfo(overId, loc);
+//			PrintOverInfo(overId, loc);
+			ViewerFormsManager.RouteView   .Control     .PrintOverInfo(overId, loc);
+			ViewerFormsManager.TopRouteView.ControlRoute.PrintOverInfo(overId, loc);
 
 //			DeselectNode();
 //			UpdateNodeInformation();
@@ -248,12 +249,23 @@ namespace MapView.Forms.MapObservers.RouteViews
 //			if (RoutePanel.HighlightedPosition.X != -1)
 //				OnLinkMouseLeave(null, EventArgs.Empty);
 //			else
-			Refresh();
+
+//			Refresh();
+			ViewerFormsManager.RouteView   .Control     .Refresh();
+			ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
 		}
 		#endregion
 
 
 		#region Methods (print TileData)
+		/// <summary>
+		/// Clears the selected tile-info text when another Map loads.
+		/// </summary>
+		internal void ClearSelectedInfo()
+		{
+			lblSelected.Text = String.Empty;
+		}
+
 		/// <summary>
 		/// Prints the currently selected tile-info to the TileData groupbox.
 		/// NOTE: The displayed level is inverted here.
@@ -262,8 +274,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			if (MainViewUnderlay.Instance.MainViewOverlay.FirstClick)
 			{
-				string selected = String.Empty;
-
+				string selected;
 				int level;
 
 				if (NodeSelected != null)
@@ -272,7 +283,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 					level = NodeSelected.Lev;
 				}
 				else
+				{
+					selected = String.Empty;
 					level = _lev;
+				}
 
 				selected += Environment.NewLine;
 
@@ -286,24 +300,18 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		/// <summary>
-		/// Clears the selected tile-info text when another Map loads.
-		/// </summary>
-		internal void ClearSelectedInfo()
-		{
-			lblSelected.Text = String.Empty;
-		}
-
-		/// <summary>
 		/// Prints the currently mouse-overed tile-info to the TileData groupbox.
 		/// </summary>
 		/// <param name="overId"></param>
 		/// <param name="loc"></param>
 		private void PrintOverInfo(int overId, Point loc)
 		{
-			string over = String.Empty;
+			string over;
 
 			if (overId != -1)
 				over = "Over " + overId;
+			else
+				over = String.Empty;
 
 			over += Environment.NewLine;
 
@@ -333,7 +341,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			var loc = RoutePanel.GetTileLocation(args.X, args.Y);
 
-			PrintOverInfo(overId, loc);
+			ViewerFormsManager.RouteView   .Control     .PrintOverInfo(overId, loc);
+			ViewerFormsManager.TopRouteView.ControlRoute.PrintOverInfo(overId, loc);
 
 			RoutePanel.CursorPosition = new Point(args.X, args.Y);
 			RoutePanel.Refresh();	// 3nd mouseover refresh for RouteView.
@@ -385,11 +394,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void UpdateLinkDistances()
 		{
-			for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId) // update distances to selected node's linked nodes ->
+			for (int slot = 0; slot != RouteNode.LinkSlots; ++slot) // update distances to selected node's linked nodes ->
 			{
 				string distance;
 
-				var link = NodeSelected[slotId];
+				var link = NodeSelected[slot];
 				switch (link.Destination)
 				{
 					case Link.NotUsed: // NOTE: Should not change; is here to help keep distances consistent.
@@ -410,17 +419,17 @@ namespace MapView.Forms.MapObservers.RouteViews
 															NodeSelected,
 															MapFile.Routes[link.Destination]);
 						distance = link.Distance.ToString(System.Globalization.CultureInfo.InvariantCulture)
-								 + GetDistanceSuffix(slotId);
+								 + GetDistanceSuffix(slot);
 						break;
 				}
-				UpdateLinkText(slotId, distance);
+				UpdateLinkText(slot, distance);
 			}
 
-			for (var nodeId = 0; nodeId != MapFile.Routes.Length; ++nodeId) // update distances of any links to the selected node ->
+			for (var id = 0; id != MapFile.Routes.Length; ++id) // update distances of any links to the selected node ->
 			{
-				if (nodeId != NodeSelected.Index) // NOTE: a node shall not link to itself.
+				if (id != NodeSelected.Index) // NOTE: a node shall not link to itself.
 				{
-					var node = MapFile.Routes[nodeId];
+					var node = MapFile.Routes[id];
 
 					for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
 					{
@@ -1541,31 +1550,36 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Options
+		private static Form _foptions; // static to be used by both RouteViewOptions
+		private static bool _closing;  // and TopRouteView(Route)Options
+
 		private void OnOptionsClick(object sender, EventArgs e)
 		{
 			var it = sender as ToolStripMenuItem;
 			if (!it.Checked)
 			{
-				it.Checked = true;
+				ViewerFormsManager.RouteView   .Control     .tsmiOptions.Checked =
+				ViewerFormsManager.TopRouteView.ControlRoute.tsmiOptions.Checked = true;
 
 				_foptions = new OptionsForm("RouteViewOptions", Options);
 				_foptions.Text = "RouteView Options";
 
 				_foptions.Show();
 
-				_foptions.FormClosing += (sender1, e1) =>
-				{
-					if (!_closing)
-						OnOptionsClick(sender, e);
+				_foptions.FormClosing += (sender1, e1) => // a note describing why this is here could be helpful ...
+										{
+											if (!_closing)
+												OnOptionsClick(sender, e);
 
-					_closing = false;
-				};
+											_closing = false;
+										};
 			}
 			else
 			{
-				_closing = true;
+				ViewerFormsManager.RouteView   .Control     .tsmiOptions.Checked =
+				ViewerFormsManager.TopRouteView.ControlRoute.tsmiOptions.Checked = false;
 
-				it.Checked = false;
+				_closing = true;
 				_foptions.Close();
 			}
 		}

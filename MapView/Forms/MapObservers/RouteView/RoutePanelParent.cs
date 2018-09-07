@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
+using MapView.Forms.MainWindow;
 using MapView.Forms.MapObservers.TopViews;
 
 using XCom;
@@ -246,7 +247,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="e"></param>
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			base.OnMouseMove(e); // required to fire RouteView.OnRoutePanelMouseMove()
+//			base.OnMouseMove(e); // required to fire RouteView.OnRoutePanelMouseMove()
 
 			var end = GetTileLocation(e.X, e.Y);
 			if (end.X != _overCol || end.Y != _overRow)
@@ -254,8 +255,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 				_overCol = end.X;
 				_overRow = end.Y;
 
-				Refresh();	// 3nd mouseover refresh for RouteView.
+//				ViewerFormsManager.RouteView   .Control     .Refresh();
+//				ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
+//				Refresh();	// 3nd mouseover refresh for RouteView.
 			}				// See RouteView.OnRoutePanelMouseMove(), RouteView.OnRoutePanelMouseLeave()
+
+			base.OnMouseMove(e); // required to fire RouteView.OnRoutePanelMouseMove()
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)
