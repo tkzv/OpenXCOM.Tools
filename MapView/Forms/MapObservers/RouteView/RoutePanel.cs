@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
+using MapView.Forms.MainWindow;
 using MapView.Forms.MapObservers.TopViews;
 
 using XCom;
@@ -10,6 +11,9 @@ using XCom;
 
 namespace MapView.Forms.MapObservers.RouteViews
 {
+	/// <summary>
+	/// The derived class for RoutePanel. Handles drawing/painting the panel.
+	/// </summary>
 	internal sealed class RoutePanel
 		:
 			RoutePanelParent
@@ -28,6 +32,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private const string Patrol = "patrol";
 
 		private const string textTile1 = ""; // "position" or "location" or ... "pos" or "loc" ...
+
+		internal static RouteNode NodeSelected
+		{ private get; set; }
 		#endregion
 
 
@@ -52,19 +59,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
-		#region Properties
-		private Point _pos = new Point(-1, -1);
+		#region Properties (static)
+		private static Point _pos = new Point(-1, -1);
 		/// <summary>
 		/// Tracks the screen-position of the mouse cursor.
 		/// </summary>
-		public Point CursorPosition
+		public static Point CursorPosition
 		{
 			get { return _pos; }
 			set { _pos = value; }
 		}
-
-		internal RouteNode NodeSelected
-		{ private get; set; }
 		#endregion
 
 
@@ -146,7 +150,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				DrawRose();
 
-				if (ShowOverlay)
+				if (ShowOverlay && _overCol != -1)
 					DrawInfoOverlay();
 			}
 //			}
@@ -421,7 +425,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 											x,                 y + DrawAreaHeight * 2,
 											x - DrawAreaWidth, y + DrawAreaHeight);
 							_nodeFill.CloseFigure();
-
 
 							if (NodeSelected != null && MapFile.Level == NodeSelected.Lev
 								&& col == SelectedPosition.X

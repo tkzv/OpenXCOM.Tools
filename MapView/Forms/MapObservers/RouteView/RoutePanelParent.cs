@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-using MapView.Forms.MainWindow;
 using MapView.Forms.MapObservers.TopViews;
 
 using XCom;
@@ -13,7 +12,8 @@ using XCom;
 namespace MapView.Forms.MapObservers.RouteViews
 {
 	/// <summary>
-	/// The base class for RoutePanel.
+	/// The base class for RoutePanel. Generally handles mousey things and
+	/// calculating lozenges.
 	/// </summary>
 	internal class RoutePanelParent
 		:
@@ -37,6 +37,15 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
+		#region Properties (static)
+		/// <summary>
+		/// Stores the x/y-position of the currently selected tile.
+		/// </summary>
+		internal protected static Point SelectedPosition
+		{ get; set; }
+		#endregion
+
+
 		#region Properties
 		private MapFileChild _mapFile;
 		internal protected MapFileChild MapFile
@@ -48,9 +57,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 				OnResize(null);
 			}
 		}
-
-		internal protected Point SelectedPosition
-		{ get; set; }
 
 		private Point _highlight = new Point(-1, -1);
 		/// <summary>
@@ -204,8 +210,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Selects a tile on the mouse-down event.
 		/// IMPORTANT: Any changes that are done here regarding node-selection
-		/// should be reflected in RouteView.Go() since that is an alternate way
-		/// to select a tile.
+		/// should be reflected in RouteView.SelectNode() since that is an
+		/// alternate way to select a tile/node.
 		/// </summary>
 		/// <param name="e"></param>
 		protected override void OnMouseDown(MouseEventArgs e)

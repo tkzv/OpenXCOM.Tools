@@ -11,15 +11,10 @@ using XCom.Interfaces.Base;
 
 namespace MapView.Forms.MapObservers.RouteViews
 {
-/*	aLien ranks:
-	UFO			TFTD
-	Commander	Commander
-	Leader		Navigator
-	Engineer	Medic
-	Medic		Technition
-	Navigator	SquadLeader
-	Soldier		Soldier */
-
+	/// <summary>
+	/// Does all the heavy-lifting/node-manipulations in RouteView and
+	/// TopRouteView(Route).
+	/// </summary>
 	internal sealed partial class RouteView
 		:
 			MapObserverControl0
@@ -43,6 +38,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private const char NodeCopySeparator = '|';
 
 		private const string Go = "go";
+
+		private static RouteNode _nodeMoved;
 		#endregion
 
 
@@ -73,8 +70,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			LinkType.ExitWest,
 			LinkType.NotUsed
 		};
-
-		private RouteNode _nodeMoved;
 		#endregion
 
 
@@ -107,15 +102,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
-		#region Properties
-		internal RoutePanel RoutePanel
-		{ get; set; }
-
-		private MapFileChild MapFile
-		{ get; set; }
-
-		private RouteNode _nodeSelected;
-		private RouteNode NodeSelected
+		#region Properties (static)
+		private static RouteNode _nodeSelected;
+		private static RouteNode NodeSelected
 		{
 			get { return _nodeSelected; }
 			set
@@ -124,13 +113,25 @@ namespace MapView.Forms.MapObservers.RouteViews
 				RoutePanel.NodeSelected = value;
 			}
 		}
+		#endregion
+
+
+		#region Properties
+		internal RoutePanel RoutePanel
+		{ get; set; }
+
+		private MapFileChild MapFile
+		{ get; set; }
+
+//		internal RouteNode NodeSelected
+//		{ get; private set; }
 
 		/// <summary>
 		/// Stores the node-id from which a "Go" button is clicked. Used to
 		/// re-select the original node - which might not be equivalent to
 		/// "Back" (if there were a Back button).
 		/// </summary>
-		private int NodeOgId
+		private int OgnodeId
 		{ get; set; }
 		#endregion
 
@@ -343,7 +344,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			ViewerFormsManager.TopRouteView.ControlRoute.PrintOverInfo(overId, loc);
 
 			RoutePanel.CursorPosition = new Point(args.X, args.Y);
-			RoutePanel.Refresh();	// 3nd mouseover refresh for RouteView.
+
+			ViewerFormsManager.RouteView   .Control     .RoutePanel.Refresh();
+			ViewerFormsManager.TopRouteView.ControlRoute.RoutePanel.Refresh();
+//			RoutePanel.Refresh();	// 3nd mouseover refresh for RouteView.
 		}							// See OnRoutePanelMouseLeave(), RoutePanelParent.OnMouseMove()
 
 		/// <summary>
@@ -354,7 +358,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private void OnRoutePanelMouseLeave(object sender, EventArgs e)
 		{
 			RoutePanel.CursorPosition = new Point(-1, -1);
-			RoutePanel.Refresh();	// 3rd mouseover refresh for RouteView.
+
+			ViewerFormsManager.RouteView   .Control     .RoutePanel.Refresh();
+			ViewerFormsManager.TopRouteView.ControlRoute.RoutePanel.Refresh();
+//			RoutePanel.Refresh();	// 3rd mouseover refresh for RouteView.
 		}							// See OnRoutePanelMouseMove(), RoutePanelParent.OnMouseMove()
 
 		private void OnRoutePanelMouseUp(object sender, RoutePanelEventArgs args)
@@ -380,7 +387,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 					// node-drag started until a click calls RoutePanelParent.PathSelectedLozenge().
 					RoutePanel.SelectedPosition = new Point(_nodeMoved.Col, _nodeMoved.Row);
 
-					UpdateLinkDistances();
+					ViewerFormsManager.RouteView   .Control     .UpdateLinkDistances();
+					ViewerFormsManager.TopRouteView.ControlRoute.UpdateLinkDistances();
 				}
 				_nodeMoved = null;
 			}
@@ -417,7 +425,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 															NodeSelected,
 															MapFile.Routes[link.Destination]);
 						distance = link.Distance.ToString(System.Globalization.CultureInfo.InvariantCulture)
-								 + GetDistanceSuffix(slot);
+								 + GetDistanceArrow(slot);
 						break;
 				}
 				UpdateLinkText(slot, distance);
@@ -441,9 +449,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
-		private void UpdateLinkText(int slotId, string distance)
+		private void UpdateLinkText(int slot, string distance)
 		{
-			switch (slotId)
+			switch (slot)
 			{
 				case 0: tbLink1Dist.Text = distance; break;
 				case 1: tbLink2Dist.Text = distance; break;
@@ -464,9 +472,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			bool update = false;
 
+			var node = ((XCMapTile)args.Tile).Node;
+
 			if (NodeSelected == null)
 			{
-				if ((NodeSelected = ((XCMapTile)args.Tile).Node) == null
+				if ((NodeSelected = node) == null
 					&& args.MouseButton == MouseButtons.Right)
 				{
 					NodeSelected = MapFile.AddRouteNode(args.Location);
@@ -475,7 +485,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 			else // if a node is already selected ...
 			{
-				var node = ((XCMapTile)args.Tile).Node;
 				if (node == null)
 				{
 					if (args.MouseButton == MouseButtons.Right)
@@ -501,17 +510,31 @@ namespace MapView.Forms.MapObservers.RouteViews
 				// else the selected node is the node clicked.
 			}
 
-			if (update) UpdateNodeInformation();
+			if (update)
+			{
+				ViewerFormsManager.RouteView   .Control     .UpdateNodeInformation();
+				ViewerFormsManager.TopRouteView.ControlRoute.UpdateNodeInformation();
+			}
 
 			_nodeMoved = NodeSelected;
 
 			bool valid = (NodeSelected != null);
-			btnCut           .Enabled =
-			btnCopy          .Enabled =
-			btnDelete        .Enabled =
-			tsmiClearLinkData.Enabled = valid;
-			btnPaste         .Enabled = valid
-									 && Clipboard.GetText().Split(NodeCopySeparator)[0] == NodeCopyPrefix;
+
+			ViewerFormsManager.RouteView   .Control     .btnCut           .Enabled =
+			ViewerFormsManager.TopRouteView.ControlRoute.btnCut           .Enabled =
+
+			ViewerFormsManager.RouteView   .Control     .btnCopy          .Enabled =
+			ViewerFormsManager.TopRouteView.ControlRoute.btnCopy          .Enabled =
+
+			ViewerFormsManager.RouteView   .Control     .btnDelete        .Enabled =
+			ViewerFormsManager.TopRouteView.ControlRoute.btnDelete        .Enabled =
+
+			ViewerFormsManager.RouteView   .Control     .tsmiClearLinkData.Enabled =
+			ViewerFormsManager.TopRouteView.ControlRoute.tsmiClearLinkData.Enabled = valid;
+
+			ViewerFormsManager.RouteView   .Control     .btnPaste         .Enabled =
+			ViewerFormsManager.TopRouteView.ControlRoute.btnPaste         .Enabled = valid
+																				  && Clipboard.GetText().Split(NodeCopySeparator)[0] == NodeCopyPrefix;
 		}
 
 		/// <summary>
@@ -524,14 +547,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var type = GetConnectorType();
 			if (type != ConnectNodeType.ConnectNone)
 			{
-				int linkId = GetOpenLinkSlot(NodeSelected, node.Index);
-				if (linkId > -1)
+				int slot = GetOpenLinkSlot(NodeSelected, node.Index);
+				if (slot > -1)
 				{
 					MapFile.RoutesChanged = true;
-					NodeSelected[linkId].Destination = node.Index;
-					NodeSelected[linkId].Distance = CalculateLinkDistance(NodeSelected, node);
+					NodeSelected[slot].Destination = node.Index;
+					NodeSelected[slot].Distance = CalculateLinkDistance(NodeSelected, node);
 				}
-				else if (linkId == -3)
+				else if (slot == -3)
 				{
 					MessageBox.Show(
 								this,
@@ -550,14 +573,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				if (type == ConnectNodeType.ConnectTwoWays)
 				{
-					linkId = GetOpenLinkSlot(node, NodeSelected.Index);
-					if (linkId > -1)
+					slot = GetOpenLinkSlot(node, NodeSelected.Index);
+					if (slot > -1)
 					{
 						MapFile.RoutesChanged = true;
-						node[linkId].Destination = NodeSelected.Index;
-						node[linkId].Distance = CalculateLinkDistance(node, NodeSelected);
+						node[slot].Destination = NodeSelected.Index;
+						node[slot].Distance = CalculateLinkDistance(node, NodeSelected);
 					}
-					else if (linkId == -3)
+					else if (slot == -3)
 					{
 						MessageBox.Show(
 									this,
@@ -596,25 +619,25 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// Gets the first available link-slot for a given node.
 		/// </summary>
 		/// <param name="node">the node to check the link-slots of</param>
-		/// <param name="idOther">the id of the destination node</param>
+		/// <param name="dest">the id of the destination node</param>
 		/// <returns>id of an available link-slot, or
 		/// -1 if the source-node is null (not sure if this ever happens)
 		/// -2 if the link already exists
 		/// -3 if there are no free slots</returns>
-		private static int GetOpenLinkSlot(RouteNode node, int idOther)
+		private static int GetOpenLinkSlot(RouteNode node, int dest)
 		{
 			if (node != null)
 			{
-				for (int i = 0; i != RouteNode.LinkSlots; ++i) // first check if destination-id already exists
+				for (int slot = 0; slot != RouteNode.LinkSlots; ++slot) // first check if destination-id already exists
 				{
-					if (idOther != -1 && node[i].Destination == idOther)
+					if (dest != -1 && node[slot].Destination == dest)
 						return -2;
 				}
 
-				for (int i = 0; i != RouteNode.LinkSlots; ++i) // then check for an open slot
+				for (int slot = 0; slot != RouteNode.LinkSlots; ++slot) // then check for an open slot
 				{
-					if (node[i].Destination == (byte)LinkType.NotUsed)
-						return i;
+					if (node[slot].Destination == (byte)LinkType.NotUsed)
+						return slot;
 				}
 				return -3;
 			}
@@ -789,7 +812,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 						tbDist.Text = Convert.ToString(
 													link.Distance,
 													System.Globalization.CultureInfo.InvariantCulture)
-									+ GetDistanceSuffix(slot);
+									+ GetDistanceArrow(slot);
 
 						if (link.StandardNode())
 							cbDest.SelectedItem = dest;
@@ -818,7 +841,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		/// <param name="slot"></param>
 		/// <returns></returns>
-		private string GetDistanceSuffix(int slot)
+		private string GetDistanceArrow(int slot)
 		{
 			var link = NodeSelected[slot];
 			if (link.StandardNode())
@@ -1020,7 +1043,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 									Math.Pow(nodeA.Lev - nodeB.Lev, 2));
 			if (textBox != null)
 				textBox.Text = dist.ToString(System.Globalization.CultureInfo.InvariantCulture)
-							 + GetDistanceSuffix(slot);
+							 + GetDistanceArrow(slot);
 
 			return dist;
 		}
@@ -1080,16 +1103,20 @@ namespace MapView.Forms.MapObservers.RouteViews
 				slot = 4;
 
 			btnOg.Enabled = true;
-			NodeOgId = NodeSelected.Index; // store the current nodeId for the og-button.
+			OgnodeId = NodeSelected.Index; // store the current nodeId for the og-button.
 
 			SelectNode(NodeSelected[slot].Destination);
 
 			HighlightGoLink(slot); // highlight back to the startnode.
 		}
 
-		private void SelectNode(int nodeId)
+		/// <summary>
+		/// Deals with the ramifications of a Go or Og click.
+		/// </summary>
+		/// <param name="id"></param>
+		private void SelectNode(int id)
 		{
-			var node = MapFile.Routes[nodeId];
+			var node = MapFile.Routes[id];
 
 			if (node.Lev != MapFile.Level)
 				MapFile.Level = node.Lev;			// fire LevelChangedEvent.
@@ -1113,7 +1140,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			RoutePanel.SelectedPosition = start;
 
-			Refresh();
+			ViewerFormsManager.RouteView   .Control     .Refresh();
+			ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
 		}
 
 		/// <summary>
@@ -1188,10 +1216,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnOgClick(object sender, EventArgs e)
 		{
-			if (NodeOgId < MapFile.Routes.Length) // in case nodes were deleted.
+			if (OgnodeId < MapFile.Routes.Length) // in case nodes were deleted.
 			{
-				if (NodeSelected == null || NodeOgId != NodeSelected.Index)
-					SelectNode(NodeOgId);
+				if (NodeSelected == null || OgnodeId != NodeSelected.Index)
+					SelectNode(OgnodeId);
 			}
 			else
 				btnOg.Enabled = false;
@@ -1199,9 +1227,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnOgMouseEnter(object sender, EventArgs e)
 		{
-			if (NodeOgId < MapFile.Routes.Length) // in case nodes were deleted.
+			if (OgnodeId < MapFile.Routes.Length) // in case nodes were deleted.
 			{
-				var node = MapFile.Routes[NodeOgId];
+				var node = MapFile.Routes[OgnodeId];
 				RoutePanel.HighlightedPosition = new Point(node.Col, node.Row);
 				Refresh();
 			}
@@ -1303,7 +1331,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				// TODO: check if the Og-button should be disabled when a node gets deleted or cut.
 
-//				Refresh();
 				ViewerFormsManager.RouteView   .Control     .Refresh();
 				ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
 			}			
@@ -1333,15 +1360,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			NodeSelected = null;
 			RoutePanel.ClearClickPoint();
 			tsmiClearLinkData.Enabled = false;
-
-/*			ViewerFormsManager.RouteView   .Control     .NodeSelected =
-			ViewerFormsManager.TopRouteView.ControlRoute.NodeSelected = null;
-
-			ViewerFormsManager.RouteView   .Control     .RoutePanel.ClearClickPoint();
-			ViewerFormsManager.TopRouteView.ControlRoute.RoutePanel.ClearClickPoint();
-
-			ViewerFormsManager.RouteView   .Control     .tsmiClearLinkData.Enabled =
-			ViewerFormsManager.TopRouteView.ControlRoute.tsmiClearLinkData.Enabled = false; */
 		}
 
 		/// <summary>
@@ -1388,12 +1406,25 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Eventcalls (menubar)
-		private void OnConnectDropDownClosed(object sender, EventArgs e)
+		/// <summary>
+		/// Handler for closing the ConnectType combobox.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnConnectTypeClosed(object sender, EventArgs e)
 		{
-			pnlRoutes.Select();	// take focus off the stupid combobox. Tks. NOTE: sometimes it
-		}						// stays "highlighted" but at least it's no longer "selected".
+			ViewerFormsManager.RouteView   .Control     .tscbConnectType.SelectedIndex =
+			ViewerFormsManager.TopRouteView.ControlRoute.tscbConnectType.SelectedIndex = tscbConnectType.SelectedIndex;
 
-		private void OnAllNodeSpawnRank0Click(object sender, EventArgs e)
+			pnlRoutes.Select();	// take focus off the stupid combobox. Tks. NOTE: It tends to
+		}						// stay "highlighted" but at least it's no longer "selected".
+
+		/// <summary>
+		/// Handler for menuitem that sets all NodeRanks to Civ/Scout.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnAllNodeRank0Click(object sender, EventArgs e)
 		{
 			if (MessageBox.Show(
 							this,
@@ -1453,12 +1484,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					MapFile.RoutesChanged = true;
 
-					for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
+					for (int slot = 0; slot != RouteNode.LinkSlots; ++slot)
 					{
-						NodeSelected[slotId].Destination = Link.NotUsed;
-						NodeSelected[slotId].Distance = 0;
+						NodeSelected[slot].Destination = Link.NotUsed;
+						NodeSelected[slot].Distance = 0;
 
-						NodeSelected[slotId].Type = UnitType.Any;
+						NodeSelected[slot].Type = UnitType.Any;
 					}
 					UpdateNodeInformation();
 

@@ -512,7 +512,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tscbConnectType.Font = new System.Drawing.Font("Verdana", 7F);
 			this.tscbConnectType.Name = "tscbConnectType";
 			this.tscbConnectType.Size = new System.Drawing.Size(110, 25);
-			this.tscbConnectType.DropDownClosed += new System.EventHandler(this.OnConnectDropDownClosed);
+			this.tscbConnectType.DropDownClosed += new System.EventHandler(this.OnConnectTypeClosed);
 			// 
 			// tsddbEdit
 			// 
@@ -543,7 +543,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsmiAllNodesRank0.Name = "tsmiAllNodesRank0";
 			this.tsmiAllNodesRank0.Size = new System.Drawing.Size(171, 22);
 			this.tsmiAllNodesRank0.Text = "All Nodes Rank 0";
-			this.tsmiAllNodesRank0.Click += new System.EventHandler(this.OnAllNodeSpawnRank0Click);
+			this.tsmiAllNodesRank0.Click += new System.EventHandler(this.OnAllNodeRank0Click);
 			// 
 			// tsmiClearLinkData
 			// 
