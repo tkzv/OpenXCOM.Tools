@@ -123,9 +123,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private MapFileChild MapFile
 		{ get; set; }
 
-//		internal RouteNode NodeSelected
-//		{ get; private set; }
-
 		/// <summary>
 		/// Stores the node-id from which a "Go" button is clicked. Used to
 		/// re-select the original node - which might not be equivalent to
@@ -345,10 +342,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 			RoutePanel.CursorPosition = new Point(args.X, args.Y);
 
-			ViewerFormsManager.RouteView   .Control     .RoutePanel.Refresh();
-			ViewerFormsManager.TopRouteView.ControlRoute.RoutePanel.Refresh();
-//			RoutePanel.Refresh();	// 3nd mouseover refresh for RouteView.
-		}							// See OnRoutePanelMouseLeave(), RoutePanelParent.OnMouseMove()
+			ViewerFormsManager.RouteView   .Control     .RoutePanel.Refresh(); // 3nd mouseover refresh for RouteView.
+			ViewerFormsManager.TopRouteView.ControlRoute.RoutePanel.Refresh(); // See OnRoutePanelMouseLeave(), RoutePanelParent.OnMouseMove()
+		}						
 
 		/// <summary>
 		/// Hides the info-overlay when the mouse leaves this control.
@@ -359,10 +355,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			RoutePanel.CursorPosition = new Point(-1, -1);
 
-			ViewerFormsManager.RouteView   .Control     .RoutePanel.Refresh();
-			ViewerFormsManager.TopRouteView.ControlRoute.RoutePanel.Refresh();
-//			RoutePanel.Refresh();	// 3rd mouseover refresh for RouteView.
-		}							// See OnRoutePanelMouseMove(), RoutePanelParent.OnMouseMove()
+			ViewerFormsManager.RouteView   .Control     .RoutePanel.Refresh(); // 3rd mouseover refresh for RouteView.
+			ViewerFormsManager.TopRouteView.ControlRoute.RoutePanel.Refresh(); // See OnRoutePanelMouseMove(), RoutePanelParent.OnMouseMove()
+		}							
 
 		private void OnRoutePanelMouseUp(object sender, RoutePanelEventArgs args)
 		{

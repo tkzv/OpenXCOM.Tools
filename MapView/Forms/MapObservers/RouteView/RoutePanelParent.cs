@@ -261,10 +261,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				_overCol = end.X;
 				_overRow = end.Y;
 
-//				ViewerFormsManager.RouteView   .Control     .Refresh();
-//				ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
-//				Refresh();	// 3nd mouseover refresh for RouteView.
-			}				// See RouteView.OnRoutePanelMouseMove(), RouteView.OnRoutePanelMouseLeave()
+//				ViewerFormsManager.RouteView   .Control     .Refresh(); // 3nd mouseover refresh for RouteView.
+//				ViewerFormsManager.TopRouteView.ControlRoute.Refresh(); // See RouteView.OnRoutePanelMouseMove(), RouteView.OnRoutePanelMouseLeave()
+			}				
 
 			base.OnMouseMove(e); // required to fire RouteView.OnRoutePanelMouseMove()
 		}

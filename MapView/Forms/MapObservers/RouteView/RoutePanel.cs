@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-using MapView.Forms.MainWindow;
 using MapView.Forms.MapObservers.TopViews;
 
 using XCom;
@@ -32,9 +31,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private const string Patrol = "patrol";
 
 		private const string textTile1 = ""; // "position" or "location" or ... "pos" or "loc" ...
-
-		internal static RouteNode NodeSelected
-		{ private get; set; }
 		#endregion
 
 
@@ -69,6 +65,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			get { return _pos; }
 			set { _pos = value; }
 		}
+
+		internal static RouteNode NodeSelected
+		{ private get; set; }
 		#endregion
 
 
