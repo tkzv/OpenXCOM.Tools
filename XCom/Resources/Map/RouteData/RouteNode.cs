@@ -167,6 +167,17 @@ namespace XCom
 			fs.WriteByte((byte)Attack);
 			fs.WriteByte((byte)Spawn);
 		}
+
+		/// <summary>
+		/// Gets the location of this node as a string. This funct inverts the
+		/// z-level for readability (which is the policy in Mapview II).
+		/// </summary>
+		/// <param name="levels">the quantity of z-levels of the Map</param>
+		/// <returns></returns>
+		public string GetLocationString(int levels)
+		{
+			return ("c " + Col + "  r " + Row + "  L " + (levels - Lev));
+		}
 		#endregion
 
 

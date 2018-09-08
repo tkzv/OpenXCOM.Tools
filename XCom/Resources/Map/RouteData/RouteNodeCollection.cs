@@ -190,6 +190,9 @@ namespace XCom
 		private string FullPath
 		{ get; set; }
 
+		/// <summary>
+		/// Returns the node at id.
+		/// </summary>
 		public RouteNode this[int id]
 		{
 			get
@@ -201,6 +204,9 @@ namespace XCom
 			}
 		}
 
+		/// <summary>
+		/// Returns the length of the collection.
+		/// </summary>
 		public int Length
 		{
 			get { return _nodes.Count; }
@@ -376,7 +382,7 @@ namespace XCom
 		/// <param name="rows"></param>
 		/// <param name="levs"></param>
 		/// <returns></returns>
-		internal static bool IsOutsideMap(
+		public static bool IsOutsideMap(
 				RouteNode node,
 				int cols,
 				int rows,
@@ -386,15 +392,6 @@ namespace XCom
 				|| node.Row < 0 || node.Row >= rows
 				|| node.Lev < 0 || node.Lev >= levs;
 		}
-
-//		public RmpEntry GetEntryAtHeight(byte currentHeight)
-//		{
-//			foreach (var route in _entries)
-//				if (route.Height == currentHeight)
-//					return route;
-//
-//			return null;
-//		}
 		#endregion
 	}
 }

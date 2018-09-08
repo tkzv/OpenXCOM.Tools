@@ -7,6 +7,7 @@ using MapView.Forms.MainWindow;
 
 using XCom;
 using XCom.Interfaces.Base;
+using XCom.Resources.Map.RouteData;
 
 
 namespace MapView.Forms.MapObservers.RouteViews
@@ -1211,28 +1212,39 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="e"></param>
 		private void OnLinkGoClick(object sender, EventArgs e)
 		{
-			OgnodeId = NodeSelected.Index; // store the current nodeId for the og-button.
-
-			ViewerFormsManager.RouteView   .Control     .btnOg.Enabled =
-			ViewerFormsManager.TopRouteView.ControlRoute.btnOg.Enabled = true;
-
 			int slot;
 
 			var btn = sender as Button;
-			if (btn == btnGoLink1)
-				slot = 0;
-			else if (btn == btnGoLink2)
-				slot = 1;
-			else if (btn == btnGoLink3)
-				slot = 2;
-			else if (btn == btnGoLink4)
-				slot = 3;
-			else //if (btn == btnGoLink5)
-				slot = 4;
+			if      (btn == btnGoLink1) slot = 0;
+			else if (btn == btnGoLink2) slot = 1;
+			else if (btn == btnGoLink3) slot = 2;
+			else if (btn == btnGoLink4) slot = 3;
+			else                        slot = 4; //if (btn == btnGoLink5)
 
-			SelectNode(NodeSelected[slot].Destination);
+			var link = NodeSelected[slot];
+			if (!RouteNodeCollection.IsOutsideMap(
+												MapFile.Routes[link.Destination],
+												MapFile.MapSize.Cols,
+												MapFile.MapSize.Rows,
+												MapFile.MapSize.Levs))
+			{
+				OgnodeId = NodeSelected.Index; // store the current nodeId for the og-button.
 
-			HighlightGoLink(slot); // highlight back to the startnode.
+				ViewerFormsManager.RouteView   .Control     .btnOg.Enabled =
+				ViewerFormsManager.TopRouteView.ControlRoute.btnOg.Enabled = true;
+
+				SelectNode(link.Destination);
+
+				HighlightGoLink(slot); // highlight back to the startnode.
+			}
+			else
+				MessageBox.Show(
+							"Destination node is outside the Map's boundaries.",
+							"Error",
+							MessageBoxButtons.OK,
+							MessageBoxIcon.Error,
+							MessageBoxDefaultButton.Button1,
+							0);
 		}
 
 		/// <summary>
@@ -1545,8 +1557,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="e"></param>
 		private void OnConnectTypeClosed(object sender, EventArgs e)
 		{
-			ViewerFormsManager.RouteView   .Control     .tscbConnectType.SelectedIndex =
-			ViewerFormsManager.TopRouteView.ControlRoute.tscbConnectType.SelectedIndex = tscbConnectType.SelectedIndex;
+			if (Tag as String == "ROUTE")
+				ViewerFormsManager.TopRouteView.ControlRoute.tscbConnectType.SelectedIndex = tscbConnectType.SelectedIndex;
+			else
+				ViewerFormsManager.RouteView.Control.tscbConnectType.SelectedIndex = tscbConnectType.SelectedIndex;
 
 			pnlRoutes.Select();	// take focus off the stupid combobox. Tks. NOTE: It tends to
 		}						// stay "highlighted" but at least it's no longer "selected".
@@ -1580,7 +1594,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					MapFile.RoutesChanged = true;
 
-					UpdateNodeInformation();
+					ViewerFormsManager.RouteView   .Control     .UpdateNodeInformation();
+					ViewerFormsManager.TopRouteView.ControlRoute.UpdateNodeInformation();
 
 					MessageBox.Show(
 								changed + " nodes were changed.",
@@ -1629,9 +1644,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 						NodeSelected[slot].Type = UnitType.Any;
 					}
-					UpdateNodeInformation();
 
-					Refresh();
+					ViewerFormsManager.RouteView   .Control     .UpdateNodeInformation();
+					ViewerFormsManager.TopRouteView.ControlRoute.UpdateNodeInformation();
+
+					ViewerFormsManager.RouteView   .Control     .Refresh();
+					ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
 				}
 			}
 		}
@@ -1639,6 +1657,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <summary>
 		/// Handler for menuitem that checks if any node's rank is beyond the
 		/// array of the combobox. See also RouteNodeCollection.cTor
+		/// TODO: Consolidate these checks to RouteCheckService.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -1686,12 +1705,17 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		/// <summary>
 		/// Handler for menuitem that checks if any node's location is outside
-		/// the dimensions of the Map. See also RouteNodeCollection.cTor
+		/// the dimensions of the Map.
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void OnCheckOobNodesClick(object sender, EventArgs e)
 		{
+			if (RouteCheckService.CheckNodeBoundsMenuitem(MapFile))
+			{
+				ViewerFormsManager.RouteView   .Control     .UpdateNodeInformation();
+				ViewerFormsManager.TopRouteView.ControlRoute.UpdateNodeInformation();
+			}
 		}
 		#endregion
 
