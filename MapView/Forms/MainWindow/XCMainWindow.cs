@@ -38,7 +38,6 @@ namespace MapView
 		private readonly MainViewUnderlay      _mainViewUnderlay;
 
 		private readonly ViewersManager        _viewersManager;
-		private readonly ViewerFormsManager    _viewerFormsManager;
 		private readonly MainMenusManager      _mainMenusManager;
 
 //		private readonly LoadingForm           _loadingProgress;
@@ -233,7 +232,6 @@ namespace MapView
 //			_warningHandler  = new ConsoleWarningHandler(consoleShare);
 
 
-			_viewerFormsManager = new ViewerFormsManager();
 			_viewersManager     = new ViewersManager(_optionsManager/*, shareConsole*/);
 			LogFile.WriteLine("Viewer managers instantiated.");
 
@@ -1272,7 +1270,7 @@ namespace MapView
 						tsslDimensions.Text = f.MapBase.MapSize.ToString();
 						tsslPosition.Text = String.Empty;
 
-						_viewerFormsManager.SetObservers(f.MapBase);
+						ViewerFormsManager.SetObservers(f.MapBase);
 
 //						ViewerFormsManager.RouteView.Control.ClearSelectedLocation(); // ... why not
 
@@ -2363,7 +2361,7 @@ namespace MapView
 				if (!menuViewers.Enabled) // open/close the forms that appear in the Views menu.
 					_mainMenusManager.StartViewers();
 
-				_viewerFormsManager.SetObservers(mapBase); // reset all observer events
+				ViewerFormsManager.SetObservers(mapBase); // reset all observer events
 			}
 //			else miExport.Enabled = false;
 		}

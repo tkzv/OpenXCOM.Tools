@@ -6,8 +6,6 @@ using DSShared.Windows;
 
 using MapView.Forms.MapObservers;
 
-using XCom;
-
 
 namespace MapView.Forms.MainWindow
 {
@@ -16,7 +14,7 @@ namespace MapView.Forms.MainWindow
 		#region Fields
 		private readonly Dictionary<string, Form> _viewers = new Dictionary<string, Form>();
 
-		private readonly OptionsManager     _optionsManager;
+		private readonly OptionsManager _optionsManager;
 //		private readonly ConsoleSharedSpace _consoleShare;
 		#endregion
 
@@ -60,7 +58,7 @@ namespace MapView.Forms.MainWindow
 			_viewers.Add("Help",  ViewerFormsManager.HelpScreen);
 			_viewers.Add("About", ViewerFormsManager.AboutScreen);
 
-//			MainWindowsManager.TopRouteView.ControlTop.RegistryInfo   = MainWindowsManager.TopView.Control.RegistryInfo;
+//			MainWindowsManager.TopRouteView.ControlTop  .RegistryInfo = MainWindowsManager.TopView  .Control.RegistryInfo;
 //			MainWindowsManager.TopRouteView.ControlRoute.RegistryInfo = MainWindowsManager.RouteView.Control.RegistryInfo;
 		}
 

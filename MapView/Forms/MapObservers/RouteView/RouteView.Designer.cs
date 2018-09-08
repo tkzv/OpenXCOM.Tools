@@ -71,6 +71,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsmiAllNodesRank0 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiClearLinkData = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiCheckNodeRanks = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmiCheckOobNodes = new System.Windows.Forms.ToolStripMenuItem();
 			this.gbLinkData = new System.Windows.Forms.GroupBox();
 			this.btnGoLink5 = new System.Windows.Forms.Button();
 			this.btnGoLink4 = new System.Windows.Forms.Button();
@@ -522,7 +523,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsmiOptions,
 			this.tsmiAllNodesRank0,
 			this.tsmiClearLinkData,
-			this.tsmiCheckNodeRanks});
+			this.tsmiCheckNodeRanks,
+			this.tsmiCheckOobNodes});
 			this.tsddbEdit.Font = new System.Drawing.Font("Verdana", 7F);
 			this.tsddbEdit.Image = ((System.Drawing.Image)(resources.GetObject("tsddbEdit.Image")));
 			this.tsddbEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -534,30 +536,37 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.tsmiOptions.Name = "tsmiOptions";
 			this.tsmiOptions.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.tsmiOptions.Size = new System.Drawing.Size(171, 22);
+			this.tsmiOptions.Size = new System.Drawing.Size(226, 22);
 			this.tsmiOptions.Text = "Options";
 			this.tsmiOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
 			// tsmiAllNodesRank0
 			// 
 			this.tsmiAllNodesRank0.Name = "tsmiAllNodesRank0";
-			this.tsmiAllNodesRank0.Size = new System.Drawing.Size(171, 22);
+			this.tsmiAllNodesRank0.Size = new System.Drawing.Size(226, 22);
 			this.tsmiAllNodesRank0.Text = "All Nodes Rank 0";
 			this.tsmiAllNodesRank0.Click += new System.EventHandler(this.OnAllNodeRank0Click);
 			// 
 			// tsmiClearLinkData
 			// 
 			this.tsmiClearLinkData.Name = "tsmiClearLinkData";
-			this.tsmiClearLinkData.Size = new System.Drawing.Size(171, 22);
+			this.tsmiClearLinkData.Size = new System.Drawing.Size(226, 22);
 			this.tsmiClearLinkData.Text = "Clear Link data";
 			this.tsmiClearLinkData.Click += new System.EventHandler(this.OnClearLinkDataClick);
 			// 
 			// tsmiCheckNodeRanks
 			// 
 			this.tsmiCheckNodeRanks.Name = "tsmiCheckNodeRanks";
-			this.tsmiCheckNodeRanks.Size = new System.Drawing.Size(171, 22);
+			this.tsmiCheckNodeRanks.Size = new System.Drawing.Size(226, 22);
 			this.tsmiCheckNodeRanks.Text = "Check Node ranks";
 			this.tsmiCheckNodeRanks.Click += new System.EventHandler(this.OnCheckNodeRanksClick);
+			// 
+			// tsmiCheckOobNodes
+			// 
+			this.tsmiCheckOobNodes.Name = "tsmiCheckOobNodes";
+			this.tsmiCheckOobNodes.Size = new System.Drawing.Size(226, 22);
+			this.tsmiCheckOobNodes.Text = "Check Out of Bounds nodes";
+			this.tsmiCheckOobNodes.Click += new System.EventHandler(this.OnCheckOobNodesClick);
 			// 
 			// gbLinkData
 			// 
@@ -867,5 +876,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.Button btnGoLink1;
 		private System.Windows.Forms.Button btnOg;
 		private System.Windows.Forms.ToolStripMenuItem tsmiCheckNodeRanks;
+		private System.Windows.Forms.ToolStripMenuItem tsmiCheckOobNodes;
 	}
 }

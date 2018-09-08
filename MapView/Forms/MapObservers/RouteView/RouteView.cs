@@ -1601,6 +1601,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 			}
 		}
 
+		/// <summary>
+		/// Handler for menuitem that clears all link-data of the currently
+		/// selected node.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void OnClearLinkDataClick(object sender, EventArgs e)
 		{
 			if (NodeSelected != null)
@@ -1631,7 +1637,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		}
 
 		/// <summary>
-		/// See also RouteNodeCollection.cTor
+		/// Handler for menuitem that checks if any node's rank is beyond the
+		/// array of the combobox. See also RouteNodeCollection.cTor
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -1675,6 +1682,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 						icon,
 						MessageBoxDefaultButton.Button1,
 						0);
+		}
+
+		/// <summary>
+		/// Handler for menuitem that checks if any node's location is outside
+		/// the dimensions of the Map. See also RouteNodeCollection.cTor
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnCheckOobNodesClick(object sender, EventArgs e)
+		{
 		}
 		#endregion
 
