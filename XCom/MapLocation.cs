@@ -7,7 +7,7 @@ namespace XCom
 	/// A container for 3d Map coordinates.
 	/// TODO: override Equals, ==, !=
 	/// </summary>
-	public class MapLocation // TODO: merge with MapPosition.
+	public class MapLocation
 	{
 		public int Row
 		{ get; set; }

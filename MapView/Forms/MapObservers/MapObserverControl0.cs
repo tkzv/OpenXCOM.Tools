@@ -55,14 +55,11 @@ namespace MapView
 		/// <param name="args"></param>
 		public virtual void OnLocationSelectedObserver(LocationSelectedEventArgs args)
 		{
-			//XCom.LogFile.WriteLine("");
-			//XCom.LogFile.WriteLine("MapObserverControl0.OnLocationSelectedObserver");
-
 			Refresh();
 		}
 
 		/// <summary>
-		/// Satisfied IMapObserver.
+		/// Satisfies IMapObserver.
 		/// </summary>
 		/// <param name="args"></param>
 		public virtual void OnLevelChangedObserver(LevelChangedEventArgs args)

@@ -32,7 +32,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Fields
-		internal protected int _overCol = -1; // these track the location of the mouse-cursor
+		internal protected int _overCol = -1; // these track the location of the last mouse-overed tile
 		internal protected int _overRow = -1; // NOTE: could be subsumed into 'RoutePanel.CursorPosition' except ...
 		#endregion
 
@@ -47,6 +47,17 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Properties
+		private Point _pos = new Point(-1, -1);
+		/// <summary>
+		/// Tracks the screen-position of the mouse cursor. Used to print
+		/// over-info, overlay-info, and to position the Overlay.
+		/// </summary>
+		public Point CursorPosition
+		{
+			get { return _pos; }
+			set { _pos = value; }
+		}
+
 		private MapFileChild _mapFile;
 		internal protected MapFileChild MapFile
 		{
@@ -165,11 +176,35 @@ namespace MapView.Forms.MapObservers.RouteViews
 				   | ControlStyles.ResizeRedraw, true);
 
 			MainViewUnderlay.Instance.MainViewOverlay.MouseDragEvent += PathSelectedLozenge;
+
+
+			var timer1 = new Timer();	// because the mouse OnLeave event doesn't fire
+			timer1.Interval = 250;		// when the mouse moves over a different form before
+			timer1.Enabled = true;		// actually "leaving" this control.
+			timer1.Tick += timer1_Tick;	// btw, this is only to stop the overlay from drawing
+		}								// on both RouteView and TopRouteView(Route) simultaneously.
+		#endregion						// so uh yeah it's overkill
+										// Good Lord it works.
+
+		#region Eventcalls
+		private void timer1_Tick(object sender, EventArgs e)
+		{
+			if (!Bounds.Contains(PointToClient(Cursor.Position)))
+				CursorPosition = new Point(
+										_overCol = -1,
+										_overRow = -1);
 		}
 		#endregion
 
 
 		#region Eventcalls (override)
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+			timer1_Tick(this, e);
+		}
+
+
 		protected override void OnResize(EventArgs e)
 		{
 //			base.OnResize(e);
@@ -253,18 +288,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="e"></param>
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-//			base.OnMouseMove(e); // required to fire RouteView.OnRoutePanelMouseMove()
-
 			var end = GetTileLocation(e.X, e.Y);
 			if (end.X != _overCol || end.Y != _overRow)
 			{
 				_overCol = end.X;
 				_overRow = end.Y;
-
-//				ViewerFormsManager.RouteView   .Control     .Refresh(); // 3nd mouseover refresh for RouteView.
-//				ViewerFormsManager.TopRouteView.ControlRoute.Refresh(); // See RouteView.OnRoutePanelMouseMove(), RouteView.OnRoutePanelMouseLeave()
 			}				
-
 			base.OnMouseMove(e); // required to fire RouteView.OnRoutePanelMouseMove()
 		}
 
@@ -378,15 +407,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// Gets the tile contained at (x,y) wrt client-area in local screen
 		/// coordinates.
 		/// </summary>
-		/// <param name="x">the x-position of the mouse-cursor wrt Client-area</param>
-		/// <param name="y">the y-position of the mouse-cursor wrt Client-area</param>
+		/// <param name="x">ref to the x-position of the mouse-cursor wrt
+		/// Client-area (refout is the tile-x location)</param>
+		/// <param name="y">ref to the y-position of the mouse-cursor wrt
+		/// Client-area (refout is the tile-y location)</param>
 		/// <returns>the corresponding XCMapTile or null if (x,y) is an invalid
 		/// location for a tile</returns>
-		internal protected XCMapTile GetTile(int x, int y)
+		internal protected XCMapTile GetTile(ref int x, ref int y)
 		{
 			var loc = GetTileLocation(x, y);
-			return (loc.X != -1) ? MapFile[loc.Y, loc.X] as XCMapTile
-								 : null;
+			x = loc.X;
+			y = loc.Y;
+			return (x != -1) ? MapFile[y, x] as XCMapTile
+							 : null;
 		}
 
 		/// <summary>

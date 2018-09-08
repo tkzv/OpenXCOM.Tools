@@ -201,19 +201,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// <param name="args"></param>
 		public override void OnLocationSelectedObserver(LocationSelectedEventArgs args)
 		{
-			//LogFile.WriteLine("");
-			//LogFile.WriteLine("RouteView.OnLocationSelectedObserver");
-
-			// as long as MainViewOverlay.OnLocationSelectedMain()
-			// fires before the subsidiary viewers' OnLocationSelectedObserver()
-			// functions fire, FirstClick is set okay by the former.
-			//
-			// See also, TopViewPanelParent.OnLocationSelectedObserver()
-//			MainViewUnderlay.Instance.MainViewOverlay.FirstClick = true;
-
 			_col = args.Location.Col;
 			_row = args.Location.Row;
 			_lev = args.Location.Lev;
+
 			PrintSelectedInfo();
 		}
 
@@ -225,28 +216,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			_lev = args.Level;
 
-//			PrintSelectedInfo(); // SelectedNode should be same as before
-
 			var loc = RoutePanel.GetTileLocation(
 											RoutePanel.CursorPosition.X,
 											RoutePanel.CursorPosition.Y);
-			int overId = -1;
+			int over = -1;
 			if (loc.X != -1)
 			{
 				var node = ((XCMapTile)MapBase[loc.Y, loc.X, _lev]).Node;
 				if (node != null)
-					overId = node.Index;
+					over = node.Index;
 			}
 
-			ViewerFormsManager.RouteView   .Control     .PrintOverInfo(overId, loc);
-			ViewerFormsManager.TopRouteView.ControlRoute.PrintOverInfo(overId, loc);
-
-//			DeselectNode();
-//			UpdateNodeInformation();
-
-//			if (RoutePanel.HighlightedPosition.X != -1)
-//				OnLinkMouseLeave(null, EventArgs.Empty);
-//			else
+			ViewerFormsManager.RouteView   .Control     .PrintOverInfo(over, loc);
+			ViewerFormsManager.TopRouteView.ControlRoute.PrintOverInfo(over, loc);
 
 			ViewerFormsManager.RouteView   .Control     .Refresh();
 			ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
@@ -328,23 +310,26 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#region Eventcalls (mouse-events for RoutePanel)
 		private void OnRoutePanelMouseMove(object sender, MouseEventArgs args)
 		{
-			int overId;
+			int over;
 
-			var tile = RoutePanel.GetTile(args.X, args.Y);
+			int x = args.X;
+			int y = args.Y;
+
+			var tile = RoutePanel.GetTile(ref x, ref y); // x/y -> tile-location
 			if (tile != null && tile.Node != null)
-				overId = tile.Node.Index;
+				over = tile.Node.Index;
 			else
-				overId = -1;
+				over = -1;
 
-			var loc = RoutePanel.GetTileLocation(args.X, args.Y);
+			var loc = new Point(x, y);
 
-			ViewerFormsManager.RouteView   .Control     .PrintOverInfo(overId, loc);
-			ViewerFormsManager.TopRouteView.ControlRoute.PrintOverInfo(overId, loc);
+			ViewerFormsManager.RouteView   .Control     .PrintOverInfo(over, loc);
+			ViewerFormsManager.TopRouteView.ControlRoute.PrintOverInfo(over, loc);
 
 			RoutePanel.CursorPosition = new Point(args.X, args.Y);
 
-			ViewerFormsManager.RouteView   .Control     .RoutePanel.Refresh(); // 3nd mouseover refresh for RouteView.
-			ViewerFormsManager.TopRouteView.ControlRoute.RoutePanel.Refresh(); // See OnRoutePanelMouseLeave(), RoutePanelParent.OnMouseMove()
+			ViewerFormsManager.RouteView   .Control     .RoutePanel.Refresh();
+			ViewerFormsManager.TopRouteView.ControlRoute.RoutePanel.Refresh();
 		}						
 
 		/// <summary>
@@ -356,8 +341,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		{
 			RoutePanel.CursorPosition = new Point(-1, -1);
 
-			ViewerFormsManager.RouteView   .Control     .RoutePanel.Refresh(); // 3rd mouseover refresh for RouteView.
-			ViewerFormsManager.TopRouteView.ControlRoute.RoutePanel.Refresh(); // See OnRoutePanelMouseMove(), RoutePanelParent.OnMouseMove()
+			ViewerFormsManager.RouteView   .Control     .RoutePanel.Refresh();
+			ViewerFormsManager.TopRouteView.ControlRoute.RoutePanel.Refresh();
 		}							
 
 		private void OnRoutePanelMouseUp(object sender, RoutePanelEventArgs args)
@@ -1061,7 +1046,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 																		btnGo.Text);
 				}
 
-				ViewerFormsManager.RouteView   .Control     .Refresh(); // update the importance bar
+				ViewerFormsManager.RouteView   .Control     .Refresh();
 				ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
 			}
 		}

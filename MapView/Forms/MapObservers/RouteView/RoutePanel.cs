@@ -56,16 +56,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Properties (static)
-		private static Point _pos = new Point(-1, -1);
-		/// <summary>
-		/// Tracks the screen-position of the mouse cursor.
-		/// </summary>
-		public static Point CursorPosition
-		{
-			get { return _pos; }
-			set { _pos = value; }
-		}
-
 		internal static RouteNode NodeSelected
 		{ private get; set; }
 		#endregion
@@ -149,7 +139,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				DrawRose();
 
-				if (ShowOverlay && _overCol != -1)
+				if (ShowOverlay && CursorPosition.X != -1)
 					DrawInfoOverlay();
 			}
 //			}
@@ -661,11 +651,13 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// </summary>
 		private void DrawInfoOverlay()
 		{
-			var tile = GetTile(CursorPosition.X, CursorPosition.Y);
+			int x = CursorPosition.X;
+			int y = CursorPosition.Y;
+
+			var tile = GetTile(ref x, ref y); // x/y -> tile-location
 			if (tile != null)
 			{
-				var pt = GetTileLocation(CursorPosition.X, CursorPosition.Y);
-				string textTile2 = "c " + pt.X + "  r " + pt.Y + "  L " + (MapFile.MapSize.Levs - MapFile.Level);
+				string textTile2 = "c " + x + "  r " + y + "  L " + (MapFile.MapSize.Levs - MapFile.Level);
 
 				int textWidth1 = (int)_graphics.MeasureString(textTile1, _fontOverlay).Width;
 				int textWidth2 = (int)_graphics.MeasureString(textTile2, _fontOverlay).Width;
