@@ -1301,7 +1301,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// Sets the highlighted destination link-line and node if applicable.
 		/// </summary>
 		/// <param name="slot">the link-slot whose destination should get
-		/// spotted</param>
+		/// highlighted</param>
 		private void SpotGoDestination(int slot)
 		{
 			if (NodeSelected != null && NodeSelected[slot] != null) // safety: Go should not be enabled unless a node is selected.

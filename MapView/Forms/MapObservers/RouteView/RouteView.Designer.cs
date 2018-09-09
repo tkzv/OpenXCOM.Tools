@@ -88,6 +88,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelAttack = new System.Windows.Forms.Label();
 			this.gbTileData = new System.Windows.Forms.GroupBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.tsddbDebug = new System.Windows.Forms.ToolStripDropDownButton();
 			this.tsMain.SuspendLayout();
 			this.gbLinkData.SuspendLayout();
 			this.pnlDataFields.SuspendLayout();
@@ -500,7 +501,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.tsMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.tscbConnectType,
-			this.tsddbEdit});
+			this.tsddbEdit,
+			this.tsddbDebug});
 			this.tsMain.Location = new System.Drawing.Point(0, 0);
 			this.tsMain.Name = "tsMain";
 			this.tsMain.Size = new System.Drawing.Size(640, 25);
@@ -522,9 +524,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsddbEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.tsmiOptions,
 			this.tsmiAllNodesRank0,
-			this.tsmiClearLinkData,
-			this.tsmiCheckNodeRanks,
-			this.tsmiCheckOobNodes});
+			this.tsmiClearLinkData});
 			this.tsddbEdit.Font = new System.Drawing.Font("Verdana", 7F);
 			this.tsddbEdit.Image = ((System.Drawing.Image)(resources.GetObject("tsddbEdit.Image")));
 			this.tsddbEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -553,20 +553,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsmiClearLinkData.Size = new System.Drawing.Size(226, 22);
 			this.tsmiClearLinkData.Text = "Clear Link data";
 			this.tsmiClearLinkData.Click += new System.EventHandler(this.OnClearLinkDataClick);
-			// 
-			// tsmiCheckNodeRanks
-			// 
-			this.tsmiCheckNodeRanks.Name = "tsmiCheckNodeRanks";
-			this.tsmiCheckNodeRanks.Size = new System.Drawing.Size(226, 22);
-			this.tsmiCheckNodeRanks.Text = "Check Node ranks";
-			this.tsmiCheckNodeRanks.Click += new System.EventHandler(this.OnCheckNodeRanksClick);
-			// 
-			// tsmiCheckOobNodes
-			// 
-			this.tsmiCheckOobNodes.Name = "tsmiCheckOobNodes";
-			this.tsmiCheckOobNodes.Size = new System.Drawing.Size(226, 22);
-			this.tsmiCheckOobNodes.Text = "Check Out of Bounds nodes";
-			this.tsmiCheckOobNodes.Click += new System.EventHandler(this.OnCheckOobNodesClick);
 			// 
 			// gbLinkData
 			// 
@@ -795,6 +781,33 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.UseAnimation = false;
 			// 
+			// tsddbDebug
+			// 
+			this.tsddbDebug.AutoToolTip = false;
+			this.tsddbDebug.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.tsddbDebug.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.tsmiCheckNodeRanks,
+			this.tsmiCheckOobNodes});
+			this.tsddbDebug.Image = ((System.Drawing.Image)(resources.GetObject("tsddbDebug.Image")));
+			this.tsddbDebug.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsddbDebug.Name = "tsddbDebug";
+			this.tsddbDebug.Size = new System.Drawing.Size(53, 22);
+			this.tsddbDebug.Text = "debug";
+			// 
+			// tsmiCheckNodeRanks
+			// 
+			this.tsmiCheckNodeRanks.Name = "tsmiCheckNodeRanks";
+			this.tsmiCheckNodeRanks.Size = new System.Drawing.Size(226, 22);
+			this.tsmiCheckNodeRanks.Text = "Check Node ranks";
+			this.tsmiCheckNodeRanks.Click += new System.EventHandler(this.OnCheckNodeRanksClick);
+			// 
+			// tsmiCheckOobNodes
+			// 
+			this.tsmiCheckOobNodes.Name = "tsmiCheckOobNodes";
+			this.tsmiCheckOobNodes.Size = new System.Drawing.Size(226, 22);
+			this.tsmiCheckOobNodes.Text = "Check Out of Bounds nodes";
+			this.tsmiCheckOobNodes.Click += new System.EventHandler(this.OnCheckOobNodesClick);
+			// 
 			// RouteView
 			// 
 			this.Controls.Add(this.pnlRoutes);
@@ -877,5 +890,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.Button btnOg;
 		private System.Windows.Forms.ToolStripMenuItem tsmiCheckNodeRanks;
 		private System.Windows.Forms.ToolStripMenuItem tsmiCheckOobNodes;
+		private System.Windows.Forms.ToolStripDropDownButton tsddbDebug;
 	}
 }
