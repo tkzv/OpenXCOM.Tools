@@ -137,14 +137,14 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 					if (SpotPosition.X > -1)
 					{
-						PathHighlightedLozenge(
+						PathSpottedLozenge(
 										Origin.X + (SpotPosition.X - SpotPosition.Y) * DrawAreaWidth,
 										Origin.Y + (SpotPosition.X + SpotPosition.Y) * DrawAreaHeight);
 						_graphics.DrawPath(
 										new Pen( // TODO: make this a separate Option.
 												RouteBrushes[RouteView.SelectedNodeColor].Color,
 												RoutePens[RouteView.GridLineColor].Width + 1),
-										LozHighlighted);
+										LozSpotted);
 					}
 				}
 
@@ -266,106 +266,110 @@ namespace MapView.Forms.MapObservers.RouteViews
 				RouteNode node,
 				bool selected = true)
 		{
-			int xDst;
-			int yDst;
-			RouteNode nodeDst;
+			int xDst, yDst;
+			RouteNode dest;
+			byte destId;
 
-			for (int i = 0; i != RouteNode.LinkSlots; ++i)
+			for (int slot = 0; slot != RouteNode.LinkSlots; ++slot)
 			{
-				nodeDst = null;
-				xDst = -1;
-				yDst =  0;
-
-				var link = node[i] as Link;
-				switch (link.Destination)
+				var link = node[slot] as Link;
+				if ((destId = link.Destination) != Link.NotUsed)
 				{
-					case Link.NotUsed:
-						break;
+					switch (destId)
+					{
+						case Link.ExitWest:
+							if (node.Lev != MapFile.Level)
+								continue;
 
-					case Link.ExitWest:
-						if (node.Lev == MapFile.Level)
-						{
 							xDst = OffsetX + 1;
 							yDst = OffsetY + 1;
-						}
-						break;
+							dest = null;
+							break;
 
-					case Link.ExitNorth:
-						if (node.Lev == MapFile.Level)
-						{
+						case Link.ExitNorth:
+							if (node.Lev != MapFile.Level)
+								continue;
+
 							xDst = Width - OffsetX * 2;
-							yDst = OffsetY + 1;
-						}
-						break;
+							yDst =         OffsetY + 1;
+							dest = null;
+							break;
 
-					case Link.ExitEast:
-						if (node.Lev == MapFile.Level)
-						{
+						case Link.ExitEast:
+							if (node.Lev != MapFile.Level)
+								continue;
+
 							xDst = Width  - OffsetX * 2;
 							yDst = Height - OffsetY * 2;
-						}
-						break;
+							dest = null;
+							break;
 
-					case Link.ExitSouth:
-						if (node.Lev == MapFile.Level)
-						{
-							xDst = OffsetX + 1;
+						case Link.ExitSouth:
+							if (node.Lev != MapFile.Level)
+								continue;
+
+							xDst =          OffsetX + 1;
 							yDst = Height - OffsetY * 2;
-						}
-						break;
+							dest = null;
+							break;
 
-					default:
-						if ((nodeDst = MapFile.Routes[link.Destination]) != null
-							&& nodeDst.Lev == MapFile.Level
-							&& (NodeSelected == null || nodeDst != NodeSelected))
-						{
-							xDst = Origin.X + (nodeDst.Col - nodeDst.Row)     * DrawAreaWidth;
-							yDst = Origin.Y + (nodeDst.Col + nodeDst.Row + 1) * DrawAreaHeight;
-						}
-						break;
-				}
+						default:
+							if ((dest = MapFile.Routes[destId]) == null
+								|| dest.Lev != MapFile.Level
+								|| (NodeSelected != null && dest == NodeSelected)
+								|| RouteNodeCollection.IsOutsideMap(
+																dest,
+																MapFile.MapSize.Cols,
+																MapFile.MapSize.Rows,
+																MapFile.MapSize.Levs))
+							{
+								continue;
+							}
 
-				if (xDst != -1)
-				{
+							xDst = Origin.X + (dest.Col - dest.Row)     * DrawAreaWidth;
+							yDst = Origin.Y + (dest.Col + dest.Row + 1) * DrawAreaHeight;
+							break;
+					}
+
 					if (selected) // draw link-lines for a selected node ->
 					{
-						var pen0 = _penLinkSelected;
+						var pen = _penLinkSelected;
 
 						if (SpotPosition.X != -1)
 						{
-							if (nodeDst != null)
+							if (dest != null)
 							{
-								if (   SpotPosition.X != nodeDst.Col
-									|| SpotPosition.Y != nodeDst.Row)
+								if (   SpotPosition.X != dest.Col
+									|| SpotPosition.Y != dest.Row)
 								{
-									pen0 = _penLinkUnselected;
+									pen = _penLinkUnselected;
 								}
 							}
 							else
 							{
-								switch (link.Destination)	// see RouteView.HighlightDestinationNode() for
-								{							// def'n of the following highlighted-positions
+								switch (destId)							// See RouteView.SpotGoDestination() for
+								{										// def'n of the following spot-positions ->
 									case Link.ExitNorth:
 										if (SpotPosition.X != -2)
-											pen0 = _penLinkUnselected;
+											pen = _penLinkUnselected;
 										break;
 									case Link.ExitEast:
 										if (SpotPosition.X != -3)
-											pen0 = _penLinkUnselected;
+											pen = _penLinkUnselected;
 										break;
 									case Link.ExitSouth:
 										if (SpotPosition.X != -4)
-											pen0 = _penLinkUnselected;
+											pen = _penLinkUnselected;
 										break;
 									case Link.ExitWest:
 										if (SpotPosition.X != -5)
-											pen0 = _penLinkUnselected;
+											pen = _penLinkUnselected;
 										break;
 								}
 							}
 						}
 						_graphics.DrawLine(
-										pen0,
+										pen,
 										xSrc, ySrc,
 										xDst, yDst);
 					}

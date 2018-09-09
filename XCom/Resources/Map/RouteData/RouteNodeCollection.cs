@@ -251,7 +251,7 @@ namespace XCom
 				{
 					string info = String.Format(
 											System.Globalization.CultureInfo.CurrentCulture,
-											"The following route-{0} an invalid NodeRank ->{1}",
+											"The following route-{0} an invalid NodeRank.{1}",
 											(invalids.Count == 1) ? "node has"
 																  : "nodes have",
 											Environment.NewLine);

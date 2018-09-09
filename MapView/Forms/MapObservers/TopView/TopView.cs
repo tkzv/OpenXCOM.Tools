@@ -25,8 +25,6 @@ namespace MapView.Forms.MapObservers.TopViews
 
 
 		#region Fields
-		private ToolstripFactory _toolFactory;
-
 		private Dictionary<string, Pen> _topPens;
 		private Dictionary<string, SolidBrush> _topBrushes;
 
@@ -221,17 +219,16 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// <param name="tools"></param>
 		internal void InitializeToolstrip(ToolstripFactory tools)
 		{
-			_toolFactory = tools;
-			_toolFactory.CreateToolstripEditorObjects(tsTools, true);
+			tools.CreateToolstripEditorObjects(tsTools, true);
 		}
 
 		/// <summary>
 		/// Selects a quadrant in the QuadrantsPanel given a selected tiletype.
 		/// </summary>
-		/// <param name="tileType"></param>
-		internal void SelectQuadrant(PartType tileType)
+		/// <param name="parttype"></param>
+		internal void SelectQuadrant(PartType parttype)
 		{
-			switch (tileType)
+			switch (parttype)
 			{
 				case PartType.Ground:
 					QuadrantsPanel.SelectedQuadrant = QuadrantType.Ground;
@@ -317,7 +314,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			OptionChangedEventHandler bc = OnBrushChanged;
 			OptionChangedEventHandler pc = OnPenColorChanged;
 			OptionChangedEventHandler pw = OnPenWidthChanged;
-//			ValueChangedEventHandler dh = OnDiamondHeight;
+//			ValueChangedEventHandler  dh = OnDiamondHeight;
 
 			Options.AddOption(FloorColor,        Color.BurlyWood,                 "Color of the floor tile indicator",           Tile,     bc);
 			Options.AddOption(WestColor,         Color.Khaki,                     "Color of the west tile indicator",            Tile,     pc);

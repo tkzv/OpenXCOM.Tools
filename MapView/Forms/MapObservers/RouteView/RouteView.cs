@@ -1121,7 +1121,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				Control textBox = null,
 				int slot = 0)
 		{
-			var dist = (byte)Math.Sqrt(
+			int dist = (int)Math.Sqrt(
 									Math.Pow(nodeA.Col - nodeB.Col, 2) +
 									Math.Pow(nodeA.Row - nodeB.Row, 2) +
 									Math.Pow(nodeA.Lev - nodeB.Lev, 2));
@@ -1129,7 +1129,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				textBox.Text = dist.ToString(System.Globalization.CultureInfo.InvariantCulture)
 							 + GetDistanceArrow(slot);
 
-			return dist;
+			return (byte)dist;
 		}
 
 
@@ -1206,12 +1206,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 			else if (btn == btnGoLink4) slot = 3;
 			else                        slot = 4; //if (btn == btnGoLink5)
 
-			var link = NodeSelected[slot];
+			var link   = NodeSelected[slot];
+			byte dest  = link.Destination;
+			var node   = MapFile.Routes[dest];
+			int levels = MapFile.MapSize.Levs;
+
 			if (!RouteNodeCollection.IsOutsideMap(
-												MapFile.Routes[link.Destination],
+												node,
 												MapFile.MapSize.Cols,
 												MapFile.MapSize.Rows,
-												MapFile.MapSize.Levs))
+												levels))
 			{
 				OgnodeId = NodeSelected.Index; // store the current nodeId for the og-button.
 
@@ -1223,13 +1227,22 @@ namespace MapView.Forms.MapObservers.RouteViews
 				SpotGoDestination(slot); // highlight back to the startnode.
 			}
 			else
+			{
+				string info = String.Format(
+										System.Globalization.CultureInfo.CurrentCulture,
+										"Destination node is outside the Map's boundaries.{0}{0}"
+											+ "id {1} : {2}",
+										Environment.NewLine,
+										dest,
+										node.GetLocationString(levels));
 				MessageBox.Show(
-							"Destination node is outside the Map's boundaries.",
+							info,
 							"Error",
 							MessageBoxButtons.OK,
 							MessageBoxIcon.Error,
 							MessageBoxDefaultButton.Button1,
 							0);
+			}
 		}
 
 		/// <summary>
@@ -1666,7 +1679,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				title = "Warning";
 				info  = String.Format(
 									System.Globalization.CultureInfo.CurrentCulture,
-									"The following route-{0} an invalid NodeRank ->{1}",
+									"The following route-{0} an invalid NodeRank.{1}",
 									(invalids.Count == 1) ? "node has"
 														  : "nodes have",
 									Environment.NewLine);

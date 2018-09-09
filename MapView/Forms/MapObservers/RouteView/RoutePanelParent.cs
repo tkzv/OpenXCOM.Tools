@@ -107,10 +107,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			get { return _lozSelected; }
 		}
 
-		private readonly GraphicsPath _lozHighlighted = new GraphicsPath(); // go-button lozenge
-		internal protected GraphicsPath LozHighlighted
+		private readonly GraphicsPath _lozSpotted = new GraphicsPath(); // go-button lozenge
+		internal protected GraphicsPath LozSpotted
 		{
-			get { return _lozHighlighted; }
+			get { return _lozSpotted; }
 		}
 
 		private readonly DrawBlobService _blobService = new DrawBlobService();
@@ -371,7 +371,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			Refresh();
 		}
 
-		internal protected void PathHighlightedLozenge(int x, int y)
+		internal protected void PathSpottedLozenge(int x, int y)
 		{
 			int halfWidth  = BlobService.HalfWidth;
 			int halfHeight = BlobService.HalfHeight;
@@ -381,11 +381,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 			var p2 = new Point(x,             y + halfHeight * 2);
 			var p3 = new Point(x - halfWidth, y + halfHeight);
 
-			LozHighlighted.Reset();
-			LozHighlighted.AddLine(p0, p1);
-			LozHighlighted.AddLine(p1, p2);
-			LozHighlighted.AddLine(p2, p3);
-			LozHighlighted.CloseFigure();
+			LozSpotted.Reset();
+			LozSpotted.AddLine(p0, p1);
+			LozSpotted.AddLine(p1, p2);
+			LozSpotted.AddLine(p2, p3);
+			LozSpotted.CloseFigure();
 		}
 
 		/// <summary>

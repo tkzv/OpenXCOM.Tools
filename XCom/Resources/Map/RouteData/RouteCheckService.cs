@@ -32,10 +32,10 @@ namespace XCom.Resources.Map.RouteData
 
 				if (invalids.Count != 0)
 				{
-					string info  = String.Format(
+					string info = String.Format(
 											System.Globalization.CultureInfo.CurrentCulture,
 											"There {0} " + invalids.Count + " route-node{1} outside"
-												+ " the bounds of this Map. Do you want {2} deleted ?{3}",
+												+ " the bounds of this Map.{3}Do you want {2} deleted ?{3}",
 											(invalids.Count == 1) ? "is" : "are",
 											(invalids.Count == 1) ? ""   : "s",
 											(invalids.Count == 1) ? "it" : "them",
@@ -99,7 +99,7 @@ namespace XCom.Resources.Map.RouteData
 					info  = String.Format(
 										System.Globalization.CultureInfo.CurrentCulture,
 										"There {0} " + invalids.Count + " route-node{1} outside"
-											+ " the bounds of this Map. Do you want {2} deleted ?{3}",
+											+ " the bounds of this Map.{3}Do you want {2} deleted ?{3}",
 										(invalids.Count == 1) ? "is" : "are",
 										(invalids.Count == 1) ? ""   : "s",
 										(invalids.Count == 1) ? "it" : "them",

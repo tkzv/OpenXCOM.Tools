@@ -70,6 +70,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsmiOptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiAllNodesRank0 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiClearLinkData = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsddbDebug = new System.Windows.Forms.ToolStripDropDownButton();
 			this.tsmiCheckNodeRanks = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiCheckOobNodes = new System.Windows.Forms.ToolStripMenuItem();
 			this.gbLinkData = new System.Windows.Forms.GroupBox();
@@ -88,7 +89,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.labelAttack = new System.Windows.Forms.Label();
 			this.gbTileData = new System.Windows.Forms.GroupBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.tsddbDebug = new System.Windows.Forms.ToolStripDropDownButton();
 			this.tsMain.SuspendLayout();
 			this.gbLinkData.SuspendLayout();
 			this.pnlDataFields.SuspendLayout();
@@ -162,7 +162,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelLink5.Location = new System.Drawing.Point(5, 130);
 			this.labelLink5.Name = "labelLink5";
-			this.labelLink5.Size = new System.Drawing.Size(40, 15);
+			this.labelLink5.Size = new System.Drawing.Size(35, 15);
 			this.labelLink5.TabIndex = 15;
 			this.labelLink5.Tag = "L5";
 			this.labelLink5.Text = "Link5";
@@ -173,7 +173,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelLink4.Location = new System.Drawing.Point(5, 105);
 			this.labelLink4.Name = "labelLink4";
-			this.labelLink4.Size = new System.Drawing.Size(40, 15);
+			this.labelLink4.Size = new System.Drawing.Size(35, 15);
 			this.labelLink4.TabIndex = 14;
 			this.labelLink4.Tag = "L4";
 			this.labelLink4.Text = "Link4";
@@ -184,7 +184,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelLink3.Location = new System.Drawing.Point(5, 80);
 			this.labelLink3.Name = "labelLink3";
-			this.labelLink3.Size = new System.Drawing.Size(40, 15);
+			this.labelLink3.Size = new System.Drawing.Size(35, 15);
 			this.labelLink3.TabIndex = 13;
 			this.labelLink3.Tag = "L3";
 			this.labelLink3.Text = "Link3";
@@ -195,7 +195,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelLink2.Location = new System.Drawing.Point(5, 55);
 			this.labelLink2.Name = "labelLink2";
-			this.labelLink2.Size = new System.Drawing.Size(40, 15);
+			this.labelLink2.Size = new System.Drawing.Size(35, 15);
 			this.labelLink2.TabIndex = 12;
 			this.labelLink2.Tag = "L2";
 			this.labelLink2.Text = "Link2";
@@ -206,7 +206,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelLink1.Location = new System.Drawing.Point(5, 30);
 			this.labelLink1.Name = "labelLink1";
-			this.labelLink1.Size = new System.Drawing.Size(40, 15);
+			this.labelLink1.Size = new System.Drawing.Size(35, 15);
 			this.labelLink1.TabIndex = 11;
 			this.labelLink1.Tag = "L1";
 			this.labelLink1.Text = "Link1";
@@ -218,7 +218,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbPatrol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbPatrol.Location = new System.Drawing.Point(105, 95);
 			this.cbPatrol.Name = "cbPatrol";
-			this.cbPatrol.Size = new System.Drawing.Size(150, 20);
+			this.cbPatrol.Size = new System.Drawing.Size(145, 20);
 			this.cbPatrol.TabIndex = 8;
 			this.toolTip1.SetToolTip(this.cbPatrol, "desire for an aLien to patrol here");
 			this.cbPatrol.SelectedIndexChanged += new System.EventHandler(this.OnPatrolPrioritySelectedIndexChanged);
@@ -228,7 +228,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbRank.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbRank.Location = new System.Drawing.Point(105, 45);
 			this.cbRank.Name = "cbRank";
-			this.cbRank.Size = new System.Drawing.Size(150, 20);
+			this.cbRank.Size = new System.Drawing.Size(145, 20);
 			this.cbRank.TabIndex = 7;
 			this.toolTip1.SetToolTip(this.cbRank, "faction or rank (if aLiens) that may spawn/patrol here. Nodes for aLiens outside " +
 		"their UFO or base are usually set to 0");
@@ -239,7 +239,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbType.Location = new System.Drawing.Point(105, 20);
 			this.cbType.Name = "cbType";
-			this.cbType.Size = new System.Drawing.Size(150, 20);
+			this.cbType.Size = new System.Drawing.Size(145, 20);
 			this.cbType.TabIndex = 6;
 			this.toolTip1.SetToolTip(this.cbType, "characteristics of units that may patrol (or spawn at) the node");
 			this.cbType.SelectedIndexChanged += new System.EventHandler(this.OnUnitTypeSelectedIndexChanged);
@@ -248,7 +248,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelSpawnWeight.Location = new System.Drawing.Point(10, 75);
 			this.labelSpawnWeight.Name = "labelSpawnWeight";
-			this.labelSpawnWeight.Size = new System.Drawing.Size(90, 15);
+			this.labelSpawnWeight.Size = new System.Drawing.Size(85, 15);
 			this.labelSpawnWeight.TabIndex = 5;
 			this.labelSpawnWeight.Text = "Spawn Weight";
 			this.labelSpawnWeight.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -258,7 +258,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelPriority.Location = new System.Drawing.Point(10, 100);
 			this.labelPriority.Name = "labelPriority";
-			this.labelPriority.Size = new System.Drawing.Size(90, 15);
+			this.labelPriority.Size = new System.Drawing.Size(85, 15);
 			this.labelPriority.TabIndex = 3;
 			this.labelPriority.Text = "Patrol Priority";
 			this.labelPriority.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -268,7 +268,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelSpawnRank.Location = new System.Drawing.Point(10, 50);
 			this.labelSpawnRank.Name = "labelSpawnRank";
-			this.labelSpawnRank.Size = new System.Drawing.Size(90, 15);
+			this.labelSpawnRank.Size = new System.Drawing.Size(85, 15);
 			this.labelSpawnRank.TabIndex = 2;
 			this.labelSpawnRank.Text = "Node Rank";
 			this.labelSpawnRank.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -279,7 +279,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelUnitType.Location = new System.Drawing.Point(10, 25);
 			this.labelUnitType.Name = "labelUnitType";
-			this.labelUnitType.Size = new System.Drawing.Size(90, 15);
+			this.labelUnitType.Size = new System.Drawing.Size(85, 15);
 			this.labelUnitType.TabIndex = 1;
 			this.labelUnitType.Text = "Unit Type";
 			this.labelUnitType.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -290,7 +290,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbSpawn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbSpawn.Location = new System.Drawing.Point(105, 70);
 			this.cbSpawn.Name = "cbSpawn";
-			this.cbSpawn.Size = new System.Drawing.Size(150, 20);
+			this.cbSpawn.Size = new System.Drawing.Size(145, 20);
 			this.cbSpawn.TabIndex = 10;
 			this.toolTip1.SetToolTip(this.cbSpawn, "desire for an aLien to spawn here");
 			this.cbSpawn.SelectedIndexChanged += new System.EventHandler(this.OnSpawnWeightSelectedIndexChanged);
@@ -350,10 +350,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// tbLink5Dist
 			// 
-			this.tbLink5Dist.Location = new System.Drawing.Point(240, 125);
+			this.tbLink5Dist.Location = new System.Drawing.Point(230, 125);
 			this.tbLink5Dist.Name = "tbLink5Dist";
 			this.tbLink5Dist.ReadOnly = true;
-			this.tbLink5Dist.Size = new System.Drawing.Size(40, 19);
+			this.tbLink5Dist.Size = new System.Drawing.Size(50, 19);
 			this.tbLink5Dist.TabIndex = 32;
 			this.tbLink5Dist.Tag = "L5";
 			this.tbLink5Dist.WordWrap = false;
@@ -362,10 +362,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// tbLink4Dist
 			// 
-			this.tbLink4Dist.Location = new System.Drawing.Point(240, 100);
+			this.tbLink4Dist.Location = new System.Drawing.Point(230, 100);
 			this.tbLink4Dist.Name = "tbLink4Dist";
 			this.tbLink4Dist.ReadOnly = true;
-			this.tbLink4Dist.Size = new System.Drawing.Size(40, 19);
+			this.tbLink4Dist.Size = new System.Drawing.Size(50, 19);
 			this.tbLink4Dist.TabIndex = 31;
 			this.tbLink4Dist.Tag = "L4";
 			this.tbLink4Dist.WordWrap = false;
@@ -374,10 +374,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// tbLink3Dist
 			// 
-			this.tbLink3Dist.Location = new System.Drawing.Point(240, 75);
+			this.tbLink3Dist.Location = new System.Drawing.Point(230, 75);
 			this.tbLink3Dist.Name = "tbLink3Dist";
 			this.tbLink3Dist.ReadOnly = true;
-			this.tbLink3Dist.Size = new System.Drawing.Size(40, 19);
+			this.tbLink3Dist.Size = new System.Drawing.Size(50, 19);
 			this.tbLink3Dist.TabIndex = 30;
 			this.tbLink3Dist.Tag = "L3";
 			this.tbLink3Dist.WordWrap = false;
@@ -386,10 +386,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// tbLink2Dist
 			// 
-			this.tbLink2Dist.Location = new System.Drawing.Point(240, 50);
+			this.tbLink2Dist.Location = new System.Drawing.Point(230, 50);
 			this.tbLink2Dist.Name = "tbLink2Dist";
 			this.tbLink2Dist.ReadOnly = true;
-			this.tbLink2Dist.Size = new System.Drawing.Size(40, 19);
+			this.tbLink2Dist.Size = new System.Drawing.Size(50, 19);
 			this.tbLink2Dist.TabIndex = 29;
 			this.tbLink2Dist.Tag = "L2";
 			this.tbLink2Dist.WordWrap = false;
@@ -398,10 +398,10 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// tbLink1Dist
 			// 
-			this.tbLink1Dist.Location = new System.Drawing.Point(240, 25);
+			this.tbLink1Dist.Location = new System.Drawing.Point(230, 25);
 			this.tbLink1Dist.Name = "tbLink1Dist";
 			this.tbLink1Dist.ReadOnly = true;
-			this.tbLink1Dist.Size = new System.Drawing.Size(40, 19);
+			this.tbLink1Dist.Size = new System.Drawing.Size(50, 19);
 			this.tbLink1Dist.TabIndex = 28;
 			this.tbLink1Dist.Tag = "L1";
 			this.tbLink1Dist.WordWrap = false;
@@ -410,9 +410,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			// labelDist
 			// 
-			this.labelDist.Location = new System.Drawing.Point(240, 10);
+			this.labelDist.Location = new System.Drawing.Point(230, 10);
 			this.labelDist.Name = "labelDist";
-			this.labelDist.Size = new System.Drawing.Size(40, 15);
+			this.labelDist.Size = new System.Drawing.Size(30, 15);
 			this.labelDist.TabIndex = 27;
 			this.labelDist.Text = "Dist";
 			this.toolTip1.SetToolTip(this.labelDist, "not used in 0penXcom");
@@ -422,7 +422,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink5UnitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink5UnitType.Location = new System.Drawing.Point(125, 125);
 			this.cbLink5UnitType.Name = "cbLink5UnitType";
-			this.cbLink5UnitType.Size = new System.Drawing.Size(110, 20);
+			this.cbLink5UnitType.Size = new System.Drawing.Size(100, 20);
 			this.cbLink5UnitType.TabIndex = 26;
 			this.cbLink5UnitType.Tag = "L5";
 			this.cbLink5UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLinkUnitTypeSelectedIndexChanged);
@@ -434,7 +434,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink4UnitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink4UnitType.Location = new System.Drawing.Point(125, 100);
 			this.cbLink4UnitType.Name = "cbLink4UnitType";
-			this.cbLink4UnitType.Size = new System.Drawing.Size(110, 20);
+			this.cbLink4UnitType.Size = new System.Drawing.Size(100, 20);
 			this.cbLink4UnitType.TabIndex = 25;
 			this.cbLink4UnitType.Tag = "L4";
 			this.cbLink4UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLinkUnitTypeSelectedIndexChanged);
@@ -446,7 +446,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink3UnitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink3UnitType.Location = new System.Drawing.Point(125, 75);
 			this.cbLink3UnitType.Name = "cbLink3UnitType";
-			this.cbLink3UnitType.Size = new System.Drawing.Size(110, 20);
+			this.cbLink3UnitType.Size = new System.Drawing.Size(100, 20);
 			this.cbLink3UnitType.TabIndex = 24;
 			this.cbLink3UnitType.Tag = "L3";
 			this.cbLink3UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLinkUnitTypeSelectedIndexChanged);
@@ -458,7 +458,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink2UnitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink2UnitType.Location = new System.Drawing.Point(125, 50);
 			this.cbLink2UnitType.Name = "cbLink2UnitType";
-			this.cbLink2UnitType.Size = new System.Drawing.Size(110, 20);
+			this.cbLink2UnitType.Size = new System.Drawing.Size(100, 20);
 			this.cbLink2UnitType.TabIndex = 23;
 			this.cbLink2UnitType.Tag = "L2";
 			this.cbLink2UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLinkUnitTypeSelectedIndexChanged);
@@ -470,7 +470,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbLink1UnitType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbLink1UnitType.Location = new System.Drawing.Point(125, 25);
 			this.cbLink1UnitType.Name = "cbLink1UnitType";
-			this.cbLink1UnitType.Size = new System.Drawing.Size(110, 20);
+			this.cbLink1UnitType.Size = new System.Drawing.Size(100, 20);
 			this.cbLink1UnitType.TabIndex = 22;
 			this.cbLink1UnitType.Tag = "L1";
 			this.cbLink1UnitType.SelectedIndexChanged += new System.EventHandler(this.OnLinkUnitTypeSelectedIndexChanged);
@@ -481,7 +481,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelUnitInfo.Location = new System.Drawing.Point(125, 10);
 			this.labelUnitInfo.Name = "labelUnitInfo";
-			this.labelUnitInfo.Size = new System.Drawing.Size(40, 15);
+			this.labelUnitInfo.Size = new System.Drawing.Size(30, 15);
 			this.labelUnitInfo.TabIndex = 21;
 			this.labelUnitInfo.Text = "Unit Type";
 			this.toolTip1.SetToolTip(this.labelUnitInfo, "not used in 0penXcom");
@@ -536,23 +536,50 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.tsmiOptions.Name = "tsmiOptions";
 			this.tsmiOptions.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.tsmiOptions.Size = new System.Drawing.Size(226, 22);
+			this.tsmiOptions.Size = new System.Drawing.Size(165, 22);
 			this.tsmiOptions.Text = "Options";
 			this.tsmiOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
 			// tsmiAllNodesRank0
 			// 
 			this.tsmiAllNodesRank0.Name = "tsmiAllNodesRank0";
-			this.tsmiAllNodesRank0.Size = new System.Drawing.Size(226, 22);
+			this.tsmiAllNodesRank0.Size = new System.Drawing.Size(165, 22);
 			this.tsmiAllNodesRank0.Text = "All Nodes Rank 0";
 			this.tsmiAllNodesRank0.Click += new System.EventHandler(this.OnAllNodeRank0Click);
 			// 
 			// tsmiClearLinkData
 			// 
 			this.tsmiClearLinkData.Name = "tsmiClearLinkData";
-			this.tsmiClearLinkData.Size = new System.Drawing.Size(226, 22);
+			this.tsmiClearLinkData.Size = new System.Drawing.Size(165, 22);
 			this.tsmiClearLinkData.Text = "Clear Link data";
 			this.tsmiClearLinkData.Click += new System.EventHandler(this.OnClearLinkDataClick);
+			// 
+			// tsddbDebug
+			// 
+			this.tsddbDebug.AutoToolTip = false;
+			this.tsddbDebug.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.tsddbDebug.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.tsmiCheckNodeRanks,
+			this.tsmiCheckOobNodes});
+			this.tsddbDebug.Image = ((System.Drawing.Image)(resources.GetObject("tsddbDebug.Image")));
+			this.tsddbDebug.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsddbDebug.Name = "tsddbDebug";
+			this.tsddbDebug.Size = new System.Drawing.Size(53, 22);
+			this.tsddbDebug.Text = "debug";
+			// 
+			// tsmiCheckNodeRanks
+			// 
+			this.tsmiCheckNodeRanks.Name = "tsmiCheckNodeRanks";
+			this.tsmiCheckNodeRanks.Size = new System.Drawing.Size(226, 22);
+			this.tsmiCheckNodeRanks.Text = "Check Node ranks";
+			this.tsmiCheckNodeRanks.Click += new System.EventHandler(this.OnCheckNodeRanksClick);
+			// 
+			// tsmiCheckOobNodes
+			// 
+			this.tsmiCheckOobNodes.Name = "tsmiCheckOobNodes";
+			this.tsmiCheckOobNodes.Size = new System.Drawing.Size(226, 22);
+			this.tsmiCheckOobNodes.Text = "Check Out of Bounds nodes";
+			this.tsmiCheckOobNodes.Click += new System.EventHandler(this.OnCheckOobNodesClick);
 			// 
 			// gbLinkData
 			// 
@@ -746,7 +773,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.cbAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbAttack.Location = new System.Drawing.Point(105, 120);
 			this.cbAttack.Name = "cbAttack";
-			this.cbAttack.Size = new System.Drawing.Size(150, 20);
+			this.cbAttack.Size = new System.Drawing.Size(145, 20);
 			this.cbAttack.TabIndex = 8;
 			this.toolTip1.SetToolTip(this.cbAttack, "attacts an aLien to shoot at XCom base tiles");
 			this.cbAttack.SelectedIndexChanged += new System.EventHandler(this.OnBaseAttackSelectedIndexChanged);
@@ -755,7 +782,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.labelAttack.Location = new System.Drawing.Point(10, 125);
 			this.labelAttack.Name = "labelAttack";
-			this.labelAttack.Size = new System.Drawing.Size(90, 15);
+			this.labelAttack.Size = new System.Drawing.Size(85, 15);
 			this.labelAttack.TabIndex = 3;
 			this.labelAttack.Text = "Base Attack";
 			this.labelAttack.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -780,33 +807,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.toolTip1.InitialDelay = 300;
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.UseAnimation = false;
-			// 
-			// tsddbDebug
-			// 
-			this.tsddbDebug.AutoToolTip = false;
-			this.tsddbDebug.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tsddbDebug.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.tsmiCheckNodeRanks,
-			this.tsmiCheckOobNodes});
-			this.tsddbDebug.Image = ((System.Drawing.Image)(resources.GetObject("tsddbDebug.Image")));
-			this.tsddbDebug.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsddbDebug.Name = "tsddbDebug";
-			this.tsddbDebug.Size = new System.Drawing.Size(53, 22);
-			this.tsddbDebug.Text = "debug";
-			// 
-			// tsmiCheckNodeRanks
-			// 
-			this.tsmiCheckNodeRanks.Name = "tsmiCheckNodeRanks";
-			this.tsmiCheckNodeRanks.Size = new System.Drawing.Size(226, 22);
-			this.tsmiCheckNodeRanks.Text = "Check Node ranks";
-			this.tsmiCheckNodeRanks.Click += new System.EventHandler(this.OnCheckNodeRanksClick);
-			// 
-			// tsmiCheckOobNodes
-			// 
-			this.tsmiCheckOobNodes.Name = "tsmiCheckOobNodes";
-			this.tsmiCheckOobNodes.Size = new System.Drawing.Size(226, 22);
-			this.tsmiCheckOobNodes.Text = "Check Out of Bounds nodes";
-			this.tsmiCheckOobNodes.Click += new System.EventHandler(this.OnCheckOobNodesClick);
 			// 
 			// RouteView
 			// 

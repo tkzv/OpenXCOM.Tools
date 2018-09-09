@@ -22,11 +22,11 @@ namespace MapView.Forms.MapObservers.TopViews
 		private readonly GraphicsPath _lozSelector = new GraphicsPath(); // mouse-over cursor lozenge
 		private readonly GraphicsPath _lozSelected = new GraphicsPath(); // selected tile or tiles being drag-selected
 
-//		[Browsable(false), DefaultValue(null)]
+		[Browsable(false), DefaultValue(null)]
 		internal protected Dictionary<string, Pen> TopPens
 		{ get; set; }
 
-//		[Browsable(false), DefaultValue(null)]
+		[Browsable(false), DefaultValue(null)]
 		internal protected Dictionary<string, SolidBrush> TopBrushes
 		{ get; set; }
 
@@ -39,7 +39,7 @@ namespace MapView.Forms.MapObservers.TopViews
 
 		private int _originX;	// since the lozenge is drawn with its Origin at 0,0 of the
 								// panel, the entire lozenge needs to be displaced to the right.
-		private int _originY;	// But this isn't really used. It's set to 'OffsetY' and stays that way.
+//		private int _originY;	// But this isn't really used. It's set to 'OffsetY' and stays that way. -> done.
 
 
 		private readonly DrawBlobService _blobService = new DrawBlobService();
@@ -48,7 +48,7 @@ namespace MapView.Forms.MapObservers.TopViews
 			get { return _blobService; }
 		}
 
-//		[Browsable(false), DefaultValue(null)]
+		[Browsable(false), DefaultValue(null)]
 		public override MapFileBase MapBase
 		{
 			set
@@ -140,7 +140,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				_blobService.HalfHeight = halfHeight;
 
 				_originX = OffsetX + MapBase.MapSize.Rows * halfWidth;
-				_originY = OffsetY;
+//				_originY = OffsetY;
 
 				if (halfWidthPre != halfWidth)
 				{
@@ -173,16 +173,16 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			var p0 = new Point(
 							_originX + (start.X - start.Y) * halfWidth,
-							_originY + (start.X + start.Y) * halfHeight);
+							OffsetY  + (start.X + start.Y) * halfHeight);
 			var p1 = new Point(
 							_originX + (end.X   - start.Y) * halfWidth  + halfWidth,
-							_originY + (end.X   + start.Y) * halfHeight + halfHeight);
+							OffsetY  + (end.X   + start.Y) * halfHeight + halfHeight);
 			var p2 = new Point(
 							_originX + (end.X   - end.Y)   * halfWidth,
-							_originY + (end.X   + end.Y)   * halfHeight + halfHeight * 2);
+							OffsetY  + (end.X   + end.Y)   * halfHeight + halfHeight * 2);
 			var p3 = new Point(
 							_originX + (start.X - end.Y)   * halfWidth  - halfWidth,
-							_originY + (start.X + end.Y)   * halfHeight + halfHeight);
+							OffsetY  + (start.X + end.Y)   * halfHeight + halfHeight);
 
 			_lozSelected.Reset();
 			_lozSelected.AddLine(p0, p1);
@@ -240,7 +240,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				for (int
 						r = 0,
 							startX = _originX,
-							startY = _originY;
+							startY = OffsetY;
 						r != MapBase.MapSize.Rows;
 						++r,
 							startX -= halfWidth,
@@ -266,17 +266,17 @@ namespace MapView.Forms.MapObservers.TopViews
 					graphics.DrawLine(
 									TopPens[TopView.GridColor],
 									_originX - i * halfWidth,
-									_originY + i * halfHeight,
+									OffsetY  + i * halfHeight,
 									_originX + (MapBase.MapSize.Cols - i) * halfWidth,
-									_originY + (MapBase.MapSize.Cols + i) * halfHeight);
+									OffsetY  + (MapBase.MapSize.Cols + i) * halfHeight);
 
 				for (int i = 0; i <= MapBase.MapSize.Cols; ++i) // draw vertical grid-lines (ie. lowerleft to upperright)
 					graphics.DrawLine(
 									TopPens[TopView.GridColor],
 									_originX + i * halfWidth,
-									_originY + i * halfHeight,
+									OffsetY  + i * halfHeight,
 									_originX + i * halfWidth  - MapBase.MapSize.Rows * halfWidth,
-									_originY + i * halfHeight + MapBase.MapSize.Rows * halfHeight);
+									OffsetY  + i * halfHeight + MapBase.MapSize.Rows * halfHeight);
 
 
 				// draw the selector lozenge ->
@@ -286,7 +286,7 @@ namespace MapView.Forms.MapObservers.TopViews
 				{
 					PathSelectorLozenge(
 									_originX + (_col - _row) * halfWidth,
-									_originY + (_col + _row) * halfHeight);
+									OffsetY  + (_col + _row) * halfHeight);
 					graphics.DrawPath(TopPens[TopView.SelectorColor], _lozSelector);
 				}
 
@@ -361,7 +361,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		private Point GetTileLocation(int x, int y)
 		{
 			x -= _originX;
-			y -= _originY;
+			y -= OffsetY;
 
 			double halfWidth  = _blobService.HalfWidth;
 			double halfHeight = _blobService.HalfHeight;
