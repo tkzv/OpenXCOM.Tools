@@ -8,11 +8,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle ("ConfigConverter")]
-[assembly: AssemblyDescription ("converts old-style configuration files for MapView")]
+[assembly: AssemblyDescription ("converts old-style configuration files for MapViewII")]
 [assembly: AssemblyConfiguration ("")]
 [assembly: AssemblyCompany ("the mutons")]
 [assembly: AssemblyProduct ("ConfigConverter")]
-[assembly: AssemblyCopyright ("2017")]
+[assembly: AssemblyCopyright ("2017-2018")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 // This sets the default COM visibility of types in the assembly to invisible.

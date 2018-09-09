@@ -33,7 +33,6 @@ namespace MapView
 #endif
 
 			DateTime dt = Assembly.GetExecutingAssembly().GetLinkerTime();
-			// what a fucking pain in the ass.
 
 			lblVersion.Text += Environment.NewLine + Environment.NewLine
 							+ String.Format(
@@ -132,6 +131,7 @@ namespace MapView
 	/// <summary>
 	/// Lifted from StackOverflow.com:
 	/// https://stackoverflow.com/questions/1600962/displaying-the-build-date#answer-1600990
+	/// - what a fucking pain in the ass.
 	/// </summary>
 	public static class DateTimeExtension
 	{
