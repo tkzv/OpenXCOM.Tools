@@ -12,7 +12,9 @@ namespace XCom.Interfaces.Base
 		MapFileBase MapBase
 		{ set; get;}
 
-		Dictionary<string, IMapObserver> MoreObservers
+		// NOTE: This is not even used by MapObserverControl1 - only by
+		// MapObserverControl0 (for TopViewPanel and QuadrantsPanel).
+		Dictionary<string, IMapObserver> Panels
 		{ get; }
 
 //		DSShared.Windows.RegistryInfo RegistryInfo
@@ -44,7 +46,6 @@ namespace XCom.Interfaces.Base
 			get { return _baseTile; }
 		}
 
-
 		/// <summary>
 		/// cTor.
 		/// </summary>
@@ -69,7 +70,6 @@ namespace XCom.Interfaces.Base
 		{
 			get { return _level; }
 		}
-
 
 		/// <summary>
 		/// cTor.

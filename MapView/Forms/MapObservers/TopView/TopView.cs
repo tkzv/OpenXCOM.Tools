@@ -125,8 +125,8 @@ namespace MapView.Forms.MapObservers.TopViews
 
 			_topViewPanel.QuadrantsPanel = QuadrantsPanel;
 
-			MoreObservers.Add("QuadrantsPanel", QuadrantsPanel);
-			MoreObservers.Add("TopViewPanel", _topViewPanel);
+			Panels.Add("QuadrantsPanel", QuadrantsPanel);
+			Panels.Add("TopViewPanel", _topViewPanel);
 
 			ResumeLayout();
 		}

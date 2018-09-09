@@ -1025,7 +1025,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 				btnGo.Enabled = enable;
 				btnGo.Text = text ? Go : String.Empty;
 
-				RoutePanel.HighlightedPosition = new Point(-1, -1);
+				RoutePanel.SpotPosition = new Point(-1, -1);
 
 				if (Tag as String == "ROUTE")
 				{
@@ -1056,11 +1056,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// TopRouteView(Route) or vice versa. The fields are actually in the
 		/// other viewer.
 		/// </summary>
-		/// <param name="slot"></param>
-		/// <param name="dest"></param>
-		/// <param name="dist"></param>
-		/// <param name="enable"></param>
-		/// <param name="text"></param>
+		/// <param name="slot">the link-slot's id</param>
+		/// <param name="dest">the selected-index of the destination</param>
+		/// <param name="dist">the distance text</param>
+		/// <param name="enable">true to enable the Go button</param>
+		/// <param name="text">the Go button text</param>
 		private void TransferDestination(int slot, int dest, string dist, bool enable, string text)
 		{
 			ComboBox cbDest;
@@ -1324,7 +1324,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 						break;
 				}
 
-				RoutePanel.HighlightedPosition = new Point(c, r);
+				RoutePanel.SpotPosition = new Point(c, r);
 				Refresh();
 			}
 			}
@@ -1332,7 +1332,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		private void OnLinkMouseLeave(object sender, EventArgs e)
 		{
-			RoutePanel.HighlightedPosition = new Point(-1, -1);
+			RoutePanel.SpotPosition = new Point(-1, -1);
 			Refresh();
 		}
 
@@ -1355,7 +1355,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			if (OgnodeId < MapFile.Routes.Length) // in case nodes were deleted.
 			{
 				var node = MapFile.Routes[OgnodeId];
-				RoutePanel.HighlightedPosition = new Point(node.Col, node.Row);
+				RoutePanel.SpotPosition = new Point(node.Col, node.Row);
 				Refresh();
 			}
 		}

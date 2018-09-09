@@ -18,12 +18,12 @@ namespace MapView
 			IMapObserver
 	{
 		#region IMapObserver requirements
-
-		private readonly Dictionary<string, IMapObserver> _observersDictionary = new Dictionary<string, IMapObserver>();
+		// NOTE: This is not used.
+		private readonly Dictionary<string, IMapObserver> _panels = new Dictionary<string, IMapObserver>();
 		[Browsable(false)]
-		public Dictionary<string, IMapObserver> MoreObservers
+		public Dictionary<string, IMapObserver> Panels
 		{
-			get { return _observersDictionary; }
+			get { return _panels; }
 		}
 
 		private MapFileBase _mapBase;
@@ -45,9 +45,6 @@ namespace MapView
 		/// <param name="args"></param>
 		public virtual void OnLocationSelectedObserver(LocationSelectedEventArgs args)
 		{
-			//XCom.LogFile.WriteLine("");
-			//XCom.LogFile.WriteLine("MapObserverControl1.OnLocationSelectedObserver");
-
 //			Refresh();
 		}
 
@@ -85,11 +82,10 @@ namespace MapView
 //				value.RegistrySaveEvent += (sender, e) => OnRegistrySettingsSave(e);
 //			}
 //		}
-
 		#endregion
 
 
-//		protected virtual void OnRegistrySettingsLoad(RegistryEventArgs e) {}
-//		protected virtual void OnRegistrySettingsSave(RegistryEventArgs e) {}
+//		protected virtual void OnRegistrySettingsLoad(RegistryEventArgs e){}
+//		protected virtual void OnRegistrySettingsSave(RegistryEventArgs e){}
 	}
 }

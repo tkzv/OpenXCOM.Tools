@@ -61,6 +61,20 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#endregion
 
 
+		#region Properties
+		private Point _spot = new Point(-1, -1);
+		/// <summary>
+		/// The location of the tile that is highlighted by a mouse-overed Go
+		/// button.
+		/// </summary>
+		internal Point SpotPosition
+		{
+			private get { return _spot; }
+			set { _spot = value; }
+		}
+		#endregion
+
+
 		/// <summary>
 		/// You know the drill ... Paint it, Black
 		/// black as night
@@ -121,11 +135,11 @@ namespace MapView.Forms.MapObservers.RouteViews
 											RoutePens[RouteView.GridLineColor].Width + 1),
 									LozSelected);
 
-					if (HighlightedPosition.X > -1)
+					if (SpotPosition.X > -1)
 					{
 						PathHighlightedLozenge(
-										Origin.X + (HighlightedPosition.X - HighlightedPosition.Y) * DrawAreaWidth,
-										Origin.Y + (HighlightedPosition.X + HighlightedPosition.Y) * DrawAreaHeight);
+										Origin.X + (SpotPosition.X - SpotPosition.Y) * DrawAreaWidth,
+										Origin.Y + (SpotPosition.X + SpotPosition.Y) * DrawAreaHeight);
 						_graphics.DrawPath(
 										new Pen( // TODO: make this a separate Option.
 												RouteBrushes[RouteView.SelectedNodeColor].Color,
@@ -317,12 +331,12 @@ namespace MapView.Forms.MapObservers.RouteViews
 					{
 						var pen0 = _penLinkSelected;
 
-						if (HighlightedPosition.X != -1)
+						if (SpotPosition.X != -1)
 						{
 							if (nodeDst != null)
 							{
-								if (   HighlightedPosition.X != nodeDst.Col
-									|| HighlightedPosition.Y != nodeDst.Row)
+								if (   SpotPosition.X != nodeDst.Col
+									|| SpotPosition.Y != nodeDst.Row)
 								{
 									pen0 = _penLinkUnselected;
 								}
@@ -332,19 +346,19 @@ namespace MapView.Forms.MapObservers.RouteViews
 								switch (link.Destination)	// see RouteView.HighlightDestinationNode() for
 								{							// def'n of the following highlighted-positions
 									case Link.ExitNorth:
-										if (HighlightedPosition.X != -2)
+										if (SpotPosition.X != -2)
 											pen0 = _penLinkUnselected;
 										break;
 									case Link.ExitEast:
-										if (HighlightedPosition.X != -3)
+										if (SpotPosition.X != -3)
 											pen0 = _penLinkUnselected;
 										break;
 									case Link.ExitSouth:
-										if (HighlightedPosition.X != -4)
+										if (SpotPosition.X != -4)
 											pen0 = _penLinkUnselected;
 										break;
 									case Link.ExitWest:
-										if (HighlightedPosition.X != -5)
+										if (SpotPosition.X != -5)
 											pen0 = _penLinkUnselected;
 										break;
 								}

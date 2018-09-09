@@ -33,7 +33,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 		#region Fields
 		internal protected int _overCol = -1; // these track the location of the last mouse-overed tile
-		internal protected int _overRow = -1; // NOTE: could be subsumed into 'RoutePanel.CursorPosition' except ...
+		internal protected int _overRow = -1; // NOTE: could be subsumed into 'CursorPosition' except ...
 		#endregion
 
 
@@ -49,7 +49,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		#region Properties
 		private Point _pos = new Point(-1, -1);
 		/// <summary>
-		/// Tracks the screen-position of the mouse cursor. Used to print
+		/// Tracks the tile-position of the mouse cursor. Used to print
 		/// over-info, overlay-info, and to position the Overlay.
 		/// </summary>
 		public Point CursorPosition
@@ -67,16 +67,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 				_mapFile = value;
 				OnResize(null);
 			}
-		}
-
-		private Point _highlight = new Point(-1, -1);
-		/// <summary>
-		/// Marks the tile that is highlighted by a mouse-overed Go button.
-		/// </summary>
-		internal protected Point HighlightedPosition
-		{
-			protected get { return _highlight; } // ... whatever.
-			set { _highlight = value; }
 		}
 
 		/// <summary>

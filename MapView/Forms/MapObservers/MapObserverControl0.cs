@@ -18,10 +18,10 @@ namespace MapView
 			IMapObserver
 	{
 		#region IMapObserver requirements
-		private readonly Dictionary<string, IMapObserver> _observersDictionary = new Dictionary<string, IMapObserver>();
-		public Dictionary<string, IMapObserver> MoreObservers
+		private readonly Dictionary<string, IMapObserver> _panels = new Dictionary<string, IMapObserver>();
+		public Dictionary<string, IMapObserver> Panels
 		{
-			get { return _observersDictionary; }
+			get { return _panels; }
 		}
 
 		private MapFileBase _mapBase;
@@ -50,7 +50,7 @@ namespace MapView
 		} */
 
 		/// <summary>
-		/// Satisfies IMapObserver. Used by RouteView.
+		/// Satisfies IMapObserver.
 		/// </summary>
 		/// <param name="args"></param>
 		public virtual void OnLocationSelectedObserver(LocationSelectedEventArgs args)
