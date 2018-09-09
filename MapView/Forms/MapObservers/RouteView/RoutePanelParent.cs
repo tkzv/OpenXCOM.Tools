@@ -313,11 +313,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 
 		#region Methods
-		internal protected void ClearClickPoint()
-		{
-			SelectedPosition = new Point(-1, -1);
-		}
-
 		/// <summary>
 		/// Sets the graphics-path for a lozenge-border around the tile that
 		/// is currently mouse-overed.

@@ -1304,7 +1304,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 		/// highlighted</param>
 		private void HighlightGoLink(int slot)
 		{
-			if (NodeSelected[slot] != null) // TEMP safety: Go should not be enabled unless a node is selected.
+			if (NodeSelected != null && NodeSelected[slot] != null) // TEMP safety: Go should not be enabled unless a node is selected.
 			{
 			byte dest = NodeSelected[slot].Destination;
 			if (dest != Link.NotUsed)
@@ -1444,15 +1444,16 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				MapFile.RoutesChanged = true;
 
-				MapFile.Routes.DeleteNode(NodeSelected);
-
 				((XCMapTile)MapFile[NodeSelected.Row,
 									NodeSelected.Col,
 									NodeSelected.Lev]).Node = null;
+				MapFile.Routes.DeleteNode(NodeSelected);
 
-//				DeselectNode();
 				ViewerFormsManager.RouteView   .Control     .DeselectNode();
 				ViewerFormsManager.TopRouteView.ControlRoute.DeselectNode();
+
+				ViewerFormsManager.RouteView   .Control     .UpdateNodeInformation();
+				ViewerFormsManager.TopRouteView.ControlRoute.UpdateNodeInformation();
 
 				gbTileData.Enabled =
 				gbNodeData.Enabled =
@@ -1487,7 +1488,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private void DeselectNode()
 		{
 			NodeSelected = null;
-			RoutePanel.ClearClickPoint();
+			RoutePanel.SelectedPosition = new Point(-1, -1);
+
 			tsmiClearLinkData.Enabled = false;
 		}
 

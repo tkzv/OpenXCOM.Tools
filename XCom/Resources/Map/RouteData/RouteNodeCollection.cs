@@ -362,13 +362,9 @@ namespace XCom
 					if (link.StandardNode())
 					{
 						if (link.Destination == id)
-						{
 							link.Destination = Link.NotUsed;
-						}
 						else if (link.Destination > id)
-						{
 							--link.Destination;
-						}
 					}
 				}
 			}
