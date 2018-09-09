@@ -1220,7 +1220,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 
 				SelectNode(link.Destination);
 
-				HighlightGoLink(slot); // highlight back to the startnode.
+				SpotGoDestination(slot); // highlight back to the startnode.
 			}
 			else
 				MessageBox.Show(
@@ -1294,39 +1294,39 @@ namespace MapView.Forms.MapObservers.RouteViews
 			else //if (tag == "L5")
 				slot = 4;
 
-			HighlightGoLink(slot);
+			SpotGoDestination(slot);
 		}
 
 		/// <summary>
 		/// Sets the highlighted destination link-line and node if applicable.
 		/// </summary>
 		/// <param name="slot">the link-slot whose destination should get
-		/// highlighted</param>
-		private void HighlightGoLink(int slot)
+		/// spotted</param>
+		private void SpotGoDestination(int slot)
 		{
-			if (NodeSelected != null && NodeSelected[slot] != null) // TEMP safety: Go should not be enabled unless a node is selected.
+			if (NodeSelected != null && NodeSelected[slot] != null) // safety: Go should not be enabled unless a node is selected.
 			{
-			byte dest = NodeSelected[slot].Destination;
-			if (dest != Link.NotUsed)
-			{
-				int c, r;
-				switch (dest)
+				byte dest = NodeSelected[slot].Destination;
+				if (dest != Link.NotUsed)
 				{
-					case Link.ExitNorth: c = r = -2; break;
-					case Link.ExitEast:  c = r = -3; break;
-					case Link.ExitSouth: c = r = -4; break;
-					case Link.ExitWest:  c = r = -5; break;
-
-					default:
-						var node = MapFile.Routes[dest];
-						c = (int)node.Col;
-						r = (int)node.Row;
-						break;
+					int c, r;
+					switch (dest)
+					{
+						case Link.ExitNorth: c = r = -2; break;
+						case Link.ExitEast:  c = r = -3; break;
+						case Link.ExitSouth: c = r = -4; break;
+						case Link.ExitWest:  c = r = -5; break;
+	
+						default:
+							var node = MapFile.Routes[dest];
+							c = (int)node.Col;
+							r = (int)node.Row;
+							break;
+					}
+	
+					RoutePanel.SpotPosition = new Point(c, r);
+					Refresh();
 				}
-
-				RoutePanel.SpotPosition = new Point(c, r);
-				Refresh();
-			}
 			}
 		}
 
