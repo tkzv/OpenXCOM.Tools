@@ -163,7 +163,7 @@ namespace MapView.Forms.MapObservers.TopViews
 		/// Sets the graphics-path for a lozenge-border around all tiles that
 		/// are selected or being selected.
 		/// </summary>
-		internal void PathSelectedLozenge()
+		internal protected void PathSelectedLozenge()
 		{
 			var start = MainViewUnderlay.Instance.MainViewOverlay.GetAbsoluteDragStart();
 			var end   = MainViewUnderlay.Instance.MainViewOverlay.GetAbsoluteDragEnd();
