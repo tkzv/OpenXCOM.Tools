@@ -70,6 +70,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsmiOptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiAllNodesRank0 = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiClearLinkData = new System.Windows.Forms.ToolStripMenuItem();
+			this.tsmiUpdateAllLinkDistances = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsddbDebug = new System.Windows.Forms.ToolStripDropDownButton();
 			this.tsmiCheckNodeRanks = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiCheckOobNodes = new System.Windows.Forms.ToolStripMenuItem();
@@ -524,7 +525,8 @@ namespace MapView.Forms.MapObservers.RouteViews
 			this.tsddbEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 			this.tsmiOptions,
 			this.tsmiAllNodesRank0,
-			this.tsmiClearLinkData});
+			this.tsmiClearLinkData,
+			this.tsmiUpdateAllLinkDistances});
 			this.tsddbEdit.Font = new System.Drawing.Font("Verdana", 7F);
 			this.tsddbEdit.Image = ((System.Drawing.Image)(resources.GetObject("tsddbEdit.Image")));
 			this.tsddbEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -536,23 +538,30 @@ namespace MapView.Forms.MapObservers.RouteViews
 			// 
 			this.tsmiOptions.Name = "tsmiOptions";
 			this.tsmiOptions.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.tsmiOptions.Size = new System.Drawing.Size(165, 22);
+			this.tsmiOptions.Size = new System.Drawing.Size(210, 22);
 			this.tsmiOptions.Text = "Options";
 			this.tsmiOptions.Click += new System.EventHandler(this.OnOptionsClick);
 			// 
 			// tsmiAllNodesRank0
 			// 
 			this.tsmiAllNodesRank0.Name = "tsmiAllNodesRank0";
-			this.tsmiAllNodesRank0.Size = new System.Drawing.Size(165, 22);
+			this.tsmiAllNodesRank0.Size = new System.Drawing.Size(210, 22);
 			this.tsmiAllNodesRank0.Text = "All Nodes Rank 0";
 			this.tsmiAllNodesRank0.Click += new System.EventHandler(this.OnAllNodeRank0Click);
 			// 
 			// tsmiClearLinkData
 			// 
 			this.tsmiClearLinkData.Name = "tsmiClearLinkData";
-			this.tsmiClearLinkData.Size = new System.Drawing.Size(165, 22);
+			this.tsmiClearLinkData.Size = new System.Drawing.Size(210, 22);
 			this.tsmiClearLinkData.Text = "Clear Link data";
 			this.tsmiClearLinkData.Click += new System.EventHandler(this.OnClearLinkDataClick);
+			// 
+			// tsmiUpdateAllLinkDistances
+			// 
+			this.tsmiUpdateAllLinkDistances.Name = "tsmiUpdateAllLinkDistances";
+			this.tsmiUpdateAllLinkDistances.Size = new System.Drawing.Size(210, 22);
+			this.tsmiUpdateAllLinkDistances.Text = "Update all Link distances";
+			this.tsmiUpdateAllLinkDistances.Click += new System.EventHandler(this.OnUpdateAllLinkDistances);
 			// 
 			// tsddbDebug
 			// 
@@ -891,5 +900,6 @@ namespace MapView.Forms.MapObservers.RouteViews
 		private System.Windows.Forms.ToolStripMenuItem tsmiCheckNodeRanks;
 		private System.Windows.Forms.ToolStripMenuItem tsmiCheckOobNodes;
 		private System.Windows.Forms.ToolStripDropDownButton tsddbDebug;
+		private System.Windows.Forms.ToolStripMenuItem tsmiUpdateAllLinkDistances;
 	}
 }

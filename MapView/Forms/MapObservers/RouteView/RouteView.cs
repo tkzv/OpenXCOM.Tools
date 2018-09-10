@@ -418,9 +418,9 @@ namespace MapView.Forms.MapObservers.RouteViews
 				{
 					var node = MapFile.Routes[id];
 
-					for (int slotId = 0; slotId != RouteNode.LinkSlots; ++slotId)
+					for (int slot = 0; slot != RouteNode.LinkSlots; ++slot)
 					{
-						var link = node[slotId];
+						var link = node[slot];
 						if (link.Destination == NodeSelected.Index)
 							link.Distance = CalculateLinkDistance(
 																node,
@@ -1652,6 +1652,82 @@ namespace MapView.Forms.MapObservers.RouteViews
 					ViewerFormsManager.TopRouteView.ControlRoute.Refresh();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Handler for menuitem that updates all link distances in the RMP.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnUpdateAllLinkDistances(object sender, EventArgs e)
+		{
+			RouteNode node;
+			Link link;
+			byte dist;
+			int changed = 0;
+
+			for (var id = 0; id != MapFile.Routes.Length; ++id)
+			{
+				node = MapFile.Routes[id];
+
+				for (int slot = 0; slot != RouteNode.LinkSlots; ++slot)
+				{
+					link = node[slot];
+					switch (link.Destination)
+					{
+						case Link.NotUsed:
+						case Link.ExitWest:
+						case Link.ExitNorth:
+						case Link.ExitEast:
+						case Link.ExitSouth:
+							if (link.Distance != 0)
+							{
+								link.Distance = 0;
+								++changed;
+							}
+							break;
+
+						default:
+							dist = CalculateLinkDistance(
+													node,
+													MapFile.Routes[link.Destination]);
+							if (link.Distance != dist)
+							{
+								link.Distance = dist;
+								++changed;
+							}
+							break;
+					}
+				}
+			}
+
+			string info;
+			if (changed != 0)
+			{
+				MapFile.RoutesChanged = true;
+				info = String.Format(
+								System.Globalization.CultureInfo.CurrentCulture,
+								"{0} link{1} updated.",
+								changed,
+								(changed == 1) ? " has been" : "s have been");
+
+				ViewerFormsManager.RouteView   .Control     .UpdateNodeInformation();
+				ViewerFormsManager.TopRouteView.ControlRoute.UpdateNodeInformation();
+			}
+			else
+			{
+				info = String.Format(
+								System.Globalization.CultureInfo.CurrentCulture,
+								"All link distances are already correct.");
+			}
+
+			MessageBox.Show(
+						info,
+						"Link distances updated",
+						MessageBoxButtons.OK,
+						MessageBoxIcon.Information,
+						MessageBoxDefaultButton.Button1,
+						0);
 		}
 
 		/// <summary>
