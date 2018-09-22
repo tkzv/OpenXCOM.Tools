@@ -185,8 +185,8 @@ namespace MapView
 				}
 				else // check for a valid XCOM CursorSprite and create MapResources.yml ->
 				{
-					const string CursorPck = SharedSpace.CursorFilePrefix + SpriteCollection.PckExt;
-					const string CursorTab = SharedSpace.CursorFilePrefix + SpriteCollection.TabExt;
+					string CursorPck = SharedSpace.CursorFilePrefix + SpriteCollection.PckExt;
+					string CursorTab = SharedSpace.CursorFilePrefix + SpriteCollection.TabExt;
 
 					if (   (!File.Exists(Path.Combine(Ufo,  CursorPck)) || !File.Exists(Path.Combine(Ufo,  CursorTab)))
 						&& (!File.Exists(Path.Combine(Tftd, CursorPck)) || !File.Exists(Path.Combine(Tftd, CursorTab))))

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 
 namespace XCom
@@ -14,7 +15,7 @@ namespace XCom
 
 		public const string Palettes              = "Palettes";
 
-		public const string CursorFilePrefix      = @"UFOGRAPH\CURSOR"; // the cursor is determined in XCMainWindow.cTor
+		public static string CursorFilePrefix     = "UFOGRAPH" + Path.DirectorySeparatorChar + "CURSOR"; // the cursor is determined in XCMainWindow.cTor
 		#endregion
 
 
