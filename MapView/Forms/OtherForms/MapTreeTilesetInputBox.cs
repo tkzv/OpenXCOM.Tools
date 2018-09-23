@@ -293,7 +293,7 @@ namespace MapView
 					string pfeMap = ofd.FileName;
 
 					string basepath = Path.GetDirectoryName(pfeMap);
-					int pos = basepath.LastIndexOf(@"\", StringComparison.OrdinalIgnoreCase);
+					int pos = basepath.LastIndexOf(Path.DirectorySeparatorChar.ToString(), StringComparison.OrdinalIgnoreCase);
 					BasePath = (pos != -1) ? basepath.Substring(0, pos)
 										   : basepath;
 

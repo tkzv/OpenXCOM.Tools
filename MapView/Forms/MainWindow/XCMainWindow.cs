@@ -1033,12 +1033,12 @@ namespace MapView
 					//LogFile.WriteLine("pathroot= " + Path.GetPathRoot(dir));
 					if (dir != Path.GetPathRoot(dir))
 					{
-						string basepath = dir.Substring(0, dir.LastIndexOf(@"\", StringComparison.Ordinal));
+						string basepath = dir.Substring(0, dir.LastIndexOf(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal));
 						//LogFile.WriteLine("basepath= " + basepath);
-						if (basepath.IndexOf(@"\", StringComparison.Ordinal) == -1)	// check if root dir, again
-							basepath += @"\";										// account for awkward path at the root dir.
-																					// NOTE: But that's probly not valid for
-																					// things like mounted or network drives.
+						if (basepath.IndexOf(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal) == -1)	// check if root dir, again
+							basepath += Path.DirectorySeparatorChar.ToString();											// account for awkward path at the root dir.
+																														// NOTE: But that's probly not valid for
+																														// things like mounted or network drives.
 						string dirMaps   = Path.Combine(basepath, MapFileChild.MapsDir);
 						string dirRoutes = Path.Combine(basepath, RouteNodeCollection.RoutesDir);
 						//LogFile.WriteLine("dirMaps= " + dirMaps);

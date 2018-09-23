@@ -85,7 +85,7 @@ namespace MapView
 
 
 			// NOTE: Add your own personal XCOM resources-dir here if desired:
-			var dirsUfo = new List<string>();
+/*			var dirsUfo = new List<string>();
 			dirsUfo.Add(@"C:\0xC_kL\data");
 //			dirsUfo.Add(@"C:\MapView_test");
 
@@ -96,7 +96,7 @@ namespace MapView
 					Ufo = dir;
 					break;
 				}
-			}
+			} */
 		}
 		#endregion
 
@@ -165,10 +165,10 @@ namespace MapView
 				Ufo  = Ufo.Trim();
 				Tftd = Tftd.Trim();
 
-				if (Ufo.EndsWith(@"\", StringComparison.Ordinal)) // NOTE: drive-root directories do funny things. Like append '\'
+				if (Ufo.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal)) // NOTE: drive-root directories do funny things. Like append '\'
 					Ufo = Ufo.Substring(0, Ufo.Length - 1);
 
-				if (Tftd.EndsWith(@"\", StringComparison.Ordinal))
+				if (Tftd.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
 					Tftd = Tftd.Substring(0, Tftd.Length - 1);
 
 				if (String.IsNullOrEmpty(Ufo) && String.IsNullOrEmpty(Tftd))

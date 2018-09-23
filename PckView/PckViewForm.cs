@@ -1116,7 +1116,7 @@ namespace PckView
 		{
 			string help = Path.GetDirectoryName(Application.ExecutablePath);
 				   help = Path.Combine(help, "MapView.chm");
-			Help.ShowHelp(this, "file://" + help, HelpNavigator.Topic, @"html\pckview.htm");
+			Help.ShowHelp(this, "file://" + help, HelpNavigator.Topic, "html/pckview.htm");
 		}
 
 		/// <summary>
