@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 
 using MapView.Properties;
@@ -21,7 +20,7 @@ namespace MapView.Forms.MainWindow
 		private readonly List<ToolStripButton> _pasters = new List<ToolStripButton>();
 
 
-		private readonly ToolStripTextBox _tstbSearch = new ToolStripTextBox();	// NOTE: The instantiations of toolstrip-objects that
+		private readonly ToolStripTextBox _tstbSearch = new ToolStripTextBox();	// NOTE: These instantiations of toolstrip-objects that
 																				// are classvars are for MainView, while the toolstrip-
 		private ToolStripButton _tsbZoomAuto = new ToolStripButton();			// objects for TopView and TopRouteView(Top) are
 		private ToolStripButton _tsbZoomIn   = new ToolStripButton();			// instantiated in the functions below.
@@ -254,7 +253,11 @@ namespace MapView.Forms.MainWindow
 		}
 
 		/// <summary>
-		/// Enables or disables toolstrip objects.
+		/// Enables or disables toolstrip objects. This disables all of MainView's
+		/// toolstrip (except search) when Mapview loads. These buttons are
+		/// subsequently enabled when a map is loaded.
+		/// NOTE: Subsidiary viewers don't need to bother with this - they do
+		/// not even show until a Map is loaded.
 		/// </summary>
 		/// <param name="enable"></param>
 		internal void EnableToolStrip(bool enable)
@@ -266,7 +269,7 @@ namespace MapView.Forms.MainWindow
 			_tsbDown    .Enabled =
 			_tsbCut     .Enabled =
 			_tsbCopy    .Enabled =
-			_tsbPaste   .Enabled =
+//			_tsbPaste   .Enabled = // do not enable Paste until a Cut or Copy has occured
 			_tsbFill    .Enabled = enable;
 		}
 		#endregion
