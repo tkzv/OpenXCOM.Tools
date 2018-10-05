@@ -1198,12 +1198,13 @@ namespace MapView
 
 				_foptions.Show();
 
-				_foptions.FormClosing += (sender1, e1) => {
-					if (!_closing)
-						OnOptionsClick(sender, e);
+				_foptions.FormClosing += (sender1, e1) =>
+										{
+											if (!_closing)
+												OnOptionsClick(sender, e);
 
-					_closing = false;
-				};
+											_closing = false;
+										};
 			}
 			else
 			{
@@ -2321,13 +2322,13 @@ namespace MapView
 			{
 				//LogFile.WriteLine(". descriptor= " + descriptor);
 
-				miSaveAll.Enabled     =
-				miSaveMap.Enabled     =
-				miSaveRoutes.Enabled  =
-				miSaveAs.Enabled      =
-				miSaveImage.Enabled   =
-				miResize.Enabled      =
-				miInfo.Enabled        =
+				miSaveAll    .Enabled =
+				miSaveMap    .Enabled =
+				miSaveRoutes .Enabled =
+				miSaveAs     .Enabled =
+				miSaveImage  .Enabled =
+				miResize     .Enabled =
+				miInfo       .Enabled =
 				miRegenOccult.Enabled = true;
 
 //				miExport.Enabled = true; // disabled in designer w/ Visible=FALSE.

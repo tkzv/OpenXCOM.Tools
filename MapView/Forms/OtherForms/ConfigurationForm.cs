@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+//using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
@@ -73,8 +73,8 @@ namespace MapView
 
 			if (!_pathTilesets.FileExists())
 			{
-				cbTilesets.Enabled    =
-				rbTilesets.Enabled    =
+				cbTilesets   .Enabled =
+				rbTilesets   .Enabled =
 				rbTilesetsTpl.Enabled = false;
 			}
 			else
@@ -107,15 +107,15 @@ namespace MapView
 			gbResources.Visible = cbResources.Checked;
 
 			btnOk.Enabled = cbResources.Checked
-						 || cbTilesets.Checked;
+						 || cbTilesets .Checked;
 		}
 
 		private void OnTilesetsCheckedChanged(object sender, EventArgs e)
 		{
-			rbTilesets.Visible    =
+			rbTilesets   .Visible =
 			rbTilesetsTpl.Visible = cbTilesets.Checked;
 
-			btnOk.Enabled = cbTilesets.Checked
+			btnOk.Enabled = cbTilesets .Checked
 						 || cbResources.Checked;
 		}
 

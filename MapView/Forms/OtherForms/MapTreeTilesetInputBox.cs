@@ -187,9 +187,9 @@ namespace MapView
 					lblAddType.Text = "Modify existing tileset";
 					lblTilesetCurrent.Text = Tileset;
 
-					btnFindTileset.Visible   =
+					btnFindTileset  .Visible =
 					btnFindDirectory.Visible =
-					btnCreateMap.Visible     = false;
+					btnCreateMap    .Visible = false;
 
 					TilesetOriginal = String.Copy(Tileset);
 
@@ -208,11 +208,11 @@ namespace MapView
 					lblAddType.Text = "Descriptor invalid";
 
 					lblTerrainChanges.Visible =
-					lblHeaderTileset.Visible  =
+					lblHeaderTileset .Visible =
 					lblTilesetCurrent.Visible = false;
 
-					btnCreateMap.Enabled    =
-					btnTerrainCopy.Enabled  =
+					btnCreateMap   .Enabled =
+					btnTerrainCopy .Enabled =
 					btnTerrainPaste.Enabled = false;
 
 					string keyBaseDir = null;
@@ -377,10 +377,10 @@ namespace MapView
 			//LogFile.WriteLine("");
 			//LogFile.WriteLine("ListTerrains");
 
-			btnMoveUp.Enabled      =
-			btnMoveDown.Enabled    =
-			btnMoveRight.Enabled   =
-			btnMoveLeft.Enabled    = false;
+			btnMoveUp   .Enabled =
+			btnMoveDown .Enabled =
+			btnMoveRight.Enabled =
+			btnMoveLeft .Enabled = false;
 
 			lbTerrainsAllocated.Items.Clear();
 			lbTerrainsAvailable.Items.Clear();
@@ -413,7 +413,7 @@ namespace MapView
 					lbTerrainsAllocated.Items.Add(terrain);
 			}
 
-			btnTerrainCopy.Enabled  =
+			btnTerrainCopy .Enabled =
 			btnTerrainPaste.Enabled = (Descriptor != null);
 
 
@@ -805,7 +805,7 @@ namespace MapView
 
 				if (Descriptor != null && Descriptor.Terrains.Count > 1)
 				{
-					btnMoveUp.Enabled   = (lbTerrainsAllocated.SelectedIndex != 0);
+					btnMoveUp  .Enabled = (lbTerrainsAllocated.SelectedIndex != 0);
 					btnMoveDown.Enabled = (lbTerrainsAllocated.SelectedIndex != Descriptor.Terrains.Count - 1);
 				}
 			}
@@ -980,12 +980,12 @@ namespace MapView
 //				tbTileset.SelectionStart = tbTileset.TextLength;
 //			}
 //			else if (MapFileExists(Tileset))	// TODO: check to ensure that this Create function (and KeyUp-Enter events)
-//			{										// cannot be called if a descriptor and/or a Map-file already exist.
+//			{									// cannot be called if a descriptor and/or a Map-file already exist.
 //				LogFile.WriteLine(". The Map file already exists."); // NOTE: Don't worry about it yet; this does not create a Map-file.
 //				ShowErrorDialog("The Map file already exists.");
 //			}
-//			else if (TileGroup.Categories[Category].ContainsKey(Tileset))				// safety -> TODO: the create map and tileset keyup events should
-//			{															// be disabled if a Descriptor w/ tileset-label already exists
+//			else if (TileGroup.Categories[Category].ContainsKey(Tileset))	// safety -> TODO: the create map and tileset keyup events should
+//			{																// be disabled if a Descriptor w/ tileset-label already exists
 //				LogFile.WriteLine(". The Tileset label already exists.");
 //				ShowErrorDialog("The Tileset label already exists.");
 //			}

@@ -103,10 +103,11 @@ namespace PckView
 
 			#region SharedSpace information
 			_fconsole = new ConsoleSharedSpace(new SharedSpace()).Console;
-			_fconsole.FormClosing += (sender, e) => {
-				e.Cancel = true;
-				_fconsole.Hide();
-			};
+			_fconsole.FormClosing += (sender, e) =>
+									{
+										e.Cancel = true;
+										_fconsole.Hide();
+									};
 
 			FormClosed += (sender, e) => _fconsole.Close();
 
@@ -403,17 +404,17 @@ namespace PckView
 		private void OnSpritesetChanged(bool valid)
 		{
 			// under File menu
-			miSave.Enabled            =
-			miSaveAs.Enabled          =
-			miExportSprites.Enabled   =
+			miSave           .Enabled =
+			miSaveAs         .Enabled =
+			miExportSprites  .Enabled =
 
 			// on Main menu
-			miPaletteMenu.Enabled     =
+			miPaletteMenu    .Enabled =
 			miTransparentMenu.Enabled =
-			miBytesMenu.Enabled       =
+			miBytesMenu      .Enabled =
 
 			// on Context menu
-			_miAdd.Enabled            = valid;
+			_miAdd           .Enabled = valid;
 		}
 
 		/// <summary>
@@ -431,14 +432,14 @@ namespace PckView
 			bool valid = (_pnlView.SelectedId != -1);
 
 			// on Context menu
-			_miEdit.Enabled         =
+			_miEdit        .Enabled =
 			_miInsertBefore.Enabled =
-			_miInsertAfter.Enabled  =
-			_miReplace.Enabled      =
-			_miDelete.Enabled       =
-			_miExport.Enabled       = valid;
-			_miMoveLeft.Enabled     = valid && (_pnlView.SelectedId != 0);
-			_miMoveRight.Enabled    = valid && (_pnlView.SelectedId != _pnlView.Spriteset.Count - 1);
+			_miInsertAfter .Enabled =
+			_miReplace     .Enabled =
+			_miDelete      .Enabled =
+			_miExport      .Enabled = valid;
+			_miMoveLeft    .Enabled = valid && (_pnlView.SelectedId != 0);
+			_miMoveRight   .Enabled = valid && (_pnlView.SelectedId != _pnlView.Spriteset.Count - 1);
 		}
 
 		/// <summary>
@@ -494,8 +495,8 @@ namespace PckView
 		{
 			using (var ofd = new OpenFileDialog())
 			{
-				ofd.Title  = "Add 32x40 8-bpp BMP file(s)";
-				ofd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
+				ofd.Title       = "Add 32x40 8-bpp BMP file(s)";
+				ofd.Filter      = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
 				ofd.Multiselect = true;
 
 				if (ofd.ShowDialog() == DialogResult.OK)
@@ -536,8 +537,8 @@ namespace PckView
 		{
 			using (var ofd = new OpenFileDialog())
 			{
-				ofd.Title  = "Insert 32x40 8-bpp BMP file(s)";
-				ofd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
+				ofd.Title       = "Insert 32x40 8-bpp BMP file(s)";
+				ofd.Filter      = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
 				ofd.Multiselect = true;
 
 				if (ofd.ShowDialog() == DialogResult.OK)
@@ -563,8 +564,8 @@ namespace PckView
 		{
 			using (var ofd = new OpenFileDialog())
 			{
-				ofd.Title  = "Insert 32x40 8-bpp BMP file(s)";
-				ofd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
+				ofd.Title       = "Insert 32x40 8-bpp BMP file(s)";
+				ofd.Filter      = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
 				ofd.Multiselect = true;
 
 				if (ofd.ShowDialog() == DialogResult.OK)
@@ -761,10 +762,10 @@ namespace PckView
 
 			using (var sfd = new SaveFileDialog())
 			{
-				sfd.Title = "Export sprite to 32x40 8-bpp BMP file";
-				sfd.FileName = _pnlView.Spriteset.Label + suffix;
+				sfd.Title      = "Export sprite to 32x40 8-bpp BMP file";
+				sfd.Filter     = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
 				sfd.DefaultExt = "BMP";
-				sfd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
+				sfd.FileName   = _pnlView.Spriteset.Label + suffix;
 
 				if (sfd.ShowDialog() == DialogResult.OK)
 					BitmapService.ExportSprite(sfd.FileName, sprite.Image);
@@ -799,8 +800,8 @@ namespace PckView
 		{
 			using (var sfd = new SaveFileDialog())
 			{
-				sfd.Title = "Create a PCK file";
-				sfd.Filter = "PCK files (*.PCK)|*.PCK|All files (*.*)|*.*";
+				sfd.Title      = "Create a PCK file";
+				sfd.Filter     = "PCK files (*.PCK)|*.PCK|All files (*.*)|*.*";
 				sfd.DefaultExt = "PCK";
 
 				if (sfd.ShowDialog() == DialogResult.OK)
@@ -880,8 +881,8 @@ namespace PckView
 		{
 			using (var sfd = new SaveFileDialog())
 			{
-				sfd.Title = "Save as";
-				sfd.Filter = "PCK files (*.PCK)|*.PCK|All files (*.*)|*.*";
+				sfd.Title    = "Save as";
+				sfd.Filter   = "PCK files (*.PCK)|*.PCK|All files (*.*)|*.*";
 				sfd.FileName = SpritesetLabel;
 
 				if (sfd.ShowDialog() == DialogResult.OK)

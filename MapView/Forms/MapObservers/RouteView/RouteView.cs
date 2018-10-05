@@ -158,7 +158,7 @@ namespace MapView.Forms.MapObservers.RouteViews
 			{
 				DontConnect,
 				OneWayConnect,
-				TwoWayConnect,
+				TwoWayConnect
 			});
 
 			// node data ->
