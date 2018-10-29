@@ -1288,7 +1288,7 @@ namespace PckView
 		/// <summary>
 		/// Backs up the PCK+TAB files before trying a Save or SaveAs.
 		/// NOTE: A possible internal reason that a spriteset is invalid is that
-		/// if the total length of its compressed PCK-data exceeds 2^16 bytes
+		/// if the total length of its compressed PCK-data exceeds 2^16 bits
 		/// (roughly). That is, the TAB file tracks the offsets and needs to
 		/// know the total length of the PCK file, but UFO's TAB file stores the
 		/// offsets in only 2-byte format (2^16 bits) so the arithmetic explodes

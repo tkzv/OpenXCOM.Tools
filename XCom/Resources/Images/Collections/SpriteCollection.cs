@@ -89,7 +89,7 @@ namespace XCom
 				tabSprites = (int)fsTab.Length / tabOffset;
 				//LogFile.WriteLine(". fsTab.Length= " + fsTab.Length);
 				//LogFile.WriteLine(". tabOffset= " + tabOffset);
-				//LogFile.WriteLine(". sprites= " + sprites);
+				//LogFile.WriteLine(". sprites= " + tabSprites);
 
 				fsTab.Position = 0;
 
@@ -148,8 +148,8 @@ namespace XCom
 				for (int i = 0; i != offsets.Length - 1; ++i)
 				{
 					//LogFile.WriteLine(". . sprite #" + i);
-					//LogFile.WriteLine(". . offsets[i+1]=\t" + (offsets[i + 1]));
 					//LogFile.WriteLine(". . offsets[i]=\t\t" + (offsets[i]));
+					//LogFile.WriteLine(". . offsets[i+1]=\t" + (offsets[i + 1]));
 					//LogFile.WriteLine(". . . val=\t\t\t"    + (offsets[i + 1] - offsets[i]));
 					var bindataSprite = new byte[offsets[i + 1] - offsets[i]];
 
@@ -166,6 +166,8 @@ namespace XCom
 			// else abort. NOTE: 'Borked' is evaluated on return to PckViewForm.LoadSpriteset()
 			// ... but the GetBorked() algorithm is pertinent (and could
 			// additionally bork things) whenever any spriteset loads.
+
+			//LogFile.WriteLine(". spritecount= " + Count);
 		}
 		#endregion
 
