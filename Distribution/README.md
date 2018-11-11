@@ -1,4 +1,4 @@
 Distribution build is hosted on Google Drive.
 
-ver 2.2.0.1 - 2018 October 5<br>
-[MapView2_181005.7z](https://drive.google.com/file/d/1NrcmdZ_8cFyDcyJHkwPecP9im79gbDSj/view?usp=sharing)
+2018 November 10<br>
+[MapView2_181110.7z](https://drive.google.com/file/d/1doVBEe5kR0D4qNjGZOB2_tVXISzlVI6J/view?usp=sharing)
