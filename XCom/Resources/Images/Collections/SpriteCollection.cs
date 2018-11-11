@@ -127,45 +127,48 @@ namespace XCom
 
 
 			Borked = false;
-			if (fsTab != null)
+			if (bindata.Length > 1)
 			{
-				int pckSprites = 0; // qty of bytes in 'bindata' w/ value 0xFF (ie. qty of sprites)
-				for (int i = 1; i != bindata.Length; ++i)
+				if (fsTab != null)
 				{
-					if (bindata[i] == 255 && bindata[i - 1] != 254)
-						++pckSprites;
+					int pckSprites = 0; // qty of bytes in 'bindata' w/ value 0xFF (ie. qty of sprites)
+					for (int i = 1; i != bindata.Length; ++i)
+					{
+						if (bindata[i] == 255 && bindata[i - 1] != 254)
+							++pckSprites;
+					}
+					Borked = (pckSprites != tabSprites);
+					//LogFile.WriteLine("pckSprites= " + pckSprites + " tabSprites= " + tabSprites);
 				}
-				Borked = (pckSprites != tabSprites);
-				//LogFile.WriteLine("pckSprites= " + pckSprites + " tabSprites= " + tabSprites);
-			}
 
-			if (!Borked) // avoid throwing 1 or 15000 exceptions ...
-			{
-				offsets[offsets.Length - 1] = (uint)bindata.Length;
-				//LogFile.WriteLine("");
-				//LogFile.WriteLine(". offsets.Length= " + offsets.Length);
-
-				for (int i = 0; i != offsets.Length - 1; ++i)
+				if (!Borked) // avoid throwing 1 or 15000 exceptions ...
 				{
-					//LogFile.WriteLine(". . sprite #" + i);
-					//LogFile.WriteLine(". . offsets[i]=\t\t" + (offsets[i]));
-					//LogFile.WriteLine(". . offsets[i+1]=\t" + (offsets[i + 1]));
-					//LogFile.WriteLine(". . . val=\t\t\t"    + (offsets[i + 1] - offsets[i]));
-					var bindataSprite = new byte[offsets[i + 1] - offsets[i]];
+					offsets[offsets.Length - 1] = (uint)bindata.Length;
+					//LogFile.WriteLine("");
+					//LogFile.WriteLine(". offsets.Length= " + offsets.Length);
 
-					for (int j = 0; j != bindataSprite.Length; ++j)
-						bindataSprite[j] = bindata[offsets[i] + j];
+					for (int i = 0; i != offsets.Length - 1; ++i)
+					{
+						//LogFile.WriteLine(". . sprite #" + i);
+						//LogFile.WriteLine(". . offsets[i]=\t\t" + (offsets[i]));
+						//LogFile.WriteLine(". . offsets[i+1]=\t" + (offsets[i + 1]));
+						//LogFile.WriteLine(". . . val=\t\t\t"    + (offsets[i + 1] - offsets[i]));
+						var bindataSprite = new byte[offsets[i + 1] - offsets[i]];
 
-					Add(new PckImage(
-									bindataSprite,
-									Pal,
-									i,
-									this));
+						for (int j = 0; j != bindataSprite.Length; ++j)
+							bindataSprite[j] = bindata[offsets[i] + j];
+
+						Add(new PckImage(
+										bindataSprite,
+										Pal,
+										i,
+										this));
+					}
 				}
+				// else abort. NOTE: 'Borked' is evaluated on return to PckViewForm.LoadSpriteset()
+				// ... but the GetBorked() algorithm is pertinent (and could
+				// additionally bork things) whenever any spriteset loads.
 			}
-			// else abort. NOTE: 'Borked' is evaluated on return to PckViewForm.LoadSpriteset()
-			// ... but the GetBorked() algorithm is pertinent (and could
-			// additionally bork things) whenever any spriteset loads.
 
 			//LogFile.WriteLine(". spritecount= " + Count);
 		}

@@ -113,6 +113,42 @@ namespace XCom
 		}
 
 		/// <summary>
+		/// Saves a spriteset as a BMP spritesheet.
+		/// </summary>
+		/// <param name="fullpath">fullpath of the output file</param>
+		/// <param name="spriteset">spriteset</param>
+		/// <param name="pal">palette</param>
+		/// <param name="width">quantity of cols</param>
+		/// <param name="pad">padding between sprites</param>
+		public static void ExportSpritesheet(
+				string fullpath,
+				SpriteCollection spriteset,
+				Palette pal,
+				int width,
+				int pad)
+		{
+			if (spriteset.Count == 1)
+				width = 1;
+
+			int extra = (spriteset.Count % width == 0) ? 0 : 1;
+
+			var bitmap = MakeBitmap(
+								width * (XCImage.SpriteWidth + pad) - pad,
+								(spriteset.Count / width + extra) * (XCImage.SpriteHeight + pad) - pad,
+								pal.ColorTable);
+
+			for (int i = 0; i != spriteset.Count; ++i)
+			{
+				int x = i % width * (XCImage.SpriteWidth  + pad);
+				int y = i / width * (XCImage.SpriteHeight + pad);
+				Draw(spriteset[i].Image, bitmap, x, y);
+			}
+
+			ExportSprite(fullpath, bitmap);
+		}
+
+
+		/// <summary>
 		/// Creates a TRUE 8-bit indexed bitmap from the specified byte-array.
 		/// </summary>
 		/// <param name="width">width of final bitmap</param>
@@ -456,7 +492,7 @@ namespace XCom
 		}
 
 		/// <summary>
-		/// Called by PckViewForm.OnSpriteReplaceClick()
+		/// Called by PckViewForm.OnImportSpritesheetClick()
 		/// </summary>
 		/// <param name="bitmap">bitmap containing sprites</param>
 		/// <param name="pal"></param>
@@ -476,18 +512,18 @@ namespace XCom
 			int cols = (bitmap.Width  + pad) / (width  + pad);
 			int rows = (bitmap.Height + pad) / (height + pad);
 
-			int aniSprite = 0;
+			int terrainId = 0;
 
 			for (int i = 0; i != cols * rows; ++i)
 			{
 				int x = (i % cols) * (width  + pad);
 				int y = (i / cols) * (height + pad);
 				spriteset.Add(CreateSprite(
-									bitmap,
-									aniSprite++, // TODO: fix the fact that should be the terrain id.
-									pal,
-									x, y,
-									width, height));
+										bitmap,
+										terrainId++,
+										pal,
+										x, y,
+										width, height));
 //				UpdateProgressBar(aniSprite, rows * cols);
 			}
 
@@ -701,40 +737,6 @@ namespace XCom
 //#else
 //			return null;
 //#endif
-//		}
-
-//		/// <summary>
-//		/// Saves an image collection as a bmp sprite sheet
-//		/// </summary>
-//		/// <param name="file">output file name</param>
-//		/// <param name="collection">image collection</param>
-//		/// <param name="pal">Palette to color the images with</param>
-//		/// <param name="across">number of columns to use for images</param>
-//		/// <param name="pad"></param>
-//		public static void SendToSaver(
-//				string file,
-//				XCImageCollection collection,
-//				Palette pal,
-//				int across,
-//				int pad)
-//		{
-//			if (collection.Count == 1)
-//				across = 1;
-//
-//			int mod = (collection.Count % across == 0) ? 0 : 1;
-//
-//			var b = MakeBitmap(
-//							across * (collection.IXCFile.ImageSize.Width + pad) - pad,
-//							(collection.Count / across + mod) * (collection.IXCFile.ImageSize.Height + pad) - pad,
-//							pal.Colors);
-//
-//			for (int i = 0; i != collection.Count; ++i)
-//			{
-//				int x = i % across * (collection.IXCFile.ImageSize.Width  + pad);
-//				int y = i / across * (collection.IXCFile.ImageSize.Height + pad);
-//				Draw(collection[i].Image, b, x, y);
-//			}
-//			Save(file, b);
 //		}
 
 

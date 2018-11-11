@@ -404,17 +404,19 @@ namespace PckView
 		private void OnSpritesetChanged(bool valid)
 		{
 			// under File menu
-			miSave           .Enabled =
-			miSaveAs         .Enabled =
-			miExportSprites  .Enabled =
+			miSave             .Enabled =
+			miSaveAs           .Enabled =
+			miExportSprites    .Enabled =
+			miExportSpritesheet.Enabled =
+			miImportSpritesheet.Enabled =
 
 			// on Main menu
-			miPaletteMenu    .Enabled =
-			miTransparentMenu.Enabled =
-			miBytesMenu      .Enabled =
+			miPaletteMenu      .Enabled =
+			miTransparentMenu  .Enabled =
+			miBytesMenu        .Enabled =
 
 			// on Context menu
-			_miAdd           .Enabled = valid;
+			_miAdd             .Enabled = valid;
 		}
 
 		/// <summary>
@@ -980,6 +982,83 @@ namespace PckView
 //							progress.Value = sprite.FileId;
 						}
 //						progress.Hide(); // TODO: I suspect this is essentially the same as a memory leak.
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Exports all sprites in the currently loaded spriteset to a BMP
+		/// spritesheet file.
+		/// Called when the mainmenu's file-menu Click event is raised.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnExportSpritesheetClick(object sender, EventArgs e)
+		{
+			if (_pnlView.Spriteset != null && _pnlView.Spriteset.Count != 0)
+			{
+				using (var fbd = new FolderBrowserDialog())
+				{
+					string file = _pnlView.Spriteset.Label.ToUpperInvariant();
+
+					fbd.Description = String.Format(
+												System.Globalization.CultureInfo.CurrentCulture,
+												"Export spriteset to an 8-bpp BMP spritesheet file"
+													+ Environment.NewLine + Environment.NewLine
+													+ "\t" + file);
+
+					if (fbd.ShowDialog() == DialogResult.OK)
+					{
+						string fullpath = Path.Combine(fbd.SelectedPath, file + BitmapService.BmpExt);
+						if (!File.Exists(fullpath))
+						{
+							BitmapService.ExportSpritesheet(fullpath, (SpriteCollection)_pnlView.Spriteset, Pal, 8, 1);
+						}
+						else
+							MessageBox.Show(
+										this,
+										file + BitmapService.BmpExt + " already exists.",
+										"Error",
+										MessageBoxButtons.OK,
+										MessageBoxIcon.Error,
+										MessageBoxDefaultButton.Button1,
+										0);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Imports (and replaces) the current spriteset from a BMP spritesheet.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnImportSpritesheetClick(object sender, EventArgs e)
+		{
+			if (_pnlView.Spriteset != null)
+			{
+				using (var ofd = new OpenFileDialog())
+				{
+					ofd.Title  = "Import an 8-bpp BMP spritesheet file";
+					ofd.Filter = "BMP files (*.BMP)|*.BMP|All files (*.*)|*.*";
+
+					if (ofd.ShowDialog() == DialogResult.OK)
+					{
+						_pnlView.Spriteset.Clear();
+
+						var bitmap = new Bitmap(ofd.FileName);
+						SpriteCollectionBase spriteset = BitmapService.CreateSpriteset(
+																					bitmap,
+																					Pal,
+																					XCImage.SpriteWidth,
+																					XCImage.SpriteHeight,
+																					1);
+						for (int i = 0; i != spriteset.Count; ++i)
+						{
+							_pnlView.Spriteset.Add(spriteset[i]);
+						}
+						InsertSpritesFinish();
 					}
 				}
 			}
