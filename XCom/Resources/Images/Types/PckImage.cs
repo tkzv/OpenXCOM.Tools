@@ -68,11 +68,9 @@ namespace XCom
 				SpriteCollection spriteset)
 			:
 				base(
-//					new byte[]{},
-					new byte[XCImage.SpriteWidth * XCImage.SpriteHeight],
-//					0,0,
-					XCImage.SpriteWidth,
-					XCImage.SpriteHeight,
+					new byte[XCImage.SpriteWidth * XCImage.SpriteHeight],	// new byte[]{}
+					XCImage.SpriteWidth,									// 0
+					XCImage.SpriteHeight,									// 0
 					null, // do *not* pass 'pal' in here. See XCImage..cTor
 					terrainId)
 		{
@@ -85,7 +83,7 @@ namespace XCom
 			Pal = pal;
 
 			for (int id = 0; id != Bindata.Length; ++id)
-				Bindata[id] = Palette.TransparentId;
+				Bindata[id] = Palette.TransparentId; // I *think* byte arrays get initialized w/ "0" by default (c#)
 
 			int posSrc = 0;
 			int posDst = 0;

@@ -125,7 +125,7 @@ namespace XCom
 				SpriteCollection spriteset,
 				Palette pal,
 				int width,
-				int pad)
+				int pad = 0)
 		{
 			if (spriteset.Count == 1)
 				width = 1;
@@ -505,7 +505,7 @@ namespace XCom
 				Palette pal,
 				int width,
 				int height,
-				int pad)
+				int pad = 0)
 		{
 			var spriteset = new SpriteCollectionBase();
 

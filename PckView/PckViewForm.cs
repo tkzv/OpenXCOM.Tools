@@ -1013,7 +1013,7 @@ namespace PckView
 						string fullpath = Path.Combine(fbd.SelectedPath, file + BitmapService.BmpExt);
 						if (!File.Exists(fullpath))
 						{
-							BitmapService.ExportSpritesheet(fullpath, (SpriteCollection)_pnlView.Spriteset, Pal, 8, 1);
+							BitmapService.ExportSpritesheet(fullpath, (SpriteCollection)_pnlView.Spriteset, Pal, 8);
 						}
 						else
 							MessageBox.Show(
@@ -1052,8 +1052,7 @@ namespace PckView
 																					bitmap,
 																					Pal,
 																					XCImage.SpriteWidth,
-																					XCImage.SpriteHeight,
-																					1);
+																					XCImage.SpriteHeight);
 						for (int i = 0; i != spriteset.Count; ++i)
 						{
 							_pnlView.Spriteset.Add(spriteset[i]);
