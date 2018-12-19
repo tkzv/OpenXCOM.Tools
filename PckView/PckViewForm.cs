@@ -1299,53 +1299,41 @@ namespace PckView
 			string pfeTab = pfePck.Substring(0, pfePck.Length - 4) + SpriteCollection.TabExt;
 			if (File.Exists(pfeTab))
 			{
+				SpriteCollection spriteset = null;
+
 				using (var fsPck = File.OpenRead(pfePck))
 				using (var fsTab = File.OpenRead(pfeTab))
 				{
-					// TODO: figure a decent way to rewrite this UFO vs TFTD kludge ->
-					var spriteset = new SpriteCollection(
-													fsPck,
-													fsTab,
-													2,
-													Palette.UfoBattle);
-					if (spriteset.Borked)
+					spriteset = new SpriteCollection(
+												fsPck,
+												fsTab,
+												2,
+												Palette.UfoBattle);
+				}
+
+				if (spriteset.Borked)
+				{
+					using (var fsPck = File.OpenRead(pfePck))
+					using (var fsTab = File.OpenRead(pfeTab))
+					{
 						spriteset = new SpriteCollection(
 													fsPck,
 													fsTab,
 													4,
 													Palette.TftdBattle);
-
-//					SpriteCollectionBase spriteset = null;
-//					try
-//					{
-//						//LogFile.WriteLine(". . try UFO");
-//						spriteset = new SpriteCollection(
-//													fsPck,
-//													fsTab,
-//													2,
-//													Palette.UfoBattle);
-//					}
-//					catch
-//					{
-//						//LogFile.WriteLine(". . catch TFTD");
-//						spriteset = new SpriteCollection(
-//													fsPck,
-//													fsTab,
-//													4,
-//													Palette.TftdBattle);
-//					}
-
-					if (spriteset != null)
-						spriteset.Label = SpritesetLabel;
-
-					OnPaletteClick(
-								_paletteItems[DefaultPalette],
-								EventArgs.Empty);
-
-					_pnlView.Spriteset = spriteset;
-
-					Text = "PckView - " + pfePck;
+					}
 				}
+
+				if (spriteset != null)
+					spriteset.Label = SpritesetLabel;
+
+				OnPaletteClick(
+							_paletteItems[DefaultPalette],
+							EventArgs.Empty);
+
+				_pnlView.Spriteset = spriteset;
+
+				Text = "PckView - " + pfePck;
 			}
 			else
 			{

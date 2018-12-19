@@ -66,10 +66,12 @@ namespace XCom
 		/// 4.
 		/// XCMainWindow..cTor also needs to load the CURSOR.
 		/// </summary>
-		/// <param name="fsPck"></param>
-		/// <param name="fsTab"></param>
-		/// <param name="tabOffset"></param>
-		/// <param name="pal"></param>
+		/// <param name="fsPck">filestream of the PCK file</param>
+		/// <param name="fsTab">filestream of the TAB file</param>
+		/// <param name="tabOffset">the length of a word in bytes of a single
+		/// tab-record (ie. 2 for 2-byte UFO records, 4 for 4-byte TFTD records)</param>
+		/// <param name="pal">the palette to use (typically Palette.UfoBattle
+		/// for UFO sprites or Palette.TftdBattle for TFTD sprites)</param>
 		public SpriteCollection(
 				Stream fsPck,
 				Stream fsTab,
