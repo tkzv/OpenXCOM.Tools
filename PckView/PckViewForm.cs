@@ -1301,8 +1301,8 @@ namespace PckView
 			{
 				SpriteCollection spriteset = null;
 
-				using (var fsPck = File.OpenRead(pfePck))
-				using (var fsTab = File.OpenRead(pfeTab))
+				using (var fsPck = File.OpenRead(pfePck)) // try 2-byte sprite-offsets in .TAB file
+				using (var fsTab = File.OpenRead(pfeTab)) // ie, UFO/TFTD terrain-sprites, UFO unit-sprites
 				{
 					spriteset = new SpriteCollection(
 												fsPck,
@@ -1313,8 +1313,8 @@ namespace PckView
 
 				if (spriteset.Borked)
 				{
-					using (var fsPck = File.OpenRead(pfePck))
-					using (var fsTab = File.OpenRead(pfeTab))
+					using (var fsPck = File.OpenRead(pfePck)) // try 4-byte sprite-offsets in .TAB file
+					using (var fsTab = File.OpenRead(pfeTab)) // ie, TFTD unit-sprites
 					{
 						spriteset = new SpriteCollection(
 													fsPck,
