@@ -1092,24 +1092,25 @@ namespace MapView
 		{
 			string changed = null;
 
-			if (_mainViewUnderlay.MainViewOverlay.MapBase != null
-				&& _mainViewUnderlay.MainViewOverlay.MapBase.MapChanged)
+			if (_mainViewUnderlay.MapBase != null)
 			{
-				changed = "Map";
-			}
+				if (_mainViewUnderlay.MapBase.MapChanged)
+					changed = "Map";
 
-			if (_mainViewUnderlay.MainViewOverlay.MapBase != null
-				&& _mainViewUnderlay.MainViewOverlay.MapBase.RoutesChanged)
-			{
-				if (!String.IsNullOrEmpty(changed))
-					changed += " and ";
-				changed += "Routes";
+				if (_mainViewUnderlay.MapBase.RoutesChanged)
+				{
+					if (!String.IsNullOrEmpty(changed))
+						changed += " and ";
+
+					changed += "Routes";
+				}
 			}
 
 			if (MaptreeChanged)
 			{
 				if (!String.IsNullOrEmpty(changed))
 					changed += " and ";
+
 				changed += "Maptree";
 			}
 
@@ -1136,11 +1137,14 @@ namespace MapView
 						break;
 
 					case DialogResult.Retry:
-						if (_mainViewUnderlay.MapBase.MapChanged)
-							_mainViewUnderlay.MapBase.SaveMap();
+						if (_mainViewUnderlay.MapBase != null)
+						{
+							if (_mainViewUnderlay.MapBase.MapChanged)
+								_mainViewUnderlay.MapBase.SaveMap();
 
-						if (_mainViewUnderlay.MapBase.RoutesChanged)
-							_mainViewUnderlay.MapBase.SaveRoutes();
+							if (_mainViewUnderlay.MapBase.RoutesChanged)
+								_mainViewUnderlay.MapBase.SaveRoutes();
+						}
 
 						if (MaptreeChanged)
 						{
