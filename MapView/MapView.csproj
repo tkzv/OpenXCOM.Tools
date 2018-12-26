@@ -2,8 +2,6 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{AAB9EA5A-403E-488D-894F-6014B85D09CC}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -39,7 +37,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <NoWin32Manifest>False</NoWin32Manifest>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
     <NoStdLib>False</NoStdLib>
@@ -61,43 +59,86 @@
     <DebugSymbols>true</DebugSymbols>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <ErrorReport>prompt</ErrorReport>
+    <StartAction>Project</StartAction>
+    <BaseAddress>285212672</BaseAddress>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>Full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DebugSymbols>false</DebugSymbols>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
     <ErrorReport>prompt</ErrorReport>
+    <StartAction>Project</StartAction>
+    <PostBuildEvent>copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\Release\MapView.exe C:\0xC_kL\editors\MapView_kL\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\Release\DSShared.dll C:\0xC_kL\editors\MapView_kL\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\Release\XCom.dll C:\0xC_kL\editors\MapView_kL\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\Release\YamlDotNet.dll C:\0xC_kL\editors\MapView_kL\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\Release\PckView.exe C:\0xC_kL\editors\MapView_kL\
+</PostBuildEvent>
+    <BaseAddress>285212672</BaseAddress>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>None</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Debug\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <StartAction>Project</StartAction>
+    <BaseAddress>285212672</BaseAddress>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>Full</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <StartAction>Project</StartAction>
+    <PostBuildEvent>copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\Release\MapView.exe C:\0xC_kL\editors\MapView_kL\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\Release\DSShared.dll C:\0xC_kL\editors\MapView_kL\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\Release\XCom.dll C:\0xC_kL\editors\MapView_kL\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\Release\YamlDotNet.dll C:\0xC_kL\editors\MapView_kL\
+copy /y C:\GIT\OpenXCOM.Tools\MapView\bin\Release\PckView.exe C:\0xC_kL\editors\MapView_kL\
+</PostBuildEvent>
+    <BaseAddress>285212672</BaseAddress>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>None</DebugType>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\YamlDotNet\YamlDotNet.csproj">
-      <Project>{bf32de1b-6276-4341-b212-f8862adbba7a}</Project>
+      <Project>{BF32DE1B-6276-4341-B212-F8862ADBBA7A}</Project>
       <Name>YamlDotNet</Name>
     </ProjectReference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" />
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Design">
       <Name>System.Design</Name>
     </Reference>
@@ -124,11 +165,8 @@
     <ProjectReference Include="..\XCom\XCom.csproj">
       <Name>XCom</Name>
       <Project>{66DC3C20-8041-48DD-962B-DEA050F89179}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Forms\MainWindow\OptionsManager.cs" />
